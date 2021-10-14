@@ -1,7 +1,7 @@
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { element } from 'protractor';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -10,10 +10,9 @@ declare var $: any;
 @Component({
   selector: 'app-application-asset-hierarchy',
   templateUrl: './application-asset-hierarchy.component.html',
-  styleUrls: ['./application-asset-hierarchy.component.css']
+  styleUrls: ['./application-asset-hierarchy.component.css'],
 })
 export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
-
   @Input() applicationData: any;
   selectedHierarchyItem: any;
   addedTagItem: string;
@@ -34,7 +33,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -67,13 +66,13 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     console.log(JSON.stringify(this.selectedHierarchyData));
     this.selectedHierarchyData[i + 1] = tag;
     this.configureHierarchy[i] = tag;
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
     console.log(this.configureHierarchy);
-    Object.keys(this.hierarchyArr).forEach(key => {
+    Object.keys(this.hierarchyArr).forEach((key) => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -98,7 +97,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   }
 
   onAddNewTag(i, tagIndex) {
-    if (!this.addedTagItem || (this.addedTagItem.trim()).length === 0) {
+    if (!this.addedTagItem || this.addedTagItem.trim().length === 0) {
       this.toasterService.showError('Blank values are not allowed', 'Add Tag');
       return;
     }
@@ -130,8 +129,8 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
       console.log(index);
       console.log(i + 1, this.configureHierarchy[i + 1]);
       if (index > i + 1) {
-      obj = obj[this.configureHierarchy[i + 1]];
-      console.log(obj);
+        obj = obj[this.configureHierarchy[i + 1]];
+        console.log(obj);
       }
     });
     console.log(obj);
@@ -158,15 +157,15 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
 
     let nextHierarchy = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, i) => {
-        console.log('1111111 ', nextHierarchy);
-        console.log(this.configureHierarchy[i + 1]);
-        nextHierarchy = nextHierarchy[this.configureHierarchy[i + 1]];
-        this.selectedHierarchyData[i + 2] = nextHierarchy;
-        console.log('2222222   ', nextHierarchy);
-        if (nextHierarchy) {
-          arr[i + 2] = Object.keys(nextHierarchy);
-          console.log('333333333   ', arr);
-        }
+      console.log('1111111 ', nextHierarchy);
+      console.log(this.configureHierarchy[i + 1]);
+      nextHierarchy = nextHierarchy[this.configureHierarchy[i + 1]];
+      this.selectedHierarchyData[i + 2] = nextHierarchy;
+      console.log('2222222   ', nextHierarchy);
+      if (nextHierarchy) {
+        arr[i + 2] = Object.keys(nextHierarchy);
+        console.log('333333333   ', arr);
+      }
     });
     this.hierarchyArr = JSON.parse(JSON.stringify(arr));
     console.log(this.hierarchyArr);
@@ -176,21 +175,21 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
 
   trackByFn(index: any, item: any) {
     return index;
- }
+  }
 
- trackByFn1(index: any, item: any) {
-  return index;
-}
+  trackByFn1(index: any, item: any) {
+    return index;
+  }
 
   onSaveHierarchyTags() {
     let flag;
 
-    this.applicationData.hierarchy.levels.forEach(item => {
-      if (!item || (item.trim()).length === 0) {
+    this.applicationData.hierarchy.levels.forEach((item) => {
+      if (!item || item.trim().length === 0) {
         flag = 'Blank Name is not allowed.';
         return;
       }
-      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
         if (item.includes(char)) {
           flag = `Hierarchy name should not contain space, dot '#' and '$'`;
           return;
@@ -205,7 +204,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.applicationData.app,
       hierarchy: this.applicationData.hierarchy,
-      force_update: this.forceUpdate ? this.forceUpdate : undefined
+      force_update: this.forceUpdate ? this.forceUpdate : undefined,
     };
     // if (this.forceUpdate && this.selectedHierarchy) {
     //   const hierarchy = [];
@@ -217,22 +216,25 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     //   obj.hierarchy = hierarchy;
     // }
     this.saveHierarchyAPILoading = true;
-    this.apiSubscriptions.push(this.applicationService.updateAppHierarchy(obj).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Save Asset Hierarchy');
-        this.selectedHierarchyItem = undefined;
-        this.addedTagItem = undefined;
-        if (this.forceUpdate) {
+    this.apiSubscriptions.push(
+      this.applicationService.updateAppHierarchy(obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Save Asset Hierarchy');
+          this.selectedHierarchyItem = undefined;
+          this.addedTagItem = undefined;
+          if (this.forceUpdate) {
+            this.isAppSetingsEditable = false;
+          }
+          this.saveHierarchyAPILoading = false;
           this.isAppSetingsEditable = false;
+          this.applicationService.refreshAppData.emit();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Save Asset Hierarchy');
+          this.saveHierarchyAPILoading = false;
         }
-        this.saveHierarchyAPILoading = false;
-        this.isAppSetingsEditable = false;
-        this.applicationService.refreshAppData.emit();
-      }, (error) => {
-        this.toasterService.showError(error.message, 'Save Asset Hierarchy');
-        this.saveHierarchyAPILoading = false;
-      }
-    ));
+      )
+    );
   }
 
   onAddTagCancel(index, tagIndex) {
@@ -258,6 +260,6 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

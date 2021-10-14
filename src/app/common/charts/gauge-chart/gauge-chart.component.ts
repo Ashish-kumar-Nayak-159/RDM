@@ -2,7 +2,7 @@ import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit, OnChanges, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-gauge-chart',

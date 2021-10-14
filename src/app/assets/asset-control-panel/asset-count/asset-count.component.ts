@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../../services/common.service';
 import { AssetService } from './../../../services/assets/asset.service';
 import { ToasterService } from './../../../services/toaster.service';

@@ -6,27 +6,23 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from './../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
-
 
 @Component({
   selector: 'app-application-dashboard',
   templateUrl: './application-dashboard.component.html',
-  styleUrls: ['./application-dashboard.component.css']
+  styleUrls: ['./application-dashboard.component.css'],
 })
 export class ApplicationDashboardComponent implements OnInit, OnDestroy {
-
   @ViewChildren('c2dChart') c2dChart: ElementRef;
   @ViewChildren('d2cChart') d2cChart: ElementRef;
   public barChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
   };
-  public barChartLabels = [
-    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-  ];
+  public barChartLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   public barChartType = 'bar';
   public barChartLegend = false;
   public barChartData = [
@@ -37,7 +33,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       hoverBackgroundColor: '#809eb9',
       hoverBorderColor: '#505c80',
       hoverBorderWidth: 2,
-    }
+    },
   ];
   public barChartData1 = [
     {
@@ -46,7 +42,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       backgroundColor: '#505c80',
       hoverBackgroundColor: '#809eb9',
       hoverBorderColor: '#505c80',
-    }
+    },
   ];
   dashboardSnapshot: ApplicationDashboardSnapshot; // to store application dashboard snapshot
   isDashboardSnapshotLoading = false; // flag to identify dashboard snapshot API call is completed or not
@@ -74,63 +70,64 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private assetService: AssetService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
-      this.tileName = this.getTileName('IoT Gateways');
-      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
-        this.contextApp.metadata.logo = {
-          url : CONSTANTS.DEFAULT_APP_LOGO
-        };
-      }
-      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.icon) {
-        this.contextApp.metadata.icon = {
-          url : CONSTANTS.DEFAULT_APP_ICON
-        };
-      }
-      this.commonService.breadcrumbEvent.emit({
-        type: 'replace',
-        data: [
-          {
-            title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.contextApp.app
-          }
-        ]
-      });
-      this.getDashboardSnapshot();
-      this.getLastNotificationData();
-      this.getLastAlertData();
-      this.getLastEventData();
-    }));
+    this.apiSubscriptions.push(
+      this.route.paramMap.subscribe(async (params) => {
+        this.tileName = this.getTileName('IoT Gateways');
+        if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
+          this.contextApp.metadata.logo = {
+            url: CONSTANTS.DEFAULT_APP_LOGO,
+          };
+        }
+        if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.icon) {
+          this.contextApp.metadata.icon = {
+            url: CONSTANTS.DEFAULT_APP_ICON,
+          };
+        }
+        this.commonService.breadcrumbEvent.emit({
+          type: 'replace',
+          data: [
+            {
+              title: this.contextApp.user.hierarchyString,
+              url: 'applications/' + this.contextApp.app,
+            },
+          ],
+        });
+        this.getDashboardSnapshot();
+        this.getLastNotificationData();
+        this.getLastAlertData();
+        this.getLastEventData();
+      })
+    );
     await this.getAllAssets();
     const center = this.commonService.averageGeolocation(this.assets);
     this.centerLatitude = center?.latitude || 23.0225;
     this.centerLongitude = center?.longitude || 72.5714;
-    this.assets.forEach(marker => {
+    this.assets.forEach((marker) => {
       const mtbfHours = this.commonService.randomIntFromInterval(0, 7);
       const mtbfMinutes = this.commonService.randomIntFromInterval(10, 59);
       if (mtbfHours > 0) {
         marker.mtbf = mtbfHours + ' Hrs ' + mtbfMinutes + ' Mins';
       } else {
-        marker.mtbf =  mtbfMinutes + ' Mins';
+        marker.mtbf = mtbfMinutes + ' Mins';
       }
       const mttrHours = this.commonService.randomIntFromInterval(0, 5);
       const mttrMinutes = this.commonService.randomIntFromInterval(5, 59);
       if (mttrHours > 0) {
         marker.mttr = mttrHours + ' Hrs ' + mttrMinutes + ' Mins';
       } else {
-        marker.mttr =  mttrMinutes + ' Mins';
+        marker.mttr = mttrMinutes + ' Mins';
       }
     });
   }
 
-
   getTileName(type) {
     let name;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === type) {
         name = item.display_name;
       }
@@ -141,16 +138,16 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   getAllAssets() {
     return new Promise<void>((resolve) => {
       const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       };
-      this.apiSubscriptions.push(this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
           }
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -161,17 +158,19 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.isDashboardSnapshotLoading = true;
     const obj = {
       app: this.contextApp.app,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
     };
-    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj, obj.app)
-    .subscribe(
-      (response: ApplicationDashboardSnapshot) => {
-        this.dashboardSnapshot = response;
-        this.isDashboardSnapshotLoading = false;
-      }, error => {
-        this.isDashboardSnapshotLoading = false;
-      }
-    ));
+    this.apiSubscriptions.push(
+      this.applicationService.getApplicationDashboardSnapshot(obj, obj.app).subscribe(
+        (response: ApplicationDashboardSnapshot) => {
+          this.dashboardSnapshot = response;
+          this.isDashboardSnapshotLoading = false;
+        },
+        (error) => {
+          this.isDashboardSnapshotLoading = false;
+        }
+      )
+    );
   }
 
   /**
@@ -183,21 +182,25 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
-      to_date: (moment().utc()).unix()
+      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
+      to_date: moment().utc().unix(),
     };
-    this.apiSubscriptions.push(this.applicationService.getLastAlerts(obj)
-    .subscribe(
-      (response: any) => {
-        if (response.data) {
-          this.lastGeneratedAlerts = response.data;
-          this.lastGeneratedAlerts.forEach(alert => alert.time_diff = this.calculateTimeDifference(alert.message_date));
+    this.apiSubscriptions.push(
+      this.applicationService.getLastAlerts(obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.lastGeneratedAlerts = response.data;
+            this.lastGeneratedAlerts.forEach(
+              (alert) => (alert.time_diff = this.calculateTimeDifference(alert.message_date))
+            );
+          }
+          this.isLastAlertDataLoading = false;
+        },
+        (error) => {
+          this.isLastAlertDataLoading = false;
         }
-        this.isLastAlertDataLoading = false;
-      }, error => {
-        this.isLastAlertDataLoading = false;
-      }
-    ));
+      )
+    );
   }
 
   /**
@@ -209,23 +212,25 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
-      to_date: (moment().utc()).unix()
+      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
+      to_date: moment().utc().unix(),
     };
-    this.apiSubscriptions.push(this.applicationService.getLastNotifications(obj)
-    .subscribe(
-      (response: any) => {
-        if (response.data) {
-          this.lastGeneratedNotifications = response.data;
-          this.lastGeneratedNotifications.forEach(
-            notification => notification.time_diff = this.calculateTimeDifference(notification.message_date)
-          );
+    this.apiSubscriptions.push(
+      this.applicationService.getLastNotifications(obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.lastGeneratedNotifications = response.data;
+            this.lastGeneratedNotifications.forEach(
+              (notification) => (notification.time_diff = this.calculateTimeDifference(notification.message_date))
+            );
+          }
+          this.isLastNotificationDataLoading = false;
+        },
+        (error) => {
+          this.isLastNotificationDataLoading = false;
         }
-        this.isLastNotificationDataLoading = false;
-      }, error => {
-        this.isLastNotificationDataLoading = false;
-      }
-    ));
+      )
+    );
   }
 
   /**
@@ -237,28 +242,30 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
-      to_date: (moment().utc()).unix()
+      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
+      to_date: moment().utc().unix(),
     };
-    this.apiSubscriptions.push(this.applicationService.getAssetLifeCycleEvents(obj)
-    .subscribe(
-      (response: any) => {
-        if (response.data) {
-          this.lastGeneratedEvents = response.data;
-          this.lastGeneratedEvents.forEach(event => {
-            event.time_diff = this.calculateTimeDifference(event.created_date);
-            const eventMsg = event.event_type.split('.');
-            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
-            eventMsg[eventMsg.length - 1] = (event.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
-            eventMsg[eventMsg.length - 1];
-            event.event_type = eventMsg[eventMsg.length - 1];
-          });
+    this.apiSubscriptions.push(
+      this.applicationService.getAssetLifeCycleEvents(obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.lastGeneratedEvents = response.data;
+            this.lastGeneratedEvents.forEach((event) => {
+              event.time_diff = this.calculateTimeDifference(event.created_date);
+              const eventMsg = event.event_type.split('.');
+              eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
+              eventMsg[eventMsg.length - 1] =
+                (event.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ') + eventMsg[eventMsg.length - 1];
+              event.event_type = eventMsg[eventMsg.length - 1];
+            });
+          }
+          this.isLastEventDataLoading = false;
+        },
+        (error) => {
+          this.isLastEventDataLoading = false;
         }
-        this.isLastEventDataLoading = false;
-      }, error => {
-        this.isLastEventDataLoading = false;
-      }
-    ));
+      )
+    );
   }
 
   calculateTimeDifference(startDate) {
@@ -284,10 +291,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     let obj;
     if (type || fromValue) {
       obj = {
-        connection_state: type
+        connection_state: type,
       };
     }
-    this.router.navigate(['applications', this.contextApp.app, 'gateways'], {queryParams: obj});
+    this.router.navigate(['applications', this.contextApp.app, 'gateways'], { queryParams: obj });
   }
 
   onMarkerClick(infowindow, gm) {
@@ -308,6 +315,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    * It will help prevent memory leak issue.
    */
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

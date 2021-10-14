@@ -4,17 +4,16 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 
 @Component({
   selector: 'app-battery-messages',
   templateUrl: './battery-messages.component.html',
-  styleUrls: ['./battery-messages.component.css']
+  styleUrls: ['./battery-messages.component.css'],
 })
 export class BatteryMessagesComponent implements OnInit, OnDestroy {
-
   @Input() batteryMessageFilter: any = {};
   batteryMessageList: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -31,12 +30,15 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.assetService.searchNotificationsEventEmitter.subscribe(
-      () => this.searchBatteryMessage(this.batteryMessageFilter)));
+    this.apiSubscriptions.push(
+      this.assetService.searchNotificationsEventEmitter.subscribe(() =>
+        this.searchBatteryMessage(this.batteryMessageFilter)
+      )
+    );
     // if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
     //   this.batteryMessageFilter.gateway_id = this.asset.asset_id;
     // } else {
@@ -60,15 +62,15 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
         {
           name: 'Message',
           key: undefined,
-        }
-      ]
+        },
+      ],
     };
     // this.loadFromCache();
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.batteryMessageTableConfig.data.splice(1, 1);
       this.batteryMessageTableConfig.data.splice(1, 0, {
         name: 'Asset Name',
-        key: 'asset_id'
+        key: 'asset_id',
       });
     }
   }
@@ -100,7 +102,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
       pagefilterObj['from_date'] = obj.from_date;
@@ -109,52 +111,55 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
       this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     this.batteryMessageFilter = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetBatteryMessagesList(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.batteryMessageList = response.data;
-          this.batteryMessageList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-        }
-        if (this.batteryMessageFilter.dateOption !== 'Custom Range') {
-          this.batteryMessageTableConfig.dateRange = this.batteryMessageFilter.dateOption;
-        }
-        else {
-          this.batteryMessageTableConfig.dateRange = 'this selected range';
-        }
-        this.isBatteryMessageLoading = false;
-      }, error => this.isBatteryMessageLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetBatteryMessagesList(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.batteryMessageList = response.data;
+            this.batteryMessageList.forEach(
+              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+            );
+          }
+          if (this.batteryMessageFilter.dateOption !== 'Custom Range') {
+            this.batteryMessageTableConfig.dateRange = this.batteryMessageFilter.dateOption;
+          } else {
+            this.batteryMessageTableConfig.dateRange = 'this selected range';
+          }
+          this.isBatteryMessageLoading = false;
+        },
+        (error) => (this.isBatteryMessageLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
       };
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'battery').subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'battery').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
   openBatteryMessageModal(obj) {
     if (obj.type === this.batteryMessageTableConfig.type) {
       this.selectedBatteryMessage = obj.data;
-      this.getMessageData(obj.data).then(message => {
+      this.getMessageData(obj.data).then((message) => {
         this.selectedBatteryMessage.message = message;
       });
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
-        isDisplayCancel: true
+        isDisplayCancel: true,
       };
       $('#batteryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
-
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -164,7 +169,6 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
 }

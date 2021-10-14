@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';

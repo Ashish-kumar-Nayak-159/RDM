@@ -6,9 +6,10 @@ import { UserService } from './../../../services/user.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { CONSTANTS } from 'src/app/app.constants';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-users',
@@ -201,7 +202,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {

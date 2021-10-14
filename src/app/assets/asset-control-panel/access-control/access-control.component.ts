@@ -1,13 +1,14 @@
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ActivatedRoute } from '@angular/router';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { SearchCountryField, CountryISO } from 'ngx-intl-tel-input';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-access-control',
@@ -170,7 +171,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
     const user = this.addUserForm.value;
     delete user.userObj;
     if (!user.email || !user.name) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Recipient');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Recipient');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(user.email)) {

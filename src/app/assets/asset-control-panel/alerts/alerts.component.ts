@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-alerts',

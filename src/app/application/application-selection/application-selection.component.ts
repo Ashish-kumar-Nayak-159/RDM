@@ -3,13 +3,14 @@ import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 @Component({
   selector: 'app-application-selection',
@@ -101,7 +102,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     const decodedToken = this.commonService.decodeJWTToken(app.token);
     if (decodedToken.privileges.indexOf('APMV') === -1) {
-      this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
+      this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, UIMESSAGES.CONTACT_ADMINISTRATOR);
       this.commonService.onLogOut();
       return;
     }

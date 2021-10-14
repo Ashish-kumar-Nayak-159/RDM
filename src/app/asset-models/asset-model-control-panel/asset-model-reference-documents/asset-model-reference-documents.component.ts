@@ -1,4 +1,4 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -7,7 +7,8 @@ import { CommonService } from 'src/app/services/common.service';
 import { FileSaverService } from 'ngx-filesaver';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -280,7 +281,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       !this.documentObj.metadata
     ) {
       this.toasterService.showError(
-        APIMESSAGES.ALL_FIELDS_REQUIRED,
+        UIMESSAGES.ALL_FIELDS_REQUIRED,
         (this.documentObj.id ? 'Edit' : 'Add') + ' Document'
       );
       return;

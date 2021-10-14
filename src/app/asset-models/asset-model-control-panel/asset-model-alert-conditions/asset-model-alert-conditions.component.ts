@@ -5,9 +5,10 @@ import { AssetModelService } from './../../../services/asset-model/asset-model.s
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -510,7 +511,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       !this.alertObj.severity ||
       !this.alertObj.alert_type
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
@@ -559,7 +560,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       !this.alertObj.severity ||
       !this.alertObj.alert_type
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     this.alertObj.code = 'M_' + this.alertObj.code;

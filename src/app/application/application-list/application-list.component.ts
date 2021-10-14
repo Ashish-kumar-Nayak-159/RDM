@@ -1,11 +1,12 @@
-import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { environment } from 'src/environments/environment';
 import { ToasterService } from './../../services/toaster.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-list',
@@ -212,7 +213,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         applicationDetail.metadata.app_telemetry_specific_schema
       )
     ) {
-      this.toasterService.showWarning(APIMESSAGES.APP_CREATE_DB_CONFIG_WARNING, APIMESSAGES.APP_CREATE_DB_CONFIG);
+      this.toasterService.showWarning(UIMESSAGES.APP_CREATE_DB_CONFIG_WARNING, UIMESSAGES.APP_CREATE_DB_CONFIG);
     }
     this.isCreateAPILoading = true;
     applicationDetail.dashboard_config = {

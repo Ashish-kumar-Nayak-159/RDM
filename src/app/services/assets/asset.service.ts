@@ -1,9 +1,9 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppUrls } from '../../app-url.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
 import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
 import { catchError, map, filter } from 'rxjs/operators';

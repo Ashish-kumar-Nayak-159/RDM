@@ -7,7 +7,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { Asset } from 'src/app/models/asset.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-asset-control-panel',

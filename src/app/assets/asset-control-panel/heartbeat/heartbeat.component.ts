@@ -6,16 +6,15 @@ import { Asset } from 'src/app/models/asset.model';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { expInOut } from '@amcharts/amcharts4/.internal/core/utils/Ease';
 declare var $: any;
 @Component({
   selector: 'app-heartbeat',
   templateUrl: './heartbeat.component.html',
-  styleUrls: ['./heartbeat.component.css']
+  styleUrls: ['./heartbeat.component.css'],
 })
 export class HeartbeatComponent implements OnInit, OnDestroy {
-
   @Input() heartBeatFilter: any = {};
   heartbeats: any[] = [];
   contextApp: any;
@@ -33,14 +32,14 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.assetService.searchNotificationsEventEmitter.subscribe(
-      () => this.searchHeartBeat(this.heartBeatFilter))
+    this.apiSubscriptions.push(
+      this.assetService.searchNotificationsEventEmitter.subscribe(() => this.searchHeartBeat(this.heartBeatFilter))
     );
-    if (this.asset.tags.category === CONSTANTS.IP_GATEWAY ) {
+    if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
       this.heartBeatFilter.gateway_id = this.asset.asset_id;
     } else {
       this.heartBeatFilter.asset_id = this.asset.asset_id;
@@ -64,14 +63,14 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
         {
           name: 'Message',
           key: undefined,
-        }
-      ]
+        },
+      ],
     };
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.heartbeatTableConfig.data.splice(1, 1);
       this.heartbeatTableConfig.data.splice(1, 0, {
         name: 'Asset Name',
-        key: 'asset_id'
+        key: 'asset_id',
       });
     }
     // this.searchHeartBeat(this.heartBeatFilter);
@@ -105,7 +104,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Heartbeats');
       this.isHeartbeatLoading = false;
@@ -120,34 +119,38 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     this.heartBeatFilter = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetHeartBeats(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.heartbeats = response.data;
-          this.heartbeats.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-        }
-        if (this.heartBeatFilter.dateOption !== 'Custom Range') {
-          this.heartbeatTableConfig.dateRange = this.heartBeatFilter.dateOption;
-        }
-        else {
-          this.heartbeatTableConfig.dateRange = 'this selected range';
-        }
-        this.isHeartbeatLoading = false;
-      }, error => this.isHeartbeatLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetHeartBeats(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.heartbeats = response.data;
+            this.heartbeats.forEach(
+              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+            );
+          }
+          if (this.heartBeatFilter.dateOption !== 'Custom Range') {
+            this.heartbeatTableConfig.dateRange = this.heartBeatFilter.dateOption;
+          } else {
+            this.heartbeatTableConfig.dateRange = 'this selected range';
+          }
+          this.isHeartbeatLoading = false;
+        },
+        (error) => (this.isHeartbeatLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
       };
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'heartbeat').subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'heartbeat').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -157,15 +160,14 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
-        isDisplayCancel: true
+        isDisplayCancel: true,
       };
-      this.getMessageData(obj.data).then(message => {
+      this.getMessageData(obj.data).then((message) => {
         this.selectedHeartbeat.message = message;
       });
       $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
-
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -174,9 +176,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
 }

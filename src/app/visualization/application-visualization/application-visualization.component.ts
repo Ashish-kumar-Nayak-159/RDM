@@ -16,7 +16,7 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
 import { AssetService } from './../../services/assets/asset.service';
 import * as moment from 'moment';
@@ -31,6 +31,7 @@ import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CoordinatesModule } from 'ngx-color';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
+import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -71,8 +72,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedPropertyForChart: any[] = [];
   alertCondition: any = {};
   documents: any[] = [];
-  configureHierarchy = {};
-  hierarchyArr = {};
   tileData: any;
   signalRAlertSubscription: any;
   originalAssets: any[] = [];
@@ -89,16 +88,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   today = new Date();
   loadingMessage: string;
   selectedTab: any;
-  hierarchyString: any;
   isShowOpenFilter = true;
   selectedDateRange: string;
-  displayHierarchyString: string;
   decodedToken: any;
   selectedDocument: any;
   derivedKPIs: any;
   derivedKPIHistoricData: any;
   nullValueArr: any[];
   frequency: any;
+  @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
+  configuredHierarchy: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -117,18 +116,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
     this.getTileName();
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
-        }
-      }
-    });
     if (this.pageType === 'history') {
       this.filterObj.asset = this.asset;
     }
@@ -156,24 +144,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     if (item) {
       if (this.pageType === 'live') {
-        if (item.assets) {
-          this.filterObj.asset = item.assets;
-          this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-          this.onChangeOfAsset(this.filterObj.asset);
-        }
-        // this.filterObj = JSON.parse(JSON.stringify(item));
-        if (item.hierarchy) {
-          if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-            this.contextApp.hierarchy.levels.forEach((level, index) => {
-              if (index !== 0) {
-                this.configureHierarchy[index] = item.hierarchy[level];
-                if (item.hierarchy[level]) {
-                  this.onChangeOfHierarchy(index, false);
-                }
-              }
-            });
-          }
-        }
+        this.hierarchyDropdown.updateHierarchyDetail(item);
         this.getLatestAlerts(false);
       } else if (this.pageType === 'history') {
         if (item.dateOption) {
@@ -223,64 +194,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+  onSaveHierachy(configuredHierarchy) {
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
   }
 
-  onSaveHierachy() {
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
-    this.originalFilterObj = {};
-    this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-  }
-
-  onClearHierarchy() {
-    console.log('in clear');
-    this.hierarchyArr = {};
-    this.configureHierarchy = {};
-    this.originalFilterObj = {};
-    this.configureHierarchy = {};
-    this.filterObj.asset = undefined;
-    // this.filterObj = {};
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    console.log(this.hierarchyArr);
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        console.log(this.configureHierarchy);
-        console.log(level);
-        console.log(this.contextApp.user.hierarchy);
-        if (this.contextApp.user.hierarchy[level]) {
-          console.log('hereeeee');
-          this.onChangeOfHierarchy(index, false);
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
+  onClearHierarchy(configuredHierarchy) {
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
   }
 
   selectedDate(filterObj) {
@@ -321,78 +240,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onChangeOfHierarchy(i, persistAssetSelection = true) {
-    console.log(i);
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (key > i) {
-        delete this.configureHierarchy[key];
-      }
-    });
-    Object.keys(this.hierarchyArr).forEach((key) => {
-      if (key > i) {
-        this.hierarchyArr[key] = [];
-      }
-    });
-    console.log('2088888');
-    let nextHierarchy = this.contextApp.hierarchy.tags;
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
-    const hierarchyObj: any = { App: this.contextApp.app };
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      }
-    });
-    if (Object.keys(hierarchyObj).length === 1) {
-      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-    } else {
-      const arr = [];
-      this.assets = [];
-      this.originalAssets.forEach((asset) => {
-        let trueFlag = 0;
-        let flaseFlag = 0;
-        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            trueFlag++;
-          } else {
-            flaseFlag++;
-          }
-        });
-        if (trueFlag > 0 && flaseFlag === 0) {
-          arr.push(asset);
-        }
-      });
-      this.assets = JSON.parse(JSON.stringify(arr));
-    }
-    if (this.assets?.length === 1) {
-      this.filterObj.asset = this.assets[0];
-    }
-    console.log(persistAssetSelection);
-    if (persistAssetSelection) {
-      console.log('2477777');
-      this.filterObj.assetArr = undefined;
-      this.filterObj.asset = undefined;
-    }
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
-      }
-    });
-    if (count === 0) {
-      this.hierarchyArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      }
-    }
-  }
-
   getTileName() {
     let selectedItem;
     this.contextApp.menu_settings.main_menu.forEach((item) => {
@@ -414,9 +261,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           if (response?.data) {
             this.assets = response.data;
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
-            if (this.assets?.length === 1) {
-              this.filterObj.asset = this.assets[0];
-            }
           }
           resolve();
         })
@@ -424,30 +268,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAssetSelection() {
-    if (this.filterObj?.assetArr.length > 0) {
-      this.filterObj.asset = this.filterObj.assetArr[0];
-    } else {
-      this.filterObj.asset = undefined;
-      this.filterObj.assetArr = undefined;
-    }
-  }
-
-  onAssetDeselect() {
-    this.filterObj.asset = undefined;
-    this.filterObj.assetArr = undefined;
-  }
-
   getLatestAlerts(updateFilterObj = true) {
     this.latestAlerts = [];
     this.isAlertAPILoading = true;
-    // const filterObj = {
-    //   app: this.contextApp.app,
-    //   count: 10
-    // };
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     if (this.pageType === 'history') {
       if (this.filterObj.dateOption !== 'Custom Range') {
@@ -461,9 +284,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     const obj = { ...this.filterObj };
     obj.hierarchy = { App: this.contextApp.app };
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+    Object.keys(this.configuredHierarchy).forEach((key) => {
+      if (this.configuredHierarchy[key]) {
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
       }
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
@@ -489,9 +312,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
         if (!this.filterObj.asset) {
           pagefilterObj.hierarchy = { App: this.contextApp.app };
-          Object.keys(this.configureHierarchy).forEach((key) => {
-            if (this.configureHierarchy[key]) {
-              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+          Object.keys(this.configuredHierarchy).forEach((key) => {
+            if (this.configuredHierarchy[key]) {
+              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
             }
           });
         } else {

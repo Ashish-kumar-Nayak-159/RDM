@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { environment } from 'src/environments/environment';
@@ -14,10 +14,9 @@ declare var $: any;
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.component.html',
-  styleUrls: ['./logs.component.css']
+  styleUrls: ['./logs.component.css'],
 })
 export class LogsComponent implements OnInit {
-
   @Input() asset = new Asset();
   filterObj: any = {};
   logList: any[] = [];
@@ -176,7 +175,9 @@ export class LogsComponent implements OnInit {
         '/' +
         obj.data.file_name +
         this.sasToken;
-      this.apiSubscriptions.push(this.commonService.getFileData(url).subscribe((response) => {
+      this.apiSubscriptions.push(
+        this.commonService.getFileData(url).subscribe(
+          (response) => {
             this.fileData = response;
             this.fileSaverService.save(response, obj.data.file_name);
             this.isFileDataLoading = false;
@@ -198,4 +199,3 @@ export class LogsComponent implements OnInit {
     this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
 }
-

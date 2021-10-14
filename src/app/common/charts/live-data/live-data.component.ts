@@ -9,7 +9,7 @@ import { ChartService } from 'src/app/services/chart/chart.service';
 import * as moment from 'moment';
 declare var $: any;
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 @Component({
   selector: 'app-live-chart-data',
   templateUrl: './live-data.component.html',

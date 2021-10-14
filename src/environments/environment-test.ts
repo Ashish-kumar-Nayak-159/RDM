@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  appServerURL: 'https://kemsysrdmfuntionapp.azurewebsites.net/api/',
+  appServerURL: 'https://kempaas-functions-qa.azurewebsites.net/api/',
   blobAccountName: 'storageaccountkemsy96a3',
   blobContainerName: 'rdm-images',
   blobKey:

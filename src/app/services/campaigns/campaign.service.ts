@@ -1,22 +1,19 @@
 import { String } from 'typescript-string-operations';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AppUrls } from 'src/app/app-url.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CampaignService {
-
   url = environment.appServerURL;
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   getJobCampaigns(app, filterObj) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }

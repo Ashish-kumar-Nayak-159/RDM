@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { ActivatedRoute } from '@angular/router';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 declare var $: any;

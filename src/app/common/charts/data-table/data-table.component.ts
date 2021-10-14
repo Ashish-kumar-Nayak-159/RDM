@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 
 declare var $: any;
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.css']
+  styleUrls: ['./data-table.component.css'],
 })
 export class DataTableComponent implements OnInit {
-
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
@@ -30,27 +29,24 @@ export class DataTableComponent implements OnInit {
   headerMessage: string;
   hideCancelButton = false;
   decodedToken: any;
-  constructor(
-    private commonService: CommonService
-  ) { }
+  constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     setTimeout(() => this.plotChart(), 200);
   }
 
-  plotChart() {
-  }
+  plotChart() {}
 
   getPropertyType(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
+    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.type || 'Measured';
   }
 
   openConfirmRemoveWidgetModal() {
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
-      isDisplayCancel: true
+      isDisplayCancel: true,
     };
     this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
     this.headerMessage = 'Remove Widget';
@@ -67,14 +63,8 @@ export class DataTableComponent implements OnInit {
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
+    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;
   }
 
-
-  removeWidget(chartId) {
-
-  }
-
-
-
+  removeWidget(chartId) {}
 }

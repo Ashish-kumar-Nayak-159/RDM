@@ -5,8 +5,9 @@ import { ToasterService } from './../../../services/toaster.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
-import { CONSTANTS } from 'src/app/app.constants';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -240,7 +241,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       !this.controlWidget.metadata ||
       !this.controlWidget.metadata?.communication_technique
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
       return;
     }
     // try {

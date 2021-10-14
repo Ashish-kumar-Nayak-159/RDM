@@ -5,7 +5,7 @@ import { AssetModelService } from './../../services/asset-model/asset-model.serv
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';

@@ -4,17 +4,16 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ActivatedRoute } from '@angular/router';
 
 declare var $: any;
 @Component({
   selector: 'app-others',
   templateUrl: './others.component.html',
-  styleUrls: ['./others.component.css']
+  styleUrls: ['./others.component.css'],
 })
 export class OthersComponent implements OnInit, OnDestroy {
-
   @Input() otherFilter: any = {};
   othersList: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -31,12 +30,13 @@ export class OthersComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.assetService.searchNotificationsEventEmitter.subscribe(
-      () => this.searchOther(this.otherFilter)));
+    this.apiSubscriptions.push(
+      this.assetService.searchNotificationsEventEmitter.subscribe(() => this.searchOther(this.otherFilter))
+    );
     // if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
     //   this.otherFilter.gateway_id = this.asset.asset_id;
     // } else {
@@ -61,8 +61,8 @@ export class OthersComponent implements OnInit, OnDestroy {
         {
           name: 'Other Message',
           key: undefined,
-        }
-      ]
+        },
+      ],
     };
     // this.loadFromCache();
   }
@@ -79,7 +79,7 @@ export class OthersComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
       pagefilterObj['from_date'] = obj.from_date;
@@ -88,34 +88,38 @@ export class OthersComponent implements OnInit, OnDestroy {
       this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     this.otherFilter = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetotherMessagesList(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.othersList = response.data;
-          this.othersList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-        }
-        if (this.otherFilter.dateOption !== 'Custom Range') {
-          this.otherTableConfig.dateRange = this.otherFilter.dateOption;
-        }
-        else {
-          this.otherTableConfig.dateRange = 'this selected range';
-        }
-        this.isOthersLoading = false;
-      }, error => this.isOthersLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetotherMessagesList(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.othersList = response.data;
+            this.othersList.forEach(
+              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+            );
+          }
+          if (this.otherFilter.dateOption !== 'Custom Range') {
+            this.otherTableConfig.dateRange = this.otherFilter.dateOption;
+          } else {
+            this.otherTableConfig.dateRange = 'this selected range';
+          }
+          this.isOthersLoading = false;
+        },
+        (error) => (this.isOthersLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
       };
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'other').subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'other').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -125,15 +129,14 @@ export class OthersComponent implements OnInit, OnDestroy {
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
-        isDisplayCancel: true
+        isDisplayCancel: true,
       };
-      this.getMessageData(obj.data).then(message => {
+      this.getMessageData(obj.data).then((message) => {
         this.selectedOther.message = message;
       });
       $('#otherMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
-
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -143,6 +146,6 @@ export class OthersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
 }

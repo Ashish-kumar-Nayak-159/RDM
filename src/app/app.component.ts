@@ -1,9 +1,9 @@
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from './app.constants';
 
 @Component({
   selector: 'app-root',

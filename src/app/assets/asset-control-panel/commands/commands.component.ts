@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../../services/common.service';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';

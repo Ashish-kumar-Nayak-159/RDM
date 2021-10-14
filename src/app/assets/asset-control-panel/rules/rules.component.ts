@@ -149,7 +149,7 @@ export class RulesComponent implements OnInit {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -196,7 +196,7 @@ export class RulesComponent implements OnInit {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -249,7 +249,7 @@ export class RulesComponent implements OnInit {
       },
       (err: HttpErrorResponse) => {
         this.isDeleteRuleLoading = false;
-        this.toasterService.showSuccess(err.message, 'Delete Rule');
+        this.toasterService.showError(err.message, 'Delete Rule');
         this.onCloseDeleteModal();
       }
     );

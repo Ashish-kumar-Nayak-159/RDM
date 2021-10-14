@@ -125,7 +125,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -170,7 +170,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -223,7 +223,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       },
       (err: HttpErrorResponse) => {
         this.isDeleteRuleLoading = false;
-        this.toasterService.showSuccess(err.message, 'Delete Rule');
+        this.toasterService.showError(err.message, 'Delete Rule');
         this.onCloseDeleteModal();
       }
     );

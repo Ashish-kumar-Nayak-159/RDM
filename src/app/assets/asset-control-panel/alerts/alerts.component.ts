@@ -35,11 +35,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
-    //   this.alertFilter.gateway_id = this.asset.asset_id;
-    // } else {
-    //   this.alertFilter.asset_id = this.asset.asset_id;
-    // }
     this.alertFilter.displayAlertOptions = true;
     this.alertFilter.count = 10;
     this.alertFilter.app = this.contextApp.app;
@@ -51,7 +46,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           name: 'Code',
           key: 'code',
-          headerClass: 'w-5',
+          headerClass: 'w-15',
         },
         {
           name: 'Alert Start Time',

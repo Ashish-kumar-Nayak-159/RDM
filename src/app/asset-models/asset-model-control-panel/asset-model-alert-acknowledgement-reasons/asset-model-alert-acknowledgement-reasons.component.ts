@@ -143,7 +143,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
         (error) => {
           this.toasterService.showError(error.message, 'Update Reasons');
           this.isUpdateReasonsAPILoading = false;
-          this.isEnableEdit[i] = false;
+          // this.isEnableEdit[i] = false;
         }
       )
     );

@@ -2,13 +2,14 @@ import { ApplicationService } from './../../services/application/application.ser
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ToasterService } from './../../services/toaster.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, Input, OnInit, EventEmitter, Output, OnChanges } from '@angular/core';
 import * as moment from 'moment';
 import { Asset } from 'src/app/models/asset.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-add-asset',
@@ -54,10 +55,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
         if (this.assetDetail?.hierarchy) {
-            this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
-            if (this.assetDetail.hierarchy[level]) {
-              this.onChangeOfAddAssetHierarchy(index);
-            }
+          this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+          if (this.assetDetail.hierarchy[level]) {
+            this.onChangeOfAddAssetHierarchy(index);
+          }
         } else {
           this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
@@ -78,8 +79,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
       if (!this.assetDetail.asset_manager) {
         this.assetDetail.tags.asset_manager = undefined;
-      }
-      else {
+      } else {
         this.assetDetail.tags.asset_manager = this.assetDetail.asset_manager;
       }
       if (!this.assetDetail.asset_model) {
@@ -310,7 +310,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       !this.assetDetail.tags.cloud_connectivity ||
       !this.assetDetail.tags.asset_model
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
       return;
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET && !this.assetDetail.gateway_id) {
@@ -448,4 +448,3 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.cancelModal.emit();
   }
 }
-

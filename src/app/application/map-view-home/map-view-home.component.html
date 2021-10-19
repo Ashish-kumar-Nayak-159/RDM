@@ -25,42 +25,10 @@
               </div>
             </div>
           </ng-container>
-          <div class="form-group" id="dd-open">
-            <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              [ngClass]="{'active': hierarchyString}" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
-              (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString :
-              'Select Hierarchy'}}</button>
-            <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
-              <ng-container *ngFor="
-                      let level of contextApp?.hierarchy?.levels;
-                      let index = index
-                    ">
-                <div class="">
-                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form dropdown-open"
-                    id="{{ level }}" [disabled]="contextApp?.user?.hierarchy[level]"
-                    [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
-                    (change)="onChangeOfHierarchy(index, true)">
-                    <option [ngValue]="undefined">
-                      Select {{ level }}
-                    </option>
-                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                      {{ tag }}
-                    </option>
-                  </select>
-                  <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
-                    disabled class="dropdown-form dropdown-open" />
-                </div>
-              </ng-container>
-              <div class="form-group"
-                *ngIf="contextApp?.hierarchy?.levels?.length > 1 && contextAppUserHierarchyLength !== contextApp?.hierarchy?.levels?.length">
-                <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
-                  (click)="onSaveHierachy()">Apply</button>
-                <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
-                  (click)="onClearHierarchy()">Clear</button>
-              </div>
-            </div>
-          </div>
+          <app-hierarchy-dropdown *ngIf="!isGetAssetsAPILoading" #hierarchyDropdown [showAsset]="false"
+            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
+            (clearHierarchyEvent)="onClearHierarchy($event)">
+          </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
               (click)="onAssetFilterApply()"><i class="fas fa-search fa-sm"></i></button></div>
         </form>

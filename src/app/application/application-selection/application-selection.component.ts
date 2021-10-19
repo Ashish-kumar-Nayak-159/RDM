@@ -1,15 +1,14 @@
 import { SignalRService } from './../../services/signalR/signal-r.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
-import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 @Component({
   selector: 'app-application-selection',
@@ -27,12 +26,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   decodedToken: any;
   userApplications: any[] = [];
   isUserApplicationLoading = false;
+  uiMessages = UIMESSAGES.MESSAGES;
   constructor(
     private commonService: CommonService,
     private router: Router,
     private applicationService: ApplicationService,
-    private assetService: AssetService,
-    private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService
   ) {}
@@ -45,13 +43,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     } else {
       this.userApplications = this.userData?.apps || [];
     }
-    // if ($('.container-fluid').hasClass('sb-notoggle')) {
-    //   $('.container-fluid').removeClass('sb-notoggle');
-    // }
-    // else if ($('.container-fluid').hasClass('sb-toggle')) {
-    //   $('.container-fluid').removeClass('sb-toggle');
-    // }
-    // if ()
   }
 
   getUserApplications() {
@@ -75,7 +66,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
         this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
       }
       if (this.userData.apps.length === 0) {
-        this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
+        this.toasterService.showError(this.uiMessages.NO_APPS_ASSIGNED_MESSAGE, this.uiMessages.CONTACT_ADMINISTRATOR);
         this.commonService.onLogOut();
       }
       this.isUserApplicationLoading = false;
@@ -98,12 +89,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
-    }
-    const decodedToken = this.commonService.decodeJWTToken(app.token);
-    if (decodedToken.privileges.indexOf('APMV') === -1) {
-      this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
-      this.commonService.onLogOut();
-      return;
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);

@@ -1,4 +1,4 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../services/common.service';
 import { ToasterService } from './../services/toaster.service';
 import { Injectable } from '@angular/core';
@@ -7,9 +7,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, Htt
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { AppUrls } from '../app-url.constants';
 import * as moment from 'moment';
-import { constants } from 'buffer';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {

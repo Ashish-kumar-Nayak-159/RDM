@@ -5,7 +5,7 @@ import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
 declare var $: any;
@@ -149,7 +149,7 @@ export class RulesComponent implements OnInit {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -196,7 +196,7 @@ export class RulesComponent implements OnInit {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -249,7 +249,7 @@ export class RulesComponent implements OnInit {
       },
       (err: HttpErrorResponse) => {
         this.isDeleteRuleLoading = false;
-        this.toasterService.showSuccess(err.message, 'Delete Rule');
+        this.toasterService.showError(err.message, 'Delete Rule');
         this.onCloseDeleteModal();
       }
     );

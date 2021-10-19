@@ -1,7 +1,8 @@
+import { cos } from '@amcharts/amcharts4/.internal/core/utils/Math';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import * as SignalR from '@microsoft/signalr';
-import { AppUrls } from 'src/app/app-url.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -32,6 +33,7 @@ export class SignalRService {
       // connection start
       connection.start().then(() => {
         connection.on('notify', (data) => {
+          console.log(data);
           if (connectionObj.type === 'telemetry') {
             this.signalRTelemetryData.emit(JSON.parse(data));
           } else if (connectionObj.type === 'alert' && type === '') {
@@ -56,7 +58,7 @@ export class SignalRService {
       let arr = [];
       arr = [...this.telemetryConnections];
       arr.forEach((connection, i) => {
-        if (connection.connectionState === 1) {
+        if (connection.connectionState === 'Connected') {
           connection.stop();
           this.telemetryConnections.splice(i, 1);
         }
@@ -66,7 +68,7 @@ export class SignalRService {
       let arr = [];
       arr = [...this.alertConnections];
       arr.forEach((connection, i) => {
-        if (connection.connectionState === 1) {
+        if (connection.connectionState === 'Connected') {
           connection.stop();
           this.alertConnections.splice(i, 1);
         }
@@ -76,7 +78,8 @@ export class SignalRService {
       let arr = [];
       arr = [...this.alertOverlayConnections];
       arr.forEach((connection, i) => {
-        if (connection.connectionState === 1) {
+        console.log(connection.connectionState);
+        if (connection.connectionState === 'Connected') {
           connection.stop();
           this.alertOverlayConnections.splice(i, 1);
         }

@@ -1,9 +1,10 @@
+import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 
@@ -22,11 +23,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   contextApp: any;
   apiSubscriptions: Subscription[] = [];
   constantData = CONSTANTS;
-  hierarchyArr: any = {};
-  configureHierarchy: any = {};
   filterObj: any = {};
-  hierarchyString: any;
-  displayHierarchyString: any;
   derivedKPILatestData: any[] = [];
   healthyAssetCount = 0;
   unhealthyAssetCount = 0;
@@ -34,6 +31,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   activeCircle = 'all';
   mapFitBounds = false;
   zoom = undefined;
+  isGetAssetsAPILoading = false;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -50,38 +48,27 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     },
   ];
   tileData: any;
-  contextAppUserHierarchyLength = 0;
-
+  configuredHierarchy: any = {};
+  @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp?.user?.hierarchy) {
-      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
-    }
     if (this.environmentApp === 'SopanCMS') {
       await this.getLatestDerivedKPIData();
     }
     await this.getAllAssets();
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    console.log(item);
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    if (item) {
-      this.loadFromCache(item);
-    } else {
-      this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
-          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-          if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index, false);
-          }
-        }
-      });
-      this.onAssetFilterApply();
-    }
+    setTimeout(() => {
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      if (item) {
+        console.log(this.assets);
+        this.loadFromCache(item);
+      } else {
+        this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
+        this.onAssetFilterApply();
+      }
+    }, 200);
   }
 
   getTileName() {
@@ -95,69 +82,24 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   loadFromCache(item) {
-    // this.originalFilter = JSON.parse(JSON.stringify(item));
-    // this.filterObj = JSON.parse(JSON.stringify(item));
+    this.hierarchyDropdown.updateHierarchyDetail(item);
     if (item.hierarchy) {
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-        this.contextApp.hierarchy.levels.forEach((level, index) => {
-          if (index !== 0) {
-            this.configureHierarchy[index] = item.hierarchy[level];
-            console.log(this.configureHierarchy);
-            if (item.hierarchy[level]) {
-              this.onChangeOfHierarchy(index, true, false);
-            }
-          }
-        });
-      }
+      this.assets = this.hierarchyDropdown.getAssets();
       this.onAssetFilterApply(false);
     }
   }
 
-  onSaveHierachy() {
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
+  onSaveHierachy(configuredHierarchy) {
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
   }
 
-  onClearHierarchy() {
-    console.log('in clear');
-    this.hierarchyArr = {};
-    this.configureHierarchy = {};
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    console.log(this.hierarchyArr);
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        console.log(this.configureHierarchy);
-        console.log(level);
-        console.log(this.contextApp.user.hierarchy);
-        if (this.contextApp.user.hierarchy[level]) {
-          console.log('hereeeee');
-          this.onChangeOfHierarchy(index, false);
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
+  onClearHierarchy(configuredHierarchy) {
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
   }
 
   getAllAssets() {
     return new Promise<void>((resolve) => {
+      this.isGetAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
         type: this.environmentApp === 'SopanCMS' ? CONSTANTS.NON_IP_ASSET : undefined,
@@ -167,187 +109,117 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         this.unhealthyAssetCount = 0;
       }
       this.apiSubscriptions.push(
-        this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-          if (response?.data) {
-            this.assets = response.data;
-            this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-            this.assets.forEach((asset) => {
-              if (this.environmentApp === 'KCMS') {
-                asset.mttr = '7 Mins';
-                asset.mtbf = '2 days 5 hours';
-                asset.gas = '0.4%';
-                asset.power = '45 SCMH';
-              }
-              if (this.environmentApp === 'SopanCMS') {
-                this.derivedKPILatestData.forEach((kpiObj) => {
-                  if (asset.asset_id === kpiObj.asset_id) {
-                    asset.kpiValue = kpiObj?.metadata?.healthy;
-                    asset.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
-                    console.log(kpiObj?.metadata?.healthy);
-                    if (kpiObj?.metadata?.healthy === true) {
-                      this.healthyAssetCount++;
-                      console.log('healthy');
-                    } else if (kpiObj?.metadata?.healthy === false) {
-                      this.unhealthyAssetCount++;
-                      console.log('unhealthy');
+        this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
+          (response: any) => {
+            if (response?.data) {
+              this.assets = response.data;
+              this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+              this.isGetAssetsAPILoading = false;
+              this.assets.forEach((asset) => {
+                if (this.environmentApp === 'KCMS') {
+                  asset.mttr = '7 Mins';
+                  asset.mtbf = '2 days 5 hours';
+                  asset.gas = '0.4%';
+                  asset.power = '45 SCMH';
+                }
+                if (this.environmentApp === 'SopanCMS') {
+                  this.derivedKPILatestData.forEach((kpiObj) => {
+                    if (asset.asset_id === kpiObj.asset_id) {
+                      asset.kpiValue = kpiObj?.metadata?.healthy;
+                      asset.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
+                      console.log(kpiObj?.metadata?.healthy);
+                      if (kpiObj?.metadata?.healthy === true) {
+                        this.healthyAssetCount++;
+                        console.log('healthy');
+                      } else if (kpiObj?.metadata?.healthy === false) {
+                        this.unhealthyAssetCount++;
+                        console.log('unhealthy');
+                      }
                     }
+                  });
+                  if (asset.type === this.constantData.NON_IP_ASSET) {
+                    asset.icon = {
+                      url:
+                        asset.kpiValue === true
+                          ? './assets/img/legacy-asset-green.svg'
+                          : asset.kpiValue === false
+                          ? './assets/img/legacy-asset-red.svg'
+                          : './assets/img/legacy-assets.svg',
+                      scaledSize: {
+                        width: 25,
+                        height: 25,
+                      },
+                    };
                   }
-                });
-                if (asset.type === this.constantData.NON_IP_ASSET) {
-                  asset.icon = {
-                    url:
-                      asset.kpiValue === true
-                        ? './assets/img/legacy-asset-green.svg'
-                        : asset.kpiValue === false
-                        ? './assets/img/legacy-asset-red.svg'
-                        : './assets/img/legacy-assets.svg',
-                    scaledSize: {
-                      width: 25,
-                      height: 25,
-                    },
-                  };
+                } else {
+                  if (
+                    asset.type === this.constantData.IP_ASSET &&
+                    asset?.connection_state?.toLowerCase() === 'connected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/iot-assets-green.svg',
+                      scaledSize: {
+                        width: 35,
+                        height: 35,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_ASSET &&
+                    asset?.connection_state?.toLowerCase() === 'disconnected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/iot-assets-red.svg',
+                      scaledSize: {
+                        width: 35,
+                        height: 35,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_GATEWAY &&
+                    asset?.connection_state?.toLowerCase() === 'connected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/iot-gateways-green.svg',
+                      scaledSize: {
+                        width: 30,
+                        height: 30,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_GATEWAY &&
+                    asset?.connection_state?.toLowerCase() === 'disconnected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/iot-gateways-red.svg',
+                      scaledSize: {
+                        width: 30,
+                        height: 30,
+                      },
+                    };
+                  } else if (asset.type === this.constantData.NON_IP_ASSET) {
+                    asset.icon = {
+                      url: './assets/img/legacy-assets.svg',
+                      scaledSize: {
+                        width: 25,
+                        height: 25,
+                      },
+                    };
+                  }
                 }
-              } else {
-                if (
-                  asset.type === this.constantData.IP_ASSET &&
-                  asset?.connection_state?.toLowerCase() === 'connected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/iot-assets-green.svg',
-                    scaledSize: {
-                      width: 35,
-                      height: 35,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_ASSET &&
-                  asset?.connection_state?.toLowerCase() === 'disconnected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/iot-assets-red.svg',
-                    scaledSize: {
-                      width: 35,
-                      height: 35,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_GATEWAY &&
-                  asset?.connection_state?.toLowerCase() === 'connected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/iot-gateways-green.svg',
-                    scaledSize: {
-                      width: 30,
-                      height: 30,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_GATEWAY &&
-                  asset?.connection_state?.toLowerCase() === 'disconnected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/iot-gateways-red.svg',
-                    scaledSize: {
-                      width: 30,
-                      height: 30,
-                    },
-                  };
-                } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                  asset.icon = {
-                    url: './assets/img/legacy-assets.svg',
-                    scaledSize: {
-                      width: 25,
-                      height: 25,
-                    },
-                  };
-                }
-              }
-              console.log(asset.asset_id, '=====', asset.icon);
-            });
-            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
-            const center = this.commonService.averageGeolocation(this.assets);
-            this.centerLatitude = center?.latitude || 23.0225;
-            this.centerLongitude = center?.longitude || 72.5714;
-          }
-          resolve();
-        })
+                console.log(asset.asset_id, '=====', asset.icon);
+              });
+              this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+              const center = this.commonService.averageGeolocation(this.assets);
+              this.centerLatitude = center?.latitude || 23.0225;
+              this.centerLongitude = center?.longitude || 72.5714;
+            }
+
+            resolve();
+          },
+          (error) => (this.isGetAssetsAPILoading = false)
+        )
       );
     });
-  }
-
-  async onChangeOfHierarchy(i, flag, persistAssetSelection = true) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (key > i) {
-        delete this.configureHierarchy[key];
-      }
-    });
-    Object.keys(this.hierarchyArr).forEach((key) => {
-      if (key > i) {
-        this.hierarchyArr[key] = [];
-      }
-    });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
-
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
-    // let hierarchy = {...this.configureHierarchy};
-
-    if (flag) {
-      const hierarchyObj: any = { App: this.contextApp.app };
-
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-        }
-      });
-      if (Object.keys(hierarchyObj).length === 1) {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      } else {
-        const arr = [];
-        this.assets = [];
-        this.originalAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
-            }
-          });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
-          }
-        });
-        this.assets = JSON.parse(JSON.stringify(arr));
-      }
-      if (this.assets?.length === 1) {
-        this.filterObj.asset = this.assets[0];
-      }
-      if (persistAssetSelection) {
-        this.filterObj.assetArr = undefined;
-        this.filterObj.asset = undefined;
-      }
-      // await this.getAssets(hierarchyObj);
-    }
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
-      }
-    });
-    if (count === 0) {
-      this.hierarchyArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      }
-    }
   }
 
   getLatestDerivedKPIData() {
@@ -401,29 +273,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
-    if (
-      this.contextApp?.hierarchy?.levels?.length > 1 &&
-      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
-    ) {
-      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-        console.log('bbbbbb');
-        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-          console.log('cccccccccc');
-          e.preventDefault();
-        }
-      });
-    }
-  }
-
   onAssetFilterApply(updateFilterObj = true) {
-    console.log(this.filterObj);
-    console.log(this.configureHierarchy);
     this.activeCircle = 'all';
+    this.assets = this.hierarchyDropdown.getAssets();
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+    console.log(this.mapAssets);
     if (this.environmentApp === 'SopanCMS') {
       this.healthyAssetCount = 0;
       this.unhealthyAssetCount = 0;
@@ -440,16 +294,13 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         });
       });
     }
-    this.onSaveHierachy();
-
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      pagefilterObj['hierarchy'] = this.configureHierarchy;
-      pagefilterObj.hierarchy = { App: this.contextApp.app };
+      pagefilterObj['hierarchy'] = { App: this.contextApp.app };
       pagefilterObj.dateOption = 'Last 30 Mins';
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      Object.keys(this.configuredHierarchy).forEach((key) => {
+        if (this.configuredHierarchy[key]) {
+          pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
         }
       });
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
@@ -471,8 +322,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onMarkerClick(infowindow, gm) {
-    if (gm.lastOpen != null) {
-      gm.lastOpen.close();
+    if (gm?.lastOpen != null) {
+      gm.lastOpen?.close();
     }
     gm.lastOpen = infowindow;
     infowindow.open();

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 
 declare var $: any;
 @Component({
@@ -36,9 +36,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(
-      localStorage.getItem(CONSTANTS.APP_TOKEN)
-    );
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.telemetryData.length > 0) {
       setTimeout(() => this.plotChart(), 200);
     }

@@ -3,7 +3,7 @@ import { SignalRService } from './../services/signalR/signal-r.service';
 import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 declare var $: any;
 @Component({
@@ -35,6 +35,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         if (msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical') {
+          console.log(msg);
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
@@ -94,7 +95,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         // alert('here');
         this.connectToSignalR();
         this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
-          if (msg?.severity?.toLowerCase() === 'critical') {
+          if (msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical') {
+            console.log(msg);
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,

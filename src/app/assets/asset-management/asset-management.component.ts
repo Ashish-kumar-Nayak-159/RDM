@@ -1,5 +1,5 @@
 import { AssetService } from './../../services/assets/asset.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
@@ -7,7 +7,7 @@ import { TabsetComponent } from 'ngx-bootstrap/tabs';
 @Component({
   selector: 'app-asset-management',
   templateUrl: './asset-management.component.html',
-  styleUrls: ['./asset-management.component.css']
+  styleUrls: ['./asset-management.component.css'],
 })
 export class AssetManagementComponent implements OnInit {
   contextApp: any;
@@ -21,11 +21,8 @@ export class AssetManagementComponent implements OnInit {
   isOpenAssetCreateModal = false;
   gateways: any[] = [];
   subscriptions: any[] = [];
-  tabData: { tab_name: any; table_key: any; };
-  constructor(
-    private commonService: CommonService,
-    private assetService: AssetService
-  ) { }
+  tabData: { tab_name: any; table_key: any };
+  constructor(private commonService: CommonService, private assetService: AssetService) {}
 
   async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -48,7 +45,7 @@ export class AssetManagementComponent implements OnInit {
     let selectedItem;
     let assetItem;
     let assetDataItem = {};
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Asset Management' || item.page === 'Asset Management') {
         selectedItem = item.showAccordion;
       }
@@ -58,45 +55,45 @@ export class AssetManagementComponent implements OnInit {
     });
     this.tileData = selectedItem;
     console.log(this.tileData);
-    selectedItem.forEach(item => {
+    selectedItem.forEach((item) => {
       this.tileData[item.name] = item.value;
     });
-    assetItem.forEach(item => {
+    assetItem.forEach((item) => {
       assetDataItem[item.name] = item.value;
     });
     this.iotAssetsTab = {
       visibility: assetDataItem['IOT Assets'],
       tab_name: assetDataItem['IOT Assets Tab Name'],
-      table_key: assetDataItem['IOT Assets Table Key Name']
+      table_key: assetDataItem['IOT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
       visibility: assetDataItem['Legacy Assets'],
       tab_name: assetDataItem['Legacy Assets Tab Name'],
-      table_key: assetDataItem['Legacy Assets Table Key Name']
+      table_key: assetDataItem['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
       visibility: assetDataItem['IOT Gateways'],
       tab_name: assetDataItem['IOT Gateways Tab Name'],
-      table_key: assetDataItem['IOT Gateways Table Key Name']
+      table_key: assetDataItem['IOT Gateways Table Key Name'],
     };
     console.log(this.tileData);
     if (this.componentState === CONSTANTS.IP_ASSET) {
       this.tabData = {
         tab_name: assetDataItem['IOT Assets Tab Name'],
-        table_key: assetDataItem['IOT Assets Table Key Name']
+        table_key: assetDataItem['IOT Assets Table Key Name'],
       };
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
-    this.tabData = {
-      tab_name: assetDataItem['Legacy Assets Tab Name'],
-      table_key: assetDataItem['Legacy Assets Table Key Name']
-    };
+      this.tabData = {
+        tab_name: assetDataItem['Legacy Assets Tab Name'],
+        table_key: assetDataItem['Legacy Assets Table Key Name'],
+      };
     }
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
-    this.tabData = {
-      tab_name: assetDataItem['IOT Gateways Tab Name'],
-      table_key: assetDataItem['IOT Gateways Table Key Name']
-    };
+      this.tabData = {
+        tab_name: assetDataItem['IOT Gateways Tab Name'],
+        table_key: assetDataItem['IOT Gateways Table Key Name'],
+      };
     }
     console.log(this.tabData);
   }
@@ -130,16 +127,14 @@ export class AssetManagementComponent implements OnInit {
     const obj = {
       app: this.contextApp.app,
       type: CONSTANTS.IP_GATEWAY,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
     };
-    this.subscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
         if (response.data) {
           this.gateways = response.data;
         }
-      }
-    ));
+      })
+    );
   }
-
-
 }

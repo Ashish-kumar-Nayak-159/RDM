@@ -1,12 +1,13 @@
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { Component, Input, OnInit, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -350,14 +351,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     }
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     if (
       this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET &&
       Object.keys(this.propertyObj?.metadata).length === 0
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.propertyObj.json_key);

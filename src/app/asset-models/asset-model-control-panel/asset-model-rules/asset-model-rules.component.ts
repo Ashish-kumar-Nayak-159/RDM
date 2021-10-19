@@ -1,6 +1,6 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
@@ -125,7 +125,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -170,7 +170,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
           this.onCloseDeleteModal();
         }
       );
@@ -223,7 +223,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       },
       (err: HttpErrorResponse) => {
         this.isDeleteRuleLoading = false;
-        this.toasterService.showSuccess(err.message, 'Delete Rule');
+        this.toasterService.showError(err.message, 'Delete Rule');
         this.onCloseDeleteModal();
       }
     );

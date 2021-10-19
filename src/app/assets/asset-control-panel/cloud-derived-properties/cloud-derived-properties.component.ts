@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 
 declare var $: any;
 @Component({

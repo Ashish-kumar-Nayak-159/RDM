@@ -15,58 +15,9 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <div class="form-group" id="dd-open">
-            <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              [ngClass]="{'active' : originalFilter?.asset}" placement="bottom" [tooltip]="originalFilter?.asset ?
-              (originalFilter.asset.display_name ? originalFilter.asset.display_name :
-              originalFilter.asset.asset_id) : 'Select Asset'" (click)="onAssetFilterBtnClick()" aria-haspopup="true"
-              aria-expanded="false">
-              <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
-              {{originalFilter?.asset ?
-              (originalFilter.asset.display_name ? originalFilter.asset.display_name :
-              originalFilter.asset.asset_id) : 'Select Asset'}}
-            </button>
-            <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
-              <ng-container *ngFor="
-                          let level of contextApp?.hierarchy?.levels;
-                          let index = index
-                        ">
-                <div class="">
-                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form dropdown-open"
-                    id="{{ level }}" [disabled]="contextApp?.user?.hierarchy[level]"
-                    [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
-                    (change)="onChangeOfHierarchy(index, true)">
-                    <option [ngValue]="undefined">
-                      Select {{ level }}
-                    </option>
-                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                      {{ tag }}
-                    </option>
-                  </select>
-                  <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
-                    disabled class="dropdown-form dropdown-open" />
-                </div>
-              </ng-container>
-              <ng-select [items]="assets" class="custom dropdown-open" bindLabel="display_name" [clearable]="false"
-                [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"
-                (change)="onChangeOfAsset($event)">
-                <ng-template ng-option-tmp let-asset="item">
-                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
-                    asset.display_name: asset.asset_id}}</span>
-                </ng-template>
-              </ng-select>
-              <div class="form-group">
-                <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
-                  (click)="onSaveHierachy()">Apply</button>
-                <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
-                  (click)="onClearHierarchy()">Clear</button>
-              </div>
-              <!-- <div class="">
-                <button class="btn btn-sm searchBtn btn-primary" type="button">Apply</button>
-              </div> -->
-            </div>
-          </div>
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [filterObj]="filterObj"
+            [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
+          </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
               (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><i
                 class="fas fa-search fa-sm"></i></button></div>
@@ -213,10 +164,10 @@
       ">
         No widgets configured for this asset. Please contact administrator.
       </div>
-      <div class="m-3" *ngIf="historicalWidgets.length > 0 && !isTelemetryDataLoading && telemetryData.length === 0 && isFilterSelected
+      <!-- <div class="m-3" *ngIf="historicalWidgets.length > 0 && !isTelemetryDataLoading && telemetryData.length === 0 && isFilterSelected
       ">
         No telemetry data found for selected interval.
-      </div>
+      </div> -->
     </ng-container>
     <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.dashboard_config) && isFilterSelected">
       <div class="ml-1">No dashboard configuration added for this application.</div>

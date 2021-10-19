@@ -1,12 +1,11 @@
-import { filter } from 'rxjs/operators';
 import { ToasterService } from './../../../services/toaster.service';
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Subscription } from 'rxjs';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { any } from '@amcharts/amcharts4/.internal/core/utils/Array';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -304,7 +303,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   saveSlaveObj() {
     console.log(this.slaveObj);
     if (!this.slaveObj.slave_id || !this.slaveObj.slave_name || !this.slaveObj.slave_type) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Detail');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Detail');
       return;
     }
     this.isCreateSlaveAPILoading = true;
@@ -329,7 +328,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   updateSlaveObj() {
     console.log(this.slaveObj);
     if (!this.slaveObj.slave_id || !this.slaveObj.slave_name || !this.slaveObj.slave_type) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Detail');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Detail');
       return;
     }
     this.isCreateSlaveAPILoading = true;
@@ -390,7 +389,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
 
   saveSlavePositionObj() {
     if (!this.slaveObj.slave_position || !this.slaveObj.slave_category) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Position');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Position');
       return;
     }
     this.isCreateSlaveAPILoading = true;
@@ -417,7 +416,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   updateSlavePositionObj() {
     console.log(this.slaveObj);
     if (!this.slaveObj.slave_position || !this.slaveObj.slave_category) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Position');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Position');
       return;
     }
     this.isCreateSlaveAPILoading = true;
@@ -464,7 +463,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
 
   saveSlaveCategoryObj() {
     if (!this.slaveObj.slave_category) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Category');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Category');
       return;
     }
     this.isCreateSlaveAPILoading = true;
@@ -491,7 +490,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   updateSlaveCategoryObj() {
     console.log(this.slaveObj);
     if (!this.slaveObj.slave_category) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Category');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Category');
       return;
     }
     this.isCreateSlaveAPILoading = true;

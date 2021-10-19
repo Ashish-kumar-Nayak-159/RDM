@@ -2,7 +2,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import * as moment from 'moment';
 

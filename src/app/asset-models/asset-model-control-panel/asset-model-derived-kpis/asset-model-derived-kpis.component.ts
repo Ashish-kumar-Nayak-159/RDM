@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 

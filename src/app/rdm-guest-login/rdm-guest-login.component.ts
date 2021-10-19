@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';

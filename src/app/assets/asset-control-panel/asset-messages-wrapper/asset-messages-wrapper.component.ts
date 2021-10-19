@@ -1,26 +1,22 @@
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
 
 @Component({
   selector: 'app-asset-messages-wrapper',
   templateUrl: './asset-messages-wrapper.component.html',
-  styleUrls: ['./asset-messages-wrapper.component.css']
+  styleUrls: ['./asset-messages-wrapper.component.css'],
 })
 export class AssetMessagesWrapperComponent implements OnInit {
-
   filterObj: any = {};
   originalFilterObj: any = {};
   notifications: any[] = [];
   @Input() asset: Asset = new Asset();
   @Input() componentState: any;
   contextApp: any;
-  constructor(
-    private commonService: CommonService,
-    private assetService: AssetService
-  ) { }
+  constructor(private commonService: CommonService, private assetService: AssetService) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -54,7 +50,5 @@ export class AssetMessagesWrapperComponent implements OnInit {
     this.filterObj = filterObj;
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     setTimeout(() => this.assetService.searchNotificationsEventEmitter.emit(), 100);
-
   }
-
 }

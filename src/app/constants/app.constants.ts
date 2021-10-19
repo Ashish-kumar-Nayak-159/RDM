@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
   public static ASSETAPPPS = [
@@ -1754,8 +1755,8 @@ export class CONSTANTS {
   // public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/app-media/logo.png';
   // public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/asset-model-media/asset.svg';
 
-  public static DEFAULT_APP_ICON = 'rdm-images/default_app_icon.png';
-  public static DEFAULT_APP_LOGO = 'rdm-images/default_app_logo.jpg';
-  public static DEFAULT_HEADER_LOGO = 'rdm-images/app-images/header-logo/logo.png';
-  public static DEFAULT_MODEL_IMAGE = 'rdm-images/asset-model-images/asset.svg';
+  public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
+  public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
+  public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/default_app_header_logo.png';
+  public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/default_asset_icon.svg';
 }

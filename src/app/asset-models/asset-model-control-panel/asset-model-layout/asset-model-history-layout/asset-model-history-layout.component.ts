@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 import { Input } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import * as moment from 'moment';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
@@ -24,9 +24,10 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { kill } from 'process';
 import { type } from '@amcharts/amcharts4/core';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 
 @Component({
@@ -243,7 +244,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     if (this.selectedChartType === 'Vibration Damage Plot') {

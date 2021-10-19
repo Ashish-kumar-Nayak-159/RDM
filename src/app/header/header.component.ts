@@ -1,4 +1,5 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from './../../environments/environment';
 import { Component, OnInit, Input, SimpleChanges, OnChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
@@ -25,6 +26,7 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   defaultAppName = environment.app;
   decodedToken: any;
   isGuestUser: string;
+  uiMessages = UIMESSAGES.MESSAGES;
   constructor(private router: Router, private commonService: CommonService) {}
 
   ngOnInit(): void {

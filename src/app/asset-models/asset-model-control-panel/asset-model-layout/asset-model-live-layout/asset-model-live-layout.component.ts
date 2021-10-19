@@ -4,10 +4,11 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -367,7 +368,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   onSaveWidgetObj() {
     console.log(this.widgetObj);
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     let found = true;

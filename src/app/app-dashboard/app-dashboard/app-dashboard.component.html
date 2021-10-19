@@ -176,7 +176,7 @@
       *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
         <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-              || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+              || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
               'margin-left':'2%', 'margin-top': '2%'}">
           <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
@@ -185,7 +185,10 @@
           </app-only-number-widget>
           <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset" 
              *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
-            </app-rectangle-widget>
+          </app-rectangle-widget>
+          <app-cylinder-widget [chartConfig]="widget"  [asset]="originalFilter?.asset" 
+            *ngIf="widget.widgetType === 'CylinderWidget'"   [telemetryObj]="telemetryObj">
+          </app-cylinder-widget>
           <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
             *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
             [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>

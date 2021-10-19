@@ -3,7 +3,7 @@ import { Component, Input, NgZone, OnInit, OnChanges, EventEmitter, Output, Afte
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 declare var $: any;
 
@@ -48,7 +48,6 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-      if (changes.telemetryObj) {
       this.chartConfig.properties.forEach((prop, index) => {
         const chart = this.chart[index];
         if (chart) {
@@ -64,7 +63,6 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
           }
         }
       });
-     }
     }
   }
 
@@ -83,9 +81,10 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       categoryAxis.renderer.labels.template.disabled = true;
 
       const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis.min = 0;
+      valueAxis.min = (prop?.minCapacityValue === 0 ? 1 : prop?.minCapacityValue) || 1;
       valueAxis.max = prop?.maxCapacityValue || 100;
       valueAxis.strictMinMax = true;
+      valueAxis.logarithmic = true;
       valueAxis.renderer.fontSize = '0.6em';
       valueAxis.renderer.grid.template.strokeOpacity = 0;
       valueAxis.renderer.minGridDistance = 50;

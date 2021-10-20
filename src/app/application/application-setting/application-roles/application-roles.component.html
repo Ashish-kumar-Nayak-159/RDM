@@ -28,11 +28,11 @@
           <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
           <td>
             <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'view')">
-              <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'"></i>
+              <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'" placement="bottom" tooltip="View Role"></i>
             </a>
             <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')" class="ml-2"
               *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'"></i>
+              <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'" placement="bottom" tooltip="Edit Role"></i>
             </a>
             <a href="javascript:void(0)" (click)="onSaveRoles()"
               *ngIf="item.role !== constantData.APP_ADMIN_ROLE && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"

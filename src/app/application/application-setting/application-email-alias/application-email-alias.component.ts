@@ -81,12 +81,20 @@ export class ApplicationEmailAliasComponent implements OnInit {
         return;
       }
       if (!this.isAddUserGroup) {
+        if (this.userGroups[index].recipients['emails'].includes(this.recipientemail)) {
+          this.toasterService.showError('Same email address exist in this group', 'Add Email');
+          return;
+        }
         this.userGroups[index].recipients['emails'].splice(
           this.userGroups[index].recipients['emails'].length,
           0,
           this.recipientemail
         );
       } else {
+        if (this.groupObj.recipients['emails'].includes(this.recipientemail)) {
+          this.toasterService.showError('Same email address exist in this group', 'Add Email');
+          return;
+        }
         this.groupObj.recipients['emails'].splice(this.groupObj.recipients['emails'].length, 0, this.recipientemail);
       }
       this.recipientemail = undefined;
@@ -110,12 +118,20 @@ export class ApplicationEmailAliasComponent implements OnInit {
       this.toasterService.showError('Phone Number is required', 'Add SMS No');
     } else {
       if (!this.isAddUserGroup) {
+        if (this.userGroups[index].recipients['sms'].includes(this.recipientsms[index].e164Number)) {
+          this.toasterService.showError('Same number exist in this group', 'Add SMS No');
+          return;
+        }
         this.userGroups[index].recipients['sms'].splice(
           this.userGroups[index].recipients['sms'].length,
           0,
           this.recipientsms[index].e164Number
         );
       } else {
+        if (this.groupObj.recipients['sms'].includes(this.recipientsms[index].e164Number)) {
+          this.toasterService.showError('Same number exist in this group', 'Add SMS No');
+          return;
+        }
         this.groupObj.recipients['sms'].splice(
           this.groupObj.recipients['sms'].length,
           0,
@@ -143,12 +159,20 @@ export class ApplicationEmailAliasComponent implements OnInit {
       this.toasterService.showError('Whatsapp No is required', 'Add Whatsapp No');
     } else {
       if (!this.isAddUserGroup) {
+        if (this.userGroups[index].recipients['whatsapp'].includes(this.recipientwhatsapp[index].e164Number)) {
+          this.toasterService.showError('Same number exist in this group', 'Add Whatsapp No');
+          return;
+        }
         this.userGroups[index]?.recipients['whatsapp'].splice(
           this.userGroups[index]?.recipients['whatsapp'].length,
           0,
           this.recipientwhatsapp[index].e164Number
         );
       } else {
+        if (this.groupObj.recipients['whatsapp'].includes(this.recipientwhatsapp[index].e164Number)) {
+          this.toasterService.showError('Same number exist in this group', 'Add Whatsapp No');
+          return;
+        }
         this.groupObj?.recipients['whatsapp'].splice(
           this.groupObj?.recipients['whatsapp'].length,
           0,
@@ -238,6 +262,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   openConfirmModal(userGroup) {
+    $('.panel-heading .close-btn').on('click', (e) => {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    });
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,

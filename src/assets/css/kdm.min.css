@@ -14818,6 +14818,9 @@ height: calc(100vh - 8rem);
 .scrollbox_delayed:hover {
   transition: visibility 0s 0.2s;
 }*/
+.customClass {
+  margin: 5px 0;
+}
 
 .card.customClass .card-header {
   background-color: #fff;

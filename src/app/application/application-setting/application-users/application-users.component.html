@@ -23,22 +23,35 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let user of users">
-        <td>{{ user.user_email }}</td>
-        <td>{{ user.user_name }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ getUserHierarchy(user) }}</td>
-        <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
-          <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1" placement="bottom"
-            tooltip="Edit User">
-            <i class="fa fa-fw fa-edit"></i>
-          </a>
-          <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1" placement="bottom"
-            tooltip="Delete User">
-            <i class="fa fa-fw fa-trash"></i>
-          </a>
-        </td>
-      </tr>
+      <ng-container *ngIf="users.length > 0 && !isGetUsersAPILoading">
+        <tr *ngFor="let user of users">
+          <td>{{ user.user_email }}</td>
+          <td>{{ user.user_name }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ getUserHierarchy(user) }}</td>
+          <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
+            <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1" placement="bottom"
+              tooltip="Edit User">
+              <i class="fa fa-fw fa-edit"></i>
+            </a>
+            <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1" placement="bottom"
+              tooltip="Delete User">
+              <i class="fa fa-fw fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="isGetUsersAPILoading">
+        <tr>
+          <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!isGetUsersAPILoading && users.length === 0">
+        <tr>
+          <td colspan="5"> No Users available.</td>
+        </tr>
+      </ng-container>
+
     </tbody>
   </table>
 </div>

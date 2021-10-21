@@ -1,4 +1,4 @@
-<div style="bottom:30px; position:fixed; z-index:40;">
+<div style="bottom:30px; position:fixed; z-index:40; width: calc(100vw - 16rem);">
   <div class="tab-bar" style="border-top: 1px solid #89a7ff; background-color: #e9eff9;">
     <h6 class="mt-2">Recent Jobs
       <a href="javascript:void(0)" (click)="getRecentJobs()"><i class="fa fa-sync ml-2"></i>
@@ -13,7 +13,7 @@
           <th width="25%">Time Stamp</th>
           <th width="14%">Job Type</th>
           <th width="18%">Type</th>
-          <th width="18%"> Requested By</th>
+          <th width="18%">Requested By</th>
           <th width="8%">Request</th>
           <th width="8%">Response</th>
         </tr>
@@ -42,12 +42,12 @@
 
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading">
           <tr>
-            <td colspan="6">No data available.</td>
+            <td colspan="7">No data available.</td>
           </tr>
         </ng-container>
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
-            <td colspan="6">
+            <td colspan="7">
               <i class="fa fa-spinner fa-spin fa-fw"></i>
             </td>
           </tr>

@@ -19,6 +19,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
 import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.compon
       apiKey: 'AIzaSyCGnaF9LBIEhAgc5wwktQtWOBu9pnNNfK0',
       libraries: ['places'],
     }),
+    NgxIntlTelInputModule,
   ],
   providers: [HttpInterceptorProviders],
   bootstrap: [AppComponent],

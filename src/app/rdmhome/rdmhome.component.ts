@@ -1,3 +1,4 @@
+import { ToasterService } from './../services/toaster.service';
 import { data } from 'jquery';
 import { environment } from './../../environments/environment';
 import { Subscription } from 'rxjs';
@@ -6,6 +7,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-rdmhome',
@@ -20,7 +22,8 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private commonService: CommonService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private toasterService: ToasterService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -52,6 +55,11 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         localStorage.removeItem(CONSTANTS.APP_TOKEN);
         localStorage.setItem(CONSTANTS.APP_TOKEN, data.apps[0].token);
         const decodedToken = this.commonService.decodeJWTToken(data.apps[0].token);
+        if (!decodedToken.privileges || decodedToken.privileges.length === 0) {
+          this.toasterService.showError('User is not having any privileges', APIMESSAGES.CONTACT_ADMINISTRATOR);
+          this.commonService.onLogOut();
+          return;
+        }
         const obj = {
           hierarchy: decodedToken.hierarchy,
           role: decodedToken.role,

@@ -126,6 +126,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           localStorage.removeItem(CONSTANTS.APP_TOKEN);
           localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
           const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
+          if (!decodedToken.privileges || decodedToken.privileges.length === 0) {
+            this.toasterService.showError('User is not having any privileges', APIMESSAGES.CONTACT_ADMINISTRATOR);
+            this.commonService.onLogOut();
+            return;
+          }
           const obj = {
             hierarchy: decodedToken.hierarchy,
             role: decodedToken.role,

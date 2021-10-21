@@ -4,10 +4,11 @@
     <div class="h6 m-0 p-0">Dashboard Configuration
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isConfigEditable"
       (click)="isConfigEditable = true;"><i class="fa fa-edit"></i></a> -->
-      <ng-container  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isConfigEditable = true;" *ngIf="!isConfigEditable"
-      placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
-      <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isConfigEditable"
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isConfigEditable = true;"
+          *ngIf="!isConfigEditable" placement="bottom" tooltip="Edit Dashboard Configuration"><i
+            class="fas fa-edit fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isConfigEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
       <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isConfigEditable"
       placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>

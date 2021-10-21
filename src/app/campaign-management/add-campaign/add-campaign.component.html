@@ -285,7 +285,7 @@
             </button>
             <button type="button" class="btn btn-primary mr-3" *ngIf="campaignObj.objective === 'FOTA'"
               [disabled]="!campaignObj.job_request.package_obj || !campaignObj.job_request.version || !campaignObj.request_type"
-              (click)="visitedSteps = visitedSteps + 1" id="nextBtn">
+              (click)="visitedSteps = visitedSteps + 1;getAssetsForCampaign()" id="nextBtn">
               Next Step
             </button>
             <button type="button" class="btn btn-primary mr-3"

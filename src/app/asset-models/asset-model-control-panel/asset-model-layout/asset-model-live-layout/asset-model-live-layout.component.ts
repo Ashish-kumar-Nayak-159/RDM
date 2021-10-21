@@ -185,7 +185,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                     prop.json_key = prop.property.json_key;
                   }
                   prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                  prop.type = prop.property.type;
+                  prop.type = prop.property?.type;
                   if (prop?.type === 'Derived KPIs') {
                     widget.derived_kpis = true;
                   } else if (prop?.type === 'Edge Derived Properties') {

@@ -407,9 +407,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                       prop.json_key = prop.property.json_key;
                     }
                     prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                    prop.type = prop.property.type;
+                    prop.type = prop.property?.type;
                     console.log(prop);
-                    this.addPropertyInList(prop.property);
+                    if (prop?.property) {
+                      this.addPropertyInList(prop.property);
+                    }
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {
@@ -552,6 +554,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
+    if (
+      !this.contextApp?.dashboard_config &&
+      !this.contextApp?.dashboard_config?.show_live_widgets &&
+      !this.contextApp?.dashboard_config?.show_historical_widgets
+    ) {
+      this.contextApp.dashboard_config = {
+        show_live_widgets: true,
+      };
+    }
     if (asset_model) {
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getTelemetryMode(this.filterObj.asset.asset_id);
@@ -559,15 +570,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
-      if (
-        !this.contextApp?.dashboard_config &&
-        !this.contextApp?.dashboard_config?.show_live_widgets &&
-        !this.contextApp?.dashboard_config?.show_historical_widgets
-      ) {
-        this.contextApp.dashboard_config = {
-          show_live_widgets: true,
-        };
-      }
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
@@ -739,6 +741,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       $(child).remove();
     }
     console.log(this.historicalDateFilter);
+    if (this.historicalDateFilter?.widgets?.length === 0) {
+      this.toasterService.showError('Select at least one widget to view the data', 'View Telemetry Data');
+      this.isTelemetryDataLoading = false;
+      // this.isFilterSelected = false;
+      return;
+    }
     this.historicalDateFilter?.widgets.forEach((widget) => {
       widget.y1axis.forEach((prop) => {
         if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
@@ -918,9 +926,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);
           let telemetryData = this.telemetryData;
-          // telemetryData.forEach((item) => {
-          //   item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          // });
+          telemetryData.forEach((item) => {
+            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          });
           telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();

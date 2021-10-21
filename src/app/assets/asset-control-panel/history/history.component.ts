@@ -537,6 +537,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
               });
               console.log(this.nullValueArr);
               this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
+              this.historyData.forEach((item) => {
+                item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+              });
               this.isHistoryAPILoading = false;
               // historyData.reverse();
               resolve();
@@ -681,14 +684,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
           }
         });
       }
-      // this.historyData.forEach((item) => {
-      //   const obj = {
-      //     message_date: this.commonService.convertUTCDateToLocal(item.message_date),
-      //   };
-      //   y1Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
-      //   y2Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
-      //   data.splice(data.length, 0, obj);
-      // });
       let componentRef;
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);

@@ -7,9 +7,7 @@
         <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
       </select>
     </div>
-    <div
-      *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
-      class="alert-danger">
+    <div *ngIf="setupForm.get('slave_id').errors && setupForm.get('slave_id').touched" class="alert-danger">
       <div *ngIf="setupForm.get('slave_id').errors.required">
         Slave is required.
       </div>
@@ -20,8 +18,7 @@
       <label for="message-text" class="col-form-label required">Register Address:</label>
       <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
         placeholder="Enter Register Address" min="0" max="99999">
-      <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
         <div *ngIf="setupForm.get('sa').errors.required">
           Register Address is required.
         </div>
@@ -34,8 +31,7 @@
       <label for="message-text" class="col-form-label required">Precision:</label>
       <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
         placeholder="Enter Precision" min="1" max="5">
-      <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
         <div *ngIf="setupForm.get('p').errors.required">
           Precision is required.
         </div>
@@ -52,8 +48,7 @@
         <option [ngValue]="1">Sensor Reading</option>
         <option [ngValue]="2">Vibration Plotting</option>
       </select>
-      <div *ngIf="setupForm.get('t').invalid && (setupForm.get('t').dirty || setupForm.get('t').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('t').errors && setupForm.get('t').touched" class="alert-danger">
         <div *ngIf="setupForm.get('t').errors.required">
           Value Type is required.
         </div>
@@ -68,8 +63,7 @@
         <option [ngValue]="2">Outer Body</option>
         <option [ngValue]="3">Rolling Body</option>
       </select>
-      <div *ngIf="setupForm.get('pt').invalid && (setupForm.get('pt').dirty || setupForm.get('pt').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('pt').errors && setupForm.get('pt').touched" class="alert-danger">
         <div *ngIf="setupForm.get('pt').errors.required">
           Plot Type is required.
         </div>
@@ -82,8 +76,7 @@
       <label for="message-text" class="col-form-label required">Channel Number:</label>
       <input type="number" class="form-control form-control-sm" id="cn" name="cn" formControlName="cn"
         placeholder="Enter Channel Number" min="0">
-      <div *ngIf="setupForm.get('cn').invalid && (setupForm.get('cn').dirty || setupForm.get('cn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('cn').errors && setupForm.get('cn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('cn').errors.required">
           Channel Number is required.
         </div>
@@ -102,8 +95,7 @@
           <option [ngValue]="'d'">Digital</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
         <div *ngIf="setupForm.get('d').errors.required">
           Type is required.
         </div>
@@ -113,8 +105,7 @@
       <label for="message-text" class="col-form-label required">Precision:</label>
       <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
         placeholder="Enter Precision" min="1" max="5">
-      <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
         <div *ngIf="setupForm.get('p').errors.required">
           Precision is required.
         </div>
@@ -137,8 +128,7 @@
           <option [ngValue]="'s'">String</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
         <div *ngIf="setupForm.get('d').errors.required">
           Type is required.
         </div>
@@ -162,8 +152,7 @@
           <option [ngValue]="10">DECIMAL_FLOAT</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('sd')?.errors && setupForm.get('sd')?.touched" class="alert-danger">
         <div *ngIf="setupForm.get('sd')?.errors.required">
           Secondary Type is required.
         </div>
@@ -173,8 +162,7 @@
       <label for="message-text" class="col-form-label required">Register Address:</label>
       <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
         placeholder="Enter Register Address" min="0" max="99999">
-      <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
         <div *ngIf="setupForm.get('sa').errors.required">
           Register Address is required.
         </div>
@@ -187,8 +175,7 @@
       <label for="message-text" class="col-form-label required">String Length:</label>
       <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
         placeholder="Enter String Length" min="1" max="99999">
-      <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('la').errors && setupForm.get('la').touched" class="alert-danger">
         <div *ngIf="setupForm.get('la').errors.required">
           String Length is required.
         </div>
@@ -202,8 +189,7 @@
       <label for="message-text" class="col-form-label required">Precision:</label>
       <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
         placeholder="Enter Precision" min="1" max="5">
-      <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
         <div *ngIf="setupForm.get('p').errors.required">
           Precision is required.
         </div>
@@ -220,8 +206,7 @@
         <option [ngValue]="0">LSB</option>
         <option [ngValue]="1">MSB</option>
       </select>
-      <div *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('bytn').errors && setupForm.get('bytn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('bytn').errors.required">
           Byte Number is required.
         </div>
@@ -235,17 +220,29 @@
         <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
           (change)="onChangeOfSetupFunctionCode()">
           <option [ngValue]="null">Select Function Code</option>
-          <option [ngValue]="1">Read Coil (DIGITAL)</option>
-          <option [ngValue]="2">Read Discrete Input (DIGITAL)</option>
-          <option [ngValue]="3" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read
-            Holding
-            Registers (ANALOG)</option>
-          <option [ngValue]="4" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Input
-            Registers (ANALOG)</option>
+          <ng-container *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">
+            <!-- <option [ngValue]="1" >Read Coil (DIGITAL)</option>
+          <option [ngValue]="2" >Read
+            Discrete Input (DIGITAL)</option> -->
+            <option [ngValue]="3">Read
+              Holding
+              Registers (ANALOG)</option>
+            <option [ngValue]="4">Read Input
+              Registers (ANALOG)</option>
+          </ng-container>
+          <ng-container *ngIf="setupForm.get('d').value === 'd'">
+            <option [ngValue]="1">Read Coil (DIGITAL)</option>
+            <option [ngValue]="2">Read
+              Discrete Input (DIGITAL)</option>
+            <option [ngValue]="3">Read
+              Holding
+              Registers (ANALOG)</option>
+            <option [ngValue]="4">Read Input
+              Registers (ANALOG)</option>
+          </ng-container>
         </select>
       </div>
-      <div *ngIf="setupForm.get('fc').invalid && (setupForm.get('fc').dirty || setupForm.get('fc').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('fc').errors && setupForm.get('fc').touched" class="alert-danger">
         <div *ngIf="setupForm.get('fc').errors.required">
           Function Code is required.
         </div>
@@ -256,8 +253,7 @@
       <label for="message-text" class="col-form-label required">Bit Number:</label>
       <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
         placeholder="Enter Bit Number" min="0" max="15">
-      <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('bn').errors && setupForm.get('bn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('bn').errors.required">
           Bit Number is required.
         </div>
@@ -279,8 +275,7 @@
           <option [ngValue]="'s'">String</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
         <div *ngIf="setupForm.get('d').errors.required">
           Type is required.
         </div>
@@ -303,8 +298,7 @@
           <option [ngValue]="9">BYTE</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('sd')?.errors && setupForm.get('sd')?.touched" class="alert-danger">
         <div *ngIf="setupForm.get('sd')?.errors.required">
           Secondary Type is required.
         </div>
@@ -314,8 +308,7 @@
       <label for="message-text" class="col-form-label required">Register Address:</label>
       <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
         placeholder="Enter Register Address" min="0" max="99999">
-      <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
         <div *ngIf="setupForm.get('sa').errors.required">
           Register Address is required.
         </div>
@@ -328,8 +321,7 @@
       <label for="message-text" class="col-form-label required">String Length:</label>
       <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
         placeholder="Enter String Length" min="1" max="99999">
-      <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('la').errors && setupForm.get('la').touched" class="alert-danger">
         <div *ngIf="setupForm.get('la').errors.required">
           String Length is required.
         </div>
@@ -343,8 +335,7 @@
       <label for="message-text" class="col-form-label required">Precision:</label>
       <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
         placeholder="Enter Precision" min="1" max="5">
-      <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
         <div *ngIf="setupForm.get('p').errors.required">
           Precision is required.
         </div>
@@ -361,8 +352,7 @@
         <option [ngValue]="0">LSB</option>
         <option [ngValue]="1">MSB</option>
       </select>
-      <div *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('bytn').errors && setupForm.get('bytn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('bytn').errors.required">
           Byte Number is required.
         </div>
@@ -383,8 +373,7 @@
           <option [ngValue]="'TM'">TM</option>
         </select>
       </div>
-      <div *ngIf="setupForm.get('mt').invalid && (setupForm.get('mt').dirty || setupForm.get('mt').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('mt').errors && setupForm.get('mt').touched" class="alert-danger">
         <div *ngIf="setupForm.get('mt').errors.required">
           Memory Type is required.
         </div>
@@ -394,8 +383,7 @@
       <label for="message-text" class="col-form-label required">DB Number:</label>
       <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
         placeholder="Enter DB Number" min="0">
-      <div *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('dbn').errors && setupForm.get('dbn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('dbn').errors.required">
           DB Number is required.
         </div>
@@ -408,8 +396,7 @@
       <label for="message-text" class="col-form-label required">Bit Number:</label>
       <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
         placeholder="Enter Bit Number" min="0" max="15">
-      <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
-        class="alert-danger">
+      <div *ngIf="setupForm.get('bn').errors && setupForm.get('bn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('bn').errors.required">
           Bit Number is required.
         </div>

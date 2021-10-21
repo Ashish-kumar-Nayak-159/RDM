@@ -175,9 +175,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onChangeOfAsset(event) {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === event.asset_id);
     const frequencyArr = [];
-    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     if (this.filterObj.from_date && this.filterObj.to_date) {
       // this.onChangeOfAsset(this.filterObj.asset);
@@ -386,7 +386,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (obj.type === 'alert') {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
       obj.start_event_message_date = obj?.timestamp || obj.ts;
-      obj.message_date = obj.timestamp;
+      obj.message_date = obj.timestamp || obj?.ts;
       obj.alert_id = 'alert_' + this.latestAlerts.length;
       this.latestAlerts.splice(0, 0, obj);
     } else if (obj.type === 'alertendevent') {
@@ -630,7 +630,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               item.measured_props = false;
               item.cloud_derived_props = false;
               item.y1axis.forEach((prop) => {
-                const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
                 if (type === 'Edge Derived Properties') {
                   item.edge_derived_props = true;
                 } else if (type === 'Cloud Derived Properties') {
@@ -640,7 +640,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 }
               });
               item.y2axis.forEach((prop) => {
-                const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
                 if (type === 'Edge Derived Properties') {
                   item.edge_derived_props = true;
                 } else if (type === 'Cloud Derived Properties') {
@@ -734,7 +734,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.asset_model || this.selectedAsset?.tags?.asset_model,
+        name: this.alertCondition?.asset_model || this.selectedAsset?.asset_model,
       };
       this.subscriptions.push(
         this.assetModelService.getModelReasons(obj.app, obj.name).subscribe((response: any) => {

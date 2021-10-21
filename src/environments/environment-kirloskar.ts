@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  appServerURL: 'https://kempaas-functions.azurewebsites.net/api/',
+  appServerURL: 'https://api.kempaas.io/api/',
   blobAccountName: 'cmsblobstorageaccount',
   blobContainerName: 'ui-media',
   blobKey:

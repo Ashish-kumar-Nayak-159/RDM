@@ -27,7 +27,8 @@ export class SlavesInfoComponent implements OnInit {
   deleteSlaveObj: any;
   isDeleteSlaveAPILoading = false;
   isAPILoading = false;
-  setupForm: FormGroup;
+  addSetupForm: FormGroup;
+  editSetupForm: FormGroup;
   constantData = CONSTANTS;
   decodedToken: any;
   assetTwin: any;
@@ -143,8 +144,9 @@ export class SlavesInfoComponent implements OnInit {
 
   setupFormData(obj = undefined) {
     console.log(obj);
+    let setupformGroup: FormGroup;
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
-      this.setupForm = new FormGroup({
+      setupformGroup = new FormGroup({
         host_address: new FormControl(
           obj &&
           obj.metadata &&
@@ -173,7 +175,7 @@ export class SlavesInfoComponent implements OnInit {
         ),
       });
     } else if (this.asset.tags.protocol === 'ModbusRTUMaster') {
-      this.setupForm = new FormGroup({
+      setupformGroup = new FormGroup({
         com_port: new FormControl(
           obj && obj.metadata && obj.metadata && obj.metadata.com_port !== undefined && obj.metadata.com_port !== null
             ? obj.metadata.com_port
@@ -212,7 +214,7 @@ export class SlavesInfoComponent implements OnInit {
         ),
       });
     } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
-      this.setupForm = new FormGroup({
+      setupformGroup = new FormGroup({
         host_address: new FormControl(
           obj &&
           obj.metadata &&
@@ -236,6 +238,11 @@ export class SlavesInfoComponent implements OnInit {
           [Validators.required, Validators.min(0), Validators.max(31)]
         ),
       });
+    }
+    if (obj) {
+      this.editSetupForm = setupformGroup;
+    } else {
+      this.addSetupForm = setupformGroup;
     }
   }
 
@@ -285,7 +292,7 @@ export class SlavesInfoComponent implements OnInit {
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     const macID = this.slaveObj.metadata.mac_id;
-    this.slaveObj.metadata = this.setupForm?.value || {};
+    this.slaveObj.metadata = this.addSetupForm?.value || {};
     this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(
       this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj).subscribe(
@@ -294,6 +301,7 @@ export class SlavesInfoComponent implements OnInit {
           this.isAddSlaveAPILoading = false;
           this.onCloseModal('addSlaveModal');
           this.getSlaveData();
+          this.addSetupForm = undefined;
           this.slaveObj = undefined;
         },
         (error) => {
@@ -325,7 +333,7 @@ export class SlavesInfoComponent implements OnInit {
 
     const macID = obj.metadata.mac_id;
     this.isAddSlaveAPILoading = true;
-    obj.metadata = this.setupForm?.value || {};
+    obj.metadata = this.editSetupForm?.value || {};
     obj.metadata.mac_id = macID;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(

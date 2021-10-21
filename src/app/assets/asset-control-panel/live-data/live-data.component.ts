@@ -128,7 +128,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop.property?.type || prop.type;
                 console.log(prop);
-                this.addPropertyInList(prop.property);
+                if (prop?.property) {
+                  this.addPropertyInList(prop.property);
+                }
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
                 } else if (prop?.type === 'Edge Derived Properties') {

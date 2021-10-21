@@ -92,6 +92,10 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     if (this.originalReasonObj) {
       obj = JSON.parse(JSON.stringify(this.originalReasonObj));
     }
+    if (!this.originalReasonObj.reason || this.originalReasonObj.reason.trim().length === 0) {
+      this.toasterService.showError('Reason is required', 'Update Reason');
+      return;
+    }
     const modelObj = {
       app: this.contextApp.app,
       name: this.assetModel.name,
@@ -128,6 +132,10 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   onSaveReason(r, e, i) {
     const id = e;
     const obj = { reason: r };
+    if (!r || r.trim().length === 0) {
+      this.toasterService.showError('Reason is required', 'Update Reason');
+      return;
+    }
     const modelObj = {
       app: this.contextApp.app,
       name: this.assetModel.name,

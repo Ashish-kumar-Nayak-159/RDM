@@ -387,7 +387,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onUpdateAlertConditions() {
-    this.isCreateAlertConditionLoading = true;
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -427,20 +426,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
-    // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
-    // this.alertObj.visualization_widgets = distinctArray;
-    // distinctArray = this.alertObj.reference_documents.filter((n, i) => this.alertObj.reference_documents.indexOf(n) === i);
-    // this.alertObj.reference_documents = distinctArray;
-    // this.alertConditions.forEach(alert => {
-    //   alert.reference_documents.forEach(refDoc => {
-    //     this.documents.forEach(doc => {
-    //       if (doc.name === refDoc) {
-    //         arr.push(doc.id);
-    //       }
-    //     });
-    //   });
-    // });
-    // this.alertObj.reference_documents  = arr;
+    this.isCreateAlertConditionLoading = true;
     console.log(this.alertObj.code);
     this.subscriptions.push(
       this.assetService
@@ -464,22 +450,23 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onCreateAlertCondition() {
-    this.alertObj.created_by = this.loggedInUser.email;
+    const alertObj = JSON.parse(JSON.stringify(this.alertObj));
+    alertObj.created_by = this.loggedInUser.email;
     if (
-      !this.alertObj.message ||
-      this.alertObj.message.trim().length === 0 ||
-      !this.alertObj.code ||
-      this.alertObj.code.trim().length === 0 ||
-      !this.alertObj.severity ||
-      !this.alertObj.alert_type
+      !alertObj.message ||
+      alertObj.message.trim().length === 0 ||
+      !alertObj.code ||
+      alertObj.code.trim().length === 0 ||
+      !alertObj.severity ||
+      !alertObj.alert_type
     ) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
-    this.alertObj.code = 'A_' + this.alertObj.code;
+    alertObj.code = 'A_' + alertObj.code;
     let flag = false;
     this.alertConditions.forEach((alert) => {
-      if (this.alertObj.message === alert.message) {
+      if (alertObj.message === alert.message) {
         flag = true;
       }
     });
@@ -488,17 +475,17 @@ export class AssetAlertConditionsComponent implements OnInit {
       return;
     }
     this.isCreateAlertConditionLoading = true;
-    this.alertObj.visualization_widgets = [];
-    this.alertObj.recommendations = [];
-    this.alertObj.reference_documents = [];
-    this.alertObj.actions = {
+    alertObj.visualization_widgets = [];
+    alertObj.recommendations = [];
+    alertObj.reference_documents = [];
+    alertObj.actions = {
       email: { enabled: false },
       whatsapp: { enabled: false },
       sms: { enabled: false },
     };
-    console.log(this.alertObj.code);
+    console.log(alertObj.code);
     this.subscriptions.push(
-      this.assetService.createAlertCondition(this.alertObj, this.asset.app, this.asset.asset_id).subscribe(
+      this.assetService.createAlertCondition(alertObj, this.asset.app, this.asset.asset_id).subscribe(
         (response: any) => {
           this.isCreateAlertConditionLoading = false;
           this.onCloseAlertConditionModal();

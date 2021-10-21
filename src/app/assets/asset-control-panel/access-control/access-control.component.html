@@ -133,7 +133,7 @@
             <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="user_no"
               [searchCountryFlag]="true" [cssClass]="'custom'" [inputId]="'sms_no'" formControlName="sms_no"
               [phoneValidation]="true" id="sms_no_control" [customPlaceholder]="'Enter User SMS No'"
-              [selectedCountryISO]="countryISO.India"
+              [selectedCountryISO]="countryISO.India" [maxLength]="15"
               [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
             </ngx-intl-tel-input>
           </div>
@@ -142,7 +142,7 @@
             <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
               [searchCountryFlag]="true" [cssClass]="'custom'" formControlName="whatsapp_no" [phoneValidation]="true"
               [customPlaceholder]="'Enter User Whatsapp No'" [inputId]="'whatsapp_no'"
-              [selectedCountryISO]="countryISO.India" id="whatsapp_no_control"
+              [selectedCountryISO]="countryISO.India" id="whatsapp_no_control" [maxLength]="15"
               [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
             </ngx-intl-tel-input>
           </div>

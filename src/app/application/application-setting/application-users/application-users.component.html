@@ -76,7 +76,7 @@
               <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="user_no"
                 [searchCountryFlag]="true" [cssClass]="'custom'" [inputId]="'sms_no'" formControlName="sms_no"
                 [phoneValidation]="true" id="sms_no_control" [customPlaceholder]="'Enter User SMS No'"
-                [selectedCountryISO]="countryISO.India"
+                [selectedCountryISO]="countryISO.India" [maxLength]="15"
                 [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
               </ngx-intl-tel-input>
             </div>
@@ -85,7 +85,7 @@
               <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
                 [searchCountryFlag]="true" [cssClass]="'custom'" formControlName="whatsapp_no" [phoneValidation]="true"
                 [customPlaceholder]="'Enter User Whatsapp No'" [inputId]="'whatsapp_no'"
-                [selectedCountryISO]="countryISO.India" id="whatsapp_no_control"
+                [selectedCountryISO]="countryISO.India" id="whatsapp_no_control" [maxLength]="15"
                 [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
               </ngx-intl-tel-input>
             </div>
@@ -142,7 +142,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <h6>Please Enter your password to remove this user access.</h6>
+        <p>Please Enter your password to remove this user access.</p>
+        <p class="alert-warning">Note: User Access termination may take up-to 24 hrs.</p>
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>

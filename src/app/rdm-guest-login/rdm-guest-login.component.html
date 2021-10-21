@@ -21,26 +21,27 @@
                 <div class="col-sm-6 mb-3 mb-sm-0">
                   <input type="text" class="form-control form-control-user" id="Name" placeholder="Name*"
                     formControlName="name" name="Name">
-                  <div
-                    *ngIf="loginForm.get('name').invalid && (loginForm.get('name').dirty || loginForm.get('name').touched)"
-                    class="alert-danger">
+                  <div *ngIf="loginForm.get('name').errors && loginForm.get('name').touched" class="alert-danger">
                     <div *ngIf="loginForm.get('name').errors.required">
                       Name is required.
                     </div>
                   </div>
                 </div>
                 <div class="col-sm-6">
-                  <input type="phone" class="form-control form-control-user" id="phone" placeholder="Mobile Phone"
-                    formControlName="phone" name="phone">
-
+                  <!-- <input type="phone" class="form-control form-control-user" id="phone" placeholder="Mobile Phone"
+                    formControlName="phone" name="phone"> -->
+                  <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
+                    [searchCountryFlag]="true" [cssClass]="'custom form-control-user'" formControlName="phone"
+                    [phoneValidation]="true" [customPlaceholder]="'Enter Mobile No'" [inputId]="'phone'"
+                    [selectedCountryISO]="countryISO.India" id="phone_control" [maxLength]="15"
+                    [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+                  </ngx-intl-tel-input>
                 </div>
               </div>
               <div class="form-group">
                 <input type="email" class="form-control form-control-user" id="inputEmail" placeholder="Work Email*"
                   formControlName="email" name="email">
-                <div
-                  *ngIf="loginForm.get('email').invalid && (loginForm.get('email').dirty || loginForm.get('email').touched)"
-                  class="alert-danger">
+                <div *ngIf="loginForm.get('email').errors && loginForm.get('email').touched" class="alert-danger">
                   <div *ngIf="loginForm.get('email').errors.required">
                     Email is required.
                   </div>
@@ -53,9 +54,7 @@
                 <div class="col-sm-6 mb-3 mb-sm-0">
                   <input type="text" class="form-control form-control-user" id="companyName" placeholder="Organization*"
                     formControlName="org" name="org">
-                  <div
-                    *ngIf="loginForm.get('org').invalid && (loginForm.get('org').dirty || loginForm.get('org').touched)"
-                    class="alert-danger">
+                  <div *ngIf="loginForm.get('org').errors && loginForm.get('org').touched" class="alert-danger">
                     <div *ngIf="loginForm.get('org').errors.required">
                       Organization is required.
                     </div>
@@ -70,7 +69,7 @@
               <button type="submit" style="background-color:#1a5a9e"
                 class="btn btn-primary btn-user btn-block text-white " [disabled]=" (!loginForm.valid &&
                 (loginForm.touched || !loginForm.touched)) || isLoginAPILoading">
-                Submit
+                Login
                 <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
               </button>
             </form>

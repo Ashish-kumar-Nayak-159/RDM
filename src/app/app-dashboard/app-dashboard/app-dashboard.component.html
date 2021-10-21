@@ -173,7 +173,7 @@
       <div class="ml-1">No dashboard configuration added for this application.</div>
     </ng-container>
     <div class="row col-md-12 mt-n2"
-      *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets">
+      *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets && originalFilter?.asset">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
         <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',

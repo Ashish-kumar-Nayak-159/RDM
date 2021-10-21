@@ -351,6 +351,8 @@ export class CommonService {
     // } else {
     //   localStorage.removeItem(CONSTANTS.USER_DETAILS);
     // }
+    const isGuestUser = localStorage.getItem(CONSTANTS.GUEST_USER);
+    const app = this.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     localStorage.clear();
     this.signalRService.disconnectFromSignalR('all');
     if (environment.app === 'Indygo') {
@@ -358,9 +360,15 @@ export class CommonService {
         location.reload();
       });
     } else {
-      this.router.navigate(['']).then(() => {
-        location.reload();
-      });
+      if (isGuestUser === 'true') {
+        this.router.navigate([app.app, 'guest-login']).then(() => {
+          location.reload();
+        });
+      } else {
+        this.router.navigate(['']).then(() => {
+          location.reload();
+        });
+      }
     }
   }
 

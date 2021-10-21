@@ -89,7 +89,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getAssetData() {
-    this.asset.tags = undefined;
+    // this.asset.tags = {};
     let methodToCall;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       const obj = {
@@ -262,7 +262,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.isUpdateAPILoading = true;
     const tagObj = {};
     if (this.asset.tags?.custom_tags) {
-      Object.keys(this.asset.tags.custom_tags).forEach((customTag) => {
+      Object.keys(this.asset.tags?.custom_tags).forEach((customTag) => {
         let flag = false;
         this.assetCustomTags.forEach((tag) => {
           if (tag.name === customTag) {

@@ -26,8 +26,7 @@
             <label for="message-text" class="col-form-label required">App name:</label>
             <input type="text" class="form-control form-control-sm" id="app" name="app" formControlName="app"
               placeholder="Enter App name">
-            <div
-              *ngIf="createApplicationForm.get('app').invalid && (createApplicationForm.get('app').dirty || createApplicationForm.get('app').touched)"
+            <div *ngIf="createApplicationForm.get('app').errors && createApplicationForm.get('app').touched"
               class="alert-danger">
               <div *ngIf="createApplicationForm.get('app').errors.required">
                 App Name is required.
@@ -42,7 +41,7 @@
             <input type="text" class="form-control form-control-sm" id="admin_name" name="admin_name"
               placeholder="Enter App Admin" formControlName="admin_name">
             <div
-              *ngIf="createApplicationForm.get('admin_name').invalid && (createApplicationForm.get('admin_name').dirty || createApplicationForm.get('admin_name').touched)"
+              *ngIf="createApplicationForm.get('admin_name').errors &&  createApplicationForm.get('admin_name').touched"
               class="alert-danger">
               <div *ngIf="createApplicationForm.get('admin_name').errors.required">
                 Admin Name is required.
@@ -54,7 +53,7 @@
             <input type="email" class="form-control form-control-sm" id="app_admin" name="app_admin"
               placeholder="Enter App Admin Email" formControlName="admin_email">
             <div
-              *ngIf="createApplicationForm.get('admin_email').invalid && (createApplicationForm.get('admin_email').dirty || createApplicationForm.get('admin_email').touched)"
+              *ngIf="createApplicationForm.get('admin_email').errors &&  createApplicationForm.get('admin_email').touched"
               class="alert-danger">
               <div *ngIf="createApplicationForm.get('admin_email').errors.required">
                 Admin Email is required.

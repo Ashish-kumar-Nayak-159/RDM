@@ -29,11 +29,17 @@ export class DataTableComponent implements OnInit {
   headerMessage: string;
   hideCancelButton = false;
   decodedToken: any;
-  constructor(private commonService: CommonService) {}
+  subscriptions: Subscription[] = [];
+  constructor(private commonService: CommonService, private chartService: ChartService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     setTimeout(() => this.plotChart(), 200);
+    this.subscriptions.push(
+      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
+    );
+    this.y1AxisProps.forEach((prop) => (prop.hidden = false));
+    this.y2AxisProps.forEach((prop) => (prop.hidden = false));
   }
 
   plotChart() {}
@@ -64,6 +70,20 @@ export class DataTableComponent implements OnInit {
 
   getPropertyName(key) {
     return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;
+  }
+
+  toggleProperty(property) {
+    console.log(property);
+    this.y1AxisProps.forEach((prop) => {
+      if (prop.json_key === property) {
+        prop.hidden = !prop.hidden;
+      }
+    });
+    this.y2AxisProps.forEach((prop) => {
+      if (prop.json_key === property) {
+        prop.hidden = !prop.hidden;
+      }
+    });
   }
 
   removeWidget(chartId) {}

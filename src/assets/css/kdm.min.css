@@ -14818,6 +14818,9 @@ height: calc(100vh - 8rem);
 .scrollbox_delayed:hover {
   transition: visibility 0s 0.2s;
 }*/
+.customClass {
+  margin: 5px 0;
+}
 
 .card.customClass .card-header {
   background-color: #fff;
@@ -14857,13 +14860,17 @@ height: calc(100vh - 8rem);
   background-color: #06305a !important;
   color: #fff !important;
 }
-.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked,
+/* .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked, */
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
   background-color: #1e90ff !important;
   color: #fff !important;
 }
 
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  background-color: #f5faff !important;
+  color: #333 !important;
+}
 /* control configure css */
 
 .cd-breadcrumb,

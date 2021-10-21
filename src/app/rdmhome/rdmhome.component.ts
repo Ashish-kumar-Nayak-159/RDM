@@ -1,3 +1,4 @@
+import { UIMESSAGES } from './../constants/ui-messages.constants';
 import { ToasterService } from './../services/toaster.service';
 import { data } from 'jquery';
 import { environment } from './../../environments/environment';
@@ -56,7 +57,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         localStorage.setItem(CONSTANTS.APP_TOKEN, data.apps[0].token);
         const decodedToken = this.commonService.decodeJWTToken(data.apps[0].token);
         if (!decodedToken.privileges || decodedToken.privileges.length === 0) {
-          this.toasterService.showError('User is not having any privileges', APIMESSAGES.CONTACT_ADMINISTRATOR);
+          this.toasterService.showError('User is not having any privileges', UIMESSAGES.MESSAGES.CONTACT_ADMINISTRATOR);
           this.commonService.onLogOut();
           return;
         }

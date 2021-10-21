@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { CommonService } from 'src/app/services/common.service';
 
 declare var $: any;

@@ -71,7 +71,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   openCreateUserModal() {
     this.privilegeObj = {};
     this.privilegeObj.app = this.applicationData.app;
-    this.privilegeObj.privileges = CONSTANTS.DEFAULT_PRIVILEGES;
+    this.privilegeObj.privileges = JSON.parse(JSON.stringify(CONSTANTS.DEFAULT_PRIVILEGES));
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

@@ -143,7 +143,8 @@
             <td>{{hierarchyItem}}</td>
             <td>
               <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
-                [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0">
+                [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
+                [disabled]="contextApp.user.hierarchy[hierarchyItem]">
                 <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
                 <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
               </select>

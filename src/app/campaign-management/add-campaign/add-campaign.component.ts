@@ -119,6 +119,7 @@ export class AddCampaignComponent implements OnInit {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
           this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+          console.log(this.configureHierarchy);
           if (this.contextApp.user.hierarchy[level]) {
             this.onChangeOfHierarchy(index);
           }

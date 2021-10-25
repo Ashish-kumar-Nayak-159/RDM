@@ -89,7 +89,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getAssetData() {
-    this.asset.tags = undefined;
+    // this.asset.tags = {};
     let methodToCall;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       const obj = {
@@ -251,6 +251,12 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   checkKeyDuplicacy(tagObj, tagIndex) {
+    CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
+      if (tagObj.name.includes(char)) {
+        this.toasterService.showError('Tag key should not include `.`, ` `, `$`, `#`', 'Set Tags');
+        return;
+      }
+    });
     const index = this.assetCustomTags.findIndex((tag) => tag.name === tagObj.name);
     if (index !== -1 && index !== tagIndex) {
       this.toasterService.showError('Tag with same name is already exists. Please use different name', 'Set Tags');
@@ -262,7 +268,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.isUpdateAPILoading = true;
     const tagObj = {};
     if (this.asset.tags?.custom_tags) {
-      Object.keys(this.asset.tags.custom_tags).forEach((customTag) => {
+      Object.keys(this.asset.tags?.custom_tags).forEach((customTag) => {
         let flag = false;
         this.assetCustomTags.forEach((tag) => {
           if (tag.name === customTag) {

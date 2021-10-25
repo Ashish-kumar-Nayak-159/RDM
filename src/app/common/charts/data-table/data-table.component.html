@@ -27,23 +27,33 @@
                 <thead>
                   <tr>
                     <th>Date</th>
-                    <th *ngFor="let item of y1AxisProps">
-                      <i class="icon icon-function"
-                        *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>{{getPropertyName(item.json_key)}}
-                    </th>
-                    <th *ngFor="let item of y2AxisProps">
-                      <i class="icon icon-function"
-                        *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>
-                      {{getPropertyName(item.json_key)}}
-                    </th>
+                    <ng-container *ngFor="let item of y1AxisProps">
+                      <th *ngIf="!item.hidden">
+                        <i class="icon icon-function"
+                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>{{getPropertyName(item.json_key)}}
+                      </th>
+                    </ng-container>
+                    <ng-container *ngFor="let item of y2AxisProps">
+                      <th *ngIf="!item.hidden">
+
+                        <i class="icon icon-function"
+                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>
+                        {{getPropertyName(item.json_key)}}
+                      </th>
+                    </ng-container>
                   </tr>
                 </thead>
                 <tbody>
                   <ng-container>
                     <tr *ngFor="let obj of telemetryData">
                       <td>{{ obj.message_date }}</td>
-                      <td *ngFor="let item of y1AxisProps">{{ obj[item.json_key] }}</td>
-                      <td *ngFor="let item of y2AxisProps">{{ obj[item.json_key] }}</td>
+                      <ng-container *ngFor="let item of y1AxisProps">
+                        <td *ngIf="!item.hidden">
+                          {{ obj[item.json_key] }}</td>
+                      </ng-container>
+                      <ng-container *ngFor="let item of y2AxisProps">
+                        <td *ngIf="!item.hidden">{{ obj[item.json_key] }}</td>
+                      </ng-container>
                     </tr>
                   </ng-container>
 

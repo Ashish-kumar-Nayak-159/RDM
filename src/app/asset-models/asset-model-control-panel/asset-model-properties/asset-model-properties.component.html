@@ -123,7 +123,7 @@
                         groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
                         [(ngModel)]="propObj.property">
                         <ng-template ng-option-tmp let-item="item">
-                          <span> <i
+                          <span [tooltip]="item.name"> <i
                               [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
                             {{item.name}}</span>
                         </ng-template>

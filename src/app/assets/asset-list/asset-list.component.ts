@@ -82,6 +82,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   chart: am4charts.XYChart;
   environmentApp = environment.app;
   originalAssetsList: any[] = [];
+contextAppUserHierarchyLength = 0;
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(

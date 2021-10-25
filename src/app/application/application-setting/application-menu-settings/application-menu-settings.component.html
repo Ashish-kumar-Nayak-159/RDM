@@ -3,10 +3,11 @@
     <div class="h6 m-0 p-0">Menu Settings
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
-        <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;" *ngIf="!isAppSettingsEditable"
-      placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
-    <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;"
+          *ngIf="!isAppSettingsEditable" placement="bottom" tooltip="Edit Menu Settings"><i
+            class="fas fa-edit fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
       <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSettingsEditable"
       placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
@@ -66,289 +67,309 @@
                 <td><input type="checkbox" name="visible_menu_{{configIndex}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
                     id="visible_menu_{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
-              </tr>
-              <tr *ngIf="toggleRows['main_menu_' + configIndex]" style="background-color: #fdfeff;">
-                <td colspan="1" class="accordion-border"></td>
-                <td colspan="2" class="accordion-border">
-                  <div class="form-group row my-2" *ngFor="let control of item.showAccordion;" >
-                    <ng-container >
+                  </tr>
+                  <ng-container *ngIf="toggleRows['main_menu_' + configIndex]" style="background-color: #fdfeff;">
+                    <tr *ngFor="let control of item.showAccordion; let first = first; let last = last">
 
-                    <div class="col-6">
-                      <label for="recipient-name" class="col-form-label">{{control.name}}</label>
-                    </div>
-                    <div class="col-6">
-                      <input *ngIf="control?.type !== 'checkbox'" type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm w-75" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                        placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
-                      <input type="checkbox" *ngIf="control?.type === 'checkbox'" class="mt-1"
-                      id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                        />
-                    </div>
+                      <td colspan="2" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"> <label for="recipient-name"
+                          class="col-form-label">{{control.name}}</label></td>
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}">
+
+                        <input *ngIf="control?.type !== 'checkbox'"
+                          type="{{control.type === 'number' ? 'number' : 'text'}}"
+                          class="form-control form-control-sm w-75" id="{{control.name}}" name="{{control.name}}"
+                          [(ngModel)]="control.value" placeholder="Enter {{control.name}}"
+                          [disabled]="!isAppSettingsEditable">
+                        <input type="checkbox" *ngIf="control?.type === 'checkbox'" class="mt-1" id="{{control.name}}"
+                          name="{{control.name}}" [(ngModel)]="control.value" [disabled]="!isAppSettingsEditable" />
+
+                      </td>
+
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+
+                    </tr>
                   </ng-container>
-                  </div>
-                </td>
-                <td colspan="2" class="accordion-border"></td>
-              </tr>
-              </ng-container>
-            </tbody>
-          </table>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </accordion-group>
-  <accordion-group heading="" [panelClass]="'customClass'">
-    <ng-container accordion-heading>
-      <a class="btn" >
-        IOT Asset Control Panel Menu
-      </a>
-    </ng-container>
-    <div class="row">
-      <div class="col-12 p-0">
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          IOT Asset Control Panel Menu
+        </a>
+      </ng-container>
+      <div class="row">
         <div class="col-12 p-0">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th></th>
-                <th>System Name</th>
-                <th>Display Name</th>
-                <th>Visibility</th>
-              </tr>
-            </thead>
-            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <tr>
-                <th colspan="5">
-                  <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
-                </th>
+          <div class="col-12 p-0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>System Name</th>
+                  <th>Display Name</th>
+                  <th>Visibility</th>
+                </tr>
+              </thead>
+              <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <tr>
+                  <th colspan="5">
+                    <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                    <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
+                      [disabled]="!isAppSettingsEditable">CANCEL</button>
+                  </th>
 
-              </tr>
-            </tfoot>
-            <tbody>
-              <ng-container *ngFor="let item of applicationData?.menu_settings?.asset_control_panel_menu; let configIndex = index">
-                <tr *ngIf="!item.isTitle">
-                  <td >
-                    <ng-container *ngIf="item.showAccordion?.length > 0">
-                      <a href="javascript:void(0)" (click)="onToggleRows('asset_' + configIndex)">
-                        <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                </tr>
+              </tfoot>
+              <tbody>
+                <ng-container
+                  *ngFor="let item of applicationData?.menu_settings?.asset_control_panel_menu; let configIndex = index">
+                  <tr *ngIf="!item.isTitle">
+                    <td>
+                      <ng-container *ngIf="item.showAccordion?.length > 0">
+                        <a href="javascript:void(0)" (click)="onToggleRows('asset_' + configIndex)">
+                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                         </a>
-                    </ng-container>
-                  </td>
-                  <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
-                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
-                  <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                      id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
-                </tr>
-                <tr *ngIf="toggleRows['asset_' + configIndex]" style="background-color: #fdfeff;">
-                  <td colspan="1" class="accordion-border"></td>
-                  <td colspan="4"  class="accordion-border">
-                    <div class="row">
-
-                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
-                        <input type="checkbox" name="visible_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
-                          id="visible_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
-                        <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
-                      </div>
-
-                      <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                          placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
-                      </div> -->
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
+                      </ng-container>
+                    </td>
+                    <td>{{item.system_name}}</td>
+                    <td><input type="text" class="form-control form-control-sm w-75"
+                        name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                    <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                        id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                  </tr>
+                  <ng-container *ngIf="toggleRows['asset_' + configIndex]" style="background-color: #fdfeff;">
+                    <tr
+                      *ngFor="let control of item.showAccordion;let accordionIndex = index;let first = first; let last = last;">
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"><label for="recipient-name"
+                          class="col-form-label">&nbsp;{{control.name}}</label></td>
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td colspan="4" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}">
+                        <input type="checkbox" name="visible_asset_{{control.name}}_{{accordionIndex}}"
+                          [disabled]="!isAppSettingsEditable" id="visible_asset_{{control.name}}_{{accordionIndex}}"
+                          [(ngModel)]="item.accordion_value[control.key]" />
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </accordion-group>
-  <accordion-group heading="" [panelClass]="'customClass'">
-    <ng-container accordion-heading>
-      <a class="btn" >
-        Legacy Asset Control Panel Menu
-      </a>
-    </ng-container>
-    <div class="row">
-      <div class="col-12 p-0">
-
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Legacy Asset Control Panel Menu
+        </a>
+      </ng-container>
+      <div class="row">
         <div class="col-12 p-0">
-          <table class="table table-hover">
-            <thead>
-              <tr >
-                <th></th>
-                <th>System Name</th>
-                <th>Display Name</th>
-                <th>Visibility</th>
-              </tr>
-            </thead>
-            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <tr>
-                <th colspan="5">
-                  <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
-                </th>
 
-              </tr>
-            </tfoot>
-            <tbody>
-              <ng-container *ngFor="let item of applicationData?.menu_settings?.legacy_asset_control_panel_menu; let configIndex = index">
-                <tr *ngIf="!item.isTitle">
-                  <td>
-                    <ng-container *ngIf="item.showAccordion?.length > 0">
-                      <a href="javascript:void(0)" (click)="onToggleRows('legacy_asset_' + configIndex)">
-                        <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+          <div class="col-12 p-0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>System Name</th>
+                  <th>Display Name</th>
+                  <th>Visibility</th>
+                </tr>
+              </thead>
+              <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <tr>
+                  <th colspan="5">
+                    <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                    <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
+                      [disabled]="!isAppSettingsEditable">CANCEL</button>
+                  </th>
+
+                </tr>
+              </tfoot>
+              <tbody>
+                <ng-container
+                  *ngFor="let item of applicationData?.menu_settings?.legacy_asset_control_panel_menu; let configIndex = index">
+                  <tr *ngIf="!item.isTitle">
+                    <td>
+                      <ng-container *ngIf="item.showAccordion?.length > 0">
+                        <a href="javascript:void(0)" (click)="onToggleRows('legacy_asset_' + configIndex)">
+                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                         </a>
-                    </ng-container>
-                  </td>
-                  <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
-                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
-                  <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                      id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
-                </tr>
-                <tr *ngIf="toggleRows['legacy_asset_' + configIndex]" style="background-color: #fdfeff;">
-                  <td colspan="1" class="accordion-border"></td>
-                  <td colspan="4"  class="accordion-border">
-                    <div class="row">
-
-                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
-                        <input type="checkbox" name="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
-                          id="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
-                        <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
-                      </div>
-
-                      <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                          placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
-                      </div> -->
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
+                      </ng-container>
+                    </td>
+                    <td>{{item.system_name}}</td>
+                    <td><input type="text" class="form-control form-control-sm w-75"
+                        name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                    <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                        id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                  </tr>
+                  <ng-container *ngIf="toggleRows['legacy_asset_' + configIndex]" style="background-color: #fdfeff;">
+                    <tr
+                      *ngFor="let control of item.showAccordion;let accordionIndex = index;let first = first; let last = last;">
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"><label for="recipient-name"
+                          class="col-form-label">&nbsp;{{control.name}}</label></td>
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td colspan="4" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}">
+                        <input type="checkbox" name="visible_legacy_asset_{{control.name}}_{{accordionIndex}}"
+                          [disabled]="!isAppSettingsEditable"
+                          id="visible_legacy_asset_{{control.name}}_{{accordionIndex}}"
+                          [(ngModel)]="item.accordion_value[control.key]" />
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </accordion-group>
-  <accordion-group heading="" [panelClass]="'customClass'">
-    <ng-container accordion-heading>
-      <a class="btn" >
-        Gateway Diagnosis Panel Menu
-      </a>
-    </ng-container>
-    <div class="row">
-      <div class="col-12 p-0">
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Gateway Diagnosis Panel Menu
+        </a>
+      </ng-container>
+      <div class="row">
         <div class="col-12 p-0">
-          <table class="table table-hover">
-            <thead>
-              <tr >
-                <th></th>
-                <th>System Name</th>
-                <th>Display Name</th>
-                <th>Visibility</th>
-              </tr>
-            </thead>
-            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <tr>
-                <th colspan="5">
-                  <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
-                </th>
-              </tr>
-            </tfoot>
-            <tbody>
-              <ng-container *ngFor="let item of applicationData?.menu_settings?.gateway_control_panel_menu; let configIndex = index">
-                <tr *ngIf="!item.isTitle">
-                  <td>
-                    <ng-container *ngIf="item.showAccordion?.length > 0">
-                      <a href="javascript:void(0)" (click)="onToggleRows('gateway_' + configIndex)">
-                        <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+          <div class="col-12 p-0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>System Name</th>
+                  <th>Display Name</th>
+                  <th>Visibility</th>
+                </tr>
+              </thead>
+              <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <tr>
+                  <th colspan="5">
+                    <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                    <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
+                      [disabled]="!isAppSettingsEditable">CANCEL</button>
+                  </th>
+                </tr>
+              </tfoot>
+              <tbody>
+                <ng-container
+                  *ngFor="let item of applicationData?.menu_settings?.gateway_control_panel_menu; let configIndex = index">
+                  <tr *ngIf="!item.isTitle">
+                    <td>
+                      <ng-container *ngIf="item.showAccordion?.length > 0">
+                        <a href="javascript:void(0)" (click)="onToggleRows('gateway_' + configIndex)">
+                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                         </a>
-                    </ng-container>
-                  </td>
-                  <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
-                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
-                  <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                      id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
-                </tr>
-                <tr *ngIf="toggleRows['gateway_' + configIndex]" style="background-color: #fdfeff;">
-                  <td colspan="1" class="accordion-border"></td>
-                  <td colspan="4" class="accordion-border">
-                    <div class="row">
+                      </ng-container>
+                    </td>
+                    <td>{{item.system_name}}</td>
+                    <td><input type="text" class="form-control form-control-sm w-75"
+                        name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                    <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                        id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                  </tr>
 
-                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
-                        <input type="checkbox" name="visible_gateway_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
-                          id="visible_gateway_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
-                        <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
-                      </div>
-
-                      <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                          placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
-                      </div> -->
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
+                  <ng-container *ngIf="toggleRows['gateway_' + configIndex]" style="background-color: #fdfeff;">
+                    <tr
+                      *ngFor="let control of item.showAccordion;let accordionIndex = index;let first = first; let last = last;">
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"><label for="recipient-name"
+                          class="col-form-label">&nbsp;{{control.name}}</label></td>
+                      <td colspan="1" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
+                      <td colspan="4" [ngClass]="{'accordion-border': last}"
+                        [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}">
+                        <input type="checkbox" name="visible_gateway_{{control.name}}_{{accordionIndex}}"
+                          [disabled]="!isAppSettingsEditable" id="visible_gateway_{{control.name}}_{{accordionIndex}}"
+                          [(ngModel)]="item.accordion_value[control.key]" />
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </accordion-group>
-  <accordion-group heading="" [panelClass]="'customClass'">
-    <ng-container accordion-heading>
-      <a class="btn" >
-        Model Definition Menu
-      </a>
-    </ng-container>
-    <div class="row">
-      <div class="col-12 p-0">
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Model Definition Menu
+        </a>
+      </ng-container>
+      <div class="row">
         <div class="col-12 p-0">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>System Name</th>
-                <th>Display Name</th>
-                <th>Visibility</th>
-              </tr>
-            </thead>
-            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <tr>
-                <th colspan="5">
-                  <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
-                </th>
-
-              </tr>
-            </tfoot>
-            <tbody>
-              <ng-container *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
-                <tr *ngIf="!item.isTitle">
-                  <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
-                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
-                  <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                      id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
+          <div class="col-12 p-0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>System Name</th>
+                  <th>Display Name</th>
+                  <th>Visibility</th>
                 </tr>
-              </ng-container>
-            </tbody>
-          </table>
+              </thead>
+              <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <tr>
+                  <th colspan="5">
+                    <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                    <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
+                      [disabled]="!isAppSettingsEditable">CANCEL</button>
+                  </th>
+
+                </tr>
+              </tfoot>
+              <tbody>
+                <ng-container
+                  *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
+                  <tr *ngIf="!item.isTitle">
+                    <td>{{item.system_name}}</td>
+                    <td><input type="text" class="form-control form-control-sm w-75"
+                        name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                    <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                        id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </accordion-group>
+    </accordion-group>
 
-</accordion>
+  </accordion>
 </div>

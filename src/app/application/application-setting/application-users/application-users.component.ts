@@ -20,6 +20,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   @Input() applicationData: any;
   userData: any;
   users: any[] = [];
+  isGetUsersAPILoading = false;
   addUserObj: any;
   hierarchyList: any[] = [];
   isCreateUserAPILoading = false;
@@ -65,13 +66,18 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   getApplicationUsers() {
+    this.isGetUsersAPILoading = true;
     this.users = [];
     this.apiSubscriptions.push(
-      this.applicationService.getApplicationUsers(this.applicationData.app).subscribe((response: any) => {
-        if (response && response.data) {
-          this.users = response.data;
-        }
-      })
+      this.applicationService.getApplicationUsers(this.applicationData.app).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.users = response.data;
+            this.isGetUsersAPILoading = false;
+          }
+        },
+        (error) => (this.isGetUsersAPILoading = false)
+      )
     );
   }
 

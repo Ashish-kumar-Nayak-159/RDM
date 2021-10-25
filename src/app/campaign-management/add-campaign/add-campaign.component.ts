@@ -33,39 +33,41 @@ export class AddCampaignComponent implements OnInit {
   daterange: any = {};
   assetModels: any[] = [];
   campaignAssets: any[] = [];
+  protocolList = CONSTANTS.PROTOCOLS;
+  applications = CONSTANTS.ASSETAPPPS;
   campaignObjectiveList = [
     {
-      name: 'Firmware Upgrade of Field loT Assets over the Air',
+      name: 'Firmware Upgrade of Field IoT Assets over the Air',
       objective: 'FOTA',
       communication_method: 'Twin',
       model_type: [CONSTANTS.IP_GATEWAY, CONSTANTS.IP_ASSET],
     },
     {
-      name: 'Sync Updated Model Properties with Field loT Assets',
+      name: 'Sync Model Properties with Field IoT Assets',
       objective: 'Sync Properties/Alerts',
       communication_method: 'Message',
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
     },
     {
-      name: 'Updating Measurement Frequency / Telemetry Frequency of Field loT Assets',
+      name: 'Updating Ingestion Frequency / Telemetry Frequency of Field IoT Assets',
       objective: 'Change Telemetry Frequency',
       communication_method: 'Message',
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
     },
     {
-      name: 'Updating Telemetry Ingestion Settings of Field loT Assets',
-      objective: 'Change Ingestion Frequency',
+      name: 'Updating Measurement Frequency of Field IoT Assets',
+      objective: 'Change Measurement Frequency',
       communication_method: 'Message',
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
     },
     {
-      name: 'Updating Turbo Mode settings of Field loT Assets',
-      objective: 'Change Telemetry Mode',
-      communication_method: 'Message',
+      name: 'Updating Turbo Mode settings of Field IoT Assets',
+      objective: 'Change Asset Mode',
+      communication_method: 'DirectMethod',
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
     },
     {
-      name: 'Deploying Edge Rules in Field loT Assets',
+      name: 'Deploying Edge Rules in Field IoT Assets',
       objective: 'Sync Rules',
       communication_method: 'Message',
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
@@ -84,11 +86,15 @@ export class AddCampaignComponent implements OnInit {
     DELETE_PACKAGE: 'Uninstall Package',
     UPGRADE_PACKAGE: 'Upgrade Package',
     set_properties: 'Sync Properties/Alerts',
+    set_asset_configuration: 'Sync Configuration',
+    change_asset_mode: 'Change Asset Mode',
+    set_asset_rules: 'Sync Rules',
   };
   hierarchyList: any[] = [];
   hierarchyArr = {};
   configureHierarchy = {};
   isGetCampaignAssetAPILoading = false;
+  rules: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -213,7 +219,9 @@ export class AddCampaignComponent implements OnInit {
   onAssetModelChange() {
     if (this.campaignObj.asset_model_obj) {
       this.campaignObj.asset_model = this.campaignObj.asset_model_obj.name;
-      this.getPackages();
+      if (this.campaignObj.objective === 'FOTA') {
+        this.getPackages();
+      }
     } else {
       this.campaignObj.asset_model = undefined;
       this.campaignObj.job_request = {};
@@ -348,6 +356,49 @@ export class AddCampaignComponent implements OnInit {
     });
   }
 
+  checkForFrequencyValue() {
+    console.log(this.campaignObj.job_request);
+    let flag = true;
+    const keys = Object.keys(this.campaignObj.job_request) || [];
+    if (keys.length === 0) {
+      flag = true;
+    }
+    console.log(keys);
+    keys.forEach((key) => {
+      if (this.campaignObj.job_request[key] !== undefined && this.campaignObj.job_request[key] !== null) {
+        flag = false;
+      }
+    });
+    console.log(flag);
+    if (flag) {
+      this.toasterService.showError('At least one frequency value is required.', 'Create Campaign');
+      return;
+    } else {
+      this.visitedSteps = this.visitedSteps + 1;
+      this.getAssetsForCampaign();
+    }
+  }
+
+  getAssetModelEdgeRules() {
+    return new Promise<void>((resolve, reject) => {
+      this.rules = [];
+      const obj = {
+        type: 'Edge',
+      };
+      this.subscriptions.push(
+        this.assetModelService
+          .getRules(this.contextApp.app, this.campaignObj.asset_model, obj)
+          .subscribe((response: any) => {
+            if (response?.data) {
+              this.rules = response.data;
+              console.log(this.rules);
+            }
+            resolve();
+          })
+      );
+    });
+  }
+
   prepareFOTAPayload() {
     const obj = {
       desired_properties: {
@@ -397,6 +448,31 @@ export class AddCampaignComponent implements OnInit {
     return obj;
   }
 
+  prepareFrequencyChangePayload() {
+    const obj = {
+      command: 'set_asset_configuration',
+    };
+    Object.keys(this.campaignObj.job_request).forEach((key) => {
+      obj[key] = this.campaignObj.job_request[key];
+    });
+    return obj;
+  }
+
+  prepareModeChangePayload() {
+    return {
+      method: 'change_asset_mode',
+      telemetry_mode: this.campaignObj.job_request.mode ? 'normal' : 'turbo',
+    };
+  }
+
+  async prepareSyncRulesPayload() {
+    await this.getAssetModelEdgeRules();
+    return {
+      command: 'set_asset_rules',
+      rules: this.rules,
+    };
+  }
+
   async createCampaign() {
     const obj = JSON.parse(JSON.stringify(this.campaignObj));
     obj.hierarchy = { App: this.contextApp.app };
@@ -405,19 +481,27 @@ export class AddCampaignComponent implements OnInit {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
+    if (!obj.asset_model) {
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+      return;
+    }
     if (obj.objective === 'FOTA') {
-      if (
-        !obj.asset_model ||
-        !obj.job_request ||
-        !obj.job_request.package_obj ||
-        !obj.job_request.version ||
-        !obj.request_type
-      ) {
+      if (!obj.job_request || !obj.job_request.package_obj || !obj.job_request.version || !obj.request_type) {
         this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
     } else if (obj.objective === 'Sync Properties/Alerts') {
-      if (!obj.asset_model || !obj.job_request || !obj.job_request.type) {
+      if (!obj.job_request || !obj.job_request.type) {
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        return;
+      }
+    } else if (obj.objective === 'Change Telemetry Frequency' || obj.objective === 'Change Measurement Frequency') {
+      if (!obj.job_request) {
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        return;
+      }
+    } else if (obj.objective === 'Change Asset Mode') {
+      if (!obj.job_request) {
         this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
@@ -435,6 +519,15 @@ export class AddCampaignComponent implements OnInit {
       obj.request_type = this.requestTypeData[this.campaignObj.request_type];
     } else if (obj.objective === 'Sync Properties/Alerts') {
       obj.job_request = await this.prepareSyncPropertiesPayload();
+      obj.request_type = this.requestTypeData[obj.job_request.command];
+    } else if (obj.objective === 'Change Telemetry Frequency' || obj.objective === 'Change Measurement Frequency') {
+      obj.job_request = await this.prepareFrequencyChangePayload();
+      obj.request_type = this.requestTypeData[obj.job_request.command];
+    } else if (obj.objective === 'Change Asset Mode') {
+      obj.job_request = await this.prepareModeChangePayload();
+      obj.request_type = this.requestTypeData[obj.job_request.method];
+    } else if (obj.objective === 'Sync Rules') {
+      obj.job_request = await this.prepareSyncRulesPayload();
       obj.request_type = this.requestTypeData[obj.job_request.command];
     }
     this.subscriptions.push(

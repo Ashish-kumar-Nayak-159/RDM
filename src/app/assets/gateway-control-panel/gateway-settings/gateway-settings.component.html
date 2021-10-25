@@ -56,16 +56,16 @@
 <ng-container *ngIf="selectedTab === 'Test Connection'">
   <div class="table-responsive">
     <div class="tableFixHead">
-      <div class="row col-md-12 mt-1 py-3 pl-4">
+      <div class="col-md-12 mt-1 py-3 pl-4">
         Check gateway is connected or not, Gateway to respond within 30 seconds, else Gateway is considered as offline.
       </div>
-      <div class="row col-md-12 mt-1 pb-4 pl-4">
+      <div class="col-md-12 mt-1 pb-4 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
           (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
           Test Connection</a>
       </div>
       <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-      <div class="row mt-1 col-md-12 pl-3" *ngIf="testConnectionMessage">
+      <div class="mt-1 col-md-12 pl-3" *ngIf="testConnectionMessage">
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
         'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}}
         </span>

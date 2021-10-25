@@ -9,7 +9,7 @@ import { CommonCustomModule } from '../common/common.module';
 import { Daterangepicker } from 'ng2-daterangepicker';
 import { AddCampaignComponent } from './add-campaign/add-campaign.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 @NgModule({
   declarations: [CampaignManagementListComponent, AddCampaignComponent],
@@ -21,7 +21,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CommonCustomModule,
     TooltipModule,
     Daterangepicker,
-    NgSelectModule
-  ]
+    NgSelectModule,
+    UiSwitchModule,
+  ],
 })
-export class CampaignManagementModule { }
+export class CampaignManagementModule {}

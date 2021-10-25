@@ -48,8 +48,8 @@
             <td>{{item.objective}}</td>
             <td>{{item.status}}</td>
             <td>
-              <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><i
-                  class="fa fa-sm fa-eye"></i></a>
+              <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><i
+                  class="fa fa-sm fa-eye"></i></a> -->
               <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
                 [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'running' || item.status?.toLowerCase() === 'completed'"
                 (click)="startStopCampaign(item, index, 'start')" placement="bottom" tooltip="Start Campaign"><img

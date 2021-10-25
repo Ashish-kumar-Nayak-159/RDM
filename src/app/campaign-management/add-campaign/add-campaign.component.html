@@ -25,7 +25,6 @@
   <div class="row m-3">
     <h6>Please select objective of the campaign.</h6>
   </div>
-
   <div class="row mx-3 mt-3">
     <div class="form-group">
       <div class="form-control border-0" style="color: #000" *ngFor="let item of campaignObjectiveList">
@@ -210,7 +209,6 @@
       <p class="m-2">
         Objective: {{campaignObj.objective_name}}
       </p>
-
       <table class="table table-hover table-bordered mx-2 my-3">
         <tbody>
           <ng-container *ngIf="campaignObj.objective === 'FOTA'">
@@ -270,6 +268,108 @@
               </td>
             </tr>
           </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">
+            <tr>
+              <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g1_ingestion_frequency_in_ms" name="g1_frequency_in_normal"
+                  placeholder="G1 Normal Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g1_turbo_mode_frequency_in_ms" name="g1_frequency_in_turbo"
+                  placeholder="G1 Turbo Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g2_ingestion_frequency_in_ms" name="g2_frequency_in_normal"
+                  placeholder="G2 Normal Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Turbo mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g2_turbo_mode_frequency_in_ms" name="g2_frequency_in_turbo"
+                  placeholder="G2 Turbo Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g3_ingestion_frequency_in_ms" name="g3_frequency_in_normal"
+                  placeholder="G3 Normal Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g3_turbo_mode_frequency_in_ms" name="g3_frequency_in_turbo"
+                  placeholder="G3 Turbo Mode Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">Turbo mode Timeout (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.turbo_mode_timeout_time" name="timeout_in_turbo"
+                  placeholder="Turbo Mode Timeout">
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Change Measurement Frequency'">
+            <tr>
+              <td style="width: 50%;">G1 Measurement Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g1_measurement_frequency_in_ms" name="g1_frequency_in_normal"
+                  placeholder="G1 Measurement Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Measurement Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g2_measurement_frequency_in_ms" name="g2_frequency_in_normal"
+                  placeholder="G2 MeasurementFrequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Measurement Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="campaignObj.job_request.g3_measurement_frequency_in_ms" name="g3_frequency_in_normal"
+                  placeholder="G3 Measurement Frequency">
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Change Asset Mode'">
+            <tr>
+              <td class="required">Asset Mode</td>
+              <td>
+                <ui-switch size="small" class="mr-1" defaultBgColor="#c80815" checkedTextColor="white"
+                  uncheckedTextColor="white" checkedLabel="OFF" uncheckedLabel="ON" name="type"
+                  [(ngModel)]="campaignObj.job_request.mode"></ui-switch>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Sync Rules'">
+            <tr>
+              <td>Rules</td>
+              <td>
+                All Model rules will get synced with selected assets
+              </td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>
@@ -291,6 +391,20 @@
             <button type="button" class="btn btn-primary mr-3"
               *ngIf="campaignObj.objective === 'Sync Properties/Alerts'"
               [disabled]="!campaignObj.job_request.type || campaignObj.job_request.type?.length === 0"
+              (click)="visitedSteps = visitedSteps + 1;getAssetsForCampaign()" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-primary mr-3" *ngIf="campaignObj.objective === 'Change Asset Mode'"
+              [disabled]="campaignObj.job_request.mode === undefined || campaignObj.job_request.mode === null"
+              (click)="visitedSteps = visitedSteps + 1;getAssetsForCampaign()" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-primary mr-3"
+              *ngIf="campaignObj.objective === 'Change Telemetry Frequency' || campaignObj.objective === 'Change Measurement Frequency'"
+              (click)="checkForFrequencyValue()" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-primary mr-3" *ngIf="campaignObj.objective === 'Sync Rules'"
               (click)="visitedSteps = visitedSteps + 1;getAssetsForCampaign()" id="nextBtn">
               Next Step
             </button>
@@ -365,20 +479,76 @@
               <td>{{campaignObj.job_request.type}} </td>
             </tr>
           </ng-container>
-          <!-- <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">
-          <tr>
-            <td></td>
-            <td>
-              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
-                        [(ngModel)]="campaignObj.asset_model_obj" (change)="onAssetModelChange()">
-                        <option [ngValue]="undefined"> Select Asset Model</option>
-                        <option *ngFor="let item of assetModels" [ngValue]="item">
-                            {{item.name}}</option>
-              </select>
-              <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}} assets of this specific model, This campaign will run on all {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p>
-            </td>
-          </tr>
-        </ng-container> -->
+          <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">
+            <tr>
+              <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g1_ingestion_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g1_turbo_mode_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g2_ingestion_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Turbo mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g2_turbo_mode_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g3_ingestion_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g3_turbo_mode_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td>Turbo mode Timeout (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.turbo_mode_timeout_time}}
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Change Measurement Frequency'">
+            <tr>
+              <td style="width: 50%;">G1 Measurement Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g1_measurement_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Measurement Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g2_measurement_frequency_in_ms}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G3 Measurement Frequency (In Sec): </td>
+              <td>
+                {{campaignObj.job_request.g3_measurement_frequency_in_ms}}
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="campaignObj.objective === 'Change Asset Mode'">
+            <tr>
+              <td>Asset Mode</td>
+              <td>{{campaignObj.job_request.mode ? 'Normal' : 'Turbo'}} </td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>

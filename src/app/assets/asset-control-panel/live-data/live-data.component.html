@@ -42,7 +42,7 @@
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of selectedWidgets">
           <div [style]="{ 'width': widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
-      || widget?.value.widgetType === 'NumberWithImage' || widget?.value.widgetType === 'GaugeChart' || widget.value.widgetType === 'StringWidget'? (23 * widget.value.properties.length + (widget.value.properties.length > 1 ? (2 * (widget.value.properties.length - 1)) : 0) +'%') : '48%',
+      || widget?.value.widgetType === 'NumberWithImage'  || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget?.value.widgetType === 'GaugeChart' || widget.value.widgetType === 'StringWidget'? (23 * widget.value.properties.length + (widget.value.properties.length > 1 ? (2 * (widget.value.properties.length - 1)) : 0) +'%') : '48%',
       'margin-left':'2%', 'margin-top': '2%'}">
             <app-only-number-widget *ngIf="widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
       || widget?.value.widgetType === 'NumberWithImage' || widget.value.widgetType === 'StringWidget'"
@@ -52,6 +52,12 @@
             <app-gauge-chart [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'GaugeChart'"
               [telemetryObj]="telemetryObj" [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
             </app-gauge-chart>
+            <app-rectangle-widget [chartConfig]="widget.value"  *ngIf="widget.value.widgetType === 'RectangleWidget'"
+             [telemetryObj]="telemetryObj"  [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'CylinderWidget'"
+             [telemetryObj]="telemetryObj"  [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
+            </app-cylinder-widget>
             <app-live-line-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [asset]="asset"
               *ngIf="widget.value.widgetType === 'LineChart' || widget.value.widgetType === 'AreaChart'">
             </app-live-line-chart>

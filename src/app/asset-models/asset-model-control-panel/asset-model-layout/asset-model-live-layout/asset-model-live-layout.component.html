@@ -26,7 +26,7 @@
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
           <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
       'margin-left':'2%', 'margin-top': '2%'}">
             <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
       || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
@@ -35,6 +35,12 @@
             <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
               (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
             </app-gauge-chart>
+            <app-rectangle-widget [chartConfig]="widget"  *ngIf="widget.widgetType === 'RectangleWidget'"
+             (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget"  *ngIf="widget.widgetType === 'CylinderWidget'"
+             (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
             <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
               (removeWidget)="removeWidget($event)"
               *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
@@ -81,6 +87,8 @@
               <option [ngValue]="'GaugeChart'">Gauge Chart</option>
               <option [ngValue]="'LineChart'">Line Chart</option>
               <option [ngValue]="'AreaChart'">Area Chart</option>
+              <option [ngValue]="'RectangleWidget'">Rectangle Widget</option>
+              <option [ngValue]="'CylinderWidget'">Cylinder Widget</option>
               <!-- <option [ngValue]="'ColumnChart'" >Column Chart</option>
             <option [ngValue]="'BarChart'" >Bar Chart</option> -->
             </select>

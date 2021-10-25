@@ -30,6 +30,8 @@ import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific
 import { DateRangePickerComponent } from './date-range-picker/date-range-picker.component';
 import { MessageModalComponent } from './message-modal/message-modal.component';
 import { HierarchyDropdownComponent } from './hierarchy-dropdown/hierarchy-dropdown.component';
+import { RectangleWidgetComponent } from './charts/rectangle-widget/rectangle-widget.component';
+import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widget.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { HierarchyDropdownComponent } from './hierarchy-dropdown/hierarchy-dropd
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
     MessageModalComponent,
-HierarchyDropdownComponent
+    HierarchyDropdownComponent,
+    RectangleWidgetComponent,
+    CylinderWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -90,7 +94,9 @@ HierarchyDropdownComponent
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
     MessageModalComponent,
-HierarchyDropdownComponent
+    HierarchyDropdownComponent,
+    RectangleWidgetComponent,
+    CylinderWidgetComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

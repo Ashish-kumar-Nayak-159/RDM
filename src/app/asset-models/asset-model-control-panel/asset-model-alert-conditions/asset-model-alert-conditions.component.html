@@ -357,7 +357,7 @@
                             <ng-container>
                               <div class="form-group">
                                 <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName">
+                                  [(ngModel)]="groupName['email']">
                                   <option [ngValue]="undefined">Select User Group</option>
                                   <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">
@@ -406,7 +406,7 @@
                             <ng-container>
                               <div class="form-group">
                                 <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName">
+                                  [(ngModel)]="groupName['whatsapp']">
                                   <option [ngValue]="undefined">Select User Group</option>
                                   <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">
@@ -457,7 +457,7 @@
                             <ng-container>
                               <div class="form-group">
                                 <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName">
+                                  [(ngModel)]="groupName['sms']">
                                   <option [ngValue]="undefined">Select User Group</option>
                                   <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">

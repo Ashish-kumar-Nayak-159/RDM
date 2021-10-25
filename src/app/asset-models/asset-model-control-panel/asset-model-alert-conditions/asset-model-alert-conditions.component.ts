@@ -54,7 +54,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   widgetName: string;
   recommendationObj: any;
   docName: any;
-  groupName: any;
+  groupName: any[] = [];
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
@@ -240,18 +240,18 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   addUserGroup(key) {
     console.log(this.alertObj);
-    const index = this.alertObj.actions[key].recipients.findIndex((group) => group === this.groupName);
+    const index = this.alertObj.actions[key].recipients.findIndex((group) => group === this.groupName[key]);
     if (index > -1) {
       this.toasterService.showError('Same UserGroup is already added.', 'Add UserGroup');
       return;
-    } else if (!this.groupName) {
+    } else if (!this.groupName[key]) {
       this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
       return;
     }
-    if (this.groupName && index === -1) {
-      this.alertObj.actions[key].recipients.splice(this.alertObj.actions[key].recipients.length, 0, this.groupName);
+    if (this.groupName[key] && index === -1) {
+      this.alertObj.actions[key].recipients.splice(this.alertObj.actions[key].recipients.length, 0, this.groupName[key]);
     }
-    this.groupName = undefined;
+    this.groupName[key] = undefined;
   }
 
   removeUserGroup(index, key) {
@@ -593,6 +593,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.toggleRows = {};
     this.editRecommendationStep = {};
     this.editDocuments = {};
+    this.groupName = [];
   }
 
   ngOnDestroy() {

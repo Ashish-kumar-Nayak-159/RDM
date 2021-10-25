@@ -86,6 +86,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
   frequency: any;
+  latestRunningHours: any = 0;
+  latestRunningMinutes: any = 0;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -217,7 +219,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'change_asset_mode',
+      request_type: 'Change Asset Mode',
       job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
       sub_job_id: null,
     };
@@ -687,6 +689,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};
+            if (environment.app === 'SopanCMS') {
+              this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
+              this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
+            }
             // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
@@ -713,8 +719,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
             if (environment.app === 'SopanCMS') {
               this.getTimeDifference(
-                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
-                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')]))
+                Math.floor(Number(this.latestRunningHours)),
+                Math.floor(Number(this.latestRunningMinutes))
               );
             }
             this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
@@ -994,9 +1000,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     this.sampleCountArr[0] = this.sampleCountArr[0] + 1;
     if (environment.app === 'SopanCMS') {
+      if (environment.app === 'SopanCMS') {
+        this.latestRunningHours = telemetryObj[this.getPropertyKey('Running Hours')];
+        this.latestRunningMinutes = telemetryObj[this.getPropertyKey('Running Minutes')];
+      }
       this.getTimeDifference(
-        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
-        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')]))
+        Math.floor(Number(this.latestRunningHours)),
+        Math.floor(Number(this.latestRunningMinutes))
       );
     }
     if (this.telemetryObj) {
@@ -1072,11 +1082,27 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getTimeDifference(hour, minute) {
-    const midNightTime = this.midNightHour * 60 + this.midNightMinute;
-    const currentTime = Number(hour) * 60 + Number(minute);
-    const diff = currentTime - midNightTime;
-    this.currentHour = Math.floor(diff / 60);
-    this.currentMinute = diff - this.currentHour * 60;
+    if (
+      this.midNightHour !== undefined &&
+      this.midNightHour !== null &&
+      this.midNightMinute !== undefined &&
+      this.midNightMinute !== null &&
+      hour !== undefined &&
+      hour !== null &&
+      minute !== undefined &&
+      minute !== null
+    ) {
+      const midNightTime = this.midNightHour * 60 + this.midNightMinute;
+      console.log(midNightTime);
+      const currentTime = Number(hour) * 60 + Number(minute);
+      console.log(currentTime);
+      const diff = currentTime - midNightTime;
+      console.log(diff);
+      this.currentHour = Math.floor(diff / 60);
+      this.currentMinute = diff - this.currentHour * 60;
+      console.log(this.currentHour);
+      console.log(this.currentMinute);
+    }
   }
 
   onAssetSelection() {

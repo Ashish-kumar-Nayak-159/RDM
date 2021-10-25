@@ -212,8 +212,8 @@
                     <div class="mt-4">
                       <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;">
                         <!-- {{telemetryObj[prop.property.json_key]}} -->
-                        {{ telemetryObj[getPropertyKey("Running Hours")] + ':' +
-                        (telemetryObj[getPropertyKey('Running Minutes')] || 0)}}
+                        {{ latestRunningHours + ':' +
+                        latestRunningMinutes}}
                       </span>
                     </div>
                     <div>
@@ -247,7 +247,7 @@
                     <span class="text-xs">(M) HH:MM</span>
                     <div class="mt-4">
                       <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;"
-                        *ngIf="currentHour && currentMinute">
+                        *ngIf="currentHour !== undefined && currentHour !== null && currentMinute  !== undefined && currentMinute  !== null ">
                         <!-- {{telemetryObj[prop.property.json_key]}} -->
                         {{currentHour}}:{{currentMinute}}
                       </span>

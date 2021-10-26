@@ -67,7 +67,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           name: '',
           key: undefined,
-          headerClass: 'w-5',
+          headerClass: 'w-3',
         },
       ],
     };
@@ -155,7 +155,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: alert.app,
-        id: alert.start_event_id,
+        id: alert.id,
         asset_id: this.asset.asset_id,
         from_date: null,
         to_date: null,

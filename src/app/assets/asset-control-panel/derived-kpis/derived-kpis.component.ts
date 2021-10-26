@@ -67,7 +67,7 @@ export class DerivedKpisComponent implements OnInit {
   onToggleRows(index) {
     this.isDerivedKPIDataLoading = false;
     this.loader = false;
-    this.toggleRows = {};
+    // this.toggleRows = {};
     this.derivedKPIData = [];
     if (this.toggleRows[index]) {
       this.toggleRows = {};
@@ -85,7 +85,7 @@ export class DerivedKpisComponent implements OnInit {
     console.log(this.selectedDerivedKPI);
     // this.getDerivedKPIsHistoricData();
     // $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    setTimeout(() => this.loadFromCache(), 500);
+    setTimeout(() => this.loadFromCache(), 50);
   }
 
   getDerivedKPIsHistoricData() {

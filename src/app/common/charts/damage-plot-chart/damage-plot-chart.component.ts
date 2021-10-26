@@ -281,7 +281,7 @@ export class DamagePlotChartComponent implements OnInit {
           // series.groupFields.valueY = 'value';
           series.compareText = true;
           series.strokeWidth = 2;
-          const time = this.commonService.convertUTCDateToLocal(data.message_date);
+          const time = data.message_date;
           series.time = time;
           series.connect = false;
           // series.connect = false;

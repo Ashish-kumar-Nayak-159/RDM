@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
 declare var $: any;
 
 @Component({
@@ -27,6 +29,8 @@ export class RdmGuestLoginComponent implements OnInit {
   isPasswordVisible = false;
   isForgotPassword = false;
   isForgotAPILoading = false;
+  searchCountryField = SearchCountryField;
+  countryISO = CountryISO;
   tenantId: string;
   constructor(
     private router: Router,
@@ -131,7 +135,12 @@ export class RdmGuestLoginComponent implements OnInit {
   }
 
   onSignUp() {
+    if ($('#phone').is(':invalid')) {
+      this.toasterService.showError('Please enter valid mobile number', 'Guest User Login');
+      return;
+    }
     const loginObj = this.loginForm.value;
+    loginObj.phone = loginObj.phone.e164Number;
     this.isLoginAPILoading = true;
     loginObj.app = this.tenantId;
     this.subscriptions.push(

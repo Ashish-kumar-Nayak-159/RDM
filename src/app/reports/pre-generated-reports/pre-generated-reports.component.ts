@@ -55,6 +55,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   selectedAssets: any[] = [];
   isAddReport = false;
   contextAppUserHierarchyLength = 0;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -67,6 +68,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;

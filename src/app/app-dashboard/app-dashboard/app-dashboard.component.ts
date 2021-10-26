@@ -86,6 +86,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
   frequency: any;
+  latestRunningHours: any = 0;
+  latestRunningMinutes: any = 0;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -217,7 +219,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'change_asset_mode',
+      request_type: 'Change Asset Mode',
       job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
       sub_job_id: null,
     };
@@ -407,9 +409,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                       prop.json_key = prop.property.json_key;
                     }
                     prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                    prop.type = prop.property.type;
+                    prop.type = prop.property?.type;
                     console.log(prop);
-                    this.addPropertyInList(prop.property);
+                    if (prop?.property) {
+                      this.addPropertyInList(prop.property);
+                    }
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {
@@ -552,6 +556,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
+    if (
+      !this.contextApp?.dashboard_config &&
+      !this.contextApp?.dashboard_config?.show_live_widgets &&
+      !this.contextApp?.dashboard_config?.show_historical_widgets
+    ) {
+      this.contextApp.dashboard_config = {
+        show_live_widgets: true,
+      };
+    }
     if (asset_model) {
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getTelemetryMode(this.filterObj.asset.asset_id);
@@ -559,15 +572,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
-      if (
-        !this.contextApp?.dashboard_config &&
-        !this.contextApp?.dashboard_config?.show_live_widgets &&
-        !this.contextApp?.dashboard_config?.show_historical_widgets
-      ) {
-        this.contextApp.dashboard_config = {
-          show_live_widgets: true,
-        };
-      }
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
@@ -685,6 +689,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};
+            if (environment.app === 'SopanCMS') {
+              this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
+              this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
+            }
             // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
@@ -711,8 +719,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
             if (environment.app === 'SopanCMS') {
               this.getTimeDifference(
-                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
-                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')]))
+                Math.floor(Number(this.latestRunningHours)),
+                Math.floor(Number(this.latestRunningMinutes))
               );
             }
             this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
@@ -739,6 +747,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       $(child).remove();
     }
     console.log(this.historicalDateFilter);
+    if (this.historicalDateFilter?.widgets?.length === 0) {
+      this.toasterService.showError('Select at least one widget to view the data', 'View Telemetry Data');
+      this.isTelemetryDataLoading = false;
+      // this.isFilterSelected = false;
+      return;
+    }
     this.historicalDateFilter?.widgets.forEach((widget) => {
       widget.y1axis.forEach((prop) => {
         if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
@@ -918,9 +932,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);
           let telemetryData = this.telemetryData;
-          // telemetryData.forEach((item) => {
-          //   item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          // });
+          telemetryData.forEach((item) => {
+            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          });
           telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
@@ -986,9 +1000,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     this.sampleCountArr[0] = this.sampleCountArr[0] + 1;
     if (environment.app === 'SopanCMS') {
+      if (environment.app === 'SopanCMS') {
+        this.latestRunningHours = telemetryObj[this.getPropertyKey('Running Hours')];
+        this.latestRunningMinutes = telemetryObj[this.getPropertyKey('Running Minutes')];
+      }
       this.getTimeDifference(
-        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
-        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')]))
+        Math.floor(Number(this.latestRunningHours)),
+        Math.floor(Number(this.latestRunningMinutes))
       );
     }
     if (this.telemetryObj) {
@@ -1064,11 +1082,27 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getTimeDifference(hour, minute) {
-    const midNightTime = this.midNightHour * 60 + this.midNightMinute;
-    const currentTime = Number(hour) * 60 + Number(minute);
-    const diff = currentTime - midNightTime;
-    this.currentHour = Math.floor(diff / 60);
-    this.currentMinute = diff - this.currentHour * 60;
+    if (
+      this.midNightHour !== undefined &&
+      this.midNightHour !== null &&
+      this.midNightMinute !== undefined &&
+      this.midNightMinute !== null &&
+      hour !== undefined &&
+      hour !== null &&
+      minute !== undefined &&
+      minute !== null
+    ) {
+      const midNightTime = this.midNightHour * 60 + this.midNightMinute;
+      console.log(midNightTime);
+      const currentTime = Number(hour) * 60 + Number(minute);
+      console.log(currentTime);
+      const diff = currentTime - midNightTime;
+      console.log(diff);
+      this.currentHour = Math.floor(diff / 60);
+      this.currentMinute = diff - this.currentHour * 60;
+      console.log(this.currentHour);
+      console.log(this.currentMinute);
+    }
   }
 
   onAssetSelection() {

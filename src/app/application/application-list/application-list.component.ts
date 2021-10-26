@@ -166,7 +166,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         }),
         app_specific_db: new FormControl(false),
         database_settings: new FormGroup({}),
-        app_specific_schema: new FormControl(true),
+        app_specific_schema: new FormControl(false),
         app_telemetry_specific_schema: new FormControl(false),
         partition: new FormGroup({
           telemetry: new FormGroup({

@@ -7,7 +7,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-dev": "ng build --configuration production --output-path=dist/kempaas-dev",
+    "build-qa": "ng build --configuration test --output-path=dist/kempaas-test && ng build --configuration indygo --output-path=dist/indygo",
+    "build-prod": "ng build --configuration sopan --output-path=dist/sopan && ng build --configuration kirloskar --output-path=dist/kirloskar && ng build --configuration rogers --output-path=dist/rogers && ng build --configuration kempass-prod --output-path=dist/kempass-prod"
   },
   "private": true,
   "dependencies": {

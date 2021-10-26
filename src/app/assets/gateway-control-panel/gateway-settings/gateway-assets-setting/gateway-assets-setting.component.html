@@ -97,14 +97,6 @@
             </ng-container>
             <table class="table table-hover" *ngIf="asset?.metadata">
               <tbody>
-                <!-- <tr>
-                  <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
-                  <td>
-                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                      [(ngModel)]="asset.metadata.telemetry_mode_settings.normal_mode_frequency"
-                      name="frequency_in_normal" placeholder="Frequency">
-                  </td>
-                </tr> -->
                 <tr>
                   <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
                   <td>
@@ -145,15 +137,6 @@
                       name="g3_frequency_in_normal" placeholder="Frequency">
                   </td>
                 </tr>
-
-                <!-- <tr>
-                  <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
-                  <td>
-                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                      [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_frequency"
-                      name="frequency_in_turbo" placeholder="Frequency">
-                  </td>
-                </tr> -->
                 <tr>
                   <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
                   <td>
@@ -162,7 +145,6 @@
                       name="g3_frequency_in_turbo" placeholder="Frequency">
                   </td>
                 </tr>
-
                 <tr>
                   <td>Turbo mode Timeout (In Sec): </td>
                   <td>

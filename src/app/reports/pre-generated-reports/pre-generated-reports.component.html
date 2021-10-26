@@ -42,7 +42,7 @@
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
         (click)="reports = [];currentOffset = 0;getReportsData(true)"><i class="fa fa-search fa-sm"></i></button>
     </div>
-    <div class="form-group">
+    <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
       <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom"
         tooltip="Configure New PreGenerated Report"><i class="fa fa-cog fa-sm text-white"></i></button>
     </div>
@@ -88,7 +88,7 @@
               <td>{{reportObj.metadata?.file_size}}</td>
               <td>
                 <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
-                  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Excel"><i
+                  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><i
                     class="fa fa-sm fa-download"></i></a>
                 <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
                 </ng-container>
@@ -259,7 +259,7 @@
               <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="reportsObj.report_type"
                 name="report_type">
                 <option [ngValue]="undefined">Select Report Type</option>
-                <option [ngValue]="'Raw'">RAW</option>
+                <option [ngValue]="'Raw'">Raw</option>
                 <option [ngValue]="'Sampling'">Sampling</option>
               </select>
             </div>

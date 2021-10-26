@@ -111,11 +111,11 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   addSMSRecipient(index) {
     if ($('#recipientsms_' + index).is(':invalid')) {
-      this.toasterService.showError('Please enter valid number', 'Add SMS No');
+      this.toasterService.showError('Please enter valid user mobile number to receive SMS', 'Add SMS No');
       return;
     }
     if (!this.recipientsms[index]) {
-      this.toasterService.showError('Phone Number is required', 'Add SMS No');
+      this.toasterService.showError('User mobile number is required to receive SMS', 'Add SMS No');
     } else {
       if (!this.isAddUserGroup) {
         if (this.userGroups[index].recipients['sms'].includes(this.recipientsms[index].e164Number)) {
@@ -152,11 +152,11 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   addWhatsappRecipient(index) {
     if ($('#recipientwhatsapp_' + index).is(':invalid')) {
-      this.toasterService.showError('Please enter valid number', 'Add Whatsapp No');
+      this.toasterService.showError('Please enter valid user mobile number to receive Whatsapp', 'Add Whatsapp No');
       return;
     }
     if (!this.recipientwhatsapp[index]) {
-      this.toasterService.showError('Whatsapp No is required', 'Add Whatsapp No');
+      this.toasterService.showError('User mobile number is required to receive Whatsapp', 'Add Whatsapp No');
     } else {
       if (!this.isAddUserGroup) {
         if (this.userGroups[index].recipients['whatsapp'].includes(this.recipientwhatsapp[index].e164Number)) {
@@ -207,6 +207,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   onCreateUserGroup() {
+    if (!this.groupObj.recipients['emails'] || this.groupObj.recipients['emails'].length === 0) {
+      this.toasterService.showError('At least one email address is required', 'Create User Group');
+      return;
+    }
     this.isCreateUserGroupAPILoading = true;
     this.apiSubscriptions.push(
       this.applicationService.createApplicationUserGroups(this.groupObj, this.applicationData.app).subscribe(
@@ -225,6 +229,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   onUpdateUserGroups() {
+    if (!this.appObj.recipients['emails'] || this.appObj.recipients['emails'].length === 0) {
+      this.toasterService.showError('At least one email address is required', 'Update User Group');
+      return;
+    }
     this.isUpdateUserGroupsLoading = true;
     this.apiSubscriptions.push(
       this.applicationService

@@ -65,9 +65,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="slaveObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{(slaveObj.id ? 'Update' : 'Add') +
-          (mainSelectedTab === 'slaves' ? ' Source / Slave / Sensor' : (mainSelectedTab === 'slave positions' ? 'Slave
-          Positions' : 'Slave Categories'))}} </h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{(slaveObj.id ? 'Update ' : 'Add ') +
+          (mainSelectedTab === 'slaves' ? 'Source / Slave / Sensor' : (mainSelectedTab === 'slave positions' ? 'Slave
+          Position' : 'Slave Category'))}} </h5>
         <button type="button" class="close" [disabled]="isCreateSlaveAPILoading" (click)="onCloseModal('addSlaveModal')"
           aria-label="Close">
           <span aria-hidden="true">&times;</span>

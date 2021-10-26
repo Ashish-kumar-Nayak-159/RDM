@@ -15,6 +15,9 @@ export class Rule {
     updated_by: string;
     created_by: string;
     rule_type?: boolean;
+    rule_code?: any;
+    metadata?: any;
+    condition?: any;
     type?: string;
     actions?: any;
 

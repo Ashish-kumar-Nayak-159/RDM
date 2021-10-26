@@ -21,6 +21,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   selectedTab: any;
   isAddRule = false;
+  isCloneRule = false;
   isEdit = false;
   ruleData: any;
   isDeleteRuleLoading = false;
@@ -46,12 +47,22 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   addRule() {
     this.selectedTab = '';
     this.isEdit = false;
+    this.isCloneRule = false;
     this.ruleData = {};
     this.isAddRule = true;
   }
 
+  cloneRule() {
+    this.selectedTab = '';
+    this.isEdit = false;
+    this.isAddRule = false;
+    this.ruleData = {};
+    this.isCloneRule = true;
+  }
+
   onClickOfTab(type) {
     this.isAddRule = false;
+    this.isCloneRule = false;
     this.selectedTab = type;
     this.toggleRows = {};
     this.getRules();
@@ -236,6 +247,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
 
   onCloseRuleModel(event) {
     this.isAddRule = false;
+    this.isCloneRule = false;
     if (event.status) {
       this.onClickOfTab('Cloud');
     }

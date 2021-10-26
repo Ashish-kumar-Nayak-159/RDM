@@ -18,13 +18,18 @@
           <i class="fa fa-fw fa-plus"></i>
           Add</a>
       </li>
+      <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('RKPIM') > -1">
+        <a class="nav-link" (click)="cloneRule()" href="javascript:void(0)" [ngClass]="{'active': isCloneRule }">
+          <i class="fa fa-fw fa-clone"></i>
+          Clone</a>
+      </li>
     </ul>
   </div>
 </div>
 
-<div class="table-responsive" *ngIf="isAddRule">
+<div class="table-responsive">
   <div class="tableFixHead">
-    <div>
+    <div *ngIf="isAddRule">
       <div class="tab-bar">
         Enter below details to create a cloud or edge rule.
       </div>
@@ -32,10 +37,16 @@
         (onCloseRuleModel)="onCloseRuleModel($event)">
       </app-add-rule>
     </div>
-  </div>
-</div>
+    <div *ngIf="isCloneRule">
+      <div class="tab-bar">
+        Select a existing rule to clone.
+      </div>
+      <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit" [isClone]="isCloneRule" [ruleData]="ruleData"
+        (onCloseRuleModel)="onCloseRuleModel($event)">
+      </app-add-rule>
+    </div>
 
-<div *ngIf="!isAddRule">
+<div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
   <accordion [closeOthers]="'true'" class="mb-2 p-3">
     <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'" [isOpen]="true">
       <ng-container accordion-heading>
@@ -232,6 +243,8 @@
     </accordion-group>
   </accordion>
 
+</div>
+</div>
 </div>
 
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

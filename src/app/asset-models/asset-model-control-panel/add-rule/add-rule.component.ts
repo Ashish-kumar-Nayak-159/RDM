@@ -21,6 +21,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
+  @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
@@ -32,6 +33,8 @@ export class AddRuleComponent implements OnInit {
   alertConditionList: any[] = [];
   isUpdateApiCall = false;
   selectedAlertCondition: AlertCondition = new AlertCondition();
+  rules: any[] = [];
+  selectedRule: Rule = new Rule();
   title = 'Create';
   operatorList = [
     { id: 'GREATEROREQUAL', value: '>=' },
@@ -87,6 +90,9 @@ export class AddRuleComponent implements OnInit {
     } else {
       this.getAlertConditions('Cloud');
     }
+    if (this.isClone) {
+      this.getRules();
+    }
     this.getApplicationUserGroups();
   }
 
@@ -98,6 +104,89 @@ export class AddRuleComponent implements OnInit {
         }
       })
     );
+  }
+
+  getRules() {
+    this.rules = [];
+    let method;
+    if (this.asset) {
+      const obj: any = {};
+      obj.type = 'Cloud';
+      obj.source = 'Asset';
+      method = this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj);
+    } else {
+      const asset_model = this.asset ? this.asset.tags.asset_model : this.name;
+      const obj: any = {};
+      obj.type = 'Cloud';
+      method = this.assetModelService.getRules(this.contextApp.app, asset_model, obj);
+    }
+
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.rules = response.data;
+          }
+        }
+      )
+    );
+  }
+
+  onChangeOfRule() {
+    const rule = this.rules.find(
+      (rule) => rule.code === this.ruleModel.rule_code
+    );
+    this.selectedRule = rule;
+    this.cloneData();
+  }
+
+  cloneData() {
+    this.ruleModel.name = this.selectedRule.name;
+    this.ruleModel.operator = this.selectedRule.operator;
+    this.ruleModel.code = this.selectedRule.code;
+    this.ruleModel.description = this.selectedRule.description;
+    this.ruleModel.aggregation_window_in_sec = this.selectedRule.aggregation_window_in_sec;
+    this.ruleModel.alert_condition_id = this.selectedRule.alert_condition_id;
+    this.ruleModel.condition_str = this.selectedRule.metadata.condition_str;
+    if (this.selectedRule.type === 'Edge') {
+      this.ruleModel.conditions = JSON.parse(this.selectedRule.metadata.conditions);
+    } else {
+      this.ruleModel.conditions = this.selectedRule.condition;
+    }
+    this.ruleModel.created_by = this.selectedRule.created_by;
+    this.ruleModel.escalation_time_in_sec = this.selectedRule.escalation_time_in_sec;
+    this.ruleModel.properties = this.selectedRule.properties;
+    this.ruleModel.aggregation_enabled = this.selectedRule.aggregation_enabled;
+    this.ruleModel.updated_by = this.selectedRule.updated_by;
+    this.ruleModel.rule_type = this.selectedRule.type === 'Edge' ? true : false;
+    this.getAlertConditions(this.selectedRule.type);
+    if (!this.selectedRule.actions || Object.keys(this.selectedRule.actions).length === 0) {
+      this.ruleModel.actions = {
+        alert_management: { enabled: false, alert_condition_code: '' },
+        notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
+        asset_control: { enabled: false, disable: false },
+      };
+    } else {
+      this.ruleModel.actions = this.selectedRule.actions;
+    }
+    if (!this.ruleModel.actions.alert_management) {
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+    }
+    if (!this.ruleModel.actions.alert_management.alert_condition_code) {
+      this.ruleModel.actions.alert_management.alert_condition_code = null;
+    }
+    if (!this.ruleModel.actions.notification) {
+      this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
+    }
+    if (!this.ruleModel.actions.notification.email) {
+      this.ruleModel.actions.notification.email = { subject: null, body: null, groups: [] };
+    }
+    if (!this.ruleModel.actions.notification.email.groups) {
+      this.ruleModel.actions.notification.email.groups = [];
+    }
+    if (!this.ruleModel.actions.asset_control) {
+      this.ruleModel.actions.asset_control = { enabled: false, disable: false };
+    }
   }
 
   configureData() {

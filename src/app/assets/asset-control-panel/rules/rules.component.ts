@@ -25,6 +25,7 @@ export class RulesComponent implements OnInit {
   subscriptions: Subscription[] = [];
   selectedTab: any;
   isAddRule = false;
+  isCloneRule = false;
   isEdit = false;
   ruleData: any;
   isDeleteRuleLoading = false;
@@ -47,17 +48,28 @@ export class RulesComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.onTabClick('Cloud');
     this.isAddRule = false;
+    this.isCloneRule = false;
   }
 
   addRule() {
     this.selectedTab = '';
     this.isEdit = false;
+    this.isCloneRule = false;
     this.ruleData = {};
     this.isAddRule = true;
   }
 
+  cloneRule() {
+    this.selectedTab = '';
+    this.isEdit = false;
+    this.isAddRule = false;
+    this.ruleData = {};
+    this.isCloneRule = true;
+  }
+
   onTabClick(type) {
     this.isAddRule = false;
+    this.isCloneRule = false;
     this.selectedTab = type;
     this.toggleRows = {};
     this.getRules();
@@ -117,6 +129,7 @@ export class RulesComponent implements OnInit {
 
   onCloseRuleModel(event) {
     this.isAddRule = false;
+    this.isCloneRule = false;
     if (event.status) {
       this.onTabClick('Cloud');
     }

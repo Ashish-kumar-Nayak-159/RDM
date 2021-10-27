@@ -100,13 +100,11 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
 
         this.y1AxisProps.forEach((prop) => {
-          // console.log(obj[prop.json_key], '====', prop.json_key);
           if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
             newObj[prop.json_key] = obj[prop.json_key];
           }
         });
         this.y2AxisProps.forEach((prop) => {
-          console.log(obj[prop.json_key], '====', prop.json_key);
           if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
             newObj[prop.json_key] = obj[prop.json_key];
           }

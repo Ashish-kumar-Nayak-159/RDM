@@ -92,22 +92,18 @@ export class HierarchyDropdownComponent implements OnInit {
       this.originalAssets.forEach((asset) => {
         let trueFlag = 0;
         let flaseFlag = 0;
-        console.log(hierarchyObj);
         Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          console.log(asset.hierarchy[hierarchyKey], '======', hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             trueFlag++;
           } else {
             flaseFlag++;
           }
         });
-        console.log(asset.asset_id, '===', trueFlag, '=====', flaseFlag);
         if (trueFlag > 0 && flaseFlag === 0) {
           arr.push(asset);
         }
       });
       this.assets = JSON.parse(JSON.stringify(arr));
-      console.log(this.assets);
     }
     if (this.showAsset) {
       if (this.assets?.length === 1) {
@@ -162,13 +158,9 @@ export class HierarchyDropdownComponent implements OnInit {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
-    console.log(this.hierarchyArr);
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
         this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        console.log(this.configureHierarchy);
-        console.log(level);
-        console.log(this.contextApp.user.hierarchy);
         if (this.contextApp.user.hierarchy[level]) {
           this.onChangeOfHierarchy(index);
         }
@@ -193,7 +185,6 @@ export class HierarchyDropdownComponent implements OnInit {
   }
 
   updateHierarchyDetail(hierarchyObj) {
-    console.log(hierarchyObj);
     if (hierarchyObj.hierarchy) {
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -210,7 +201,6 @@ export class HierarchyDropdownComponent implements OnInit {
       this.filterObj.asset = hierarchyObj.assets;
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     }
-    console.log(this.filterObj);
     if (!this.showAsset) {
       this.hierarchyString = this.contextApp.app;
       this.displayHierarchyString = this.contextApp.app;
@@ -220,8 +210,6 @@ export class HierarchyDropdownComponent implements OnInit {
           this.displayHierarchyString = this.configureHierarchy[key];
         }
       });
-      console.log(this.hierarchyString);
-      console.log(this.displayHierarchyString);
     }
   }
 }

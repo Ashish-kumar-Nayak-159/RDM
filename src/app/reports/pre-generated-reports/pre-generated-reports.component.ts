@@ -144,6 +144,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
+        this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;
@@ -423,6 +424,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
+    this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   getTileName() {

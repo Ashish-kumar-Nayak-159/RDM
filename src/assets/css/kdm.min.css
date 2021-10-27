@@ -14295,11 +14295,11 @@ table.display tbody tr:hover > .sorting_1 {
   margin-right: 0.25rem;
 }
 
-.selection-page-scroll { 
-  margin-top: 3.5rem; 
-  height:calc(100vh - 5.2rem); 
-  overflow-y:auto; 
-  overflow-x: hidden; 
+.selection-page-scroll {
+  margin-top: 3.5rem;
+  height:calc(100vh - 5.2rem);
+  overflow-y:auto;
+  overflow-x: hidden;
 }
 /*
 .icon::before {
@@ -14502,7 +14502,7 @@ table.display tbody tr:hover > .sorting_1 {
 
 .daterangepicker {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  max-height: 70%;
+  max-height: 55%;
   overflow-y: auto;
 }
 

@@ -63,7 +63,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     };
     this.telemetryFilter.aggregation_format = 'COUNT';
     this.telemetryFilter.aggregation_minutes = 1;
-
     this.telemetryFilter.count = 10;
     this.telemetryFilter.epoch = true;
     this.originalTelemetryFilter = { ...this.telemetryFilter };
@@ -84,6 +83,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
+        this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
         this.selectedDateRange = this.telemetryFilter.dateOption;
       } else {
         this.telemetryFilter.from_date = item.from_date;
@@ -166,6 +166,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
+      filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
@@ -297,6 +298,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   selectedDate(filterObj) {
     this.telemetryFilter.from_date = filterObj.from_date;
     this.telemetryFilter.to_date = filterObj.to_date;
+    this.telemetryFilter.last_n_secs = filterObj.last_n_secs;
     this.telemetryFilter.dateOption = filterObj.dateOption;
   }
 
@@ -310,6 +312,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
+      this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.telemetryFilter.dateOption;
     } else {
       this.telemetryFilter.from_date = this.telemetryFilter.from_date;

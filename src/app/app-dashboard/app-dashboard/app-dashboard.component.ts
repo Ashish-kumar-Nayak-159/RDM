@@ -106,19 +106,34 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    await this.getAssets(this.contextApp.user.hierarchy);
-    this.onTabChange();
+
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-      this.historicalDateFilter.dateOption = 'Last 30 Mins';
-      this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-      this.historicalDateFilter.to_date = moment().utc().unix();
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaa     ', JSON.stringify(item));
+      this.historicalDateFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historicalDateFilter.from_date = dateObj.from_date;
+        this.historicalDateFilter.to_date = dateObj.to_date;
+        this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      } else {
+        this.historicalDateFilter.from_date = item.from_date;
+        this.historicalDateFilter.to_date = item.to_date;
+        this.historicalDateFilter.last_n_secs = undefined;
+      }
+      console.log('aaaaaaaaaaabbbbbbbb     ', JSON.stringify(this.historicalDateFilter));
+
+      // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      // this.historicalDateFilter.to_date = moment().utc().unix();
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
       this.historicalDateFilter.widgets = [];
       this.selectedDateRange = this.historicalDateFilter.dateOption;
       this.historicalDateFilter.type = true;
       this.historicalDateFilter.sampling_format = 'minute';
       this.historicalDateFilter.sampling_time = 1;
     }
-
+    await this.getAssets(this.contextApp.user.hierarchy);
+    this.onTabChange();
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
@@ -177,27 +192,31 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    if (this.filterObj.from_date && this.filterObj.to_date) {
+    if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
       // this.onChangeOfAsset(this.filterObj.asset);
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
-        this.filterObj.from_date,
-        this.filterObj.to_date
+        this.historicalDateFilter.from_date,
+        this.historicalDateFilter.to_date
       );
+      console.log(records);
       if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.filterObj.isTypeEditable = true;
+        this.historicalDateFilter.isTypeEditable = true;
       } else {
-        this.filterObj.isTypeEditable = false;
+        this.historicalDateFilter.isTypeEditable = false;
       }
+      console.log(this.historicalDateFilter.isTypeEditable);
     }
   }
 
-  loadFromCache() {
+  async loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     console.log(item);
     if (item) {
-      this.hierarchyDropdown.updateHierarchyDetail(item);
+      this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
+        this.filterObj.asset = item.assets;
+        await this.onChangeOfAsset();
         this.onFilterSelection(this.filterObj, false, true);
       }
     }
@@ -296,6 +315,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.assets = response.data;
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
+              this.onChangeOfAsset();
             }
           }
           resolve1();
@@ -482,9 +502,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(filterObj) {
+    console.log('1111111111    ', JSON.stringify(this.historicalDateFilter));
     this.historicalDateFilter.from_date = filterObj.from_date;
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
+    this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
+    console.log('2222222    ', JSON.stringify(this.historicalDateFilter));
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -546,16 +569,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isFilterSelected = false;
       return;
     }
-    if (updateFilterObj) {
-      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
-      pagefilterObj['assets'] = filterObj.asset;
-      console.log(pagefilterObj);
-      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    }
-    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
-    this.isTelemetryDataLoading = true;
-    await this.getAssetData();
     if (
       !this.contextApp?.dashboard_config &&
       !this.contextApp?.dashboard_config?.show_live_widgets &&
@@ -565,6 +578,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         show_live_widgets: true,
       };
     }
+    if (updateFilterObj && this.contextApp?.dashboard_config?.show_live_widgets) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+      pagefilterObj['assets'] = filterObj.asset;
+      console.log(pagefilterObj);
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    }
+    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
+    this.isTelemetryDataLoading = true;
+    await this.getAssetData();
     if (asset_model) {
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getTelemetryMode(this.filterObj.asset.asset_id);
@@ -613,16 +636,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
+          last_n_secs: undefined,
         };
-        const now = moment().utc().unix();
         if (this.historicalDateFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
+          obj.last_n_secs = this.historicalDateFilter.last_n_secs;
         } else {
           obj.from_date = this.historicalDateFilter.from_date;
           obj.to_date = this.historicalDateFilter.to_date;
         }
+
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {
             const itemobj = {
@@ -650,6 +675,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const now = moment().utc().unix();
     obj.from_date = midnight;
     obj.to_date = now;
+    obj.last_n_secs = obj.to_date - obj.from_date;
     obj.app = this.contextApp.app;
     obj.partition_key = this.filterObj.asset.partition_key;
     delete obj.assetArr;
@@ -774,6 +800,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // filterObj.message_props = '';
     filterObj.from_date = null;
     filterObj.to_date = null;
+    filterObj.last_n_secs = null;
     const propArr = [];
     this.propertyList.forEach((propObj) => {
       this.propList.forEach((prop) => {
@@ -805,12 +832,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const now = moment().utc().unix();
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+      console.log(dateObj);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
+      filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;
     } else {
       filterObj.from_date = this.historicalDateFilter.from_date;
       filterObj.to_date = this.historicalDateFilter.to_date;
     }
+    console.log(JSON.stringify(this.historicalDateFilter));
+
     // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
     // filterObj.to_date = now;
     let method;
@@ -821,11 +852,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   this.isFilterSelected = false;
     //   return;
     // }
-    const record = this.commonService.calculateEstimatedRecords(
-      this.frequency,
-      this.filterObj.from_date,
-      this.filterObj.to_date
-    );
+    const record = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
     if (record > CONSTANTS.NO_OF_RECORDS && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -833,6 +860,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isFilterSelected = false;
       return;
     }
+    const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    console.log('breofreeeeee          ', JSON.stringify(pagefilterObj));
+    pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+    pagefilterObj['assets'] = filterObj.asset;
+    pagefilterObj['from_date'] = filterObj.from_date;
+    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
+    pagefilterObj['to_date'] = filterObj.to_date;
+    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
+    pagefilterObj['dateOption'] = this.historicalDateFilter.dateOption;
+    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
+    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
     const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
     filterObj.partition_key = asset.partition_key;
     delete filterObj.count;

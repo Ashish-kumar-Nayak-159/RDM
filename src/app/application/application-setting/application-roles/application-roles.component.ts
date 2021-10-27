@@ -76,6 +76,16 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   }
 
   onSaveRoles() {
+    let i = 0;
+    Object.keys(this.privilegeObj.privileges).forEach((privilege) => {
+      if (this.privilegeObj.privileges[privilege].enabled) {
+        i++;
+      }
+    });
+    if (i === 0) {
+      this.toasterService.showError('At least one privilege is required to save Role', 'Save Role');
+      return;
+    }
     this.saveRoleAPILoading = true;
     const method = this.privilegeObj.id
       ? this.applicationService.updateUserRoles(this.applicationData.app, this.privilegeObj)

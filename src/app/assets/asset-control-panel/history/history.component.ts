@@ -128,6 +128,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.historyFilter.from_date = dateObj.from_date;
         this.historyFilter.to_date = dateObj.to_date;
+        this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.historyFilter.from_date = item.from_date;
         this.historyFilter.to_date = item.to_date;
@@ -245,6 +246,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.from_date = filterObj.from_date;
     this.historyFilter.to_date = filterObj.to_date;
     this.historyFilter.dateOption = filterObj.dateOption;
+    this.historyFilter.last_n_secs = filterObj.last_n_secs;
     const records = this.commonService.calculateEstimatedRecords(
       this.frequency,
       this.historyFilter.from_date,
@@ -284,12 +286,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
+          last_n_secs: undefined,
         };
         const now = moment().utc().unix();
         if (this.historyFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
+          obj.last_n_secs = this.historyFilter.last_n_secs;
         } else {
           obj.from_date = this.historyFilter.from_date;
           obj.to_date = this.historyFilter.to_date;
@@ -343,16 +347,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.app = this.contextApp.app;
       const currentHistoryFilter = { ...this.historyFilter };
 
-      currentHistoryFilter.to_date = this.historyFilter.to_date;
-      currentHistoryFilter.from_date = this.historyFilter.from_date;
+      // currentHistoryFilter.to_date = this.historyFilter.to_date;
+      // currentHistoryFilter.from_date = this.historyFilter.from_date;
 
       if (currentHistoryFilter.dateOption !== 'Custom Range') {
         const dateObj = this.commonService.getMomentStartEndDate(currentHistoryFilter.dateOption);
         currentHistoryFilter.from_date = dateObj.from_date;
         currentHistoryFilter.to_date = dateObj.to_date;
-      } else {
-        currentHistoryFilter.from_date = currentHistoryFilter.from_date;
-        currentHistoryFilter.to_date = currentHistoryFilter.to_date;
       }
       const obj = { ...currentHistoryFilter };
       obj.partition_key = this.asset?.tags?.partition_key;
@@ -568,6 +569,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter = {};
     this.historyFilter.from_date = undefined;
     this.historyFilter.to_date = undefined;
+    this.historyFilter.last_n_secs = undefined;
     this.historyFilter.epoch = true;
     this.historyFilter.asset_id = this.asset.asset_id;
     this.historyFilter.app = this.contextApp.app;
@@ -587,6 +589,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
       this.historyFilter.from_date = dateObj.from_date;
       this.historyFilter.to_date = dateObj.to_date;
+      this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
       this.selectedDateRange =
         moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') +
@@ -619,12 +622,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     const from = this.historyFilter.from_date.unix();
     const to = this.historyFilter.to_date.unix();
-    // if (to - from > 3600) {
-    //   this.historyFilter.isTypeEditable = true;
-    // } else {
-    //   this.historyFilter.type = true;
-    //   this.historyFilter.isTypeEditable = false;
-    // }
     const records = this.commonService.calculateEstimatedRecords(this.frequency, from, to);
     if (records > CONSTANTS.NO_OF_RECORDS) {
       this.historyFilter.isTypeEditable = true;

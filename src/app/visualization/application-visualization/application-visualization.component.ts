@@ -153,6 +153,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
             this.filterObj.from_date = dateObj.from_date;
             this.filterObj.to_date = dateObj.to_date;
+            this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
           } else {
             this.filterObj.from_date = item.from_date;
             this.filterObj.to_date = item.to_date;
@@ -206,6 +207,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
+    this.filterObj.last_n_secs = filterObj.last_n_secs;
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -299,6 +301,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       const now = moment().utc().unix();
       obj.from_date = moment().subtract(24, 'hour').utc().unix();
       obj.to_date = now;
+      obj.last_n_secs = obj.to_date - obj.from_date;
     } else {
       if (!obj.from_date || !obj.to_date) {
         this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
@@ -547,6 +550,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.selectedAlert?.start_event_message_date || this.selectedAlert.timestamp
         ) +
         this.afterInterval * 60;
+      this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
       this.onChangeOfAsset(this.selectedAlert);
     }
   }
@@ -775,12 +779,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
+          last_n_secs: undefined,
         };
         const now = moment().utc().unix();
         if (this.filterObj.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
+          obj.last_n_secs = this.filterObj.last_n_secs;
         } else {
           obj.from_date = this.filterObj.from_date;
           obj.to_date = this.filterObj.to_date;
@@ -834,6 +840,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // filterObj.message_props = '';
     filterObj.from_date = null;
     filterObj.to_date = null;
+    filterObj.last_n_secs = null;
     const propArr = [];
     this.propertyList.forEach((propObj) => {
       this.propList.forEach((prop) => {
@@ -885,6 +892,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       );
       return;
     }
+    filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
     let method;
     // this.onChangeOfAsset(filterObj.asset_id);
     const record = this.commonService.calculateEstimatedRecords(

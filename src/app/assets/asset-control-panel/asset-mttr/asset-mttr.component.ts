@@ -88,6 +88,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     this.filterObj.dateOption = 'This Month';
     this.filterObj.from_date = moment().startOf('month').utc().unix();
     this.filterObj.to_date = moment().endOf('month').utc().unix();
+    this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
@@ -110,6 +111,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
+    this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   clear() {
@@ -128,6 +130,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
       this.selectedDateRange = this.filterObj.dateOption;
+      this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
       this.selectedDateRange =
         moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
@@ -145,6 +148,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
+      filterObj.last_n_secs = filterObj.last_n_secs;
     } else {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;

@@ -43,7 +43,6 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.filterObj.count) {
       this.filterObj.count = 10;
     }
-
     this.originalFilterObj = {};
     this.originalFilterObj = { ...this.filterObj };
   }
@@ -64,6 +63,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
+    this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   search() {
@@ -84,6 +84,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
+      this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
       this.selectedDateRange =
         moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +

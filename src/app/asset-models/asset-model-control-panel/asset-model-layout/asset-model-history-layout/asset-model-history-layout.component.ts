@@ -24,9 +24,6 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
-import { kill } from 'process';
-import { type } from '@amcharts/amcharts4/core';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 
@@ -255,7 +252,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         if (prop.data_type === 'Object') {
           arr.push({
             json_key: prop.json_key,
-            type: type,
+            type: prop.type,
           });
         } else {
           flag = true;

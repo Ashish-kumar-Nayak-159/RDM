@@ -275,7 +275,7 @@ export class DamagePlotChartComponent implements OnInit {
           series.propKey = prop.json_key;
           // series.xAxis = axis;
           series.stroke = color;
-          series.yAxis = chart.yAxes.getIndex(0);
+          series.yAxis = valueYAxis;
           series.dataFields.valueX = 'frequency' + index;
           series.dataFields.valueY = prop.json_key + '_' + index;
           // series.groupFields.valueY = 'value';
@@ -295,13 +295,13 @@ export class DamagePlotChartComponent implements OnInit {
             series.hiddenInLegend = true;
           }
           count++;
-          series.tensionX = 0.6;
+          series.tensionX = 0.999999999999;
           // series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
 
           // series.tooltipText = 'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY}[/]';
           const bullet = series.bullets.push(new am4charts.CircleBullet());
           bullet.strokeWidth = 2;
-          bullet.circle.radius = 1.5;
+          bullet.circle.radius = 0.00001;
           bullet.tooltipText =
             'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY} {units}[/]';
           // chart.cursor.snapToSeries = series;

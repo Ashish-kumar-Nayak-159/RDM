@@ -17,6 +17,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   applications: any[] = [];
   partitionConfigs: any[] = [];
   isApplicationListLoading = false;
+  isPartitionConfigLoading = false;
   isCreateAPILoading = false;
   blobSASToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
@@ -104,7 +105,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     this.databaseTableConfig = {
       type: 'Database Table Partition',
-      is_table_data_loading: this.isApplicationListLoading,
+      is_table_data_loading: this.isPartitionConfigLoading,
       no_data_message: '',
       data: [
         {
@@ -237,7 +238,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   openPartitionIconModal(app) {
     this.selectedApp = app;
     console.log(this.selectedApp);
-    this.DatabasePartitionConfig();
+    this.databasePartitionConfig();
     $('#viewPartitionIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -255,8 +256,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  DatabasePartitionConfig() {
-    this.isApplicationListLoading = true;
+  databasePartitionConfig() {
+    this.isPartitionConfigLoading = true;
     this.databaseTableConfig.is_table_data_loading = true;
     this.partitionConfigs = [];
     const obj = {
@@ -268,11 +269,11 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           if (response && response.data) {
             this.partitionConfigs = response.data;
           }
-          this.isApplicationListLoading = false;
+          this.isPartitionConfigLoading = false;
           this.databaseTableConfig.is_table_data_loading = false;
         },
         () => {
-          this.isApplicationListLoading = false;
+          this.isPartitionConfigLoading = false;
           this.databaseTableConfig.is_table_data_loading = false;
         }
       )

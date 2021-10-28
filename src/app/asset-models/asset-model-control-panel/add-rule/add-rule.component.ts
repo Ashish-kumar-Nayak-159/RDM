@@ -136,61 +136,15 @@ export class AddRuleComponent implements OnInit {
     const rule = this.rules.find(
       (rule) => rule.code === this.ruleModel.rule_code
     );
-    this.selectedRule = rule;
-    this.cloneData();
-  }
-
-  cloneData() {
-    this.ruleModel.name = this.selectedRule.name;
-    this.ruleModel.operator = this.selectedRule.operator;
-    this.ruleModel.code = this.selectedRule.code;
-    this.ruleModel.description = this.selectedRule.description;
-    this.ruleModel.aggregation_window_in_sec = this.selectedRule.aggregation_window_in_sec;
-    this.ruleModel.alert_condition_id = this.selectedRule.alert_condition_id;
-    this.ruleModel.condition_str = this.selectedRule.metadata.condition_str;
-    if (this.selectedRule.type === 'Edge') {
-      this.ruleModel.conditions = JSON.parse(this.selectedRule.metadata.conditions);
-    } else {
-      this.ruleModel.conditions = this.selectedRule.condition;
-    }
-    this.ruleModel.created_by = this.selectedRule.created_by;
-    this.ruleModel.escalation_time_in_sec = this.selectedRule.escalation_time_in_sec;
-    this.ruleModel.properties = this.selectedRule.properties;
-    this.ruleModel.aggregation_enabled = this.selectedRule.aggregation_enabled;
-    this.ruleModel.updated_by = this.selectedRule.updated_by;
-    this.ruleModel.rule_type = this.selectedRule.type === 'Edge' ? true : false;
-    this.getAlertConditions(this.selectedRule.type);
-    if (!this.selectedRule.actions || Object.keys(this.selectedRule.actions).length === 0) {
-      this.ruleModel.actions = {
-        alert_management: { enabled: false, alert_condition_code: '' },
-        notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
-        asset_control: { enabled: false, disable: false },
-      };
-    } else {
-      this.ruleModel.actions = this.selectedRule.actions;
-    }
-    if (!this.ruleModel.actions.alert_management) {
-      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
-    }
-    if (!this.ruleModel.actions.alert_management.alert_condition_code) {
-      this.ruleModel.actions.alert_management.alert_condition_code = null;
-    }
-    if (!this.ruleModel.actions.notification) {
-      this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
-    }
-    if (!this.ruleModel.actions.notification.email) {
-      this.ruleModel.actions.notification.email = { subject: null, body: null, groups: [] };
-    }
-    if (!this.ruleModel.actions.notification.email.groups) {
-      this.ruleModel.actions.notification.email.groups = [];
-    }
-    if (!this.ruleModel.actions.asset_control) {
-      this.ruleModel.actions.asset_control = { enabled: false, disable: false };
-    }
+    this.ruleData = rule;
+    delete this.ruleData.rule_id;
+    this.configureData();
   }
 
   configureData() {
-    this.ruleModel.rule_id = this.ruleData.rule_id;
+    if (this.ruleData.rule_id) {
+      this.ruleModel.rule_id = this.ruleData.rule_id;
+    }
     this.ruleModel.name = this.ruleData.name;
     this.ruleModel.operator = this.ruleData.operator;
     this.ruleModel.code = this.ruleData.code;

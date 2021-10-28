@@ -15,7 +15,8 @@
           <th>Name</th>
           <th>Description</th>
           <th>JSON Key</th>
-          <th>Value</th>
+          <th>Last Value</th>
+          <th>Historical Data</th>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +34,9 @@
               <td>{{kpi.description}}</td>
               <td>{{kpi.kpi_json_key}}</td>
               <td>{{kpi.kpi_result}}</td>
+              <td><a href="javascript:void(0)" (click)="onToggleRows(i)" class="mr-1" placement="bottom" tooltip="View">
+                  <i class="fa fa-fw fa-eye"></i>
+                </a></td>
             </tr>
             <tr *ngIf="toggleRows[i]" style="background-color:#fdfeff;">
               <td colspan="7">
@@ -58,12 +62,12 @@
         </ng-container>
         <ng-container *ngIf="isderivedKPILoading">
           <tr>
-            <td colspan="7"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+            <td colspan="8"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="!isderivedKPILoading && derivedKPIs.length === 0">
           <tr>
-            <td colspan="7"> No Derived KPIs added.</td>
+            <td colspan="8"> No Derived KPIs added.</td>
           </tr>
         </ng-container>
       </tbody>

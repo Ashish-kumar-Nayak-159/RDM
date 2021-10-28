@@ -85,6 +85,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.heartBeatFilter.from_date = dateObj.from_date;
         this.heartBeatFilter.to_date = dateObj.to_date;
+        this.heartBeatFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.heartBeatFilter.from_date = item.from_date;
         this.heartBeatFilter.to_date = item.to_date;

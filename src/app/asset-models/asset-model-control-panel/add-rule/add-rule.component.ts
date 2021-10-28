@@ -122,20 +122,16 @@ export class AddRuleComponent implements OnInit {
     }
 
     this.subscriptions.push(
-      method.subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.rules = response.data;
-          }
+      method.subscribe((response: any) => {
+        if (response?.data) {
+          this.rules = response.data;
         }
-      )
+      })
     );
   }
 
   onChangeOfRule() {
-    const rule = this.rules.find(
-      (rule) => rule.code === this.ruleModel.rule_code
-    );
+    const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
     this.ruleData = rule;
     delete this.ruleData.rule_id;
     this.configureData();
@@ -207,17 +203,17 @@ export class AddRuleComponent implements OnInit {
       response.properties.edge_derived_properties = response.properties.edge_derived_properties
         ? response.properties.edge_derived_properties
         : [];
-      response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-        ? response.properties.cloud_derived_properties
-        : [];
+      // response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+      //   ? response.properties.cloud_derived_properties
+      //   : [];
       response.properties.edge_derived_properties.forEach((prop) => {
         prop.type = 'Edge Derived Properties';
         this.propertyList.push(prop);
       });
-      response.properties.cloud_derived_properties.forEach((prop) => {
-        prop.type = 'Cloud Derived Properties';
-        this.propertyList.push(prop);
-      });
+      // response.properties.cloud_derived_properties.forEach((prop) => {
+      //   prop.type = 'Cloud Derived Properties';
+      //   this.propertyList.push(prop);
+      // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
         this.dropdownPropList.push({

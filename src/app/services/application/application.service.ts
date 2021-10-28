@@ -60,6 +60,16 @@ export class ApplicationService {
     );
   }
 
+  getDatabasePartition(obj) {
+    let params = new HttpParams();
+    Object.keys(obj).forEach((key) => {
+      if (obj[key]) {
+        params = params.set(key, obj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_DBPARTITION, { params });
+  }
+
   getApplicationDetail(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, encodeURIComponent(app)));
   }

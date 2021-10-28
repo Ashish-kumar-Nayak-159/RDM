@@ -5,6 +5,24 @@
     {{ruleData.deployed_by}}.</p>
   <p *ngIf="ruleData.synced_on">This rule is last deployed on {{ruleData.local_synced_on}} by
     {{ruleData.synced_by}}.</p>
+  <div *ngIf="isClone">
+      <div class="form-group row">
+        <label for="exampleEmail" class="h6 col-2 pl-3 required">Rule</label>
+        <div class="col-6">
+          <ng-select [items]="rules" class="custom-dropdown w-75 sm" name="rules"
+            [clearable]="false" [searchable]="true" bindLabel="name" [disabled]="isView"
+            [closeOnSelect]="true" placeholder="Select Rule" groupBy="type"
+            (change)="onChangeOfRule()" dropdownPosition="bottom" name="rules-dropdown"
+            bindValue="code" [(ngModel)]="ruleModel.rule_code" required>
+            <ng-template ng-option-tmp let-item="item">
+              <span [tooltip]="item.code + ' - ' + item.name">
+                {{item.code}} - {{item.name}}
+              </span>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+  </div>
   <accordion class="mb-2" [closeOthers]="'true'">
     <accordion-group heading="" [panelClass]="'customClass modelRuleAccordion'">
       <ng-container accordion-heading>

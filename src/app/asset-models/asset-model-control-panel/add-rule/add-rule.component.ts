@@ -21,6 +21,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
+  @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
@@ -32,6 +33,8 @@ export class AddRuleComponent implements OnInit {
   alertConditionList: any[] = [];
   isUpdateApiCall = false;
   selectedAlertCondition: AlertCondition = new AlertCondition();
+  rules: any[] = [];
+  selectedRule: Rule = new Rule();
   title = 'Create';
   operatorList = [
     { id: 'GREATEROREQUAL', value: '>=' },
@@ -87,6 +90,9 @@ export class AddRuleComponent implements OnInit {
     } else {
       this.getAlertConditions('Cloud');
     }
+    if (this.isClone) {
+      this.getRules();
+    }
     this.getApplicationUserGroups();
   }
 
@@ -100,8 +106,45 @@ export class AddRuleComponent implements OnInit {
     );
   }
 
+  getRules() {
+    this.rules = [];
+    let method;
+    if (this.asset) {
+      const obj: any = {};
+      obj.type = 'Cloud';
+      obj.source = 'Asset';
+      method = this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj);
+    } else {
+      const asset_model = this.asset ? this.asset.tags.asset_model : this.name;
+      const obj: any = {};
+      obj.type = 'Cloud';
+      method = this.assetModelService.getRules(this.contextApp.app, asset_model, obj);
+    }
+
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.rules = response.data;
+          }
+        }
+      )
+    );
+  }
+
+  onChangeOfRule() {
+    const rule = this.rules.find(
+      (rule) => rule.code === this.ruleModel.rule_code
+    );
+    this.ruleData = rule;
+    delete this.ruleData.rule_id;
+    this.configureData();
+  }
+
   configureData() {
-    this.ruleModel.rule_id = this.ruleData.rule_id;
+    if (this.ruleData.rule_id) {
+      this.ruleModel.rule_id = this.ruleData.rule_id;
+    }
     this.ruleModel.name = this.ruleData.name;
     this.ruleModel.operator = this.ruleData.operator;
     this.ruleModel.code = this.ruleData.code;

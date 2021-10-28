@@ -212,3 +212,24 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="viewPartitionIconModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="overflow-y: hidden;">
+  <div class="modal-dialog modal-lg my-3" role="document">
+    <div class="modal-content" *ngIf="selectedApp">
+      <div class="modal-header">
+        <h5 class="modal-title">Database Partition: {{selectedApp.app}}</h5>
+        <button type="button" class="close" (click)="onCloseCreateAppModal('viewPartitionIconModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0" style="overflow-y: hidden;">
+        <app-common-data-table [tableData]="partitionConfigs" [tableConfig]="databaseTableConfig"></app-common-data-table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCloseCreateAppModal('viewPartitionIconModal')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

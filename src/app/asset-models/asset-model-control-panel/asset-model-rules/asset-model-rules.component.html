@@ -19,6 +19,12 @@
           <i class="fa fa-fw fa-plus"></i>
           Add</a>
       </li>
+      <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1">
+        <a class="nav-link" (click)="cloneRule()" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
+          [ngClass]="{'active': isCloneRule }">
+          <i class="fa fa-fw fa-clone"></i>
+          Clone</a>
+      </li>
     </ul>
   </div>
 </div>
@@ -33,7 +39,14 @@
       <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [ruleData]="ruleData"
         (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
     </div>
-    <div *ngIf="!isAddRule">
+    <div *ngIf="isCloneRule">
+      <div class="tab-bar">
+        Select a existing rule to clone.
+      </div>
+      <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isClone]="isCloneRule" [ruleData]="ruleData"
+        (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
+    </div>
+    <div *ngIf="!isAddRule && !isCloneRule">
       <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>
 
       <table class="table table-hover">

@@ -15,12 +15,15 @@ declare var $: any;
 })
 export class ApplicationListComponent implements OnInit, OnDestroy {
   applications: any[] = [];
+  partitionConfigs: any[] = [];
   isApplicationListLoading = false;
+  isPartitionConfigLoading = false;
   isCreateAPILoading = false;
   blobSASToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
+  databaseTableConfig: any;
   selectedApp: any;
   createApplicationForm: FormGroup;
   constructor(private applicationService: ApplicationService, private toasterService: ToasterService) {}
@@ -87,11 +90,56 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
               valueclass: '',
               tooltip: 'View',
             },
+            {
+              icon: 'fa fa-fw fa-table',
+              text: '',
+              id: 'Partition',
+              valueclass: '',
+              tooltip: 'Database Partition',
+            }
           ],
         },
       ],
     };
     this.searchApplications();
+
+    this.databaseTableConfig = {
+      type: 'Database Table Partition',
+      is_table_data_loading: this.isPartitionConfigLoading,
+      no_data_message: '',
+      data: [
+        {
+          header_name: 'Table Name',
+          value_type: 'string',
+          data_type: 'text',
+          data_key: 'table_name',
+        },
+        {
+          header_name: 'Partition Column',
+          value_type: 'string',
+          data_type: 'text',
+          data_key: 'partition_column',
+        },
+        {
+          header_name: 'Partition Strategy Label',
+          value_type: 'string',
+          data_type: 'text',
+          data_key: 'partition_strategy_label',
+        },
+        {
+          header_name: 'Sub Partition Column',
+          value_type: 'string',
+          data_type: 'text',
+          data_key: 'sub_partition_column',
+        },
+        {
+          header_name: 'Sub Partition Strategy Label',
+          value_type: 'string',
+          data_type: 'text',
+          data_key: 'sub_partition_strategy_label',
+        },
+      ],
+    };
   }
 
   searchApplications() {
@@ -121,6 +169,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   onTableFunctionCall(obj) {
     if (obj.for === 'View') {
       this.openViewIconModal(obj.data);
+    }
+    if (obj.for === 'Partition') {
+      this.openPartitionIconModal(obj.data);
     }
   }
 
@@ -184,9 +235,18 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  openPartitionIconModal(app) {
+    this.selectedApp = app;
+    console.log(this.selectedApp);
+    this.databasePartitionConfig();
+    $('#viewPartitionIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
   onCloseCreateAppModal(modalId) {
     $('#' + modalId).modal('hide');
-    this.createApplicationForm.reset();
+    if (modalId === 'createAppModal') {
+      this.createApplicationForm.reset();
+    }
   }
 
   checkDatabaseConfigOption(a, b, c) {
@@ -194,6 +254,30 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     if (!a && b && !c) return true;
     if (!a && !b && c) return true;
     return false;
+  }
+
+  databasePartitionConfig() {
+    this.isPartitionConfigLoading = true;
+    this.databaseTableConfig.is_table_data_loading = true;
+    this.partitionConfigs = [];
+    const obj = {
+      app: this.selectedApp.app,
+    };
+    this.apiSubscriptions.push(
+      this.applicationService.getDatabasePartition(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.partitionConfigs = response.data;
+          }
+          this.isPartitionConfigLoading = false;
+          this.databaseTableConfig.is_table_data_loading = false;
+        },
+        () => {
+          this.isPartitionConfigLoading = false;
+          this.databaseTableConfig.is_table_data_loading = false;
+        }
+      )
+    );
   }
 
   async createApp() {

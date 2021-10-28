@@ -6,22 +6,21 @@
   <p *ngIf="ruleData.synced_on">This rule is last deployed on {{ruleData.local_synced_on}} by
     {{ruleData.synced_by}}.</p>
   <div *ngIf="isClone">
-      <div class="form-group row">
-        <label for="exampleEmail" class="h6 col-2 pl-3 required">Rule</label>
-        <div class="col-6">
-          <ng-select [items]="rules" class="custom-dropdown w-75 sm" name="rules"
-            [clearable]="false" [searchable]="true" bindLabel="name" [disabled]="isView"
-            [closeOnSelect]="true" placeholder="Select Rule" groupBy="type"
-            (change)="onChangeOfRule()" dropdownPosition="bottom" name="rules-dropdown"
-            bindValue="code" [(ngModel)]="ruleModel.rule_code" required>
-            <ng-template ng-option-tmp let-item="item">
-              <span [tooltip]="item.code + ' - ' + item.name">
-                {{item.code}} - {{item.name}}
-              </span>
-            </ng-template>
-          </ng-select>
-        </div>
+    <div class="form-group row">
+      <label for="exampleEmail" class="h6 col-2 pl-3 required">Rule</label>
+      <div class="col-6">
+        <ng-select [items]="rules" class="custom-dropdown w-75 sm" name="rules" [clearable]="false" [searchable]="true"
+          bindLabel="name" [disabled]="isView" [closeOnSelect]="true" placeholder="Select Rule" groupBy="type"
+          (change)="onChangeOfRule()" dropdownPosition="bottom" name="rules-dropdown" bindValue="code"
+          [(ngModel)]="ruleModel.rule_code" required>
+          <ng-template ng-option-tmp let-item="item">
+            <span [tooltip]="item.code + ' - ' + item.name">
+              {{item.code}} - {{item.name}}
+            </span>
+          </ng-template>
+        </ng-select>
       </div>
+    </div>
   </div>
   <accordion class="mb-2" [closeOthers]="'true'">
     <accordion-group heading="" [panelClass]="'customClass modelRuleAccordion'">
@@ -174,7 +173,7 @@
                                                     {{prop.id}}</option>
                                             </select> -->
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" required name="telemetry_{{i}}"
-                  [clearable]="false" [searchable]="true" bindLabel="id" [disabled]="isView" [closeOnSelect]="true"
+                  [clearable]="false" [searchable]="true" bindLabel="id" *ngIf="!isView" [closeOnSelect]="true"
                   placeholder="Select Property" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
                   bindValue="json_key" [(ngModel)]="condition.property" required>
                   <ng-template ng-option-tmp let-item="item">
@@ -185,6 +184,8 @@
                     </span>
                   </ng-template>
                 </ng-select>
+                <span class="form-control form-control-sm w-auto" *ngIf="isView">{{getPropertyName(condition.property)
+                  || condition.property}}</span>
               </div>
               <div class="col-auto">
                 <label for="exampleEmail" class="mb-2 required">Operator</label>

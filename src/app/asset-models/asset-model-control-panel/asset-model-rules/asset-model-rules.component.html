@@ -43,8 +43,8 @@
       <div class="tab-bar">
         Select a existing rule to clone.
       </div>
-      <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isClone]="isCloneRule" [ruleData]="ruleData"
-        (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
+      <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isClone]="isCloneRule"
+        [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
     </div>
     <div *ngIf="!isAddRule && !isCloneRule">
       <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>
@@ -77,8 +77,10 @@
                 <td>{{rule.name}}</td>
                 <td>{{rule.code}}</td>
                 <td>{{rule.local_updated_date}}</td>
-                <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
-                <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on}}</td>
+                <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on ? rule.local_deployed_on :
+                  'Not yet delployed'}}</td>
+                <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
+                  'Not yet synced'}}</td>
                 <!-- <td>{{rule.description}}</td> -->
                 <!-- <td>{{rule.type}}</td> -->
                 <td>

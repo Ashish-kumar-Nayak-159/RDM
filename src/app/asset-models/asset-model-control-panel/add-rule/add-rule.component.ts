@@ -227,6 +227,10 @@ export class AddRuleComponent implements OnInit {
     });
   }
 
+  getPropertyName(id) {
+    return this.propertyList.find((prop) => prop.json_key === id)?.name;
+  }
+
   getAlertConditions(alert_type) {
     let obj = {
       asset_model: this.asset ? this.asset.tags.asset_model : this.name,

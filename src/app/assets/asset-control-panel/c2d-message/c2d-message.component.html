@@ -42,7 +42,7 @@
         </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
           <tr>
-            <td colspan="6">No commands issued in {{this.previousMsgFilter.dateOption}}. <p
+            <td colspan="7">No commands issued in {{this.previousMsgFilter.dateOption}}. <p
                 *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You
                 can choose large time window.</p>
               <ng-template #differentMsg>
@@ -53,12 +53,12 @@
         </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
           <tr>
-            <td colspan="6">Select filter and press search button to load the data.</td>
+            <td colspan="7">Select filter and press search button to load the data.</td>
           </tr>
         </ng-container>
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
-            <td colspan="6">
+            <td colspan="7">
               <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
             </td>
           </tr>

@@ -82,7 +82,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   chart: am4charts.XYChart;
   environmentApp = environment.app;
   originalAssetsList: any[] = [];
-contextAppUserHierarchyLength = 0;
+  contextAppUserHierarchyLength = 0;
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
@@ -439,14 +439,15 @@ contextAppUserHierarchyLength = 0;
     this.tableConfig.is_table_data_loading = true;
     this.isAssetListLoading = true;
     this.isFilterSelected = true;
+    const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     const obj = JSON.parse(JSON.stringify(this.assetFilterObj));
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
     if (this.contextApp) {
       obj.hierarchy = { App: this.contextApp.app };
-      Object.keys(this.configuredHierarchy).forEach((key) => {
-        if (this.configuredHierarchy[key]) {
-          obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+      Object.keys(configuredHierarchy).forEach((key) => {
+        if (configuredHierarchy[key]) {
+          obj.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
         }
       });
       obj.hierarchy = JSON.stringify(obj.hierarchy);

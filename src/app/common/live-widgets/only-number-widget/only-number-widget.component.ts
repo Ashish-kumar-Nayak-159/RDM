@@ -40,6 +40,10 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
+  convertToNumber(value) {
+    return Number(value);
+  }
+
   ngOnChanges(changes) {
     if (changes.telemetryObj) {
       if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {

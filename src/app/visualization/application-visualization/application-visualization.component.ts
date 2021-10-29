@@ -697,6 +697,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.isOpen = true;
     this.beforeInterval = 1.5;
     this.afterInterval = 0.5;
+
     // $('#alertVisualizationModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.isAlertModalDataLoading = true;
     this.y1AxisProps = [];
@@ -708,6 +709,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.sampling_time = 1;
     this.filterObj.aggregation_minutes = 1;
     this.filterObj.aggregation_format = 'AVG';
+    this.onChangeTimeValue();
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(
         this.selectedAlert.metadata.acknowledged_date
@@ -781,16 +783,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           to_date: undefined,
           last_n_secs: undefined,
         };
+        console.log(this.filterObj);
         const now = moment().utc().unix();
-        if (this.filterObj.dateOption !== 'Custom Range') {
-          const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-          obj.from_date = dateObj.from_date;
-          obj.to_date = dateObj.to_date;
-          obj.last_n_secs = this.filterObj.last_n_secs;
-        } else {
-          obj.from_date = this.filterObj.from_date;
-          obj.to_date = this.filterObj.to_date;
-        }
+        obj.from_date = this.filterObj.from_date;
+        obj.to_date = this.filterObj.to_date;
+
         this.derivedKPIHistoricData = [];
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {
@@ -801,8 +798,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             if (itemobj && Object.keys(itemobj).length > 1) {
               this.derivedKPIHistoricData.push(itemobj);
             }
-            // this.derivedKPIHistoricData.reverse();
           });
+          this.derivedKPIHistoricData.reverse();
+          console.log(this.derivedKPIHistoricData);
           // this.derivedKPIHistoricData = response.data;
           resolve1();
         });
@@ -1004,7 +1002,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
           });
           console.log(this.nullValueArr);
-          const telemetryData = response.data;
+          const telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
           this.isChartViewOpen = true;
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
@@ -1012,7 +1010,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
           this.isTelemetryDataLoading = false;
-
+          console.log(JSON.stringify(telemetryData));
           // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.selectedWidgets.forEach((widget) => {

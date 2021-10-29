@@ -71,15 +71,37 @@
 </ng-container>
 <ng-container *ngIf="obj.type?.toLowerCase() === 'enum'">
   <div class="row col-lg-12 p-0">
-    <div class="form-group col-lg-5">
+    <div class="form-group col-lg-4">
       <label for="recipient-name" class="col-form-label">Enum Label:</label>
       <input type="text" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="enumObj.label"
         placeholder="Enum Key">
     </div>
-    <div class="form-group col-lg-5">
+    <div class="form-group col-lg-3">
+      <label for="recipient-name" class="col-form-label">Type:</label>
+      <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="enumObj.data_type">
+        <option [ngValue]="undefined">Select Type</option>
+        <option [ngValue]="'number'">Number</option>
+        <option [ngValue]="'string'">String</option>
+        <option [ngValue]="'boolean'">Boolean</option>
+      </select>
+    </div>
+    <div class="form-group col-lg-3" *ngIf="enumObj.data_type === 'string'">
       <label for="recipient-name" class="col-form-label">Enum Value:</label>
       <input type="text" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
         placeholder="Enum Value">
+    </div>
+    <div class="form-group col-lg-3" *ngIf="enumObj.data_type === 'number'">
+      <label for="recipient-name" class="col-form-label">Enum Value:</label>
+      <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
+        placeholder="Enum Value">
+    </div>
+    <div class="form-group col-lg-3" *ngIf="enumObj.data_type === 'boolean'">
+      <label for="recipient-name" class="col-form-label">Enum Value:</label>
+      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="enumObj.value">
+        <option [ngValue]="undefined">Select Value</option>
+        <option [ngValue]="true">True</option>
+        <option [ngValue]="false">False</option>
+      </select>
     </div>
     <div class="form-group col-lg-2">
       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
@@ -94,7 +116,7 @@
     <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0">
       <ng-container *ngFor="let item of obj.enum; let index = index">
         <span class="tag">
-          <span class="tag-text">{{item.label}}</span>
+          <span class="tag-text">{{item.label}} : {{item.value}}</span>
           <button class="tag-remove" (click)="removeEnumValue(index)"></button>
         </span>
       </ng-container>

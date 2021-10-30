@@ -515,10 +515,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item?.connection_state?.toLowerCase() === 'disconnected'
               ) {
                 item.icon = {
-                  url: './assets/img/iot-assets-red.svg',
+                  url: './assets/img/assets-red.gif',
                   scaledSize: {
-                    width: 35,
-                    height: 35,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (
@@ -538,10 +538,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item?.connection_state?.toLowerCase() === 'disconnected'
               ) {
                 item.icon = {
-                  url: './assets/img/iot-gateways-red.svg',
+                  url: './assets/img/assets-red.gif',
                   scaledSize: {
-                    width: 30,
-                    height: 30,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (this.componentState === this.constantData.NON_IP_ASSET) {
@@ -575,10 +575,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item?.connection_state?.toLowerCase() === 'disconnected'
               ) {
                 item.icon = {
-                  url: './assets/img/iot-assets-red.svg',
+                  url: './assets/img/assets-red.gif',
                   scaledSize: {
-                    width: 35,
-                    height: 35,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (
@@ -598,10 +598,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item?.connection_state?.toLowerCase() === 'disconnected'
               ) {
                 item.icon = {
-                  url: './assets/img/iot-gateways-red.svg',
+                  url: './assets/img/assets-red.gif',
                   scaledSize: {
-                    width: 30,
-                    height: 30,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (this.componentState === this.constantData.NON_IP_ASSET) {

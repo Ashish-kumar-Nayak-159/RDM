@@ -168,10 +168,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     asset?.connection_state?.toLowerCase() === 'disconnected'
                   ) {
                     asset.icon = {
-                      url: './assets/img/iot-assets-red.svg',
+                      url: './assets/img/assets-red.gif',
                       scaledSize: {
-                        width: 35,
-                        height: 35,
+                        width: 20,
+                        height: 20,
                       },
                     };
                   } else if (
@@ -190,10 +190,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     asset?.connection_state?.toLowerCase() === 'disconnected'
                   ) {
                     asset.icon = {
-                      url: './assets/img/iot-gateways-red.svg',
+                      url: './assets/img/assets-red.gif',
                       scaledSize: {
-                        width: 30,
-                        height: 30,
+                        width: 20,
+                        height: 20,
                       },
                     };
                   } else if (asset.type === this.constantData.NON_IP_ASSET) {

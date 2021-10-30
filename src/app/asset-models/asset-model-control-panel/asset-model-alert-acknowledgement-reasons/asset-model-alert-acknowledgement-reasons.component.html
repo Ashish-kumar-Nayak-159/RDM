@@ -36,7 +36,7 @@
         <tr *ngIf="reasonObj">
           <td></td>
           <td class="td-padding"><input type="text" min="1" class="form-control form-control-sm w-50" id="name"
-              placeholder="Add Reason here..." [(ngModel)]="reasonObj.reason" name="name"></td>
+              placeholder="Add Reason *" [(ngModel)]="reasonObj.reason" name="name"></td>
           <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><a
               href="javascript:void(0)" placement="bottom" tooltip="Cancel"
               (click)="reasonObj = undefined; ReasonBtnClicked = false;"><i class="fa fa-times"></i></a>

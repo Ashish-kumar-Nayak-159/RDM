@@ -23,6 +23,11 @@
                 </div>
               </a>
             </div>
+            <div class="card-desc text-center">
+              <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)">
+              <p class="px-3 pt-3 card-desc-height  truncate">{{app.metadata.description ? app.metadata.description: 'This application is designed for tracking industrial assets. Keep a track of your industrial asset data online.'}}</p>
+             </a>
+            </div>
           </div>
         </div>
       </ng-container>

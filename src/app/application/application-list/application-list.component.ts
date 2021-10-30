@@ -215,6 +215,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           name: new FormControl(null),
           address: new FormControl(null),
         }),
+        description: new FormControl(null),
         app_specific_db: new FormControl(false),
         database_settings: new FormGroup({}),
         app_specific_schema: new FormControl(false),
@@ -282,6 +283,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   async createApp() {
     const applicationDetail = this.createApplicationForm.value;
+    // if (!applicationDetail.metadata.description) {
+    //   applicationDetail.metadata.description = 'App Description';
+    // }
     if (
       !applicationDetail.metadata.app_specific_schema &&
       !applicationDetail.metadata.app_specific_db &&

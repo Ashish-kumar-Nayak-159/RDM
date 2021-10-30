@@ -64,6 +64,11 @@
             </div>
           </div>
           <ng-container formGroupName="metadata">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">App Description:</label>
+              <textarea type="text" rows="3" class="form-control form-control-sm" id="app_description"
+                name="app_description" formControlName="description" placeholder="Enter App Description"></textarea>
+            </div>
             <ng-container formGroupName="customer">
               <div class="form-group">
                 <label for="message-text" class="col-form-label">Customer Name:</label>

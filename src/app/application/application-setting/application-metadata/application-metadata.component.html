@@ -43,6 +43,16 @@
         <td>App Name</td>
         <td>{{applicationData?.app}}</td>
       </tr>
+      <tr>
+        <td>App Description</td>
+        <td><ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.description ?
+          applicationData?.metadata?.description : 'This application is designed for tracking industrial assets. Keep a track of your industrial asset data online.'}}</ng-container>
+          <div *ngIf="isMetadataEditable">
+          <input type="text" class="form-control form-control-sm w-75"
+          name="app_description" id="app_description"
+          [(ngModel)]="description" [disabled]="!isMetadataEditable" >
+          </div></td> 
+      </tr>
       <!-- <tr class="bg-white">
       <td>App Admin</td>
       <td>{{applicationData?.admin_email + ' (' + applicationData?.admin_name + ')'}}</td>
@@ -55,7 +65,7 @@
             applicationData?.metadata?.header_logo.name : 'Not yet uploaded'}}</ng-container>
           <!-- <input *ngIf="isMetadataEditable" type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
         class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
-          <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
+          <div class="form-group input-group row col-4 p-0 m-0" *ngIf="isMetadataEditable">
             <div class="file-input form-control form-control-sm p-0 col-8">
               <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file"
                 (change)="onHeaderLogoFileSelected($event.target.files)">
@@ -97,7 +107,7 @@
             applicationData?.metadata?.icon.name : 'Not yet uploaded'}}</ng-container>
           <!-- <input  *ngIf="isMetadataEditable"  type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
         class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
-          <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
+          <div class="form-group input-group row col-4 p-0 m-0" *ngIf="isMetadataEditable">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm p-0 col-8">
               <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file"

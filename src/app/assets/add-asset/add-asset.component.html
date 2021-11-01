@@ -50,7 +50,7 @@
             </select>
           </div>
           <div class="form-group" *ngIf="componentState === constantData.NON_IP_ASSET">
-            <label for="message-text" class="col-form-label">Gateway:</label>
+            <label for="message-text" class="col-form-label required">Gateway:</label>
             <select class="form-control form-control-sm" id="template" name="gateway_id" [(ngModel)]="assetDetail.gateway_id">
               <option [ngValue]="undefined"> Select Gateway</option>
               <option *ngFor="let item of gateways" [ngValue]="item.asset_id">
@@ -67,7 +67,7 @@
             </select>
           </div> -->
           <div class="form-group" *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
-            <label for="recipient-name" class="col-form-label">Partition Key:</label>
+            <label for="recipient-name" class="col-form-label required">Partition Key:</label>
             <input type="text" class="form-control form-control-sm" id="partition_key" name="partition_key"
               [(ngModel)]="assetDetail.tags.partition_key" placeholder="Partition Key">
           </div>

@@ -304,11 +304,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCreateAsset() {
     if (
       !this.assetDetail.asset_id ||
-      !this.assetDetail.tags.asset_manager ||
       !this.assetDetail.tags.display_name ||
-      !this.assetDetail.tags.protocol ||
-      !this.assetDetail.tags.cloud_connectivity ||
+      !this.assetDetail.tags.asset_manager ||
       !this.assetDetail.tags.asset_model
+      // ||
+      // !this.assetDetail.tags.protocol ||
+      // !this.assetDetail.tags.cloud_connectivity
     ) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
       return;

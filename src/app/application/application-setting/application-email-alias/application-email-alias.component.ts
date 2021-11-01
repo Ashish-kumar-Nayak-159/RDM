@@ -207,6 +207,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   onCreateUserGroup() {
+    if (!this.groupObj.group_name) {
+      this.toasterService.showError('User Group Name is Required', 'Create User Group');
+      return;
+    }
     if (!this.groupObj.recipients['emails'] || this.groupObj.recipients['emails'].length === 0) {
       this.toasterService.showError('At least one email address is required', 'Create User Group');
       return;

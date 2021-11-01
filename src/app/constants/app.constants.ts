@@ -418,7 +418,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-cogs',
       visible: true,
       showAccordion: [{ name: 'Title', value: 'Asset Management' }],
-      privileges_required: ['ASMV'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED'],
       priority: 1,
     },
     {
@@ -448,7 +448,7 @@ export class CONSTANTS {
         { name: 'Title', value: 'Reports' },
         { name: 'Records Limit', value: 100, type: 'number' },
       ],
-      privileges_required: ['RV', 'RMV'],
+      privileges_required: ['RV'],
       priority: 1,
     },
 
@@ -497,7 +497,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      privileges_required: ['ASMV'],
+      privileges_required: [],
       accordion_value: {},
     },
     {
@@ -916,7 +916,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-users',
       visible: true,
       isTitle: false,
-      privileges_required: ['ASMV'],
+      privileges_required: [],
       showAccordion: [],
       accordion_value: {},
     },

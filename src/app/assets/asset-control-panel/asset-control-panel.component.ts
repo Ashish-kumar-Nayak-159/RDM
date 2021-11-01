@@ -50,7 +50,9 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getApplicationUsers();
+    if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+      await this.getApplicationUsers();
+    }
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (params.get('assetId')) {

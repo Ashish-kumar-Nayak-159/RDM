@@ -81,7 +81,9 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.getAssetModelWidgets();
     this.onClickOfTab('Edge');
     this.getSlaveData();
-    this.getApplicationUserGroups();
+    if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
+      this.getApplicationUserGroups();
+    }
   }
 
   onClickOfTab(type) {

@@ -19,7 +19,11 @@
           <div class="row" *ngIf="environmentApp !== 'Indygo'">
             <h6>This asset is inherited from asset model
               <a href="javascript:void(0)" class="blue-font"
+                *ngIf="decodedToken?.privileges?.indexOf('ASMMV') > -1; else noModelLinkTemplate"
                 (click)="onRedirectToModel(asset)">({{asset?.tags?.asset_model}})</a>
+              <ng-template #noModelLinkTemplate>
+                ({{asset?.tags?.asset_model}})
+              </ng-template>
             </h6>
           </div>
           <div class="row" *ngIf="componentState === constantData.IP_GATEWAY">
@@ -31,13 +35,13 @@
           <div class="row">
             <h6
               *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'connected'">
-              Currently, {{constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
+              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="enabled-font">
                 {{asset?.status}} & Online.</span>
             </h6>
             <h6
               *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
-              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="enabled-font">
                 {{asset?.status}}</span>, but it is
               <span class="disabled-font">
@@ -45,7 +49,7 @@
             </h6>
             <h6
               *ngIf="asset?.status?.toLowerCase() === 'disabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
-              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="disabled-font">
                 {{asset?.status}} & Offline.</span>
             </h6>

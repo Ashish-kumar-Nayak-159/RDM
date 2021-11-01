@@ -97,11 +97,16 @@ export class AddRuleComponent implements OnInit {
   }
 
   getApplicationUserGroups() {
+    this.userGroups = [];
     this.subscriptions.push(
       this.applicationService.getApplicationUserGroups(this.contextApp.app).subscribe((response: any) => {
         if (response && response.data) {
           this.userGroups = response.data;
         }
+        this.userGroups.splice(0, 0, {
+          group_name: 'Client Field Support',
+        });
+        console.log('userGroups    ', this.userGroups);
       })
     );
   }

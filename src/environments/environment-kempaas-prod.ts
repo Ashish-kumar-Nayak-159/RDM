@@ -12,4 +12,5 @@ export const environment = {
   version: '11.0',
   packageManagementContainer: 'packages',
   storgageSecretKey: '$0p@Ncm$',
+  redirectToLogin: false,
 };

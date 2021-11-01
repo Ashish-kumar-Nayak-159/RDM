@@ -45,7 +45,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getAssetAccessUsers();
+    if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+      this.getAssetAccessUsers();
+    } else {
+      this.selectedTab = 'Recipients';
+    }
   }
 
   onClickOfTab(type) {
@@ -55,7 +59,9 @@ export class AccessControlComponent implements OnInit, OnChanges {
   async ngOnChanges(changes) {
     if (changes.asset) {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-      await this.getApplicationUsers();
+      if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+        await this.getApplicationUsers();
+      }
       this.assetUsers = [];
       if (this.asset?.tags?.recipients) {
         this.assetUsers = this.asset.tags.recipients;

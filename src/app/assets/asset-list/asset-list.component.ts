@@ -85,6 +85,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
   contextAppUserHierarchyLength = 0;
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
+  blobURL = environment.blobURL;
+  blobToken = environment.blobKey;
   constructor(
     private router: Router,
     private assetService: AssetService,
@@ -564,10 +566,14 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item?.connection_state?.toLowerCase() === 'connected'
               ) {
                 item.icon = {
-                  url: './assets/img/iot-assets-green.svg',
+                  url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+                    ? this.blobURL +
+                      this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                      this.blobToken
+                    : './assets/img/iot-assets-green.svg',
                   scaledSize: {
-                    width: 35,
-                    height: 35,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (
@@ -589,8 +595,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item.icon = {
                   url: './assets/img/iot-gateways-green.svg',
                   scaledSize: {
-                    width: 30,
-                    height: 30,
+                    width: 20,
+                    height: 20,
                   },
                 };
               } else if (
@@ -606,10 +612,14 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 };
               } else if (this.componentState === this.constantData.NON_IP_ASSET) {
                 item.icon = {
-                  url: './assets/img/legacy-assets.svg',
+                  url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+                    ? this.blobURL +
+                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                      this.blobToken
+                    : './assets/img/legacy-assets.svg',
                   scaledSize: {
-                    width: 25,
-                    height: 25,
+                    width: 20,
+                    height: 20,
                   },
                 };
               }

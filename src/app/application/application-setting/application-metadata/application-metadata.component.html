@@ -45,13 +45,15 @@
       </tr>
       <tr>
         <td>App Description</td>
-        <td><ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.description ?
-          applicationData?.metadata?.description : 'This application is designed for tracking industrial assets. Keep a track of your industrial asset data online.'}}</ng-container>
+        <td>
+          <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.description ?
+            applicationData?.metadata?.description : 'This application is designed to track assets & its data.'}}
+          </ng-container>
           <div *ngIf="isMetadataEditable">
-          <input type="text" class="form-control form-control-sm w-75"
-          name="app_description" id="app_description"
-          [(ngModel)]="description" [disabled]="!isMetadataEditable" >
-          </div></td> 
+            <input type="text" class="form-control form-control-sm w-75" name="app_description" id="app_description"
+              [(ngModel)]="description" [disabled]="!isMetadataEditable">
+          </div>
+        </td>
       </tr>
       <!-- <tr class="bg-white">
       <td>App Admin</td>
@@ -71,8 +73,8 @@
                 (change)="onHeaderLogoFileSelected($event.target.files)">
               <label for="header_logo" class="overflow-text"
                 [tooltip]="applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : ''">
-                {{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : 'Choose
-                File'}}</label>
+                {{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name
+                : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
               <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file">

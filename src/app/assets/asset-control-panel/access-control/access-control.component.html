@@ -109,7 +109,7 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="addUserForm">
-          <div class="form-group">
+          <div class="form-group" *ngIf="decodedToken?.privileges?.indexOf('UMV') > -1">
             <label for="recipient-name" class="col-form-label required">User:</label>
             <select class="form-control form-control-sm" id="user" name="user" formControlName="userObj"
               (change)="onUserSelectionChange()">

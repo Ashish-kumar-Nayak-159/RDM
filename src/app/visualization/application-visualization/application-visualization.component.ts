@@ -274,6 +274,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.latestAlerts = [];
     this.isAlertAPILoading = true;
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    let configuredHierarchy = this.configuredHierarchy;
     if (this.pageType === 'history') {
       if (this.filterObj.dateOption !== 'Custom Range') {
         const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
@@ -283,12 +284,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.filterObj.from_date = this.filterObj.from_date;
         this.filterObj.to_date = this.filterObj.to_date;
       }
+    } else {
+      configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     }
     const obj = { ...this.filterObj };
     obj.hierarchy = { App: this.contextApp.app };
-    Object.keys(this.configuredHierarchy).forEach((key) => {
-      if (this.configuredHierarchy[key]) {
-        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+    Object.keys(configuredHierarchy).forEach((key) => {
+      if (configuredHierarchy[key]) {
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
       }
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
@@ -421,10 +424,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getAlertConditions() {
     return new Promise<void>((resolve, reject) => {
+      console.log(this.selectedAsset);
       const filterObj = {
         app: this.contextApp.app,
         asset_id: this.selectedAlert.asset_id,
-        asset_model: this.selectedAsset.asset_model,
+        asset_model: this.selectedAsset.asset_model || this.selectedAsset?.tags?.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id),
       };
       this.alertCondition = undefined;
@@ -720,6 +724,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
+    console.log(this.selectedAlert);
+    console.log(this.originalAssets);
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
     // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();

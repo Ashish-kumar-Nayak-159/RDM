@@ -270,19 +270,19 @@ export class TagsComponent implements OnInit, OnDestroy {
   updateAssetTags() {
     this.isUpdateAPILoading = true;
     const tagObj = {};
-    if (this.asset.tags?.custom_tags) {
-      Object.keys(this.asset.tags?.custom_tags).forEach((customTag) => {
-        let flag = false;
-        this.assetCustomTags.forEach((tag) => {
-          if (tag.name === customTag) {
-            flag = true;
-          }
-        });
-        if (!flag) {
-          tagObj[customTag] = null;
-        }
-      });
-    }
+    // if (this.asset.tags?.custom_tags) {
+    //   Object.keys(this.asset.tags?.custom_tags).forEach((customTag) => {
+    //     let flag = false;
+    //     this.assetCustomTags.forEach((tag) => {
+    //       if (tag.name === customTag) {
+    //         flag = true;
+    //       }
+    //     });
+    //     if (!flag) {
+    //       tagObj[customTag] = null;
+    //     }
+    //   });
+    // }
     this.assetCustomTags.forEach((tag) => {
       if (tag.name && tag.value) {
         tagObj[tag.name] = tag.value;
@@ -332,13 +332,13 @@ export class TagsComponent implements OnInit, OnDestroy {
   deleteAllAssetTags(event) {
     if (event === 'save') {
       this.isUpdateAPILoading = true;
-      const tagObj = {};
-      this.assetCustomTags.forEach((tag) => {
-        if (tag.name && tag.value) {
-          tagObj[tag.name] = null;
-        }
-      });
-      this.asset.tags.custom_tags = JSON.stringify(tagObj);
+      // const tagObj = {};
+      // this.assetCustomTags.forEach((tag) => {
+      //   if (tag.name && tag.value) {
+      //     tagObj[tag.name] = null;
+      //   }
+      // });
+      this.asset.tags.custom_tags = JSON.stringify({});
       // (Object.keys(this.asset.tags)).forEach(key => {
       //   if (this.tagsListToNotDelete.indexOf(key) === -1 && key !== 'custom_tags') {
       //     this.asset.tags[key] = null;

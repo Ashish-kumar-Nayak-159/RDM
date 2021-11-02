@@ -99,8 +99,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         name: new FormControl(null, [Validators.required, Validators.nullValidator]),
         email: new FormControl(null, [Validators.required, Validators.nullValidator]),
         metadata: new FormGroup({
-          sms_no: new FormControl(null),
-          whatsapp_no: new FormControl(null),
+          sms: new FormControl(null),
+          whatsapp: new FormControl(null),
         }),
         role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
       });
@@ -115,8 +115,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         name: new FormControl(userObj.user_name, [Validators.required, Validators.nullValidator]),
         email: new FormControl(userObj.user_email, [Validators.required, Validators.nullValidator]),
         metadata: new FormGroup({
-          sms_no: new FormControl(userObj.metadata?.sms_no || null),
-          whatsapp_no: new FormControl(userObj.metadata?.whatsapp_no || null),
+          sms: new FormControl(userObj.metadata?.sms || null),
+          whatsapp: new FormControl(userObj.metadata?.whatsapp || null),
         }),
         role: new FormControl(userObj.role, [Validators.required]),
       });
@@ -216,19 +216,19 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.addUserObj?.metadata?.sms_no) {
-      if ($('#sms_no').is(':invalid')) {
+    if (this.addUserObj?.metadata?.sms) {
+      if ($('#sms').is(':invalid')) {
         this.toasterService.showError('Please enter valid number', 'Add SMS No');
         return;
       }
-      this.addUserObj.metadata.sms_no = this.addUserObj.metadata.sms_no.e164Number;
+      this.addUserObj.metadata.sms = this.addUserObj.metadata.sms.e164Number;
     }
-    if (this.addUserObj?.metadata?.whatsapp_no) {
-      if ($('#whatsapp_no').is(':invalid')) {
+    if (this.addUserObj?.metadata?.whatsapp) {
+      if ($('#whatsapp').is(':invalid')) {
         this.toasterService.showError('Please enter valid number', 'Add Whatsapp No');
         return;
       }
-      this.addUserObj.metadata.whatsapp_no = this.addUserObj.metadata.whatsapp_no.e164Number;
+      this.addUserObj.metadata.whatsapp = this.addUserObj.metadata.whatsapp.e164Number;
     }
     this.isCreateUserAPILoading = true;
     const method = this.addUserObj.id

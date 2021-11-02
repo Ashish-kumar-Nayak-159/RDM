@@ -30,13 +30,13 @@
             </ng-container>
             <div class="row col-md-12">
               <div class="col-12  my-2 accordion-padding">
-                <p *ngIf="userGroup?.recipients?.emails?.length === 0" class="mb-0"> No Email Recipients added yet.
+                <p *ngIf="userGroup?.recipients?.email?.length === 0" class="mb-0"> No Email Recipients added yet.
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
                     tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
                   <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
                 </p>
-                <p *ngIf="userGroup?.recipients?.emails?.length > 0;" class="mb-0"> Following Email Recipients have been
+                <p *ngIf="userGroup?.recipients?.email?.length > 0;" class="mb-0"> Following Email Recipients have been
                   added so far. You can add more.
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
@@ -60,9 +60,9 @@
                   </ng-container>
                 </div>
               </div>
-              <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.emails?.length > 0">
+              <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.email?.length > 0">
                 <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                  <ng-container *ngFor="let user of userGroup?.recipients?.emails; let index = index">
+                  <ng-container *ngFor="let user of userGroup?.recipients?.email; let index = index">
                     <span class="tag">
                       <span class="tag-text">{{user}}</span>
                       <button class="tag-remove"
@@ -230,9 +230,9 @@
               </ng-container>
             </div>
           </div>
-          <div class="my-2" *ngIf="groupObj?.recipients?.emails?.length > 0">
+          <div class="my-2" *ngIf="groupObj?.recipients?.email?.length > 0">
             <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-              <ng-container *ngFor="let user of groupObj?.recipients?.emails; let index = index">
+              <ng-container *ngFor="let user of groupObj?.recipients?.email; let index = index">
                 <span class="tag">
                   <span class="tag-text">{{user}}</span>
                   <button class="tag-remove"

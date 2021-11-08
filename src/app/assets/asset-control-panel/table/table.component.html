@@ -1,21 +1,22 @@
-
-  <table  class="table table-hover" >
-    <thead>
-      <tr >
-        <th>No</th>
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}" [ngClass]="{'w-2': i === 0 && !item.key,
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}"
+        [ngClass]="{'w-2': i === 0 && !item.key,
         'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 1), 'w-35': item.name === 'Timestamp'}">
-          {{item.name}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
-        <tr *ngFor="let data of tableData; let i = index;" [ngClass]="{'bg-danger text-white': tableConfig.type === 'alert'
+        {{item.name}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
+      <tr *ngFor="let data of tableData; let i = index;" [ngClass]="{'bg-danger text-white': tableConfig.type === 'alert'
         && data?.severity?.toLowerCase() === 'critical'}">
-          <td>{{i + 1}}</td>
-          <td *ngFor="let header of tableConfig?.data" >
-            <ng-container *ngIf="header.key">
-              <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
+        <td>{{i + 1}}</td>
+        <td *ngFor="let header of tableConfig?.data">
+          <ng-container *ngIf="header.key">
+            <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'"
+              [style.color]="
                 (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
@@ -26,13 +27,19 @@
           <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
             <i class="fa fa-fw fa-eye" placement="left" tooltip="View {{tableConfig?.type}} message"
               [style.color]="(tableConfig.type === 'alert'  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
-            </a>
-          </td>
-        </tr>
-      </ng-container>
+          </a>
+        </td>
+      </tr>
+    </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
-        <td colspan="7">No {{tableConfig.type}} data found <span *ngIf="tableConfig.hasOwnProperty('dateRange')">for {{tableConfig.dateRange}}. <p *ngIf="tableConfig.dateRange !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></span></td>
+        <td colspan="7">No {{tableConfig.type}} data found <span *ngIf="tableConfig.hasOwnProperty('dateRange')">for
+            {{tableConfig.dateRange}}. <p *ngIf="tableConfig.dateRange !== 'this selected range'; else differentMsg"
+              class="pt-2">You can choose large time window.</p>
+            <ng-template #differentMsg>
+              <p class="pt-2">You can choose different time window.</p>
+            </ng-template>
+          </span></td>
       </tr>
     </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">
@@ -48,4 +55,4 @@
       </tr>
     </ng-container>
   </tbody>
-  </table>
+</table>

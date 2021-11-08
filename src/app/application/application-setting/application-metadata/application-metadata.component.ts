@@ -21,7 +21,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @ViewChild('iconFileInput') iconFileInput: ElementRef;
   isMetadataEditable = false;
   decodedToken: any;
-  description: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -33,9 +32,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    if (this.applicationData.metadata.description) {
-        this.description = this.applicationData.metadata.description;
-    }
   }
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
@@ -77,7 +73,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   onSaveMetadata() {
     this.saveMetadataAPILoading = true;
     this.applicationData.id = this.applicationData.app;
-    this.applicationData.metadata.description = this.description;
     this.apiSubscriptions.push(
       this.applicationService.updateApp(this.applicationData).subscribe(
         (response: any) => {

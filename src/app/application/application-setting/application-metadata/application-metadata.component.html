@@ -51,7 +51,7 @@
           </ng-container>
           <div *ngIf="isMetadataEditable">
             <input type="text" class="form-control form-control-sm w-75" name="app_description" id="app_description"
-              [(ngModel)]="description" [disabled]="!isMetadataEditable">
+            [(ngModel)]="this.applicationData.metadata.description" [disabled]="!isMetadataEditable" >
           </div>
         </td>
       </tr>

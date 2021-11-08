@@ -36,6 +36,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   countryISO = CountryISO;
   userRoles: any = [];
   addUserForm: FormGroup;
+  rolesList: any = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -56,10 +57,24 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   getApplicationUserRoles() {
+    let userLevel;
     this.apiSubscriptions.push(
       this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe((response: any) => {
         if (response && response.data) {
-          this.userRoles = response.data;
+          // this.userRoles = response.data;
+          response.data.map((role)=>{
+            if(role.role == this.applicationData.user.role){
+              userLevel = role.level;
+            }
+          })
+          response.data.map((role)=>{
+            if(role.level >= userLevel){
+              this.userRoles.push(role)
+              this.rolesList.push(role.role);
+            }
+          })
+          console.log('userRoles ',this.userRoles)
+          console.log('this.applicationData ',this.applicationData)
         }
       })
     );
@@ -99,10 +114,11 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         name: new FormControl(null, [Validators.required, Validators.nullValidator]),
         email: new FormControl(null, [Validators.required, Validators.nullValidator]),
         metadata: new FormGroup({
-          sms_no: new FormControl(null),
-          whatsapp_no: new FormControl(null),
+          sms: new FormControl(null),
+          whatsapp: new FormControl(null),
         }),
-        role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
+        // role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
+        role : new FormControl(this.applicationData.user.role,[Validators.required])
       });
       this.addUserObj.app = this.applicationData.app;
       this.configureHierarchy = {};
@@ -115,8 +131,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         name: new FormControl(userObj.user_name, [Validators.required, Validators.nullValidator]),
         email: new FormControl(userObj.user_email, [Validators.required, Validators.nullValidator]),
         metadata: new FormGroup({
-          sms_no: new FormControl(userObj.metadata?.sms_no || null),
-          whatsapp_no: new FormControl(userObj.metadata?.whatsapp_no || null),
+          sms: new FormControl(userObj.metadata?.sms || null),
+          whatsapp: new FormControl(userObj.metadata?.whatsapp || null),
         }),
         role: new FormControl(userObj.role, [Validators.required]),
       });
@@ -216,19 +232,19 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.addUserObj?.metadata?.sms_no) {
-      if ($('#sms_no').is(':invalid')) {
+    if (this.addUserObj?.metadata?.sms) {
+      if ($('#sms').is(':invalid')) {
         this.toasterService.showError('Please enter valid number', 'Add SMS No');
         return;
       }
-      this.addUserObj.metadata.sms_no = this.addUserObj.metadata.sms_no.e164Number;
+      this.addUserObj.metadata.sms = this.addUserObj.metadata.sms.e164Number;
     }
-    if (this.addUserObj?.metadata?.whatsapp_no) {
-      if ($('#whatsapp_no').is(':invalid')) {
+    if (this.addUserObj?.metadata?.whatsapp) {
+      if ($('#whatsapp').is(':invalid')) {
         this.toasterService.showError('Please enter valid number', 'Add Whatsapp No');
         return;
       }
-      this.addUserObj.metadata.whatsapp_no = this.addUserObj.metadata.whatsapp_no.e164Number;
+      this.addUserObj.metadata.whatsapp = this.addUserObj.metadata.whatsapp.e164Number;
     }
     this.isCreateUserAPILoading = true;
     const method = this.addUserObj.id

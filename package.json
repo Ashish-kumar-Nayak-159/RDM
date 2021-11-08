@@ -10,7 +10,14 @@
     "e2e": "ng e2e",
     "build-dev": "ng build --configuration production --output-path=dist/kempaas-dev",
     "build-qa": "ng build --configuration test --output-path=dist/kempaas-test && ng build --configuration indygo --output-path=dist/indygo",
-    "build-prod": "ng build --configuration sopan --output-path=dist/sopan && ng build --configuration kirloskar --output-path=dist/kirloskar && ng build --configuration rogers --output-path=dist/rogers && ng build --configuration kempass-prod --output-path=dist/kempass-prod"
+    "build-qa-only": "ng build --configuration test --output-path=dist/kempaas-test",
+    "build-indygo-qa": "ng build --configuration indygo --output-path=dist/indygo",
+    "build-prod": "ng build --configuration sopan --output-path=dist/sopan && ng build --configuration kirloskar --output-path=dist/kirloskar && ng build --configuration rogers --output-path=dist/rogers && ng build --configuration telawne --output-path=dist/MyEquipos && ng build --configuration kempaas-prod --output-path=dist/kempaas-prod",
+    "build-prod-only": "ng build --configuration kempaas-prod --output-path=dist/kempaas-prod",
+    "build-sopan": "ng build --configuration sopan --output-path=dist/sopan",
+    "build-kirloskar": "ng build --configuration kirloskar --output-path=dist/kirloskar",
+    "build-rogers": "ng build --configuration rogers --output-path=dist/rogers",
+    "build-telawne": "ng build --configuration telawne --output-path=dist/MyEquipos"
   },
   "private": true,
   "dependencies": {

@@ -1,5 +1,5 @@
+import { environment } from 'src/environments/environment';
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
-import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
@@ -28,6 +28,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   healthyAssetCount = 0;
   unhealthyAssetCount = 0;
   environmentApp = environment.app;
+  blobURL = environment.blobURL;
+  blobToken = environment.blobKey;
   activeCircle = 'all';
   mapFitBounds = false;
   zoom = undefined;
@@ -99,7 +101,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.isGetAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: this.environmentApp === 'SopanCMS' ? CONSTANTS.NON_IP_ASSET : undefined,
+        type:
+          this.environmentApp === 'SopanCMS'
+            ? CONSTANTS.NON_IP_ASSET
+            : CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
         map_content: true
       };
       if (this.environmentApp === 'SopanCMS') {
@@ -130,10 +135,14 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     asset?.connection_state?.toLowerCase() === 'connected'
                   ) {
                     asset.icon = {
-                      url: './assets/img/iot-assets-green.svg',
+                      url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+                        ? this.blobURL +
+                          this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                          this.blobToken
+                        : './assets/img/iot-assets-green.svg',
                       scaledSize: {
-                        width: 35,
-                        height: 35,
+                        width: 20,
+                        height: 20,
                       },
                     };
                   } else if (
@@ -154,8 +163,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     asset.icon = {
                       url: './assets/img/iot-gateways-green.svg',
                       scaledSize: {
-                        width: 30,
-                        height: 30,
+                        width: 20,
+                        height: 20,
                       },
                     };
                   } else if (
@@ -171,10 +180,14 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     };
                   } else if (asset.type === this.constantData.NON_IP_ASSET) {
                     asset.icon = {
-                      url: './assets/img/legacy-assets.svg',
+                      url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+                        ? this.blobURL +
+                          this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                          this.blobToken
+                        : './assets/img/legacy-assets.svg',
                       scaledSize: {
-                        width: 25,
-                        height: 25,
+                        width: 20,
+                        height: 20,
                       },
                     };
                   }

@@ -45,7 +45,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getAssetAccessUsers();
+    if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+      this.getAssetAccessUsers();
+    } else {
+      this.selectedTab = 'Recipients';
+    }
   }
 
   onClickOfTab(type) {
@@ -55,7 +59,9 @@ export class AccessControlComponent implements OnInit, OnChanges {
   async ngOnChanges(changes) {
     if (changes.asset) {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-      await this.getApplicationUsers();
+      if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+        await this.getApplicationUsers();
+      }
       this.assetUsers = [];
       if (this.asset?.tags?.recipients) {
         this.assetUsers = this.asset.tags.recipients;
@@ -105,15 +111,15 @@ export class AccessControlComponent implements OnInit, OnChanges {
       this.addUserForm.patchValue({
         name: user.user_name,
         email: user.user_email,
-        sms_no: user?.metadata?.sms_no,
-        whatsapp_no: user?.metadata?.whatsapp_no,
+        sms: user?.metadata?.sms,
+        whatsapp: user?.metadata?.whatsapp,
       });
     } else {
       this.addUserForm.patchValue({
         name: null,
         email: null,
-        sms_no: null,
-        whatsapp_no: null,
+        sms: null,
+        whatsapp: null,
       });
     }
     console.log(this.addUserForm.value);
@@ -124,8 +130,8 @@ export class AccessControlComponent implements OnInit, OnChanges {
       userObj: new FormControl(null, []),
       name: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required]),
-      sms_no: new FormControl(null),
-      whatsapp_no: new FormControl(null),
+      sms: new FormControl(null),
+      whatsapp: new FormControl(null),
     });
     this.isAddUserModalOpen = true;
     $('#userAccessAddModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -178,19 +184,19 @@ export class AccessControlComponent implements OnInit, OnChanges {
       this.toasterService.showError('Email address is not valid', 'Add Recipient');
       return;
     }
-    if (user.sms_no) {
-      if ($('#sms_no').is(':invalid')) {
+    if (user.sms) {
+      if ($('#sms').is(':invalid')) {
         this.toasterService.showError('Please enter valid sms number', 'Add Recipient');
         return;
       }
-      user.sms_no = user.sms_no.e164Number;
+      user.sms = user.sms.e164Number;
     }
-    if (user.whatsapp_no) {
-      if ($('#whatsapp_no').is(':invalid')) {
+    if (user.whatsapp) {
+      if ($('#whatsapp').is(':invalid')) {
         this.toasterService.showError('Please enter valid whatsapp number', 'Add Recipient');
         return;
       }
-      user.whatsapp_no = user.whatsapp_no.e164Number;
+      user.whatsapp = user.whatsapp.e164Number;
     }
     const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email);
     if (index > -1) {

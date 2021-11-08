@@ -261,6 +261,10 @@ export class CONSTANTS {
       display_name: 'Asset Management - Provision',
       enabled: true,
     },
+    ASMED: {
+      display_name: 'Asset Management - Enable/Disable',
+      enabled: true,
+    },
     ASMS: {
       display_name: 'Asset Management - Setup',
       enabled: true,
@@ -321,7 +325,8 @@ export class CONSTANTS {
 
   public static PRIVILEGE_GROUPS = {
     'App Management': ['APMV', 'APMM'],
-    'Asset Management': ['ASMV', 'ASMVC', 'ASMP', 'ASMD', 'ASMM', 'ASMS'],
+    Assets: ['ASMV', 'ASMVC', 'ASMM', 'ASMS'],
+    'Asset Management': ['ASMP', 'ASMD', 'ASMED'],
     'Asset Campaign Management': ['ASCMV', 'ASCMM'],
     'Asset Model Management': ['ASMMV', 'ASMMM'],
     'Remote Control': ['RCV', 'RCC', 'RCP'],
@@ -357,7 +362,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: true,
       exactMatch: true,
-      privileges_required: ['ASMV', 'ASMMV', 'RMV'],
+      privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
         {
           name: 'Title',
@@ -373,7 +378,7 @@ export class CONSTANTS {
       display_name: 'Live Alerts',
       icon: 'fa fa-fw fa-bell',
       exactMatch: true,
-      privileges_required: ['ASMV', 'ASMMV', 'RMV'],
+      privileges_required: ['ASMV', 'RMV'],
       visible: true,
       showAccordion: [
         {
@@ -391,7 +396,7 @@ export class CONSTANTS {
       for_admin_only: true,
       exactMatch: true,
       icon: 'fab fa-fw fa-mixcloud',
-      privileges_required: ['ASMV', 'ASMMV'],
+      privileges_required: ['ASMV'],
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets' },
@@ -418,7 +423,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-cogs',
       visible: true,
       showAccordion: [{ name: 'Title', value: 'Asset Management' }],
-      privileges_required: ['ASMV'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED'],
       priority: 1,
     },
     {
@@ -448,10 +453,9 @@ export class CONSTANTS {
         { name: 'Title', value: 'Reports' },
         { name: 'Records Limit', value: 100, type: 'number' },
       ],
-      privileges_required: ['RV', 'RMV'],
+      privileges_required: ['RV'],
       priority: 1,
     },
-
     {
       page: 'Campaigns',
       system_name: 'Campaigns',
@@ -497,7 +501,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      privileges_required: ['ASMV'],
+      privileges_required: [],
       accordion_value: {},
     },
     {
@@ -916,7 +920,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-users',
       visible: true,
       isTitle: false,
-      privileges_required: ['ASMV'],
+      privileges_required: [],
       showAccordion: [],
       accordion_value: {},
     },

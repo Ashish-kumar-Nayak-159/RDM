@@ -14,8 +14,8 @@ declare var $: any;
 })
 export class ApplicationEmailAliasComponent implements OnInit {
   @Input() applicationData: any;
-  appObj: { group_name?: string; recipients?: any[]; emails?: any[]; sms?: any[]; whatsapp?: any[] };
-  groupObj: { group_name?: string; recipients?: {}; emails?: any[]; sms?: any[]; whatsapp?: any[] };
+  appObj: { group_name?: string; recipients?: any[]; email?: any[]; sms?: any[]; whatsapp?: any[] };
+  groupObj: { group_name?: string; recipients?: {}; email?: any[]; sms?: any[]; whatsapp?: any[] };
   userGroups: any[] = [];
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
@@ -50,8 +50,8 @@ export class ApplicationEmailAliasComponent implements OnInit {
           if (response && response.data) {
             this.userGroups = response.data;
             this.userGroups.forEach((group) => {
-              if (!group.recipients.emails) {
-                group.recipients.emails = [];
+              if (!group.recipients.email) {
+                group.recipients.email = [];
               }
               if (!group.recipients.sms) {
                 group.recipients.sms = [];
@@ -81,21 +81,21 @@ export class ApplicationEmailAliasComponent implements OnInit {
         return;
       }
       if (!this.isAddUserGroup) {
-        if (this.userGroups[index].recipients['emails'].includes(this.recipientemail)) {
+        if (this.userGroups[index].recipients['email'].includes(this.recipientemail)) {
           this.toasterService.showError('Same email address exist in this group', 'Add Email');
           return;
         }
-        this.userGroups[index].recipients['emails'].splice(
-          this.userGroups[index].recipients['emails'].length,
+        this.userGroups[index].recipients['email'].splice(
+          this.userGroups[index].recipients['email'].length,
           0,
           this.recipientemail
         );
       } else {
-        if (this.groupObj.recipients['emails'].includes(this.recipientemail)) {
+        if (this.groupObj.recipients['email'].includes(this.recipientemail)) {
           this.toasterService.showError('Same email address exist in this group', 'Add Email');
           return;
         }
-        this.groupObj.recipients['emails'].splice(this.groupObj.recipients['emails'].length, 0, this.recipientemail);
+        this.groupObj.recipients['email'].splice(this.groupObj.recipients['email'].length, 0, this.recipientemail);
       }
       this.recipientemail = undefined;
     }
@@ -103,9 +103,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   removeEmailRecipient(index) {
     if (!this.isAddUserGroup) {
-      this.appObj.recipients['emails'].splice(index, 1);
+      this.appObj.recipients['email'].splice(index, 1);
     } else {
-      this.groupObj.recipients['emails'].splice(index, 1);
+      this.groupObj.recipients['email'].splice(index, 1);
     }
   }
 
@@ -193,7 +193,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   openCreateUserGroupModal() {
     this.isAddUserGroup = true;
-    this.groupObj = { group_name: null, recipients: { emails: [], sms: [], whatsapp: [] } };
+    this.groupObj = { group_name: null, recipients: { email: [], sms: [], whatsapp: [] } };
     this.recipientemail = undefined;
     this.recipientsms = {};
     this.recipientwhatsapp = {};
@@ -211,7 +211,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
       this.toasterService.showError('User Group Name is Required', 'Create User Group');
       return;
     }
-    if (!this.groupObj.recipients['emails'] || this.groupObj.recipients['emails'].length === 0) {
+    if (!this.groupObj.recipients['email'] || this.groupObj.recipients['email'].length === 0) {
       this.toasterService.showError('At least one email address is required', 'Create User Group');
       return;
     }
@@ -233,7 +233,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   onUpdateUserGroups() {
-    if (!this.appObj.recipients['emails'] || this.appObj.recipients['emails'].length === 0) {
+    if (!this.appObj.recipients['email'] || this.appObj.recipients['email'].length === 0) {
       this.toasterService.showError('At least one email address is required', 'Update User Group');
       return;
     }

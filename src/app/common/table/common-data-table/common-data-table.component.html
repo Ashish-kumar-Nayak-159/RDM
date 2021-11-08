@@ -1,70 +1,86 @@
 <div class="tableFixHead  table-responsive" [ngClass]="tableConfig?.table_class" id="table-top">
-<table  class="table table-hover" *ngIf="tableConfig">
-  <thead>
-    <tr >
-      <th ></th>
-      <th >No</th>
-      <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
-        <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
-          <th ><span>{{item.header_name}}</span>
-            <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
-          </th>
-        </ng-container>
-        <ng-template #filterTemplate>
-          <th>
-            <span>{{item.header_name}}
-              <ng-container *ngIf="item.value_type === 'number'">
-                <a href="javascript:void(0)" id="userDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}" placement="bottom"
-                [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'">
-                  <i class="fa fa-fw fa-search fa-sm ml-1"></i>
-                </a>
-                <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown1">
-                <div class="dropdown-filter-search">
-                  <input type="number" class="dropdown-form" min="0" placeholder="Search Text" id="{{item.header_name}}_{{headerIndex}}"
-                  [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
+  <table class="table table-hover" *ngIf="tableConfig">
+    <thead>
+      <tr>
+        <th></th>
+        <th>No</th>
+        <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
+          <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
+            <th><span>{{item.header_name}}</span>
+              <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
+            </th>
+          </ng-container>
+          <ng-template #filterTemplate>
+            <th>
+              <span>{{item.header_name}}
+                <ng-container *ngIf="item.value_type === 'number'">
+                  <a href="javascript:void(0)" id="userDropdown1" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
+                    placement="left"
+                    [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'">
+                    <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown1">
+                    <div class="dropdown-filter-search">
+                      <input type="number" class="dropdown-form" min="0" placeholder="Search Text"
+                        id="{{item.header_name}}_{{headerIndex}}" [(ngModel)]="tableFilterObj[item.data_key]"
+                        name="{{item.header_name}}_{{headerIndex}}" />
+                    </div>
+                    <div class="form-group"><button type="button" placement="left" tooltip="Search"
+                        class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()">Search</button>
+                      <button type="button" placement="left" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
+                        (click)="onClear(item)">Clear</button>
+                    </div>
                   </div>
-                  <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()" >Search</button>
-                    <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClear(item)" >Clear</button></div>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="item.value_type === 'string'">
-                <a href="javascript:void(0)" id="userDropdown2" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
-                [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'" placement="bottom">
-                  <i class="fa fa-fw fa-search fa-sm ml-1"></i>
-                </a>
-                <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown2">
-                <div class="dropdown-filter-search">
-                  <input type="text" class="dropdown-form" placeholder="Search Text" id="{{item.header_name}}_{{headerIndex}}"
-                   [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
-                  </div>
-                  <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()" >Search</button>
-                    <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClear(item)" >Clear</button></div>
+                </ng-container>
+                <ng-container *ngIf="item.value_type === 'string'">
+                  <a href="javascript:void(0)" id="userDropdown2" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
+                    [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'"
+                    placement="left">
+                    <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown2">
+                    <div class="dropdown-filter-search">
+                      <input type="text" class="dropdown-form" placeholder="Search Text"
+                        id="{{item.header_name}}_{{headerIndex}}" [(ngModel)]="tableFilterObj[item.data_key]"
+                        name="{{item.header_name}}_{{headerIndex}}" />
+                    </div>
+                    <div class="form-group"><button type="button" placement="left" tooltip="Search"
+                        class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()">Search</button>
+                      <button type="button" placement="left" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
+                        (click)="onClear(item)">Clear</button>
+                    </div>
 
-                </div>
-              </ng-container>
-              <ng-container *ngIf="item.value_type === 'fixed_values'">
-                <a href="javascript:void(0)" id="userDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
-                [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'" placement="bottom"
-                >
-                <i class="fa fa-fw fa-filter fa-sm ml-1"></i></a>
-                <div class="dropdown-menu dropdown-filter-content" id="table-filter" aria-labelledby="userDropdown3" >
-                <div class="checkbox-container">
-                  <div class="dropdown-filter-item">
-                    <input type="radio" value="" [(ngModel)]="tableFilterObj[item.data_key]"
-                    name="{{item.header_name}}_{{headerIndex}}"   id="{{item.header_name}}_{{headerIndex}}_all" />
-                  Select All</div>
-                  <div class="dropdown-divider"></div>
-                  <div class="dropdown-filter-item " *ngFor="let data of item.fixed_value_list;let i = index">
-                    <input type="radio" value="{{data}}"  name="{{item.header_name}}_{{headerIndex}}"
-                     [(ngModel)]="tableFilterObj[item.data_key]" id="{{item.header_name}}_{{headerIndex}}_{{i}}" />{{data}}</div>
                   </div>
-                  <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()" >Search</button>
-                    <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClear(item)" >Clear</button></div>
-                </div>
-              </ng-container>
+                </ng-container>
+                <ng-container *ngIf="item.value_type === 'fixed_values'">
+                  <a href="javascript:void(0)" id="userDropdown3" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
+                    [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'"
+                    placement="left">
+                    <i class="fa fa-fw fa-filter fa-sm ml-1"></i></a>
+                  <div class="dropdown-menu dropdown-filter-content" id="table-filter" aria-labelledby="userDropdown3">
+                    <div class="checkbox-container">
+                      <div class="dropdown-filter-item">
+                        <input type="radio" value="" [(ngModel)]="tableFilterObj[item.data_key]"
+                          name="{{item.header_name}}_{{headerIndex}}" id="{{item.header_name}}_{{headerIndex}}_all" />
+                        Select All
+                      </div>
+                      <div class="dropdown-divider"></div>
+                      <div class="dropdown-filter-item " *ngFor="let data of item.fixed_value_list;let i = index">
+                        <input type="radio" value="{{data}}" name="{{item.header_name}}_{{headerIndex}}"
+                          [(ngModel)]="tableFilterObj[item.data_key]"
+                          id="{{item.header_name}}_{{headerIndex}}_{{i}}" />{{data}}
+                      </div>
+                    </div>
+                    <div class="form-group"><button type="button" placement="left" tooltip="Search"
+                        class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()">Search</button>
+                      <button type="button" placement="left" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
+                        (click)="onClear(item)">Clear</button>
+                    </div>
+                  </div>
+                </ng-container>
 
             </span>
             <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
@@ -90,31 +106,33 @@
       <td class="{{item.value_class}}">
         <ng-container *ngIf="item.data_type === 'text' && item.btn_list?.length > 0">
 
-            <!-- {{resolve(dataItem, item.data_key)}} -->
-            <ng-container *ngFor="let btn of item.btn_list">
-            <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}} blue-font" (click)="onClickOfButton(dataItem, btn.id)"
-              >
-              {{resolve(dataItem, item.data_key)}}
-              </a>
+                <!-- {{resolve(dataItem, item.data_key)}} -->
+                <ng-container *ngFor="let btn of item.btn_list">
+                  <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}} blue-font"
+                    (click)="onClickOfButton(dataItem, btn.id)">
+                    {{resolve(dataItem, item.data_key)}}
+                  </a>
+                </ng-container>
               </ng-container>
-        </ng-container>
-        <ng-container *ngIf="item.data_type === 'text' && (!item.btn_list || item.btn_list.length === 0) ">
-          {{resolve(dataItem, item.data_key)}}
-        </ng-container>
-        <ng-container *ngIf="item.data_type === 'list'">
-          <!-- {{resolve(dataItem, item.data_key)}} -->
-          <span *ngFor="let item of resolve(dataItem, item.data_key)">{{item}}<br/></span>
-        </ng-container>
-        <ng-container *ngIf="item.data_type  === 'button'">
-          <ng-container *ngFor="let btn of item.btn_list">
-            <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}" (click)="onClickOfButton(dataItem, btn.id)"
-            >
-              <i class="{{btn.icon}}" placement="bottom" [tooltip]="btn.tooltip"></i>
-              {{btn.text}}
-            </a>
+              <ng-container *ngIf="item.data_type === 'text' && (!item.btn_list || item.btn_list.length === 0) ">
+                {{resolve(dataItem, item.data_key)}}
+              </ng-container>
+              <ng-container *ngIf="item.data_type === 'list'">
+                <!-- {{resolve(dataItem, item.data_key)}} -->
+                <span *ngFor="let item of resolve(dataItem, item.data_key)">{{item}}<br /></span>
+              </ng-container>
+              <ng-container *ngIf="item.data_type  === 'button'">
+                <ng-container *ngFor="let btn of item.btn_list">
+                  <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
+                    (click)="onClickOfButton(dataItem, btn.id)">
+                    <i class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></i>
+                    {{btn.text}}
+                  </a>
+                </ng-container>
+              </ng-container>
+            </td>
           </ng-container>
-        </ng-container>
-      </td>
+        </tr>
       </ng-container>
     </tr>
     </ng-container>
@@ -139,9 +157,9 @@
       </td>
     </tr>
   </tfoot> -->
-</table>
+  </table>
 </div>
- <!-- Scroll to Top Button-->
- <a class="scroll-to-top rounded" (click)="scrollToTop()">
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" (click)="scrollToTop()">
   <i class="fas fa-angle-up"></i>
 </a>

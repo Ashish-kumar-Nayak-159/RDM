@@ -353,12 +353,12 @@
 
                     <input type="checkbox" class="form-check-input" id="email" name="email"
                       [(ngModel)]="alertObj.actions.email.enabled"
-                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMS') === -1">
                     <label class="form-check-label" for="email">Email</label>
 
                     <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -387,7 +387,7 @@
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
                               <button class="tag-remove" (click)="removeUserGroup(index, 'email')"
-                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1"></button>
                             </span>
                           </ng-container>
                         </div>
@@ -401,12 +401,12 @@
                   <div class="form-group accordion-padding mx-3">
                     <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
                       [(ngModel)]="alertObj.actions.whatsapp.enabled"
-                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMS') === -1">
                     <label class="form-check-label" for="whatsapp">Whatsapp</label>
 
                     <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -435,7 +435,7 @@
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
                               <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
-                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1"></button>
                             </span>
                           </ng-container>
                         </div>
@@ -449,13 +449,13 @@
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
                       [(ngModel)]="alertObj.actions.sms.enabled"
-                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMS') === -1">
                     <label class="form-check-label" for="sms">SMS</label>
 
 
                     <div class="row my-2" *ngIf="alertObj.actions.sms.enabled">
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -484,7 +484,7 @@
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
                               <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
-                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMS') > -1"></button>
                             </span>
                           </ng-container>
                         </div>

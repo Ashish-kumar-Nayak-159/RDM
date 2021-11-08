@@ -12,4 +12,5 @@ export const environment = {
   version: '11.2',
   storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages',
+  redirectToLogin: false,
 };

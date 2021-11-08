@@ -1,4 +1,3 @@
-
 <div class="tab-bar">
   <div class="d-flex align-items-center">
     <div class="h6 m-0 p-0">Dashboard Configuration
@@ -10,56 +9,170 @@
             class="fas fa-edit fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isConfigEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
-      <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isConfigEditable"
-      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
-    </ng-container>
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
+          *ngIf="isConfigEditable" placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+      </ng-container>
     </div>
-</div>
+  </div>
 </div>
 <div class="tableFixHead table-responsive">
-<table class="table table-hover">
-  <!--<thead>
+  <table class="table table-hover">
+    <!--<thead>
     <tr>
       <th>Project Name</th>
       <th>Employer</th>
       <th>Awards</th>
     </tr>
   </thead>-->
-  <tfoot >
-    <tr *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-      <th colspan="3" >
-        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
-        [disabled]="saveConfigAPILoading || !isConfigEditable">SAVE
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveConfigAPILoading"></i></button>
-        <button type="button" class="btn btn-sm searchBtn btn-white ml-1"
-        (click)="onCancelClick();" [disabled]="!isConfigEditable">
-        CANCEL</button>
-      </th>
+    <tfoot>
+      <tr *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+        <th colspan="3">
+          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
+            [disabled]="saveConfigAPILoading || !isConfigEditable">SAVE
+            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveConfigAPILoading"></i></button>
+          <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick();"
+            [disabled]="!isConfigEditable">
+            CANCEL</button>
+        </th>
 
-    </tr>
+      </tr>
     </tfoot>
-  <tbody>
-    <tr>
-      <td>Historical Widgets on Dashboard?
-      </td>
-      <td>
-        <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_historical_widgets ? 'Yes': 'No'}}</ng-container>
-        <input type="checkbox" name="historical_widgets" *ngIf="isConfigEditable"
-        id="historical_widgets"
-        (change)="toggleHistoryCheckbox()"
-        [checked]="applicationData.dashboard_config.show_historical_widgets" />
+    <tbody>
+      <tr>
+        <td>Historical Widgets on Dashboard?
+        </td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_historical_widgets ? 'Yes':
+            'No'}}</ng-container>
+          <input type="checkbox" name="historical_widgets" *ngIf="isConfigEditable" id="historical_widgets"
+            (change)="toggleHistoryCheckbox()" [checked]="applicationData.dashboard_config.show_historical_widgets" />
 
         </td>
-    </tr>
-    <tr>
-      <td>Live Widgets on Dashboard?</td>
-      <td>
-        <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_live_widgets ? 'Yes': 'No'}}</ng-container>
-        <input type="checkbox" name="live_widgets" *ngIf="isConfigEditable"
-        id="live_widgets" (change)="toggleLiveCheckbox()"
-        [checked]="applicationData.dashboard_config.show_live_widgets"/>
+      </tr>
+      <tr>
+        <td>Live Widgets on Dashboard?</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_live_widgets ? 'Yes': 'No'}}
+          </ng-container>
+          <input type="checkbox" name="live_widgets" *ngIf="isConfigEditable" id="live_widgets"
+            (change)="toggleLiveCheckbox()" [checked]="applicationData.dashboard_config.show_live_widgets" />
         </td>
-    </tr>
-  </tbody>
-</table>
+      </tr>
+      <tr>
+        <td>Healthy IOT Asset Map Icon</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy ?
+            applicationData?.dashboard_config?.map_icons?.iot_asset.healthy.name : 'Not yet uploaded'}}</ng-container>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isConfigEditable">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_iot_asset_healthy" class="file"
+                (change)="onMapIconFileSelected($event.target.files, 'iot_asset', 'healthy')">
+              <label for="map_icons_iot_asset_healthy" class="overflow-text"
+                [tooltip]="applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy?.name ? applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy.name : ''">
+                {{applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy?.name ?
+                applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy.name
+                : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_iot_asset_healthy" class="file">
+              <label for="map_icons_iot_asset_healthy" class="bg-secondary text-white">Browse</label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Unhealthy IOT Asset Map Icon</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy ?
+            applicationData?.dashboard_config?.map_icons?.iot_asset.unhealthy.name : 'Not yet uploaded'}}</ng-container>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isConfigEditable">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_iot_asset_unhealthy" class="file"
+                (change)="onMapIconFileSelected($event.target.files, 'iot_asset', 'unhealthy')">
+              <label for="map_icons_iot_asset_unhealthy" class="overflow-text"
+                [tooltip]="applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy?.name ? applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy.name : ''">
+                {{applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy?.name ?
+                applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy.name
+                : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_iot_asset_unhealthy" class="file">
+              <label for="map_icons_iot_asset_unhealthy" class="bg-secondary text-white">Browse</label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <!-- <tr>
+        <td>Legacy Asset Map Icon</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.legacy_asset ?
+            applicationData?.dashboard_config?.map_icons?.legacy_asset.name : 'Not yet uploaded'}}</ng-container>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isConfigEditable">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacy_asset" class="file"
+                (change)="onMapIconFileSelected($event.target.files, 'legacy_asset')">
+              <label for="map_icons_legacy_asset" class="overflow-text"
+                [tooltip]="applicationData?.dashboard_config?.map_icons?.legacy_asset?.name ? applicationData?.dashboard_config?.map_icons?.legacy_asset.name : ''">
+                {{applicationData?.dashboard_config?.map_icons?.legacy_asset?.name ?
+                applicationData?.dashboard_config?.map_icons?.legacy_asset.name :
+                'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacy_asset" class="file">
+              <label for="map_icons_legacy_asset" class="bg-secondary text-white">Browse</label>
+            </div>
+          </div>
+        </td>
+      </tr> -->
+      <tr>
+        <td>Healthy Legacy Asset Map Icon</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy
+            ?
+            applicationData?.dashboard_config?.map_icons?.legacy_asset.healthy.name : 'Not yet uploaded'}}
+          </ng-container>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isConfigEditable">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacy_asset_healthy" class="file"
+                (change)="onMapIconFileSelected($event.target.files, 'legacy_asset', 'healthy')">
+              <label for="map_icons_legacy_asset_healthy" class="overflow-text"
+                [tooltip]="applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy?.name ? applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy.name : ''">
+                {{applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy?.name ?
+                applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy.name
+                : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacu_asset_healthy" class="file">
+              <label for="map_icons_legacy_asset_healthy" class="bg-secondary text-white">Browse</label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Unhealthy Legacy Asset Map Icon</td>
+        <td>
+          <ng-container *ngIf="!isConfigEditable">
+            {{applicationData?.dashboard_config?.map_icons?.legacy_asset?.unhealthy
+            ?
+            applicationData?.dashboard_config?.map_icons?.legacy_asset.unhealthy.name : 'Not yet uploaded'}}
+          </ng-container>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isConfigEditable">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacy_asset_unhealthy" class="file"
+                (change)="onMapIconFileSelected($event.target.files, 'legacy_asset', 'unhealthy')">
+              <label for="map_icons_legacy_asset_unhealthy" class="overflow-text"
+                [tooltip]="applicationData?.dashboard_config?.map_icons?.legacy_asset?.unhealthy?.name ? applicationData?.dashboard_config?.map_icons?.legacy_asset?.unhealthy.name : ''">
+                {{applicationData?.dashboard_config?.map_icons?.legacy_asset?.unhealthy?.name ?
+                applicationData?.dashboard_config?.map_icons?.legacy_asset?.unhealthy.name
+                : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="map_icons_legacy_asset_unhealthy" class="file">
+              <label for="map_icons_legacy_asset_unhealthy" class="bg-secondary text-white">Browse</label>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

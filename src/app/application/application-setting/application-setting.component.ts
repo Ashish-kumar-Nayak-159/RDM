@@ -92,6 +92,15 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           if (this.applicationData.menu_settings?.main_menu?.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           }
+          if (!this.applicationData.dashboard_config) {
+            this.applicationData.dashboard_config = {};
+            this.applicationData.dashboard_config.show_historical_widgets = false;
+            this.applicationData.dashboard_config.show_live_widgets = true;
+            this.applicationData.dashboard_config.map_icons = {};
+          }
+          if (!this.applicationData.dashboard_config.map_icons) {
+            this.applicationData.dashboard_config.map_icons = {};
+          }
           this.contextApp = JSON.parse(JSON.stringify(this.applicationData));
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.contextApp);
           this.commonService.refreshSideMenuData.emit(this.applicationData);

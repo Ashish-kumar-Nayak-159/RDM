@@ -2,8 +2,7 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="updateAssetTags()"
-          [class.disabled]="isUpdateAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="updateAssetTags()" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
@@ -36,78 +35,78 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3">
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Reserved Tags
           </a>
         </ng-container>
-            <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
-              <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-              <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
-                (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
-              <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
-                (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
-              </ng-container>
-            </h1>
-            <table class="table table-hover">
-              <tbody>
-                <tr>
-                  <td>Asset Display Name</td>
-                  <td>
-                    <ng-container *ngIf="!isReservedTagsEditable">{{asset?.tags?.display_name}}</ng-container>
-                    <ng-container *ngIf="isReservedTagsEditable">
-                      <input type="text" class="form-control form-control-sm bg-light border-0 small"
-                        [(ngModel)]="asset?.tags.display_name" name="display_name">
-                    </ng-container>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Hierarchy</td>
-                  <td>{{asset?.hierarchyString}}</td>
-                </tr>
-                <tr>
-                  <td>Created By</td>
-                  <td>{{asset?.tags?.created_by}}</td>
-                </tr>
-                <tr>
-                  <td>Created On</td>
-                  <td>{{asset?.tags?.local_created_date}}</td>
-                </tr>
+        <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
+          <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
+              (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
+            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
+              (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
+          </ng-container>
+        </h1>
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <td>Asset Display Name</td>
+              <td>
+                <ng-container *ngIf="!isReservedTagsEditable">{{asset?.tags?.display_name}}</ng-container>
+                <ng-container *ngIf="isReservedTagsEditable">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="asset?.tags.display_name" name="display_name">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Hierarchy</td>
+              <td>{{asset?.hierarchyString}}</td>
+            </tr>
+            <tr>
+              <td>Created By</td>
+              <td>{{asset?.tags?.created_by}}</td>
+            </tr>
+            <tr>
+              <td>Created On</td>
+              <td>{{asset?.tags?.local_created_date}}</td>
+            </tr>
 
-                <tr>
-                  <td>Asset Manager</td>
-                  <td>
-                      <span *ngFor="let user of asset?.tags?.asset_users_arr">{{user}}<br/></span>
-                  </td>
-                </tr>
-                <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
-                  <td>Partition Key</td>
-                  <td>{{asset?.tags?.partition_key}}</td>
-                </tr>
-                <tr>
-                  <td>Latitude</td>
-                  <td>{{asset?.tags?.latitude}}
-                    <!-- <ng-container *ngIf="isReservedTagsEditable">
+            <tr>
+              <td>Asset Manager</td>
+              <td>
+                <span *ngFor="let user of asset?.tags?.asset_users_arr">{{user}}<br /></span>
+              </td>
+            </tr>
+            <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
+              <td>Partition Key</td>
+              <td>{{asset?.tags?.partition_key}}</td>
+            </tr>
+            <tr>
+              <td>Latitude</td>
+              <td>{{asset?.tags?.latitude}}
+                <!-- <ng-container *ngIf="isReservedTagsEditable">
                     <input type="text" class="form-control form-control-sm bg-light border-0 small"
                       [(ngModel)]="asset?.tags.latitude" name="latitude"  placeholder="Enter Latitude">
                   </ng-container> -->
-                  </td>
-                </tr>
-                <tr>
-                  <td>Longitude</td>
-                  <td>{{asset?.tags?.longitude}}
-                    <!-- <ng-container *ngIf="isReservedTagsEditable">
+              </td>
+            </tr>
+            <tr>
+              <td>Longitude</td>
+              <td>{{asset?.tags?.longitude}}
+                <!-- <ng-container *ngIf="isReservedTagsEditable">
                     <input type="text" class="form-control form-control-sm bg-light border-0 small"
                       [(ngModel)]="asset?.tags.longitude" name="longitude" placeholder="Enter Longitude">
                   </ng-container> -->
-                  </td>
-                </tr>
-                <tr>
-                  <td>Model</td>
-                  <td>{{asset?.tags?.asset_model}}</td>
-                </tr>
-                <!-- <tr>
+              </td>
+            </tr>
+            <tr>
+              <td>Model</td>
+              <td>{{asset?.tags?.asset_model}}</td>
+            </tr>
+            <!-- <tr>
                   <td>Protocol</td>
                   <td>{{asset?.tags?.protocol}}</td>
                 </tr>
@@ -115,75 +114,77 @@
                   <td>Cloud Connectivity</td>
                   <td>{{asset?.tags?.cloud_connectivity}}</td>
                 </tr> -->
-                <tr *ngFor="let tag of assetModel?.tags?.reserved_tags">
-                  <td>{{tag.name}}</td>
-                  <td>
-                    <ng-container *ngIf="!isReservedTagsEditable || tag.nonEditable;else inputTemplate">
-                      {{asset?.tags[tag.key]}}
-                    </ng-container>
-                    <ng-template #inputTemplate>
-                      <input type="text" class="form-control form-control-sm bg-light border-0 small"
-                        [(ngModel)]="asset?.tags[tag.key]" name="{{tag.name}}">
-                    </ng-template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <tr *ngFor="let tag of assetModel?.tags?.reserved_tags">
+              <td>{{tag.name}}</td>
+              <td>
+                <ng-container *ngIf="!isReservedTagsEditable || tag.nonEditable;else inputTemplate">
+                  {{asset?.tags[tag.key]}}
+                </ng-container>
+                <ng-template #inputTemplate>
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="asset?.tags[tag.key]" name="{{tag.name}}">
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
       </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Custom Tags
           </a>
         </ng-container>
-            <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
-              <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-              <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
-                *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
-                  class="fa fa-edit"></i></a>
-              <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isCustomTagsEditable"
-                (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
+        <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
+          <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
+              *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
+                class="fa fa-edit"></i></a>
+            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isCustomTagsEditable"
+              (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
+          </ng-container>
+        </h1>
+        <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <tbody>
+            <tr *ngFor="let tag of assetCustomTags;let i = index">
+              <ng-container *ngIf="!tag.editable; else lastRowTemplate">
+                <ng-container *ngIf="!isCustomTagsEditable">
+                  <td>{{tag.name}}</td>
+                  <td>{{tag.value}}</td>
+                  <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                    <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
+                      <i class="fa fa-fw fa-trash"></i>
+                    </a>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="isCustomTagsEditable">
+                  <td>
+                    <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
+                      aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                      (focusout)="checkKeyDuplicacy(tag, i)"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
+                  </td>
+                  <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
+                      aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1"></td>
+                  <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+                </ng-container>
               </ng-container>
-            </h1>
-            <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
-              <tbody>
-                <tr *ngFor="let tag of assetCustomTags;let i = index">
-                  <ng-container *ngIf="!tag.editable; else lastRowTemplate">
-                    <ng-container *ngIf="!isCustomTagsEditable">
-                      <td>{{tag.name}}</td>
-                      <td>{{tag.value}}</td>
-                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                        <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
-                          <i class="fa fa-fw fa-trash"></i>
-                        </a>
-                      </td>
-                    </ng-container>
-                    <ng-container *ngIf="isCustomTagsEditable">
-                      <td>
-                        <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
-                          aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                          (focusout)="checkKeyDuplicacy(tag, i)">
-                      </td>
-                      <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
-                          aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"></td>
-                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
-                    </ng-container>
-                  </ng-container>
-                  <ng-template #lastRowTemplate>
-                    <td>
-                      <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
-                        aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                        (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i)">
-                    </td>
-                    <td><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
-                        aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
-                        (input)="onCustomTagInputChange()"></td>
-                    <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
-                  </ng-template>
-                </tr>
-              </tbody>
-            </table>
+              <ng-template #lastRowTemplate>
+                <td>
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
+                    aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                    (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i)">
+                </td>
+                <td><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
+                    aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
+                    (input)="onCustomTagInputChange()"></td>
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+              </ng-template>
+            </tr>
+          </tbody>
+        </table>
       </accordion-group>
     </accordion>
   </div>
@@ -193,16 +194,16 @@
   <div class="modal-dialog" role="document">
     <app-message-modal
       [bodyMessage]="'All the unsaved tags will get reverted. Are you sure you want to reset the tags?'"
-      [headerMessage]="'Reset Asset Tags'" (modalEvents)="resetAssetTags($event)"
-      [modalConfig]="modalConfig"></app-message-modal>
+      [headerMessage]="'Reset Asset Tags'" (modalEvents)="resetAssetTags($event)" [modalConfig]="modalConfig">
+    </app-message-modal>
   </div>
 </div>
 
 <div class="modal fade" id="confirmdeleteTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="'All the custom tags will get deleted. Are you sure you want to delete the tags?'"
-      [headerMessage]="'Delete Asset Tags'" (modalEvents)="deleteAllAssetTags($event)"
-      [modalConfig]="modalConfig"></app-message-modal>
+      [headerMessage]="'Delete Asset Tags'" (modalEvents)="deleteAllAssetTags($event)" [modalConfig]="modalConfig">
+    </app-message-modal>
   </div>
 </div>
 
@@ -253,8 +254,9 @@
         <ng-container *ngIf="changeLocationOption === 'pick_from_map' || changeLocationOption === 'address'">
           <div class="mt-2">
             <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" (mapReady)="mapReadyHandler($event)"
-            [fitBounds]="true">
-              <agm-marker [latitude]="asset?.tags.latitude" [longitude]="asset?.tags.longitude" [agmFitBounds]="true"></agm-marker>
+              [fitBounds]="true">
+              <agm-marker [latitude]="asset?.tags.latitude" [longitude]="asset?.tags.longitude" [agmFitBounds]="true">
+              </agm-marker>
             </agm-map>
           </div>
         </ng-container>
@@ -276,7 +278,8 @@
         </ng-container>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading || !changeLocationOption" (click)="updateAssetTags()">
+        <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading || !changeLocationOption"
+          (click)="updateAssetTags()">
           Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAPILoading "
           (click)="onModalClose('changeLocationModal')">

@@ -29,15 +29,17 @@
           <td>{{ user.user_name }}</td>
           <td>{{ user.role }}</td>
           <td>{{ getUserHierarchy(user) }}</td>
-          <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
-            <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1" placement="bottom"
-              tooltip="Edit User">
-              <i class="fa fa-fw fa-edit"></i>
-            </a>
-            <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1" placement="bottom"
-              tooltip="Delete User">
-              <i class="fa fa-fw fa-trash"></i>
-            </a>
+          <td>
+            <span *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1 && rolesList.indexOf(user.role) >= 0">
+              <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1" placement="bottom"
+                tooltip="Edit User">
+                <i class="fa fa-fw fa-edit"></i>
+              </a>
+              <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1" placement="bottom"
+                tooltip="Delete User">
+                <i class="fa fa-fw fa-trash"></i>
+              </a>
+            </span>
           </td>
         </tr>
       </ng-container>

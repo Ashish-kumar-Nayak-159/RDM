@@ -36,6 +36,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   countryISO = CountryISO;
   userRoles: any = [];
   addUserForm: FormGroup;
+  rolesList: any = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -56,10 +57,24 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   getApplicationUserRoles() {
+    let userLevel;
     this.apiSubscriptions.push(
       this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe((response: any) => {
         if (response && response.data) {
-          this.userRoles = response.data;
+          // this.userRoles = response.data;
+          response.data.map((role)=>{
+            if(role.role == this.applicationData.user.role){
+              userLevel = role.level;
+            }
+          })
+          response.data.map((role)=>{
+            if(role.level >= userLevel){
+              this.userRoles.push(role)
+              this.rolesList.push(role.role);
+            }
+          })
+          console.log('userRoles ',this.userRoles)
+          console.log('this.applicationData ',this.applicationData)
         }
       })
     );
@@ -102,7 +117,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
           sms: new FormControl(null),
           whatsapp: new FormControl(null),
         }),
-        role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
+        // role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
+        role : new FormControl(this.applicationData.user.role,[Validators.required])
       });
       this.addUserObj.app = this.applicationData.app;
       this.configureHierarchy = {};

@@ -2,7 +2,7 @@
 <table  class="table table-hover" *ngIf="tableConfig">
   <thead>
     <tr >
-      <th  *ngIf="tableConfig.border_left_key" ></th>
+      <th ></th>
       <th >No</th>
       <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
         <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
@@ -76,14 +76,14 @@
   <tbody >
     <ng-container *ngIf="filteredTableData.length > 0">
     <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
-      <td class="pl-3" *ngIf="tableConfig.border_left_key"
+      <td class="pl-3" 
       >
-      <div class="status-icon-circle"   [tooltip]="dataItem[tableConfig.border_left_key] === true ? 'Healthy Asset' : (dataItem[tableConfig.border_left_key] === false ? 'Unhealthy Asset' : '')"
-      [ngClass]="dataItem[tableConfig.border_left_key] === true ? 'bg-success' : (dataItem[tableConfig.border_left_key]  === false ? 'bg-danger' : 'bg-white-asset')">
-        <i class="fas text-white" [ngClass]="dataItem[tableConfig.border_left_key] === true ? 'fa-check' : (dataItem[tableConfig.border_left_key] === false ? 'fa-times' : 'fa-check')"></i>
+      <div class="status-icon-circle"   [tooltip]="dataItem?.map_content?.healthy === true ? 'Healthy Asset' : (dataItem?.map_content?.healthy === false ? 'Unhealthy Asset' : '')"
+      [ngClass]="dataItem?.map_content?.healthy === true ? 'bg-success' : (dataItem?.map_content?.healthy  === false ? 'bg-danger' : 'bg-white-asset')">
+        <i class="fas text-white" [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></i>
       </div>
       </td>
-      <td [ngClass]="{'pl-3': !tableConfig.border_left_key}" >
+      <td>
         {{dataIndex + 1}}
       </td>
       <ng-container *ngFor="let item of tableConfig.data">
@@ -120,12 +120,12 @@
     </ng-container>
     <ng-container *ngIf="filteredTableData.length === 0 && !tableConfig.is_table_data_loading">
       <tr>
-        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)">{{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>
+        <td [attr.colspan]="tableConfig?.data?.length + 2">{{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="tableConfig.is_table_data_loading">
       <tr>
-        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)"> <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i></td>
+        <td [attr.colspan]="tableConfig?.data?.length + 2"> <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i></td>
       </tr>
     </ng-container>
   </tbody>

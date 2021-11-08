@@ -194,8 +194,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
       is_table_data_loading: this.isAssetListLoading,
       no_data_message: '',
       table_class: 'tableFixHead-assets-list',
-      border_left_key:
-        this.environmentApp === 'SopanCMS' && this.componentState === CONSTANTS.NON_IP_ASSET ? 'kpiValue' : undefined,
       data: [
         {
           header_name: (obj.table_key || '') + ' Name',
@@ -275,9 +273,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
         valueclass: '',
         tooltip: 'View Diagnosis panel',
       });
-    }
-    if (this.environmentApp === 'SopanCMS' && this.componentState === CONSTANTS.NON_IP_ASSET) {
-      await this.getLatestDerivedKPIData();
     }
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS);
     this.assetsList = [];
@@ -405,6 +400,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       type: CONSTANTS.IP_GATEWAY,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      map_content: true
     };
     this.subscriptions.push(
       this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
@@ -443,6 +439,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.assetFilterObj));
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
+    obj.map_content = true;
     if (this.contextApp) {
       obj.hierarchy = { App: this.contextApp.app };
       Object.keys(configuredHierarchy).forEach((key) => {
@@ -493,73 +490,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
               item.gas = '0.4%';
               item.power = '45 SCMH';
             }
-            if (this.environmentApp === 'SopanCMS') {
-              this.derivedKPILatestData.forEach((kpiObj) => {
-                if (item.asset_id === kpiObj.asset_id) {
-                  item.kpiValue = kpiObj?.metadata?.healthy;
-                }
-              });
-              if (
-                this.componentState === this.constantData.IP_ASSET &&
-                item?.connection_state?.toLowerCase() === 'connected'
-              ) {
-                item.icon = {
-                  url: './assets/img/iot-assets-green.svg',
-                  scaledSize: {
-                    width: 35,
-                    height: 35,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_ASSET &&
-                item?.connection_state?.toLowerCase() === 'disconnected'
-              ) {
-                item.icon = {
-                  url: './assets/img/assets-red.gif',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_GATEWAY &&
-                item?.connection_state?.toLowerCase() === 'connected'
-              ) {
-                console.log('11111111111111111111111111');
-                item.icon = {
-                  url: './assets/img/iot-gateways-green.svg',
-                  scaledSize: {
-                    width: 30,
-                    height: 30,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_GATEWAY &&
-                item?.connection_state?.toLowerCase() === 'disconnected'
-              ) {
-                item.icon = {
-                  url: './assets/img/assets-red.gif',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (this.componentState === this.constantData.NON_IP_ASSET) {
-                item.icon = {
-                  url:
-                    item.kpiValue === true
-                      ? './assets/img/legacy-asset-green.svg'
-                      : item.kpiValue === false
-                      ? './assets/img/legacy-asset-red.svg'
-                      : './assets/img/legacy-assets.svg',
-                  scaledSize: {
-                    width: 25,
-                    height: 25,
-                  },
-                };
-              }
-            } else {
-              if (
+            if (
                 this.componentState === this.constantData.IP_ASSET &&
                 item?.connection_state?.toLowerCase() === 'connected'
               ) {
@@ -613,7 +544,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
                   },
                 };
               }
-            }
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);

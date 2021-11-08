@@ -134,8 +134,6 @@
           </ng-container>
         </tr>
       </ng-container>
-    </tr>
-    </ng-container>
     <ng-container *ngIf="filteredTableData.length === 0 && !tableConfig.is_table_data_loading">
       <tr>
         <td [attr.colspan]="tableConfig?.data?.length + 2">{{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>

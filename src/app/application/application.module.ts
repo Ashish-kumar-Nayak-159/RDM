@@ -24,6 +24,7 @@ import { ApplicationOrgTreeComponent } from './application-setting/application-o
 import { ApplicationDashboardConfigurationComponent } from './application-setting/application-dashboard-configuration/application-dashboard-configuration.component';
 import { ApplicationEmailAliasComponent } from './application-setting/application-email-alias/application-email-alias.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
@@ -51,10 +52,14 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     AccordionModule,
     CommonCustomModule,
     AgmCoreModule,
+    AgmCoreModule.forRoot({
+      libraries: ['places'],
+    }),
     AgmMarkerClustererModule,
     NgSelectModule,
     TooltipModule,
     NgxIntlTelInputModule,
+    GoogleMapsModule,
   ],
 })
 export class ApplicationModule {}

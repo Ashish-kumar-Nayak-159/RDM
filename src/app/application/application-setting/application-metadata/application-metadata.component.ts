@@ -1,15 +1,17 @@
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-
+import { MapsAPILoader } from '@agm/core';
+declare var $: any;
 @Component({
   selector: 'app-application-metadata',
   templateUrl: './application-metadata.component.html',
   styleUrls: ['./application-metadata.component.css'],
 })
+
 export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @Input() applicationData: any;
   isFileUploading = false;
@@ -19,14 +21,23 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @ViewChild('headerFileInput') headerFileInput: ElementRef;
   @ViewChild('logoFileInput') logoFileInput: ElementRef;
   @ViewChild('iconFileInput') iconFileInput: ElementRef;
+  @ViewChild('search') searchElementRef: ElementRef;
   isMetadataEditable = false;
   decodedToken: any;
   description: any;
+  changeLocationOption: any;
+  latitude: any;
+  longitude: any;
+  centerLatitude = 23.0225;
+  centerLongitude = 72.5714;
+  zoom = 8;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private applicationService: ApplicationService
-  ) {}
+    private applicationService: ApplicationService,
+    private mapsAPILoader: MapsAPILoader,
+    private ngZone: NgZone
+  ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -34,8 +45,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
     if (this.applicationData.metadata.description) {
-        this.description = this.applicationData.metadata.description;
+      this.description = this.applicationData.metadata.description;
     }
+    this.latitude = this.applicationData.metadata?.latitude;
+    this.longitude = this.applicationData.metadata?.longitude;
   }
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
@@ -106,6 +119,54 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
       this.logoFileInput.nativeElement.value = '';
     }
     this.isMetadataEditable = false;
+  }
+
+  openModal(id) {
+    $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalClose(id) {
+    this.changeLocationOption = undefined;
+    $('#' + id).modal('hide');
+  }
+
+  public mapReadyHandler(map: google.maps.Map): void {
+    map.addListener('click', (e: google.maps.MouseEvent) => {
+      this.centerLatitude = e.latLng.lat();
+      this.centerLongitude = e.latLng.lng();
+      this.latitude = e.latLng.lat();
+      this.longitude = e.latLng.lng();
+      this.zoom = 12;
+    });
+  }
+
+  onRadioChange() {
+    setTimeout(() => {
+      this.mapsAPILoader.load().then(() => {
+        const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+          types: ['geocode'],
+        });
+        autocomplete.addListener('place_changed', () => {
+          this.ngZone.run(() => {
+            const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+            if (place.geometry === undefined || place.geometry === null) {
+              return;
+            }
+            this.zoom = 12;
+            this.centerLatitude = place.geometry.location.lat();
+            this.centerLongitude = place.geometry.location.lng();
+            this.latitude = place.geometry.location.lat();
+            this.longitude = place.geometry.location.lng();
+          });
+        });
+      });
+    }, 500);
+  }
+
+  setDefaultLocation() {
+    this.applicationData.metadata['latitude'] = this.latitude;
+    this.applicationData.metadata['longitude'] = this.longitude;
+    this.onModalClose('changeLocationModal');
   }
 
   ngOnDestroy() {

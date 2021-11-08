@@ -125,6 +125,103 @@
           </div>
         </td>
       </tr>
+      <tr>
+        <td>
+          Default Map Point
+        </td>
+        <td>
+          <span *ngIf="latitude && longitude">
+            {{latitude}} , {{longitude}}
+          </span>
+          <div class="form-group input-group row col-4 p-0 m-0" *ngIf="isMetadataEditable">
+            <a class="nav-link" href="javascript:void(0)" (click)="openModal('changeLocationModal')">
+              <i class="fa fa-fw fa-map-marker"></i>
+              <span class="text-secondary delete-row">Change Asset Location</span></a>
+          </div>
+        </td>
+      </tr>
     </tbody>
   </table>
+</div>
+
+<div class="modal fade" id="changeLocationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Asset Location</h5>
+        <button type="button" class="close" aria-label="Close" (click)="onModalClose('changeLocationModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
+            value="latitude_longitude" [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios1">
+            Enter Latitude Longitude
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="address"
+            [(ngModel)]="changeLocationOption" (change)="onRadioChange()">
+          <label class="form-check-label ml-2" for="exampleRadios2">
+            Enter Address
+          </label>
+        </div>
+        <!-- <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="address" [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios2">
+            Enter Address
+          </label>
+        </div> -->
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="pick_from_map"
+            [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios3">
+            Pick Location From Map
+          </label>
+        </div>
+        <ng-container *ngIf="changeLocationOption === 'address'">
+          <div class="form-group mt-2 ">
+            <label for="inputEmail4">Address:</label>
+            <input placeholder="Search Address" autocorrect="off" autocapitalize="off" spellcheck="off" type="text"
+              class="form-control form-control-sm" #search>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="changeLocationOption === 'pick_from_map' || changeLocationOption === 'address'">
+          <div class="mt-2">
+            <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" (mapReady)="mapReadyHandler($event)"
+              [fitBounds]="true">
+              <agm-marker [latitude]="latitude" [longitude]="longitude" [agmFitBounds]="true">
+              </agm-marker>
+            </agm-map>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="changeLocationOption">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-4 col-sm-6">
+              <label for="inputEmail4">Latitude:</label>
+              <input type="text" class="form-control form-control-sm"
+                [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="latitude"
+                name="latitude" placeholder="Enter Latitude">
+            </div>
+            <div class="form-group col-md-4 col-sm-6">
+              <label for="inputPassword4">Longitude:</label>
+              <input type="text" class="form-control form-control-sm"
+                [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="longitude"
+                name="longitude" placeholder="Enter Longitude">
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="!changeLocationOption"  (click)="setDefaultLocation()">
+          Set Location</button>
+        <button type="button" class="btn btn-white"
+          (click)="onModalClose('changeLocationModal')">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

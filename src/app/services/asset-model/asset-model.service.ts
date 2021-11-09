@@ -346,7 +346,7 @@ export class AssetModelService {
         String.Format(
           AppUrls.UPDATE_ASSETS_MODEL_CONTROL_WIDGETS,
           encodeURIComponent(app),
-          encodeURIComponent(modelObj.assetModel),
+          encodeURIComponent(modelObj.asset_model),
           encodeURIComponent(modelObj.id)
         ),
       modelObj
@@ -394,7 +394,7 @@ export class AssetModelService {
         String.Format(
           AppUrls.UPDATE_ASSETS_MODEL_CONFIGURATION_WIDGETS,
           encodeURIComponent(app),
-          encodeURIComponent(modelObj.assetModel),
+          encodeURIComponent(modelObj.asset_model),
           encodeURIComponent(modelObj.id)
         ),
       modelObj

@@ -95,19 +95,42 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  openAddWidgetModal() {
-    this.controlWidget = {
-      properties: [],
-      metadata: {
-        communication_technique: 'C2D Message',
-        widget_type: undefined,
-      },
-      json: {
-        params: [],
-      },
-    };
-    this.addParameter();
-    this.viewType = 'add';
+  openAddWidgetModal(widget = null) {
+    if(widget!=null){
+      this.controlWidget = JSON.parse(JSON.stringify(widget))
+      if(this.controlWidget.metadata.communication_technique === 'Direct Method'){
+        this.controlWidget.properties = {...widget.properties[0]}
+        this.extraParams = []
+      }
+      else{
+        this.extraParams = [...this.controlWidget.json?.params];
+        this.controlWidget.json.params = [];
+      }
+      for(var index =0;index<this.extraParams.length;index++){
+        const param = this.extraParams[index];
+        this.controlWidget.properties.forEach((prop) => {
+          if(prop.json_key === param.key) {
+            this.extraParams.splice(index,1);
+            index--;
+          }
+        });
+      }
+      this.viewType = 'edit';
+    }
+    else{
+      this.controlWidget = {
+        properties: [],
+        metadata: {
+          communication_technique: 'C2D Message',
+          widget_type: undefined,
+        },
+        json: {
+          params: [],
+        },
+      };
+      this.addParameter();
+      this.viewType = 'add';
+    }
     $('#createWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -144,7 +167,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       // }
     } else {
       const propObj = event.value || event;
-      const index = this.controlWidget.json.params.forEach((param) => param.key === propObj.json_key);
+      const index = this.controlWidget.json.params.findIndex((param) => param.key === propObj.json_key);
       if (index > -1) {
         this.controlWidget.json.params.splice(index, 1);
       } else {
@@ -231,7 +254,6 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     } else {
       param.json = {};
     }
-    console.log(JSON.stringify(this.extraParams));
     // this.editor.set(this.assetMethodObj.json_model);
   }
 
@@ -267,20 +289,36 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    this.subscriptions.push(
-      this.assetModelService.createAssetsModelControlWidget(this.controlWidget).subscribe(
-        (response: any) => {
+    if(this.viewType == 'add'){
+      this.subscriptions.push(
+        this.assetModelService.createAssetsModelControlWidget(this.controlWidget).subscribe(
+          (response: any) => {
+            this.isCreateWidgetAPILoading = false;
+            this.toasterService.showSuccess(response.message, 'Create Control Widget');
+            this.closeCreateWidgetModal();
+            this.getControlWidgets();
+          },
+          (error) => {
+            this.isCreateWidgetAPILoading = false;
+            this.toasterService.showError(error.message, 'Create Control Widget');
+          }
+        )
+      );
+    }
+    else{
+      this.subscriptions.push(this.assetModelService.updateAssetsModelControlWidget(this.controlWidget,this.assetModel.app).subscribe(
+        (response: any)=>{
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showSuccess(response.message, 'Create Control Widget');
+          this.toasterService.showSuccess(response.message, 'Update Control Widget');
           this.closeCreateWidgetModal();
           this.getControlWidgets();
         },
-        (error) => {
+        (error)=>{
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showError(error.message, 'Create Control Widget');
+          this.toasterService.showError(error.message, 'Update Control Widget');
         }
-      )
-    );
+      ))
+    }
   }
 
   deleteControlWidget() {

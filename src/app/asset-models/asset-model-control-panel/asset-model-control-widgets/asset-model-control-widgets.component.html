@@ -29,9 +29,15 @@
           <button class="btn" type="button">
             {{widget.name}}
           </button>
-          <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
-            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-            (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+          <div class="float-right pull-right mt-1" >
+            <a href="javascript:void(0)" class="pr-2" [class.disabled]="assetModel.freezed"
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+              (click)="openAddWidgetModal(widget)"><i class="fa fa-edit"></i></a>
+
+            <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+              (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+          </div>
         </ng-container>
         <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through
           {{widget?.metadata?.communication_technique}}.</h6>
@@ -72,14 +78,14 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create New Control Widget</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{viewType == 'add' ? 'Create New Control Widget' : 'Update Control Widget'}}</h5>
         <button type="button" class="close" aria-label="Close" (click)="closeCreateWidgetModal()"
           [disabled]="isCreateWidgetAPILoading">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="viewType === 'add'">
-        <form *ngIf="viewType === 'add'">
+      <div class="modal-body" *ngIf="viewType === 'add' || viewType === 'edit'">
+        <form *ngIf="viewType === 'add' || viewType === 'edit'">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Control Widget Name:</label>
             <input type="text" class="form-control form-control-sm" id="name" name="name"
@@ -88,7 +94,7 @@
 
           <div class="form-group">
             <label for="message-text" class="col-form-label">Description:</label>
-            <input type="text" class="form-control form-control-sm" id="name" name="name"
+            <input type="text" class="form-control form-control-sm" id="description" name="description"
               [(ngModel)]="controlWidget.metadata.description" placeholder="Enter Description">
           </div>
           <div class="form-group">

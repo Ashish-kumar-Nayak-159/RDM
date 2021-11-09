@@ -39,9 +39,7 @@
 </div>
 <div class="">
   <div id="map-container-google-1" class="z-depth-1-half map-container">
-
-    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
-      [fitBounds]="mapFitBounds">
+    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle" [fitBounds]="mapFitBounds">
       <agm-marker-cluster imagePath="./assets/img/m">
         <ng-container *ngFor="let asset of mapAssets; let i = index; ">
           <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"

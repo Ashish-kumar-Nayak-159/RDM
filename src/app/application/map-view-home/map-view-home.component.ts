@@ -223,10 +223,15 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               });
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
               const center = this.commonService.averageGeolocation(this.assets);
-              this.centerLatitude = center?.latitude || 23.0225;
-              this.centerLongitude = center?.longitude || 72.5714;
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+              this.mapFitBounds = false
             }
-
+            else{
+              this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+              this.mapFitBounds = false
+            }
             resolve();
           },
           (error) => (this.isGetAssetsAPILoading = false)
@@ -321,11 +326,12 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     if (this.mapAssets.length === 0) {
       this.mapFitBounds = false;
       const center = this.commonService.averageGeolocation(this.mapAssets);
-      this.centerLatitude = center?.latitude || 23.0225;
-      this.centerLongitude = center?.longitude || 72.5714;
+      this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+      this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
       // this.zoom = 8;
     } else {
-      this.mapFitBounds = true;
+      // this.mapFitBounds = true;
+      this.mapFitBounds = false;
       // this.zoom = undefined;
     }
   }

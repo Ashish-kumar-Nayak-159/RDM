@@ -50,13 +50,14 @@
             <agm-info-window #infowindow>
               <b> <a class="blue-font" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ?
                   asset.display_name: asset.asset_id}}</a></b>
-              <ng-container *ngIf="environmentApp === 'SopanCMS'">
+              <ng-container>
                 <hr>
-                <p *ngIf="asset.spcd !== undefined && asset.spcd !== null; else noSPCDTemplate"><b>Specific Power
-                    Consumption:</b> {{asset.spcd}}</p>
-                <ng-template #noSPCDTemplate>
-                  <p>No data available.</p>
-                </ng-template>
+                <div *ngFor="let kpi of asset.map_content.data | keyvalue">
+                  <p *ngIf="kpi.key !== undefined && kpi.key !== null; else noSPCDTemplate"><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+                  <ng-template #noSPCDTemplate>
+                    <p>No data available.</p>
+                  </ng-template>
+                </div>
               </ng-container>
               <ng-container *ngIf="environmentApp === 'KCMS'">
                 <hr>

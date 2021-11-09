@@ -101,16 +101,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.isGetAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type:
-          this.environmentApp === 'SopanCMS'
-            ? CONSTANTS.NON_IP_ASSET
-            : CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
+        type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
         map_content: true
       };
-      if (this.environmentApp === 'SopanCMS') {
-        this.healthyAssetCount = 0;
-        this.unhealthyAssetCount = 0;
-      }
       this.apiSubscriptions.push(
         this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
           (response: any) => {
@@ -203,27 +196,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
           },
           (error) => (this.isGetAssetsAPILoading = false)
         )
-      );
-    });
-  }
-
-  getLatestDerivedKPIData() {
-    return new Promise<void>((resolve) => {
-      const derivedKPICode = 'SPCD';
-      const obj = {
-        from_date: moment().subtract(24, 'hours').utc().unix(),
-        to_date: moment().utc().unix(),
-        epoch: true,
-      };
-      this.apiSubscriptions.push(
-        this.assetService
-          .getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
-          .subscribe((response: any) => {
-            if (response?.data) {
-              this.derivedKPILatestData = response.data;
-            }
-            resolve();
-          })
       );
     });
   }

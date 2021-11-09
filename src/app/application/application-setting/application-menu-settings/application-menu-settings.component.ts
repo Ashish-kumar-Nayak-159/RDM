@@ -4,7 +4,7 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-
+declare var $: any;
 @Component({
   selector: 'app-application-menu-settings',
   templateUrl: './application-menu-settings.component.html',
@@ -117,6 +117,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
     }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
+      this.sideMenuList.forEach((menu, i) => {
+        if (menu.index === undefined || menu.index === null ) {
+          menu.index = i;
+        }
+      });
       this.applicationData.menu_settings.main_menu = this.sideMenuList;
     } else {
       const arr = [];
@@ -166,6 +171,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       this.applicationData.menu_settings.main_menu = [...arr];
+      this.applicationData.menu_settings.main_menu.forEach((menu, i) => {
+        if (menu.index === undefined || menu.index === null ) {
+          menu.index = i;
+        }
+      });
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
@@ -189,6 +199,8 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
+    this.applicationData.menu_settings.main_menu.sort((a, b) => a.index - b.index);
+    this.sideMenuList.sort((a, b) => this.applicationData.menu_settings.main_menu.indexOf(a) - this.applicationData.menu_settings.main_menu.indexOf(b));
     this.applicationData.id = this.applicationData.app;
     this.sideMenuList.forEach((item) => {
       this.applicationData.menu_settings.main_menu.forEach((config) => {
@@ -199,6 +211,8 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       });
     });
     this.applicationData.menu_settings.main_menu = [...this.sideMenuList];
+    console.log(JSON.stringify(this.applicationData.menu_settings.main_menu));
+    console.log(this.sideMenuList);
     this.apiSubscriptions.push(
       this.applicationService.updateApp(this.applicationData).subscribe(
         (response: any) => {
@@ -213,6 +227,55 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       )
     );
+  }
+
+  getTableSortable() {
+    const that = this;
+    setTimeout(() => {
+
+      const fixHelperModified = (e, tr) => {
+        const $originals = tr.children();
+        const $helper = tr.clone();
+        $helper.children().each(function(index) {
+          $(this).width($originals.eq(index).width());
+        });
+        return $helper;
+      };
+
+      const updateIndex = (e, ui) => {
+        $('td.index', ui.item.parent()).each(function(i) {
+          $(this).html(i + '');
+        });
+
+        $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < that.applicationData.menu_settings.main_menu.length; j++) {
+            if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j].system_name) {
+              if (this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index]) {
+                this.toggleRows['main_menu_' + i] = this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
+                delete this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
+              }
+              that.applicationData.menu_settings.main_menu[j].index = i;
+            }
+          }
+        });
+      };
+
+      $('#myFavTable tbody').sortable({
+          helper: fixHelperModified,
+          stop: updateIndex,
+        })
+        .disableSelection();
+
+      $('#myFavTable tbody').sortable({
+        distance: 5,
+        delay: 100,
+        opacity: 0.6,
+        cursor: 'move',
+        update: () => {},
+      });
+
+    }, 1000);
   }
 
   onCancelClick() {

@@ -4,7 +4,7 @@
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;"
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true; this.getTableSortable();"
           *ngIf="!isAppSettingsEditable" placement="bottom" tooltip="Edit Menu Settings"><i
             class="fas fa-edit fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
@@ -26,9 +26,10 @@
     <div class="row">
       <div class="col-12 p-0">
         <div class="col-12 p-0">
-          <table class="table table-hover">
+          <table class="table table-hover" id="myFavTable">
             <thead>
               <tr >
+                <th></th>
                 <th></th>
                 <th>Page</th>
                 <th>System Name</th>
@@ -38,7 +39,7 @@
             </thead>
             <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
-                <th colspan="5">
+                <th colspan="6">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                     [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -49,29 +50,31 @@
             </tfoot>
             <tbody>
               <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
-              <tr *ngIf="item.privilege_show === undefined || item.privilege_show === true">
-                <td>
+              <tr [ngClass]="{ 'cursor-move' : isAppSettingsEditable, 'favoriteOrderId': item.visible }" id="{{item.visible ? item.system_name : ''}}"
+              *ngIf="item.privilege_show === undefined || item.privilege_show === true">
+                <td class="index"></td>
+                <td>{{item.index}}
                   <ng-container *ngIf="item.showAccordion?.length > 0">
-                    <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + configIndex)">
-                      <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                    <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + item.index)">
+                      <i [ngClass]="toggleRows['main_menu_' + item.index] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                       </a>
                   </ng-container>
                 </td>
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td>
-                  <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                  <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{item.index}}" id="display_name_main_menu{{item.index}}"
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
-                <td><input type="checkbox" name="visible_menu_{{configIndex}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
-                    id="visible_menu_{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                <td><input type="checkbox" name="visible_menu_{{item.index}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
+                    id="visible_menu_{{item.index}}" [(ngModel)]="item.visible" /></td>
 
                   </tr>
-                  <ng-container *ngIf="toggleRows['main_menu_' + configIndex]" style="background-color: #fdfeff;">
-                    <tr *ngFor="let control of item.showAccordion; let first = first; let last = last">
+                  <ng-container *ngIf="toggleRows['main_menu_' + item.index]" style="background-color: #fdfeff;">
+                    <tr id="{{'main_menu_' + item.index}}" *ngFor="let control of item.showAccordion; let first = first; let last = last">
 
-                      <td colspan="2" [ngClass]="{'accordion-border': last}"
+                      <td colspan="3" [ngClass]="{'accordion-border': last}"
                         [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
 
                       <td [ngClass]="{'accordion-border': last}"

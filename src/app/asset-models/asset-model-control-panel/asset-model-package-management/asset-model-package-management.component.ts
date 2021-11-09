@@ -51,6 +51,18 @@ export class AssetModelPackageManagementComponent implements OnInit {
     if (this.assetModel.metadata.model_type !== this.constantData.NON_IP_ASSET) {
       this.setUpPackageData();
       this.getPackages();
+    } else {
+      let assetItem;
+      const assetDataItem = {};
+      this.contextApp.menu_settings.main_menu.forEach((item) => {
+        if (item.page === 'Assets') {
+          assetItem = item.showAccordion;
+        }
+      });
+      assetItem.forEach((item) => {
+        assetDataItem[item.name] = item.value;
+      });
+      this.assetModel.metadata.local_model_type = assetDataItem['Legacy Asset'] || CONSTANTS.NON_IP_ASSET;
     }
   }
 

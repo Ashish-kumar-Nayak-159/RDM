@@ -33,8 +33,7 @@
                 <i class="fa fa-fw fa-eye"></i></a>
             </td>
             <td>
-              <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom"
-                tooltip="View Response">
+              <a (click)="loadResponseDetail(msg)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
                 <i class="fa fa-fw fa-eye"></i></a>
             </td>
           </tr>
@@ -62,9 +61,39 @@
       <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.request"
         [headerMessage]="'Request: ' + selectedMessage?.job_id" (modalEvents)="onModalEvents($event)"
         [modalConfig]="modalConfig"></app-message-modal>
-      <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail"
+      <!-- <app-message-modal *ngIf="c2dResponseDetail"
+        [bodyMessage]="c2dResponseDetail?.length === 0 ? 'No response data found.' : c2dResponseDetail"
         [headerMessage]="'Response: ' + selectedMessage?.job_id" (modalEvents)="onModalEvents($event)"
-        [modalConfig]="modalConfig"></app-message-modal>
+        [modalConfig]="modalConfig"></app-message-modal> -->
+
+    </ng-container>
+    <ng-container *ngIf="c2dResponseDetail">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Response: {{selectedMessage?.request_type}}
+
+          </h5>
+          <a class="ml-2 mt-2" (click)="loadResponseDetail(selectedMessage)" href="javascript:void(0)"
+            placement="bottom" tooltip="Refresh Response">
+            <i class="fa fa-fw fa-refresh"></i></a>
+          <button type="button" class="close" aria-label="Close" (click)="onModalEvents('close')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="isC2dMsgResponsesLoading"><i class="fa fa-spinner fa-spin fa-fw"></i></ng-container>
+          <ng-container *ngIf="!isC2dMsgResponsesLoading">
+            <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dResponseDetail | json"></pre>
+            <div *ngIf="modalConfig?.stringDisplay">No response data found.</div>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+            Cancel
+          </button>
+        </div>
+      </div>
+
     </ng-container>
     <ng-container *ngIf="selectedMessage?.job_type === 'DirectMethod'">
       <div class="modal-content">
@@ -78,10 +107,6 @@
           <ng-container *ngIf="c2dMessageDetail">
             <h5>Reqeust: </h5>
             <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
-          </ng-container>
-          <ng-container *ngIf="c2dResponseDetail">
-            <h5>Response: </h5>
-            <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="selectedMessage?.metadata | json"></pre>
           </ng-container>
         </div>
         <div class="modal-footer">

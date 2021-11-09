@@ -249,7 +249,11 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.groupName[key] && index === -1) {
-      this.alertObj.actions[key].recipients.splice(this.alertObj.actions[key].recipients.length, 0, this.groupName[key]);
+      this.alertObj.actions[key].recipients.splice(
+        this.alertObj.actions[key].recipients.length,
+        0,
+        this.groupName[key]
+      );
     }
     this.groupName[key] = undefined;
   }
@@ -361,7 +365,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
               a: new FormControl(true),
               p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
             });
-          } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+          } else if (this.assetModel.tags.protocol === 'AIoTInputs') {
             this.setupForm = new FormGroup({
               slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
               cn: new FormControl(alertObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
@@ -413,7 +417,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
             a: new FormControl(true),
             p: new FormControl(2, [Validators.required]),
           });
-        } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        } else if (this.assetModel.tags.protocol === 'AIoTInputs') {
           this.setupForm = new FormGroup({
             slave_id: new FormControl(null, [Validators.required]),
             cn: new FormControl(null, [Validators.required, Validators.min(0)]),

@@ -331,6 +331,10 @@ export class CommonService {
     const centralLongitude = Math.atan2(y, x);
     const centralSquareRoot = Math.sqrt(x * x + y * y);
     const centralLatitude = Math.atan2(z, centralSquareRoot);
+    console.log({
+      latitude: (centralLatitude * 180) / Math.PI,
+      longitude: (centralLongitude * 180) / Math.PI,
+    });
     return {
       latitude: (centralLatitude * 180) / Math.PI,
       longitude: (centralLongitude * 180) / Math.PI,

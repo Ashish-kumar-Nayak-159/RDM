@@ -57,7 +57,13 @@
   <div class="table-responsive">
     <div class="tableFixHead">
       <div class="col-md-12 mt-1 py-3 pl-4">
-        Check gateway is connected or not, Gateway to respond within 30 seconds, else Gateway is considered as offline.
+        <ng-container *ngIf="asset.type === constantData.IP_GATEWAY">
+          Check gateway is connected or not, Gateway to respond within 30 seconds, else Gateway is considered as
+          offline.
+        </ng-container>
+        <ng-container *ngIf="asset.type === constantData.IP_ASSET">
+          Check asset is connected or not, Asset to respond within 30 seconds, else Asset is considered as offline.
+        </ng-container>
       </div>
       <div class="col-md-12 mt-1 pb-4 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"

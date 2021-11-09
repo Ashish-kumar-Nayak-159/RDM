@@ -11,12 +11,12 @@
           <!-- <li class="" ><a href="#">Compose</a></li> -->
           <li class="" [ngClass]="{'visited': selectedLevel === 2 || selectedLevel > 2}">
             <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
-              (click)="onClickOfFeedback()">Feedback</a>
+              (click)="onClickOfFeedback()">Job Detail</a>
           </li>
-          <li [ngClass]="{'visited': selectedLevel === 3}">
+          <!-- <li [ngClass]="{'visited': selectedLevel === 3}">
             <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
               (click)="onClickOfResponse()">Response</a>
-          </li>
+          </li> -->
         </ol>
       </nav>
     </div>
@@ -222,9 +222,9 @@
   <div *ngIf="displayType === 'feedback'">
     <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
   </div>
-  <div *ngIf="displayType === 'response'">
+  <!-- <div *ngIf="displayType === 'response'">
     <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
-  </div>
+  </div> -->
 </div>
 <!-- <div class="" style="position:fixed; bottom:1.5rem;">
   <div class="form-group px-3"><button type="button" placement="bottom" class="btn btn-sm searchBtn btn-primary" onclick="changeClass()">Next</button></div>

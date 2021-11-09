@@ -21,8 +21,22 @@ export class AssetPackagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.setUpPackageData();
-    this.getPackages();
+    if (this.asset.type !== this.constantData.NON_IP_ASSET) {
+      this.setUpPackageData();
+      this.getPackages();
+    } else {
+      let assetItem;
+      const assetDataItem = {};
+      this.contextApp.menu_settings.main_menu.forEach((item) => {
+        if (item.page === 'Assets') {
+          assetItem = item.showAccordion;
+        }
+      });
+      assetItem.forEach((item) => {
+        assetDataItem[item.name] = item.value;
+      });
+      this.asset.local_type = assetDataItem['Legacy Asset'] || CONSTANTS.NON_IP_ASSET;
+    }
   }
 
   setUpPackageData() {

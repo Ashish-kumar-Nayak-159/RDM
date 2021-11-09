@@ -275,7 +275,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             t: new FormControl(null, [Validators.required]),
             pt: new FormControl(null, [Validators.required]),
           });
-        } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        } else if (this.assetModel.tags.protocol === 'AIoTInputs') {
           this.setupForm = new FormGroup({
             slave_id: new FormControl(null, [Validators.required]),
             cn: new FormControl(null, [Validators.required, Validators.min(0)]),
@@ -676,7 +676,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               p: new FormControl(this.propertyObj?.metadata?.p, [Validators.required]),
               t: new FormControl(this.propertyObj?.metadata?.t, [Validators.required]),
             });
-          } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+          } else if (this.assetModel.tags.protocol === 'AIoTInputs') {
             this.setupForm = new FormGroup({
               slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
               cn: new FormControl(this.propertyObj?.metadata?.cn, [Validators.required, Validators.min(0)]),

@@ -32,9 +32,9 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   originalAssetsModelFilterObj: any;
   tileData: any;
   subscriptions: Subscription[] = [];
-  iotAssetsTab: { visibility: any; tab_name: any; table_key: any };
-  legacyAssetsTab: { visibility: any; tab_name: any; table_key: any };
-  iotGatewaysTab: { visibility: any; tab_name: any; table_key: any };
+  iotAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
+  legacyAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
+  iotGatewaysTab: { visibility: any; tab_name: any; table_key: any; name: any };
   componentState: any;
   decodedToken: any;
   constructor(
@@ -93,7 +93,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
               is_sort_required: true,
               fixed_value_list: [],
               data_type: 'text',
-              data_key: 'model_type',
+              data_key: 'local_model_type',
             },
             {
               header_name: 'Created By',
@@ -189,19 +189,22 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       assetDataItem[item.name] = item.value;
     });
     this.iotAssetsTab = {
-      visibility: assetDataItem['IOT Assets'],
-      tab_name: assetDataItem['IOT Assets Tab Name'],
-      table_key: assetDataItem['IOT Assets Table Key Name'],
+      visibility: assetDataItem['IoT Assets'],
+      tab_name: assetDataItem['IoT Assets Tab Name'],
+      table_key: assetDataItem['IoT Assets Table Key Name'],
+      name: assetDataItem['IoT Asset'],
     };
     this.legacyAssetsTab = {
       visibility: assetDataItem['Legacy Assets'],
       tab_name: assetDataItem['Legacy Assets Tab Name'],
       table_key: assetDataItem['Legacy Assets Table Key Name'],
+      name: assetDataItem['Legacy Asset'],
     };
     this.iotGatewaysTab = {
-      visibility: assetDataItem['IOT Gateways'],
-      tab_name: assetDataItem['IOT Gateways Tab Name'],
-      table_key: assetDataItem['IOT Gateways Table Key Name'],
+      visibility: assetDataItem['IoT Gateways'],
+      tab_name: assetDataItem['IoT Gateways Tab Name'],
+      table_key: assetDataItem['IoT Gateways Table Key Name'],
+      name: assetDataItem['IoT Gateway'],
     };
   }
 
@@ -218,6 +221,13 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
           if (response && response.data) {
             response.data.forEach((model) => {
               if (model.model_type === this.componentState) {
+                if (model.model_type === CONSTANTS.IP_ASSET) {
+                  model.local_model_type = this.iotAssetsTab?.name || CONSTANTS.IP_ASSET;
+                } else if (model.model_type === CONSTANTS.IP_GATEWAY) {
+                  model.local_model_type = this.iotGatewaysTab?.name || CONSTANTS.IP_GATEWAY;
+                } else if (model.model_type === CONSTANTS.NON_IP_ASSET) {
+                  model.local_model_type = this.legacyAssetsTab?.name || CONSTANTS.NON_IP_ASSET;
+                }
                 this.assetModels.push(model);
               }
             });

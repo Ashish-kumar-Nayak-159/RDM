@@ -62,9 +62,9 @@ export class AssetManagementComponent implements OnInit {
       assetDataItem[item.name] = item.value;
     });
     this.iotAssetsTab = {
-      visibility: assetDataItem['IOT Assets'],
-      tab_name: assetDataItem['IOT Assets Tab Name'],
-      table_key: assetDataItem['IOT Assets Table Key Name'],
+      visibility: assetDataItem['IoT Assets'],
+      tab_name: assetDataItem['IoT Assets Tab Name'],
+      table_key: assetDataItem['IoT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
       visibility: assetDataItem['Legacy Assets'],
@@ -72,15 +72,15 @@ export class AssetManagementComponent implements OnInit {
       table_key: assetDataItem['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
-      visibility: assetDataItem['IOT Gateways'],
-      tab_name: assetDataItem['IOT Gateways Tab Name'],
-      table_key: assetDataItem['IOT Gateways Table Key Name'],
+      visibility: assetDataItem['IoT Gateways'],
+      tab_name: assetDataItem['IoT Gateways Tab Name'],
+      table_key: assetDataItem['IoT Gateways Table Key Name'],
     };
     console.log(this.tileData);
     if (this.componentState === CONSTANTS.IP_ASSET) {
       this.tabData = {
-        tab_name: assetDataItem['IOT Assets Tab Name'],
-        table_key: assetDataItem['IOT Assets Table Key Name'],
+        tab_name: assetDataItem['IoT Assets Tab Name'],
+        table_key: assetDataItem['IoT Assets Table Key Name'],
       };
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
@@ -91,8 +91,8 @@ export class AssetManagementComponent implements OnInit {
     }
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.tabData = {
-        tab_name: assetDataItem['IOT Gateways Tab Name'],
-        table_key: assetDataItem['IOT Gateways Table Key Name'],
+        tab_name: assetDataItem['IoT Gateways Tab Name'],
+        table_key: assetDataItem['IoT Gateways Table Key Name'],
       };
     }
     console.log(this.tabData);

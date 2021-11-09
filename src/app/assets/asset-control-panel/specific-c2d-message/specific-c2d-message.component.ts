@@ -192,6 +192,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
               const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
               this.timerObj = this.dhms(time);
             }, 1000);
+            this.onClickOfFeedback();
           },
           (error) => {
             this.sendMessageResponse =

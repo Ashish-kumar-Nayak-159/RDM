@@ -38,7 +38,7 @@ export class GatewaySettingsComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetTwinData();
     this.getAssetData();
-    this.c2dJobFilter.request_type = 'Test Gateway Connection';
+    this.c2dJobFilter.request_type = 'Test Connection';
     this.c2dJobFilter.job_type = 'DirectMethod';
     // this.c2dJobFilter1.request_type = 'Sync Rules';
     // this.c2dJobFilter1.job_type = 'Message';
@@ -127,7 +127,7 @@ export class GatewaySettingsComponent implements OnInit {
       gateway_id: this.asset.asset_id,
       message: {},
       job_type: 'DirectMethod',
-      request_type: 'Test Gateway Connection',
+      request_type: 'Test Connection',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
       sub_job_id: null,
     };
@@ -136,13 +136,15 @@ export class GatewaySettingsComponent implements OnInit {
       this.assetService.callAssetMethod(obj, obj.app, this.asset?.gateway_id || this.asset.asset_id).subscribe(
         (response: any) => {
           if (response?.asset_response?.status?.toLowerCase() === 'connected') {
-            this.testConnectionMessage = 'Gateway connection is successful';
+            this.testConnectionMessage =
+              (this.asset.type === this.constantData.IP_ASSET ? 'Asset' : 'Gateway') + ' connection is successful';
             this.assetService.refreshRecentJobs.emit();
           }
           this.isTestConnectionAPILoading = false;
         },
         (error) => {
-          this.testConnectionMessage = 'Gateway is not connected';
+          this.testConnectionMessage =
+            (this.asset.type === this.constantData.IP_ASSET ? 'Asset' : 'Gateway') + ' is not connected';
           this.assetService.refreshRecentJobs.emit();
           this.isTestConnectionAPILoading = false;
         }

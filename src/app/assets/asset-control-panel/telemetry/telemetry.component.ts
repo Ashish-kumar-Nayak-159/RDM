@@ -97,7 +97,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
         //   key: 'message_id',
         // },
         {
-          name: 'IOT Hub Date',
+          name: 'IoT Hub Date',
           key: 'local_iothub_date',
           type: 'text',
           headerClass: 'w-15',

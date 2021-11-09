@@ -98,7 +98,7 @@ export class AppUrls {
   public static CREATE_ALERT_CONDITION = 'apps/{0}/asset_models/{1}/alert_conditions';
   public static UPDATE_ALERT_CONDITION = 'apps/{0}/asset_models/{1}/alert_conditions/{2}';
   public static DELETE_ALERT_CONDITION = 'apps/{0}/asset_models/{1}/alert_conditions/{2}';
-  public static GET_IOT_LEGACY_ASSETS = 'apps/{0}/assets';
+  public static GET_IoT_LEGACY_ASSETS = 'apps/{0}/assets';
   public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report';
   public static SIGNALR_NEGOTIATE = 'signalr/negotiate';
   public static GET_MODEL_ALERT_REASONS = 'apps/{0}/asset_models/{1}/alert_acknowledge_reasons';

@@ -26,8 +26,8 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
         this.onChangeOfSetupSecondaryType(this.dataObj);
         this.onChageOfMemoryType(this.dataObj);
       }
-      if (this.assetModel.tags.protocol === 'AIOTInputs') {
-        this.onAIOTTypeChange(this.dataObj);
+      if (this.assetModel.tags.protocol === 'AIoTInputs') {
+        this.onAIoTTypeChange(this.dataObj);
       }
       if (this.assetModel.tags.protocol === 'BlueNRG') {
         this.onChangeOfBlueNRGValueType(this.dataObj);
@@ -35,7 +35,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
     }
   }
 
-  onAIOTTypeChange(obj = undefined) {
+  onAIoTTypeChange(obj = undefined) {
     if (this.setupForm.value.d === 'a') {
       this.setupForm.removeControl('p');
       this.setupForm.addControl(

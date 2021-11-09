@@ -20,9 +20,9 @@ export class C2dJobsComponent implements OnInit {
   c2dJobFilter: any = {};
   c2dMsgs: any[] = [];
   isC2dMsgsLoading = false;
+  isC2dMsgRequestLoading = false;
+  isC2dMsgResponsesLoading = false;
   @Input() asset: Asset = new Asset();
-  @Input() type = 'all';
-  @Input() message: any;
   apiSubscriptions: Subscription[] = [];
   c2dMessageDetail: any;
   c2dResponseDetail: any[];
@@ -83,9 +83,7 @@ export class C2dJobsComponent implements OnInit {
   }
 
   loadMessageDetail(message, openModalFlag) {
-    if (!openModalFlag) {
-      this.isC2dMsgsLoading = true;
-    }
+    this.isC2dMsgRequestLoading = true;
     this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
     const obj = {
@@ -109,64 +107,50 @@ export class C2dJobsComponent implements OnInit {
     this.apiSubscriptions.push(
       this.assetService.getMessageRequestDetails(message.id, this.contextApp.app, obj).subscribe(
         (response: any) => {
-          if (openModalFlag) {
-            this.c2dMessageDetail = response;
-            this.openC2DMessageModal();
-          } else {
-            const arr = [];
-            response.local_created_date = this.commonService.convertUTCDateToLocal(response.request_date);
-            arr.push(response);
-            this.c2dMsgs = arr;
-            this.isC2dMsgsLoading = false;
-          }
+          this.c2dMessageDetail = response;
+          this.openC2DMessageModal();
+          this.isC2dMsgRequestLoading = false;
         },
-        (error) => (this.isC2dMsgsLoading = false)
+        (error) => (this.isC2dMsgRequestLoading = false)
       )
     );
   }
 
-  loadResponseDetail(message, openModalFlag) {
-    if (!openModalFlag) {
-      this.isC2dMsgsLoading = true;
-    }
+  loadResponseDetail(message) {
+    this.openC2DMessageModal();
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
-    console.log(message.job_type);
-    if ((this.type !== 'response' || !openModalFlag) && message.job_type !== 'DirectMethod') {
-      const obj = {
-        sub_job_id: message.sub_job_id,
-        from_date: null,
-        to_date: null,
-        epoch: true,
-      };
-      const epoch = message.request_date
-        ? this.commonService.convertDateToEpoch(message.request_date)
-        : message.timestamp;
-      obj.from_date = epoch ? epoch - 5 : null;
-      obj.to_date = moment().utc().unix();
-      this.apiSubscriptions.push(
-        this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-          (response: any) => {
-            if (response.data) {
-              if (openModalFlag) {
-                this.c2dResponseDetail = response.data;
-                this.openC2DMessageModal();
-              } else {
-                this.c2dMsgs = response.data;
-                this.c2dMsgs.forEach(
-                  (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
-                );
-                this.isC2dMsgsLoading = false;
-              }
-            }
-          },
-          (error) => (this.isC2dMsgsLoading = false)
-        )
-      );
-    } else if ((this.type === 'response' && openModalFlag) || message.job_type === 'DirectMethod') {
-      this.c2dResponseDetail = message;
-      this.openC2DMessageModal();
-    }
+    console.log(message);
+    this.isC2dMsgResponsesLoading = true;
+    const obj = {
+      sub_job_id: message.sub_job_id,
+      from_date: null,
+      to_date: null,
+      epoch: true,
+    };
+    const epoch = message.request_date
+      ? this.commonService.convertDateToEpoch(message.request_date)
+      : message.timestamp;
+    obj.from_date = epoch ? epoch - 5 : null;
+    obj.to_date = moment().utc().unix();
+    this.apiSubscriptions.push(
+      this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.c2dResponseDetail = response.data;
+          }
+          if (this.c2dResponseDetail.length === 0) {
+            this.modalConfig.jsonDisplay = false;
+            this.modalConfig.stringDisplay = true;
+          } else {
+            this.modalConfig.jsonDisplay = true;
+            this.modalConfig.stringDisplay = false;
+          }
+          this.isC2dMsgResponsesLoading = false;
+        },
+        (error) => (this.isC2dMsgResponsesLoading = false)
+      )
+    );
   }
 
   openC2DMessageModal() {

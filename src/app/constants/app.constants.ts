@@ -621,9 +621,9 @@ export class CONSTANTS {
     },
     {
       page: 'alerts',
-      system_name: 'Alert Raise Events',
+      system_name: 'Alert',
       url: '#asset_alerts',
-      display_name: 'Alert Raise Events',
+      display_name: 'Alert',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
       isTitle: false,
@@ -1004,9 +1004,9 @@ export class CONSTANTS {
     },
     {
       page: 'alerts',
-      system_name: 'Alert Raise Events',
+      system_name: 'Alert',
       url: '#asset_alerts',
-      display_name: 'Alert Raise Events',
+      display_name: 'Alert',
       icon: 'fa fa-fw fa-bolt',
       privileges_required: ['RMV'],
       visible: true,

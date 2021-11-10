@@ -649,12 +649,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
               item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
               this.propertyList.forEach((prop) => {
                 if (item[prop.json_key] !== null && item[prop.json_key] !== undefined) {
-                  item[prop.json_key] = JSON.stringify(item[prop.json_key]);
+                  // item[prop.json_key] = JSON.stringify(item[prop.json_key]);
+                  // item[prop.name] = JSON.stringify(item[prop.json_key]);
                   item[prop.name] = JSON.stringify(item[prop.json_key]);
                 }
               });
             });
             this.telemetry = [...this.telemetry, ...response.data];
+            console.log(JSON.stringify(this.telemetry));
             this.isFilterOpen = false;
             if (response.data.length === this.currentLimit) {
               this.insideScrollFunFlag = false;

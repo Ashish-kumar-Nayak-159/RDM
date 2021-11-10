@@ -108,7 +108,19 @@
             [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
             tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
             style="width: 3em;">
-          <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+          <!-- <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div> -->
+          <div class="form-group pl-2">
+            <select class="form-control form-control-sm" id="samplingFormat"
+              [(ngModel)]="historicalDateFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
+              [disabled]="!historicalDateFilter.isTypeEditable" [ngClass]="{'active': historicalDateFilter.sampling_format}">
+              <option [ngValue]="undefined">Sampling Format</option>
+              <option [ngValue]="'minute'">Minute</option>
+              <option [ngValue]="'hour'">Hour</option>
+              <option [ngValue]="'day'">Day</option>
+              <option [ngValue]="'week'">Week</option>
+              <option [ngValue]="'month'">Month</option>
+            </select>
+          </div>
         </div>
         <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
           <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>

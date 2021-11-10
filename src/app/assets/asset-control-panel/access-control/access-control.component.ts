@@ -42,10 +42,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.decodedToken?.privileges?.indexOf('UMV') > -1) {
+      await this.getApplicationUsers();
       this.getAssetAccessUsers();
     } else {
       this.selectedTab = 'Recipients';

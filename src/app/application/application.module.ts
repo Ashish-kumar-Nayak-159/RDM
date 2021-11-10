@@ -25,7 +25,8 @@ import { ApplicationDashboardConfigurationComponent } from './application-settin
 import { ApplicationEmailAliasComponent } from './application-setting/application-email-alias/application-email-alias.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { GoogleMapsModule } from '@angular/google-maps';
-
+import { ApplicationFilterSettingsComponent } from './application-setting/application-filter-settings/application-filter-settings.component';
+import { MatNativeDateModule } from '@angular/material/core';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -42,6 +43,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     ApplicationOrgTreeComponent,
     ApplicationDashboardConfigurationComponent,
     ApplicationEmailAliasComponent,
+    ApplicationFilterSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -60,6 +62,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     TooltipModule,
     NgxIntlTelInputModule,
     GoogleMapsModule,
+    MatNativeDateModule
   ],
 })
 export class ApplicationModule {}

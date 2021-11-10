@@ -155,11 +155,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
-            dateOption: 'Last 24 Hours',
+            dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
-            dateOption: 'Last 30 Mins',
+            dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel ||'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           resolve();

@@ -91,7 +91,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.filterObj.aggregation_minutes = 1;
         this.filterObj.aggregation_format = 'AVG';
         this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-        console.log(this.originalFilterObj.report_type);
         // this.getLatestAlerts();
         await this.getAssets(this.contextApp.user.hierarchy);
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -105,7 +104,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};    
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(item);
       if (item.dateOption) {
@@ -132,8 +131,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // } else {
         //   this.filterObj.isTypeEditable = false;
         // }
+        this.filterObj.asset = item.assets
         if (this.filterObj.asset) {
-          // this.onChangeOfAsset(this.filterObj.asset);
+          this.onChangeOfAsset(this.filterObj.asset);
           const records = this.commonService.calculateEstimatedRecords(
             this.frequency,
             this.filterObj.from_date,
@@ -147,7 +147,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
       console.log(this.originalFilterObj);
-
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       console.log(this.originalFilterObj);
       // if (this.filterObj.asset) {
@@ -224,7 +223,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
             }
-          }
+          }          
           resolve();
         })
       );
@@ -238,9 +237,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    console.log(frequencyArr);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    console.log(this.frequency);
     if (this.filterObj.from_date && this.filterObj.to_date) {
       // this.onChangeOfAsset(this.filterObj.asset);
       const records = this.commonService.calculateEstimatedRecords(
@@ -264,10 +261,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onAssetSelection() {
     if (this.filterObj.asset) {
       const asset_model = this.filterObj?.asset?.asset_model;
-
       if (asset_model) {
         this.getAssetsModelProperties(asset_model);
       }
+      this.onChangeOfAsset(this.filterObj.asset)
     } else {
       this.dropdownPropList = [];
       this.propertyList = [];
@@ -289,7 +286,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onNonIPAssetChange() {
     // this.filterObj.asset_id = this.filterObj.asset.asset_id;
-    console.log(this.originalFilterObj.report_type);
     if (this.filterObj.report_type === 'Process Parameter Report') {
       if (this.filterObj.asset) {
         const asset_model = this.filterObj.asset.asset_model;
@@ -298,7 +294,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log(this.originalFilterObj.report_type);
   }
 
   getAssetsModelProperties(assetModel) {
@@ -338,7 +333,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
-          console.log(this.dropdownPropList);
           // this.props = [...this.dropdownPropList];
           resolve();
         })
@@ -373,7 +367,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date;
     }
-    console.log(this.filterObj);
     const obj = { ...this.filterObj };
     let asset_model: any;
     if (obj.asset) {
@@ -410,7 +403,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    console.log(this.originalFilterObj.report_type);
     this.isTelemetryLoading = true;
     // this.telemetry = [];
     // this.latestAlerts = [];
@@ -793,7 +785,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
           });
           data.push(obj);
         });
-        console.log(JSON.stringify(data));
         ws = XLSX.utils.json_to_sheet(data);
       }
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column

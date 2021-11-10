@@ -356,7 +356,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       for (let i = 0; i < 10; i++) {
         const obj = {
           message_date: currentDate.subtract(i, 'minute').format('DD-MMM-YYYY hh:mm:ss A'),
+          message_date_obj: null,
         };
+        obj.message_date_obj = new Date(obj.message_date);
         y1Axis.forEach((element) => {
           this.propertyList.forEach((prop) => {
             if (element.json_key === prop.json_key) {
@@ -413,7 +415,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       } else if (layoutJson.chartType === 'VibrationDamagePlot') {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
-      componentRef.instance.telemetryData = JSON.parse(JSON.stringify(data));
+      componentRef.instance.telemetryData = data;
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

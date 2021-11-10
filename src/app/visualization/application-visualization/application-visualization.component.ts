@@ -1012,6 +1012,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.isChartViewOpen = true;
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            item.message_date_obj = new Date(item.message_date);
           });
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
@@ -1050,7 +1051,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.value.y1axis;

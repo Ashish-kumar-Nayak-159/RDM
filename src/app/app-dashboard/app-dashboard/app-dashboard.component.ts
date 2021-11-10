@@ -861,17 +861,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    console.log('breofreeeeee          ', JSON.stringify(pagefilterObj));
     pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
     pagefilterObj['assets'] = filterObj.asset;
     pagefilterObj['from_date'] = filterObj.from_date;
-    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
     pagefilterObj['to_date'] = filterObj.to_date;
-    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
     pagefilterObj['dateOption'] = this.historicalDateFilter.dateOption;
-    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    console.log('aftereeee     ', JSON.stringify(pagefilterObj));
     const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
     filterObj.partition_key = asset.partition_key;
     delete filterObj.count;
@@ -952,13 +947,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.telemetryData = response.data;
           this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
           const nullValueArr = [];
-          propArr.forEach((prop) => {
+          propArr.forEach((prop, index) => {
             let flag = false;
             for (let i = 0; i < this.telemetryData.length; i++) {
               if (response.data[i][prop.json_key] !== null && response.data[i][prop.json_key] !== undefined) {
                 flag = false;
                 break;
               } else {
+                delete response.data[i][prop.json_key];
                 flag = true;
               }
             }
@@ -967,16 +963,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
           console.log(nullValueArr);
-
-          // console.log(JSON.stringify(this.telemetryData));
-          console.log(this.telemetryData.length);
-          let telemetryData = this.telemetryData;
+          let telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            // item.message_date = new Date(item.message_date);
+            item.message_date_obj = new Date(item.message_date);
           });
+          console.log(JSON.stringify(telemetryData));
+          console.log(telemetryData);
+
           telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
-          // this.loadGaugeChart(telemetryData[0]);
-          // telemetryData.reverse();
           this.isTelemetryDataLoading = false; // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.historicalDateFilter.widgets?.forEach((widget) => {
@@ -1011,7 +1007,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.y1axis;
               componentRef.instance.y2AxisProps = widget.y2axis;

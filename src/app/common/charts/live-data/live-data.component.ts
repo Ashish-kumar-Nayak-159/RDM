@@ -86,41 +86,26 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];
-      this.telemetryData.forEach((obj, i) => {
-        const newObj: any = {};
-        if (this.environmentApp === 'SopanCMS') {
-          newObj['TMD'] = Number(newObj['TMD']);
-          newObj['TMS'] = Number(newObj['TMS']);
-          if (newObj['TMD'] < 1) {
-            newObj['TMD'] = undefined;
+      if (this.environmentApp === 'SopanCMS') {
+        this.telemetryData.forEach((obj, i) => {
+          // const newObj: any = {};
+          obj['TMD'] = Number(obj['TMD']);
+          obj['TMS'] = Number(obj['TMS']);
+          if (obj['TMD'] < 1) {
+            obj['TMD'] = undefined;
           }
-          if (newObj['TMS'] < 1) {
-            newObj['TMS'] = undefined;
+          if (obj['TMS'] < 1) {
+            obj['TMS'] = undefined;
           }
-        }
-
-        this.y1AxisProps.forEach((prop) => {
-          if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            newObj[prop.json_key] = obj[prop.json_key];
-          }
+          data.splice(data.length, 0, obj);
         });
-        this.y2AxisProps.forEach((prop) => {
-          if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            newObj[prop.json_key] = obj[prop.json_key];
-          }
-        });
-        if (Object.keys(newObj).length > 0) {
-          // console.log('hereeeeee');
-          newObj.message_date = new Date(obj.message_date);
-          delete newObj.aggregation_end_time;
-          delete newObj.aggregation_start_time;
-          data.splice(data.length, 0, newObj);
-        }
-      });
-
-      chart.data = data;
+        chart.data = data;
+      } else {
+        // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
+        chart.data = this.telemetryData;
+      }
       console.log(data.length);
-      // console.log(JSON.stringify(chart.data));
+      console.log(chart.data);
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -190,12 +175,12 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         chart.exporting.title =
           this.chartTitle +
           ' from ' +
-          chart.data[0].message_date?.toString() +
+          chart.data[0].message_date_obj?.toString() +
           ' to ' +
-          chart.data[chart.data.length - 1].message_date.toString();
+          chart.data[chart.data.length - 1].message_date_obj.toString();
       }
       this.chartDataFields = {
-        message_date: 'Timestamp',
+        message_date_obj: 'Timestamp',
       };
       this.y1AxisProps.forEach((prop) => {
         this.propertyList.forEach((propObj) => {
@@ -224,12 +209,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
           chart.exporting.filePrefix =
             this.asset.asset_id +
             '_' +
-            chart.data[0].message_date.toString() +
+            chart.data[0].message_date_obj.toString() +
             '_' +
-            chart.data[chart.data.length - 1].message_date.toString();
+            chart.data[chart.data.length - 1].message_date_obj.toString();
         } else {
           chart.exporting.filePrefix =
-            chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+            chart.data[0].message_date_obj.toString() +
+            '_' +
+            chart.data[chart.data.length - 1].message_date_obj.toString();
         }
       }
       chart.scrollbarX = new am4core.Scrollbar();
@@ -313,7 +300,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.propKey = prop.json_key;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
-      series.dataFields.dateX = 'message_date';
+      series.dataFields.dateX = 'message_date_obj';
       series.dataFields.valueY = prop.json_key;
       series.groupFields.valueY = 'value';
       series.compareText = true;

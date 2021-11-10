@@ -540,6 +540,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
               this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
               this.historyData.forEach((item) => {
                 item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+                // item.message_date = new Date(item.message_date);
+                item.message_date_obj = new Date(item.message_date);
               });
               this.isHistoryAPILoading = false;
               // historyData.reverse();
@@ -696,7 +698,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
       console.log(noDataFlag, '======', this.historyData);
-      componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(this.historyData));
+      componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData;
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

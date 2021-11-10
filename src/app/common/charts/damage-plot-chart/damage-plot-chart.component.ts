@@ -86,11 +86,9 @@ export class DamagePlotChartComponent implements OnInit {
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];
-      const arr = [];
       this.telemetryData.forEach((obj, i) => {
         this.y1AxisProps.forEach((prop) => {
           if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            arr.push(obj);
             const keys = this.commonService.sortObjectBasedOnKey(obj[prop.json_key]);
             keys.forEach((key, index) => {
               const newObj: any = {};
@@ -99,9 +97,6 @@ export class DamagePlotChartComponent implements OnInit {
                 newObj[prop.json_key + '_' + i] = obj[prop.json_key][key];
               }
               if (Object.keys(newObj).length > 0) {
-                newObj.message_date = new Date(obj.message_date);
-                delete newObj.aggregation_end_time;
-                delete newObj.aggregation_start_time;
                 data.splice(data.length, 0, newObj);
               }
             });
@@ -142,49 +137,25 @@ export class DamagePlotChartComponent implements OnInit {
         this.loaderMessage = 'Loading Data. Wait...';
       });
       chart.legend.itemContainers.template.togglable = false;
-      //  chart.exporting.menu = new am4core.ExportMenu();
-      // chart.exporting.getFormatOptions('xlsx').useLocale = false;
-      // chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-      // if (chart.data.length > 0) {
-      //   chart.exporting.title =
-      //     this.chartTitle +
-      //     ' from ' +
-      //     chart.data[0].message_date?.toString() +
-      //     ' to ' +
-      //     chart.data[chart.data.length - 1].message_date.toString();
-      // }
-      // this.chartDataFields = {
-      //   message_date: 'Timestamp',
-      // };
-      // this.y1AxisProps.forEach((prop) => {
-      //   this.propertyList.forEach((propObj) => {
-      //     if (prop.json_key === propObj.json_key) {
-      //       const units = propObj.json_model[propObj.json_key].units;
-      //       this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
-      //     }
-      //   });
-      // });
-      // chart.exporting.dataFields = this.chartDataFields;
+      chart.legend.itemContainers.template.events.on('hit', (ev) => {
+        console.log(ev);
+        console.log(ev.target.dataItem.dataContext['time']);
+        this.seriesArr.forEach((item, index) => {
+          const seriesColumn = this.chart.series.getIndex(index);
+          if (ev.target.dataItem.dataContext['time'] === item.time) {
+            if (item.isHiding || item.isHidden) {
+              item.show();
+            } else {
+              item.hide();
+            }
+          }
+        });
+      });
       chart.zoomOutButton.disabled = true;
-      // chart.exporting.getFormatOptions('pdf').addURL = false;
-      // chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-      // if (chart.data.length > 0) {
-      //   if (this.selectedAlert) {
-      //     chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
-      //   } else if (this.asset?.asset_id) {
-      //     chart.exporting.filePrefix =
-      //       this.asset.asset_id +
-      //       '_' +
-      //       chart.data[0].message_date.toString() +
-      //       '_' +
-      //       chart.data[chart.data.length - 1].message_date.toString();
-      //   } else {
-      //     chart.exporting.filePrefix =
-      //       chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
-      //   }
-      // }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
+      chart.scrollbarY = new am4core.Scrollbar();
+      chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
     });
   }
@@ -251,18 +222,8 @@ export class DamagePlotChartComponent implements OnInit {
       this.y1AxisProps.forEach((prop, i) => {
         if (data[prop.json_key] !== null && data[prop.json_key] !== undefined) {
           const series = chart.series.push(new am4charts.LineSeries());
-          // series.dataFields.dateX = 'message_date';
-
-          // this.propertyList.forEach((propObj) => {
-          //   if (propObj.json_key === this.y1AxisProps[0].json_key) {
-          //     series.units = propObj.json_model[propObj.json_key].units;
-          //   }
-          // });
-          // series.stroke = am4core.color(color);
           series.units = unit;
           series.name = this.getPropertyName(prop.json_key);
-          // series.xAxis = axis;
-          // console.log(this.getPropertyType(prop.json_key));
           const proptype = this.getPropertyType(prop.json_key);
           series.propType =
             proptype === 'Edge Derived Properties'

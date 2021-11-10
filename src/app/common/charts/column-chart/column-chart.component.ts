@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -40,6 +41,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   loader = false;
   loaderMessage = 'Loading Data. Wait...';
   decodedToken: any;
+  environmentApp = environment.app;
   constructor(private zone: NgZone, private chartService: ChartService, private commonService: CommonService) {}
 
   ngOnInit(): void {
@@ -77,33 +79,32 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       const chart = am4core.create(this.chartId, am4charts.XYChart);
 
       const data = [];
-      this.telemetryData.forEach((obj, i) => {
-        const newObj: any = {};
-        this.y1AxisProps.forEach((prop) => {
-          if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            newObj[prop.json_key] = obj[prop.json_key];
+      if (this.environmentApp === 'SopanCMS') {
+        this.telemetryData.forEach((obj, i) => {
+          // const newObj: any = {};
+          obj['TMD'] = Number(obj['TMD']);
+          obj['TMS'] = Number(obj['TMS']);
+          if (obj['TMD'] < 1) {
+            obj['TMD'] = undefined;
           }
-        });
-        this.y2AxisProps.forEach((prop) => {
-          if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            newObj[prop.json_key] = obj[prop.json_key];
+          if (obj['TMS'] < 1) {
+            obj['TMS'] = undefined;
           }
+          data.splice(data.length, 0, obj);
         });
-        if (Object.keys(newObj).length > 0) {
-          newObj.message_date = new Date(obj.message_date);
-          delete obj.aggregation_end_time;
-          delete obj.aggregation_start_time;
-          data.splice(data.length, 0, newObj);
-        }
-      });
-      chart.data = data;
+        chart.data = data;
+      } else {
+        // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
+        chart.data = this.telemetryData;
+      }
+      // chart.data = data;
       if (chart.data.length > 0) {
         chart.exporting.title =
           this.chartTitle +
           ' from ' +
-          chart.data[0].message_date?.toString() +
+          chart.data[0].message_date_obj?.toString() +
           ' to ' +
-          chart.data[chart.data.length - 1].message_date.toString();
+          chart.data[chart.data.length - 1].message_date_obj.toString();
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       // Create axes
@@ -159,12 +160,12 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         chart.exporting.title =
           this.chartTitle +
           ' from ' +
-          chart.data[0].message_date?.toString() +
+          chart.data[0].message_date_obj?.toString() +
           ' to ' +
-          chart.data[chart.data.length - 1].message_date.toString();
+          chart.data[chart.data.length - 1].message_date_obj.toString();
       }
       this.chartDataFields = {
-        message_date: 'Timestamp',
+        message_date_obj: 'Timestamp',
       };
       this.y1AxisProps.forEach((prop) => {
         this.propertyList.forEach((propObj) => {
@@ -192,12 +193,14 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
           chart.exporting.filePrefix =
             this.asset.asset_id +
             '_' +
-            chart.data[0].message_date.toString() +
+            chart.data[0].message_date_obj.toString() +
             '_' +
-            chart.data[chart.data.length - 1].message_date.toString();
+            chart.data[chart.data.length - 1].message_date_obj.toString();
         } else {
           chart.exporting.filePrefix =
-            chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+            chart.data[0].message_date_obj.toString() +
+            '_' +
+            chart.data[chart.data.length - 1].message_date_obj.toString();
         }
       }
       chart.cursor = new am4charts.XYCursor();
@@ -278,7 +281,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     arr.forEach((prop, index) => {
       const series = chart.series.push(new am4charts.ColumnSeries());
       series.dataFields.valueY = prop.json_key;
-      series.dataFields.dateX = 'message_date';
+      series.dataFields.dateX = 'message_date_obj';
       this.propertyList.forEach((propObj) => {
         if (propObj.json_key === prop.json_key) {
           series.units = propObj.json_model[propObj.json_key].units;

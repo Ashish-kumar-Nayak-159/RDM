@@ -92,16 +92,16 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
       this.tileData[item.name] = item.value;
     });
     this.iotAssetsTab = {
-      tab_name: this.tileData['IOT Assets Tab Name'],
-      table_key: this.tileData['IOT Assets Table Key Name'],
+      tab_name: this.tileData['IoT Assets Tab Name'],
+      table_key: this.tileData['IoT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
       tab_name: this.tileData['Legacy Assets Tab Name'],
       table_key: this.tileData['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
-      tab_name: this.tileData['IOT Gateways Tab Name'],
-      table_key: this.tileData['IOT Gateways Table Key Name'],
+      tab_name: this.tileData['IoT Gateways Tab Name'],
+      table_key: this.tileData['IoT Gateways Table Key Name'],
     };
   }
 

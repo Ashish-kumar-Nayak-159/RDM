@@ -29,4 +29,5 @@ export class Asset {
   metadata: any;
   configuration: any;
   type: string;
+  local_type?: string;
 }

@@ -16,9 +16,8 @@ decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
     <app-common-table [tableData]="packages" [tableConfig]="packageTableConfig" [isTableFilterSelected]="true"
       [isTableDataLoading]="isPackagesAPILoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
   </div>
-  <p class="m-3" *ngIf="assetModel.metadata.model_type === constantData.NON_IP_ASSET">Package Management is not avilable
-    for
-    Legacy assets. </p>
+  <p class="m-3" *ngIf="assetModel.metadata.model_type === constantData.NON_IP_ASSET">
+    Package Management is not available for {{assetModel.metadata.local_model_type}}. </p>
 </div>
 
 <div class="modal right fade" id="addPackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

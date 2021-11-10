@@ -291,14 +291,16 @@ export class AssetListComponent implements OnInit, OnDestroy {
     console.log(type);
     if (type === 'map') {
       console.log('here');
-      if (this.assetsList.length === 0) {
+      if (this.assetsList.length > 0) {
         this.mapFitBounds = false;
         const center = this.commonService.averageGeolocation(this.assetsList);
-        this.centerLatitude = center?.latitude || 23.0225;
-        this.centerLongitude = center?.longitude || 72.5714;
+        this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+        this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
         // this.zoom = 8;
       } else {
-        this.mapFitBounds = true;
+        this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+        this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+        this.mapFitBounds = false;
         // this.zoom = undefined;
       }
     }
@@ -317,9 +319,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
       this.tileData[item.name] = item.value;
     });
     this.iotAssetsTab = {
-      visibility: this.tileData['IOT Assets'],
-      tab_name: this.tileData['IOT Assets Tab Name'],
-      table_key: this.tileData['IOT Assets Table Key Name'],
+      visibility: this.tileData['IoT Assets'],
+      tab_name: this.tileData['IoT Assets Tab Name'],
+      table_key: this.tileData['IoT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
       visibility: this.tileData['Legacy Assets'],
@@ -327,9 +329,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
       table_key: this.tileData['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
-      visibility: this.tileData['IOT Gateways'],
-      tab_name: this.tileData['IOT Gateways Tab Name'],
-      table_key: this.tileData['IOT Gateways Table Key Name'],
+      visibility: this.tileData['IoT Gateways'],
+      tab_name: this.tileData['IoT Gateways Tab Name'],
+      table_key: this.tileData['IoT Gateways Table Key Name'],
     };
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
@@ -419,7 +421,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
       });
       obj.hierarchy = JSON.stringify(obj.hierarchy);
     }
-
     if (updateFilterObj) {
       const pagefilterObj = {
         hierarchy: JSON.parse(obj.hierarchy),
@@ -533,14 +534,16 @@ export class AssetListComponent implements OnInit, OnDestroy {
           });
           this.assetsList = [...this.assetsList, ...response.data];
           this.originalAssetsList = JSON.parse(JSON.stringify(this.assetsList));
-          if (this.assetsList.length === 0) {
+          if (this.assetsList.length > 0) {
             this.mapFitBounds = false;
             const center = this.commonService.averageGeolocation(this.assetsList);
-            this.centerLatitude = center?.latitude || 23.0225;
-            this.centerLongitude = center?.longitude || 72.5714;
+            this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+            this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
             // this.zoom = 8;
           } else {
-            this.mapFitBounds = true;
+            this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+            this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+            this.mapFitBounds = false;
             // this.zoom = undefined;
           }
         }

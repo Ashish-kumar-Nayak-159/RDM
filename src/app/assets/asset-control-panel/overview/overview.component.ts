@@ -63,18 +63,30 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.editorOptions.statusBar = false;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
-    this.subscriptions.push(
-      this.route.paramMap.subscribe((params) => {
-        if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
-          this.getAssetCredentials();
-        }
-        this.getAssetModelDetail();
-        if (this.componentState === CONSTANTS.IP_GATEWAY) {
-          this.getAssetCount();
-        }
-      })
-    );
+    let assetItem;
+    let name;
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
+      if (item.page === 'Assets') {
+        assetItem = item.showAccordion;
+      }
+    });
+    console.log(this.asset);
+    assetItem.forEach((item) => {
+      console.log(item.name, '======', item.value, '&&&&&&&&', item.name === this.componentState && item.value);
+      if (item.name === this.asset.type && item.value) {
+        name = item.value;
+      }
+    });
+    console.log(this.componentState);
+    console.log(name);
+    this.asset.local_type = name || this.componentState;
+    if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
+      this.getAssetCredentials();
+    }
+    this.getAssetModelDetail();
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+      this.getAssetCount();
+    }
   }
 
   getAssetCredentials() {

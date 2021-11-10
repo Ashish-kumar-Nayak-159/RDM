@@ -9,66 +9,66 @@
             class="fas fa-edit fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
-      <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSettingsEditable"
-      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
-    </ng-container>
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
+          *ngIf="isAppSettingsEditable" placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+      </ng-container>
     </div>
-</div>
+  </div>
 </div>
 <div class="tableFixHead table-responsive">
-<accordion class="mb-2 p-3"  [closeOthers]="'true'">
-  <accordion-group heading="" [panelClass]="'customClass'">
-    <ng-container accordion-heading>
-      <a class="btn" >
-        Main Menu
-      </a>
-    </ng-container>
-    <div class="row">
-      <div class="col-12 p-0">
+  <accordion class="mb-2 p-3" [closeOthers]="'true'">
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Main Menu
+        </a>
+      </ng-container>
+      <div class="row">
         <div class="col-12 p-0">
-          <table class="table table-hover" id="myFavTable">
-            <thead>
-              <tr >
-                <th></th>
-                <th></th>
-                <th>Page</th>
-                <th>System Name</th>
-                <th>Display Name</th>
-                <th>Visibility</th>
-              </tr>
-            </thead>
-            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <tr>
-                <th colspan="6">
-                  <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
-                </th>
+          <div class="col-12 p-0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Page</th>
+                  <th>System Name</th>
+                  <th>Display Name</th>
+                  <th>Visibility</th>
+                </tr>
+              </thead>
+              <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <tr>
+                  <th colspan="5">
+                    <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                    <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
+                      [disabled]="!isAppSettingsEditable">CANCEL</button>
+                  </th>
 
-              </tr>
-            </tfoot>
-            <tbody>
-              <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
-              <tr [ngClass]="{ 'cursor-move' : isAppSettingsEditable, 'favoriteOrderId': item.visible }" id="{{item.visible ? item.system_name : ''}}"
-              *ngIf="item.privilege_show === undefined || item.privilege_show === true">
-                <td class="index"></td>
-                <td>{{item.index}}
-                  <ng-container *ngIf="item.showAccordion?.length > 0">
-                    <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + item.index)">
-                      <i [ngClass]="toggleRows['main_menu_' + item.index] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-                      </a>
-                  </ng-container>
-                </td>
-                <td>{{item.page}}</td>
-                <td>{{item.system_name}}</td>
-                <td>
-                  <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{item.index}}" id="display_name_main_menu{{item.index}}"
-                    [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
+                </tr>
+              </tfoot>
+              <tbody>
+                <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
+                  <tr *ngIf="item.privilege_show === undefined || item.privilege_show === true">
+                    <td>
+                      <ng-container *ngIf="item.showAccordion?.length > 0">
+                        <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + configIndex)">
+                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                        </a>
+                      </ng-container>
+                    </td>
+                    <td>{{item.page}}</td>
+                    <td>{{item.system_name}}</td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm w-75"
+                        name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
 
-                  </td>
-                <td><input type="checkbox" name="visible_menu_{{item.index}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
-                    id="visible_menu_{{item.index}}" [(ngModel)]="item.visible" /></td>
+                    </td>
+                    <td><input type="checkbox" name="visible_menu_{{configIndex}}"
+                        [disabled]="!isAppSettingsEditable || item.for_admin_only" id="visible_menu_{{configIndex}}"
+                        [(ngModel)]="item.visible" /></td>
 
                   </tr>
                   <ng-container *ngIf="toggleRows['main_menu_' + item.index]" style="background-color: #fdfeff;">
@@ -108,7 +108,7 @@
     <accordion-group heading="" [panelClass]="'customClass'">
       <ng-container accordion-heading>
         <a class="btn">
-          IOT Asset Control Panel Menu
+          IoT Asset Control Panel Menu
         </a>
       </ng-container>
       <div class="row">

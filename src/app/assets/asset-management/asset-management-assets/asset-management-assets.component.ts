@@ -57,7 +57,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
-    private assetModelService: AssetModelService,
     private toasterService: ToasterService
   ) {}
 
@@ -124,20 +123,23 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     });
     if (this.type === CONSTANTS.IP_ASSET) {
       this.tabData = {
-        tab_name: this.tileData['IOT Assets Tab Name'],
-        table_key: this.tileData['IOT Assets Table Key Name'],
+        tab_name: this.tileData['IoT Assets Tab Name'],
+        table_key: this.tileData['IoT Assets Table Key Name'],
+        name: this.tileData['IoT Asset'],
       };
     }
     if (this.type === CONSTANTS.NON_IP_ASSET) {
       this.tabData = {
         tab_name: this.tileData['Legacy Assets Tab Name'],
         table_key: this.tileData['Legacy Assets Table Key Name'],
+        name: this.tileData['Legacy Asset'],
       };
     }
     if (this.type === CONSTANTS.IP_GATEWAY) {
       this.tabData = {
-        tab_name: this.tileData['IOT Gateways Tab Name'],
-        table_key: this.tileData['IOT Gateways Table Key Name'],
+        tab_name: this.tileData['IoT Gateways Tab Name'],
+        table_key: this.tileData['IoT Gateways Table Key Name'],
+        name: this.tileData['IoT Gateway'],
       };
     }
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
@@ -291,38 +293,18 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   }
 
   onSingleOperationClick(type, asset) {
-    // if (this.selectedAssets?.length === 0) {
-    //   this.toasterService.showError('Please select an asset to perform the operation', 'Asset Management');
-    //   return;
-    // }
-    // if (this.selectedAssets?.length > 1) {
-    //   this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
-    //   return;
-    // }
     this.selectedAssets = [];
     this.selectedAssets.push(asset);
-    if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_ASSET) {
-      this.toasterService.showError(`Package Management is not available for Legacy asset.`, 'Asset Management');
-      return;
-    } else if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_ASSET) {
-      this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
+    if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_ASSET) {
+      this.toasterService.showError(
+        `You can't perform this operation on ` + this.tabData.name + `.`,
+        'Asset Management'
+      );
       return;
     }
-
     if (type === 'Deprovision' || type === 'Enable' || type === 'Disable') {
       this.openConfirmDialog(type);
     }
-  }
-
-  onBulkOperationClick(type) {
-    // if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_ASSET) {
-    //   this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
-    //   return;
-    // }
-    this.toasterService.showError(
-      'Currently Bulk Operations are not available for use. Work in Progress.',
-      'Asset Management'
-    );
   }
 
   openConfirmDialog(type) {
@@ -360,9 +342,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           ' will be permanently deleted.' +
           ' Are you sure you want to continue?';
       }
-    } else if (type === 'Install' || type === 'Uninstall' || type === 'Upgrade' || type === 'Downgrade') {
-      this.confirmHeaderMessage = type + ' Package';
-      this.confirmBodyMessage = 'Are you sure you want to ' + type.toLowerCase() + ' this package?';
     }
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

@@ -5,10 +5,10 @@
         <div class="pl-3">
           <!-- contextApp?.user?.role === constantData.APP_ADMIN_ROLE -->
           <div class="row" *ngIf="environmentApp !== 'Indygo'">
-            <h6>This Asset is of {{componentState}} type.</h6>
+            <h6>This Asset is of {{asset.local_type}} type.</h6>
           </div>
           <div class="row" *ngIf="componentState === constantData.NON_IP_ASSET">
-            <h6>This Asset is managed by an IP Gateway
+            <h6>This Asset is managed by an Gateway
               <a href="javascript:void(0)" class="blue-font"
                 (click)="onRedirectToGateway(asset)">({{asset.gateway_id}})</a>
             </h6>
@@ -41,7 +41,7 @@
             </h6>
             <h6
               *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
-              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="enabled-font">
                 {{asset?.status}}</span>, but it is
               <span class="disabled-font">
@@ -49,7 +49,7 @@
             </h6>
             <h6
               *ngIf="asset?.status?.toLowerCase() === 'disabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
-              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              Currently, {{componentState === constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="disabled-font">
                 {{asset?.status}} & Offline.</span>
             </h6>

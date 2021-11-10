@@ -32,6 +32,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   selectedMessage: any;
   @Input() pageType: string;
   contextApp: any;
+  isC2dMsgResponsesLoading = false;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -183,47 +184,44 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   }
 
   loadResponseDetail(message, openModalFlag) {
-    if (!openModalFlag) {
-      this.isC2dMsgsLoading = true;
+    if (openModalFlag) {
+      this.isC2dMsgResponsesLoading = true;
+      this.openC2DMessageModal();
     }
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
     console.log(message.job_type);
-    if ((this.type !== 'response' || !openModalFlag) && message.job_type !== 'DirectMethod') {
-      const obj = {
-        sub_job_id: message.sub_job_id,
-        from_date: null,
-        to_date: null,
-        epoch: true,
-      };
-      const epoch = message.request_date
-        ? this.commonService.convertDateToEpoch(message.request_date)
-        : message.timestamp;
-      obj.from_date = epoch ? epoch - 5 : null;
-      obj.to_date = moment().utc().unix();
-      this.apiSubscriptions.push(
-        this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-          (response: any) => {
-            if (response.data) {
-              if (openModalFlag) {
-                this.c2dResponseDetail = response.data;
-                this.openC2DMessageModal();
-              } else {
-                this.c2dMsgs = response.data;
-                this.c2dMsgs.forEach(
-                  (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
-                );
-                this.isC2dMsgsLoading = false;
-              }
+    const obj = {
+      sub_job_id: message.sub_job_id,
+      from_date: null,
+      to_date: null,
+      epoch: true,
+    };
+    const epoch = message.request_date
+      ? this.commonService.convertDateToEpoch(message.request_date)
+      : message.timestamp;
+    obj.from_date = epoch ? epoch - 5 : null;
+    obj.to_date = moment().utc().unix();
+    this.apiSubscriptions.push(
+      this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.c2dResponseDetail = response.data;
+            if (this.c2dResponseDetail.length === 0) {
+              this.modalConfig.jsonDisplay = false;
+              this.modalConfig.stringDisplay = true;
+            } else {
+              this.modalConfig.jsonDisplay = true;
+              this.modalConfig.stringDisplay = false;
             }
-          },
-          (error) => (this.isC2dMsgsLoading = false)
-        )
-      );
-    } else if ((this.type === 'response' && openModalFlag) || message.job_type === 'DirectMethod') {
-      this.c2dResponseDetail = message;
-      this.openC2DMessageModal();
-    }
+          }
+          this.isC2dMsgResponsesLoading = false;
+        },
+        (error) => {
+          this.isC2dMsgResponsesLoading = false;
+        }
+      )
+    );
   }
 
   openC2DMessageModal() {

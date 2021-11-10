@@ -35,7 +35,7 @@ export class AssetService {
       });
     } else {
       return this.http
-        .get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
+        .get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
         .pipe(
           map((data: any) => {
             this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, data.data);
@@ -64,7 +64,7 @@ export class AssetService {
       });
     } else {
       return this.http
-        .get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
+        .get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
         .pipe(
           map((data: any) => {
             this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_GATEWAYS_LIST, data.data);
@@ -94,7 +94,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
   getLegacyAssets(filterObj, app) {
@@ -104,7 +104,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
   getAssetList(filterObj) {

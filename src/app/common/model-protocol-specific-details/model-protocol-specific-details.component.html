@@ -71,7 +71,7 @@
       </div>
     </div>
   </ng-container>
-  <ng-container *ngIf="assetModel.tags.protocol === 'AIOTInputs'">
+  <ng-container *ngIf="assetModel.tags.protocol === 'AIoTInputs'">
     <div class="form-group" *ngIf="setupForm.get('cn')">
       <label for="message-text" class="col-form-label required">Channel Number:</label>
       <input type="number" class="form-control form-control-sm" id="cn" name="cn" formControlName="cn"
@@ -89,7 +89,7 @@
       <label for="recipient-name" class="col-form-label required">Type:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
-          (change)="onAIOTTypeChange()">
+          (change)="onAIoTTypeChange()">
           <option [ngValue]="null">Select Type</option>
           <option [ngValue]="'a'">Analog</option>
           <option [ngValue]="'d'">Digital</option>

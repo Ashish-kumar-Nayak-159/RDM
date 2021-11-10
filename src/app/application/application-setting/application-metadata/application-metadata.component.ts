@@ -24,7 +24,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @ViewChild('search') searchElementRef: ElementRef;
   isMetadataEditable = false;
   decodedToken: any;
-  description: any;
   changeLocationOption: any;
   latitude: any;
   longitude: any;
@@ -44,9 +43,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    if (this.applicationData.metadata.description) {
-      this.description = this.applicationData.metadata.description;
-    }
     this.latitude = this.applicationData.metadata?.latitude;
     this.longitude = this.applicationData.metadata?.longitude;
   }
@@ -90,7 +86,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   onSaveMetadata() {
     this.saveMetadataAPILoading = true;
     this.applicationData.id = this.applicationData.app;
-    this.applicationData.metadata.description = this.description;
     this.apiSubscriptions.push(
       this.applicationService.updateApp(this.applicationData).subscribe(
         (response: any) => {

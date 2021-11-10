@@ -57,10 +57,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log(this.contextApp);
-    if (this.environmentApp === 'SopanCMS') {
-      await this.getLatestDerivedKPIData();
-    }
     await this.getAllAssets();
     setTimeout(() => {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -118,15 +114,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.isGetAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type:
-          this.environmentApp === 'SopanCMS'
-            ? CONSTANTS.NON_IP_ASSET
-            : CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
+        type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
+        map_content: true
       };
-      if (this.environmentApp === 'SopanCMS') {
-        this.healthyAssetCount = 0;
-        this.unhealthyAssetCount = 0;
-      }
       this.apiSubscriptions.push(
         this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
           (response: any) => {
@@ -141,37 +131,12 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   asset.gas = '0.4%';
                   asset.power = '45 SCMH';
                 }
-                if (this.environmentApp === 'SopanCMS') {
-                  this.derivedKPILatestData.forEach((kpiObj) => {
-                    if (asset.asset_id === kpiObj.asset_id) {
-                      asset.kpiValue = kpiObj?.metadata?.healthy;
-                      asset.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
-                      console.log(kpiObj?.metadata?.healthy);
-                      if (kpiObj?.metadata?.healthy === true) {
-                        this.healthyAssetCount++;
-                        console.log('healthy');
-                      } else if (kpiObj?.metadata?.healthy === false) {
-                        this.unhealthyAssetCount++;
-                        console.log('unhealthy');
-                      }
-                    }
-                  });
-                  if (asset.type === this.constantData.NON_IP_ASSET) {
-                    asset.icon = {
-                      url:
-                        asset.kpiValue === true
-                          ? './assets/img/legacy-asset-green.svg'
-                          : asset.kpiValue === false
-                          ? './assets/img/legacy-asset-red.svg'
-                          : './assets/img/legacy-assets.svg',
-                      scaledSize: {
-                        width: 25,
-                        height: 25,
-                      },
-                    };
-                  }
-                } else {
-                  if (
+                if (asset?.map_content?.healthy === true) {
+                  this.healthyAssetCount++;
+                } else if (asset?.map_content?.healthy === false) {
+                  this.unhealthyAssetCount++;
+                }
+                if (
                     asset.type === this.constantData.IP_ASSET &&
                     asset?.connection_state?.toLowerCase() === 'connected'
                   ) {
@@ -232,7 +197,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                       },
                     };
                   }
-                }
                 console.log(asset.asset_id, '=====', asset.icon);
               });
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
@@ -255,37 +219,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLatestDerivedKPIData() {
-    return new Promise<void>((resolve) => {
-      const derivedKPICode = 'SPCD';
-      const obj = {
-        from_date: moment().subtract(24, 'hours').utc().unix(),
-        to_date: moment().utc().unix(),
-        epoch: true,
-      };
-      this.apiSubscriptions.push(
-        this.assetService
-          .getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
-          .subscribe((response: any) => {
-            if (response?.data) {
-              this.derivedKPILatestData = response.data;
-            }
-            resolve();
-          })
-      );
-    });
-  }
-
   onClickOfCount(type) {
     const arr = [];
     this.activeCircle = type;
     if (type !== 'all') {
       this.assets.forEach((asset) => {
         console.log(asset.kpiValue === false);
-        if (type === 'healthy' && asset.kpiValue === true) {
+        if (type === 'healthy' && asset?.map_content?.healthy === true) {
           arr.push(asset);
         }
-        if (type === 'unhealthy' && asset.kpiValue === false) {
+        if (type === 'unhealthy' && asset?.map_content?.healthy === false) {
           arr.push(asset);
         }
       });
@@ -313,22 +256,15 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.assets = this.hierarchyDropdown.getAssets();
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));
     console.log(this.mapAssets);
-    if (this.environmentApp === 'SopanCMS') {
-      this.healthyAssetCount = 0;
-      this.unhealthyAssetCount = 0;
-      this.assets.forEach((assetObj) => {
-        this.derivedKPILatestData.forEach((kpiObj) => {
-          if (assetObj.asset_id === kpiObj.asset_id) {
-            assetObj.kpiValue = kpiObj?.metadata?.healthy;
-            if (kpiObj?.metadata?.healthy === true) {
-              this.healthyAssetCount++;
-            } else if (kpiObj?.metadata?.healthy === false) {
-              this.unhealthyAssetCount++;
-            }
-          }
-        });
-      });
-    }
+    this.healthyAssetCount = 0;
+    this.unhealthyAssetCount = 0;
+    this.assets.forEach((assetObj) => {
+      if (assetObj?.map_content?.healthy === true) {
+        this.healthyAssetCount++;
+      } else if (assetObj?.map_content?.healthy === false) {
+        this.unhealthyAssetCount++;
+      }
+    });
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = { App: this.contextApp.app };

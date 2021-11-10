@@ -4,7 +4,7 @@
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;"
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true; this.getTableSortable();"
           *ngIf="!isAppSettingsEditable" placement="bottom" tooltip="Edit Menu Settings"><i
             class="fas fa-edit fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
@@ -71,10 +71,10 @@
                         [(ngModel)]="item.visible" /></td>
 
                   </tr>
-                  <ng-container *ngIf="toggleRows['main_menu_' + configIndex]" style="background-color: #fdfeff;">
-                    <tr *ngFor="let control of item.showAccordion; let first = first; let last = last">
+                  <ng-container *ngIf="toggleRows['main_menu_' + item.index]" style="background-color: #fdfeff;">
+                    <tr id="{{'main_menu_' + item.index}}" *ngFor="let control of item.showAccordion; let first = first; let last = last">
 
-                      <td colspan="2" [ngClass]="{'accordion-border': last}"
+                      <td colspan="3" [ngClass]="{'accordion-border': last}"
                         [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
 
                       <td [ngClass]="{'accordion-border': last}"

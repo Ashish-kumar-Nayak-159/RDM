@@ -88,6 +88,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   frequency: any;
   latestRunningHours: any = 0;
   latestRunningMinutes: any = 0;
+  noOfRecords = CONSTANTS.NO_OF_RECORDS;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -105,6 +106,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if(this.contextApp.metadata?.filter_settings?.record_count){
+      this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
+    }
     this.getTileName();
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
@@ -200,7 +204,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.historicalDateFilter.to_date
       );
       console.log(records);
-      if (records > CONSTANTS.NO_OF_RECORDS) {
+      if (records > this.noOfRecords) {
         this.historicalDateFilter.isTypeEditable = true;
       } else {
         this.historicalDateFilter.isTypeEditable = false;
@@ -514,7 +518,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.historicalDateFilter.from_date,
         this.historicalDateFilter.to_date
       );
-      if (records > CONSTANTS.NO_OF_RECORDS) {
+      if (records > this.noOfRecords) {
         this.historicalDateFilter.isTypeEditable = true;
       } else {
         this.historicalDateFilter.isTypeEditable = false;
@@ -853,7 +857,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   return;
     // }
     const record = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
-    if (record > CONSTANTS.NO_OF_RECORDS && !this.historicalDateFilter.isTypeEditable) {
+    if (record > this.noOfRecords && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
       this.isTelemetryDataLoading = false;
@@ -894,7 +898,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             filterObj.from_date,
             filterObj.to_date
           );
-          if (records > CONSTANTS.NO_OF_RECORDS) {
+          if (records > this.noOfRecords) {
             this.loadingMessage =
               'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
@@ -933,7 +937,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         filterObj.from_date,
         filterObj.to_date
       );
-      if (records > CONSTANTS.NO_OF_RECORDS) {
+      if (records > this.noOfRecords) {
         this.loadingMessage =
           'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }

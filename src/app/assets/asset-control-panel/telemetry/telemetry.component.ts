@@ -34,6 +34,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   activeColumn: string;
   directionColumn: string;
   frequency: any;
+  noOfRecords = CONSTANTS.NO_OF_RECORDS;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -69,6 +70,9 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if(this.contextApp.metadata?.filter_settings?.record_count){
+      this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
+    }
     if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
       this.telemetryFilter.gateway_id = this.asset.asset_id;
     } else {
@@ -172,7 +176,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
         this.telemetryFilter.from_date,
         this.telemetryFilter.to_date
       );
-      if (records > CONSTANTS.NO_OF_RECORDS) {
+      if (records > this.noOfRecords) {
         this.telemetryFilter.isTypeEditable = true;
       } else {
         this.telemetryFilter.isTypeEditable = false;
@@ -212,7 +216,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryFilter.from_date,
       this.telemetryFilter.to_date
     );
-    if (records > CONSTANTS.NO_OF_RECORDS) {
+    if (records > this.noOfRecords) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
       this.telemetryFilter.isTypeEditable = false;
@@ -250,7 +254,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryFilter.from_date,
       this.telemetryFilter.to_date
     );
-    if (records > CONSTANTS.NO_OF_RECORDS) {
+    if (records > this.noOfRecords) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
       this.telemetryFilter.isTypeEditable = false;
@@ -285,7 +289,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     //     return;
     // }
     const records = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
-    if (records > CONSTANTS.NO_OF_RECORDS && !this.telemetryFilter.isTypeEditable) {
+    if (records > this.noOfRecords && !this.telemetryFilter.isTypeEditable) {
       this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
       return;
     }

@@ -71,6 +71,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   decodedToken: any;
   isShowOpenFilter = true;
   frequency: any;
+  noOfRecords= CONSTANTS.NO_OF_RECORDS;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -84,6 +85,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if(this.contextApp.metadata?.filter_settings?.record_count){
+      this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
+    }
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetderivedKPIs(this.asset.asset_id);
     await this.getAssetsModelProperties();
@@ -151,7 +155,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.historyFilter.from_date,
         this.historyFilter.to_date
       );
-      if (records > CONSTANTS.NO_OF_RECORDS) {
+      if (records > this.noOfRecords) {
         this.historyFilter.isTypeEditable = true;
       } else {
         this.historyFilter.isTypeEditable = false;
@@ -252,7 +256,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.from_date,
       this.historyFilter.to_date
     );
-    if (records > CONSTANTS.NO_OF_RECORDS) {
+    if (records > this.noOfRecords) {
       this.historyFilter.isTypeEditable = true;
     } else {
       this.historyFilter.isTypeEditable = false;
@@ -378,7 +382,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       //   return;
       // }
       const record = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
-      if (record > CONSTANTS.NO_OF_RECORDS && !this.historyFilter.isTypeEditable) {
+      if (record > this.noOfRecords && !this.historyFilter.isTypeEditable) {
         this.historyFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
@@ -420,7 +424,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > CONSTANTS.NO_OF_RECORDS) {
+            if (records > this.noOfRecords) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -458,7 +462,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > CONSTANTS.NO_OF_RECORDS) {
+            if (records > this.noOfRecords) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -499,7 +503,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
         const frequency = this.commonService.getLowestValueFromList(frequencyArr);
         const records = this.commonService.calculateEstimatedRecords(frequency, obj.from_date, obj.to_date);
-        if (records > CONSTANTS.NO_OF_RECORDS) {
+        if (records > this.noOfRecords) {
           this.loadingMessage =
             'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
@@ -607,7 +611,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.from_date,
       this.historyFilter.to_date
     );
-    if (records > CONSTANTS.NO_OF_RECORDS) {
+    if (records > this.noOfRecords) {
       this.historyFilter.isTypeEditable = true;
     } else {
       this.historyFilter.isTypeEditable = false;
@@ -623,7 +627,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const from = this.historyFilter.from_date.unix();
     const to = this.historyFilter.to_date.unix();
     const records = this.commonService.calculateEstimatedRecords(this.frequency, from, to);
-    if (records > CONSTANTS.NO_OF_RECORDS) {
+    if (records > this.noOfRecords) {
       this.historyFilter.isTypeEditable = true;
     } else {
       this.historyFilter.type = true;

@@ -26,9 +26,10 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <table class="table table-hover">
+            <table class="table table-hover" id="myFavTable">
               <thead>
                 <tr>
+                  <th></th>
                   <th></th>
                   <th>Page</th>
                   <th>System Name</th>
@@ -38,7 +39,7 @@
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th colspan="6">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -50,25 +51,25 @@
               </tfoot>
               <tbody>
                 <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
-                  <tr *ngIf="item.privilege_show === undefined || item.privilege_show === true">
-                    <td>
+                  <tr class="favoriteOrderId" [ngClass]="{ 'cursor-move' : isAppSettingsEditable}" id="{{item.visible ? item.system_name : ''}}"
+                  *ngIf="item.privilege_show === undefined || item.privilege_show === true">
+                    <td class="index"></td>
+                    <td>{{item.index}}
                       <ng-container *ngIf="item.showAccordion?.length > 0">
-                        <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + configIndex)">
-                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-                        </a>
+                        <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + item.index)">
+                          <i [ngClass]="toggleRows['main_menu_' + item.index] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          </a>
                       </ng-container>
                     </td>
                     <td>{{item.page}}</td>
                     <td>{{item.system_name}}</td>
                     <td>
-                      <input type="text" class="form-control form-control-sm w-75"
-                        name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
-                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
+                      <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{item.index}}" id="display_name_main_menu{{item.index}}"
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
-                    </td>
-                    <td><input type="checkbox" name="visible_menu_{{configIndex}}"
-                        [disabled]="!isAppSettingsEditable || item.for_admin_only" id="visible_menu_{{configIndex}}"
-                        [(ngModel)]="item.visible" /></td>
+                      </td>
+                    <td><input type="checkbox" name="visible_menu_{{item.index}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
+                        id="visible_menu_{{item.index}}" [(ngModel)]="item.visible" /></td>
 
                   </tr>
                   <ng-container *ngIf="toggleRows['main_menu_' + item.index]" style="background-color: #fdfeff;">

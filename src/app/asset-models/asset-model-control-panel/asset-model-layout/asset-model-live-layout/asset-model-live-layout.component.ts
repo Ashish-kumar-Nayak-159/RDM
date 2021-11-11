@@ -371,6 +371,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
+    if (!this.widgetObj.noOfDataPointsForTrend === null) {
+      this.toasterService.showError('No of Data points should be geater than 0', 'Add Widget');
+      return;
+    }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property) {

@@ -35,11 +35,11 @@
             <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
               (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
             </app-gauge-chart>
-            <app-rectangle-widget [chartConfig]="widget"  *ngIf="widget.widgetType === 'RectangleWidget'"
-             (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
             </app-rectangle-widget>
-            <app-cylinder-widget [chartConfig]="widget"  *ngIf="widget.widgetType === 'CylinderWidget'"
-             (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
             </app-cylinder-widget>
             <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
               (removeWidget)="removeWidget($event)"
@@ -101,7 +101,7 @@
         ">
             <label for="message-text" class="col-form-label">Data points in Chart:</label>
             <input type="number" class="form-control form-control-sm" id="data_points" name="data_points"
-              [(ngModel)]="widgetObj.noOfDataPointsForTrend" placeholder="Enter No of data points" disabled>
+              [(ngModel)]="widgetObj.noOfDataPointsForTrend" placeholder="Enter No of data points">
           </div>
           <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
             <label for="message-text" class="col-form-label">Gauge Start Angle:</label>

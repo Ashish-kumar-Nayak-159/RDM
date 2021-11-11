@@ -50,12 +50,16 @@
                   asset.display_name: asset.asset_id}}</a></b>
               <ng-container>
                 <hr>
-                <div *ngFor="let kpi of asset.map_content.data | keyvalue">
-                  <p *ngIf="kpi.key !== undefined && kpi.key !== null; else noSPCDTemplate"><b>{{kpi.key}}:</b> {{kpi.value}}</p>
-                  <ng-template #noSPCDTemplate>
-                    <p>No data available.</p>
-                  </ng-template>
+                <div *ngIf="asset?.map_content?.data; else noSPCDTemplate">
+                  <div *ngIf="(asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
+                    <div *ngFor="let kpi of asset.map_content.data | keyvalue">
+                      <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+                    </div>
+                  </div>
                 </div>
+                <ng-template #noSPCDTemplate>
+                  <p>No data available.</p>
+                </ng-template>
               </ng-container>
               <ng-container *ngIf="environmentApp === 'KCMS'">
                 <hr>

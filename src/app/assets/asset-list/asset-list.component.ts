@@ -196,6 +196,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       is_table_data_loading: this.isAssetListLoading,
       no_data_message: '',
       table_class: 'tableFixHead-assets-list',
+      border_left_key: true,
       data: [
         {
           header_name: (obj.table_key || '') + ' Name',

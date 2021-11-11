@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -108,28 +109,26 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   }
 
   openAddWidgetModal(widget = null) {
-    if(widget!=null){
-      this.controlWidget = JSON.parse(JSON.stringify(widget))
-      if(this.controlWidget.metadata.communication_technique === 'Direct Method'){
-        this.controlWidget.properties = {...widget.properties[0]}
-        this.extraParams = []
-      }
-      else{
+    if (widget != null) {
+      this.controlWidget = JSON.parse(JSON.stringify(widget));
+      if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
+        this.controlWidget.properties = { ...widget.properties[0] };
+        this.extraParams = [];
+      } else {
         this.extraParams = this.controlWidget.json?.params;
         this.controlWidget.json.params = [];
       }
-      for(var index =0;index<this.extraParams.length;index++){
+      for (var index = 0; index < this.extraParams.length; index++) {
         const param = this.extraParams[index];
         this.controlWidget.properties.forEach((prop) => {
-          if(prop.json_key === param.key) {
-            this.extraParams.splice(index,1)
+          if (prop.json_key === param.key) {
+            this.extraParams.splice(index, 1);
             index--;
           }
         });
       }
       this.viewType = 'edit';
-    }
-    else{
+    } else {
       this.controlWidget = {
         properties: [],
         metadata: {
@@ -255,8 +254,15 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   }
 
   createControlWidget() {
-    if (!this.controlWidget.name) {
-      this.toasterService.showError('Please add widget name', 'Create Configuration Widget');
+    if (
+      !this.controlWidget.name ||
+      !this.controlWidget.metadata ||
+      !this.controlWidget.metadata?.communication_technique
+    ) {
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        (this.viewType == 'add' ? 'Create' : 'Update') + 'Configuration Widget'
+      );
       return;
     }
     // try {
@@ -276,42 +282,42 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       this.controlWidget.metadata.communication_technique !== 'Direct Method' &&
       this.controlWidget.json.params?.length < 1
     ) {
-      this.toasterService.showError('Please select at least one property/parameter', 'Create Configuration Widget');
+      this.toasterService.showError(
+        'Please select at least one property/parameter',
+        (this.viewType == 'add' ? 'Create' : 'Update') + 'Configuration Widget'
+      );
       return;
     }
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    if(this.viewType == 'add'){
-      this.subscriptions.push(
-        this.assetModelService.createAssetsModelConfigurationWidget(this.controlWidget).subscribe(
-          (response: any) => {
-            this.isCreateWidgetAPILoading = false;
-            this.toasterService.showSuccess(response.message, 'Create Configuration Widget');
-            this.closeCreateWidgetModal();
-            this.getControlWidgets();
-          },
-          (error) => {
-            this.isCreateWidgetAPILoading = false;
-            this.toasterService.showError(error.message, 'Create Configuration Widget');
-          }
-        )
-      );
+    let method;
+    if (this.viewType == 'add') {
+      method = this.assetModelService.createAssetsModelConfigurationWidget(this.controlWidget);
+    } else {
+      method = this.assetModelService.updateAssetsModelConfigurationWidget(this.controlWidget, this.assetModel.app);
     }
-    else{
-      this.subscriptions.push(this.assetModelService.updateAssetsModelConfigurationWidget(this.controlWidget,this.assetModel.app).subscribe(
-        (response: any)=>{
+
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showSuccess(response.message, 'Update Configuration Widget');
+          this.toasterService.showSuccess(
+            response.message,
+            (this.viewType == 'add' ? 'Create' : 'Update') + 'Configuration Widget'
+          );
           this.closeCreateWidgetModal();
           this.getControlWidgets();
         },
-        (error)=>{
+        (error) => {
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showError(error.message, 'Update Configuration Widget');
+          this.toasterService.showError(
+            error.message,
+            (this.viewType == 'add' ? 'Create' : 'Update') + 'Configuration Widget'
+          );
         }
-      ))
-    }
+      )
+    );
   }
 
   deleteControlWidget() {

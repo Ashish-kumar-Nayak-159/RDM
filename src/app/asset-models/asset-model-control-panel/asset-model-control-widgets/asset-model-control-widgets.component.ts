@@ -96,28 +96,26 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   openAddWidgetModal(widget = null) {
-    if(widget!=null){
-      this.controlWidget = JSON.parse(JSON.stringify(widget))
-      if(this.controlWidget.metadata.communication_technique === 'Direct Method'){
-        this.controlWidget.properties = {...widget.properties[0]}
-        this.extraParams = []
-      }
-      else{
+    if (widget != null) {
+      this.controlWidget = JSON.parse(JSON.stringify(widget));
+      if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
+        this.controlWidget.properties = { ...widget.properties[0] };
+        this.extraParams = [];
+      } else {
         this.extraParams = [...this.controlWidget.json?.params];
         this.controlWidget.json.params = [];
       }
-      for(var index =0;index<this.extraParams.length;index++){
+      for (var index = 0; index < this.extraParams.length; index++) {
         const param = this.extraParams[index];
         this.controlWidget.properties.forEach((prop) => {
-          if(prop.json_key === param.key) {
-            this.extraParams.splice(index,1);
+          if (prop.json_key === param.key) {
+            this.extraParams.splice(index, 1);
             index--;
           }
         });
       }
       this.viewType = 'edit';
-    }
-    else{
+    } else {
       this.controlWidget = {
         properties: [],
         metadata: {
@@ -263,7 +261,10 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       !this.controlWidget.metadata ||
       !this.controlWidget.metadata?.communication_technique
     ) {
-      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        (this.viewType == 'add' ? 'Create' : 'Update') + 'Control Widget'
+      );
       return;
     }
     // try {
@@ -283,42 +284,41 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       this.controlWidget.metadata.communication_technique !== 'Direct Method' &&
       this.controlWidget.json.params?.length < 1
     ) {
-      this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
+      this.toasterService.showError(
+        'Please select at least one property/parameter',
+        (this.viewType == 'add' ? 'Create' : 'Update') + 'Control Widget'
+      );
       return;
     }
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    if(this.viewType == 'add'){
-      this.subscriptions.push(
-        this.assetModelService.createAssetsModelControlWidget(this.controlWidget).subscribe(
-          (response: any) => {
-            this.isCreateWidgetAPILoading = false;
-            this.toasterService.showSuccess(response.message, 'Create Control Widget');
-            this.closeCreateWidgetModal();
-            this.getControlWidgets();
-          },
-          (error) => {
-            this.isCreateWidgetAPILoading = false;
-            this.toasterService.showError(error.message, 'Create Control Widget');
-          }
-        )
-      );
+    let method;
+    if (this.viewType == 'add') {
+      method = this.assetModelService.createAssetsModelControlWidget(this.controlWidget);
+    } else {
+      method = this.assetModelService.updateAssetsModelControlWidget(this.controlWidget, this.assetModel.app);
     }
-    else{
-      this.subscriptions.push(this.assetModelService.updateAssetsModelControlWidget(this.controlWidget,this.assetModel.app).subscribe(
-        (response: any)=>{
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showSuccess(response.message, 'Update Control Widget');
+          this.toasterService.showSuccess(
+            response.message,
+            (this.viewType == 'add' ? 'Create' : 'Update') + 'Control Widget'
+          );
           this.closeCreateWidgetModal();
           this.getControlWidgets();
         },
-        (error)=>{
+        (error) => {
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showError(error.message, 'Update Control Widget');
+          this.toasterService.showError(
+            error.message,
+            (this.viewType == 'add' ? 'Create' : 'Update') + 'Control Widget'
+          );
         }
-      ))
-    }
+      )
+    );
   }
 
   deleteControlWidget() {

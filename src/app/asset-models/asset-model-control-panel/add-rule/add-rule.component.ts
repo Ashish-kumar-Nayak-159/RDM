@@ -326,11 +326,16 @@ export class AddRuleComponent implements OnInit {
 
   createNewRule() {
     if (
-      !this.ruleModel.name ||
+      (!this.ruleModel.name ||
       !this.ruleModel.description ||
       !this.ruleModel.code ||
       !this.ruleModel.operator ||
-      !this.ruleModel.escalation_time_in_sec
+      !this.ruleModel.escalation_time_in_sec) 
+      || (
+        this.ruleModel.name?.trim()?.length <=0 ||
+        this.ruleModel.description?.trim()?.length <= 0 ||
+        this.ruleModel.code?.trim()?.length <= 0
+      )
     ) {
       this.toasterService.showError('Please fill all required details', 'Add Rule');
       return;

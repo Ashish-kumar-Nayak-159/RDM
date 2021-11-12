@@ -71,7 +71,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   decodedToken: any;
   isShowOpenFilter = true;
   frequency: any;
-  noOfRecords= CONSTANTS.NO_OF_RECORDS;
+  noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  widgetStringFromMenu: any;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -85,7 +86,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if(this.contextApp.metadata?.filter_settings?.record_count){
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -327,7 +329,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       console.log('wdigetssss', this.selectedWidgets);
       this.propList = [];
       if (this.selectedWidgets.length === 0) {
-        this.toasterService.showError('Please select widgets first.', 'View Widget');
+        this.toasterService.showError(
+          'Please select ' + this.widgetStringFromMenu + ' first.',
+          'View ' + this.widgetStringFromMenu
+        );
         return;
       }
 
@@ -344,7 +349,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         });
       });
       if (this.selectedWidgets.length > 3) {
-        this.toasterService.showWarning('Select max 3 widgets for better performance.', 'Historical Visualization');
+        this.toasterService.showWarning(
+          'Select max 3 ' + this.widgetStringFromMenu + ' for better performance.',
+          'Historical Visualization'
+        );
       }
       this.selectedPropertyForChart = [];
       this.selectedPropertyForChart = [...this.propList];
@@ -747,11 +755,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     } else {
       if (this.layoutJson.length === 0) {
-        this.toasterService.showError('Layout not defined', 'Historical Widgets');
+        this.toasterService.showError('Layout not defined', 'Historical ' + this.widgetStringFromMenu);
         return;
       }
       if (this.historyData.length === 0) {
-        this.toasterService.showError('No data available for selected filter.', 'Historical Widgets');
+        this.toasterService.showError(
+          'No data available for selected filter.',
+          'Historical ' + this.widgetStringFromMenu
+        );
         return;
       }
     }

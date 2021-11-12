@@ -19,6 +19,7 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   apiSubscriptions: Subscription[] = [];
   decodedToken: any;
   isFileUploading = false;
+  widgetStringFromMenu: any;
   constructor(
     private assetService: AssetService,
     private applicationService: ApplicationService,
@@ -28,6 +29,7 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));

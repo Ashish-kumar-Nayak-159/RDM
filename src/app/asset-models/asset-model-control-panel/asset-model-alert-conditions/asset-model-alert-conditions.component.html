@@ -108,7 +108,7 @@
               <td colspan="6" class="accordion-border" *ngIf="viewType === 'Visualization'">
                 <div class="col-12  my-2 accordion-padding">
                   <!-- <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p> -->
-                  Following widgets have been defined so far.
+                  Following {{widgetStringFromMenu}} have been defined so far.
                   You can define more.
 
                   <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
@@ -132,7 +132,7 @@
                       <div class="form-group">
                         <select class="form-control form-control-sm" id="template" name="model_type"
                           [(ngModel)]="widgetName">
-                          <option [ngValue]="undefined">Select Widgets</option>
+                          <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
                           <ng-container *ngFor="let widget of widgets">
                             <option [ngValue]="widget.title">
                               {{widget.title}}</option>

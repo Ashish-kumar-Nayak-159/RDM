@@ -33,10 +33,12 @@ export class PieChartComponent implements OnInit, OnDestroy {
   hideCancelButton = false;
   asset: any;
   decodedToken: any;
+  widgetStringFromMenu: any;
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryData.length > 0) {
       setTimeout(() => this.plotChart(), 200);
     }
@@ -140,8 +142,9 @@ export class PieChartComponent implements OnInit, OnDestroy {
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

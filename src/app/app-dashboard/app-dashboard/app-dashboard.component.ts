@@ -89,6 +89,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   latestRunningHours: any = 0;
   latestRunningMinutes: any = 0;
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  widgetStringFromMenu: string;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -106,9 +107,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if(this.contextApp.metadata?.filter_settings?.record_count){
+    if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    console.log(this.widgetStringFromMenu);
     this.getTileName();
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
@@ -778,7 +781,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     console.log(this.historicalDateFilter);
     if (this.historicalDateFilter?.widgets?.length === 0) {
-      this.toasterService.showError('Select at least one widget to view the data', 'View Telemetry Data');
+      this.toasterService.showError(
+        'Select at least one ' + this.widgetStringFromMenu + ' to view the data',
+        'View Telemetry Data'
+      );
       this.isTelemetryDataLoading = false;
       // this.isFilterSelected = false;
       return;

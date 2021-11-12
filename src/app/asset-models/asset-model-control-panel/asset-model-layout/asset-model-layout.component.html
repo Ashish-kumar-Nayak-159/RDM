@@ -7,21 +7,24 @@
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link"  [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)" (click)="setViewType('history')">
+        <a class="nav-link" [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)"
+          (click)="setViewType('history')">
           <i class="fa fa-fw fa-history"></i>
-          <span class="text-secondary">Historical Widgets</span></a>
+          <span class="text-secondary">Historical {{widgetStringFromMenu}}</span></a>
       </li>
-      <li class="nav-item" >
-        <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)" (click)="setViewType('live')">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)"
+          (click)="setViewType('live')">
           <i class="fa fa-fw fa-bar-chart"></i>
-          <span class="text-secondary">Live Widgets</span></a>
+          <span class="text-secondary">Live {{widgetStringFromMenu}}</span></a>
       </li>
 
     </ul>
 
   </div>
-  </div>
-  <div >
-        <app-asset-model-history-layout *ngIf="viewType === 'history'" [assetModel]="assetModel"></app-asset-model-history-layout>
-        <app-asset-model-live-layout *ngIf="viewType === 'live'" [assetModel]="assetModel"></app-asset-model-live-layout>
-  </div>
+</div>
+<div>
+  <app-asset-model-history-layout *ngIf="viewType === 'history'" [assetModel]="assetModel">
+  </app-asset-model-history-layout>
+  <app-asset-model-live-layout *ngIf="viewType === 'live'" [assetModel]="assetModel"></app-asset-model-live-layout>
+</div>

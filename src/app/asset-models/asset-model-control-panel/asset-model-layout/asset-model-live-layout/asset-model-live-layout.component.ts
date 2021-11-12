@@ -34,6 +34,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   decodedToken: any;
   derivedKPIs: any[] = [];
   filteredPropList: any[] = [];
+  widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -45,6 +46,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties();
@@ -328,7 +330,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     }
     this.liveWidgets = JSON.parse(JSON.stringify(arr));
-    this.updateAssetModel(this.liveWidgets, 'Widget removed successfully.');
+    this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
   }
 
   updateAssetModel(arr, message) {
@@ -351,7 +353,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
         (response: any) => {
-          this.toasterService.showSuccess(message, 'Live Widgets');
+          this.toasterService.showSuccess(message, 'Live ' + this.widgetStringFromMenu);
           this.getLiveWidgets();
           this.onCloseAddWidgetModal();
           this.onCloseConfigureDashboardModal();
@@ -359,7 +361,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         },
         (err) => {
           this.isCreateWidgetAPILoading = false;
-          this.toasterService.showError(err.message, 'Add Live Widgets');
+          this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
         }
       )
     );
@@ -368,11 +370,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   onSaveWidgetObj() {
     console.log(this.widgetObj);
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
-      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
     if (!this.widgetObj.noOfDataPointsForTrend === null) {
-      this.toasterService.showError('No of Data points should be geater than 0', 'Add Widget');
+      this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
     let found = true;
@@ -386,13 +388,16 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     });
     if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {
-      this.toasterService.showError('Please select properties details.', 'Add Widget');
+      this.toasterService.showError('Please select properties details.', 'Add ' + this.widgetStringFromMenu);
       return;
     }
     if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
       console.log(this.widgetObj);
       if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
-        this.toasterService.showError('Please select at least one property in y1 axis property.', 'Add Widget');
+        this.toasterService.showError(
+          'Please select at least one property in y1 axis property.',
+          'Add ' + this.widgetStringFromMenu
+        );
         return;
       } else {
         const arr = [];
@@ -425,7 +430,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj.chartId = 'chart_' + moment().utc().unix();
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    this.updateAssetModel(arr, 'Widget added successfully.');
+    this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
   }
 
   onClickOfCheckbox() {

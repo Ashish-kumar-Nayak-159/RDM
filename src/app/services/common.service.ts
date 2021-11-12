@@ -257,6 +257,18 @@ export class CommonService {
     return obj;
   }
 
+  getValueFromModelMenuSetting(page, key) {
+    const app = this.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    let value = key;
+    app.menu_settings.model_control_panel_menu.forEach((item) => {
+      if (item.page === page) {
+        console.log(item.accordion_value[key]);
+        value = item?.accordion_value[key] || key;
+      }
+    });
+    return value;
+  }
+
   generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       // tslint:disable-next-line: no-bitwise
@@ -272,10 +284,10 @@ export class CommonService {
       containerName = environment.blobContainerName;
     }
     const epoch = moment().utc().unix();
-    const fileNameArr = file.name.split('.');
-    const fileExtension = fileNameArr[fileNameArr.length - 1];
-    fileNameArr.pop();
-    const fileName = fileNameArr.join() + '_' + epoch + '.' + fileExtension;
+    // const fileNameArr = file.name.split('.');
+    // const fileExtension = fileNameArr[fileNameArr.length - 1];
+    // fileNameArr.pop();
+    // const fileName = fileNameArr.join() + '_' + epoch + '.' + fileExtension;
     const pipeline = newPipeline(new AnonymousCredential(), {
       retryOptions: { maxTries: 2 }, // Retry options
       keepAliveOptions: {
@@ -287,8 +299,7 @@ export class CommonService {
     if (!containerClient.exists()) {
       await containerClient.create();
     }
-
-    const client = containerClient.getBlockBlobClient(folderName + '/' + fileName);
+    const client = containerClient.getBlockBlobClient(folderName + '/' + epoch + '/' + file.name);
     const response = await client.uploadBrowserData(file, {
       blockSize: 4 * 1024 * 1024, // 4MB block size
       concurrency: 20, // 20 concurrency
@@ -296,7 +307,7 @@ export class CommonService {
     });
     if (response._response.status === 201) {
       return {
-        url: containerName + '/' + folderName + '/' + fileName,
+        url: containerName + '/' + folderName + '/' + epoch + '/' + file.name,
         name: file.name,
       };
     }

@@ -12,7 +12,7 @@
           *ngIf="chartConfig.cloud_derived_props">CD</div>
         <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
         <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1"
-          (click)="openConfirmRemoveWidgetModal()" placement="bottom" tooltip="Remove Widget"
+          (click)="openConfirmRemoveWidgetModal()" placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"
           class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
       </div>
     </ng-container>

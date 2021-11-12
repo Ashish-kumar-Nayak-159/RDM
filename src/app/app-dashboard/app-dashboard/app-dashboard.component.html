@@ -39,7 +39,7 @@
       </div>
       <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
           ">
-        No widgets configured for this asset. Please contact administrator.
+        No {{widgetStringFromMenu}} configured for this asset. Please contact administrator.
       </div>
       <div class="ml-auto"
         *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
@@ -64,10 +64,10 @@
         <div class="form-group">
           <ng-select [items]="historicalWidgets" class="custom-dropdown w-12 active sm" bindLabel="chart_Id"
             [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false"
-            placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+            placeholder="Select {{widgetStringFromMenu}}" dropdownPosition="bottom" name="asset-dropdown"
             [(ngModel)]="historicalDateFilter.widgets" (onDeSelectAll)="onDeSelectAll($event)">
             <ng-template ng-multi-label-tmp let-items="items">
-              {{items.length}} widgets selected
+              {{items.length}} {{widgetStringFromMenu}} selected
             </ng-template>
             <ng-template ng-header-tmp>
               <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
@@ -112,7 +112,8 @@
           <div class="form-group pl-2">
             <select class="form-control form-control-sm" id="samplingFormat"
               [(ngModel)]="historicalDateFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
-              [disabled]="!historicalDateFilter.isTypeEditable" [ngClass]="{'active': historicalDateFilter.sampling_format}">
+              [disabled]="!historicalDateFilter.isTypeEditable"
+              [ngClass]="{'active': historicalDateFilter.sampling_format}">
               <option [ngValue]="undefined">Sampling Format</option>
               <option [ngValue]="'minute'">Minute</option>
               <option [ngValue]="'hour'">Hour</option>
@@ -174,7 +175,7 @@
     <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
       <div class="m-3" *ngIf="historicalWidgets.length === 0 && isFilterSelected
       ">
-        No widgets configured for this asset. Please contact administrator.
+        No {{widgetStringFromMenu}} configured for this asset. Please contact administrator.
       </div>
       <!-- <div class="m-3" *ngIf="historicalWidgets.length > 0 && !isTelemetryDataLoading && telemetryData.length === 0 && isFilterSelected
       ">
@@ -195,11 +196,11 @@
             [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
             [telemetryObj]="telemetryObj">
           </app-only-number-widget>
-          <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset" 
-             *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
+          <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+            *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
           </app-rectangle-widget>
-          <app-cylinder-widget [chartConfig]="widget"  [asset]="originalFilter?.asset" 
-            *ngIf="widget.widgetType === 'CylinderWidget'"   [telemetryObj]="telemetryObj">
+          <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+            *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
           </app-cylinder-widget>
           <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
             *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"

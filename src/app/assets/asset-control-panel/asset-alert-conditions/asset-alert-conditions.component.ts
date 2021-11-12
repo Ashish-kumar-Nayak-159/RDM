@@ -66,6 +66,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   decodedToken: any;
   userGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -76,6 +77,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.loggedInUser = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
@@ -197,10 +199,16 @@ export class AssetAlertConditionsComponent implements OnInit {
 
     const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === this.widgetName);
     if (index > -1) {
-      this.toasterService.showError('Same Widget is already added.', 'Add Widget');
+      this.toasterService.showError(
+        'Same ' + this.widgetStringFromMenu + ' is already added.',
+        'Add ' + this.widgetStringFromMenu
+      );
       return;
     } else if (!this.widgetName) {
-      this.toasterService.showError('Please select widget to add', 'Add Widget');
+      this.toasterService.showError(
+        'Please select ' + this.widgetStringFromMenu + ' to add',
+        'Add ' + this.widgetStringFromMenu
+      );
       return;
     }
     if (this.widgetName && index === -1) {

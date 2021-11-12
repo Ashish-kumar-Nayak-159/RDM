@@ -4,14 +4,14 @@
       <form class="form-inline">
         <div class="form-group">
           <ng-select [items]="layoutJson" class="custom-dropdown w-12 active sm" bindLabel="title"
-            (onDeSelectAll)="onDeSelectAll($event)" [searchable]="true" placeholder="Select Widgets"
+            (onDeSelectAll)="onDeSelectAll($event)" [searchable]="true" placeholder="Select {{widgetStringFromMenu}}"
             clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" dropdownPosition="bottom"
             name="widget-dropdown" [(ngModel)]="selectedWidgets">
             <ng-template ng-option-tmp let-item="item">
               <span [tooltip]="item.title">{{item.title}}</span>
             </ng-template>
             <ng-template ng-multi-label-tmp let-items="items">
-              {{items.length}} widgets selected
+              {{items.length}} {{widgetStringFromMenu}} selected
             </ng-template>
             <ng-template ng-header-tmp>
               <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
@@ -48,9 +48,9 @@
             style="width: 3em;">
           <!-- <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div> -->
           <div class="form-group pl-2">
-            <select class="form-control form-control-sm" id="samplingFormat"
-              [(ngModel)]="historyFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
-              [disabled]="!historyFilter.isTypeEditable" [ngClass]="{'active': historyFilter.sampling_format}">
+            <select class="form-control form-control-sm" id="samplingFormat" [(ngModel)]="historyFilter.sampling_format"
+              name="samplingFormat" style="width: 11rem!important;" [disabled]="!historyFilter.isTypeEditable"
+              [ngClass]="{'active': historyFilter.sampling_format}">
               <option [ngValue]="undefined">Sampling Format</option>
               <option [ngValue]="'minute'">Minute</option>
               <option [ngValue]="'hour'">Hour</option>
@@ -133,10 +133,10 @@
       </ng-template>
     </p>
     <p class="m-3" *ngIf="!isFilterSelected && !isHistoryAPILoading">
-      Please select widget to load the data.
+      Please select {{widgetStringFromMenu}} to load the data.
     </p>
     <p class="m-3" *ngIf="layoutJson.length == 0 && !isHistoryAPILoading">
-      No Historical Widgets found
+      No Historical {{widgetStringFromMenu}} found.
     </p>
     <p class="m-3" *ngIf="isHistoryAPILoading">
       {{loadingMessage}}

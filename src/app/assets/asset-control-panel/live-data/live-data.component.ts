@@ -30,6 +30,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   telemetryObj: any;
   apiTelemetryObj: any;
   derivedKPIs: any[] = [];
+  widgetStringFromMenu: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -41,6 +42,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     await this.getAssetderivedKPIs(this.asset.asset_id);
     await this.getAssetsModelProperties();
     this.getLiveWidgets();
@@ -206,7 +208,10 @@ export class LiveDataComponent implements OnInit, OnDestroy {
 
   getTelemetryData() {
     if (this.selectedWidgetsForSearch?.length === 0) {
-      this.toasterService.showError('Select widgets first.', 'Live Widgets');
+      this.toasterService.showError(
+        'Select ' + this.widgetStringFromMenu + ' first.',
+        'Live ' + this.widgetStringFromMenu
+      );
       return;
     }
     this.signalRService.disconnectFromSignalR('telemetry');

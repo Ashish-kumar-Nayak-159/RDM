@@ -32,10 +32,12 @@ export class DataTableComponent implements OnInit {
   hideCancelButton = false;
   decodedToken: any;
   subscriptions: Subscription[] = [];
+  widgetStringFromMenu: any;
   constructor(private commonService: CommonService, private chartService: ChartService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(
       this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
@@ -56,8 +58,9 @@ export class DataTableComponent implements OnInit {
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

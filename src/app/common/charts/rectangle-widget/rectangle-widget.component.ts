@@ -1,5 +1,15 @@
 import { CommonService } from './../../../services/common.service';
-import { Component, Input, NgZone, OnInit, OnChanges, EventEmitter, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  NgZone,
+  OnInit,
+  OnChanges,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -10,11 +20,9 @@ declare var $: any;
 @Component({
   selector: 'app-rectangle-widget',
   templateUrl: './rectangle-widget.component.html',
-  styleUrls: ['./rectangle-widget.component.css']
+  styleUrls: ['./rectangle-widget.component.css'],
 })
-
 export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-
   private chart: am4charts.XYChart3D[] = [];
   @Input() id: string;
   @Input() value: string;
@@ -31,15 +39,13 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
   chartId: any = 'XYChart3D';
   telemetryData: any;
   subscriptions: Subscription[] = [];
+  widgetStringFromMenu: any;
 
-  constructor(
-    private commonService: CommonService,
-    private zone: NgZone,
-    private chartService: ChartService
-    ) {}
+  constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
@@ -57,9 +63,9 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
             this.telemetryObj[prop.property?.json_key]?.value !== null
           ) {
             this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
-            this.telemetryData.empty = Number((prop?.maxCapacityValue  || '100') - this.telemetryData.fillCapacity);
-            this.telemetryData.category = "";
-            chart.data = [ this.telemetryData ];
+            this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+            this.telemetryData.category = '';
+            chart.data = [this.telemetryData];
           }
         }
       });
@@ -75,7 +81,7 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       chart.angle = 50;
 
       const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-      categoryAxis.dataFields.category = "category";
+      categoryAxis.dataFields.category = 'category';
       categoryAxis.renderer.grid.template.location = 0;
       categoryAxis.renderer.grid.template.strokeOpacity = 0;
       categoryAxis.renderer.labels.template.disabled = true;
@@ -92,8 +98,8 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       // valueAxis.renderer.labels.template.disabled = true;
 
       const series1 = chart.series.push(new am4charts.ColumnSeries3D());
-      series1.dataFields.valueY = "fillCapacity";
-      series1.dataFields.categoryX = "category";
+      series1.dataFields.valueY = 'fillCapacity';
+      series1.dataFields.categoryX = 'category';
       series1.columns.template.column3D.width = am4core.percent(80);
       series1.columns.template.column3D.fillOpacity = 0.9;
       series1.columns.template.column3D.strokeOpacity = 1;
@@ -101,13 +107,13 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       // series1.columns.template.column3D.tooltipText = "{valueY}";
 
       const series2 = chart.series.push(new am4charts.ColumnSeries3D());
-      series2.dataFields.valueY = "empty";
-      series2.dataFields.categoryX = "category";
+      series2.dataFields.valueY = 'empty';
+      series2.dataFields.categoryX = 'category';
       series2.stacked = true;
       series2.columns.template.column3D.width = am4core.percent(80);
-      series2.columns.template.column3D.fill = am4core.color("#000");
+      series2.columns.template.column3D.fill = am4core.color('#000');
       series2.columns.template.column3D.fillOpacity = 0.1;
-      series2.columns.template.column3D.stroke = am4core.color("#ccc");
+      series2.columns.template.column3D.stroke = am4core.color('#ccc');
       series2.columns.template.column3D.strokeOpacity = 0.2;
       series2.columns.template.column3D.strokeWidth = 2;
 
@@ -118,9 +124,9 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       ) {
         this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = "";
+        this.telemetryData.category = '';
       }
-      chart.data = [ this.telemetryData ];
+      chart.data = [this.telemetryData];
       this.chart.push(chart);
     });
   }
@@ -131,8 +137,9 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
       backdrop: 'static',
       keyboard: false,

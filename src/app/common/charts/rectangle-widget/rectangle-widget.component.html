@@ -17,7 +17,7 @@
         <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
         <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
           href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
-          tooltip="Remove Widget"><i class="fa fa-close"></i></a>
+          tooltip="Remove {{widgetStringFromMenu}}"><i class="fa fa-close"></i></a>
       </div>
     </div>
     <div class="card-body1" style="height: 12rem;">
@@ -34,7 +34,8 @@
             prop.property?.json_model[prop.json_key].units + ')') : ''}}
           </p>
           <div>
-            <div id="{{chartConfig.chartId}}_chart_{{i}}" class="mt-n2" [ngStyle]="{'width': '100%', 'height': '10rem'}"></div>
+            <div id="{{chartConfig.chartId}}_chart_{{i}}" class="mt-n2"
+              [ngStyle]="{'width': '100%', 'height': '10rem'}"></div>
             <div class="live-overlay" *ngIf="!asset" style="width: 150px; left: 75px; height:20px">
               <div style="font-family:'Arial Black'; font-size: 10px;">Sample Chart</div>
             </div>
@@ -44,7 +45,7 @@
               (prop.property?.data_type === 'Number' ?
               telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals) :
               telemetryObj[prop?.json_key]?.value) : 'NA'}}
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -60,4 +61,3 @@
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
   </div>
 </div>
-

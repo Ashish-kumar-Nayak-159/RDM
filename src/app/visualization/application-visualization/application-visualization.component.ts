@@ -99,6 +99,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   configuredHierarchy: any = {};
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -116,7 +117,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if(this.contextApp.metadata?.filter_settings?.record_count){
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -975,7 +977,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.fromDate = filterObj.from_date;
     this.toDate = filterObj.to_date;
     if (this.selectedWidgets.length === 0) {
-      this.toasterService.showError('Please select at least one widget.', 'View Visualization');
+      this.toasterService.showError(
+        'Please select at least one ' + this.widgetStringFromMenu + '.',
+        'View Visualization'
+      );
       this.isTelemetryDataLoading = false;
       return;
     }

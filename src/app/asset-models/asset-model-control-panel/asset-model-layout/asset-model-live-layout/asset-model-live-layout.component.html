@@ -1,19 +1,21 @@
 <div class="tab-bar">
   <div class="">
     <form class="form-inline">
-      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0"> No Live widgets added.&nbsp;
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0"> No Live {{widgetStringFromMenu}}
+        added.&nbsp;
       </ng-container>
-      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length !== 0">Following Live widgets are already
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length !== 0">Following Live {{widgetStringFromMenu}}
+        are already
         added.&nbsp;</ng-container>
       <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
         <button class="btn btn-sm searchBtn btn-primary" [disabled]="assetModel.freezed"
-          (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live Widget"><i
+          (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live {{widgetStringFromMenu}}"><i
             class="fa fa-plus fa-sm"></i></button>
       </div>
       <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
         <button class="btn btn-sm searchBtn btn-success" [disabled]="assetModel.freezed"
-          (click)="onOpenConfigureDashboardModal()" placement="bottom" tooltip="Configure Dashboard Widgets"><i
-            class="fa fa-cog fa-sm text-white"></i></button>
+          (click)="onOpenConfigureDashboardModal()" placement="bottom"
+          tooltip="Configure Dashboard {{widgetStringFromMenu}}"><i class="fa fa-cog fa-sm text-white"></i></button>
       </div>
     </form>
   </div>
@@ -62,7 +64,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="widgetObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Widget</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add {{widgetStringFromMenu}}</h5>
         <button type="button" class="close" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()"
           aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -71,24 +73,24 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Widget Title:</label>
+            <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Title:</label>
             <input type="text" class="form-control form-control-sm" id="name" name="name"
-              [(ngModel)]="widgetObj.widgetTitle" placeholder="Enter Widget Name">
+              [(ngModel)]="widgetObj.widgetTitle" placeholder="Enter {{widgetStringFromMenu}} Name">
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Widget Type:</label>
+            <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Type:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
               [(ngModel)]="widgetObj.widgetType" (change)="onWidgetTypeChange()">
-              <option [ngValue]="undefined">Select Widget</option>
-              <option [ngValue]="'OnlyNumber'">Only Number Widget</option>
-              <option [ngValue]="'NumberWithTrend'">Number with Trend Widget</option>
-              <option [ngValue]="'NumberWithImage'">Number with Image Widget</option>
-              <option [ngValue]="'StringWidget'">String Widget</option>
+              <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'OnlyNumber'">Only Number {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'NumberWithTrend'">Number with Trend {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'NumberWithImage'">Number with Image {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'StringWidget'">String {{widgetStringFromMenu}}</option>
               <option [ngValue]="'GaugeChart'">Gauge Chart</option>
               <option [ngValue]="'LineChart'">Line Chart</option>
               <option [ngValue]="'AreaChart'">Area Chart</option>
-              <option [ngValue]="'RectangleWidget'">Rectangle Widget</option>
-              <option [ngValue]="'CylinderWidget'">Cylinder Widget</option>
+              <option [ngValue]="'RectangleWidget'">Rectangle {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'CylinderWidget'">Cylinder {{widgetStringFromMenu}}</option>
               <!-- <option [ngValue]="'ColumnChart'" >Column Chart</option>
             <option [ngValue]="'BarChart'" >Bar Chart</option> -->
             </select>
@@ -137,7 +139,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard Widget</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard {{widgetStringFromMenu}}</h5>
         <button type="button" class="close" [disabled]="isCreateWidgetAPILoading"
           (click)="onCloseConfigureDashboardModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -150,7 +152,7 @@
             <thead>
               <tr class="bg-secondary text-white">
                 <th>Index</th>
-                <th style="width: 60%">Widget Name</th>
+                <th style="width: 60%">{{widgetStringFromMenu}} Name</th>
                 <th>
                   <input type="checkbox" name="visibleall" id="visibleall" (change)="onClickOfCheckbox()"
                     [(ngModel)]="isAllWidgestSelectedForDashboard" placement="bottom"

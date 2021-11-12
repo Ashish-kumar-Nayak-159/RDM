@@ -39,7 +39,7 @@
     </tfoot>
     <tbody>
       <tr>
-        <td>Historical Widgets on Dashboard?
+        <td>Historical {{widgetStringFromMenu}} on Dashboard?
         </td>
         <td>
           <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_historical_widgets ? 'Yes':
@@ -50,7 +50,7 @@
         </td>
       </tr>
       <tr>
-        <td>Live Widgets on Dashboard?</td>
+        <td>Live {{widgetStringFromMenu}} on Dashboard?</td>
         <td>
           <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_live_widgets ? 'Yes': 'No'}}
           </ng-container>

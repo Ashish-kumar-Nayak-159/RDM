@@ -43,11 +43,12 @@ export class BarChartComponent implements OnInit, OnDestroy {
   loaderMessage = 'Loading Data. Wait...';
   decodedToken: any;
   environmentApp = environment.app;
+  widgetStringFromMenu: any;
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryData.length > 0) {
       this.loader = true;
       setTimeout(() => this.plotChart(), 200);

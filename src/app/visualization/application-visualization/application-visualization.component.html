@@ -51,9 +51,9 @@
     </ng-container>
 
     <div class="col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class=""
-        >
-        <ul class="mail_list list-group list-unstyled alert-scroll" [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}"
+      <div class="">
+        <ul class="mail_list list-group list-unstyled alert-scroll"
+          [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}"
           *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
           <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
@@ -187,11 +187,11 @@
                     <div class="form-group">
                       <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
                         [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="true"
-                        [closeOnSelect]="false" placeholder="Select Widgets" dropdownPosition="bottom"
+                        [closeOnSelect]="false" placeholder="Select {{widgetStringFromMenu}}" dropdownPosition="bottom"
                         name="asset-dropdown" [(ngModel)]="selectedWidgetsForSearch"
                         (onDeSelectAll)="onDeSelectAll($event)">
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items.length}} widgets selected
+                          {{items.length}} {{widgetStringFromMenu}} selected
                         </ng-template>
                         <ng-template ng-header-tmp>
                           <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
@@ -307,11 +307,10 @@
                   No data found.
                 </div>
                 <div class="col-xl-12 col-lg-12 p-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
-                  No widgets configured for this alert.
+                  No {{widgetStringFromMenu}} configured for this alert.
                 </div>
                 <div id="charts" class="px-3" *ngIf="selectedWidgets?.length > 0"></div>
               </div>
-
             </div>
           </div>
         </div>

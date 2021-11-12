@@ -1660,6 +1660,8 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
       isTitle: false,
+      showAccordion: [{ name: 'Widget', key: 'widget', type: 'text' }],
+      accordion_value: { widget: 'Widget' },
     },
     {
       page: 'reference_material',

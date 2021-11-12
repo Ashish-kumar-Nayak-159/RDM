@@ -118,7 +118,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
       this.sideMenuList.forEach((menu, i) => {
-        if (menu.index === undefined || menu.index === null ) {
+        if (menu.index === undefined || menu.index === null) {
           menu.index = i;
         }
       });
@@ -172,7 +172,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       });
       this.applicationData.menu_settings.main_menu = [...arr];
       this.applicationData.menu_settings.main_menu.forEach((menu, i) => {
-        if (menu.index === undefined || menu.index === null ) {
+        if (menu.index === undefined || menu.index === null) {
           menu.index = i;
         }
       });
@@ -200,7 +200,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
     this.applicationData.menu_settings.main_menu.sort((a, b) => a.index - b.index);
-    this.sideMenuList.sort((a, b) => this.applicationData.menu_settings.main_menu.indexOf(a) - this.applicationData.menu_settings.main_menu.indexOf(b));
+    this.sideMenuList.sort(
+      (a, b) =>
+        this.applicationData.menu_settings.main_menu.indexOf(a) -
+        this.applicationData.menu_settings.main_menu.indexOf(b)
+    );
     this.applicationData.id = this.applicationData.app;
     this.sideMenuList.forEach((item) => {
       this.applicationData.menu_settings.main_menu.forEach((config) => {
@@ -232,36 +236,43 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   getTableSortable() {
     const that = this;
     setTimeout(() => {
-
       const fixHelperModified = (e, tr) => {
+        console.log(tr);
+
         const $originals = tr.children();
         const $helper = tr.clone();
-        $helper.children().each(function(index) {
+        $helper.children().each(function (index) {
           $(this).width($originals.eq(index).width());
         });
+
         return $helper;
       };
 
       const updateIndex = (e, ui) => {
-        $('td.index', ui.item.parent()).each(function(i) {
+        $('td.index', ui.item.parent()).each(function (i) {
           $(this).html(i + '');
         });
-
-        $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
+        console.log(ui.item.next());
+        $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.applicationData.menu_settings.main_menu.length; j++) {
             if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j].system_name) {
-              if (this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index]) {
-                this.toggleRows['main_menu_' + i] = this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
-                delete this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
-              }
+              // if (
+              //   this.toggleRows &&
+              //   this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index]
+              // ) {
+              //   this.toggleRows['main_menu_' + i] =
+              //     this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
+              //   delete this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index];
+              // }
               that.applicationData.menu_settings.main_menu[j].index = i;
             }
           }
         });
       };
 
-      $('#myFavTable tbody').sortable({
+      $('#myFavTable tbody')
+        .sortable({
           helper: fixHelperModified,
           stop: updateIndex,
         })
@@ -274,13 +285,13 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         cursor: 'move',
         update: () => {},
       });
-
-    }, 1000);
+    }, 100);
   }
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
     this.isAppSettingsEditable = false;
+    $('#myFavTable tbody').sortable('destroy');
   }
 
   ngOnDestroy() {

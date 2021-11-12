@@ -24,11 +24,13 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
   headerMessage: string;
   subscriptions: Subscription[] = [];
   decodedToken: any;
+  widgetStringFromMenu: any;
   constructor(private chartService: ChartService, private commonService: CommonService) {}
 
   ngOnInit(): void {
     console.log(this.chartConfig);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
@@ -76,8 +78,9 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
       backdrop: 'static',
       keyboard: false,

@@ -24,10 +24,12 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
   bodyMessage: string;
   headerMessage: string;
   decodedToken: any;
+  widgetStringFromMenu: any;
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
@@ -121,8 +123,9 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
       backdrop: 'static',
       keyboard: false,

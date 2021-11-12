@@ -64,6 +64,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   decodedToken: any;
   userGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -74,6 +75,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     await this.getDocuments();
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');
@@ -194,10 +196,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
     const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === this.widgetName);
     if (index > -1) {
-      this.toasterService.showError('Same Widget is already added.', 'Add Widget');
+      this.toasterService.showError(
+        'Same ' + this.widgetStringFromMenu + ' is already added.',
+        'Add ' + this.widgetStringFromMenu
+      );
       return;
     } else if (!this.widgetName) {
-      this.toasterService.showError('Please select widget to add', 'Add Widget');
+      this.toasterService.showError(
+        'Please select ' + this.widgetStringFromMenu + ' to add',
+        'Add ' + this.widgetStringFromMenu
+      );
       return;
     }
     if (this.widgetName && index === -1) {

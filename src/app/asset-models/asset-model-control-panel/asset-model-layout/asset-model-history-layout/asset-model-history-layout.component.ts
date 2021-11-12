@@ -120,6 +120,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   decodedToken: any;
   derivedKPIs: any[] = [];
   filteredPropList: any[] = [];
+  widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -132,6 +133,8 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    this.selectedChartType = this.widgetStringFromMenu + ' Type';
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties();
@@ -225,7 +228,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   }
 
   clear() {
-    this.selectedChartType = 'Widget Type';
+    this.selectedChartType = this.widgetStringFromMenu + ' Type';
     this.chartTitle = '';
     this.xAxisProps = '';
     this.y1AxisProps = [];
@@ -241,7 +244,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
     if (this.selectedChartType === 'Vibration Damage Plot') {
@@ -264,12 +267,18 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       //   return;
       // }
       if (this.y2AxisProps.length > 0) {
-        this.toasterService.showError('Damage Plot will not contain any y2 axis property', 'Add Chart');
+        this.toasterService.showError(
+          'Damage Plot will not contain any y2 axis property',
+          'Add ' + this.widgetStringFromMenu
+        );
         return;
       }
     } else {
       if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {
-        this.toasterService.showError('Max 4 properties are allowed in a widget', 'Add Widget');
+        this.toasterService.showError(
+          'Max 4 properties are allowed in a ' + this.widgetStringFromMenu,
+          'Add ' + this.widgetStringFromMenu
+        );
         return;
       }
       let arr = [];
@@ -341,7 +350,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.clear();
       this.layoutJson.splice(0, 0, obj);
     } else {
-      this.toasterService.showError('Widget with same title is already exist.', 'Add Widget');
+      this.toasterService.showError(
+        this.widgetStringFromMenu + ' with same title is already exist.',
+        'Add ' + this.widgetStringFromMenu
+      );
     }
   }
 

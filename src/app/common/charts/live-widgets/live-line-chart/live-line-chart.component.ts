@@ -42,10 +42,12 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   environmentApp = environment.app;
   decodedToken: any;
   propertyBasedData: any = {};
+  widgetStringFromMenu: any;
   constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (!this.chartConfig.y1AxisProps) {
       this.chartConfig.y1AxisProps = [];
     }
@@ -354,8 +356,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
       backdrop: 'static',
       keyboard: false,

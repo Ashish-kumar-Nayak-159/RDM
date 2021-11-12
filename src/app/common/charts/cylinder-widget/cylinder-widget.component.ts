@@ -1,5 +1,15 @@
 import { CommonService } from './../../../services/common.service';
-import { Component, Input, NgZone, OnInit, OnChanges, EventEmitter, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  NgZone,
+  OnInit,
+  OnChanges,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -10,10 +20,9 @@ declare var $: any;
 @Component({
   selector: 'app-cylinder-widget',
   templateUrl: './cylinder-widget.component.html',
-  styleUrls: ['./cylinder-widget.component.css']
+  styleUrls: ['./cylinder-widget.component.css'],
 })
 export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-
   private chart: am4charts.XYChart3D[] = [];
   @Input() id: string;
   @Input() value: string;
@@ -30,15 +39,13 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
   chartId: any = 'XYChart3D';
   telemetryData: any;
   subscriptions: Subscription[] = [];
+  widgetStringFromMenu: any;
 
-  constructor(
-    private commonService: CommonService,
-    private zone: NgZone,
-    private chartService: ChartService
-    ) {}
+  constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
@@ -56,9 +63,9 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
             this.telemetryObj[prop.property?.json_key]?.value !== null
           ) {
             this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
-            this.telemetryData.empty = Number((prop?.maxCapacityValue  || '100') - this.telemetryData.fillCapacity);
-            this.telemetryData.category = "";
-            chart.data = [ this.telemetryData ];
+            this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+            this.telemetryData.category = '';
+            chart.data = [this.telemetryData];
           }
         }
       });
@@ -73,7 +80,7 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       chart.logo.disabled = true;
 
       const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-      categoryAxis.dataFields.category = "category";
+      categoryAxis.dataFields.category = 'category';
       categoryAxis.renderer.grid.template.location = 0;
       categoryAxis.renderer.grid.template.strokeOpacity = 0;
       categoryAxis.renderer.labels.template.disabled = true;
@@ -83,7 +90,7 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 40)) || 200;
       valueAxis.min = (prop?.minCapacityValue < 10 ? 10 : prop?.minCapacityValue) || 10;
       // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 100)) || 300;
-      valueAxis.max = (prop?.maxCapacityValue * 2) || 300;
+      valueAxis.max = prop?.maxCapacityValue * 2 || 300;
       valueAxis.paddingBottom = 10;
       // valueAxis.marginTop = 10;
       // valueAxis.paddingTop = 25;
@@ -107,8 +114,8 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       // });
 
       const series1 = chart.series.push(new am4charts.ConeSeries());
-      series1.dataFields.valueY = "fillCapacity";
-      series1.dataFields.categoryX = "category";
+      series1.dataFields.valueY = 'fillCapacity';
+      series1.dataFields.categoryX = 'category';
       series1.columns.template.width = am4core.percent(80);
       series1.columns.template.fillOpacity = 0.9;
       series1.columns.template.strokeOpacity = 1;
@@ -116,13 +123,13 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       // series1.columns.template.column3D.tooltipText = "{valueY}";
 
       const series2 = chart.series.push(new am4charts.ConeSeries());
-      series2.dataFields.valueY = "empty";
-      series2.dataFields.categoryX = "category";
+      series2.dataFields.valueY = 'empty';
+      series2.dataFields.categoryX = 'category';
       series2.stacked = true;
       series2.columns.template.width = am4core.percent(80);
-      series2.columns.template.fill = am4core.color("#000");
+      series2.columns.template.fill = am4core.color('#000');
       series2.columns.template.fillOpacity = 0.1;
-      series2.columns.template.stroke = am4core.color("#ccc");
+      series2.columns.template.stroke = am4core.color('#ccc');
       series2.columns.template.strokeOpacity = 0.2;
       series2.columns.template.strokeWidth = 2;
 
@@ -133,9 +140,9 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       ) {
         this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = "";
+        this.telemetryData.category = '';
       }
-      chart.data = [ this.telemetryData ];
+      chart.data = [this.telemetryData];
       this.chart.push(chart);
     });
   }
@@ -146,8 +153,9 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       isDisplaySave: true,
       isDisplayCancel: true,
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
-    this.headerMessage = 'Remove Widget';
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
     $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
       backdrop: 'static',
       keyboard: false,

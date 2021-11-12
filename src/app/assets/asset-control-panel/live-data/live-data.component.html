@@ -3,11 +3,11 @@
     <form class="form-inline">
       <div class="form-group">
         <ng-select [items]="liveWidgets" class="custom-dropdown w-12 active sm" bindLabel="id"
-          (onDeSelectAll)="onDeSelectAll()" [searchable]="true" placeholder="Select Widgets" clearSearchOnAdd="true"
-          [multiple]="true" [selectableGroup]="true" [closeOnSelect]="false" dropdownPosition="bottom"
-          name="widget-dropdown" [(ngModel)]="selectedWidgetsForSearch">
+          (onDeSelectAll)="onDeSelectAll()" [searchable]="true" placeholder="Select {{widgetStringFromMenu}}"
+          clearSearchOnAdd="true" [multiple]="true" [selectableGroup]="true" [closeOnSelect]="false"
+          dropdownPosition="bottom" name="widget-dropdown" [(ngModel)]="selectedWidgetsForSearch">
           <ng-template ng-multi-label-tmp let-items="items">
-            {{items.length}} widgets selected
+            {{items.length}} {{widgetStringFromMenu}} selected
           </ng-template>
           <ng-template ng-header-tmp>
             <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
@@ -52,11 +52,11 @@
             <app-gauge-chart [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'GaugeChart'"
               [telemetryObj]="telemetryObj" [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
             </app-gauge-chart>
-            <app-rectangle-widget [chartConfig]="widget.value"  *ngIf="widget.value.widgetType === 'RectangleWidget'"
-             [telemetryObj]="telemetryObj"  [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
+            <app-rectangle-widget [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'RectangleWidget'"
+              [telemetryObj]="telemetryObj" [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
             </app-rectangle-widget>
             <app-cylinder-widget [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'CylinderWidget'"
-             [telemetryObj]="telemetryObj"  [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
+              [telemetryObj]="telemetryObj" [asset]="asset" [apiTelemetryObj]="apiTelemetryObj">
             </app-cylinder-widget>
             <app-live-line-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [asset]="asset"
               *ngIf="widget.value.widgetType === 'LineChart' || widget.value.widgetType === 'AreaChart'">
@@ -66,7 +66,7 @@
       </div>
     </ng-container>
     <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length === 0 && !telemetryObj ">
-      Please select widgets first.
+      Please select {{widgetStringFromMenu}} first.
     </p>
     <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && !telemetryObj">
       Please search to view the data.

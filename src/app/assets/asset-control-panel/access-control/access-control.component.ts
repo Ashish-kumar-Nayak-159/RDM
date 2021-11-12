@@ -65,7 +65,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
       }
       this.assetUsers = [];
       if (this.asset?.tags?.recipients) {
-        this.assetUsers = this.asset.tags.recipients;
+        if (typeof this.asset?.tags?.recipients === 'string') {
+          this.assetUsers = JSON.parse(this.asset.tags.recipients);
+        } else {
+          this.assetUsers = this.asset.tags.recipients;
+        }
       } else {
         this.asset.tags.recipients = [];
         this.assetUsers = [];
@@ -158,10 +162,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
   onModalClose() {
     $('#userAccessAddModal').modal('hide');
     this.isAddUserModalOpen = false;
-    this.addUserForm.reset();
+    this.addUserForm?.reset();
   }
 
   onCloseConfirmModal() {
+    console.log('aaaaaaaaaaa');
     $('#confirmMessageModal').modal('hide');
     this.assetUserForDelete = undefined;
   }
@@ -216,6 +221,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   updateAssetData() {
     this.isUpdateAPILoading = true;
     let methodToCall;
+    this.asset.tags.recipients = JSON.stringify(this.asset.tags.recipients);
     this.asset['sync_with_cache'] = true;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.updateNonIPAssetTags(this.asset, this.contextApp.app);

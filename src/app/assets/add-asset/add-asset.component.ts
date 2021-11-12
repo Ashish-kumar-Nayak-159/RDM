@@ -240,6 +240,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     // if (this.componentState === CONSTANTS.NON_IP_ASSET) {
     //   this.assetDetail.metadata.setup_details = this.setupForm.value;
     //   }
+
     const obj = {
       app: this.contextApp.app,
       metadata: this.assetDetail.metadata,
@@ -386,6 +387,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       sms_no: this.assetDetail.tags.asset_manager.metadata?.sms_no,
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
+    this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
     console.log(this.assetDetail);
     const methodToCall =

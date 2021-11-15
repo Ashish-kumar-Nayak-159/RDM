@@ -86,11 +86,9 @@
                         asset.asset_id}}</a></b>
                     <ng-container>
                       <hr>
-                      <div *ngIf="asset?.map_content?.data; else noSPCDTemplate">
-                        <div *ngIf="(asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
-                          <div *ngFor="let kpi of asset.map_content.data | keyvalue">
+                      <div *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
+                        <div *ngFor="let kpi of asset.map_content.data | keyvalue">
                             <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
-                          </div>
                         </div>
                       </div>  
                       <ng-template #noSPCDTemplate>

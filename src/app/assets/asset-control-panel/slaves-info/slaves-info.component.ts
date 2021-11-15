@@ -278,11 +278,11 @@ export class SlavesInfoComponent implements OnInit {
       this.asset.tags.protocol !== 'SiemensTCPIP' &&
       this.asset.tags.protocol !== 'ModbusRTUMaster'
     ) {
-      if (!this.slaveObj?.metadata?.mac_id) {
+      if (!this.slaveObj?.mac_id) {
         this.toasterService.showError('MAC Address is required', 'Add Slave');
         return;
       }
-      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(this.slaveObj?.metadata?.mac_id)) {
+      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(this.slaveObj?.mac_id)) {
         this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
         return;
       }
@@ -291,9 +291,9 @@ export class SlavesInfoComponent implements OnInit {
     this.isAddSlaveAPILoading = true;
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
-    const macID = this.slaveObj.metadata.mac_id;
+    // const macID = this.slaveObj.metadata.mac_id;
     this.slaveObj.metadata = this.addSetupForm?.value || {};
-    this.slaveObj.metadata.mac_id = macID;
+    // this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(
       this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj).subscribe(
         (response: any) => {
@@ -321,20 +321,20 @@ export class SlavesInfoComponent implements OnInit {
       this.asset.tags.protocol !== 'SiemensTCPIP' &&
       this.asset.tags.protocol !== 'ModbusRTUMaster'
     ) {
-      if (!obj?.metadata?.mac_id) {
+      if (!obj?.mac_id) {
         this.toasterService.showError('MAC Address is required', 'Add Slave');
         return;
       }
-      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(obj?.metadata?.mac_id)) {
+      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(obj?.mac_id)) {
         this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
         return;
       }
     }
 
-    const macID = obj.metadata.mac_id;
+    // const macID = obj.mac_id;
     this.isAddSlaveAPILoading = true;
     obj.metadata = this.editSetupForm?.value || {};
-    obj.metadata.mac_id = macID;
+    // obj.metadata.mac_id = macID;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(
       this.assetService.updateAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, slave.id, obj).subscribe(
@@ -391,7 +391,7 @@ export class SlavesInfoComponent implements OnInit {
     };
     this.slaveData.forEach((slave) => {
       obj.slaves[slave.slave_id] = {
-        mac_id: slave.metadata?.mac_id,
+        mac_id: slave?.mac_id,
         category: slave.slave_category?.slave_category,
       };
     });

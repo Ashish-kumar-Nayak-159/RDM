@@ -56,7 +56,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label">MAC Address:</label>
             <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
-              [(ngModel)]="slave.metadata.mac_id" placeholder="Enter MAC Address">
+              [(ngModel)]="slave.mac_id" placeholder="Enter MAC Address">
           </div>
           <form *ngIf="asset.tags.protocol && editSetupForm" [formGroup]="editSetupForm">
             <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
@@ -287,7 +287,7 @@
                 [ngClass]="{'required': asset.tags.protocol !== 'ModbusTCPMaster' && asset.tags.protocol !== 'SiemensTCPIP' && asset.tags.protocol !== 'ModbusRTUMaster' }">MAC
                 Address:</label>
               <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
-                [(ngModel)]="slaveObj.metadata.mac_id" placeholder="Enter MAC Address">
+                [(ngModel)]="slaveObj.mac_id" placeholder="Enter MAC Address">
             </div>
             <form *ngIf="asset.tags.protocol && addSetupForm" [formGroup]="addSetupForm">
               <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">

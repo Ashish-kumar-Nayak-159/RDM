@@ -339,6 +339,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       slaves: {},
     };
     this.slaveData.forEach((slave) => {
+      slave.metadata.mac_id = slave.mac_id;
       obj.slaves[slave.slave_id] = slave.metadata;
       obj.slaves[slave.slave_id]['category'] = slave.slave_category?.slave_category;
     });

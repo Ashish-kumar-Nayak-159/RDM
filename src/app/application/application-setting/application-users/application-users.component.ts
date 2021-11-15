@@ -37,12 +37,13 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   userRoles: any = [];
   addUserForm: FormGroup;
   rolesList: any = [];
+  userLevel;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private userService: UserService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -57,24 +58,23 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   getApplicationUserRoles() {
-    let userLevel;
     this.apiSubscriptions.push(
       this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe((response: any) => {
         if (response && response.data) {
           // this.userRoles = response.data;
-          response.data.map((role)=>{
-            if(role.role == this.applicationData.user.role){
-              userLevel = role.level;
+          response.data.map((role) => {
+            if (role.role == this.applicationData.user.role) {
+              this.userLevel = role.level;
             }
           })
-          response.data.map((role)=>{
-            if(role.level >= userLevel){
+          response.data.map((role) => {
+            if (role.level >= this.userLevel) {
               this.userRoles.push(role)
               this.rolesList.push(role.role);
             }
           })
-          console.log('userRoles ',this.userRoles)
-          console.log('this.applicationData ',this.applicationData)
+          console.log('userRoles ', this.userRoles)
+          console.log('this.applicationData ', this.applicationData)
         }
       })
     );
@@ -98,10 +98,15 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   getUserHierarchy(userObj) {
     let hierarchy = '';
+    let userHierarchy = '';
     const keyList = Object.keys(userObj.hierarchy);
     keyList.forEach((key, index) => {
       hierarchy = hierarchy + userObj.hierarchy[key] + (userObj.hierarchy[keyList[index + 1]] ? ' / ' : '');
+      userHierarchy = userHierarchy + (this.applicationData.user.hierarchy[key] ?  this.applicationData.user.hierarchy[key] : '')  + (this.applicationData.user.hierarchy[keyList[index + 1]] ? ' / ' : '')
     });
+    if(hierarchy.substr(0,userHierarchy.length ) == userHierarchy && hierarchy.length >= userHierarchy.length){
+      userObj['isEditable'] = true
+    }
     return hierarchy;
   }
 
@@ -118,12 +123,19 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
           whatsapp: new FormControl(null),
         }),
         // role: new FormControl(CONSTANTS.APP_ADMIN_ROLE, [Validators.required]),
-        role : new FormControl(this.applicationData.user.role,[Validators.required])
+        role: new FormControl(this.applicationData.user.role, [Validators.required])
       });
       this.addUserObj.app = this.applicationData.app;
       this.configureHierarchy = {};
-      this.addUserObj.hierarchy = { App: this.applicationData.app };
-      this.addUserObj.hierarchy = {};
+      // this.addUserObj.hierarchy = { App: this.applicationData.app };
+      // this.addUserObj.hierarchy = {};
+      this.addUserObj.hierarchy = this.applicationData.user.hierarchy;
+      this.applicationData.hierarchy.levels.forEach((level, index) => {
+        if (level !== 'App' && this.addUserObj.hierarchy[level]) {
+          this.configureHierarchy[index] = this.addUserObj.hierarchy[level];
+          this.onChangeOfHierarchy(index);
+        }
+      });
     } else {
       this.addUserForm = new FormGroup({
         id: new FormControl(userObj.id),
@@ -150,6 +162,13 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   onUserRoleChange() {
     this.getAccessLevelHierarchy();
     this.configureHierarchy = JSON.parse(JSON.stringify({}));
+    this.addUserObj.hierarchy = this.applicationData.user.hierarchy;
+    this.applicationData.hierarchy.levels.forEach((level, index) => {
+      if (level !== 'App' && this.addUserObj.hierarchy[level]) {
+        this.configureHierarchy[index] = this.addUserObj.hierarchy[level];
+        this.onChangeOfHierarchy(index);
+      }
+    });
   }
 
   onChangeOfHierarchy(i) {
@@ -192,7 +211,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     let hierarchy = '';
     const roleObj = this.userRoles.filter((role) => role.role === this.addUserForm.value.role)[0];
     this.applicationData.hierarchy.levels.forEach((element, index) => {
-      if (index <= roleObj.level) {
+      if (index <= roleObj?.level) {
         hierarchy = hierarchy + element + ' / ';
         if (element.level !== 0) {
           this.hierarchyList.push(element);

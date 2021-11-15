@@ -66,7 +66,8 @@ export class AccessControlComponent implements OnInit, OnChanges {
       this.assetUsers = [];
       if (this.asset?.tags?.recipients) {
         if (typeof this.asset?.tags?.recipients === 'string') {
-          this.assetUsers = JSON.parse(this.asset.tags.recipients);
+          this.asset.tags.recipients = JSON.parse(this.asset.tags.recipients);
+          this.assetUsers = this.asset.tags.recipients;
         } else {
           this.assetUsers = this.asset.tags.recipients;
         }
@@ -204,7 +205,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
       }
       user.whatsapp = user.whatsapp.e164Number;
     }
-    const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email);
+    const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email) || -1;
     if (index > -1) {
       this.toasterService.showError('Recipient with same email address is already there.', 'Add Recipient');
       return;
@@ -236,6 +237,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
           this.isUpdateAPILoading = false;
           this.onModalClose();
           this.onCloseConfirmModal();
+          this.asset.tags.recipients = JSON.parse(this.asset.tags.recipients);
         },
         (error) => {
           this.toasterService.showError(error.message, 'Access Control');

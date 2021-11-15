@@ -132,6 +132,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             flag = true;
             item.display_name = menu.display_name;
             item.visible = menu.visible;
+            item.index = menu.index;
             let aFlag = false;
             item.showAccordion?.forEach((aItem) => {
               menu.showAccordion?.forEach((mItem) => {
@@ -176,6 +177,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           menu.index = i;
         }
       });
+      console.log('before  ', JSON.stringify(this.applicationData.menu_settings.main_menu));
+      this.applicationData.menu_settings.main_menu = this.applicationData.menu_settings.main_menu.sort(
+        (a, b) => a.index - b.index
+      );
+      console.log('after  ', JSON.stringify(this.applicationData.menu_settings.main_menu));
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
@@ -184,6 +190,27 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   //   this.applicationData.menu_settings[index].visible = !this.applicationData.menu_settings[index].visible;
   // }
 
+  openReorderMainMenuModal() {
+    $('#reorderMainMenuModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.getTableSortable();
+  }
+
+  reorderMainMenu() {
+    this.applicationData.menu_settings.main_menu = this.applicationData.menu_settings.main_menu.sort(
+      (a, b) => a.index - b.index
+    );
+    this.sideMenuList = this.sideMenuList.sort(
+      (a, b) =>
+        this.applicationData.menu_settings.main_menu.indexOf(a) -
+        this.applicationData.menu_settings.main_menu.indexOf(b)
+    );
+    this.closeModal();
+  }
+
+  closeModal() {
+    $('#reorderMainMenuModal').modal('hide');
+    $('#myFavTable tbody').sortable('destroy');
+  }
   onToggleRows(i) {
     if (this.toggleRows[i]) {
       this.toggleRows = {};
@@ -199,12 +226,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
-    this.applicationData.menu_settings.main_menu.sort((a, b) => a.index - b.index);
-    this.sideMenuList.sort(
-      (a, b) =>
-        this.applicationData.menu_settings.main_menu.indexOf(a) -
-        this.applicationData.menu_settings.main_menu.indexOf(b)
-    );
+
     this.applicationData.id = this.applicationData.app;
     this.sideMenuList.forEach((item) => {
       this.applicationData.menu_settings.main_menu.forEach((config) => {
@@ -291,7 +313,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
     this.isAppSettingsEditable = false;
-    $('#myFavTable tbody').sortable('destroy');
   }
 
   ngOnDestroy() {

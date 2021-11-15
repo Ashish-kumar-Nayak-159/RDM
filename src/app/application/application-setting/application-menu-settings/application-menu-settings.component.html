@@ -22,14 +22,23 @@
         <a class="btn">
           Main Menu
         </a>
+        <div class="float-right pull-right mt-1">
+          <a href="javascript:void(0)" class="pr-2"
+            *ngIf="isAppSettingsEditable && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+            (click)="openReorderMainMenuModal()" tooltip="Reorder Menu Item"><i class="fa fa-cog"></i></a>
+
+          <!-- <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
+            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+            (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a> -->
+        </div>
       </ng-container>
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <table class="table table-hover" id="myFavTable">
+            <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>Index</th>
+                  <!-- <th>Index</th> -->
                   <th></th>
                   <th>Page</th>
                   <th>System Name</th>
@@ -39,7 +48,7 @@
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="6">
+                  <th colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -51,10 +60,8 @@
               </tfoot>
               <tbody>
                 <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
-                  <tr class="favoriteOrderId" [attr.index]="item.index"
-                    [ngClass]="{ 'cursor-move' : isAppSettingsEditable}" id="{{item.system_name}}"
-                    *ngIf="item.privilege_show === undefined || item.privilege_show === true">
-                    <td class="index">{{item.index}}</td>
+                  <tr *ngIf="item.privilege_show === undefined || item.privilege_show === true">
+                    <!-- <td class="index">{{item.index}}</td> -->
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + item.index)">
@@ -79,7 +86,7 @@
                     <tr id="{{'main_menu_' + item.index}}"
                       *ngFor="let control of item.showAccordion; let first = first; let last = last">
 
-                      <td colspan="3" [ngClass]="{'accordion-border': last}"
+                      <td colspan="2" [ngClass]="{'accordion-border': last}"
                         [ngStyle]="{'border-top': first ? '1px solid #9fc0ef' : 'none'}"></td>
 
                       <td [ngClass]="{'accordion-border': last}"
@@ -418,4 +425,48 @@
     </accordion-group>
 
   </accordion>
+</div>
+
+
+<div class="modal right fade" id="reorderMainMenuModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reorder Main Menu</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover" id="myFavTable">
+          <thead>
+            <tr>
+              <th>Index</th>
+              <th>Page</th>
+              <th>System Name</th>
+              <th>Display Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
+              <tr class="cursor-move favoriteOrderId" id="{{item.system_name}}"
+                *ngIf="item.privilege_show === undefined || item.privilege_show === true">
+                <td class="index">{{item.index + 1}}</td>
+                <td>{{item.page}}</td>
+                <td>{{item.system_name}}</td>
+                <td>{{item.display_name}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" (click)="reorderMainMenu()">Save</button>
+        <button type="button" class="btn btn-white" (click)="closeModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

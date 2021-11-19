@@ -10,7 +10,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-application-filter-settings',
   templateUrl: './application-filter-settings.component.html',
-  styleUrls: ['./application-filter-settings.component.css']
+  styleUrls: ['./application-filter-settings.component.css'],
 })
 export class ApplicationFilterSettingsComponent implements OnInit {
   @Input() applicationData: any;
@@ -20,14 +20,14 @@ export class ApplicationFilterSettingsComponent implements OnInit {
   apiSubscriptions: Subscription[] = [];
   decodedToken: any;
   mainFilterObj: any = {};
-  controlPanelFilterObj:any = {};
-  selectedDateRange='Last 24 Hours';
+  controlPanelFilterObj: any = {};
+  selectedDateRange = 'Last 24 Hours';
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
     maxDate: moment(),
-    timePicker: false,
+    timePicker: true,
     showCustomRangeLabel: false,
     ranges: {
       'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
@@ -44,13 +44,15 @@ export class ApplicationFilterSettingsComponent implements OnInit {
         moment().subtract(1, 'weeks').endOf('isoWeek'),
       ],
       'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
+      'Last Month': [moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
     },
   };
-  constructor(private assetService: AssetService,
+  constructor(
+    private assetService: AssetService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
-    private commonService: CommonService) { }
+    private commonService: CommonService
+  ) {}
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -59,30 +61,33 @@ export class ApplicationFilterSettingsComponent implements OnInit {
       this.applicationData.metadata.filter_settings = {};
       this.applicationData.metadata.filter_settings.record_count = 500;
       this.applicationData.metadata.filter_settings.search_duration = 'Last 24 Hours';
-      this.applicationData.metadata.filter_settings.search_duration_control_panel = 'Last 30 Minutes';
+      this.applicationData.metadata.filter_settings.search_duration_control_panel = 'Last 30 Mins';
     }
     console.log(this.selectedDateRange);
-    this.mainFilterObj.dateOption = this.applicationData.metadata.filter_settings.search_duration || 'Last 24 Hours'
-    this.mainFilterObj.from_date = this.options.ranges[this.applicationData.metadata.filter_settings.search_duration][0]
-    this.mainFilterObj.to_date = this.options.ranges[this.applicationData.metadata.filter_settings.search_duration][1]
-    
-    this.controlPanelFilterObj.dateOption = this.applicationData.metadata.filter_settings.search_duration_control_panel || 'Last 30 Mins'
-    this.controlPanelFilterObj.from_date = this.options.ranges[this.applicationData.metadata.filter_settings.search_duration_control_panel][0]
-    this.controlPanelFilterObj.to_date = this.options.ranges[this.applicationData.metadata.filter_settings.search_duration_control_panel][1]
+    this.mainFilterObj.dateOption = this.applicationData.metadata.filter_settings.search_duration || 'Last 24 Hours';
+    let obj = this.commonService.getMomentStartEndDate(this.mainFilterObj.dateOption);
+    this.mainFilterObj.from_date = obj.from_date;
+    this.mainFilterObj.to_date = obj.to_date;
+
+    this.controlPanelFilterObj.dateOption =
+      this.applicationData.metadata.filter_settings.search_duration_control_panel || 'Last 30 Mins';
+    obj = this.commonService.getMomentStartEndDate(this.controlPanelFilterObj.dateOption);
+    this.controlPanelFilterObj.from_date = obj.from_date;
+    this.controlPanelFilterObj.to_date = obj.to_date;
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 
   selectedDate(filterObj, type) {
-    if (type == "search_duration") {
-      this.applicationData.metadata.filter_settings.search_duration = filterObj.dateOption
+    if (type == 'search_duration') {
+      this.applicationData.metadata.filter_settings.search_duration = filterObj.dateOption;
     } else {
-      this.applicationData.metadata.filter_settings.search_duration_control_panel = filterObj.dateOption
+      this.applicationData.metadata.filter_settings.search_duration_control_panel = filterObj.dateOption;
     }
   }
 
   onSaveMetadata() {
-    if(this.applicationData.metadata?.filter_settings?.record_count <= 0){
-      this.toasterService.showError("Default number of records should be greater than 0","Save Filter Settings");
+    if (this.applicationData.metadata?.filter_settings?.record_count <= 0) {
+      this.toasterService.showError('Default number of records should be greater than 0', 'Save Filter Settings');
       return;
     }
     this.saveConfigAPILoading = true;
@@ -93,11 +98,11 @@ export class ApplicationFilterSettingsComponent implements OnInit {
           this.toasterService.showSuccess(response.message, 'Save Filter Settings');
           this.saveConfigAPILoading = false;
           this.applicationService.refreshAppData.emit();
-          let obj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS)
-          obj['dateOption'] = this.applicationData.metadata.filter_settings.search_duration
+          let obj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS);
+          obj['dateOption'] = this.applicationData.metadata.filter_settings.search_duration;
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
-          obj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS)
-          obj['dateOption'] = this.applicationData.metadata.filter_settings.search_duration_control_panel
+          obj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS);
+          obj['dateOption'] = this.applicationData.metadata.filter_settings.search_duration_control_panel;
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj);
         },
         (error) => {
@@ -113,4 +118,3 @@ export class ApplicationFilterSettingsComponent implements OnInit {
     this.isConfigEditable = false;
   }
 }
- 

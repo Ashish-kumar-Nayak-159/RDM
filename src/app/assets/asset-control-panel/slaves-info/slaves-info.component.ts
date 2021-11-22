@@ -314,6 +314,7 @@ export class SlavesInfoComponent implements OnInit {
 
   updateSlaveObj(slave) {
     const obj: any = {
+      mac_id: slave.mac_id,
       metadata: slave?.metadata,
     };
     if (

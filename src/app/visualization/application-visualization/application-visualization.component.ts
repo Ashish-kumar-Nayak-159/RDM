@@ -1172,11 +1172,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     this.acknowledgedAlert.metadata.files = files;
+    console.log(JSON.stringify(this.acknowledgedAlert));
     const obj = {
       app: this.contextApp.app,
       asset_id: this.acknowledgedAlert.asset_id,
       message_id: this.acknowledgedAlert.message_id,
-      start_event_message_date: this.acknowledgedAlert.start_event_message_date,
+      message_date: this.acknowledgedAlert.start_event_message_date,
       code: this.acknowledgedAlert.code,
       message: this.acknowledgedAlert.message,
       metadata: this.acknowledgedAlert.metadata,

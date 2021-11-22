@@ -31,10 +31,10 @@ const routes: Routes = [
     path: 'applications/:applicationId/reports',
     loadChildren: () => import('./reports/reports.module').then((module) => module.ReportsModule),
   },
-  {
-    path: 'applications/:applicationId/asset',
-    loadChildren: () => import('./assets/assets.module').then((module) => module.AssetsModule),
-  },
+  // {
+  //   path: 'applications/:applicationId/asset',
+  //   loadChildren: () => import('./assets/assets.module').then((module) => module.AssetsModule),
+  // },
   {
     path: 'applications/:applicationId/assets',
     loadChildren: () => import('./assets/assets.module').then((module) => module.AssetsModule),

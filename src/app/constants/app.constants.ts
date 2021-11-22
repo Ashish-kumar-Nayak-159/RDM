@@ -419,7 +419,7 @@ export class CONSTANTS {
     {
       page: 'Asset Management',
       system_name: 'Asset Management',
-      url: 'applications/:appName/asset/management',
+      url: 'applications/:appName/assets/management',
       display_name: 'Asset Management',
       for_admin_only: true,
       exactMatch: true,

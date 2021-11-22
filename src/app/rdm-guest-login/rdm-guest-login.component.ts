@@ -140,7 +140,7 @@ export class RdmGuestLoginComponent implements OnInit {
       return;
     }
     const loginObj = this.loginForm.value;
-    loginObj.phone = loginObj.phone.e164Number;
+    loginObj.phone = loginObj.phone?.e164Number || null;
     this.isLoginAPILoading = true;
     loginObj.app = this.tenantId;
     this.subscriptions.push(

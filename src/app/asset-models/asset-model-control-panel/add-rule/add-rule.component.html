@@ -310,8 +310,11 @@
                               {{item.group_name}}
                             </span>
                           </ng-template>
-                          <ng-template ng-multi-label-tmp let-items="items">
+                          <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
                             {{items.length}} groups selected
+                          </ng-template>
+                          <ng-template ng-multi-label-tmp let-items="ruleModel.actions.notification.email.groups" *ngIf='isView'>
+                            {{ruleModel.actions.notification.email.groups}}
                           </ng-template>
                         </ng-select>
                       </div>

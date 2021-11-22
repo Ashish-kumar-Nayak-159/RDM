@@ -164,7 +164,13 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type === 'Object' && prop.data_type !== 'Array'
       );
-    } else {
+    } 
+    else if(this.selectedChartType !== 'Pie Chart' && this.selectedChartType !== 'Vibration Damage Plot' && this.selectedChartType !== 'Data Table'){
+      this.filteredPropList = this.propertyList.filter(
+        (prop) => prop.data_type === 'Number'
+      );
+    }
+    else {
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type !== 'Object' && prop.data_type !== 'Array'
       );

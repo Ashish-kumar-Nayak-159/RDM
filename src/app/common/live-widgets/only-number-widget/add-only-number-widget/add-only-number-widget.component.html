@@ -186,7 +186,7 @@
 <ng-template #singleChartTemplate>
   <div class="form-group">
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
-    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm" [searchable]="true"
+    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
       placeholder="Y1 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
       bindLabel="name" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
@@ -194,9 +194,9 @@
       </ng-template>
       <ng-template ng-header-tmp>
         <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-          <li *ngIf="widgetObj.y1AxisProps?.length !== dropdownProperties.length"> <a href="javascript:void(0)"
-              (click)="widgetObj.y1AxisProps = dropdownProperties">Select All</a></li>
-          <li *ngIf="widgetObj.y1AxisProps?.length === dropdownProperties.length"> <a href="javascript:void(0)"
+          <li *ngIf="widgetObj.y1AxisProps?.length !== propertyList.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y1AxisProps = propertyList">Select All</a></li>
+          <li *ngIf="widgetObj.y1AxisProps?.length === propertyList.length"> <a href="javascript:void(0)"
               (click)="widgetObj.y1AxisProps = []">Deselect All</a></li>
         </ul>
       </ng-template>
@@ -209,7 +209,7 @@
   </div>
   <div class="form-group">
     <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
-    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm" [searchable]="true"
+    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
       placeholder="Y2 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
       bindLabel="name" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
@@ -217,9 +217,9 @@
       </ng-template>
       <ng-template ng-header-tmp>
         <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-          <li *ngIf="widgetObj.y2AxisProps?.length !== dropdownProperties.length"> <a href="javascript:void(0)"
-              (click)="widgetObj.y2AxisProps = dropdownProperties">Select All</a></li>
-          <li *ngIf="widgetObj.y2AxisProps?.length === dropdownProperties.length"> <a href="javascript:void(0)"
+          <li *ngIf="widgetObj.y2AxisProps?.length !== propertyList.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y2AxisProps = propertyList">Select All</a></li>
+          <li *ngIf="widgetObj.y2AxisProps?.length === propertyList.length"> <a href="javascript:void(0)"
               (click)="widgetObj.y2AxisProps = []">Deselect All</a></li>
         </ul>
       </ng-template>

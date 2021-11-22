@@ -65,7 +65,7 @@
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-confirm-modal *ngIf="modalConfig"
-      [bodyMessage]="'All the users and assets with this tree node will get impacted. Are you sure you want to delete this node?'"
+      [bodyMessage]="'All the users and roles with this tree node will get impacted. Are you sure you want to delete this node?'"
       [headerMessage]="'Remove Tree Node'" (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
     </app-confirm-modal>
   </div>

@@ -107,11 +107,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_model[obj.json_key] = {};
             this.propertyList.push(obj);
           });
-          this.propertyList.forEach((prop) => {
-            if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-              this.filteredPropList.push(prop);
-            }
-          });
           resolve();
         })
       );
@@ -255,6 +250,18 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     ) {
       this.widgetObj.noOfDataPointsForTrend = 15;
     }
+    this.filteredPropList = [];
+    this.propertyList.forEach((prop) => {
+      if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+        if(this.widgetObj?.widgetType !== "StringWidget" && prop.data_type === "Number"){
+          this.filteredPropList.push(prop);
+        }
+        else if(this.widgetObj?.widgetType === "StringWidget"){
+          this.filteredPropList.push(prop);
+        }
+        
+      }
+    });
   }
 
   getTelemetryData() {
@@ -392,7 +399,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       return;
     }
     if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
-      console.log(this.widgetObj);
       if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
         this.toasterService.showError(
           'Please select at least one property in y1 axis property.',
@@ -401,11 +407,12 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         return;
       } else {
         const arr = [];
+        
         this.widgetObj.y1AxisProps.forEach((prop) => {
           const obj = {
             name: prop.name,
             type: prop.type,
-            json_key: prop.value.json_key,
+            json_key: prop.json_key,
           };
           arr.push(obj);
         });
@@ -419,7 +426,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           const obj = {
             name: prop.name,
             type: prop.type,
-            json_key: prop.value.json_key,
+            json_key: prop.json_key,
           };
           arr.push(obj);
         });

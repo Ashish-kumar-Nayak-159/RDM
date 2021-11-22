@@ -221,12 +221,14 @@ export class AddRuleComponent implements OnInit {
       // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
-        this.dropdownPropList.push({
-          id: prop.name,
-          type: prop.type,
-          json_key: prop.json_key,
-          value: prop,
-        });
+        if(prop.data_type=='Number' || prop.data_type == 'Boolean'){
+          this.dropdownPropList.push({
+            id: prop.name,
+            type: prop.type,
+            json_key: prop.json_key,
+            value: prop,
+          });
+        }
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
     });

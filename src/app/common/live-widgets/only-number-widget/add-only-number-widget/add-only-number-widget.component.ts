@@ -19,15 +19,6 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log(this.propertyList);
-    this.propertyList.forEach((prop) => {
-      this.dropdownProperties.push({
-        id: prop.json_key,
-        value: prop,
-        name: prop.name,
-        type: prop.type,
-      });
-    });
   }
 
   addProperty() {

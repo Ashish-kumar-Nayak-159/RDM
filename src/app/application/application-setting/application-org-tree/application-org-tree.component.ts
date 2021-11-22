@@ -26,7 +26,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
@@ -54,7 +54,12 @@ export class ApplicationOrgTreeComponent implements OnInit {
 
   onSaveNodes() {
     let flag;
+    const originalLevelsLowerCase = this.originalAppData?.hierarchy?.levels.map(item => item.toLowerCase());
     this.applicationData.hierarchy.levels.forEach((item) => {
+      if (originalLevelsLowerCase.indexOf(item.toLowerCase()) !== -1) {
+        flag = 'Node with given name already exists';
+        return;
+      } else { flag = '' }
       if (!item || item.trim().length === 0) {
         flag = 'Blank Name is not allowed.';
         return;
@@ -103,7 +108,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
   }
 
   openConfirmNodeDeleteModal(item, index) {
-    this.isAppSetingsEditable = true;
+    this.isAppSetingsEditable = false;
     this.forceUpdate = true;
     this.selectedItemForDelete = item;
     console.log('beforee', JSON.stringify(this.applicationData.hierarchy.levels));

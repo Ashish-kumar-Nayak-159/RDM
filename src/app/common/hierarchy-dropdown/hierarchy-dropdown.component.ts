@@ -1,7 +1,7 @@
 import { ToasterService } from 'src/app/services/toaster.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 declare var $: any;
 @Component({
@@ -9,7 +9,7 @@ declare var $: any;
   templateUrl: './hierarchy-dropdown.component.html',
   styleUrls: ['./hierarchy-dropdown.component.css'],
 })
-export class HierarchyDropdownComponent implements OnInit {
+export class HierarchyDropdownComponent implements OnInit, OnChanges {
   @Input() filterObj: any = {};
   originalFilterObj: any = {};
   contextApp: any;
@@ -23,10 +23,13 @@ export class HierarchyDropdownComponent implements OnInit {
   displayHierarchyString: string;
   @Output() saveHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() clearHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private commonService: CommonService, private toasterService: ToasterService) {}
+  constructor(private commonService: CommonService, private toasterService: ToasterService) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+  }
 
   ngOnInit(): void {
-    console.log(this.assets);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;

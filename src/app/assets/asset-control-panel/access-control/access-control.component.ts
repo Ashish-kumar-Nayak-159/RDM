@@ -205,7 +205,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
       }
       user.whatsapp = user.whatsapp.e164Number;
     }
-    const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email) || -1;
+    const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email);
     if (index > -1) {
       this.toasterService.showError('Recipient with same email address is already there.', 'Add Recipient');
       return;

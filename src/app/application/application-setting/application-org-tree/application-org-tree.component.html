@@ -32,11 +32,12 @@
         <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"></td>
       </tr>
       <ng-container *ngFor="let item of applicationData?.hierarchy?.levels; let i = index;trackBy:trackByFn">
-        <tr *ngIf="i !== 0">
+        <tr *ngIf="i !== 0 ">
           <td> Level - {{i + 1}}:</td>
           <td>
-            <ng-container *ngIf="originalAppData?.hierarchy?.levels?.indexOf(item) !== -1">{{item}}</ng-container>
-            <ng-container *ngIf="originalAppData?.hierarchy?.levels?.indexOf(item) === -1">
+            <ng-container *ngIf="(i < applicationData?.hierarchy?.levels.length - 1 || !isAppSetingsEditable) && originalAppData?.hierarchy?.levels?.indexOf(item) !== -1">{{item}}</ng-container>
+            <!-- <ng-container *ngIf="originalAppData?.hierarchy?.levels?.indexOf(item) === -1 "> -->
+              <ng-container *ngIf="isAppSetingsEditable && i == applicationData?.hierarchy?.levels.length - 1"> 
               <input type="text" name="level{{i}}" id="level{{i}}" [(ngModel)]="applicationData.hierarchy.levels[i]"
                 placeholder="Enter Node Name" class="form-control form-control-sm">
             </ng-container>

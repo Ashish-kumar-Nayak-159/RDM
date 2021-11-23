@@ -224,6 +224,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // this.reportsObj.assets = assets;
     console.log(this.reportsObj);
     const reportObj = { ...this.reportsObj };
+    reportObj.file_type = 'XLSX';
     delete reportObj.asset_model;
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, reportObj).subscribe(

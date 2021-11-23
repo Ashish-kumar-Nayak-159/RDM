@@ -211,8 +211,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
       g3_turbo_mode_frequency_in_ms:
         this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms * 1000,
 
-      turbo_mode_timeout_in_milli_sec:
-        this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
+      turbo_mode_timeout_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
       ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
 
       g1_ingestion_frequency_in_ms:

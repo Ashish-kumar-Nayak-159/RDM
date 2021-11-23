@@ -273,11 +273,11 @@ export class AddCampaignComponent implements OnInit {
         this.campaignObj.hierarchyString =
           this.campaignObj.hierarchyString +
           (this.campaignObj.hierarchyString ? ' / ' : '') +
-          this.configureHierarchy[key] +
-          (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' / ' : '');
+          this.configureHierarchy[key] ;
+          // (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' -/- ' : '');
       }
     });
-    console.log(this.campaignObj.hierarchyString);
+    console.log('hierarchy str ',this.campaignObj.hierarchyString);
   }
 
   getPackages() {

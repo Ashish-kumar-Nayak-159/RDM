@@ -227,7 +227,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve1, reject) => {
       const filterObj = {
         asset_model: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model,
-        source: 'Asset',
+        alert_type: 'Asset',
       };
       this.subscriptions.push(
         this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(

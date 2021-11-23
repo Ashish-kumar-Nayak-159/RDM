@@ -255,12 +255,12 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   checkKeyDuplicacy(tagObj, tagIndex) {
     CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
-      if (tagObj.name.includes(char)) {
+      if (tagObj?.name.includes(char)) {
         this.toasterService.showError('Tag key should not include `.`, ` `, `$`, `#`', 'Set Tags');
         return;
       }
     });
-    const index = this.assetCustomTags.findIndex((tag) => tag.name === tagObj.name);
+    const index = this.assetCustomTags.findIndex((tag) => tag.name === tagObj?.name);
     if (index !== -1 && index !== tagIndex) {
       this.toasterService.showError('Tag with same name is already exists. Please use different name', 'Set Tags');
       tagObj.name = undefined;

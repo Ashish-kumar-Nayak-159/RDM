@@ -354,7 +354,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     if (index === -1) {
       await this.plotChart(obj);
       this.clear();
-      this.layoutJson.splice(0, 0, obj);
+      this.layoutJson.push(obj)
     } else {
       this.toasterService.showError(
         this.widgetStringFromMenu + ' with same title is already exist.',
@@ -489,7 +489,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         this.layoutJson.splice(i, 1);
       }
     }
-    // this.layoutJson.reverse();
     this.assetModel.historical_widgets = this.layoutJson;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(

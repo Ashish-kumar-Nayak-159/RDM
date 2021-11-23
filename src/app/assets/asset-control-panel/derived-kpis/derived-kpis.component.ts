@@ -120,13 +120,20 @@ export class DerivedKpisComponent implements OnInit {
         (response: any) => {
           if (response?.data) {
             // this.derivedKPIData = response.data;
-            this.derivedKPIData = response.data.filter(
-              (item) => item.kpi_result !== undefined && item.kpi_result !== null
-            );
+            response.data = response.data.filter((item) => item.kpi_result !== undefined && item.kpi_result !== null);
+            response.data.forEach((obj, i) => {
+              const newObj: any = {};
+              // const date = this.commonService.convertUTCDateToLocal(obj?.start_interval);
+              newObj.local_end_interval = this.commonService.convertUTCDateToLocal(obj?.end_interval);
+              // newObj.date = new Date(date);
+              newObj.date = new Date(newObj.local_end_interval);
+              newObj.spc = Number(obj.kpi_result) || null;
+              this.derivedKPIData.splice(this.derivedKPIData.length, 0, newObj);
+            });
             console.log(this.derivedKPIData.length);
             // this.derivedKPILatestData.reverse();
             this.isDerivedKPIDataLoading = false;
-            if (this.derivedKPIData.length > 0) {
+            if (this.derivedKPIData.length > 0 && this.selectedDerivedKPI.data_type?.toLowerCase() === 'number') {
               setTimeout(() => this.plotChart(), 500);
             } else {
               this.isDerivedKPIDataLoading = false;
@@ -175,25 +182,13 @@ export class DerivedKpisComponent implements OnInit {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
     const chart = am4core.create('derivedKPIChart_' + this.selectedDerivedKPI.kpi_json_key, am4charts.XYChart);
-    const data = [];
-    this.derivedKPIData.reverse();
-    console.log(this.derivedKPIData);
-    this.derivedKPIData.forEach((obj, i) => {
-      const newObj: any = {};
-      const date = this.commonService.convertUTCDateToLocal(obj?.start_interval);
-      const endDate = this.commonService.convertUTCDateToLocal(obj?.end_interval);
-      // newObj.date = new Date(date);
-      newObj.date = new Date(endDate);
-      newObj.spc = obj.kpi_result || null;
-      data.splice(data.length, 0, newObj);
-    });
-    console.log(data);
-    chart.data = data;
+    const data = this.derivedKPIData;
+    chart.data = this.derivedKPIData.reverse();
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     let date = new Date(0);
-    date.setUTCSeconds(this.filterObj.from_date);
+    date.setUTCSeconds(this.filterObj.from_date + 60);
     dateAxis.min = date.getTime();
     date = new Date(0);
     date.setUTCSeconds(this.filterObj.to_date + 60);
@@ -202,7 +197,7 @@ export class DerivedKpisComponent implements OnInit {
     console.log(dateAxis.max);
     dateAxis.renderer.minGridDistance = 70;
     // dateAxis.baseInterval = { count: 1, timeUnit: 'day' };
-    dateAxis.strictMinMax = true;
+    // dateAxis.strictMinMax = true;
     dateAxis.renderer.tooltipLocation = 0;
     // Add data
     // Set input format for the dates

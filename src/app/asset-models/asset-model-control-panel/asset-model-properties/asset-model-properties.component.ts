@@ -415,6 +415,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       });
     }
+    else if (this.type === 'measured_properties' && (!this.propertyObj.hasOwnProperty('group') || this.propertyObj.group === 'undefined')) {
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        'Add ' + this.getPropertyNameToAddOrUpdate()
+      );
+      return;
+    }
     console.log(JSON.stringify(this.propertyObj.metadata));
     if (this.propertyObj.threshold && this.type === 'measured_properties') {
       if (
@@ -544,6 +551,15 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
     }
+    if(this.propertyObj.json_key.length <= 0 || this.propertyObj.name.length <= 0 
+      || this.propertyObj.data_type.length <= 0 || this.propertyObj.data_type === 'undefined' )
+  {
+    this.toasterService.showError(
+      UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+      'Add ' + this.getPropertyNameToAddOrUpdate()
+    );
+    return;
+  }
     if (this.type === 'edge_derived_properties') {
       let flag = false;
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
@@ -585,6 +601,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
         }
       });
+    }
+    else if (this.type === 'measured_properties' && (!this.propertyObj.hasOwnProperty('group') || this.propertyObj.group === 'undefined')) {
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        'Add ' + this.getPropertyNameToAddOrUpdate()
+      );
+      return;
     }
     console.log(JSON.stringify(this.propertyObj.metadata));
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
@@ -708,5 +731,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+  getPropertyNameToAddOrUpdate()
+  {
+    return (this.type.includes('measured') ? 'Measured Property' : (
+      this.type.includes('controllable') ? 'Controllable Property' : (
+      this.type.includes('configurable') ? 'Configurable Property' : (
+      this.type.includes('edge_derived') ? 'Edge Derived Property' : (
+      this.type.includes('cloud_derived') ? 'Cloud Derived Property' : ''
+      )
+      )
+      )
+      ))
   }
 }

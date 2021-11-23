@@ -76,7 +76,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (assetModel?.metadata?.model_type ? assetModel.metadata.model_type + ' ' : '') + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
       <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isCreateAssetsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -92,10 +92,9 @@
           <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="assetModel.name"
           placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
         </div>
-        <div class="form-group" *ngIf="!assetModel.id">
+        <div class="form-group" *ngIf="!assetModel.id  && !assetModel.metadata.model_type">
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
-          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="assetModel.metadata.model_type"
-          >
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="assetModel.metadata.model_type">
             <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}</option>
             <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
             <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_ASSET}}</option>

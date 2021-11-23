@@ -71,6 +71,7 @@
             <label for="recipient-name" class="col-form-label required">Data Type:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
               [(ngModel)]="propertyObj.data_type" (change)="onDataTypeChange()">
+              <option value="undefined">Select Data Type</option>
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
@@ -80,6 +81,7 @@
           <div class="form-group" *ngIf="type.includes('measured')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
+              <option value="undefined">Select Group</option>
               <option value="g1">G1</option>
               <option value="g2">G2</option>
               <option value="g3">G3</option>

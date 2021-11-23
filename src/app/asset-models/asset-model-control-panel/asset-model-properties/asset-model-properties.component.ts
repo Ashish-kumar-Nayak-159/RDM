@@ -196,9 +196,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         if (this.type.includes('edge_derived')) {
           response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
-          this.dependentProperties = response.properties?.measured_properties
-            ? response.properties?.measured_properties
-            : [];
+          if(response.properties?.measured_properties){
+            response.properties?.measured_properties.forEach(element => {
+              if(element.data_type == "Number"){
+                this.dependentProperties.push(element)      
+              }
+            });
+          }
+          // this.dependentProperties = response.properties?.measured_properties
+          //   ? response.properties?.measured_properties
+          //   : [];
         }
         // if (this.type.includes('derived')) {
         //   this.properties[this.type] = this.properties[this.type].filter(

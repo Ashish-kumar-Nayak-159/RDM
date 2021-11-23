@@ -380,16 +380,20 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
-      if (!prop.property) {
+      if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {
         found = false;
-      } else {
+      } else if(prop.property && this.widgetObj.widgetType != "NumberWithImage"){
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
         delete prop.property;
       }
     });
-    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {
+    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage") {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
+      return;
+    }
+    if(!found && this.widgetObj.widgetType == "NumberWithImage"){
+      this.toasterService.showError('Please select image.', 'Add Widget');
       return;
     }
     if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {

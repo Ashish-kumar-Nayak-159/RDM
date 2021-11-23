@@ -268,6 +268,12 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   updateAssetTags() {
+    console.log('this.asset.tags ',this.asset.tags);
+    
+    if(!this.asset.tags.latitude || !this.asset.tags.longitude){
+      this.toasterService.showError("Select proper location", 'Set Asset Location');
+      return;
+    }
     this.isUpdateAPILoading = true;
     const tagObj = {};
     // if (this.asset.tags?.custom_tags) {

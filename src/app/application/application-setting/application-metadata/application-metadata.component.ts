@@ -159,6 +159,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLocation() {
+    if(!this.latitude || !this.longitude){
+      this.toasterService.showError("Select proper location", 'Save Menu Settings');
+      return;
+    }
     this.applicationData.metadata['latitude'] = this.latitude;
     this.applicationData.metadata['longitude'] = this.longitude;
     this.onModalClose('changeLocationModal');

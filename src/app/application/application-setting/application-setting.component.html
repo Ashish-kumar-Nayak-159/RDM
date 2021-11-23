@@ -8,20 +8,20 @@
         <div class="settings-tabs">
           <ul class="nav nav-tabs " role="tablist" (click)="responsiveTabs()">
             <li class="nav-item">
-              <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab"
+              <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'meta-data'}" href="#app-meta-data" role="tab"
                 aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
                 Metadata</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab"
+              <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'database-configuration'}" href="#app-database-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"
                 (click)="setActiveTab('database-configuration')">
                 Database Configuration</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab"
+              <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'dashboard-configuration'}" href="#app-dashboard-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"
                 (click)="setActiveTab('dashboard-configuration')">

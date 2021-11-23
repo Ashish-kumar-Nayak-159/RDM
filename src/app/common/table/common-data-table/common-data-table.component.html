@@ -94,7 +94,7 @@
     <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
       <td class="pl-3" 
       >
-      <div class="status-icon-circle"   [tooltip]="dataItem?.map_content?.healthy === true ? 'Healthy Asset' : (dataItem?.map_content?.healthy === false ? 'Unhealthy Asset' : '')"
+      <div class="status-icon-circle"   [tooltip]="dataItem?.map_content?.healthy === true ? 'Health Status : Healthy' : (dataItem?.map_content?.healthy === false ? 'Health Status : Unhealthy' : 'Health Status : Unknown')"
       [ngClass]="dataItem?.map_content?.healthy === true ? 'bg-success' : (dataItem?.map_content?.healthy  === false ? 'bg-danger' : 'bg-white-asset')">
         <i class="fas text-white" [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></i>
       </div>

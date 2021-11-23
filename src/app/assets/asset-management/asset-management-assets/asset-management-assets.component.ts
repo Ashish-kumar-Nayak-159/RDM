@@ -447,7 +447,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.isAllAssetSelected = false;
           const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
           if (item) {
-            delete item.asset;
+            delete item.assets;
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
           this.getAssets();

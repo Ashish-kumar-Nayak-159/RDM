@@ -26,6 +26,7 @@ export class GatewaySettingsComponent implements OnInit {
   constantData = CONSTANTS;
   c2dJobFilter: any = {};
   c2dJobFilter1: any = {};
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -36,6 +37,7 @@ export class GatewaySettingsComponent implements OnInit {
     this.asset = JSON.parse(JSON.stringify(this.asset));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getAssetTwinData();
     this.getAssetData();
     this.c2dJobFilter.request_type = 'Test Connection';

@@ -15,6 +15,7 @@ declare var $: any;
   templateUrl: './asset-model-list.component.html',
   styleUrls: ['./asset-model-list.component.css'],
 })
+
 export class AssetModelListComponent implements OnInit, OnDestroy {
   assetModels: any[] = [];
   assetModel: any;
@@ -272,17 +273,17 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       this.assetModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
       this.assetModel.metadata = {};
       if (this.iotAssetsTab?.visibility) {
-        this.assetModel.metadata.model_type = CONSTANTS.IP_ASSET;
+        this.assetModel.metadata.model_type = this.componentState;
       } else if (this.iotGatewaysTab?.visibility) {
-        this.assetModel.metadata.model_type = CONSTANTS.IP_GATEWAY;
+        this.assetModel.metadata.model_type = this.componentState;
       } else if (this.legacyAssetsTab?.visibility) {
-        this.assetModel.metadata.model_type = CONSTANTS.NON_IP_ASSET;
+        this.assetModel.metadata.model_type = this.componentState;
       }
       this.assetModel.tags = {};
     } else {
       this.assetModel = JSON.parse(JSON.stringify(obj));
       this.assetModel.metadata = {
-        model_type: this.assetModel.model_type,
+        model_type: this.componentState,
         image: this.assetModel.model_image,
       };
       this.assetModel.tags = {
@@ -323,13 +324,14 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   }
 
   createAssetsModel() {
+    let assetModelMsg = `Create ${this.assetModel.metadata.model_type} Model`;
     if (
       !this.assetModel.name ||
       !this.assetModel.tags.protocol ||
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,assetModelMsg );
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {
@@ -373,12 +375,12 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.isCreateAssetsModelAPILoading = false;
           this.onCloseAssetsModelModal();
-          this.toasterService.showSuccess(response.message, 'Create Asset Model');
+          this.toasterService.showSuccess(response.message, assetModelMsg);
           this.searchAssetsModels();
         },
         (error) => {
           this.isCreateAssetsModelAPILoading = false;
-          this.toasterService.showError(error.message, 'Create Asset Model');
+          this.toasterService.showError(error.message, assetModelMsg);
         }
       )
     );

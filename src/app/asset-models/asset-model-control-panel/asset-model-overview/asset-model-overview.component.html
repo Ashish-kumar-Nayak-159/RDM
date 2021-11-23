@@ -31,7 +31,7 @@
           <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
             <h6 class="pl-3">Asset Model Image:
               <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
-                class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
+                class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed"><i class="fa fa-edit" ></i></a>
             </h6>
           </div>
         </div>

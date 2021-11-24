@@ -627,6 +627,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       pagefilterObj['to_date'] = obj.to_date;
       pagefilterObj['dateOption'] = obj.dateOption;
       pagefilterObj.hierarchy = { App: this.contextApp.app };
+      delete pagefilterObj.assets;
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
           pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];

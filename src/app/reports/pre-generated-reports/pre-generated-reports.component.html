@@ -230,7 +230,7 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="id" [closeOnSelect]="false"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key" [closeOnSelect]="false"
                   placeholder="Select Properties" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
                   [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>

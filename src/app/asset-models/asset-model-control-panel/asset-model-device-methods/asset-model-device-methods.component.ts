@@ -8,6 +8,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { constants } from 'buffer';
 
 declare var $: any;
 @Component({
@@ -240,9 +241,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     // this.editor.set(this.assetMethodObj.json_model);
   }
   onKeyPressAlphaNumericWithCharacters(event) {
-    var inp = String.fromCharCode(event.keyCode);
-    // Allow numbers, alpahbets, space, underscore
-    if (/[a-zA-Z0-9-_]/.test(inp)) {
+    var inp = String.fromCharCode();
+    if (CONSTANTS.METHODNAME_REGEX.test(inp)) {
       return true;
     } else {
       event.preventDefault();

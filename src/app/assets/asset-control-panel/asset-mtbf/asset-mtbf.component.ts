@@ -176,7 +176,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     let hDisplay = h > 0 ? h + (h == 1 ? ' Hr, ' : ' Hrs, ') : '';
     let mDisplay = m > 0 ? m + (m == 1 ? ' Min, ' : ' Minutes, ') : '';
     let sDisplay = s > 0 ? s + (s == 1 ? ' Second' : ' Seconds') : '';
-
+    if(sDisplay == '') mDisplay = mDisplay.replace(', ','');
     return dDisplay + hDisplay + mDisplay + sDisplay;
   }
 

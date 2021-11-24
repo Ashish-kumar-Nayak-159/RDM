@@ -80,10 +80,10 @@ export class ApplicationOrgTreeComponent implements OnInit {
     this.updateAppData();
   }
 
-  updateAppData() {
+  updateAppData(hierarchy = null) {
     const obj = {
       app: this.applicationData.app,
-      hierarchy: this.applicationData.hierarchy,
+      hierarchy: !hierarchy ? this.applicationData.hierarchy : hierarchy,
       force_update: this.forceUpdate ? this.forceUpdate : undefined,
     };
     this.apiSubscriptions.push(
@@ -96,12 +96,15 @@ export class ApplicationOrgTreeComponent implements OnInit {
           }
           this.isSaveNodeAPILoading = false;
           this.isAppSetingsEditable = false;
+          this.applicationData.hierarchy = hierarchy ?? this.applicationData.hierarchy;
           this.applicationService.refreshAppData.emit();
           this.originalAppData = JSON.parse(JSON.stringify(this.applicationData));
         },
         (error) => {
+          this.onModalEvents('close');
           this.toasterService.showError(error.message, 'Update Org Tree');
           this.isSaveNodeAPILoading = false;
+          this.isAppSetingsEditable = false;
         }
       )
     );
@@ -143,22 +146,23 @@ export class ApplicationOrgTreeComponent implements OnInit {
     const index = this.applicationData.hierarchy.levels.indexOf(this.selectedItemForDelete);
     console.log(index);
     const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
-    this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
+    // this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     const levels = [];
     this.applicationData.hierarchy.levels.forEach((element) => {
       if (element && element !== this.selectedItemForDelete) {
         levels.push(element);
       }
     });
-    this.applicationData.hierarchy.levels = JSON.parse(JSON.stringify(levels));
+    // this.applicationData.hierarchy.levels = JSON.parse(JSON.stringify(levels));
     this.forceUpdate = true;
     console.log(JSON.stringify(this.applicationData.hierarchy));
-    this.updateAppData();
+    this.updateAppData({
+      "tags": tags,
+      "levels": levels
+    });
   }
 
   removeHierarchyIndexTags(tags, index) {
-    console.log('11111', tags);
-    console.log(index);
     if (index === 1) {
       return {};
     }

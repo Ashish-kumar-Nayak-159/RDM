@@ -394,8 +394,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         delete prop.property;
       }
     });
-    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {
-      this.toasterService.showError('Please select properties details.', 'Add ' + this.widgetStringFromMenu);
+    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage") {
+      this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
     if(!found && this.widgetObj.widgetType == "NumberWithImage"){

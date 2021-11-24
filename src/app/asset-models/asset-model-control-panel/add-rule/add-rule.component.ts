@@ -32,6 +32,7 @@ export class AddRuleComponent implements OnInit {
   dropdownPropList: any[] = [];
   alertConditionList: any[] = [];
   isUpdateApiCall = false;
+  isRulesLoading = false;
   selectedAlertCondition: AlertCondition = new AlertCondition();
   rules: any[] = [];
   selectedRule: Rule = new Rule();
@@ -112,6 +113,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   getRules() {
+    this.isRulesLoading = true;
     this.rules = [];
     let method;
     if (this.asset) {
@@ -130,6 +132,7 @@ export class AddRuleComponent implements OnInit {
       method.subscribe((response: any) => {
         if (response?.data) {
           this.rules = response.data;
+          this.isRulesLoading = false;
         }
       })
     );

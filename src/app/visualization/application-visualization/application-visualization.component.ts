@@ -317,6 +317,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.isAlertAPILoading = false;
         return;
       }
+      obj.last_n_secs = obj.to_date - obj.from_date;
     }
     if (updateFilterObj) {
       let pagefilterObj;

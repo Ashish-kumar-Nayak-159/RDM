@@ -145,7 +145,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         const range = dateAxis.axisRanges.create();
         range.date = new Date(this.selectedAlert.local_created_date);
         range.endDate = new Date(this.selectedAlert.local_end_created_date);
-        range.axisFill.fillOpacity = 0.2;
+        range.axisFill.fillOpacity = 5;
         range.grid.strokeOpacity = 0;
         range.axisFill.fill = am4core.color('red');
         range.axisFill.tooltip = new am4core.Tooltip();

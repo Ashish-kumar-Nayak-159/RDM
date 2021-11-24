@@ -317,22 +317,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.isAlertAPILoading = false;
         return;
       }
+      obj.last_n_secs = obj.to_date - obj.from_date;
     }
     if (updateFilterObj) {
       let pagefilterObj;
       if (this.pageType === 'live') {
         pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        if (!this.filterObj.asset) {
-          pagefilterObj.hierarchy = { App: this.contextApp.app };
-          Object.keys(this.configuredHierarchy).forEach((key) => {
-            if (this.configuredHierarchy[key]) {
-              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
-            }
-          });
-        } else {
-          pagefilterObj['hierarchy'] = this.filterObj.asset.hierarchy;
-          pagefilterObj['assets'] = this.filterObj.asset;
-        }
+        pagefilterObj.hierarchy = { App: this.contextApp.app };
+        Object.keys(this.configuredHierarchy).forEach((key) => {
+          if (this.configuredHierarchy[key]) {
+            pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+          }
+        });
+        delete pagefilterObj.assets;
         this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
       } else if (this.pageType === 'history') {
         pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};

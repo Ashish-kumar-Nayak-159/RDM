@@ -115,7 +115,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
         type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
-        map_content: true
+        map_content: true,
       };
       this.apiSubscriptions.push(
         this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
@@ -137,66 +137,66 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   this.unhealthyAssetCount++;
                 }
                 if (
-                    asset.type === this.constantData.IP_ASSET &&
-                    asset?.connection_state?.toLowerCase() === 'connected'
-                  ) {
-                    asset.icon = {
-                      url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
-                        ? this.blobURL +
-                          this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                          this.blobToken
-                        : './assets/img/iot-assets-green.svg',
-                      scaledSize: {
-                        width: 20,
-                        height: 20,
-                      },
-                    };
-                  } else if (
-                    asset.type === this.constantData.IP_ASSET &&
-                    asset?.connection_state?.toLowerCase() === 'disconnected'
-                  ) {
-                    asset.icon = {
-                      url: './assets/img/assets-red.gif',
-                      scaledSize: {
-                        width: 20,
-                        height: 20,
-                      },
-                    };
-                  } else if (
-                    asset.type === this.constantData.IP_GATEWAY &&
-                    asset?.connection_state?.toLowerCase() === 'connected'
-                  ) {
-                    asset.icon = {
-                      url: './assets/img/iot-gateways-green.svg',
-                      scaledSize: {
-                        width: 20,
-                        height: 20,
-                      },
-                    };
-                  } else if (
-                    asset.type === this.constantData.IP_GATEWAY &&
-                    asset?.connection_state?.toLowerCase() === 'disconnected'
-                  ) {
-                    asset.icon = {
-                      url: './assets/img/assets-red.gif',
-                      scaledSize: {
-                        width: 20,
-                        height: 20,
-                      },
-                    };
-                  } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                    asset.icon = {
-                      url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
-                        ? this.blobURL +
-                          this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                          this.blobToken
-                        : './assets/img/legacy-assets.svg',
-                      scaledSize: {
-                        width: 20,
-                        height: 20,
-                      },
-                    };
-                  }
+                  asset.type === this.constantData.IP_ASSET &&
+                  asset?.connection_state?.toLowerCase() === 'connected'
+                ) {
+                  asset.icon = {
+                    url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+                      ? this.blobURL +
+                        this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                        this.blobToken
+                      : './assets/img/iot-assets-green.svg',
+                    scaledSize: {
+                      width: 20,
+                      height: 20,
+                    },
+                  };
+                } else if (
+                  asset.type === this.constantData.IP_ASSET &&
+                  asset?.connection_state?.toLowerCase() === 'disconnected'
+                ) {
+                  asset.icon = {
+                    url: './assets/img/assets-red.gif',
+                    scaledSize: {
+                      width: 20,
+                      height: 20,
+                    },
+                  };
+                } else if (
+                  asset.type === this.constantData.IP_GATEWAY &&
+                  asset?.connection_state?.toLowerCase() === 'connected'
+                ) {
+                  asset.icon = {
+                    url: './assets/img/iot-gateways-green.svg',
+                    scaledSize: {
+                      width: 20,
+                      height: 20,
+                    },
+                  };
+                } else if (
+                  asset.type === this.constantData.IP_GATEWAY &&
+                  asset?.connection_state?.toLowerCase() === 'disconnected'
+                ) {
+                  asset.icon = {
+                    url: './assets/img/assets-red.gif',
+                    scaledSize: {
+                      width: 20,
+                      height: 20,
+                    },
+                  };
+                } else if (asset.type === this.constantData.NON_IP_ASSET) {
+                  asset.icon = {
+                    url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+                      ? this.blobURL +
+                        this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                        this.blobToken
+                      : './assets/img/legacy-assets.svg',
+                    scaledSize: {
+                      width: 20,
+                      height: 20,
+                    },
+                  };
+                }
                 console.log(asset.asset_id, '=====', asset.icon);
               });
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
@@ -205,7 +205,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
               console.log(this.centerLatitude, '====', this.centerLongitude);
-              this.mapFitBounds = false;
+              this.mapFitBounds = true;
             } else {
               this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
@@ -237,8 +237,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     } else {
       this.mapAssets = JSON.parse(JSON.stringify(this.assets));
     }
-    if (this.mapAssets.length === 0) {
-      this.mapFitBounds = false;
+    if (this.mapAssets.length > 0) {
+      this.mapFitBounds = true;
       const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
@@ -268,12 +268,12 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-      pagefilterObj.dateOption = 'Last 30 Mins';
       Object.keys(this.configuredHierarchy).forEach((key) => {
         if (this.configuredHierarchy[key]) {
           pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
         }
       });
+      delete pagefilterObj.assets;
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     if (this.mapAssets.length > 0) {

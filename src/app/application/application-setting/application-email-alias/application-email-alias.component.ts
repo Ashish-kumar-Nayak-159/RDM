@@ -20,7 +20,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
   apiSubscriptions: Subscription[] = [];
-  recipientemail: string;
+  recipientemail: any = {};
   recipientsms: any = {};
   recipientwhatsapp: any = {};
   decodedToken: any;
@@ -73,31 +73,31 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   addEmailRecipient(index) {
-    if (!this.recipientemail) {
+    if (!this.recipientemail[index]) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.recipientemail)) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.recipientemail[index])) {
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
       if (!this.isAddUserGroup) {
-        if (this.userGroups[index].recipients['email'].includes(this.recipientemail)) {
+        if (this.userGroups[index].recipients['email'].includes(this.recipientemail[index])) {
           this.toasterService.showError('Same email address exist in this group', 'Add Email');
           return;
         }
         this.userGroups[index].recipients['email'].splice(
           this.userGroups[index].recipients['email'].length,
           0,
-          this.recipientemail
+          this.recipientemail[index]
         );
       } else {
-        if (this.groupObj.recipients['email'].includes(this.recipientemail)) {
+        if (this.groupObj.recipients['email'].includes(this.recipientemail[index])) {
           this.toasterService.showError('Same email address exist in this group', 'Add Email');
           return;
         }
-        this.groupObj.recipients['email'].splice(this.groupObj.recipients['email'].length, 0, this.recipientemail);
+        this.groupObj.recipients['email'].splice(this.groupObj.recipients['email'].length, 0, this.recipientemail[index]);
       }
-      this.recipientemail = undefined;
+      this.recipientemail = {};
     }
   }
 
@@ -194,7 +194,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   openCreateUserGroupModal() {
     this.isAddUserGroup = true;
     this.groupObj = { group_name: null, recipients: { email: [], sms: [], whatsapp: [] } };
-    this.recipientemail = undefined;
+    this.recipientemail = {};
     this.recipientsms = {};
     this.recipientwhatsapp = {};
     $('#createUserGroupModal').modal({ backdrop: 'static', keyboard: false, show: true });

@@ -48,10 +48,6 @@
       </div>
     </ng-container>
 
-    <div class="" *ngIf="isTelemetryDataLoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-    </div>
-
     <div class="" *ngIf="!isFilterSelected">
       Please select an asset and click on search to view the data.
     </div>
@@ -172,6 +168,9 @@
 </div>
 <ng-container>
   <div class="content-scroll content-scroll-live-data">
+    <div class="pl-3 pt-3" *ngIf="isTelemetryDataLoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    </div>
     <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
       <div class="m-3" *ngIf="historicalWidgets.length === 0 && isFilterSelected
       ">

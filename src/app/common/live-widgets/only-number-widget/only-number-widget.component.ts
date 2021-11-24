@@ -10,7 +10,7 @@ declare var $: any;
   templateUrl: './only-number-widget.component.html',
   styleUrls: ['./only-number-widget.component.css'],
 })
-export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
+export class OnlyNumberWidgetComponent implements OnInit, OnDestroy {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
@@ -46,31 +46,31 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
     return Number(value);
   }
 
-  ngOnChanges(changes) {
-    if (changes.telemetryObj) {
-      if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
-        if (this.telemetryObj) {
-          this.telemetryData.push(this.telemetryObj);
-        }
-        if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-          this.telemetryData.splice(0, 1);
-        }
-      }
-    }
-    if (changes.apiTelemetryObj) {
-      if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
-        if (this.apiTelemetryObj) {
-          this.telemetryData.push(this.apiTelemetryObj);
-        }
-        if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-          this.telemetryData.splice(0, 1);
-        }
-      }
-    }
-    const arr = JSON.parse(JSON.stringify(this.telemetryData));
-    this.telemetryData = JSON.parse(JSON.stringify([]));
-    this.telemetryData = JSON.parse(JSON.stringify(arr));
-  }
+  // ngOnChanges(changes) {
+  //   if (changes.telemetryObj) {
+  //     if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
+  //       if (this.telemetryObj) {
+  //         this.telemetryData.push(this.telemetryObj);
+  //       }
+  //       if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+  //         this.telemetryData.splice(0, 1);
+  //       }
+  //     }
+  //   }
+  //   if (changes.apiTelemetryObj) {
+  //     if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
+  //       if (this.apiTelemetryObj) {
+  //         this.telemetryData.push(this.apiTelemetryObj);
+  //       }
+  //       if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+  //         this.telemetryData.splice(0, 1);
+  //       }
+  //     }
+  //   }
+  //   const arr = JSON.parse(JSON.stringify(this.telemetryData));
+  //   this.telemetryData = JSON.parse(JSON.stringify([]));
+  //   this.telemetryData = JSON.parse(JSON.stringify(arr));
+  // }
 
   openConfirmRemoveWidgetModal() {
     this.modalConfig = {

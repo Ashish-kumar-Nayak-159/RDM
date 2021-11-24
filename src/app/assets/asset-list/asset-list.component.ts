@@ -373,7 +373,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       type: CONSTANTS.IP_GATEWAY,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      map_content: true
+      map_content: true,
     };
     this.subscriptions.push(
       this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
@@ -423,12 +423,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
       obj.hierarchy = JSON.stringify(obj.hierarchy);
     }
     if (updateFilterObj) {
-      const pagefilterObj = {
-        hierarchy: JSON.parse(obj.hierarchy),
-        assets: undefined,
-        from_date: undefined,
-        to_date: undefined,
-      };
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      pagefilterObj['hierarchy'] = JSON.parse(obj.hierarchy);
+      delete pagefilterObj.assets;
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     delete obj.gatewayArr;
@@ -463,67 +460,67 @@ export class AssetListComponent implements OnInit, OnDestroy {
               item.power = '45 SCMH';
             }
             if (
-                this.componentState === this.constantData.IP_ASSET &&
-                item?.connection_state?.toLowerCase() === 'connected'
-              ) {
-                item.icon = {
-                  url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
-                    ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                      this.blobToken
-                    : './assets/img/iot-assets-green.svg',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_ASSET &&
-                item?.connection_state?.toLowerCase() === 'disconnected'
-              ) {
-                item.icon = {
-                  url: './assets/img/assets-red.gif',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_GATEWAY &&
-                item?.connection_state?.toLowerCase() === 'connected'
-              ) {
-                console.log('11111111111111111111111111');
-                item.icon = {
-                  url: './assets/img/iot-gateways-green.svg',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (
-                this.componentState === this.constantData.IP_GATEWAY &&
-                item?.connection_state?.toLowerCase() === 'disconnected'
-              ) {
-                item.icon = {
-                  url: './assets/img/assets-red.gif',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              } else if (this.componentState === this.constantData.NON_IP_ASSET) {
-                item.icon = {
-                  url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
-                    ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                      this.blobToken
-                    : './assets/img/legacy-assets.svg',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              }
+              this.componentState === this.constantData.IP_ASSET &&
+              item?.connection_state?.toLowerCase() === 'connected'
+            ) {
+              item.icon = {
+                url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+                  ? this.blobURL +
+                    this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                    this.blobToken
+                  : './assets/img/iot-assets-green.svg',
+                scaledSize: {
+                  width: 20,
+                  height: 20,
+                },
+              };
+            } else if (
+              this.componentState === this.constantData.IP_ASSET &&
+              item?.connection_state?.toLowerCase() === 'disconnected'
+            ) {
+              item.icon = {
+                url: './assets/img/assets-red.gif',
+                scaledSize: {
+                  width: 20,
+                  height: 20,
+                },
+              };
+            } else if (
+              this.componentState === this.constantData.IP_GATEWAY &&
+              item?.connection_state?.toLowerCase() === 'connected'
+            ) {
+              console.log('11111111111111111111111111');
+              item.icon = {
+                url: './assets/img/iot-gateways-green.svg',
+                scaledSize: {
+                  width: 20,
+                  height: 20,
+                },
+              };
+            } else if (
+              this.componentState === this.constantData.IP_GATEWAY &&
+              item?.connection_state?.toLowerCase() === 'disconnected'
+            ) {
+              item.icon = {
+                url: './assets/img/assets-red.gif',
+                scaledSize: {
+                  width: 20,
+                  height: 20,
+                },
+              };
+            } else if (this.componentState === this.constantData.NON_IP_ASSET) {
+              item.icon = {
+                url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+                  ? this.blobURL +
+                    this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                    this.blobToken
+                  : './assets/img/legacy-assets.svg',
+                scaledSize: {
+                  width: 20,
+                  height: 20,
+                },
+              };
+            }
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);

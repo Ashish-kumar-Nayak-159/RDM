@@ -80,7 +80,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');
     this.getSlaveData();
-    this.getApplicationUserGroups();
+    if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
+      this.getApplicationUserGroups();
+    }
   }
 
   onClickOfTab(type) {

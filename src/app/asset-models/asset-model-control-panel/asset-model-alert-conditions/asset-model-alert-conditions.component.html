@@ -349,7 +349,8 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="email">Email</label>
 
-                    <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
+                    <div class="row my-2"
+                      *ngIf="alertObj.actions.email.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
 
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
@@ -398,7 +399,8 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="whatsapp">Whatsapp</label>
 
-                    <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
+                    <div class="row my-2"
+                      *ngIf="alertObj.actions.whatsapp.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
 
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
@@ -449,7 +451,8 @@
                     <label class="form-check-label" for="sms">SMS</label>
 
 
-                    <div class="row my-2" *ngIf="alertObj.actions.sms.enabled">
+                    <div class="row my-2"
+                      *ngIf="alertObj.actions.sms.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
 
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">

@@ -239,6 +239,17 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     console.log(JSON.stringify(this.assetMethodObj));
     // this.editor.set(this.assetMethodObj.json_model);
   }
+  onKeyPressAlphaNumericWithCharacters(event) {
+    var inp = String.fromCharCode(event.keyCode);
+    // Allow numbers, alpahbets, space, underscore
+    if (/[a-zA-Z0-9-_]/.test(inp)) {
+      return true;
+    } else {
+      event.preventDefault();
+      this.toasterService.showError('Method name only allow alphabet, numbers and underscore.', 'Add Method');
+      return false;
+    }
+  }
 
   onJSONKeyChange() {
     if (this.assetMethodObj.method_name) {

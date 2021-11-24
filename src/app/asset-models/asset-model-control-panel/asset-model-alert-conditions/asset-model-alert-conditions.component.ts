@@ -87,6 +87,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.selectedTab = type;
     this.toggleRows = {};
     this.getAlertConditions();
+    this.alertObj = {};    
+    this.alertObj.alert_type = this.selectedTab;
   }
 
   getApplicationUserGroups() {
@@ -181,7 +183,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       )
     );
   }
-
   onToggleRows(i) {
     if (this.toggleRows[this.selectedTab + '_' + i]) {
       this.toggleRows = {};
@@ -383,9 +384,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           }
         }
       }
-      console.log(this.setupForm);
     } else {
       this.alertObj = {};
+      this.alertObj.alert_type = this.selectedTab;
     }
     this.toggleRows = {};
     this.editRecommendationStep = {};

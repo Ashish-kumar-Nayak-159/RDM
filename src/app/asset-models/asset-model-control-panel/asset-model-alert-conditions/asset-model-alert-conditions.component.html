@@ -512,7 +512,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert Condition
+        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} {{selectedTab == 'Asset' ? 'External' : selectedTab}} Alert Condition
         </h5>
         <button type="button" class="close" [disabled]="isCreateAlertConditionLoading"
           (click)="onCloseAlertConditionModal()" aria-label="Close">
@@ -542,7 +542,7 @@
               <option [ngValue]="'Informational'">Informational</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group" *ngIf="alertObj?.alert_type == 'undefined'">
             <label for="recipient-name" class="col-form-label required">Alert Source:</label>
             <select class="form-control form-control-sm" id="alert_type" name="alert_type"
               [(ngModel)]="alertObj.alert_type" (change)="onChangeOfAlertSource()">

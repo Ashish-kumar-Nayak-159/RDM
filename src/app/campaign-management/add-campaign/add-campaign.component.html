@@ -1,4 +1,4 @@
-<div class="filter-bar">
+<div class="filter-bar sticky-top">
   <div class="row mx-2">
     <nav>
       <ol class="cd-multi-steps text-center custom-icons mb-0">
@@ -30,7 +30,7 @@
       <div class="form-control border-0" style="color: #000" *ngFor="let item of campaignObjectiveList">
         <input type="radio" [value]="item.objective" [(ngModel)]="campaignObj.objective" name="objective"
           (change)="onObjectiveChange(item)" id="{{item.objective}}" />
-        <span class="ml-2"> {{item.name}}</span>
+          <label for="{{item.objective}}" class="ml-2"> {{item.name}}</label>
       </div>
     </div>
   </div>
@@ -62,16 +62,16 @@
       <table class="table mx-2 mt-2">
         <tbody>
           <tr>
-            <td class="required">Code</td>
+            <td class="required align-middle">Code</td>
             <td>
               <input class="form-control form-control-sm" type="text" name="expire_in_min" min="1" max="6"
                 style="width: 20rem!important;" minlength="1" maxlength="6" [(ngModel)]="campaignObj.code" />
             </td>
           </tr>
           <tr>
-            <td class="required">Start Date</td>
+            <td class="required align-middle">Start Date</td>
             <td>
-              <div class="form-group left-inner-addon">
+              <div class="left-inner-addon">
                 <i class="fa fa-calendar"></i>
                 <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_start_date_display"
@@ -81,9 +81,9 @@
             </td>
           </tr>
           <tr>
-            <td class="required">End Date</td>
+            <td class="required align-middle">End Date</td>
             <td>
-              <div class="form-group left-inner-addon">
+              <div class="left-inner-addon">
                 <i class="fa fa-calendar"></i>
                 <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_end_date_display"
@@ -94,11 +94,11 @@
           </tr>
           <tr>
             <td colspan="2">
-              <div class="form-control border-0" style="color: #000">
+              <div class="border-0" style="color: #000">
                 <input type="checkbox" name="retry_required" id="retry_required"
-                  [(ngModel)]="campaignObj.retry_required" /> If cloud to asset command
-                expires to non-availbility of IoT Asset, let the cloud try
-                sending command again.
+                  [(ngModel)]="campaignObj.retry_required" /> 
+                <label for="retry_required" class="ml-2">If cloud to asset command expires to non-availbility of IoT Asset, 
+                  let the cloud try sending command again.</label>
               </div>
             </td>
           </tr>

@@ -205,7 +205,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
               console.log(this.centerLatitude, '====', this.centerLongitude);
-              this.mapFitBounds = false;
+              this.mapFitBounds = true;
             } else {
               this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
@@ -237,8 +237,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     } else {
       this.mapAssets = JSON.parse(JSON.stringify(this.assets));
     }
-    if (this.mapAssets.length === 0) {
-      this.mapFitBounds = false;
+    if (this.mapAssets.length > 0) {
+      this.mapFitBounds = true;
       const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;

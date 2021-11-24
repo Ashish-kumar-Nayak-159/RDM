@@ -19,18 +19,16 @@
       </tr>
     </thead>
     <tbody>
+      <ng-container *ngIf="userRoles.length > 0 && !isUserRolesAPILoading">
       <ng-container *ngFor="let item of userRoles; let configIndex = index">
-        <tr *ngIf="item.length === 0">
-          <td colspan="3">No User Roles Found</td>
-        </tr>
         <tr [ngClass]="{ 'accordion-bg' : toggleRows[configIndex] }">
           <td>{{item.role}}</td>
           <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
           <td>
-            <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'view')">
+            <a href="javascript:void(0)" (click)="toggleRows[configIndex] && pageType === 'view' ? onToggleRows(configIndex, 'view', 'toggle') :  onToggleRows(configIndex, 'view', 'notoggle') ">
               <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'" placement="bottom" tooltip="View Role"></i>
             </a>
-            <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')" class="ml-2"
+            <a href="javascript:void(0)" (click)="toggleRows[configIndex] && pageType === 'edit' ? onToggleRows(configIndex, 'edit', 'toggle') : onToggleRows(configIndex, 'edit', 'notoggle') " class="ml-2"
               *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'" placement="bottom" tooltip="Edit Role"></i>
             </a>
@@ -60,6 +58,17 @@
               </div>
             </div>
           </td>
+        </tr>
+      </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isUserRolesAPILoading">
+        <tr>
+          <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!isUserRolesAPILoading && userRoles.length === 0">
+        <tr>
+          <td colspan="5">No User Roles Found.</td>
         </tr>
       </ng-container>
     </tbody>

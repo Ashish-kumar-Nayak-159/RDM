@@ -396,7 +396,7 @@
             <ul>
               <li>
                 <h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
-                <div class="col-xl-12 col-lg-12 ml-3"
+                <div class="col-xl-12 col-lg-12"
                   *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                   <ng-container>
                     <p> This alert is not yet acknowledged.
@@ -411,7 +411,7 @@
                   </ng-container>
                 </div>
                 <ng-template #actionTakenTemplate>
-                  <div class="table-responsive col-xl-12 col-lg-12 ml-3">
+                  <div class="table-responsive col-xl-12 col-lg-12">
                     <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
                       {{selectedAlert?.metadata?.acknowledged_date}}.</p>
                     <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
@@ -436,7 +436,7 @@
               </li>
               <li>
                 <h6 class="py-2 font-weight-light-bold">Action taken by Kempaas:</h6>
-                <div class="col-xl-12 col-lg-12 ml-3">
+                <div class="col-xl-12 col-lg-12">
                   No Actions recorded by Kempaas yet.
                 </div>
               </li>

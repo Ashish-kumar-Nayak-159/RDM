@@ -406,6 +406,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.value.json_key,
+            color: prop.color,
           };
           arr.push(obj);
         });
@@ -420,6 +421,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.value.json_key,
+            color: prop.color,
           };
           arr.push(obj);
         });

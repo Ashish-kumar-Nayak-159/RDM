@@ -306,26 +306,28 @@ export class GatewayAssetsSettingComponent implements OnInit {
   async openGroupPropertyModel() {
     await this.getAssetsModelProperties();
     $('#groupProperyModel').modal({ backdrop: 'static', keyboard: false, show: true });
-    if (
-      this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration &&
-      this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[
-        this.asset.asset_id
-      ] &&
-      this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[
-        this.asset.asset_id
-      ].properties
-    ) {
-      this.properties =
+    if(this.assetTwin.twin_properties){
+      if (
+        this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration &&
         this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[
           this.asset.asset_id
-        ].properties;
-    } else {
-      this.propertiesList.measured_properties.forEach((prop) => {
-        this.properties['measured_properties'][prop.json_key] = prop.group;
-      });
-      this.propertiesList.edge_derived_properties.forEach((prop) => {
-        this.properties['edge_derived_properties'][prop.json_key] = prop.group;
-      });
+        ] &&
+        this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[
+          this.asset.asset_id
+        ].properties
+      ) {
+        this.properties =
+          this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[
+            this.asset.asset_id
+          ].properties;
+      } else {
+        this.propertiesList.measured_properties.forEach((prop) => {
+          this.properties['measured_properties'][prop.json_key] = prop.group;
+        });
+        this.propertiesList.edge_derived_properties.forEach((prop) => {
+          this.properties['edge_derived_properties'][prop.json_key] = prop.group;
+        });
+      }
     }
   }
 
@@ -384,6 +386,5 @@ export class GatewayAssetsSettingComponent implements OnInit {
 
   updatePropertyData() {
     console.log(this.properties);
-    debugger;
   }
 }

@@ -12,10 +12,10 @@
         </ng-container>
         <div class="row d-flex px-3 pb-1">
           <div class="ml-auto">
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary text-white shadow-sm mr-3"
+            <!-- <a class="d-none d-sm-inline-block btn btn-sm btn-primary text-white shadow-sm mr-3"
               (click)="openGroupPropertyModel()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
               <i class="fa fa-fw fa-cog"></i>
-              Configure Properties</a>
+              Configure Properties</a> -->
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="javascript:void(0)"
               (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
               <i class="fa fa-fw fa-save"></i>
@@ -175,6 +175,9 @@
       </div>
       <div class="modal-body">
         <div>
+          <ng-container *ngIf="!properties || properties.length == 0 ">
+            Properties not available
+          </ng-container>
           <accordion [closeOthers]="'true'" id="groupAc">
             <accordion-group heading="" [panelClass]="'customClass'"
               *ngFor="let property of properties | keyvalue;let i = index">

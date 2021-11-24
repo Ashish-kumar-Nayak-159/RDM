@@ -12,8 +12,9 @@ declare var $: any;
 })
 export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() chartId: string;
-  @Input() telemetryData: any[] = [];
   @Input() property: string;
+  @Input() telemetryObj;
+  @Input() chartConfig: any;
   private chart: am4charts.XYChart;
   min = 0;
   max = 100;
@@ -27,9 +28,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   constructor(private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
+    console.log(this.chartConfig.noOfDataPointsForTrend);
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
-        this.telemetryData = JSON.parse(JSON.stringify([]));
         if (this.chart) {
           this.chart.data = JSON.parse(JSON.stringify([]));
           this.chart.invalidateData();
@@ -43,27 +44,28 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   }
 
   ngOnChanges(changes) {
-    if (changes.telemetryData && this.chart) {
-      const data = [];
-      const valueArr = [];
-      const dateArr = [];
-      this.telemetryData.forEach((obj, i) => {
-        const newObj = {
-          message_date: new Date(obj[this.property]?.date),
-        };
-        newObj[this.property] = obj[this.property]?.value;
-        data.splice(data.length, 0, newObj);
-        valueArr.push(Number(obj[this.property]?.value));
-        dateArr.push(newObj.message_date);
-      });
+    if (changes.telemetryObj && this.chart) {
+      // const data = JSON.parse(JSON.stringify(this.chart.data));
+      let valueArr = [];
+      const newObj = {
+        message_date: new Date(this.telemetryObj[this.property]?.date),
+      };
+      newObj[this.property] = this.telemetryObj[this.property]?.value;
+      this.chart.data.push(newObj);
+      console.log(this.chart.data);
+      valueArr = this.chart.data.map((a) => a[this.property]);
       if (valueArr.length > 0) {
         this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
         this.min = Math.floor(valueArr.reduce((a, b) => Math.min(a, b)));
+
         if (this.min === this.max) {
           this.min = this.min - 5;
           this.max = this.max + 5;
         }
+        console.log(this.min);
+        console.log(this.max);
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
+        console.log(this.average);
         this.valueAxis.min = this.min;
         this.valueAxis.max = this.max;
         this.range0.value = this.min;
@@ -75,7 +77,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.range1.grid.disabled = this.min === this.max;
         this.range2.grid.disabled = this.min + this.max === this.average * 2;
       }
-      this.chart.data = data;
+      if (this.chart.data.length >= this.chartConfig.noOfDataPointsForTrend) {
+        this.chart.data.splice(0, 1);
+      }
       this.chart.validateData();
     }
   }
@@ -85,36 +89,30 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
-      const valueArr = [];
-      this.telemetryData.forEach((obj, i) => {
+      if (this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
         const newObj = {
-          message_date: new Date(obj[this.property]?.date),
+          message_date: new Date(this.telemetryObj[this.property]?.date),
         };
-        newObj[this.property] = obj[this.property]?.value;
-        data.splice(data.length, 0, newObj);
-        valueArr.push(Number(obj[this.property]?.value));
-      });
-      if (valueArr.length > 0) {
-        this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
-        this.min = Math.floor(valueArr.reduce((a, b) => Math.min(a, b)));
+        newObj[this.property] = this.telemetryObj[this.property]?.value;
+        data.push(newObj);
+      }
+      if (this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
+        this.max = Number(this.telemetryObj[this.property]?.value);
+        this.min = Number(this.telemetryObj[this.property]?.value);
         if (this.min === this.max) {
           this.min = this.min - 5;
           this.max = this.max + 5;
         }
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
       }
-      data.reverse();
       chart.data = data;
+      console.log(JSON.stringify(data));
       chart.logo.disabled = true;
       chart.marginLeft = -100;
       chart.dateFormatter.inputDateFormat = 'x';
+      chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.hidden = true;
-      chart.events.on('beforedatavalidated', (ev) => {
-        chart.data.sort((a, b) => {
-          return a.message_date - b.message_date;
-        });
-      });
       this.createValueAxis(chart, 0);
       this.chart = chart;
     });
@@ -137,21 +135,21 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     range0.value = this.min;
     range0.label.fontSize = '0.6em';
     range0.label.fontWeight = 'bold';
-    range0.label.text = this.min.toString();
+    range0.label.text = this.min?.toString();
     this.range0 = range0;
 
     const range1 = valueYAxis.axisRanges.create();
     range1.value = this.max;
     range1.label.fontSize = '0.6em';
     range1.label.fontWeight = 'bold';
-    range1.label.text = this.max.toString();
+    range1.label.text = this.max?.toString();
     this.range1 = range1;
 
     const range2 = valueYAxis.axisRanges.create();
     range2.value = this.average;
     range2.label.fontSize = '0.6em';
     range2.label.fontWeight = 'bold';
-    range2.label.text = this.average.toString();
+    range2.label.text = this.average?.toString();
     this.range2 = range2;
 
     const series = chart.series.push(new am4charts.LineSeries());
@@ -177,7 +175,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   ngOnDestroy(): void {
     if (this.chart) {
+      console.log('in destroy');
       this.chart.dispose();
+      console.log(this.chart);
     }
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }

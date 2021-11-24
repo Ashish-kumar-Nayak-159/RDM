@@ -51,9 +51,9 @@
     </ng-container>
 
     <div class="col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class="">
+      <div class=""
+        [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
         <ul class="mail_list list-group list-unstyled alert-scroll"
-          [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}"
           *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
           <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
@@ -396,7 +396,7 @@
             <ul>
               <li>
                 <h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
-                <div class="col-xl-12 col-lg-12 ml-3"
+                <div class="col-xl-12 col-lg-12"
                   *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                   <ng-container>
                     <p> This alert is not yet acknowledged.
@@ -411,7 +411,7 @@
                   </ng-container>
                 </div>
                 <ng-template #actionTakenTemplate>
-                  <div class="table-responsive col-xl-12 col-lg-12 ml-3">
+                  <div class="table-responsive col-xl-12 col-lg-12">
                     <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
                       {{selectedAlert?.metadata?.acknowledged_date}}.</p>
                     <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
@@ -436,7 +436,7 @@
               </li>
               <li>
                 <h6 class="py-2 font-weight-light-bold">Action taken by Kempaas:</h6>
-                <div class="col-xl-12 col-lg-12 ml-3">
+                <div class="col-xl-12 col-lg-12">
                   No Actions recorded by Kempaas yet.
                 </div>
               </li>

@@ -22,10 +22,10 @@
         <a class="btn">
           Main Menu
         </a>
-        <div class="float-right pull-right mt-1">
-          <a href="javascript:void(0)" class="pr-2"
+        <div class="float-right pull-right mt-2 mr-4">
+          <a href="javascript:void(0)"
             *ngIf="isAppSettingsEditable && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-            (click)="openReorderMainMenuModal()" tooltip="Reorder Menu Item"><i class="fa fa-cog"></i></a>
+            (click)="openReorderMainMenuModal()" tooltip="Reorder Menu Item" placement="left"><i class="fa fa-cog"></i></a>
 
           <!-- <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
             *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"

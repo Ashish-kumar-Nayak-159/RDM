@@ -57,10 +57,12 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     );
   }
 
-  onToggleRows(i, type) {
+  onToggleRows(i, type, action) {
     this.privilegeObj = this.userRoles[i];
     if (this.toggleRows[i]) {
-      this.toggleRows = {};
+      if (action === 'toggle') {
+        this.toggleRows = {};
+      }
     } else {
       this.toggleRows = {};
       this.toggleRows[i] = true;

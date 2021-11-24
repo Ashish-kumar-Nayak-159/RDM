@@ -213,10 +213,17 @@ export class DerivedKpisComponent implements OnInit {
     // series.propType =
     series.dataFields.valueY = 'spc';
     series.strokeWidth = 2;
+    series['units'] = this.selectedDerivedKPI.unit;
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name}';
     series.fillOpacity = 0;
-    series.tooltipText = 'Date: {dateX} \n {name}: [bold]{spc} [/]';
+    if (series['units']) {
+      series.tooltipText = 'Date: {dateX} \n {name}({units}): [bold]{spc} [/]';
+      series.legendSettings.labelText = '{name}({units})';
+    } else {
+      series.tooltipText = 'Date: {dateX} \n {name}: [bold]{spc} [/]';
+      series.legendSettings.labelText = '{name}';
+    }
     const bullet = series.bullets.push(new am4charts.CircleBullet());
     bullet.strokeWidth = 2;
     bullet.circle.radius = 1.5;

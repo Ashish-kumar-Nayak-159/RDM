@@ -45,7 +45,7 @@
                     <i class="fas fa-fw fa-plus-circle"></i>
                    </a> -->
               <a href="javascript:void(0)" (click)="openAssetCreateModal(asset);" tooltip="Edit"
-                *ngIf="asset.provision_status !== 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
+                *ngIf="asset.provision_status !== 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
                 <i class="fas fa-fw fa-edit"></i>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision', asset)" tooltip="Deprovision"
@@ -53,12 +53,12 @@
                 <i class="fas fa-fw fa-times-circle"></i>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2"
-                tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1
+                tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                   && asset.status.toLowerCase() === 'disabled'">
                 <i class="fas fa-fw fa-toggle-on"></i>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2"
-                tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1
+                tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                    && asset.status.toLowerCase() === 'enabled'">
                 <i class="fas fa-fw fa-toggle-off"></i>
               </a>
@@ -106,6 +106,3 @@
   </div>
 
 </div>
-
-
-

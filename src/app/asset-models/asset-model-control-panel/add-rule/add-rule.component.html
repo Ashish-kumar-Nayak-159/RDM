@@ -20,6 +20,9 @@
           </ng-template>
         </ng-select>
       </div>
+      <div class="col-1 margin-left-loader" >
+        <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isRulesLoading"></i>
+      </div>
     </div>
   </div>
   <accordion class="mb-2" [closeOthers]="'true'">
@@ -313,7 +316,8 @@
                           <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
                             {{items.length}} groups selected
                           </ng-template>
-                          <ng-template ng-multi-label-tmp let-items="ruleModel.actions.notification.email.groups" *ngIf='isView'>
+                          <ng-template ng-multi-label-tmp let-items="ruleModel.actions.notification.email.groups"
+                            *ngIf='isView'>
                             {{ruleModel.actions.notification.email.groups}}
                           </ng-template>
                         </ng-select>

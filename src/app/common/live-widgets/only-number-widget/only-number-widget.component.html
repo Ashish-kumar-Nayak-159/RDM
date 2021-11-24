@@ -45,7 +45,8 @@
           <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
             <app-line-chart-without-axis
               [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
-              [telemetryData]="telemetryData" [property]="prop.property?.json_key"></app-line-chart-without-axis>
+              [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
+            </app-line-chart-without-axis>
           </div>
           <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
             <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken

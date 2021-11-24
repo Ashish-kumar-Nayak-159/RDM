@@ -13790,6 +13790,7 @@ body {
 .alert-tabs .nav-link:hover {
   border-color: #eaecf4 #eaecf4 #dddfeb;
   background-color: #f3f8ff;
+  border: 1px solid #f3f8ff !important;
 }
 
 .alert-tabs .nav-link.disabled {
@@ -15703,7 +15704,7 @@ form .page .btns button.next {
 
 @media (min-width: 1200px) {
   .responsive-height {
-    height: calc(100vh - 23rem);
+    height: calc(100vh - 23.5rem);
   }
 }
 

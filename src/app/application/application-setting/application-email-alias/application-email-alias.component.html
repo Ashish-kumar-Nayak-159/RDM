@@ -60,7 +60,7 @@
                     <ng-container>
                       <div class="form-group">
                         <input type="email" class="form-control form-control-sm small" min="0" name="Email"
-                          placeholder="Email ID" [(ngModel)]="recipientemail">
+                          placeholder="Email ID" [(ngModel)]="recipientemail[i]">
                       </div>
                       <div class="form-group">
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
@@ -238,7 +238,7 @@
               <ng-container>
                 <div class="form-group col-11">
                   <input type="email" class="form-control form-control-sm small" min="0" name="Email"
-                    placeholder="Email ID" [(ngModel)]="recipientemail">
+                    placeholder="Email ID" [(ngModel)]="recipientemail['add']">
                 </div>
                 <div class="form-group col-1">
                   <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"

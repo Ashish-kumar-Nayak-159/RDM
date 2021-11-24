@@ -282,7 +282,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.applicationData.menu_settings.main_menu.length; j++) {
-            if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j].system_name) {
+            if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j]?.system_name) {
               // if (
               //   this.toggleRows &&
               //   this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index]
@@ -295,6 +295,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             }
           }
         });
+        console.log('menu item',that.applicationData.menu_settings.main_menu);
       };
 
       $('#myFavTable tbody')

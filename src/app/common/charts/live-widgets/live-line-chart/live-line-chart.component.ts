@@ -194,6 +194,24 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
             this.propertyBasedData[prop.json_key]['data'].push(obj);
           }
           this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+        } else {
+          const obj = {};
+          if (
+            !this.propertyBasedData[prop.json_key] ||
+            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+              new Date(this.telemetryObj[prop.json_key].date).getTime()
+          ) {
+            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+            if (!this.propertyBasedData[prop.json_key]) {
+              this.propertyBasedData[prop.json_key] = {
+                data: [],
+              };
+            }
+            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+            this.propertyBasedData[prop.json_key]['data'].push(obj);
+          }
+          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
         }
       });
       this.chartConfig.y2AxisProps?.forEach((prop) => {
@@ -203,6 +221,24 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryObj[prop.json_key].value !== null &&
           index > -1
         ) {
+          const obj = {};
+          if (
+            !this.propertyBasedData[prop.json_key] ||
+            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+              new Date(this.telemetryObj[prop.json_key].date).getTime()
+          ) {
+            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+            if (!this.propertyBasedData[prop.json_key]) {
+              this.propertyBasedData[prop.json_key] = {
+                data: [],
+              };
+            }
+            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+            this.propertyBasedData[prop.json_key]['data'].push(obj);
+          }
+          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+        } else {
           const obj = {};
           if (
             !this.propertyBasedData[prop.json_key] ||
@@ -329,7 +365,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '({propType}) {name} ({units})';
       series.fillOpacity = this.chartConfig.widgetType.includes('Area') ? 0.3 : 0;
-      series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+      // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       bullet.strokeWidth = 2;

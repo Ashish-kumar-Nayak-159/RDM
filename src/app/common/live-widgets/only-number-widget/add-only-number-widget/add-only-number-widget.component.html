@@ -188,7 +188,7 @@
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
     <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
       placeholder="Y1 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
-      bindLabel="name" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
+      bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
       </ng-template>
@@ -211,7 +211,7 @@
     <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
     <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
       placeholder="Y2 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
-      bindLabel="name" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
+      bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
       </ng-template>

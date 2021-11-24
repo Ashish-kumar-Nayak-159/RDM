@@ -101,9 +101,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           this.changePasswordAPILoading = false;
           this.toasterService.showSuccess(response.message, 'Change Password');
           this.onModalClose();
-          if (this.isFirstTimeLogin) {
-            location.reload();
-          }
+          // if (this.isFirstTimeLogin) {
+          //   location.reload();
+          // }
           this.resetPasswordForm.reset();
         },
         (error: HttpErrorResponse) => {

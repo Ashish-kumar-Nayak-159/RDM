@@ -86,7 +86,7 @@
             (click)="syncWithCache()" [class.disabled]="isSyncAPILoading"
             *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
             Sync with cache
-            <i *ngIf="!isSyncAPILoading" class="fa fa-refresh fa-sm text-white"></i>
+            <i *ngIf="!isSyncAPILoading" class="fa fa-refresh fa-sm text-white ml-1"></i>
             <i class="fa fa-spinner fa-spin fa-fw fa-sm text-white" *ngIf="isSyncAPILoading"></i></button>
         </div>
       </div>

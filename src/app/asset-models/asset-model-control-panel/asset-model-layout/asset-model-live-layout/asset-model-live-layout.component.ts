@@ -409,6 +409,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         return;
       } else {
         const arr = [];
+        
         this.widgetObj.y1AxisProps.forEach((prop) => {
           const obj = {
             name: prop.name,

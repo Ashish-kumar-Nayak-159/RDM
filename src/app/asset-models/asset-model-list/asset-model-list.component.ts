@@ -272,13 +272,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       this.assetModel.app = this.contextApp.app;
       this.assetModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
       this.assetModel.metadata = {};
-      if (this.iotAssetsTab?.visibility) {
-        this.assetModel.metadata.model_type = this.componentState;
-      } else if (this.iotGatewaysTab?.visibility) {
-        this.assetModel.metadata.model_type = this.componentState;
-      } else if (this.legacyAssetsTab?.visibility) {
-        this.assetModel.metadata.model_type = this.componentState;
-      }
+      this.assetModel.metadata.model_type = this.componentState;
       this.assetModel.tags = {};
     } else {
       this.assetModel = JSON.parse(JSON.stringify(obj));

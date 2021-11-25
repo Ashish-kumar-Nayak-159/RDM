@@ -273,11 +273,11 @@ export class AddCampaignComponent implements OnInit {
         this.campaignObj.hierarchyString =
           this.campaignObj.hierarchyString +
           (this.campaignObj.hierarchyString ? ' / ' : '') +
-          this.configureHierarchy[key] ;
-          // (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' -/- ' : '');
+          this.configureHierarchy[key];
+        // (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' -/- ' : '');
       }
     });
-    console.log('hierarchy str ',this.campaignObj.hierarchyString);
+    console.log('hierarchy str ', this.campaignObj.hierarchyString);
   }
 
   getPackages() {
@@ -342,7 +342,7 @@ export class AddCampaignComponent implements OnInit {
     return new Promise<void>((resolve1, reject) => {
       const filterObj = {
         asset_model: this.campaignObj.asset_model,
-        alert_type : "Asset"
+        alert_type: 'Asset',
       };
       this.subscriptions.push(
         this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
@@ -463,7 +463,7 @@ export class AddCampaignComponent implements OnInit {
   prepareModeChangePayload() {
     return {
       method: 'change_asset_mode',
-      telemetry_mode: this.campaignObj.job_request.mode ? 'normal' : 'turbo',
+      telemetry_mode: !this.campaignObj.job_request.mode ? 'normal' : 'turbo',
     };
   }
 

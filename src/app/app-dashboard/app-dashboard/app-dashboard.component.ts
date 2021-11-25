@@ -240,7 +240,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       asset_id: this.filterObj.asset.asset_id,
       gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
       message: {
-        telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
+        telemetry_mode: !this.signalRModeValue ? 'normal' : 'turbo',
         asset_id: this.filterObj.asset.asset_id,
       },
       app: this.contextApp.app,
@@ -1238,10 +1238,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         (response: any) => {
           const newMode =
             response?.mode?.toLowerCase() === 'normal'
-              ? true
-              : response?.mode?.toLowerCase() === 'turbo'
               ? false
-              : true;
+              : response?.mode?.toLowerCase() === 'turbo'
+              ? true
+              : false;
           if (this.signalRModeValue === newMode) {
             // $('#overlay').hide();
             this.isC2dAPILoading = false;

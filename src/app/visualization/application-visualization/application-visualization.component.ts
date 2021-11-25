@@ -394,16 +394,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getLiveAlerts(obj) {
     console.log(obj);
-    if (obj.type === 'alert') {
+    if (obj.type === 'alertendevent') {
+      obj.end_event_message_date = obj?.timestamp || obj.ts;
+      const alertObj = this.latestAlerts.find((alert) => alert.message_id === obj.message_id);
+      alertObj.local_end_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
+    }else{
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
       obj.start_event_message_date = obj?.timestamp || obj.ts;
       obj.message_date = obj.timestamp || obj?.ts;
       obj.alert_id = 'alert_' + this.latestAlerts.length;
       this.latestAlerts.splice(0, 0, obj);
-    } else if (obj.type === 'alertendevent') {
-      obj.end_event_message_date = obj?.timestamp || obj.ts;
-      const alertObj = this.latestAlerts.find((alert) => alert.message_id === obj.message_id);
-      alertObj.local_end_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
     }
   }
 

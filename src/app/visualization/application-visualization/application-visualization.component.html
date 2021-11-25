@@ -420,7 +420,7 @@
                     <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
                       Documents: NA</p>
                     <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
-                      <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
+                      <!-- <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
                         <p><b>{{file.data.name}}</b></p>
                         <img *ngIf="file.type === 'Image'" class="img-fluid pr-3"
                           [src]="blobStorageURL + file.data.url + sasToken" />
@@ -429,7 +429,13 @@
                         </video>
                         <iframe *ngIf="file.type === 'PDF'" [src]="file.data.sanitizedURL"
                           style="width: 100%;height: 80vh"></iframe>
-                      </ng-container>
+                      </ng-container> -->
+                      <div class="table-responsive">
+                        <div class="tableFixHead">
+                          <app-common-table [tableData]="selectedAlert?.metadata?.files" [tableConfig]="docTableConfig" [isTableFilterSelected]="true"
+                            [isTableDataLoading]="isAlertModalDataLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </ng-template>
@@ -546,10 +552,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <img *ngIf="selectedDocument.type === 'Image'" width="420" height="350"
+        <img *ngIf="selectedDocument.type === 'Image' && selectedDocument.metadata" width="420" height="350"
           [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" />
-        <video *ngIf="selectedDocument.type === 'Video'" width="420" height="350" controls>
+        <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.metadata" width="420" height="350" controls>
           <source [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" type="video/mp4">
+        </video>
+        <img *ngIf="selectedDocument.type === 'Image' && selectedDocument.data" width="420" height="350"
+          [src]="blobStorageURL + selectedDocument.data.url + sasToken" />
+        <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.data" width="420" height="350" controls>
+          <source [src]="blobStorageURL + selectedDocument.data.url + sasToken" type="video/mp4">
         </video>
         <iframe *ngIf="selectedDocument.type === 'PDF'" [src]="selectedDocument.sanitizedURL"
           style="width: 100%;height: 80vh"></iframe>

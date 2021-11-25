@@ -32,6 +32,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CoordinatesModule } from 'ngx-color';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { async } from 'rxjs/internal/scheduler/async';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -100,8 +101,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   configuredHierarchy: any = {};
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   widgetStringFromMenu: any;
-  uploadedFile: any;
-  uploadedFileIndex: any;
+  uploadedFiles: any = [];
+  docTableConfig
+  documentObj
+  headerMessage
+  bodyMessage
+  modalConfig
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -141,6 +146,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
+    this.setUpDocumentData();
   }
 
   loadFromCache() {
@@ -517,10 +523,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   downloadDocument(obj) {
-    this.downloadFile(obj.metadata);
+    this.downloadFile(obj.data ?? obj.metadata);
   }
 
   downloadFile(fileObj) {
+    console.log('fileObj ',fileObj);
+    
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
@@ -725,7 +733,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       );
     }
     this.selectedAlert?.metadata?.files?.forEach((file) => {
+      file['url'] = file.data.url;
+      file['name'] = file.data.name;
+      file['data']['type'] = file.type;
       file.data.sanitizedURL = this.sanitizeURL(file.data.url);
+      file['sanitizedURL'] = file.data.sanitizedURL 
     });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
@@ -1129,7 +1141,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   addDocument() {
     let msg = '';
     this.acknowledgedAlert.metadata.files.forEach((file) => {
-      if (!file.type || !file?.data?.url || !file?.data?.name) {
+      if (!file.type || !file?.data?.name) {
         msg = 'Please select file.';
       }
     });
@@ -1143,27 +1155,31 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onDocumentFileSelected(files: FileList, index): Promise<void> {
+  onDocumentFileSelected(files: FileList, index) {
     if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
-    this.uploadedFile = files?.item(0);
-    this.uploadedFileIndex = index;
-    this.acknowledgedAlert.metadata.files[this.uploadedFileIndex].data.name = this.uploadedFile.name;
+    this.uploadedFiles.push({
+      'file':files?.item(0),
+      'index': index
+    }) 
+    this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
   }
 
   async uploadFile(){
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(
-      this.uploadedFile,
-      this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
-    );
-    if (data) {
-      this.acknowledgedAlert.metadata.files[this.uploadedFileIndex].data = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
+    await Promise.all(this.uploadedFiles.map(async(file)=>{
+      const data = await this.commonService.uploadImageToBlob(
+        file.file,
+        this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
+      );
+      if (data) {
+        this.acknowledgedAlert.metadata.files[file.index].data = data;
+      } else {
+        this.toasterService.showError('Error in uploading file', 'Upload file');
+      }
+    }))
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
@@ -1238,5 +1254,67 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (e === [] || e.length === 0) {
       this.y2AxisProps = [];
     }
+  }
+
+  onTableFunctionCall(obj) {
+    if (obj.for === 'Download') {
+      this.headerMessage = 'Download Document';
+      this.bodyMessage = 'Downloading Document...';
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: false,
+      };
+      this.downloadFile(obj.metadata ?? obj.data);
+    }  else if (obj.for === 'View Document') {
+      this.openModal('viewDocModal');
+      this.selectedDocument = obj.metadata ?? obj.data ;
+    } 
+  }
+
+  setUpDocumentData() {
+    this.docTableConfig = {
+      type: 'Documents',
+      tableHeight: 'calc(100vh - 11rem)',
+      data: [
+        {
+          name: 'Name',
+          key: 'name',
+          type: 'text',
+          headerClass: '',
+          valueclass: '',
+        },
+        {
+          name: 'Type',
+          key: 'type',
+          type: 'text',
+          headerClass: '',
+          valueclass: '',
+        },
+        {
+          name: 'Actions',
+          key: undefined,
+          type: 'button',
+          headerClass: '',
+          btnData: [
+            
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'View Document',
+              valueclass: '',
+              tooltip: 'View Document',
+            },
+            {
+              icon: 'fa fa-fw fa-download',
+              text: '',
+              id: 'Download',
+              valueclass: '',
+              tooltip: 'Download',
+            }
+          ],
+        },
+      ],
+    };
   }
 }

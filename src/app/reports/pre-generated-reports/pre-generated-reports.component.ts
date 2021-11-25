@@ -327,6 +327,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
               id: prop.name,
               type: prop.type,
               value: prop,
+              json_key: prop.json_key
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));

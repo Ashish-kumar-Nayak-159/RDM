@@ -177,11 +177,9 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           menu.index = i;
         }
       });
-      console.log('before  ', JSON.stringify(this.applicationData.menu_settings.main_menu));
       this.applicationData.menu_settings.main_menu = this.applicationData.menu_settings.main_menu.sort(
         (a, b) => a.index - b.index
       );
-      console.log('after  ', JSON.stringify(this.applicationData.menu_settings.main_menu));
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
@@ -201,9 +199,10 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     );
     this.sideMenuList = this.sideMenuList.sort(
       (a, b) =>
-        this.applicationData.menu_settings.main_menu.indexOf(a) -
-        this.applicationData.menu_settings.main_menu.indexOf(b)
+        a.index -
+        b.index
     );
+    this.onSaveMenuSettings();
     this.closeModal();
   }
 
@@ -236,6 +235,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
     });
+    this.sideMenuList = this.sideMenuList.sort(
+      (a, b) =>
+        a.index -
+        b.index
+    );
     this.applicationData.menu_settings.main_menu = [...this.sideMenuList];
     console.log(JSON.stringify(this.applicationData.menu_settings.main_menu));
     console.log(this.sideMenuList);
@@ -272,13 +276,13 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
       const updateIndex = (e, ui) => {
         $('td.index', ui.item.parent()).each(function (i) {
-          $(this).html(i + '');
+          $(this).html((i + 1) + '');
         });
         console.log(ui.item.next());
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.applicationData.menu_settings.main_menu.length; j++) {
-            if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j].system_name) {
+            if ($(this).attr('id') === that.applicationData.menu_settings.main_menu[j]?.system_name) {
               // if (
               //   this.toggleRows &&
               //   this.toggleRows['main_menu_' + that.applicationData.menu_settings.main_menu[j].index]
@@ -291,6 +295,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             }
           }
         });
+        console.log('menu item',that.applicationData.menu_settings.main_menu);
       };
 
       $('#myFavTable tbody')

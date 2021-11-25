@@ -19,15 +19,6 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log(this.propertyList);
-    this.propertyList.forEach((prop) => {
-      this.dropdownProperties.push({
-        id: prop.json_key,
-        value: prop,
-        name: prop.name,
-        type: prop.type,
-      });
-    });
   }
 
   addProperty() {
@@ -39,7 +30,6 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   }
 
   onPropertySelection(prop) {
-    console.log(prop);
     if (prop?.property) {
       // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
@@ -58,17 +48,18 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   }
 
   async onLogoFileSelected(files: FileList, index): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(
-      files.item(0),
-      this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets'
-    );
-    if (data) {
-      this.widgetObj.properties[index].image = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
+    this.widgetObj.properties[index].image = files.item(0);
+    // this.isFileUploading = true;
+    // const data = await this.commonService.uploadImageToBlob(
+    //   files.item(0),
+    //   this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets'
+    // );
+    // if (data) {
+    //   this.widgetObj.properties[index].image = data;
+    // } else {
+    //   this.toasterService.showError('Error in uploading file', 'Upload file');
+    // }
+    // this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 

@@ -7,8 +7,11 @@
           <div class="row">
             <h6 class="p-3" *ngIf="assetModel.freezed">
               This model is freezed. <br />
-              You can't add, modify, delete any attribute of this model.<br />
-              Please Unfreeze, if you want to add, modify, delete any.
+              <span *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                You can't add, modify, delete any attribute of this model.<br />
+                Please Unfreeze, if you want to add, modify, delete any.
+              </span>
+
               <a href="javascript:void(0)" (click)="openUnfreezeModal()"
                 [class.disabled]="isModelFreezeUnfreezeAPILoading"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
@@ -20,7 +23,9 @@
           <div class="row">
             <h6 class="p-3" *ngIf="!assetModel.freezed">
               This model is not freezed.<br />
-              Once you complete modifications (add, edit, delete), Please freeze it for better performance.
+              <span *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                Once you complete modifications (add, edit, delete), Please freeze it for better performance.
+              </span>
               <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Freeze It <i
@@ -31,7 +36,7 @@
           <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
             <h6 class="pl-3">Asset Model Image:
               <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
-                class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
+                class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed"><i class="fa fa-edit" ></i></a>
             </h6>
           </div>
         </div>

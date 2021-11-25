@@ -244,7 +244,7 @@ export class FotaComponent implements OnInit {
       $('#confirmMessageModal').modal('hide');
       $('#packageManagementModal').modal('hide');
       clearInterval(this.twinResponseInterval);
-      this.refreshAssetTwin.emit();
+      // this.refreshAssetTwin.emit();
       this.installPackages = [];
       this.updatePackages = [];
       this.uninstallPackages = [];

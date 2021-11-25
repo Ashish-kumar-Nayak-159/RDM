@@ -20,7 +20,7 @@
       </div> -->
       <div class="form-group">
         <ng-select [items]="filteredPropList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y1Deselect($event)"
-          [searchable]="true" placeholder="Y1 Axis Props" clearSearchOnAdd="true" [multiple]="true" bindLabel="name"
+          [searchable]="true" placeholder="Y1 Axis Props" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
           [closeOnSelect]="false" groupBy="type" dropdownPosition="bottom" name="widget-dropdown1"
           [(ngModel)]="y1AxisProps">
           <ng-template ng-multi-label-tmp let-items="items">
@@ -44,7 +44,7 @@
       <div class="form-group" *ngIf="selectedChartType !== 'Vibration Damage Plot'">
         <ng-select [items]="filteredPropList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y2Deselect($event)"
           [searchable]="true" placeholder="Y2 Axis Props" clearSearchOnAdd="true" [multiple]="true"
-          [closeOnSelect]="false" groupBy="type" bindLabel="name" dropdownPosition="bottom" name="widget-dropdown2"
+          [closeOnSelect]="false" groupBy="type" bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown2"
           [(ngModel)]="y2AxisProps">
           <ng-template ng-multi-label-tmp let-items="items">
             {{items.length}} properties selected

@@ -1763,7 +1763,7 @@ export class CONSTANTS {
   public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/app-media/logo.png';
   public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/asset-model-media/asset.svg';
-
+  public static METHODNAME_REGEX = /^[a-zA-Z0-9_]+$/;
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
   // public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/default_app_header_logo.png';

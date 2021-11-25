@@ -109,7 +109,7 @@
             <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
               <div class="form-group">
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="id"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
                   [ngClass]="{'active': props.length > 0}" [closeOnSelect]="false" placeholder="Select Properties"
                   groupBy="type" dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props"
                   (onDeSelectAll)="y1Deselect($event)">

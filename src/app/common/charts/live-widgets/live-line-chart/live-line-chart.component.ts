@@ -142,7 +142,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
             }
           });
         }
-        console.log(JSON.stringify(this.telemetryData));
         // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
         //   this.telemetryData.splice(0, 1);
         // }
@@ -170,7 +169,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
       this.chartConfig.y1AxisProps?.forEach((prop) => {
-        console.log(prop);
         const index = this.telemetryObj['previous_properties']?.findIndex((propKey) => (propKey = prop.json_key)) || -1;
         if (
           this.telemetryObj[prop.json_key].value !== undefined &&
@@ -260,7 +258,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       });
 
       // this.telemetryData.push(this.telemetryObj);
-      console.log(this.telemetryData);
       chart.data = this.telemetryData;
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';

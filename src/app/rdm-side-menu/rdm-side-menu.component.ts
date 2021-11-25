@@ -31,6 +31,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    console.log('this.userData ',this.userData);
+    console.log('this.contextApp ',this.contextApp);
+    
     if (this.contextApp) {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
@@ -46,14 +49,16 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       });
     }
     this.processAppMenuData();
-
     this.apiSubscriptions.push(
       this.commonService.refreshSideMenuData.subscribe((list) => {
+        
         let config =
-          list.menu_settings?.main_menu?.length > 0
-            ? list.menu_settings.main_menu
-            : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+        list.menu_settings?.main_menu?.length > 0
+        ? list.menu_settings.main_menu
+        : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
         config = JSON.parse(JSON.stringify(config));
+        console.log('sidemenu list ',list);
+        console.log('sidemenu config ',config);
         this.processSideMenuData(config, list);
       })
     );
@@ -73,6 +78,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
                 config.display_name = item.display_name;
                 config.visible = item.visible;
                 config.showAccordion = item.showAccordion;
+                config.index = item.index;
                 data.push(config);
               }
             });
@@ -83,6 +89,13 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           data = arr;
         }
+        data = data.sort(
+          (a, b) =>
+            a.index -
+            b.index
+        );
+        console.log('in process app menu data ',data);
+        
         this.processSideMenuData(data, this.contextApp);
       }
     }
@@ -123,6 +136,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   processSideMenuData(data, list) {
+    console.log('data ',data);
+    
     const arr = JSON.parse(JSON.stringify(data));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     const decodedToken = this.commonService.decodeJWTToken(token);

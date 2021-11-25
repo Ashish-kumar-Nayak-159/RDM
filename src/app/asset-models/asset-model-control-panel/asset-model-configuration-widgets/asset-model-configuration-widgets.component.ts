@@ -257,7 +257,9 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     if (
       !this.controlWidget.name ||
       !this.controlWidget.metadata ||
-      !this.controlWidget.metadata?.communication_technique
+      !this.controlWidget.metadata?.communication_technique ||
+      (this.controlWidget.properties.length == 0 &&
+        (!this.extraParams[0].key || !this.extraParams[0].name || !this.extraParams[0].data_type))
     ) {
       this.toasterService.showError(
         UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,

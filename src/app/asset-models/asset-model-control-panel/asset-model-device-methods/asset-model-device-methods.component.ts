@@ -8,6 +8,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { constants } from 'buffer';
 
 declare var $: any;
 @Component({
@@ -238,6 +239,16 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     }
     console.log(JSON.stringify(this.assetMethodObj));
     // this.editor.set(this.assetMethodObj.json_model);
+  }
+  onKeyPressAlphaNumericWithCharacters(event) {
+    var inp = String.fromCharCode();
+    if (CONSTANTS.METHODNAME_REGEX.test(inp)) {
+      return true;
+    } else {
+      event.preventDefault();
+      this.toasterService.showError('Method name only allow alphabet, numbers and underscore.', 'Add Method');
+      return false;
+    }
   }
 
   onJSONKeyChange() {

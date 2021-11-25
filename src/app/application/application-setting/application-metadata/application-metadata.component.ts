@@ -30,6 +30,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   centerLatitude = 23.0225;
   centerLongitude = 72.5714;
   zoom = 8;
+  uploadedLogoFile: any;
+  uploadedIconFile: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -47,11 +49,17 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     this.longitude = this.applicationData.metadata?.longitude;
   }
 
-  async onHeaderLogoFileSelected(files: FileList): Promise<void> {
+
+  async uploadFile(file,type){
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), this.applicationData.app + '/app-images');
+    const data = await this.commonService.uploadImageToBlob(file, this.applicationData.app + '/app-images');
     if (data) {
-      this.applicationData.metadata.header_logo = data;
+      if(type=="header_logo"){
+        this.applicationData.metadata.header_logo = data;
+      }
+      if(type == "icon"){
+        this.applicationData.metadata.icon = data;
+      }
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -71,19 +79,27 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   //   // this.blobState.uploadItems(files);
   // }
 
-  async onIconFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), this.applicationData.app + '/app-images');
-    if (data) {
-      this.applicationData.metadata.icon = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
+  onFileSelected(files: FileList,type){
+    if(type=="header_logo"){
+      this.uploadedLogoFile = files.item(0);
+      if(!this.applicationData.metadata.header_logo) this.applicationData.metadata.header_logo = {}
+      this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
     }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
+    if(type=="icon"){
+      this.uploadedIconFile = files.item(0);
+      if(!this.applicationData.metadata.icon) this.applicationData.metadata.icon = {}
+      this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+    }
   }
 
-  onSaveMetadata() {
+  async onSaveMetadata() {
+    if(this.uploadedLogoFile){
+      await this.uploadFile(this.uploadedLogoFile,"header_logo");
+    }
+    if(this.uploadedIconFile){
+      await this.uploadFile(this.uploadedIconFile,"icon");
+    }
+
     this.saveMetadataAPILoading = true;
     this.applicationData.id = this.applicationData.app;
     this.apiSubscriptions.push(
@@ -159,6 +175,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLocation() {
+    if(!this.latitude || !this.longitude){
+      this.toasterService.showError("Select proper location", 'Save Menu Settings');
+      return;
+    }
     this.applicationData.metadata['latitude'] = this.latitude;
     this.applicationData.metadata['longitude'] = this.longitude;
     this.onModalClose('changeLocationModal');

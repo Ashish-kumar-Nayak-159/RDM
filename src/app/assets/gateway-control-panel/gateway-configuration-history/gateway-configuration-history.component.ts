@@ -95,7 +95,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
     }
     const obj = { ...filterObj };
     if (!obj.from_date || !obj.to_date) {
-      this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
+      this.toasterService.showError('Date selection is requierd.', 'Get Configuration History');
       this.isConfigHistoryLoading = false;
       this.isFilterSelected = false;
       return;

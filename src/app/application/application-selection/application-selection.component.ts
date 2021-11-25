@@ -93,8 +93,28 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
-    this.router.navigate(['applications', this.applicationData.app]);
+    
+    // this.router.navigate(['applications', this.applicationData.app]);
+    this.redirectToFirstMenu()
     this.isAppDataLoading = undefined;
+  }
+
+  redirectToFirstMenu() {
+    const menu =
+      this.applicationData.menu_settings.main_menu.length > 0
+        ? this.applicationData.menu_settings.main_menu
+        : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+    for(let i=0;i<menu.length;i++){
+      const menuObj = menu[i];
+      if (menuObj.visible) {
+        if (menuObj.url?.includes(':appName')) {
+          menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
+          this.router.navigateByUrl(menuObj.url);
+        }
+        break;
+      }
+
+    }
   }
 
   getApplicationData(app) {
@@ -107,11 +127,10 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
           this.userData.apps.forEach((appObj) => {
             if (app.app === appObj.app) {
-              console.log(appObj);
-              console.log(appObj.user);
               this.applicationData.user = appObj.user;
             }
           });
+          
           if (
             !this.applicationData.menu_settings.main_menu ||
             this.applicationData.menu_settings.main_menu.length === 0
@@ -182,6 +201,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
                 config.display_name = item.display_name;
                 config.visible = item.visible;
                 config.showAccordion = item.showAccordion;
+                config.index = item.index;
                 data.push(config);
               }
             });
@@ -190,7 +210,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             }
           });
         }
-        this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
+        this.applicationData.menu_settings.main_menu = data.sort(
+          (a, b) =>
+            a.index -
+            b.index
+        );
       }
     }
   }

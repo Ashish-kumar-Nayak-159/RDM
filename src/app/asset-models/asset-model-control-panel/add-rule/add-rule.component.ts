@@ -32,6 +32,7 @@ export class AddRuleComponent implements OnInit {
   dropdownPropList: any[] = [];
   alertConditionList: any[] = [];
   isUpdateApiCall = false;
+  isRulesLoading = false;
   selectedAlertCondition: AlertCondition = new AlertCondition();
   rules: any[] = [];
   selectedRule: Rule = new Rule();
@@ -112,6 +113,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   getRules() {
+    this.isRulesLoading = true;
     this.rules = [];
     let method;
     if (this.asset) {
@@ -130,6 +132,7 @@ export class AddRuleComponent implements OnInit {
       method.subscribe((response: any) => {
         if (response?.data) {
           this.rules = response.data;
+          this.isRulesLoading = false;
         }
       })
     );
@@ -221,12 +224,14 @@ export class AddRuleComponent implements OnInit {
       // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
-        this.dropdownPropList.push({
-          id: prop.name,
-          type: prop.type,
-          json_key: prop.json_key,
-          value: prop,
-        });
+        if(prop.data_type=='Number' || prop.data_type == 'Boolean'){
+          this.dropdownPropList.push({
+            id: prop.name,
+            type: prop.type,
+            json_key: prop.json_key,
+            value: prop,
+          });
+        }
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
     });

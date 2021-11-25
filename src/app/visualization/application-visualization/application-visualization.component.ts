@@ -100,6 +100,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   configuredHierarchy: any = {};
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   widgetStringFromMenu: any;
+  uploadedFile: any;
+  uploadedFileIndex: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -1142,18 +1144,23 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onDocumentFileSelected(files: FileList, index): Promise<void> {
-    const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
+    this.uploadedFile = files?.item(0);
+    this.uploadedFileIndex = index;
+    this.acknowledgedAlert.metadata.files[this.uploadedFileIndex].data.name = this.uploadedFile.name;
+  }
+
+  async uploadFile(){
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
-      files.item(0),
+      this.uploadedFile,
       this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
     );
     if (data) {
-      this.acknowledgedAlert.metadata.files[index].data = data;
+      this.acknowledgedAlert.metadata.files[this.uploadedFileIndex].data = data;
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -1161,7 +1168,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // this.blobState.uploadItems(files);
   }
 
-  acknowledgeAlert(): void {
+  async acknowledgeAlert() {
+    await this.uploadFile();
     const files = [];
     this.acknowledgedAlert.metadata.files.forEach((file) => {
       if (file.type && file?.data?.url && file?.data?.name) {

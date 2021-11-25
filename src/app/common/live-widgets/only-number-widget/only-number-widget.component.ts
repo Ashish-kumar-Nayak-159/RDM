@@ -28,13 +28,11 @@ export class OnlyNumberWidgetComponent implements OnInit, OnDestroy {
   constructor(private chartService: ChartService, private commonService: CommonService) {}
 
   ngOnInit(): void {
-    console.log(this.chartConfig);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
-    console.log(this.apiTelemetryObj);
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
         this.telemetryData = JSON.parse(JSON.stringify([]));

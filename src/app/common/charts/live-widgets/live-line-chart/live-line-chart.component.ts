@@ -276,9 +276,11 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       dateAxis.renderer.labels.template.location = 0.5;
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
+
       chart.logo.disabled = true;
       chart.cursor = new am4charts.XYCursor();
       dateAxis.dateFormatter = new am4core.DateFormatter();
+      chart.cursor.maxTooltipDistance = 5;
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       chart.zoomOutButton.disabled = true;
       chart.preloader.disabled = false;
@@ -358,6 +360,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       if (prop.color) {
         series.stroke = am4core.color(prop.color);
       }
+      series.tooltip.getFillFromObject = false;
+      series.tooltip.background.fill = am4core.color(prop.color);
+
       series.strokeWidth = 2;
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '({propType}) {name} ({units})';
@@ -365,6 +370,11 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
+      if (series.units) {
+        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+      } else {
+        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+      }
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
       this.seriesArr.push(series);

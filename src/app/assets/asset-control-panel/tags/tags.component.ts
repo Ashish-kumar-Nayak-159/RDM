@@ -382,6 +382,10 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   public mapReadyHandler(map: google.maps.Map): void {
+    console.log('map ready');
+    navigator.geolocation.getCurrentPosition(this.showPosition)
+    this.asset.tags.latitude = this.centerLatitude;
+    this.asset.tags.longitude = this.centerLongitude;
     map.addListener('click', (e: google.maps.MouseEvent) => {
       this.centerLatitude = e.latLng.lat();
       this.centerLongitude = e.latLng.lng();
@@ -389,6 +393,11 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.asset.tags.longitude = e.latLng.lng();
       this.zoom = 12;
     });
+  }
+
+  showPosition = (position)=> {
+    this.centerLatitude =  position?.coords?.latitude || this.centerLatitude;  
+    this.centerLongitude = position.coords.longitude || this.centerLongitude;
   }
 
   onRadioChange() {

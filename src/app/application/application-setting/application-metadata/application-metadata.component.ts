@@ -25,8 +25,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   isMetadataEditable = false;
   decodedToken: any;
   changeLocationOption: any;
-  latitude: any;
-  longitude: any;
+  latitude= 23.0225;
+  longitude= 72.5714;
   centerLatitude = 23.0225;
   centerLongitude = 72.5714;
   zoom = 8;
@@ -42,11 +42,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    this.latitude = this.applicationData.metadata?.latitude;
-    this.longitude = this.applicationData.metadata?.longitude;
+    this.latitude = this.applicationData.metadata?.latitude || this.latitude;
+    this.longitude = this.applicationData.metadata?.longitude || this.longitude;
   }
 
 
@@ -142,6 +141,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   public mapReadyHandler(map: google.maps.Map): void {
+    //get user's location on map open
+    navigator.geolocation.getCurrentPosition(this.showPosition)
     map.addListener('click', (e: google.maps.MouseEvent) => {
       this.centerLatitude = e.latLng.lat();
       this.centerLongitude = e.latLng.lng();
@@ -151,6 +152,13 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     });
   }
 
+  showPosition = (position)=> {
+    console.log('in show position');
+    
+    this.latitude =  position?.coords?.latitude || this.latitude;  
+    this.longitude = position.coords.longitude || this.longitude;
+  }
+
   onRadioChange() {
     setTimeout(() => {
       this.mapsAPILoader.load().then(() => {
@@ -158,8 +166,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
           types: ['geocode'],
         });
         autocomplete.addListener('place_changed', () => {
+          
           this.ngZone.run(() => {
             const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+            console.log('place ',place);
             if (place.geometry === undefined || place.geometry === null) {
               return;
             }
@@ -175,7 +185,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLocation() {
-    if(!this.latitude || !this.longitude){
+    if((this.latitude && !this.longitude) || (!this.latitude && this.longitude)){
       this.toasterService.showError("Select proper location", 'Save Menu Settings');
       return;
     }

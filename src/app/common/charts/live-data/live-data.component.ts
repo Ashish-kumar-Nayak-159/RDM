@@ -106,8 +106,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
         chart.data = this.telemetryData;
       }
-      console.log(data.length);
-      console.log(chart.data);
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -279,7 +277,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     }
     const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
     arr.forEach((prop, index) => {
-      console.log(prop);
       const series = chart.series.push(new am4charts.LineSeries());
       // series.dataFields.dateX = 'message_date';
       this.propertyList.forEach((propObj) => {
@@ -288,7 +285,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop.json_key);
-      console.log(this.getPropertyType(prop.json_key));
       const proptype = this.getPropertyType(prop.json_key);
       series.propType =
         proptype === 'Edge Derived Properties'
@@ -298,7 +294,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
           : proptype === 'Derived KPIs'
           ? 'DK'
           : 'M';
-      console.log(series.propType);
       series.propKey = prop.json_key;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
@@ -330,7 +325,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       bullet.circle.radius = 1.5;
       // chart.cursor.snapToSeries = series;
       this.seriesArr.push(series);
-      console.log(this.seriesArr);
     });
 
     valueYAxis.tooltip.disabled = true;

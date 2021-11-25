@@ -41,7 +41,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     private assetService: AssetService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -59,7 +59,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           } else if (response?.derived_kpis) {
             this.derivedKPIs = response.derived_kpis;
           }
@@ -150,7 +149,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         delay: 100,
         opacity: 0.6,
         cursor: 'move',
-        update: () => {},
+        update: () => { },
       });
     }, 1000);
   }
@@ -177,7 +176,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
               widget.derived_kpis = false;
               if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
                 widget?.properties.forEach((prop) => {
-                  console.log(this.propertyList);
                   if (prop.property) {
                     prop.json_key = prop.property.json_key;
                   }
@@ -192,7 +190,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                   } else {
                     widget.measured_props = true;
                   }
-                  console.log(prop);
                 });
               } else {
                 widget?.y1AxisProps.forEach((prop) => {
@@ -253,13 +250,13 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.filteredPropList = [];
     this.propertyList.forEach((prop) => {
       if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-        if(this.widgetObj?.widgetType !== "StringWidget" && prop.data_type === "Number"){
+        if (this.widgetObj?.widgetType !== "StringWidget" && prop.data_type === "Number") {
           this.filteredPropList.push(prop);
         }
-        else if(this.widgetObj?.widgetType === "StringWidget"){
+        else if (this.widgetObj?.widgetType === "StringWidget") {
           this.filteredPropList.push(prop);
         }
-        
+
       }
     });
   }
@@ -374,8 +371,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     );
   }
 
-  onSaveWidgetObj() {
-    console.log(this.widgetObj);
+  async onSaveWidgetObj() {
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -388,7 +384,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {
         found = false;
-      } else if(prop.property && this.widgetObj.widgetType != "NumberWithImage"){
+      } else if (prop.property && this.widgetObj.widgetType != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
         delete prop.property;
@@ -398,10 +394,12 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
-    if(!found && this.widgetObj.widgetType == "NumberWithImage"){
+    if (!found && this.widgetObj.widgetType == "NumberWithImage") {
       this.toasterService.showError('Please select image.', 'Add Widget');
       return;
     }
+
+
     if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
       if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
         this.toasterService.showError(
@@ -436,6 +434,22 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         });
         this.widgetObj.y2AxisProps = JSON.parse(JSON.stringify(arr));
       }
+    }
+    else if (this.widgetObj.widgetType == "NumberWithImage") {
+      let imgUploadError = false;
+      await Promise.all(this.widgetObj.properties.map(async (element, index) => {
+        const data = await this.commonService.uploadImageToBlob(
+          element.image,
+          this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets'
+        );
+        if (data) {
+          this.widgetObj.properties[index].image = { ...data };
+        }
+        else {
+          imgUploadError = true;
+        }
+      }));
+      if (imgUploadError) this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + moment().utc().unix();

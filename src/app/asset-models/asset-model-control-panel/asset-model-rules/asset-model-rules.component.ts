@@ -68,16 +68,18 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.getRules();
   }
 
-  onToggleRows(i, rule, isView = false, isEdit = false) {
+  onToggleRows(i, rule, isView = false, isEdit = false, action) {
     if (this.toggleRows[this.selectedTab + '_' + i]) {
-      this.toggleRows = {};
+      if (action === 'toggle') {
+        this.toggleRows = {};
+      }
     } else {
       this.toggleRows = {};
       this.toggleRows[this.selectedTab + '_' + i] = true;
-      this.isEdit = isEdit;
-      this.isView = isView;
-      this.ruleData = rule;
     }
+    this.isEdit = isEdit;
+    this.isView = isView;
+    this.ruleData = rule;
   }
 
   getRules() {

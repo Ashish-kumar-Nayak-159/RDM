@@ -140,8 +140,8 @@
         <tbody>
           <tr *ngFor="let hierarchyItem of contextApp.hierarchy.levels; let hIndex = index">
 
-            <td>{{hierarchyItem}}</td>
-            <td>
+            <td width="30%">{{hierarchyItem}}</td>
+            <td width="70%">
               <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
                 [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
                 [disabled]="contextApp.user.hierarchy[hierarchyItem]">
@@ -214,8 +214,8 @@
         <tbody>
           <ng-container *ngIf="campaignObj.objective === 'FOTA'">
             <tr>
-              <td class="required">Command</td>
-              <td>
+              <td class="required" width="40%">Command</td>
+              <td width="60%">
                 <select class="form-control form-control-sm" id="asset_model" name="asset_model"
                   [(ngModel)]="campaignObj.request_type" (change)="onCommandChange()">
                   <option [ngValue]="undefined"> Select Command</option>
@@ -251,7 +251,7 @@
           </ng-container>
           <ng-container *ngIf="campaignObj.objective === 'Sync Properties/Alerts'">
             <tr>
-              <td class="required">Sync Details</td>
+              <td class="required" width="40%">Sync Details</td>
               <td>
                 <ng-select [items]="propertySyncList" class="custom-dropdown w-12 active sm" [clearable]="false"
                   [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false"
@@ -355,7 +355,7 @@
           </ng-container>
           <ng-container *ngIf="campaignObj.objective === 'Change Asset Mode'">
             <tr>
-              <td class="required">Asset Mode</td>
+              <td class="required" width="50%">Asset Mode</td>
               <td>
                 <ui-switch size="small" class="mr-1" defaultBgColor="#c80815" checkedTextColor="white"
                   uncheckedTextColor="white" checkedLabel="OFF" uncheckedLabel="ON" name="type"
@@ -476,8 +476,8 @@
           </ng-container>
           <ng-container *ngIf="campaignObj.objective === 'Sync Properties/Alerts'">
             <tr>
-              <td>Sync Details</td>
-              <td>{{campaignObj.job_request.type}} </td>
+              <td width="50%">Sync Details</td>
+              <td width="50%">{{campaignObj.job_request.type}} </td>
             </tr>
           </ng-container>
           <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">

@@ -30,7 +30,7 @@
       <div class="form-control border-0" style="color: #000" *ngFor="let item of campaignObjectiveList">
         <input type="radio" [value]="item.objective" [(ngModel)]="campaignObj.objective" name="objective"
           (change)="onObjectiveChange(item)" id="{{item.objective}}" />
-        <label for="{{item.objective}}" class="ml-2"> {{item.name}}</label>
+        <label for="{{item.objective}}" class="ml-2"> {{item.name}} ({{item.objective}})</label>
       </div>
     </div>
   </div>

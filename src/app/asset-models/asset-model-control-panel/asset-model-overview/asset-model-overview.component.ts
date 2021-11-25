@@ -31,6 +31,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   isFileUploading: boolean;
   updatedAssetModel: any;
   decodedToken: any;
+  overviewFile: any;
   constructor(
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
@@ -77,21 +78,30 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   async onLogoFileSelected(files: FileList): Promise<void> {
+    this.overviewFile = files.item(0);
+    this.updatedAssetModel.metadata.image = this.overviewFile;
+  }
+
+  async uploadFile(): Promise<void>{
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
-      files.item(0),
+      this.overviewFile,
       this.contextApp.app + '/models/' + this.assetModel.name
     );
     if (data) {
       this.updatedAssetModel.metadata.image = data;
+      console.log('file uploaded ');
+      
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
+    // this.blobState.uploadItems(this.overviewFile);
   }
 
-  updateAssetsModel() {
+  async updateAssetsModel() {
+    //upload file
+    await this.uploadFile();
     this.assetModel = JSON.parse(JSON.stringify(this.updatedAssetModel));
     console.log(this.assetModel);
     if (
@@ -129,7 +139,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   onCloseAssetsModelModal() {
     $('#createAssetModelModal').modal('hide');
     // this.assetModel = undefined;
-    this.updatedAssetModel = undefined;
+    // this.updatedAssetModel = undefined;
   }
 
   freezeModel() {

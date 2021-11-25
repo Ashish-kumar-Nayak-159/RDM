@@ -19,7 +19,7 @@
         </select>
       </div>
       <div class="form-group">
-        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" bindLabel="name" [clearable]="false"
+        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" bindLabel="json_key" [clearable]="false"
           [searchable]="true" clearSearchOnAdd="true" [multiple]="true"
           [ngClass]="{'active': telemetryFilter.props?.length > 0}" [closeOnSelect]="false"
           placeholder="Select Properties" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"

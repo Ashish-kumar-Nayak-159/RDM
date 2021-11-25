@@ -33,6 +33,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   headerMessage: string;
   bodyMessage: string;
+  uploadedFile: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -232,14 +233,24 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
-    const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes(this.documentObj.type?.toLowerCase())) {
+      this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+      return;
+    }
+    this.uploadedFile = files?.item(0) || [];
+    console.log(this.documentObj);
+    if(!this.documentObj.metadata) this.documentObj.metadata = {}
+    this.documentObj.metadata.name = this.uploadedFile.name;
+  }
+
+  async uploadFile(){
+    if (!this.uploadedFile.type.includes(this.documentObj.type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
-      files.item(0),
+      this.uploadedFile,
       this.contextApp.app + '/models/' + this.assetModel.name + '/reference-material'
     );
     if (data) {
@@ -248,7 +259,6 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
   }
 
   deleteDocument() {
@@ -273,7 +283,8 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     this.documentObj.metadata = undefined;
   }
 
-  onSaveDocumentObj() {
+  async onSaveDocumentObj() {
+    await this.uploadFile();
     if (
       !this.documentObj.name ||
       this.documentObj.name.trim().length === 0 ||

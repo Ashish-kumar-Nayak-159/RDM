@@ -20,12 +20,13 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   decodedToken: any;
   isFileUploading = false;
   widgetStringFromMenu: any;
+  uploadedFiles: any = {};
   constructor(
     private assetService: AssetService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -59,22 +60,35 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
     }
   }
 
-  async onMapIconFileSelected(files: FileList, assetType, iconType): Promise<void> {
+  onMapIconFileSelected(files: FileList, assetType, iconType) {
     if (!this.applicationData.dashboard_config.map_icons[assetType]) {
       this.applicationData.dashboard_config.map_icons[assetType] = {};
     }
+    if (!this.uploadedFiles[assetType]) this.uploadedFiles[assetType] = {}
+    this.uploadedFiles[assetType][iconType] = files.item(0)
+    this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0)
+  }
+
+  async uploadFile() {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), this.applicationData.app + '/app-images');
-    if (data) {
-      this.applicationData.dashboard_config.map_icons[assetType][iconType] = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
+    const assetTypes = Object.keys(this.uploadedFiles);
+    await Promise.all(assetTypes.map(async (assetType) => {
+      const iconTypes = Object.keys(this.applicationData.dashboard_config.map_icons[assetType]);
+      await Promise.all(iconTypes.map(async(iconType) => {
+        const data = await this.commonService.uploadImageToBlob(this.applicationData.dashboard_config.map_icons[assetType][iconType], this.applicationData.app + '/app-images');
+        if (data) {
+          this.applicationData.dashboard_config.map_icons[assetType][iconType] = data;
+        } else {
+          this.toasterService.showError('Error in uploading file', 'Upload file');
+        }
+      }))
+    }))
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 
-  onSaveMetadata() {
+  async onSaveMetadata() {
+    await this.uploadFile();
     if (
       !this.applicationData.dashboard_config ||
       (!this.applicationData.dashboard_config.show_live_widgets &&

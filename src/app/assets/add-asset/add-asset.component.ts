@@ -324,7 +324,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       return;
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET && this.assetDetail.asset_id === this.assetDetail.gateway_id) {
-      this.toasterService.showError('Gateway and Asset name can not be the same.', 'Create ' + this.componentState);
+      this.toasterService.showError('Gateway and Asset ID can not be the same.', 'Create ' + this.componentState);
       return;
     }
     if (

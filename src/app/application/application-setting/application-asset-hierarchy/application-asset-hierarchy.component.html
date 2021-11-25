@@ -3,95 +3,103 @@
     <div class="h6 m-0 p-0">
       Hierarchy
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSetingsEditable = true;" *ngIf="!isAppSetingsEditable"
-      placement="bottom" tooltip="Edit Hierarchy"><i class="fas fa-edit fa-sm"></i></button>
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSetingsEditable = true;"
+          *ngIf="!isAppSetingsEditable" placement="bottom" tooltip="Edit Hierarchy"><i
+            class="fas fa-edit fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Edit Hierarchy" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a> -->
-          <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()" *ngIf="isAppSetingsEditable"
-          placement="bottom" tooltip="Save Hierarchy"><i class="fas fa-check fa-sm"></i></button>
+        <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()"
+          *ngIf="isAppSetingsEditable" placement="bottom" tooltip="Save Hierarchy"><i
+            class="fas fa-check fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Hierarchy" *ngIf="isAppSetingsEditable"
         (click)="onSaveHierarchyTags();"><i class="fa fa-check"></i></a> -->
-        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSetingsEditable"
-      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
+          *ngIf="isAppSetingsEditable" placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
         <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
           (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
-        </ng-container>
+      </ng-container>
     </div>
-</div>
-</div>
-
-<div class="p-3 scrolling-wrapper-flexbox" >
-
-  <div class="row">
-    <ng-container  *ngFor="let level of applicationData.hierarchy.levels; let i = index; trackBy:trackByFn">
-    <div class="col-3 pr-3" *ngIf="i !== 0">
-
-          <div class="card card-full-height">
-            <div class="card-header p-2">
-               <div class="d-flex align-items-center">
-                <div class="hierarchy-heading">{{level}}</div>
-                 <div class="ml-auto" *ngIf="selectedHierarchyData[i]">
-                   <button type="submit" class="btn btn-sm searchBtn1 btn-primary" *ngIf="isAppSetingsEditable && !isAddHierarchyThere"
-                   (click)="addTag(i)">
-                   <i class="fas fa-plus fa-sm"></i></button></div>
-              </div>
-            </div>
-            <div class="card-body-p0" style="overflow-y:auto;">
-              <ul class="hierarchy_list list-group list-unstyled" >
-                <ng-container *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length > 0">
-                <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
-                *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
-                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
-                  *ngIf="originalHierarchyArr[i] && originalHierarchyArr[i][tagIndex]">
-                    <div class="media">
-                    <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]" (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
-                    <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]" >{{tag}}</div>
-                    <div class="ml-auto">
-                    <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
-                    (click)="onRemoveTag(i, tagIndex)"><i class="fa fa-trash"></i></a>
-                    <span >
-                      <i class="fa fa-angle-right fa-lg" ></i>
-                    </span></div>
-                  </div></a>
-                  <ng-container *ngIf="originalHierarchyArr[i] && !originalHierarchyArr[i][tagIndex]">
-                    <div class="media">
-                  <input type="text" class="form-control form-control-sm w-10"  name="tag_{{level}}_{{i}}"
-                    [(ngModel)]="addedTagItem"/>
-                  <a href="javascript:void(0)" placement="bottom" class="ml-2"
-                    (click)="onAddNewTag(i, tagIndex)"><i class="fa fa-check"></i></a>
-                  <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel"
-                    (click)="onAddTagCancel(i, tagIndex);"><i class="fa fa-times"></i></a>
-                    </div>
-                  </ng-container>
-                </li>
-                </ng-container>
-                <li class="list-group-item" *ngIf="!selectedHierarchyData[i]">
-                  <a href="javascript:void(0)">
-                    <div class="media">
-                      <div class="overflow" style="white-space: break-spaces;">
-                      Please select specific {{applicationData.hierarchy.levels[i-1] ? applicationData.hierarchy.levels[i-1] : 'previous'}} to view {{level}} list.
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li class="list-group-item" *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length === 0">
-                  <a href="javascript:void(0)">
-                    <div class="media">
-                      <div class="overflow" style="white-space: break-spaces;">
-                      No {{applicationData.hierarchy.levels[i]}} tags available.
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-
-            </div>
-          </div>
-
-    </div>
-  </ng-container>
   </div>
 </div>
 
+<div class="p-3 scrolling-wrapper-flexbox">
 
+  <div class="row">
+    <ng-container *ngFor="let level of applicationData.hierarchy.levels; let i = index; trackBy:trackByFn">
+      <div class="col-3 pr-3" *ngIf="i !== 0">
+        <div class="card card-full-height">
+          <div class="card-header p-2">
+            <div class="d-flex align-items-center">
+              <div class="hierarchy-heading">{{level}}</div>
+              <div class="ml-auto" *ngIf="selectedHierarchyData[i]">
+                <button type="submit" class="btn btn-sm searchBtn1 btn-primary"
+                  *ngIf="isAppSetingsEditable && !isAddHierarchyThere" (click)="addTag(i)">
+                  <i class="fas fa-plus fa-sm"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body-p0" style="overflow-y:auto;">
+            <ul class="hierarchy_list list-group list-unstyled">
+              <ng-container *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length > 0">
+                <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
+                  *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
+                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
+                    *ngIf="originalHierarchyArr[i] && originalHierarchyArr[i][tagIndex]">
+                    <div class="media">
+                      <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]"
+                        (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
+                      <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]">{{tag}}</div>
+                      <div class="ml-auto">
+                        <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
+                          (click)="onRemoveTag(i, tagIndex)"><i class="fa fa-trash"></i></a>
+                        <span>
+                          <i class="fa fa-angle-right fa-lg"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  <ng-container *ngIf="originalHierarchyArr[i] && !originalHierarchyArr[i][tagIndex]">
+                    <div class="media">
+                      <input type="text" class="form-control form-control-sm w-10" name="tag_{{level}}_{{i}}"
+                        [(ngModel)]="addedTagItem" />
+                      <a href="javascript:void(0)" placement="bottom" class="ml-2" (click)="onAddNewTag(i, tagIndex)"><i
+                          class="fa fa-check"></i></a>
+                      <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel"
+                        (click)="onAddTagCancel(i, tagIndex);"><i class="fa fa-times"></i></a>
+                    </div>
+                  </ng-container>
+                </li>
+              </ng-container>
+              <li class="list-group-item" *ngIf="!selectedHierarchyData[i]">
+                <a href="javascript:void(0)">
+                  <div class="media">
+                    <div class="overflow" style="white-space: break-spaces;">
+                      Please select specific {{applicationData.hierarchy.levels[i-1] ?
+                      applicationData.hierarchy.levels[i-1] : 'previous'}} to view {{level}} list.
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="list-group-item" *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length === 0">
+                <a href="javascript:void(0)">
+                  <div class="media">
+                    <div class="overflow" style="white-space: break-spaces;">
+                      No {{applicationData.hierarchy.levels[i]}} tags available.
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
 
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+    <ng-container *ngIf="applicationData.hierarchy.levels.length == 1">
+      <div class="col-3 pr-3">
+        No nodes available in Org Tree
+      </div>
+    </ng-container>
+  </div>
+</div>

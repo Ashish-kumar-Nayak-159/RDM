@@ -164,7 +164,13 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type === 'Object' && prop.data_type !== 'Array'
       );
-    } else {
+    } 
+    else if(this.selectedChartType !== 'Pie Chart' && this.selectedChartType !== 'Vibration Damage Plot' && this.selectedChartType !== 'Data Table'){
+      this.filteredPropList = this.propertyList.filter(
+        (prop) => prop.data_type === 'Number'
+      );
+    }
+    else {
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type !== 'Object' && prop.data_type !== 'Array'
       );
@@ -348,7 +354,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     if (index === -1) {
       await this.plotChart(obj);
       this.clear();
-      this.layoutJson.splice(0, 0, obj);
+      this.layoutJson.push(obj)
     } else {
       this.toasterService.showError(
         this.widgetStringFromMenu + ' with same title is already exist.',
@@ -483,7 +489,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         this.layoutJson.splice(i, 1);
       }
     }
-    // this.layoutJson.reverse();
     this.assetModel.historical_widgets = this.layoutJson;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(

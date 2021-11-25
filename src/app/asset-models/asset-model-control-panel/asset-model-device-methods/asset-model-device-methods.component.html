@@ -47,7 +47,7 @@
             <label for="message-text" class="col-form-label required">Method Name:</label>
 
             <input list="encodings" class="form-control form-control-sm" name="name"
-              [(ngModel)]="assetMethodObj.method_name" (change)="onJSONKeyChange()" placeholder="Enter Method Name"
+              [(ngModel)]="assetMethodObj.method_name" (keypress)="onKeyPressAlphaNumericWithCharacters($event)" (change)="onJSONKeyChange()" placeholder="Enter Method Name"
               [disabled]="assetMethodObj.edit">
             <datalist id="encodings">
               <option [ngValue]="item" *ngFor="let item of assetMethodsList">{{item}}</option>

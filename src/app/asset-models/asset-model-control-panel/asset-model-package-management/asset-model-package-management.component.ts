@@ -37,6 +37,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   headerMessage: string;
   bodyMessage: string;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  uploadedFile: any = []
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -203,15 +204,18 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
-    console.log('hereeeee');
-    const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes('zip')) {
       this.toasterService.showError('Only .zip files are allowed', 'Select File');
       return;
     }
+    this.uploadedFile = files?.item(0) || [];
+    this.packageObj.metadata.file_name = this.uploadedFile.name;
+  }
+
+  async uploadDocument(){
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
-      files.item(0),
+      this.uploadedFile,
       this.contextApp.app + '/models/' + this.assetModel.name + '/packages',
       environment.packageManagementContainer
     );
@@ -228,7 +232,8 @@ export class AssetModelPackageManagementComponent implements OnInit {
     // this.blobState.uploadItems(files);
   }
 
-  onSavePackageObj() {
+  async onSavePackageObj() {
+    await this.uploadDocument();
     if (
       !this.packageObj.name ||
       this.packageObj.name.trim().length === 0 ||
@@ -246,6 +251,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
       );
       return;
     }
+    
     this.packageObj.version =
       this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor + '.' + this.packageObj.metadata.patch;
     this.isCreatePackageAPILoading = true;

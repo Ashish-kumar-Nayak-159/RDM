@@ -40,7 +40,7 @@
               <tbody>
                 <ng-container *ngIf="installPackages.length > 0">
                   <tr *ngFor="let package of installPackages; let i = index">
-                    <td><input type="checkbox" name="install" [checked]="selectedAssetPackage?.id === package.id"
+                    <td><input type="radio" name="install" [checked]="selectedAssetPackage?.id === package.id"
                         id="install{{i}}" (change)="onCheckboxChange($event, package)"
                         [disabled]="!package.is_install" /></td>
                     <td>{{package.name}}</td>
@@ -83,7 +83,7 @@
                 <tbody>
                   <ng-container *ngIf="updatePackages.length > 0">
                     <tr *ngFor="let package of updatePackages; let i = index;">
-                      <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                      <td><input type="radio" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
                           id="visible{{i}}" [checked]="selectedAssetPackage?.id === package.id"
                           [disabled]="!package.is_update" /></td>
                       <td>{{package.name}}</td>
@@ -122,7 +122,7 @@
               <tbody>
                 <ng-container *ngIf="uninstallPackages.length > 0">
                   <tr *ngFor="let package of uninstallPackages;let i = index;">
-                    <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                    <td><input type="radio" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
                         id="visible{{i}}" [checked]="selectedAssetPackage?.id === package.id"
                         [disabled]="!package.is_uninstall" /></td>
                     <td>{{package.name}}</td>

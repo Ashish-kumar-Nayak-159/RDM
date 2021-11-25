@@ -342,7 +342,7 @@ export class AddCampaignComponent implements OnInit {
     return new Promise<void>((resolve1, reject) => {
       const filterObj = {
         asset_model: this.campaignObj.asset_model,
-        source : "Asset"
+        alert_type : "Asset"
       };
       this.subscriptions.push(
         this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(

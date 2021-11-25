@@ -70,7 +70,7 @@
           <div class="form-group input-group row col-4 p-0 m-0" *ngIf="isMetadataEditable">
             <div class="file-input form-control form-control-sm p-0 col-8">
               <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file"
-                (change)="onHeaderLogoFileSelected($event.target.files)">
+                (change)="onFileSelected($event.target.files,'header_logo')">
               <label for="header_logo" class="overflow-text"
                 [tooltip]="applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : ''">
                 {{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name
@@ -113,7 +113,7 @@
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm p-0 col-8">
               <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file"
-                (change)="onIconFileSelected($event.target.files)">
+                (change)="onFileSelected($event.target.files,'icon')">
               <label for="icon" class="overflow-text"
                 [tooltip]="applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : ''">
                 {{applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : 'Choose File'}}</label>

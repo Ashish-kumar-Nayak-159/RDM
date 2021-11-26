@@ -17,7 +17,7 @@
         <h5 class="modal-title">Create App </h5>
         <button type="button" class="close" (click)="onCloseCreateAppModal('createAppModal')" aria-label="Close"
           [disabled]="isCreateAPILoading">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body" *ngIf="createApplicationForm">
@@ -93,7 +93,7 @@
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
                         formControlName="app_specific_db" (change)="onCheckboxValueChange()">
-                      <label class="form-check-label" for="contains-gateway">Separate Database Required?</label>
+                      <label class="form-check-label" for="contains-db">Separate Database Required?</label>
                     </div>
                     <ng-container *ngIf="createApplicationForm.get('metadata').get('app_specific_db').value">
                       <ng-container formGroupName="database_settings">
@@ -190,7 +190,7 @@
       <div class="modal-header">
         <h5 class="modal-title">View App Icons: {{selectedApp.app}}</h5>
         <button type="button" class="close" (click)="onCloseCreateAppModal('viewAppIconModal')">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body">
@@ -224,7 +224,7 @@
       <div class="modal-header">
         <h5 class="modal-title">Database Partition: {{selectedApp.app}}</h5>
         <button type="button" class="close" (click)="onCloseCreateAppModal('viewPartitionIconModal')">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close" placement="left">&times;</span>
         </button>
       </div>
       <div class="modal-body p-0" style="overflow-y: hidden;">

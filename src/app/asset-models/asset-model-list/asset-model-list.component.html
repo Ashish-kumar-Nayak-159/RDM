@@ -78,7 +78,7 @@
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (assetModel?.metadata?.model_type ? assetModel.metadata.model_type + ' ' : '') + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
       <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isCreateAssetsModelAPILoading">
-        <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true" tooltip="Close">&times;</span>
       </button>
     </div>
     <div class="modal-body" *ngIf="assetModel">

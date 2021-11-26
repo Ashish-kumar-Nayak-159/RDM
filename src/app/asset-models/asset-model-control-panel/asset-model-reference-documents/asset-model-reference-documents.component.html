@@ -28,7 +28,7 @@
         <h5 class="modal-title" id="exampleModalLabel">{{documentObj.id ? 'Edit' : 'Add'}} Document</h5>
         <button type="button" class="close" [disabled]="isCreateDocumentLoading" (click)="onCloseAddDocModal()"
           aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body">
@@ -103,7 +103,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">View Document</h5>
         <button type="button" class="close" aria-label="Close" (click)="closeModal('viewDocModal')">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body">

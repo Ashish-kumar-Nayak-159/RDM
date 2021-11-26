@@ -269,7 +269,7 @@
                 <input type="checkbox" class="form-check-input" id="alert_management" name="alert_management"
                   [(ngModel)]="ruleModel.actions.alert_management.enabled" [disabled]="isView"
                   (change)="onChangeOfSendAlertCheckbox()">
-                <label class="form-check-label" for="email">Send Alert</label>
+                <label class="form-check-label" for="alert_management">Send Alert</label>
 
                 <div *ngIf="ruleModel.actions.alert_management.enabled">
                   <div>

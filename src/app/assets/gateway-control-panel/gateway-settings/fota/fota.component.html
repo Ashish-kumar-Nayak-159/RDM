@@ -1,6 +1,6 @@
 <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isGetAPILoading"></i>
-<div class="table-responsive" *ngIf="!isGetAPILoading">
-  <div class="tableFixHead responsive-height">
+<div class="table-responsive responsive-height" *ngIf="!isGetAPILoading">
+  <div class="tableFixHead">
     <div *ngIf="!assetTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
     <ng-template #packageTemplate>
       <ng-container *ngIf="assetPackages.length === 0">

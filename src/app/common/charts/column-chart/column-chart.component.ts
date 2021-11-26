@@ -214,9 +214,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         this.loader = false;
         this.loaderMessage = 'Loading Data. Wait...';
       });
+      chart.legend.itemContainers.template.togglable = false;
+      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
       this.chart = chart;
       // chart.exporting.menu = new am4core.ExportMenu();
-      // chart.legend.itemContainers.template.togglable = false;
       // // Create series
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);

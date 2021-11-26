@@ -71,4 +71,6 @@ input:invalid {
   color:#fff;
 }
 
-
+.adjust-height{
+  max-height: calc(100vh - 11rem);
+}

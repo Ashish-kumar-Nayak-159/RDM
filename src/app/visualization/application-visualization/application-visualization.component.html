@@ -54,7 +54,7 @@
       <div class=""
         [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
         <ul class="mail_list list-group list-unstyled alert-scroll"
-          *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+          *ngIf="!isAlertAPILoading && latestAlerts.length > 0" [ngClass]="{'adjust-height':pageType=='history'}">
           <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'

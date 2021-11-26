@@ -73,9 +73,15 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         console.log(center);
         this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
         this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
-        console.log(this.centerLatitude, '====', this.centerLongitude);
         if(!center.latitude && !this.contextApp.metadata?.latitude){
           navigator.geolocation.getCurrentPosition(this.showPosition)
+        }
+        console.log(this.centerLatitude, '====', this.centerLongitude);
+        if(!this.centerLatitude || !this.centerLongitude){
+          
+          this.centerLatitude = 23.0225;
+          this.centerLongitude = 72.5714;
+          console.log('lat lng nt defined ',this.centerLatitude,this.centerLongitude);
         }
         this.mapFitBounds = false;
       } else {
@@ -212,9 +218,13 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               console.log(center);
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
-              this.mapFitBounds = true;
+              this.mapFitBounds = false;
               if(!center.latitude && !this.contextApp.metadata?.latitude){
                 navigator.geolocation.getCurrentPosition(this.showPosition)
+              }
+              if(!this.centerLatitude || !this.centerLongitude){
+                this.centerLatitude = 23.0225;
+                this.centerLongitude = 72.5714;
               }
             } else {
               this.centerLatitude = this.contextApp.metadata?.latitude ;

@@ -30,7 +30,7 @@
       <div class="form-control border-0" style="color: #000" *ngFor="let item of campaignObjectiveList">
         <input type="radio" [value]="item.objective" [(ngModel)]="campaignObj.objective" name="objective"
           (change)="onObjectiveChange(item)" id="{{item.objective}}" />
-          <label for="{{item.objective}}" class="ml-2"> {{item.name}}</label>
+        <label for="{{item.objective}}" class="ml-2"> {{item.name}} ({{item.objective}})</label>
       </div>
     </div>
   </div>
@@ -96,8 +96,9 @@
             <td colspan="2">
               <div class="border-0" style="color: #000">
                 <input type="checkbox" name="retry_required" id="retry_required"
-                  [(ngModel)]="campaignObj.retry_required" /> 
-                <label for="retry_required" class="ml-2">If cloud to asset command expires to non-availbility of IoT Asset, 
+                  [(ngModel)]="campaignObj.retry_required" />
+                <label for="retry_required" class="ml-2">If cloud to asset command expires to non-availbility of IoT
+                  Asset,
                   let the cloud try sending command again.</label>
               </div>
             </td>
@@ -355,11 +356,14 @@
           </ng-container>
           <ng-container *ngIf="campaignObj.objective === 'Change Asset Mode'">
             <tr>
-              <td class="required" width="50%">Asset Mode</td>
+              <td class="required">Turbo Mode</td>
               <td>
-                <ui-switch size="small" class="mr-1" defaultBgColor="#c80815" checkedTextColor="white"
-                  uncheckedTextColor="white" checkedLabel="OFF" uncheckedLabel="ON" name="type"
-                  [(ngModel)]="campaignObj.job_request.mode"></ui-switch>
+                <ui-switch size="small" class="mr-1" defaultBgColor="red" uncheckedTextColor="white"
+                  switchColor="#EFEFEF" checkedTextColor="white" checkedLabel="ON" uncheckedLabel="OFF" name="tpye"
+                  [(ngModel)]="campaignObj.job_request.mode">
+                  <i class="fa fa-check" style="color: green;" *ngIf="campaignObj.job_request.mode"></i>
+                  <i class="fa fa-times" style="color: red" *ngIf="!campaignObj.job_request.mode"></i>
+                </ui-switch>
               </td>
             </tr>
           </ng-container>
@@ -547,7 +551,7 @@
           <ng-container *ngIf="campaignObj.objective === 'Change Asset Mode'">
             <tr>
               <td>Asset Mode</td>
-              <td>{{campaignObj.job_request.mode ? 'Normal' : 'Turbo'}} </td>
+              <td>{{!campaignObj.job_request.mode ? 'Normal' : 'Turbo'}} </td>
             </tr>
           </ng-container>
         </tbody>

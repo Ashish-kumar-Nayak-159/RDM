@@ -153,11 +153,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       } else if (this.selectedAlert?.local_created_date) {
         const range = dateAxis.axisRanges.create();
         range.date = new Date(this.selectedAlert.local_created_date);
+        const ms = range.date.getMilliseconds() + 100;
+        range.endDate = new Date(range.date.setMilliseconds(ms));
         range.grid.stroke = am4core.color('red');
         range.grid.strokeWidth = 2;
         range.grid.strokeOpacity = 1;
+        range.axisFill.fill = am4core.color('red');
         range.axisFill.tooltip = new am4core.Tooltip();
-        range.axisFill.tooltipText = 'Alert Time';
+        range.axisFill.tooltipText = 'Alert Time [bold]{date}[/]\n';
         range.axisFill.interactionsEnabled = true;
         range.axisFill.isMeasured = true;
       }

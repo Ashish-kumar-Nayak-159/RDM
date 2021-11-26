@@ -26,6 +26,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   databaseTableConfig: any;
   selectedApp: any;
   createApplicationForm: FormGroup;
+  isProvisioned : string = 'true';
   constructor(private applicationService: ApplicationService, private toasterService: ToasterService) {}
 
   ngOnInit(): void {
@@ -148,6 +149,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.applications = [];
     const obj = {
       environment: environment.environment,
+      provisioned: this.isProvisioned
     };
     this.apiSubscriptions.push(
       this.applicationService.getApplications(obj).subscribe(

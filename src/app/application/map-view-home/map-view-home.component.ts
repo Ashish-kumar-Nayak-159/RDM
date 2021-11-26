@@ -71,16 +71,24 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       if (this.assets.length > 0) {
         const center = this.commonService.averageGeolocation(this.assets);
         console.log(center);
-        this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
-        this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+        this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
+        this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
         console.log(this.centerLatitude, '====', this.centerLongitude);
+        if(!center.latitude && !this.contextApp.metadata?.latitude){
+          navigator.geolocation.getCurrentPosition(this.showPosition)
+        }
         this.mapFitBounds = false;
       } else {
-        this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
-        this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+        this.centerLatitude = this.contextApp.metadata?.latitude ;
+        this.centerLongitude = this.contextApp.metadata?.longitude ;
         this.mapFitBounds = false;
       }
     }, 200);
+  }
+
+  showPosition = (position)=> {
+    this.centerLatitude =  position?.coords?.latitude || this.centerLatitude;  
+    this.centerLongitude = position.coords.longitude || this.centerLongitude;
   }
 
   getTileName() {
@@ -202,13 +210,15 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
               const center = this.commonService.averageGeolocation(this.assets);
               console.log(center);
-              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
-              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
-              console.log(this.centerLatitude, '====', this.centerLongitude);
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
               this.mapFitBounds = true;
+              if(!center.latitude && !this.contextApp.metadata?.latitude){
+                navigator.geolocation.getCurrentPosition(this.showPosition)
+              }
             } else {
-              this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
-              this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+              this.centerLatitude = this.contextApp.metadata?.latitude ;
+              this.centerLongitude = this.contextApp.metadata?.longitude ;
               this.mapFitBounds = false;
             }
             resolve();

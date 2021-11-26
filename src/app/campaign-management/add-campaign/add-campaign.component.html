@@ -3,19 +3,40 @@
     <nav>
       <ol class="cd-multi-steps text-center custom-icons mb-0">
         <li [ngClass]="{ visited: visitedSteps >= 1 }">
-          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-1</a>
+          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;"
+            *ngIf="visitedSteps === 1;else step1Clickable">STEP-1</a>
+          <ng-template #step1Clickable>
+            <a href="javascript:void(0)" (click)="visitedSteps = 1">STEP-1</a>
+          </ng-template>
+
         </li>
         <li [ngClass]="{ visited: visitedSteps >= 2 }">
-          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-2</a>
+          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;"
+            *ngIf="visitedSteps <= 2;else step2Clickable">STEP-2</a>
+          <ng-template #step2Clickable>
+            <a href="javascript:void(0)" (click)="visitedSteps = 2">STEP-2</a>
+          </ng-template>
         </li>
         <li [ngClass]="{ visited: visitedSteps >= 3  }">
-          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-3</a>
+          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;"
+            *ngIf="visitedSteps <= 3;else step3Clickable">STEP-3</a>
+          <ng-template #step3Clickable>
+            <a href="javascript:void(0)" (click)="visitedSteps = 3;prepareHierarchyDropdownData()">STEP-3</a>
+          </ng-template>
         </li>
         <li [ngClass]="{ visited: visitedSteps >= 4 }">
-          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-4</a>
+          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;"
+            *ngIf="visitedSteps <= 4;else step4Clickable">STEP-4</a>
+          <ng-template #step4Clickable>
+            <a href="javascript:void(0)" (click)="visitedSteps = 4;onPrepareHierarchy();onAssetModelChange()">STEP-4</a>
+          </ng-template>
         </li>
         <li [ngClass]="{ visited: visitedSteps >= 5 }">
-          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-5</a>
+          <a href="javascript:void(0)" style="text-decoration: none;cursor: default;"
+            *ngIf="visitedSteps <= 5;else step5Clickable">STEP-5</a>
+          <ng-template #step5Clickable>
+            <a href="javascript:void(0)" (click)="visitedSteps = 5;getAssetsForCampaign()">STEP-5</a>
+          </ng-template>
         </li>
       </ol>
     </nav>

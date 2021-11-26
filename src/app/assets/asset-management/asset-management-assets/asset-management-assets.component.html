@@ -102,7 +102,7 @@
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading"></app-message-modal>
   </div>
 
 </div>

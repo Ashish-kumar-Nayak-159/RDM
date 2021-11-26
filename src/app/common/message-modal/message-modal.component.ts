@@ -12,6 +12,7 @@ export class MessageModalComponent implements OnInit {
   @Input() headerMessage: any;
   @Output() modalEvents: EventEmitter<any> = new EventEmitter<any>();
   @Input() modalConfig: any;
+  @Input() isAPILoading: any;
   editorOptions: JsonEditorOptions;
 
   constructor() { }
@@ -20,6 +21,7 @@ export class MessageModalComponent implements OnInit {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
+    if(!this.isAPILoading) this.isAPILoading = false;
   }
 
   onCloseModal(type) {

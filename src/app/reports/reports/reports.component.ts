@@ -766,6 +766,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         });
         // const element = document.getElementById('dataTable');
         ws = XLSX.utils.json_to_sheet(data);
+        
+
       } else {
         data = [];
         this.telemetry.forEach((telemetryObj) => {
@@ -806,8 +808,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         /* assign the `.z` number format */
         ws[ref].z = fmt;
       }
+      let wscols = [],colNames=Object.keys(data[0]);
+      for (let i = range.s.c + 1; i <= range.e.c; ++i) {
+        wscols.push({
+          wch : colNames[i].length + 15
+        })
+      }
       // width of timestamp col
-      const wscols = [{ wch: 10 }];
       ws['!cols'] = wscols;
       /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();

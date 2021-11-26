@@ -131,10 +131,11 @@
         </td>
         <td>
           <div class="form-group input-group row col-4 p-0 m-0" >
-            <ng-container *ngIf="latitude && longitude">
-              {{latitude}} , {{longitude}}
+            <ng-container *ngIf="applicationData.metadata?.latitude && applicationData.metadata?.longitude">
+              <!-- {{latitude}} , {{longitude}} -->
+              {{applicationData.metadata?.latitude}} , {{applicationData.metadata?.longitude}}
             </ng-container>
-            <ng-container *ngIf="!latitude && !longitude && !isMetadataEditable">
+            <ng-container *ngIf="!applicationData.metadata?.latitude && !applicationData.metadata?.longitude && !isMetadataEditable">
               Not yet updated
             </ng-container>
             <a class="nav-link p-0 pl-2" href="javascript:void(0)" title="Update default map point" *ngIf="isMetadataEditable" (click)="openModal('changeLocationModal')">

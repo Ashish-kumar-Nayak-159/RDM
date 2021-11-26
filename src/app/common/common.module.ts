@@ -32,6 +32,8 @@ import { MessageModalComponent } from './message-modal/message-modal.component';
 import { HierarchyDropdownComponent } from './hierarchy-dropdown/hierarchy-dropdown.component';
 import { RectangleWidgetComponent } from './charts/rectangle-widget/rectangle-widget.component';
 import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widget.component';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
+
 
 @NgModule({
   declarations: [
@@ -73,6 +75,7 @@ import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widge
     NgSelectModule,
     ReactiveFormsModule,
     Daterangepicker,
+    NgJsonEditorModule
   ],
   exports: [
     // FilterComponent,

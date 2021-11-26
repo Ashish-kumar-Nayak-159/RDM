@@ -59,7 +59,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     console.log(this.decodedToken);
     console.log(this.decodedToken?.privileges?.indexOf('ASMM'));
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'view';
+    this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);

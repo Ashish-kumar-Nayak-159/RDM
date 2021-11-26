@@ -220,7 +220,10 @@
         <div class="modal-body">
           <ng-container *ngIf="isC2dMsgResponsesLoading"><i class="fa fa-spinner fa-spin fa-fw"></i></ng-container>
           <ng-container *ngIf="!isC2dMsgResponsesLoading">
-            <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dResponseDetail | json"></pre>
+            <!-- <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dResponseDetail | json"></pre> -->
+            <json-editor *ngIf="!isC2dMsgResponsesLoading" [options]="editorOptions" style="min-height: 40rem;" name="json"
+            [data]="c2dResponseDetail">
+          </json-editor>
             <div *ngIf="modalConfig?.stringDisplay">No response data found.</div>
           </ng-container>
         </div>
@@ -241,10 +244,13 @@
           </button>
         </div>
         <div class="modal-body">
-          <ng-container *ngIf="c2dMessageDetail">
-            <h5>Reqeust: </h5>
+          <!-- <ng-container *ngIf="c2dMessageDetail">
+            <h5>Request: </h5>
             <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
-          </ng-container>
+          </ng-container> -->
+          <json-editor *ngIf="c2dMessageDetail" [options]="editorOptions" style="min-height: 40rem;" name="json"
+          [data]="c2dMessageDetail?.request">
+        </json-editor>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="onModalEvents('close')">

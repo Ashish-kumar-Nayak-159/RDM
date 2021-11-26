@@ -8,7 +8,7 @@
         <li [ngClass]="{ visited: visitedSteps >= 2 }">
           <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-2</a>
         </li>
-        <li [ngClass]="{ visited: visitedSteps >= 3 }">
+        <li [ngClass]="{ visited: visitedSteps >= 3  }">
           <a href="javascript:void(0)" style="text-decoration: none;cursor: default;">STEP-3</a>
         </li>
         <li [ngClass]="{ visited: visitedSteps >= 4 }">
@@ -116,7 +116,8 @@
               id="previousBtn">
               Previous Step
             </button>
-            <button type="button" class="btn  btn-primary mr-3" (click)="visitedSteps = visitedSteps + 1"
+            <button type="button" class="btn  btn-primary mr-3"
+              (click)="visitedSteps = visitedSteps + 1;prepareHierarchyDropdownData()"
               [disabled]="!campaignObj.expected_start_date || !campaignObj.expected_end_date || !campaignObj.code || campaignObj.code?.length > 6"
               id="nextBtn">
               Next Step
@@ -156,7 +157,7 @@
             <td class="required">Asset Model</td>
             <td>
               <select class="form-control form-control-sm" id="asset_model" name="asset_model"
-                [(ngModel)]="campaignObj.asset_model_obj" (change)="onAssetModelChange()">
+                [(ngModel)]="campaignObj.asset_model_obj">
                 <option [ngValue]="undefined"> Select Asset Model</option>
                 <option *ngFor="let item of assetModels" [ngValue]="item">
                   {{item.name}}</option>
@@ -189,7 +190,7 @@
               Previous Step
             </button>
             <button type="button" class="btn btn-primary mr-3" [disabled]="!campaignObj.asset_model_obj"
-              (click)="visitedSteps = visitedSteps + 1;onPrepareHierarchy()" id="nextBtn">
+              (click)="visitedSteps = visitedSteps + 1;onPrepareHierarchy();onAssetModelChange()" id="nextBtn">
               Next Step
             </button>
             <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading"

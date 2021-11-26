@@ -17,7 +17,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   isUserRolesAPILoading = false;
   isCreateUserAPILoading = false;
   userRoles: any[] = [];
-  privilegeObj: any;
+  privilegeObj: any = {};
   privilegeGroups: any;
   saveRoleAPILoading = false;
   selectedRole: any;
@@ -26,6 +26,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   toggleRows: any = {};
   decodedToken: any;
   pageType: any;
+  isAllprivilegeSelected: any = {};
   constantData = CONSTANTS;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
@@ -58,7 +59,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   }
 
   onToggleRows(i, type, action) {
-    this.privilegeObj = this.userRoles[i];
+    this.privilegeObj[i] = this.userRoles[i];
     if (this.toggleRows[i]) {
       if (action === 'toggle') {
         this.toggleRows = {};
@@ -66,21 +67,23 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     } else {
       this.toggleRows = {};
       this.toggleRows[i] = true;
+      this.onPrivilegeSelection(i);
     }
     this.pageType = type;
   }
 
   openCreateUserModal() {
-    this.privilegeObj = {};
-    this.privilegeObj.app = this.applicationData.app;
-    this.privilegeObj.privileges = JSON.parse(JSON.stringify(CONSTANTS.DEFAULT_PRIVILEGES));
+    this.privilegeObj['add'] = {};
+    this.privilegeObj['add'].app = this.applicationData.app;
+    this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(CONSTANTS.DEFAULT_PRIVILEGES));
+    this.isAllprivilegeSelected['add'] = true;
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onSaveRoles() {
+  onSaveRoles(index) {
     let i = 0;
-    Object.keys(this.privilegeObj.privileges).forEach((privilege) => {
-      if (this.privilegeObj.privileges[privilege].enabled) {
+    Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => {
+      if (this.privilegeObj[index].privileges[privilege].enabled) {
         i++;
       }
     });
@@ -89,9 +92,9 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
       return;
     }
     this.saveRoleAPILoading = true;
-    const method = this.privilegeObj.id
-      ? this.applicationService.updateUserRoles(this.applicationData.app, this.privilegeObj)
-      : this.applicationService.addUserRoles(this.applicationData.app, this.privilegeObj);
+    const method = this.privilegeObj[index].id
+      ? this.applicationService.updateUserRoles(this.applicationData.app, this.privilegeObj[index])
+      : this.applicationService.addUserRoles(this.applicationData.app, this.privilegeObj[index]);
     this.apiSubscriptions.push(
       method.subscribe(
         (response: any) => {
@@ -111,7 +114,8 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   onCloseCreateUserModal() {
     $('#createUserModal').modal('hide');
-    this.privilegeObj = undefined;
+    this.privilegeObj['add'] = undefined;
+    this.isAllprivilegeSelected['add'] = false;
   }
 
   openDeleteUserModal(i) {
@@ -154,6 +158,32 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
         }
       )
     );
+  }
+
+  onPrivilegeSelection(index) {
+    let count = 0;
+    Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => {
+      if (this.privilegeObj[index].privileges[privilege].enabled) {
+        count++;
+      }
+    });
+    if (count === Object.keys(this.privilegeObj[index].privileges).length) {
+      this.isAllprivilegeSelected[index] = true;
+    } else {
+      this.isAllprivilegeSelected[index] = false;
+    }
+  }
+
+  onClickOfAllCheckbox(index) {
+    if (this.isAllprivilegeSelected[index]) {
+      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = true));
+    } else {
+      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = false));
+    }
+  }
+
+  onCancelClick() {
+    this.toggleRows = {};
   }
 
   ngOnDestroy() {

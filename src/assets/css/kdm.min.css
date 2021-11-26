@@ -6279,7 +6279,7 @@ a.close.disabled {
 @media (min-width: 992px) {
   .modal-lg,
   .modal-xl {
-    max-width: 800px;
+    max-width: 900px;
   }
 }
 
@@ -15800,4 +15800,8 @@ form .page .btns button.next {
   100% {
     transform: translateX(0%);
   }
+}
+
+label {
+  cursor: pointer;
 }

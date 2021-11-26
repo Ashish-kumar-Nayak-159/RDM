@@ -109,29 +109,40 @@ export class AddCampaignComponent implements OnInit {
     this.campaignObj.objective = this.campaignObjectiveList[0].objective;
     this.campaignObj.job_request = {};
     this.onObjectiveChange(this.campaignObjectiveList[0]);
-    this.contextApp.hierarchy.levels.forEach((element, index) => {
-      this.hierarchyArr[index] = [];
-    });
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-      this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
-          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-          console.log(this.configureHierarchy);
-          if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index);
-          }
-        }
-      });
-    }
   }
 
   onObjectiveChange(objective) {
+    this.campaignObj = new Campaign();
+    this.campaignObj.objective = objective.objective;
     this.campaignObj.objective_name = objective.name;
     this.campaignObj.communication_method = objective.communication_method;
+    this.visitedSteps === 1;
+    this.campaignObj.job_request = {};
+    console.log(this.campaignObj);
     this.searchAssetsModels();
+  }
+
+  prepareHierarchyDropdownData() {
+    if (Object.keys(this.configureHierarchy).length === 0 || !this.campaignObj.asset_model) {
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      this.contextApp.hierarchy.levels.forEach((element, index) => {
+        this.hierarchyArr[index] = [];
+      });
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+        this.contextApp.hierarchy.levels.forEach((level, index) => {
+          if (index !== 0) {
+            this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+            console.log(this.configureHierarchy);
+            if (this.contextApp.user.hierarchy[level]) {
+              this.onChangeOfHierarchy(index);
+            }
+          }
+        });
+      }
+    }
   }
 
   onChangeOfHierarchy(i) {
@@ -222,6 +233,11 @@ export class AddCampaignComponent implements OnInit {
       this.campaignObj.asset_model = this.campaignObj.asset_model_obj.name;
       if (this.campaignObj.objective === 'FOTA') {
         this.getPackages();
+      } else if (
+        this.campaignObj.objective === 'Change Telemetry Frequency' ||
+        this.campaignObj.objective === 'Change Measurement Frequency'
+      ) {
+        this.getAssetModelDetails();
       }
     } else {
       this.campaignObj.asset_model = undefined;
@@ -235,6 +251,42 @@ export class AddCampaignComponent implements OnInit {
   openAssetsViewModal() {
     this.getAssetsForCampaign();
     $('#viewCampaignAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  getAssetModelDetails() {
+    const obj = {
+      name: this.campaignObj.asset_model_obj.name,
+      app: this.contextApp.app,
+    };
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
+        if (response) {
+          if (this.campaignObj.objective === 'Change Telemetry Frequency') {
+            this.campaignObj.job_request.g1_ingestion_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g1_ingestion_frequency_in_ms;
+            this.campaignObj.job_request.g2_ingestion_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g2_ingestion_frequency_in_ms;
+            this.campaignObj.job_request.g3_ingestion_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g3_ingestion_frequency_in_ms;
+            this.campaignObj.job_request.g1_turbo_mode_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g1_turbo_mode_frequency_in_ms;
+            this.campaignObj.job_request.g2_turbo_mode_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g2_turbo_mode_frequency_in_ms;
+            this.campaignObj.job_request.g3_turbo_mode_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g3_turbo_mode_frequency_in_ms;
+            this.campaignObj.job_request.turbo_mode_timeout_time =
+              response?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time;
+          } else if (this.campaignObj.objective === 'Change Measurement Frequency') {
+            this.campaignObj.job_request.g1_measurement_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms;
+            this.campaignObj.job_request.g2_measurement_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms;
+            this.campaignObj.job_request.g3_measurement_frequency_in_ms =
+              response?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms;
+          }
+        }
+      })
+    );
   }
 
   getAssetsForCampaign() {

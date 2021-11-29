@@ -134,8 +134,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     });
   }
 
-  onChangeOfAddAssetHierarchy(i) {
-    console.log('i',i);
+  onChangeOfAddAssetHierarchy(i) {    
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -166,11 +165,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
     //let maxObject = hierarchyObj.fin
         if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
+      this.filteredUsers = this.appUsers;
     } else {
       const arr = [];
       this.gateways = [];
       console.log('hierarchyObj',hierarchyObj);
-      this.updateAssetManagerWithHierarchy(hierarchyObj,i);
+      this.updateAssetManagerWithHierarchy(hierarchyObj);
       console.log(this.originalGateways);
       this.originalGateways.forEach((asset) => {
         let trueFlag = 0;
@@ -207,10 +207,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     // await this.getAssets(hierarchyObj);
   }
-  updateAssetManagerWithHierarchy(hierarchyObj,i)
+  updateAssetManagerWithHierarchy(hierarchyObj)
   {
-    let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-      let selectedObjValue = this.addAssetConfigureHierarchy[i].trim();
+      let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
+      let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
       this.filteredUsers = this.appUsers.filter(function(user){
         if (!user.hierarchy.hasOwnProperty(lastObjKey))
       {

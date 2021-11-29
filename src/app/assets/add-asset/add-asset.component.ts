@@ -229,6 +229,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
         cloud_connectivity: modelObj.cloud_connectivity,
         protocol: modelObj.protocol,
       };
+      const modelTags = {
+        "Cloud_Connectivity" : modelObj.cloud_connectivity,
+        "Protocol" : modelObj.protocol
+      }
+      this.assetDetail.tags['model_tags'] = JSON.stringify(modelTags);
       const obj = { ...this.assetDetail.tags, ...modelObj.tags };
       this.assetDetail.tags = obj;
     } else {

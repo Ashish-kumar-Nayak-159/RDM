@@ -51,6 +51,9 @@
               <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><i
                   class="fa fa-sm fa-eye"></i></a> -->
               <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
+                (click)="viewCampaign(item,'viewCampaignModal')" placement="bottom" tooltip="View Campaign">
+                <i class="fa fa-fw fa-eye"></i></a>
+              <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
                 [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'running' || item.status?.toLowerCase() === 'completed'"
                 (click)="startStopCampaign(item, index, 'start')" placement="bottom" tooltip="Start Campaign"><img
                   style="width: 10px;" src="./assets/img/start.svg" /></a>
@@ -81,11 +84,180 @@
             </td>
           </tr>
         </ng-container>
-
       </tbody>
     </table>
     <app-add-campaign (cancelEvent)="closeCampaignModal()" *ngIf="isAddCampaignModalOpen"></app-add-campaign>
-
   </div>
-
+</div>
+<div class="modal right fade" id="viewCampaignModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">View Campaign</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeViewModel('viewCampaignModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table mx-2 my-3" *ngIf="campaignViewObj">
+          <tbody>
+            <tr>
+              <td>Objective</td>
+              <td>{{campaignViewObj.objective}}</td>
+            </tr>
+            <tr>
+              <td>Code</td>
+              <td>{{campaignViewObj.code}}</td>
+            </tr>
+            <tr>
+              <td>Start Date</td>
+              <td>{{campaignViewObj.expected_start_date | date:'longDate'}}</td>
+            </tr>
+            <tr>
+              <td>End Date</td>
+              <td>{{campaignViewObj.expected_end_date | date:'longDate'}}</td>
+            </tr>
+            <tr *ngIf="campaignViewObj.hierarchy && this.contextApp.hierarchy.levels">
+              <td>Hierarchy</td>
+              <td>
+                <span *ngFor="let level of this.contextApp.hierarchy.levels; let hierarchyIndex=index">
+                  <span *ngIf="campaignViewObj.hierarchy.hasOwnProperty(level)">{{campaignViewObj.hierarchy[level]}}<span *ngIf="countObjectPropertyLength(hierarchyIndex)">&nbsp;/&nbsp;</span></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td>Asset Model</td>
+              <td>{{campaignViewObj.asset_model}}</td>
+            </tr>
+            <tr *ngIf="campaignViewObj?.metadata?.participated_assets">
+              <td colspan="2">
+                <accordion [closeOthers]="true">
+                  <accordion-group heading="">
+                    <ng-container accordion-heading>
+                      <button class="btn" type="button">
+                        Assets
+                      </button>
+                    </ng-container>
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Asset Id</th>
+                          <th>Asset Name</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let asset of getAssetNames(campaignViewObj.metadata.participated_assets); let index = index">
+                        <tr>
+                          <td>
+                            {{asset.asset_id}}
+                          </td>
+                          <td>
+                            {{asset.display_name}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </accordion-group>
+                </accordion>
+              </td>
+            </tr>
+            <ng-container *ngIf="campaignViewObj.objective === 'FOTA'">
+              <tr *ngIf="campaignViewObj.request_type">
+                <td>Command</td>
+                <td>{{campaignViewObj.request_type}}</td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.package_obj">
+                <td>Package</td>
+                <td>{{campaignViewObj.job_request.package_obj?.name}}</td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.version">
+                <td>Version</td>
+                <td>{{campaignViewObj.job_request.version}}</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="campaignViewObj.objective === 'Sync Properties/Alerts'">
+              <tr *ngIf="campaignViewObj.job_request?.type">
+                <td>Sync Details</td>
+                <td>{{campaignViewObj.job_request.type}} </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="campaignViewObj.objective === 'Change Telemetry Frequency'">
+              <tr *ngIf="campaignViewObj.job_request?.g1_ingestion_frequency_in_ms">
+                <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g1_ingestion_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g1_turbo_mode_frequency_in_ms">
+                <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g1_turbo_mode_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g2_ingestion_frequency_in_ms">
+                <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g2_ingestion_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g2_turbo_mode_frequency_in_ms">
+                <td style="width: 50%;">G2 Turbo mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g2_turbo_mode_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g3_ingestion_frequency_in_ms">
+                <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g3_ingestion_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g3_turbo_mode_frequency_in_ms">
+                <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g3_turbo_mode_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.turbo_mode_timeout_time">
+                <td>Turbo mode Timeout (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.turbo_mode_timeout_time}}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="campaignViewObj.objective === 'Change Measurement Frequency'">
+              <tr *ngIf="campaignViewObj.job_request?.g1_measurement_frequency_in_ms">
+                <td style="width: 50%;">G1 Measurement Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g1_measurement_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g2_measurement_frequency_in_ms">
+                <td style="width: 50%;">G2 Measurement Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g2_measurement_frequency_in_ms}}
+                </td>
+              </tr>
+              <tr *ngIf="campaignViewObj.job_request?.g3_measurement_frequency_in_ms">
+                <td style="width: 50%;">G3 Measurement Frequency (In Sec): </td>
+                <td>
+                  {{campaignViewObj.job_request.g3_measurement_frequency_in_ms}}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="campaignViewObj.objective === 'Change Asset Mode'">
+              <tr *ngIf="campaignViewObj.job_request.mode">
+                <td>Asset Mode</td>
+                <td>{{campaignViewObj.job_request.mode ? 'Normal' : 'Turbo'}} </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeViewModel('viewCampaignModal')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

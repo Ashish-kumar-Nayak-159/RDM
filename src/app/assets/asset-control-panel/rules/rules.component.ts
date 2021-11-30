@@ -34,6 +34,7 @@ export class RulesComponent implements OnInit {
   toggleRows = {};
   selectedrule: any;
   isView = false;
+  selectedAccrodionType = 'Asset';
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetService: AssetService,
@@ -57,6 +58,11 @@ export class RulesComponent implements OnInit {
     this.isCloneRule = false;
     this.ruleData = {};
     this.isAddRule = true;
+  }
+
+  onAccordionClick(type) {
+    this.toggleRows = {};
+    setTimeout(() => (this.selectedAccrodionType = type), 200);
   }
 
   cloneRule() {
@@ -121,6 +127,9 @@ export class RulesComponent implements OnInit {
               }
             });
             console.log(this.modelrules);
+            if (this.modelrules.length === 0) {
+              this.selectedAccrodionType = 'Asset';
+            }
           }
           this.isRulesLoading = false;
         },
@@ -156,6 +165,7 @@ export class RulesComponent implements OnInit {
         (response: any) => {
           this.onCloseDeleteModal();
           this.getRules();
+          this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,
@@ -203,6 +213,7 @@ export class RulesComponent implements OnInit {
         (response: any) => {
           this.onCloseDeleteModal();
           this.getRules();
+          this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,

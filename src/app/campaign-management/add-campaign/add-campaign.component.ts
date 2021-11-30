@@ -228,16 +228,16 @@ export class AddCampaignComponent implements OnInit {
     }
   }
 
-  onAssetModelChange() {
+  async onAssetModelChange() {
     if (this.campaignObj.asset_model_obj) {
       this.campaignObj.asset_model = this.campaignObj.asset_model_obj.name;
       if (this.campaignObj.objective === 'FOTA') {
-        this.getPackages();
+        await this.getPackages();
       } else if (
         this.campaignObj.objective === 'Change Telemetry Frequency' ||
         this.campaignObj.objective === 'Change Measurement Frequency'
       ) {
-        this.getAssetModelDetails();
+        await this.getAssetModelDetails();
       }
     } else {
       this.campaignObj.asset_model = undefined;
@@ -254,39 +254,42 @@ export class AddCampaignComponent implements OnInit {
   }
 
   getAssetModelDetails() {
-    const obj = {
-      name: this.campaignObj.asset_model_obj.name,
-      app: this.contextApp.app,
-    };
-    this.subscriptions.push(
-      this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
-        if (response) {
-          if (this.campaignObj.objective === 'Change Telemetry Frequency') {
-            this.campaignObj.job_request.g1_ingestion_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g1_ingestion_frequency_in_ms;
-            this.campaignObj.job_request.g2_ingestion_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g2_ingestion_frequency_in_ms;
-            this.campaignObj.job_request.g3_ingestion_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g3_ingestion_frequency_in_ms;
-            this.campaignObj.job_request.g1_turbo_mode_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g1_turbo_mode_frequency_in_ms;
-            this.campaignObj.job_request.g2_turbo_mode_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g2_turbo_mode_frequency_in_ms;
-            this.campaignObj.job_request.g3_turbo_mode_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g3_turbo_mode_frequency_in_ms;
-            this.campaignObj.job_request.turbo_mode_timeout_time =
-              response?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time;
-          } else if (this.campaignObj.objective === 'Change Measurement Frequency') {
-            this.campaignObj.job_request.g1_measurement_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms;
-            this.campaignObj.job_request.g2_measurement_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms;
-            this.campaignObj.job_request.g3_measurement_frequency_in_ms =
-              response?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms;
+    return new Promise<void>((resolve) => {
+      const obj = {
+        name: this.campaignObj.asset_model_obj.name,
+        app: this.contextApp.app,
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
+          if (response) {
+            if (this.campaignObj.objective === 'Change Telemetry Frequency') {
+              this.campaignObj.job_request.g1_ingestion_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g1_ingestion_frequency_in_ms;
+              this.campaignObj.job_request.g2_ingestion_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g2_ingestion_frequency_in_ms;
+              this.campaignObj.job_request.g3_ingestion_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g3_ingestion_frequency_in_ms;
+              this.campaignObj.job_request.g1_turbo_mode_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g1_turbo_mode_frequency_in_ms;
+              this.campaignObj.job_request.g2_turbo_mode_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g2_turbo_mode_frequency_in_ms;
+              this.campaignObj.job_request.g3_turbo_mode_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g3_turbo_mode_frequency_in_ms;
+              this.campaignObj.job_request.turbo_mode_timeout_time =
+                response?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time;
+            } else if (this.campaignObj.objective === 'Change Measurement Frequency') {
+              this.campaignObj.job_request.g1_measurement_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms;
+              this.campaignObj.job_request.g2_measurement_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms;
+              this.campaignObj.job_request.g3_measurement_frequency_in_ms =
+                response?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms;
+            }
           }
-        }
-      })
-    );
+          resolve();
+        })
+      );
+    });
   }
 
   getAssetsForCampaign() {
@@ -333,31 +336,34 @@ export class AddCampaignComponent implements OnInit {
   }
 
   getPackages() {
-    this.packages = [];
-    this.subscriptions.push(
-      this.assetModelService
-        .getPackages(this.contextApp.app, this.campaignObj.asset_model_obj.name, {})
-        .subscribe((response: any) => {
-          if (response.data?.length > 0) {
-            const arr = [];
-            response.data.forEach((packageObj) => {
-              let flag = false;
-              arr.forEach((item) => {
-                item.versions = item.versions ? item.versions : [];
-                if (packageObj.name === item.name) {
-                  flag = true;
-                  item.versions.push(packageObj.version);
+    return new Promise<void>((resolve) => {
+      this.packages = [];
+      this.subscriptions.push(
+        this.assetModelService
+          .getPackages(this.contextApp.app, this.campaignObj.asset_model_obj.name, {})
+          .subscribe((response: any) => {
+            if (response.data?.length > 0) {
+              const arr = [];
+              response.data.forEach((packageObj) => {
+                let flag = false;
+                arr.forEach((item) => {
+                  item.versions = item.versions ? item.versions : [];
+                  if (packageObj.name === item.name) {
+                    flag = true;
+                    item.versions.push(packageObj.version);
+                  }
+                });
+                if (!flag) {
+                  packageObj.versions = [packageObj.version];
+                  arr.push(packageObj);
                 }
               });
-              if (!flag) {
-                packageObj.versions = [packageObj.version];
-                arr.push(packageObj);
-              }
-            });
-            this.packages = JSON.parse(JSON.stringify(arr));
-          }
-        })
-    );
+              this.packages = JSON.parse(JSON.stringify(arr));
+              resolve();
+            }
+          })
+      );
+    });
   }
 
   onCommandChange() {

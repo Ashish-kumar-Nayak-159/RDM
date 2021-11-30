@@ -47,10 +47,12 @@
     </div>
 
     <div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
+      {{selectedAccrodionType}}aaaaaaaaaaaaaa
       <accordion [closeOthers]="'true'" class="mb-2 p-3">
-        <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'" [isOpen]="modelrules.length > 0">
+        <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
+          [isOpen]="selectedAccrodionType === 'Model'">
           <ng-container accordion-heading>
-            <button class="btn" type="button" (click)="toggleRows = {}">
+            <button class="btn" type="button" (click)="onAccordionClick('Model')">
               Asset Model Level Rules
             </button>
           </ng-container>
@@ -126,9 +128,10 @@
             </div>
           </div>
         </accordion-group>
-        <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'" [isOpen]="modelrules.length === 0">
+        <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
+          [isOpen]="selectedAccrodionType === 'Asset'">
           <ng-container accordion-heading>
-            <button class="btn" type="button" (click)="toggleRows = {}">
+            <button class="btn" type="button" (click)="onAccordionClick('Asset')">
               Asset Level Rules
             </button>
           </ng-container>

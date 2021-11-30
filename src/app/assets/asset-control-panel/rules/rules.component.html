@@ -47,7 +47,6 @@
     </div>
 
     <div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
-      {{selectedAccrodionType}}aaaaaaaaaaaaaa
       <accordion [closeOthers]="'true'" class="mb-2 p-3">
         <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
           [isOpen]="selectedAccrodionType === 'Model'">
@@ -175,7 +174,6 @@
                             'Not yet deployed'}}</td>
                           <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                             'Not yet synced'}}</td>
-                          <td>
                           <td>
                             <a href="javascript:void(0)" (click)="this.toggleRows[this.selectedTab + '_asset_' + i] && isView ? onToggleRows(i, rule, 'asset', true, false, 'toggle') : onToggleRows(i, rule, 'asset', true, false, 'notoggle')" class="mr-1"
                               placement="bottom" tooltip="View">

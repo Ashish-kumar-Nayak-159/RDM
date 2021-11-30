@@ -165,7 +165,7 @@ export class RulesComponent implements OnInit {
         (response: any) => {
           this.onCloseDeleteModal();
           this.getRules();
-          this.toggleRows = {};
+          // this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,

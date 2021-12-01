@@ -9,13 +9,13 @@
       *ngIf="previousMsgFilter.tableType === 'All' || previousMsgFilter.tableType === 'Twin'">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Time Stamp</th>
-          <th>Job Type</th>
-          <th>Type</th>
-          <th> Requested By</th>
-          <th style="width:7%">Request</th>
-          <th style="width:7%">Response</th>
+          <th scope="col">No</th>
+          <th scope="col">Time Stamp</th>
+          <th scope="col">Job Type</th>
+          <th scope="col">Type</th>
+          <th scope="col"> Requested By</th>
+          <th scope="col"style="width:7%">Request</th>
+          <th scope="col"style="width:7%">Response</th>
         </tr>
       </thead>
 
@@ -68,17 +68,17 @@
     <table class="table table-hover" *ngIf="previousMsgFilter.tableType === 'Message'">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Time Stamp</th>
-          <th>Type</th>
-          <!-- <th  *ngIf="pageType === 'gateway'">Asset Name</th> -->
-          <!-- <th >Message ID</th> -->
-          <th *ngIf="type !== 'response'">TTL</th>
-          <th *ngIf="type !== 'response'">ACK</th>
-          <th *ngIf="type !== 'response'">Feedback</th>
-          <!-- <th >F Time Stamp</th> -->
-          <th style="width:7%" *ngIf="type !== 'response'">Request</th>
-          <th style="width:7%">Response</th>
+          <th scope="col">No</th>
+          <th scope="col">Time Stamp</th>
+          <th scope="col">Type</th>
+          <!-- <th scope="col" *ngIf="pageType === 'gateway'">Asset Name</th> -->
+          <!-- <th scope="col">Message ID</th> -->
+          <th scope="col"*ngIf="type !== 'response'">TTL</th>
+          <th scope="col"*ngIf="type !== 'response'">ACK</th>
+          <th scope="col"*ngIf="type !== 'response'">Feedback</th>
+          <!-- <th scope="col">F Time Stamp</th> -->
+          <th scope="col"style="width:7%" *ngIf="type !== 'response'">Request</th>
+          <th scope="col"style="width:7%">Response</th>
         </tr>
       </thead>
 
@@ -134,14 +134,14 @@
     <table class="table table-hover" *ngIf="previousMsgFilter.tableType === 'DirectMethod'">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Request Date</th>
-          <!-- <th>Response Date</th> -->
-          <th>Type</th>
-          <!-- <th class="border-left">F Time Stamp</th> -->
-          <th style="width:7%">Status</th>
-          <th style="width:7%">Request</th>
-          <th style="width:7%">Response</th>
+          <th scope="col">No</th>
+          <th scope="col">Request Date</th>
+          <!-- <th scope="col">Response Date</th> -->
+          <th scope="col">Type</th>
+          <!-- <th scope="col"class="border-left">F Time Stamp</th> -->
+          <th scope="col"style="width:7%">Status</th>
+          <th scope="col"style="width:7%">Request</th>
+          <th scope="col"style="width:7%">Response</th>
         </tr>
       </thead>
 

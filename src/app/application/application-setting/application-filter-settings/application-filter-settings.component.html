@@ -21,14 +21,14 @@
     <table class="table table-hover">
         <!--<thead>
       <tr>
-        <th>Project Name</th>
-        <th>Employer</th>
-        <th>Awards</th>
+        <th scope="col">Project Name</th>
+        <th scope="col">Employer</th>
+        <th scope="col">Awards</th>
       </tr>
     </thead>-->
         <tfoot>
             <tr *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-                <th colspan="3">
+                <th scope="col"colspan="3">
                     <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
                         [disabled]="saveConfigAPILoading || !isConfigEditable">SAVE
                         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveConfigAPILoading"></i></button>

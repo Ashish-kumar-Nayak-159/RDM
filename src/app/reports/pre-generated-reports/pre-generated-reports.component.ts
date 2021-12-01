@@ -373,9 +373,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  onSaveHierachy() {
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
+  onSaveHierachy(configuredHierarchy) {
+    this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         this.hierarchyString += ' > ' + this.configureHierarchy[key];
@@ -383,38 +382,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
     });
   }
-
-  onClearHierarchy() {
-    console.log('in clear');
-    this.hierarchyArr = {};
-    this.configureHierarchy = {};
-    // this.filterObj = {};
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    console.log(this.hierarchyArr);
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        console.log(this.configureHierarchy);
-        console.log(level);
-        console.log(this.contextApp.user.hierarchy);
-        if (this.contextApp.user.hierarchy[level]) {
-          console.log('hereeeee');
-          this.onChangeOfHierarchy(index, 'PG');
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
+  onClearHierarchy(configuredHierarchy) {
+    this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
   }
 
   scrollToTop() {

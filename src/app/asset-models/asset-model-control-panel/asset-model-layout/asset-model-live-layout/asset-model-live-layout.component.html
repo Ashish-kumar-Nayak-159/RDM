@@ -151,9 +151,9 @@
           <table class="table table-bordered table-striped" cellspacing="0" id="myFavTable">
             <thead>
               <tr class="bg-secondary text-white">
-                <th>Index</th>
-                <th style="width: 60%">{{widgetStringFromMenu}} Name</th>
-                <th>
+                <th scope="col">Index</th>
+                <th scope="col"style="width: 60%">{{widgetStringFromMenu}} Name</th>
+                <th scope="col">
                   <input type="checkbox" name="visibleall" id="visibleall" (change)="onClickOfCheckbox()"
                     [(ngModel)]="isAllWidgestSelectedForDashboard" placement="bottom"
                     [tooltip]="isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'" />

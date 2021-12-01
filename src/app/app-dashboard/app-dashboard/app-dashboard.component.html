@@ -15,7 +15,7 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [filterObj]="filterObj"
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="false" [filterObj]="filterObj"
             [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
@@ -104,7 +104,6 @@
             [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
             tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
             style="width: 3em;">
-          <!-- <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div> -->
           <div class="form-group pl-2">
             <select class="form-control form-control-sm" id="samplingFormat"
               [(ngModel)]="historicalDateFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"

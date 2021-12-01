@@ -25,14 +25,14 @@
     <table class="table table-hover" *ngIf="!isAddCampaignModalOpen">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Code</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Actual End Date</th>
-          <th>Objective</th>
-          <th>Status</th>
-          <th *ngIf="decodedToken?.privileges?.indexOf('ASCMM') > -1">Action</th>
+          <th scope="col">No</th>
+          <th scope="col">Code</th>
+          <th scope="col">Start Date</th>
+          <th scope="col">End Date</th>
+          <th scope="col">Actual End Date</th>
+          <th scope="col">Objective</th>
+          <th scope="col">Status</th>
+          <th scope="col"*ngIf="decodedToken?.privileges?.indexOf('ASCMM') > -1">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -141,8 +141,8 @@
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th>Asset Id</th>
-                          <th>Asset Name</th>
+                          <th scope="col">Asset Id</th>
+                          <th scope="col">Asset Name</th>
                         </tr>
                       </thead>
                       <tbody *ngFor="let asset of getAssetNames(campaignViewObj.metadata.participated_assets); let index = index">

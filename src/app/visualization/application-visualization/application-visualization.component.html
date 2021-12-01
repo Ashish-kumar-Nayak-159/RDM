@@ -16,7 +16,7 @@
             </app-date-range-picker>
           </ng-container>
           <ng-container *ngIf="pageType === 'live'">
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="false" [filterObj]="filterObj"
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [closeOnSelection]="false" [showAsset]="false" [filterObj]="filterObj"
               (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
             </app-hierarchy-dropdown>
           </ng-container>
@@ -360,10 +360,10 @@
                   <table class="table table-hover">
                     <thead>
                       <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Actions</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>

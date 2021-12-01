@@ -1,8 +1,8 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th>No</th>
-      <th *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}"
+      <th scope="col">No</th>
+      <th scope="col"*ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}"
         [ngClass]="{'w-2': i === 0 && !item.key,
         'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 1), 'w-35': item.name === 'Timestamp'}">
         {{item.name}}</th>

@@ -51,8 +51,8 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Timestamp
+          <th scope="col">No</th>
+          <th scope="col">Timestamp
             <a (click)="sortOn('local_message_date', 'asc')"><i class="fa fa-caret-up"
                 [ngClass]="(getClass('local_message_date') === 'asc') ? 'text-primary' : (getClass('local_message_date') === 'desc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i></a>
@@ -60,7 +60,7 @@
                 [ngClass]="(getClass('local_message_date') === 'desc') ? 'text-primary' : (getClass('local_message_date') === 'asc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i> </a>
           </th>
-          <th>IoT Hub Date
+          <th scope="col">IoT Hub Date
             <a (click)="sortOn('local_iothub_date', 'asc')"><i class="fa fa-caret-up"
                 [ngClass]="(getClass('local_iothub_date') === 'asc') ? 'text-primary' : (getClass('local_iothub_date') === 'desc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i></a>
@@ -68,7 +68,7 @@
                 [ngClass]="(getClass('local_iothub_date') === 'desc') ? 'text-primary' : (getClass('local_iothub_date') === 'asc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i> </a>
           </th>
-          <th>Database Record Date
+          <th scope="col">Database Record Date
             <a (click)="sortOn('local_created_date', 'asc')"><i class="fa fa-caret-up"
                 [ngClass]="(getClass('local_created_date') === 'asc') ? 'text-primary' : (getClass('local_created_date') === 'desc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i></a>
@@ -76,7 +76,7 @@
                 [ngClass]="(getClass('local_created_date') === 'desc') ? 'text-primary' : (getClass('local_created_date') === 'asc'? 'text-gray' : 'text-secondary')"
                 style="font-size:1rem"></i> </a>
           </th>
-          <th>Message</th>
+          <th scope="col">Message</th>
         </tr>
 
       </thead>

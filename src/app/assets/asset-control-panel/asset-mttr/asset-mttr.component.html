@@ -64,11 +64,11 @@
     <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
       <table class="table table-hover ">
         <thead>
-          <th></th>
-          <th>Event Start Time</th>
-          <th>Event End Time</th>
-          <th>{{displayMode === 'machine_failure' ? 'Machine Downtime' : 'Network Offtime'}}</th>
-          <th *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1"> Action</th>
+          <th scope="col"></th>
+          <th scope="col">Event Start Time</th>
+          <th scope="col">Event End Time</th>
+          <th scope="col">{{displayMode === 'machine_failure' ? 'Machine Downtime' : 'Network Offtime'}}</th>
+          <th scope="col"*ngIf="decodedToken?.privileges?.indexOf('RMM') > -1"> Action</th>
         </thead>
         <!-- <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
             <tr>

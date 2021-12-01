@@ -38,17 +38,17 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <!-- <th>Index</th> -->
-                  <th></th>
-                  <th>Page</th>
-                  <th>System Name</th>
-                  <th>Display Name</th>
-                  <th>Visibility</th>
+                  <!-- <th scope="col">Index</th> -->
+                  <th scope="col"></th>
+                  <th scope="col">Page</th>
+                  <th scope="col">System Name</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Visibility</th>
                 </tr>
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -129,15 +129,15 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>System Name</th>
-                  <th>Display Name</th>
-                  <th>Visibility</th>
+                  <th scope="col"></th>
+                  <th scope="col">System Name</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Visibility</th>
                 </tr>
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -203,15 +203,15 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>System Name</th>
-                  <th>Display Name</th>
-                  <th>Visibility</th>
+                  <th scope="col"></th>
+                  <th scope="col">System Name</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Visibility</th>
                 </tr>
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -277,15 +277,15 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>System Name</th>
-                  <th>Display Name</th>
-                  <th>Visibility</th>
+                  <th scope="col"></th>
+                  <th scope="col">System Name</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Visibility</th>
                 </tr>
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -350,15 +350,15 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>System Name</th>
-                  <th>Display Name</th>
-                  <th>Visibility</th>
+                  <th scope="col"></th>
+                  <th scope="col">System Name</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Visibility</th>
                 </tr>
               </thead>
               <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
                 <tr>
-                  <th colspan="5">
+                  <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                       [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -441,10 +441,10 @@
         <table class="table table-hover" id="myFavTable">
           <thead>
             <tr>
-              <th>Index</th>
-              <th>Page</th>
-              <th>System Name</th>
-              <th>Display Name</th>
+              <th scope="col">Index</th>
+              <th scope="col">Page</th>
+              <th scope="col">System Name</th>
+              <th scope="col">Display Name</th>
             </tr>
           </thead>
           <tbody>

@@ -59,11 +59,11 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Name</th>
-          <th>Key</th>
-          <th>Default Value</th>
-          <th *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">Action</th>
+          <th scope="col">No</th>
+          <th scope="col">Name</th>
+          <th scope="col">Key</th>
+          <th scope="col">Default Value</th>
+          <th scope="col"*ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">Action</th>
         </tr>
       </thead>
       <tbody>

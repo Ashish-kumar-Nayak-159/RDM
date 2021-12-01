@@ -90,7 +90,7 @@
                 </div>
               </div>
             </div> -->
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [filterObj]="filterObj"
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
               [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
             </app-hierarchy-dropdown>
             <div class="form-group">
@@ -217,10 +217,10 @@
                 <table class="table table-hover" id="dataTable1">
                   <thead>
                     <tr>
-                      <th></th>
-                      <th class="w-10">Asset Name</th>
-                      <th class="w-17">Time</th>
-                      <th class="report-td" *ngFor="let property of selectedProps" [tooltip]="property.id"> <i
+                      <th scope="col"></th>
+                      <th scope="col"class="w-10">Asset Name</th>
+                      <th scope="col"class="w-17">Time</th>
+                      <th scope="col"class="report-td" *ngFor="let property of selectedProps" [tooltip]="property.id"> <i
                           class="icon icon-function"
                           *ngIf="property.value.type === 'Edge Derived Properties' || property.value.type === 'Cloud Derived Properties'"></i>
                         {{property.id}}</th>
@@ -273,14 +273,14 @@
                 <table class="table table-hover" id="dataTable">
                   <thead>
                     <tr>
-                      <th></th>
-                      <th></th>
-                      <th class="w-10">Asset Name</th>
-                      <th class="w-17">Time</th>
-                      <th>Description</th>
-                      <th>Source</th>
-                      <th>Status</th>
-                      <th>Acknowledged By</th>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                      <th scope="col"class="w-10">Asset Name</th>
+                      <th scope="col"class="w-17">Time</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Source</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Acknowledged By</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -334,15 +334,15 @@
                 *ngIf="isFilterSelected && originalFilterObj.report_type === 'Alert Report'">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Asset Name</th>
-                    <th>Time</th>
-                    <th>Severity</th>
-                    <th>Description</th>
-                    <th>Source</th>
-                    <th>Status</th>
-                    <th>Acknowledged By</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col">Asset Name</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Acknowledged By</th>
                   </tr>
                 </thead>
                 <tbody>

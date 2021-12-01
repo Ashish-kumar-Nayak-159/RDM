@@ -29,12 +29,12 @@
       <table class="table table-hover" cellspacing="0" width="100%">
         <thead>
           <tr>
-            <th class="sticky-top">No</th>
-            <th>Email</th>
-            <th>SMS No</th>
-            <th>Whatsapp No</th>
-            <th>Name</th>
-            <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">Action</th>
+            <th scope="col"class="sticky-top">No</th>
+            <th scope="col">Email</th>
+            <th scope="col">SMS No</th>
+            <th scope="col">Whatsapp No</th>
+            <th scope="col">Name</th>
+            <th scope="col"*ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -66,11 +66,11 @@
         <table class="table table-hover" cellspacing="0" width="100%">
           <thead>
             <tr>
-              <th class="sticky-top">No</th>
-              <th>Email</th>
-              <th>Name</th>
-              <th>Role</th>
-              <!-- <th>Action</th> -->
+              <th scope="col"class="sticky-top">No</th>
+              <th scope="col">Email</th>
+              <th scope="col">Name</th>
+              <th scope="col">Role</th>
+              <!-- <th scope="col">Action</th> -->
             </tr>
           </thead>
           <tbody>

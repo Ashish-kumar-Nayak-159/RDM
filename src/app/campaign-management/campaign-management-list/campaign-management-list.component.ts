@@ -105,7 +105,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date + 5;
     } else {
-      this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date + 5;
     }
     const obj = {

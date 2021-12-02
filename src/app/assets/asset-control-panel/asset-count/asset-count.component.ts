@@ -167,10 +167,8 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
-    } else {
-      filterObj.from_date = filterObj.from_date;
-      filterObj.to_date = filterObj.to_date;
     }
+
     const obj = { ...filterObj };
     delete obj.asset;
     obj.asset_id = filterObj?.asset?.asset_id;
@@ -217,7 +215,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
 
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
-      return;
       return;
     }
     if (updateFilterObj) {
@@ -315,8 +312,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.telemetryFilter.dateOption;
     } else {
-      this.telemetryFilter.from_date = this.telemetryFilter.from_date;
-      this.telemetryFilter.to_date = this.telemetryFilter.to_date;
       this.selectedDateRange =
         moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
         ' to ' +

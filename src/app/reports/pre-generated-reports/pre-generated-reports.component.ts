@@ -554,9 +554,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = this.filterObj.from_date;
-      this.filterObj.to_date = this.filterObj.to_date;
     }
     const obj = { ...this.filterObj };
     // if (!obj.report_type) {

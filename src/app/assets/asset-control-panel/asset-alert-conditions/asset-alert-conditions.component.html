@@ -176,6 +176,14 @@
                      placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
                   <div class="">
                     <table id="mytable" width="100%" class="">
+                      <thead style="display: none;">
+                        <tr>
+                          <th scope="col">Step</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Activity</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         <ng-container>
                           <tr *ngFor="let step of alertObj.recommendations; let i = index;"

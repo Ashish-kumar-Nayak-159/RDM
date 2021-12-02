@@ -98,8 +98,6 @@ export class DerivedKpisComponent implements OnInit {
       this.filterObj.to_date = dateObj.to_date;
       this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.filterObj.from_date = this.filterObj.from_date;
-      this.filterObj.to_date = this.filterObj.to_date;
       this.selectedDateRange =
         moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
         ' to ' +
@@ -164,7 +162,6 @@ export class DerivedKpisComponent implements OnInit {
         const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
-        this.filterObj.last_n_secs = this.filterObj.last_n_secs;
         this.selectedDateRange = this.filterObj.dateOption;
       }
     }

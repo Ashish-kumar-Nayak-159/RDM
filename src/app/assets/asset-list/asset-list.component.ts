@@ -437,10 +437,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       obj.type = CONSTANTS.NON_IP_ASSET;
     }
-    const methodToCall =
-      this.componentState === CONSTANTS.NON_IP_ASSET
-        ? this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app)
-        : this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
+    const methodToCall = this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
     this.assetListAPISubscription = methodToCall.subscribe(
       (response: any) => {
         if (response.data) {

@@ -321,6 +321,14 @@
             <div class="content-scroll content-scroll-alert"
               [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
               <table class="table table-hover">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Activity</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
                     <tr *ngIf="alertCondition.recommendations.length > 0">

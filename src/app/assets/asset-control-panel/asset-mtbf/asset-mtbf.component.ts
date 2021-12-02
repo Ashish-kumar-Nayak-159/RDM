@@ -111,10 +111,8 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
-    } else {
-      filterObj.from_date = filterObj.from_date;
-      filterObj.to_date = filterObj.to_date;
-    }
+    } 
+    
     const obj = { ...filterObj };
     delete obj.countNotShow;
     if (!obj.date_frequency) {

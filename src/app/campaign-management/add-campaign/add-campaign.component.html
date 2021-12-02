@@ -60,6 +60,12 @@
       </div>
 
       <table class="table mx-2 mt-2">
+        <thead style="display: none;">
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
         <tbody>
           <tr>
             <td class="required align-middle">Code</td>
@@ -137,6 +143,12 @@
       </div>
 
       <table class="table table-hover table-bordered mx-2 my-3">
+        <thead style="display: none;">
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
         <tbody>
           <tr *ngFor="let hierarchyItem of contextApp.hierarchy.levels; let hIndex = index">
 
@@ -211,6 +223,12 @@
         Objective: {{campaignObj.objective_name}}
       </p>
       <table class="table table-hover table-bordered mx-2 my-3">
+        <thead style="display: none;">
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
         <tbody>
           <ng-container *ngIf="campaignObj.objective === 'FOTA'">
             <tr>
@@ -428,6 +446,12 @@
       </div>
 
       <table class="table mx-2 my-3">
+        <thead style="display: none;">
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
         <tbody>
           <tr>
             <td>Objective</td>

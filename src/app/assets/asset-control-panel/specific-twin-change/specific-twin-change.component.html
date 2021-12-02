@@ -21,6 +21,12 @@
           <h6 class="h6 mb-0">Meta Data:</h6>
         </div>
         <table class="table table-hover table-bordered">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Asset ID</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>Asset ID</td>
@@ -45,6 +51,12 @@
           <h6 class="h6 mb-0">Message Body / Message JSON:</h6>
         </div>
         <table class="table table-hover table-bordered">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
               <td>Asset</td>

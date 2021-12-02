@@ -294,9 +294,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
-      } else {
-        this.filterObj.from_date = this.filterObj.from_date;
-        this.filterObj.to_date = this.filterObj.to_date;
       }
     } else {
       configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();

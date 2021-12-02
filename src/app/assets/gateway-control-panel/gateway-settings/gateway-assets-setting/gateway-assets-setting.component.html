@@ -53,6 +53,12 @@
               </a>
             </ng-container>
             <table class="table table-hover" *ngIf="asset?.metadata">
+              <thead style="display: none;">
+                <tr>
+                  <th scope="col">Key</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
               <tbody>
                 <!-- <tr>
               <td style="width: 50%;">Measurement Frequency (In Sec): </td>
@@ -96,6 +102,12 @@
               </a>
             </ng-container>
             <table class="table table-hover" *ngIf="asset?.metadata">
+              <thead style="display: none;">
+                <tr>
+                  <th scope="col">Key</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
               <tbody>
                 <tr>
                   <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
@@ -191,6 +203,12 @@
                 </a>
               </ng-container>
               <table class="table table-hover">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr *ngFor="let item of property.value | keyvalue;let i = index">
                     <td style="width: 50%;"> {{item.key}} </td>

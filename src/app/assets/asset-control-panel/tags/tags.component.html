@@ -51,6 +51,12 @@
           </ng-container>
         </h1>
         <table class="table table-hover">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>Asset Display Name</td>
@@ -136,6 +142,12 @@
           </ng-container>
         </h1>
         <table class="table table-hover">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <ng-container *ngIf="asset.tags.model_tags || assetModel?.tags?.reserved_tags">
               <tr *ngFor="let tag of assetModelTags">
@@ -174,6 +186,12 @@
         </h1>
         <!-- {{assetCustomTags |json}} -->
         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
               <ng-container>
@@ -240,6 +258,12 @@
           </ng-container>
         </h1>
         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr *ngIf="!assetVariables || assetVariables.length  == 1 ">
               <ng-container>

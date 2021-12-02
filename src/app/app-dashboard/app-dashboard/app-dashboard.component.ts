@@ -393,13 +393,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 });
               });
-              if (historicalWidgetUpgrade) {
-                this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
-              }
+              // if (historicalWidgetUpgrade) {
+              //   this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
+              // }
             } else {
               this.historicalDateFilter.widgets = [];
             }
             this.isGetWidgetsAPILoading = false;
+            this.isFilterSelected = true;
+            this.isTelemetryDataLoading = false;
             resolve1();
           },
           () => {
@@ -609,8 +611,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getLiveWidgetTelemetryDetails(obj);
       } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
         await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
-        await this.getHistoricalWidgetsDrivedKPIDetails();
-        this.getHistoricalWidgetTelemetryDetails();
+        // await this.getHistoricalWidgetsDrivedKPIDetails();
+        // this.getHistoricalWidgetTelemetryDetails();
       }
     }
   }

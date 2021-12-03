@@ -33,6 +33,7 @@ import { HierarchyDropdownComponent } from './hierarchy-dropdown/hierarchy-dropd
 import { RectangleWidgetComponent } from './charts/rectangle-widget/rectangle-widget.component';
 import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widget.component';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
+import { CommonWidgetComponent } from './charts/common-widget/common-widget.component';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
     HierarchyDropdownComponent,
     RectangleWidgetComponent,
     CylinderWidgetComponent,
+    CommonWidgetComponent,
   ],
   imports: [
     CommonModule,

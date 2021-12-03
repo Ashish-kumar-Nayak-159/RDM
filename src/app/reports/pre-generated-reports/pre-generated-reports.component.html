@@ -133,7 +133,7 @@
         <h6 class="modal-title" id="exampleModalLabel">Download Report</h6>
         <button type="button" class="close" (click)="cancelDownloadModal()" *ngIf="isDownloadCloseOptionAvailable"
           aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body">
@@ -160,7 +160,7 @@
         <h5 class="modal-title" id="exampleModalLabel">Configure New Report</h5>
         <button type="button" class="close" [disabled]="isCreateReportAPILoading" (click)="onCloseConfigurePGRModal()"
           aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body">

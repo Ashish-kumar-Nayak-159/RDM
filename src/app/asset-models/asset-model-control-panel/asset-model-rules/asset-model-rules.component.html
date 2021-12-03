@@ -69,7 +69,7 @@
             <ng-container *ngFor="let rule of rules; let i = index">
               <tr>
                 <td class="pl-3">
-                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
+                  <a href="javascript:void(0)" (click)="toggleRows[selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1">
                     <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                   </a>
                 </td>
@@ -84,11 +84,11 @@
                 <!-- <td>{{rule.description}}</td> -->
                 <!-- <td>{{rule.type}}</td> -->
                 <td>
-                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1" placement="bottom"
+                  <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1" placement="bottom"
                     tooltip="View">
-                    <i class="fa fa-fw fa-eye"></i>
+                    <i class="fa fa-fw fa-eye" ></i>
                   </a>
-                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, false, true)" class="mr-1"
+                  <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isEdit ? onToggleRows(i, rule, false, true, 'toggle') : onToggleRows(i, rule, false, true, 'notoggle')" class="mr-1"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false"
                     [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
                     <i class="fa fa-fw fa-edit"></i>

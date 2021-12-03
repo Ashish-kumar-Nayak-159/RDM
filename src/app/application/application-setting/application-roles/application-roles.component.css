@@ -17,3 +17,8 @@ hr {
 .form-group {
     margin-bottom: 0rem !important; 
 }
+
+.table-content tbody tr:hover {
+  color: #000000;
+  background-color: #fff;
+}

@@ -29,14 +29,14 @@
           <button class="btn" type="button">
             {{widget.name}}
           </button>
-          <div class="float-right pull-right mt-1" >
+          <div class="float-right pull-right mt-2 mr-3" >
             <a href="javascript:void(0)" class="pr-2" [class.disabled]="assetModel.freezed"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-              (click)="openAddWidgetModal(widget)"><i class="fa fa-edit"></i></a>
+              (click)="openAddWidgetModal(widget)"><i class="fa fa-edit" placement="left" tooltip="Edit Widget"></i></a>
 
             <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-              (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+              (click)="openConfirmModal(widget)"><i class="fa fa-close" placement="left" tooltip="Remove Widget"></i></a>
           </div>
         </ng-container>
         <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through
@@ -81,7 +81,7 @@
         <h5 class="modal-title" id="exampleModalLabel">{{viewType == 'add' ? 'Create New Control Widget' : 'Update Control Widget'}}</h5>
         <button type="button" class="close" aria-label="Close" (click)="closeCreateWidgetModal()"
           [disabled]="isCreateWidgetAPILoading">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body" *ngIf="viewType === 'add' || viewType === 'edit'">

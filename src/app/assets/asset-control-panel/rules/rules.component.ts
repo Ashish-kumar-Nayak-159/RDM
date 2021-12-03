@@ -81,16 +81,18 @@ export class RulesComponent implements OnInit {
     this.getRules();
   }
 
-  onToggleRows(i, rule, type, isView = false, isEdit = false) {
+  onToggleRows(i, rule, type, isView = false, isEdit = false, action) {
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
-      this.toggleRows = {};
+      if (action === 'toggle' || action === '') {
+        this.toggleRows = {};
+      }
     } else {
       this.toggleRows = {};
       this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
-      this.isEdit = isEdit;
-      this.isView = isView;
-      this.ruleData = rule;
     }
+    this.isEdit = isEdit;
+    this.isView = isView;
+    this.ruleData = rule;
   }
 
   getRules() {
@@ -163,7 +165,7 @@ export class RulesComponent implements OnInit {
         (response: any) => {
           this.onCloseDeleteModal();
           this.getRules();
-          this.toggleRows = {};
+          // this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,

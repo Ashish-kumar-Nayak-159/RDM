@@ -47,7 +47,6 @@
     </div>
 
     <div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
-      {{selectedAccrodionType}}aaaaaaaaaaaaaa
       <accordion [closeOthers]="'true'" class="mb-2 p-3">
         <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
           [isOpen]="selectedAccrodionType === 'Model'">
@@ -81,7 +80,7 @@
                       <ng-container>
                         <tr>
                           <td class="pl-3">
-                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true)" class="mr-1">
+                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true, false, '')" class="mr-1">
                               <i
                                 [ngClass]="toggleRows[selectedTab + '_model_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                             </a>
@@ -96,7 +95,7 @@
                           <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                             'Not yet synced'}}</td>
                           <td>
-                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true)" class="mr-1"
+                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true, false, '')" class="mr-1"
                               placement="bottom" tooltip="View">
                               <i class="fa fa-fw fa-eye"></i>
                             </a>
@@ -161,7 +160,7 @@
                       <ng-container>
                         <tr>
                           <td class="pl-3">
-                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', true)" class="mr-1">
+                            <a href="javascript:void(0)" (click)="this.toggleRows[this.selectedTab + '_asset_' + i] && isView ? onToggleRows(i, rule, 'asset', true, false, 'toggle') : onToggleRows(i, rule, 'asset', true, false, 'notoggle')" class="mr-1">
                               <i
                                 [ngClass]="toggleRows[selectedTab + '_asset_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                             </a>
@@ -176,11 +175,11 @@
                           <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                             'Not yet synced'}}</td>
                           <td>
-                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', true)" class="mr-1"
+                            <a href="javascript:void(0)" (click)="this.toggleRows[this.selectedTab + '_asset_' + i] && isView ? onToggleRows(i, rule, 'asset', true, false, 'toggle') : onToggleRows(i, rule, 'asset', true, false, 'notoggle')" class="mr-1"
                               placement="bottom" tooltip="View">
                               <i class="fa fa-fw fa-eye"></i>
                             </a>
-                            <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', false, true)"
+                            <a href="javascript:void(0)" (click)="this.toggleRows[this.selectedTab + '_asset_' + i] && isEdit ? onToggleRows(i, rule, 'asset', false, true, 'toggle') : onToggleRows(i, rule, 'asset', false, true, 'notoggle')"
                               class="mr-1" placement="bottom" tooltip="Edit"
                               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false">
                               <i class="fa fa-fw fa-edit"></i>

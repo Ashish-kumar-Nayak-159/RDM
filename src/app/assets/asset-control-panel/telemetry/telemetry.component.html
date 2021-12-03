@@ -12,7 +12,8 @@
       <div class="form-group">
         <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
           [(ngModel)]="telemetryFilter.isTypeEditable"
-          (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;">&nbsp;Sampling:
+          (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;">
+          <label for="checkbox" class="ml-2">Sampling:</label>
       </div>
       <div class="form-group input-group">
         <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"

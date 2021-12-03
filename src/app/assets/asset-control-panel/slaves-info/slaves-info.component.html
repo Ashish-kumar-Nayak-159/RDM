@@ -35,21 +35,21 @@
           <button class="btn" type="button" (click)="onClickOfSlaveAccordion(slave)">
             {{slave.slave_name}}&nbsp; ({{slave.slave_id}})
           </button>
-          <div class="float-right mt-1">
+          <div class="float-right mt-1 mr-3">
             <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">
             <i class="fa fa-check" style="color: green;"></i>
           </div> -->
-            <a class="mt-1 mr-2" tooltip="Provisioned"
+            <a class="mt-1 mr-2" tooltip="Provisioned" placement="left"
               *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned';else Deprovisioned">
               <i class="fa fa-check" style="color: green;"></i>
             </a>
             <ng-template #Deprovisioned>
-              <a class="mt-1 mr-2" tooltip="Not Provisioned">
+              <a class="mt-1 mr-2" tooltip="Not Provisioned" placement="left">
                 <i class="fa fa-ban" style="color: red;"></i>
               </a>
             </ng-template>
             <a class="mt-1" *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1" href="javascript:void(0)"
-              (click)="removeSlaveFromAsset(slave)"><i class="fa fa-close"></i></a>
+              (click)="removeSlaveFromAsset(slave)"><i class="fa fa-close" tooltip="Remove Slave" placement="left"></i></a>
           </div>
         </ng-container>
         <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1">
@@ -267,7 +267,7 @@
           <h5 class="modal-title" id="exampleModalLabel">Add Source / Slave / Sensor</h5>
           <button type="button" class="close" [disabled]="isAddSlaveAPILoading" (click)="onCloseModal('addSlaveModal')"
             aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true" tooltip="Close">&times;</span>
           </button>
         </div>
         <div class="modal-body">

@@ -40,14 +40,14 @@
         <div class="row col-md-12">
           <input type="radio" class="mt-1" name="visible" value="changed_props" [disabled]="!isSettingsEditable"
             id="visible_1" [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
-          <label class="form-label ml-2">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+          <label for="visible_1" class="form-label ml-2">&nbsp;Ingest Only Changed Properties</label> &nbsp;
 
         </div>
         <div class="row col-md-12">
           <input class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval"
             [disabled]="!isSettingsEditable" id="visible_2"
             [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
-          <label class="form-label ml-2">&nbsp;Ingest All Properties</label> &nbsp;
+          <label for="visible_2" class="form-label ml-2">&nbsp;Ingest All Properties</label> &nbsp;
         </div>
       </accordion-group>
       <accordion-group heading="" [panelClass]="'customClass'">

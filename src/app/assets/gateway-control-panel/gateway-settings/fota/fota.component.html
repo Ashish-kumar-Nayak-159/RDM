@@ -17,7 +17,7 @@
         <p class="m-3">No packages are installed in this asset.</p>
       </ng-container>
       <ng-container *ngIf="assetPackages.length > 0">
-        <accordion [closeOthers]="'true'" class="mb-2 ml-3">
+        <accordion [closeOthers]="'true'" class="ml-3" style="margin-bottom:5rem">
           <accordion-group heading="" [panelClass]="'customClass'">
             <ng-container accordion-heading>
               <button class="btn" type="button" (click)="selectedAssetPackage = undefined">

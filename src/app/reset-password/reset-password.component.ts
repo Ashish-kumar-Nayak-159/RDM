@@ -26,6 +26,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   loginData: any;
   @Output()
   modalClose: EventEmitter<any> = new EventEmitter<any>();
+  isOldPasswordVisible = false;
+  isNewPasswordVisible = false;
+  isConfirmPasswordVisible = false;
   /**
    * Reset/change password formgroup.
    */
@@ -127,6 +130,18 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     const pass = group.controls.new_password.value;
     const confirmPass = group.controls.confirmNewPassword.value;
     return pass === confirmPass ? null : { notSame: true };
+  }
+
+  togglePasswordVisibility(type) {
+    if (type === 'old') {
+      this.isOldPasswordVisible = !this.isOldPasswordVisible;
+    }
+    else if (type === 'new') {
+      this.isNewPasswordVisible = !this.isNewPasswordVisible;
+    }
+    else if (type === 'confirm') {
+      this.isConfirmPasswordVisible = !this.isConfirmPasswordVisible;
+    }
   }
 
   /**

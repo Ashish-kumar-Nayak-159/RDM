@@ -24,9 +24,9 @@
   <a href="#" id="userDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-filter fa-sm ml-1"></i></a>
   <div class="dropdown-menu dropdown-filter-content" id="table-filter" aria-labelledby="userDropdown2" >
   <div class="checkbox-container">
-    <div class="dropdown-filter-item"><input type="checkbox" value="Select All" checked="checked" /> Select All</div>
+    <div class="dropdown-filter-item"><input type="checkbox" id="checkbox" value="Select All" checked="checked" /> <label for="checkbox">Select All</label></div>
     <div class="dropdown-divider"></div>
-    <div class="dropdown-filter-item" *ngFor="let data of item.fixed_value_list"><input type="checkbox" value="{{data.value}}" checked="checked"  />{{data.name}}</div>
+    <div class="dropdown-filter-item" *ngFor="let data of item.fixed_value_list"><input type="checkbox" id="{{data.value}}" value="{{data.value}}" checked="checked"  /><label for="{{data.value}}">{{data.name}}</label></div>
     </div>
   </div>
 </ng-container>

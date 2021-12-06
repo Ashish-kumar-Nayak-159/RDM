@@ -34,6 +34,7 @@ import { RectangleWidgetComponent } from './charts/rectangle-widget/rectangle-wi
 import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widget.component';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { CommonWidgetComponent } from './charts/common-widget/common-widget.component';
+import { ColumnchartLivedataComponentComponent } from './charts/columnchart-livedata-component/columnchart-livedata-component.component';
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { CommonWidgetComponent } from './charts/common-widget/common-widget.comp
     RectangleWidgetComponent,
     CylinderWidgetComponent,
     CommonWidgetComponent,
+    ColumnchartLivedataComponentComponent,
   ],
   imports: [
     CommonModule,

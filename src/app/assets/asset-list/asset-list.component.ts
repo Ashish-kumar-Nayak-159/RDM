@@ -1,19 +1,15 @@
+
 import { environment } from './../../../environments/environment';
-import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { ApplicationService } from 'src/app/services/application/application.service';
-import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AssetListFilter, Asset } from 'src/app/models/asset.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AssetListFilter } from 'src/app/models/asset.model';
+import { Router } from '@angular/router';
 import { AssetService } from './../../services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../services/toaster.service';
-import * as moment from 'moment';
-import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
 declare var $: any;
 @Component({
   selector: 'app-asset-list',
@@ -98,7 +94,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetsList = [];
-    await this.getTileName();
+    this.getTileName();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     if (item?.type) {
       this.onTabChange(item.type);
@@ -113,11 +109,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
     }
     localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     this.protocolList = CONSTANTS.PROTOCOLS;
-    // const keys = Object.keys(this.contextApp.user.hierarchy);
-    //  this.commonService.setFlag(true);
   }
 
-  loadFromCache(item) {
+  async loadFromCache(item) {
+    console.log('inside load from cache',item);
     this.hierarchyDropdown.updateHierarchyDetail(item);
     this.searchAssets(false);
   }
@@ -179,6 +174,15 @@ export class AssetListComponent implements OnInit, OnDestroy {
           this.insideScrollFunFlag = true;
         }
       });
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.assetsList = [];
+    console.log('item',item);
+    if (item) {
+      this.loadFromCache(item);
+    } else {
+      this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
+      this.searchAssets();
+    }
     }, 2000);
     this.tableConfig = undefined;
     const obj =
@@ -276,16 +280,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
         valueclass: '',
         tooltip: 'View Diagnosis panel',
       });
-    }
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS);
-    this.assetsList = [];
-    console.log(item);
-    if (item) {
-      this.loadFromCache(item);
-    } else {
-      this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
-      this.searchAssets();
-    }
+    }    
   }
 
   onCurrentPageViewChange(type) {

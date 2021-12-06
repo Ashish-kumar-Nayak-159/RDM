@@ -1,74 +1,145 @@
-<div class="" id="intro" style="margin-top:3.5rem">
-  <div class="row mr-0">
-    <div class="col-lg-1 d-none d-lg-block"></div>
-    <div class="col-lg-5 d-none d-lg-block align-self-center">
-      <div class="text-center">
-        <h5 class="h5 mb-3 text-white">{{uiMessages.LOGIN_TITLE}}</h5>
+<div class="bg">
+  <div class="d-flex justify-content-center align-items-center page-scroll">
+    <div class="login-reg-panel d-flex justify-content-center align-items-center">
+      <div class="login-info-box" *ngIf="this.environment === 'DEV'">
+        <h2>Don't have an account?</h2>
+        <p>Enter your details and start journey with us</p>
+        <label id="label-register" for="log-reg-show">Continue</label>
+        <input type="radio" name="active-log-panel" id="log-reg-show" (click)=Register(); >
       </div>
-      <div class="row justify-content-md-center"><img src="../../assets/img/rdm.png"></div>
-    </div>
-    <div class="col-md-2 col-lg-1"></div>
-    <div class="col-md-8 col-lg-4">
-      <div class="card o-hidden border-1 my-2"
-        style="-moz-box-shadow: 0 0 3px #9fc0ef; -webkit-box-shadow: 0 0 3px #9fc0ef; box-shadow: 0 0 3px #9fc0ef;">
-        <div class="card-body p-0">
-          <div class="p-4 bg-primary">
-            <div class="text-center">
-              <h1 class="h4 mb-4" style="color:#1a5a9e">{{uiMessages.WELCOME}}!!</h1>
+
+      <div class="login-info-box justify-content-center" *ngIf="this.environment !== 'DEV'">
+        <img src="../../assets/img/rdm.png" class="img-fluid" style="width: 70%;margin: 0 20% 0 10%;">
+      </div>
+
+      <div class="register-info-box">
+        <h2>Have an account?</h2>
+        <p>To keep connected with us, Please login here</p>
+        <label id="label-login" for="log-login-show">Login</label>
+        <input type="radio" name="active-log-panel" id="log-login-show" (click)=Register(); checked="checked">
+      </div>
+
+      <div class="white-panel">
+        <div class="register-show mt-5">
+          <h2>LOGIN</h2>
+          <form class="user" [formGroup]="loginForm" (submit)="onLogin()">
+
+            <input type="email" class="form-control form-control-user bg-white" id="exampleInputEmail"
+              aria-describedby="emailHelp" placeholder="{{uiMessages.EMAIL_PLACEHOLDER}}" formControlName="email"
+              name="email">
+            <div *ngIf="(loginForm.get('email').errors && loginForm.get('email').touched)" class="alert-danger">
+              <div *ngIf="loginForm.get('email').errors.required">
+                {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_REQUIRED}}
+              </div>
+              <div *ngIf="loginForm.get('email').errors.pattern">
+                {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_INVALID}}
+              </div>
             </div>
-            <form class="user" [formGroup]="loginForm" (submit)="onLogin()">
-              <div class="form-group">
-                <input type="email" class="form-control form-control-user bg-white" id="exampleInputEmail"
-                  aria-describedby="emailHelp" placeholder="{{uiMessages.EMAIL_PLACEHOLDER}}" formControlName="email"
-                  name="email">
-                <div *ngIf="(loginForm.get('email').errors && loginForm.get('email').touched)" class="alert-danger">
-                  <div *ngIf="loginForm.get('email').errors.required">
-                    {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_REQUIRED}}
-                  </div>
-                  <div *ngIf="loginForm.get('email').errors.pattern">
-                    {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_INVALID}}
-                  </div>
-                </div>
+
+            <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}"
+              class="form-control form-control-user  bg-white" name="exampleInputPassword"
+              placeholder="{{uiMessages.PASSWORD_PLACEHOLDER}}" formControlName="password">
+            <i class="fa fa-fw  field-icon toggle-password mt-n5" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
+            <div *ngIf="loginForm.get('password').errors &&  loginForm.get('password').touched" class="alert-danger">
+              <div *ngIf="loginForm.get('password').errors.required">
+                {{uiMessages.PASSWORD_LABEL}} {{uiMessages.IS_REQUIRED}}
               </div>
-              <div class="row form-group">
-                <div class="col-md-12">
-                  <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}"
-                    class="form-control form-control-user  bg-white" name="exampleInputPassword"
-                    placeholder="{{uiMessages.PASSWORD_PLACEHOLDER}}" formControlName="password">
-                  <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
-                    [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
-                  <div *ngIf="loginForm.get('password').errors &&  loginForm.get('password').touched"
-                    class="alert-danger">
-                    <div *ngIf="loginForm.get('password').errors.required">
-                      {{uiMessages.PASSWORD_LABEL}} {{uiMessages.IS_REQUIRED}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="custom-control custom-checkbox small">
-                  <input type="checkbox" class="custom-control-input" id="customCheck" />
-                  <label class="custom-control-label" for="customCheck">{{uiMessages.REMEMBER_ME}}</label>
-                </div>
-              </div>
-              <button type="submit" style="background-color:#1a5a9e"
-                class="btn btn-primary btn-user btn-block text-white "
-                [disabled]="(!loginForm?.valid) || isLoginAPILoading">
-                {{uiMessages.LOGIN_LABEL}}
-                <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
-              </button>
-            </form>
-            <hr>
-            <div class="text-center">
-              <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
-              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
             </div>
+
+            <div class="custom-control custom-checkbox small my-3">
+              <input type="checkbox" class="custom-control-input" id="customCheck" />
+              <label class="custom-control-label" for="customCheck">{{uiMessages.REMEMBER_ME}}</label>
+            </div>
+
+            <button type="submit" style="background-color:#1a5a9e" class="btn btn-primary text-white "
+              [disabled]="(!loginForm?.valid) || isLoginAPILoading">
+              {{uiMessages.LOGIN_LABEL}}
+              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+            </button>
+          </form>
+          <div>
+            <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
+            <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
           </div>
         </div>
+        <div class="login-show">
+          <h2 class="mt-n2 mb-3">GUEST LOGIN</h2>
+          <form class="" [formGroup]="registerForm" (submit)="onSignUp()" *ngIf="!otpData?.user_id">
+            
+            <input type="text" class="form-control form-control-user" id="Name" placeholder="Name*"
+              formControlName="name" name="Name">
+            <div *ngIf="registerForm.get('name').errors && registerForm.get('name').touched" class="alert-danger">
+              <div *ngIf="registerForm.get('name').errors.required">
+                Name is required.
+              </div>
+            </div>
+
+            <input type="email" class="form-control form-control-user" id="inputEmail" placeholder="Work Email*"
+              formControlName="email" name="email">
+            <div *ngIf="registerForm.get('email').errors && registerForm.get('email').touched" class="alert-danger">
+              <div *ngIf="registerForm.get('email').errors.required">
+                Email is required.
+              </div>
+              <div *ngIf="registerForm.get('email').errors.pattern">
+                Email is not valid.
+              </div>
+            </div>
+
+            <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
+              [searchCountryFlag]="true" [cssClass]="'custom form-control-user'" formControlName="phone"
+              [phoneValidation]="true" [customPlaceholder]="'Enter Mobile No'" [inputId]="'phone'"
+              [selectedCountryISO]="countryISO.India" id="phone_control" [maxLength]="15"
+              [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+            </ngx-intl-tel-input>
+
+            <select class="form-control form-control-sm" id="app" name="app" formControlName="app" [attr.disabled]="(this.tenantId && this.tenantId !== '' && this.tenantId !== null) ? 'disabled' : null" >
+              <option value="null">Select Application</option>  
+              <option value="UrvishaDevTestRel12">UrvishaDevTestRel12</option>
+              <option value="Pump_Monitoring">Pump Monitoring</option>
+              <option value="CMS_Dev">Compressor Monitoring</option>
+              <option value="TransformerMonitoring">Transformer Monitoring</option>
+              <option value="MachineMonitoring">Remote Machine Monitoring</option>
+              <option value="CoolingTower">Cooling Tower Monitoring</option>
+            </select>
+
+            <input type="text" class="form-control form-control-user" id="companyName" placeholder="Organization*"
+              formControlName="org" name="org">
+            <div *ngIf="registerForm.get('org').errors && registerForm.get('org').touched" class="alert-danger">
+              <div *ngIf="registerForm.get('org').errors.required">
+                Organization is required.
+              </div>
+            </div>
+
+            <input type="text" class="form-control form-control-user" id="designation" placeholder="Designation"
+              formControlName="designation" name="designation">
+
+            <button type="submit" style="background-color:#1a5a9e"
+              class="btn btn-primary btn-user btn-block text-white " [disabled]=" (!registerForm.valid &&
+              (registerForm.touched || !registerForm.touched)) || isLoginAPILoading">
+              Login
+              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+            </button>
+          </form>
+          <form class="" (submit)="onSignIn()" *ngIf="otpData?.user_id">
+            <div class="form-group mt-5">
+              <h3 class="text-center" style="color:#1a5a9e">Email Verification</h3>
+              <p class="pt-2 mb-1 text-center">OTP is sent to your email address.</p>
+              <p class="text-center">Keep an eye on your junk/spam folder</p>
+              <input type="text" class="form-control form-control-user" id="otp" placeholder="One Time Password"
+                [(ngModel)]="otpForm.email_otp" name="otp">
+            </div>
+            <button type="submit" style="background-color:#1a5a9e"
+              class="btn btn-primary btn-user btn-block text-white " [class.disabled]="isLoginAPILoading">
+              Verify
+              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+            </button>
+          </form>
+        </div>
       </div>
-      <div class="col-md-2 col-lg-1"></div>
     </div>
   </div>
+</div>
 
   <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword]="false" (modalClose)="onResetModalClose()"
     [loginData]="loginForm.value" *ngIf="isResetPassword"></app-reset-password>

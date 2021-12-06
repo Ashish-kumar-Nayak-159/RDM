@@ -45,9 +45,13 @@ const routes: Routes = [
     component: RDMLoginComponent,
   },
   {
-    path: ':tenantId/guest-login',
-    component: RdmGuestLoginComponent,
+    path: 'login/:tenantId',
+    component: RDMLoginComponent,
   },
+  // {
+  //   path: ':tenantId/guest-login',
+  //   component: RdmGuestLoginComponent,
+  // },
 ];
 const environmentObj = environment;
 if (environmentObj.redirectToLogin) {

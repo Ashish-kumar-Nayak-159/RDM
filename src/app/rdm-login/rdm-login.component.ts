@@ -4,11 +4,12 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
 declare var $: any;
 @Component({
   selector: 'app-rdm-login',
@@ -17,6 +18,7 @@ declare var $: any;
 })
 export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   loginForm: FormGroup;
+  registerForm: FormGroup;
   usersList: any[] = [];
   userData: any;
   isResetPassword = false;
@@ -27,14 +29,36 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   isForgotPassword = false;
   isForgotAPILoading = false;
   uiMessages = UIMESSAGES.MESSAGES;
+  // previousURL: string;
+  otpForm: any = {};
+  otpData: any;
+  searchCountryField = SearchCountryField;
+  countryISO = CountryISO;
+  tenantId: string;
+  environment: string;
+  // istenantId = false;
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private toasterService: ToasterService,
     private commonService: CommonService,
     private applicationService: ApplicationService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
+    // this.previousURL = this.route.snapshot.paramMap.get('previousUrl');
+    // if (!this.previousURL || this.previousURL === '' || this.previousURL === null) {
+    //   this.previousURL = 'cms_dev';
+    // }
+    // console.log(this.previousURL);
+    this.route.paramMap.subscribe(params => {
+      this.tenantId = params.get("tenantId");
+    });
+    console.log(this.tenantId);
+    // if (this.tenantId || this.tenantId !== '' || this.tenantId !== null) {
+    //   this.istenantId = true;
+    // }
+    this.environment = environment.environment;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       await this.processUserData(this.userData);
@@ -42,6 +66,14 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
       password: new FormControl(null, [Validators.required]),
+    });
+    this.registerForm = new FormGroup({
+      app: new FormControl(this.tenantId, [Validators.required]),
+      name: new FormControl(null, [Validators.required]),
+      phone: new FormControl(null),
+      email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
+      org: new FormControl(null, Validators.required),
+      designation: new FormControl(null),
     });
   }
 
@@ -56,6 +88,47 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
+
+    if (this.environment === 'DEV') {
+      if (!this.tenantId || this.tenantId === '' || this.tenantId === null) {
+        $('.register-info-box').fadeOut();
+        $('.login-info-box').fadeIn();
+        $('.white-panel').addClass('right-log');
+        $('.register-show').addClass('show-log-panel');
+        $('.login-show').removeClass('show-log-panel');
+      }
+      else {
+        $('.register-info-box').fadeIn();
+        $('.login-info-box').fadeOut();
+        $('.white-panel').removeClass('right-log');
+        $('.login-show').addClass('show-log-panel');
+        $('.register-show').removeClass('show-log-panel');
+      }
+    }
+    else {
+      $('.register-info-box').fadeOut();
+      $('.login-info-box').fadeIn();
+      $('.white-panel').addClass('right-log');
+      $('.register-show').addClass('show-log-panel');
+      $('.login-show').removeClass('show-log-panel');
+    }
+  }
+
+  Register() {
+    if ($('#log-login-show').is(':checked')) {
+      $('.register-info-box').fadeOut();
+      $('.login-info-box').fadeIn();
+      $('.white-panel').addClass('right-log');
+      $('.register-show').addClass('show-log-panel');
+      $('.login-show').removeClass('show-log-panel');
+    }
+    else if ($('#log-reg-show').is(':checked')) {
+      $('.register-info-box').fadeIn();
+      $('.login-info-box').fadeOut();
+      $('.white-panel').removeClass('right-log');
+      $('.login-show').addClass('show-log-panel');
+      $('.register-show').removeClass('show-log-panel');
+    }
   }
 
   onResetModalClose() {
@@ -65,6 +138,88 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  onSignIn() {
+    if (this.otpForm.email_otp) {
+      this.isLoginAPILoading = true;
+      const app = environment.app;
+      if (app) {
+        this.otpForm.app = app;
+      }
+      const env = environment.environment;
+      if (env) {
+        this.otpForm.environment = env;
+      }
+      this.otpForm.user_id = this.otpData.user_id;
+      this.subscriptions.push(
+        this.commonService.userSignIn(this.otpForm).subscribe(
+          async (response: any) => {
+            this.userData = response;
+            localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
+            localStorage.setItem(CONSTANTS.GUEST_USER, 'true');
+            if (response.apps && response.apps.length > 0) {
+              response.apps.forEach((element) => {
+                let hierarchy = '';
+                const decodedToken = this.commonService.decodeJWTToken(element.token);
+                const keys = Object.keys(decodedToken.hierarchy);
+                keys.forEach((key, index) => {
+                  hierarchy = hierarchy + decodedToken.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
+                });
+                element.user = { rule: decodedToken.role, hierarchy: decodedToken.hierarchy };
+                element.user.hierarchyString = hierarchy;
+              });
+              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
+
+              localStorage.removeItem(CONSTANTS.APP_TOKEN);
+              localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
+              const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
+              const obj = {
+                hierarchy: decodedToken.hierarchy,
+                role: decodedToken.role,
+                privileges: decodedToken.privileges,
+              };
+              this.userData.apps[0].user = obj;
+              await this.getApplicationData(this.userData.apps[0]);
+              this.router.navigate(['applications', this.applicationData.app]);
+            }
+            this.isLoginAPILoading = false;
+          },
+          (error) => {
+            this.isLoginAPILoading = false;
+            this.toasterService.showError(error.message, 'Guest Login');
+          }
+        )
+      );
+    } else {
+      this.isLoginAPILoading = false;
+      this.toasterService.showError('Please enter OTP', 'Login');
+    }
+  }
+
+  onSignUp() {
+    if ($('#phone').is(':invalid')) {
+      this.toasterService.showError('Please enter valid mobile number', 'Guest User Login');
+      return;
+    }
+    const loginObj = this.registerForm.value;
+    loginObj.phone = loginObj.phone?.e164Number || null;
+    this.isLoginAPILoading = true;
+    // loginObj.app = this.tenantId;
+    console.log(loginObj);
+    this.subscriptions.push(
+      this.commonService.userSignUp(loginObj).subscribe(
+        async (response: any) => {
+          this.otpData = response;
+          console.log(this.otpData);
+          this.isLoginAPILoading = false;
+        },
+        (error) => {
+          this.isLoginAPILoading = false;
+          this.toasterService.showError(error.message, 'Guest Login');
+        }
+      )
+    );
   }
 
   onLogin() {

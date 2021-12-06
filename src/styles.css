@@ -126,12 +126,12 @@ input:invalid {
 
 .accordion-toggle[aria-expanded='true']:before {
   content: '\f139';
-  font: normal normal bold 14px/1 FontAwesome;
+  font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
 }
 
 .accordion-toggle[aria-expanded='false']:before {
   content: '\f13a';
-  font: normal normal bold 14px/1 FontAwesome;
+  font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
 }
 
 .card.customClass .card-header {
@@ -200,7 +200,7 @@ input:invalid {
   margin-right: 0.7rem;
 }
 .cdk-overlay-container {
-  position: fixed;
+  /* position: fixed; */
   pointer-events: none;
   top: 0;
   left: 0;

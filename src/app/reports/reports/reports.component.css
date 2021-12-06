@@ -38,8 +38,8 @@ select.form-control {
   background-color: transparent;
 }
 #dateRow select {
-  background-color: transparent !important;
   background: url('../../../assets/img/arrow-down.png') no-repeat right #ddd;
+  background-color: transparent !important;  
   background-position: 98%;
   padding: 2px 20px 2px 8px;
   padding-right: 20px;

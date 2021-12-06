@@ -37,7 +37,7 @@
               <div id="{{chartConfig.chartId}}_chart_{{i}}" [ngClass]="innerClass.length > 0 ? innerClass : 'mt-n4'"
                 [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
               <div class="live-overlay" *ngIf="!asset" style="width: 150px; height:20px" [ngStyle]="{'left': overlayLeft.length > 0 ? overlayLeft : '60px'}">
-                <div style="font-family:'Arial Black'; font-size: 10px;">Sample Chart</div>
+                <div style="font-family:'Arial Black',sans-serif; font-size: 10px;">Sample Chart</div>
               </div>
               <div class="text-darkblue display-5 font-weight-bold" [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
                 {{ (telemetryObj[prop?.json_key] && (telemetryObj[prop?.json_key]?.value !== undefined

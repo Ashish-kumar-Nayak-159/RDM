@@ -20,7 +20,7 @@
   border-radius: 3px;
   background: #676c6e;
   display: inline-block;
-  font-family: Oswald;
+  font-family: Oswald, sans-serif;
   font-size: 15px;
   font-weight: 400;
   width: 45px;
@@ -28,7 +28,7 @@
 .timer .smalltext {
   color: #fff;
   font-size: 9px;
-  font-family: Poppins;
+  font-family: Poppins, sans-serif;
   font-weight: 500;
   display: block;
   padding: 0;

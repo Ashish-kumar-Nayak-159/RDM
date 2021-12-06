@@ -168,93 +168,11 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
-      this.chartConfig.y1AxisProps?.forEach((prop) => {
-        const index = this.telemetryObj['previous_properties']?.findIndex((propKey) => (propKey = prop.json_key)) || -1;
-        if (
-          this.telemetryObj[prop.json_key].value !== undefined &&
-          this.telemetryObj[prop.json_key].value !== null &&
-          index > -1
-        ) {
-          const obj = {};
-          if (
-            !this.propertyBasedData[prop.json_key] ||
-            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-          ) {
-            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-            if (!this.propertyBasedData[prop.json_key]) {
-              this.propertyBasedData[prop.json_key] = {
-                data: [],
-              };
-            }
-            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-            this.propertyBasedData[prop.json_key]['data'].push(obj);
-          }
-          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-        } else {
-          const obj = {};
-          if (
-            !this.propertyBasedData[prop.json_key] ||
-            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-          ) {
-            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-            if (!this.propertyBasedData[prop.json_key]) {
-              this.propertyBasedData[prop.json_key] = {
-                data: [],
-              };
-            }
-            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-            this.propertyBasedData[prop.json_key]['data'].push(obj);
-          }
-          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-        }
+      this.chartConfig.y1AxisProps?.forEach((prop) => {        
+        this.SetPropsTelemetryData(prop);
       });
       this.chartConfig.y2AxisProps?.forEach((prop) => {
-        const index = this.telemetryObj['previous_properties']?.findIndex((propKey) => (propKey = prop.json_key)) || -1;
-        if (
-          this.telemetryObj[prop.json_key].value !== undefined &&
-          this.telemetryObj[prop.json_key].value !== null &&
-          index > -1
-        ) {
-          const obj = {};
-          if (
-            !this.propertyBasedData[prop.json_key] ||
-            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-          ) {
-            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-            if (!this.propertyBasedData[prop.json_key]) {
-              this.propertyBasedData[prop.json_key] = {
-                data: [],
-              };
-            }
-            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-            this.propertyBasedData[prop.json_key]['data'].push(obj);
-          }
-          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-        } else {
-          const obj = {};
-          if (
-            !this.propertyBasedData[prop.json_key] ||
-            this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-          ) {
-            obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-            obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-            if (!this.propertyBasedData[prop.json_key]) {
-              this.propertyBasedData[prop.json_key] = {
-                data: [],
-              };
-            }
-            this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-            this.propertyBasedData[prop.json_key]['data'].push(obj);
-          }
-          this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-        }
+        this.SetPropsTelemetryData(prop);
       });
 
       // this.telemetryData.push(this.telemetryObj);
@@ -284,6 +202,24 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       chart.preloader.disabled = false;
       this.chart = chart;
     });
+  }
+
+  private SetPropsTelemetryData(prop: any) {
+    const obj = {};
+    if (!this.propertyBasedData[prop.json_key] ||
+      this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+      new Date(this.telemetryObj[prop.json_key].date).getTime()) {
+      obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+      obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+      if (!this.propertyBasedData[prop.json_key]) {
+        this.propertyBasedData[prop.json_key] = {
+          data: [],
+        };
+      }
+      this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+      this.propertyBasedData[prop.json_key]['data'].push(obj);
+    }
+    this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
   }
 
   createThresholdSeries(valueAxis, propObj) {

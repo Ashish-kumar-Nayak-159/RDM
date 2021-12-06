@@ -24,7 +24,7 @@
             *ngIf="telemetryData.length > 0 else noData;">
             <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
             <div class="overlay" *ngIf="isOverlayVisible">
-              <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
+              <div style="font-family:'Arial Black',sans-serif; font-size: 40px;">Sample Chart</div>
             </div>
           </div>
           <ng-template #noData>

@@ -82,14 +82,12 @@
   line-height: 1.25;
   border-radius: 3px;
   font-size: .85rem;
-  padding: 5px 10px;
   cursor: pointer;
   align-items: center;
   height: calc(1.5em + .5rem + 2px)!important;
   min-height: calc(1.5em + .5rem + 2px)!important;
-  color: #858796!important;
+  color: #858796 !important;
   padding: 14px !important;
-  color : #858796
   }
 
   .c-label {
@@ -111,7 +109,6 @@
 
   .cuppa-dropdown {
     /* width: 20.5rem!important; */
-    font: 400 13.3333px Arial;
     color: #6e707e;
   }
 

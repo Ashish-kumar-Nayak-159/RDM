@@ -1,12 +1,29 @@
 <div class="blue-nav-bar">
   <div class="d-flex align-items-center">
-    <div class="main-heading">App Management&nbsp;
+      <div class="main-heading">App Management&nbsp;
+      </div>
+      <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()"
+              placement="bottom" tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
+    <div class="ml-auto">
+      <div class="asset-nav-tabs">
+        <nav>
+          <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+            <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
+              (click)="isProvisioned = 'true';searchApplications()" href="#" role="tab" aria-controls="nav-provisioned"
+              aria-selected="true" [ngClass]="{'active': isProvisioned == 'true'}">
+              <i class="fab fa-mixcloud mr-2"></i>
+              <span class="d-none d-md-inline-block">Provisioned</span></a>
+            <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
+              (click)="isProvisioned = 'false';searchApplications()" href="#" role="tab" aria-controls="nav-unprovisioned"
+              aria-selected="false" [ngClass]="{'active': isProvisioned == 'false'}">
+              <i class="fa fa-cloud mr-2" aria-hidden="true"></i>
+              <span class="d-none d-md-inline-block">Un-Provisioned</span></a>
+          </div>
+        </nav>
+      </div>
     </div>
-    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()" placement="bottom"
-      tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
   </div>
 </div>
-
 <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
   (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
@@ -218,7 +235,8 @@
   </div>
 </div>
 
-<div class="modal fade" id="viewPartitionIconModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="overflow-y: hidden;">
+<div class="modal fade" id="viewPartitionIconModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
+  style="overflow-y: hidden;">
   <div class="modal-dialog modal-lg my-3" role="document">
     <div class="modal-content" *ngIf="selectedApp">
       <div class="modal-header">
@@ -228,7 +246,8 @@
         </button>
       </div>
       <div class="modal-body p-0" style="overflow-y: hidden;">
-        <app-common-data-table [tableData]="partitionConfigs" [tableConfig]="databaseTableConfig"></app-common-data-table>
+        <app-common-data-table [tableData]="partitionConfigs" [tableConfig]="databaseTableConfig">
+        </app-common-data-table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onCloseCreateAppModal('viewPartitionIconModal')">

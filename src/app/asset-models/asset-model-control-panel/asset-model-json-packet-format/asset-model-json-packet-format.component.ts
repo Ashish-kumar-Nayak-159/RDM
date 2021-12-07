@@ -6,11 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./asset-model-json-packet-format.component.css']
 })
 export class AssetModelJsonPacketFormatComponent implements OnInit {
-
   @Input() assetModel: any;
-  constructor() { }
-
   ngOnInit(): void {
   }
-
 }

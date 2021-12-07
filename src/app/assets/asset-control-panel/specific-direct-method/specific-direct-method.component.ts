@@ -95,8 +95,7 @@ export class SpecificDirectMethodComponent implements OnInit {
             this.assets = response.data;
             // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

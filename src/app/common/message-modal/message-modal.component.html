@@ -6,13 +6,19 @@
     </button>
   </div>
   <div class="modal-body">
-    <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="bodyMessage | json"></pre>
+    <!-- <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="bodyMessage | json"></pre> -->
+    <json-editor *ngIf="modalConfig?.jsonDisplay" [options]="editorOptions" style="min-height: 40rem;" name="json"
+            [data]="bodyMessage">
+          </json-editor>
     <div *ngIf="modalConfig?.stringDisplay">{{bodyMessage}}</div>
+    <div *ngIf="isAPILoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onCloseModal('save')">
+    <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onCloseModal('save')" [disabled]="isAPILoading">
       {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
-    <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onCloseModal('close')">
+    <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onCloseModal('close')" [disabled]="isAPILoading">
       {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
     </button>
   </div>

@@ -464,7 +464,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     let widgetsToLoad = [];
     widgetsToLoad = this.layoutJson;
     if (this.layoutJson) {
-      widgetsToLoad.map(async (currentChart) => {
+      widgetsToLoad.forEach(async (currentChart) => {
         this.renderCount++;
         currentChart['chartCount'] = this.renderCount;
         await this.plotChart(currentChart);

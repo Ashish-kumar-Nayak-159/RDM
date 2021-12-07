@@ -9,7 +9,6 @@ import { Asset } from './../../../models/asset.model';
 export class WorkProgressComponent implements OnInit {
   @Input() asset = new Asset();
   @Input() messageText = 'Work in Progress';
-  constructor() { }
 
   ngOnInit(): void {
   }

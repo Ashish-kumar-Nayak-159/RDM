@@ -186,6 +186,7 @@ export class AppUrls {
   public static DEPLOY_EDGE_RULE = 'apps/{0}/sync_edge_rules/{1}/{2}';
 
   public static GET_JOB_CAMPAIGNS = 'apps/{0}/job_campaigns';
+  public static GET_JOB_CAMPAIGN_BY_ID = 'apps/{0}/job_campaigns/{1}';
   public static CREATE_JOB_CAMPAIGN = 'apps/{0}/job_campaigns';
   public static START_JOB_CAMPAIGN = 'apps/{0}/job_campaigns/{1}/start';
   public static STOP_JOB_CAMPAIGN = 'apps/{0}/job_campaigns/{1}/end';

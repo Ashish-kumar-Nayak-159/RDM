@@ -158,6 +158,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       chart.legend = new am4charts.Legend();
       chart.legend.itemContainers.template.togglable = false;
+      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions('xlsx').useLocale = false;
       chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
@@ -403,7 +404,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

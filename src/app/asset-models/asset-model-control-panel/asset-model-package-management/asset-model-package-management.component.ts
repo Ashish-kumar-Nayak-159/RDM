@@ -211,8 +211,34 @@ export class AssetModelPackageManagementComponent implements OnInit {
     this.uploadedFile = files?.item(0) || [];
     this.packageObj.metadata.file_name = this.uploadedFile.name;
   }
+  onFileSelected(event) {
+    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304"];
+    this.uploadedFile = [];
+    if (event?.target?.files) {
+      let fileList = event.target.files as FileList;
+      let file = fileList.item(0);
+      let filereader = new FileReader();
+      filereader.onloadend = () => {
+        let contentHeader = filereader.result as ArrayBufferLike;
+        let arr = (new Uint8Array(contentHeader)).subarray(0, 4);
+        let header = '';
+        for (let arrvalue of arr) {
+          header += arrvalue.toString(16);
+        }
+        if (allowedZipMagicNumbers.includes(header)) {
+          this.uploadedFile = file;                   
+        }
+        else {          
+          this.toasterService.showError('Only .zip files are allowed', 'Select File');          
+        }
+        this.packageObj.metadata.file_name = this.uploadedFile.name;
+        return;
+      }
+      filereader.readAsArrayBuffer(file);
+    }
+  }
 
-  async uploadDocument(){
+  async uploadDocument() {
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
       this.uploadedFile,
@@ -251,17 +277,17 @@ export class AssetModelPackageManagementComponent implements OnInit {
       );
       return;
     }
-    
+
     this.packageObj.version =
       this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor + '.' + this.packageObj.metadata.patch;
     this.isCreatePackageAPILoading = true;
     const method = this.packageObj.id
       ? this.assetModelService.updatePackage(
-          this.assetModel.app,
-          this.assetModel.name,
-          this.packageObj.id,
-          this.packageObj
-        )
+        this.assetModel.app,
+        this.assetModel.name,
+        this.packageObj.id,
+        this.packageObj
+      )
       : this.assetModelService.createPackage(this.assetModel.app, this.assetModel.name, this.packageObj);
     this.subscriptions.push(
       method.subscribe(

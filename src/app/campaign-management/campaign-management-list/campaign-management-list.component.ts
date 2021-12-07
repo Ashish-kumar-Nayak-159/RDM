@@ -1,13 +1,14 @@
-import { filter } from 'rxjs/operators';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { CampaignService } from './../../services/campaigns/campaign.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
-import { ChangeDetectorRef, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { AssetService } from 'src/app/services/assets/asset.service';
 
+declare var $: any;
 @Component({
   selector: 'app-campaign-management-list',
   templateUrl: './campaign-management-list.component.html',
@@ -24,19 +25,33 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   previousFilterObj: any = {};
   selectedDateRange: string;
   isAPILoading = {};
+  campaignViewObj: any = {};
+  assetList : any[] = [];
   isAddCampaignModalOpen = false;
   constructor(
     private commonService: CommonService,
     private campaignService: CampaignService,
     private cdr: ChangeDetectorRef,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private assetService:AssetService
   ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
+    //this.assetList = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
+    const obj = {
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+    };
+    this.subscriptions.push(
+      this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data) {
+          this.assetList = response.data;
+        }
+      })
+    );
     this.getTileName();
-    // this.getCampaignsList();
   }
 
   ngAfterViewInit() {
@@ -90,7 +105,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date + 5;
     } else {
-      this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date + 5;
     }
     const obj = {
@@ -162,9 +176,57 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   openCampaignCreateModal() {
     this.isAddCampaignModalOpen = true;
   }
-
   closeCampaignModal() {
     this.isAddCampaignModalOpen = false;
     this.getCampaignsList();
+  }
+  viewCampaign(item,id)
+  {  
+      this.campaignViewObj  = {};
+      const obj = {
+        from_date: this.filterObj.from_date,
+        to_date: this.filterObj.to_date,
+        last_n_secs: this.filterObj.last_n_secs,
+      };
+      this.campaignService.getJobCampaignById(this.contextApp.app, item.id,obj)
+      .subscribe(
+        (response: any) => {
+          this.campaignViewObj = response;
+          this.isGetCampaignAPILoading = false;         
+        },
+        (err) => {
+          this.isGetCampaignAPILoading = false;
+        }
+      );
+    $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });  
+  }
+  closeViewModel(id)
+  {
+    $('#' + id).modal('hide');
+  }
+  countObjectPropertyLength(index)
+  {
+    let rst = Object.keys(this.campaignViewObj.hierarchy).length > (index + 1) ? true : false;
+    return rst;
+  }
+  getAppHierarchy(obj)
+  {
+    let tempObj = {};
+    if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {      
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (obj.hasOwnProperty(level)) {
+          console.log('level',level);
+          tempObj[level] = obj[level];
+        }
+      });
+    }
+    return tempObj;
+  }
+  getAssetNames(obj)
+  {
+    var result = this.assetList.filter(function (asset){
+      return !obj.find(item => asset.asset_id === item.asset_id);
+    });
+    return result;
   }
 }

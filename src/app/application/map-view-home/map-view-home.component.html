@@ -25,7 +25,7 @@
               </div>
             </div>
           </ng-container>
-          <app-hierarchy-dropdown *ngIf="!isGetAssetsAPILoading" #hierarchyDropdown [showAsset]="false"
+          <app-hierarchy-dropdown *ngIf="!isGetAssetsAPILoading" #hierarchyDropdown [showAsset]="false" [closeOnSelection]="false"
             [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
             (clearHierarchyEvent)="onClearHierarchy($event)">
           </app-hierarchy-dropdown>

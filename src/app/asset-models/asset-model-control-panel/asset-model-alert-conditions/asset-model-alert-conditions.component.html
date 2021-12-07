@@ -47,12 +47,12 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th style="width: 3%;"></th>
-          <th></th>
-          <th>Alert Code</th>
-          <th>Alert Message</th>
-          <th>Actions</th>
-          <th *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></th>
+          <th scope="col" style="width: 3%;"></th>
+          <th scope="col"></th>
+          <th scope="col">Alert Code</th>
+          <th scope="col">Alert Message</th>
+          <th scope="col">Actions</th>
+          <th scope="col" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></th>
         </tr>
       </thead>
       <tbody>
@@ -143,7 +143,7 @@
                         <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
-                          (click)="addVisualizationWidget()" >
+                          (click)="addVisualizationWidget()">
                           <i class="fa fa-plus fa-sm"></i></button>
                       </div>
                     </ng-container>
@@ -177,6 +177,14 @@
                    placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
                   <div class="">
                     <table id="mytable" width="100%" class="">
+                      <thead style="display: none;">
+                        <tr>
+                          <th scope="col">Step</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Activity</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         <ng-container>
                           <tr *ngFor="let step of alertObj.recommendations; let i = index;"
@@ -207,7 +215,7 @@
                                 </td>
                                 <td style="width: 30%;">
                                   <select class="form-control form-control-sm" id="template" name="model_type"
-                                    [(ngModel)]="recommendationObj.activity" >
+                                    [(ngModel)]="recommendationObj.activity">
                                     <option [ngValue]="undefined">Select Activity</option>
                                     <option [ngValue]="'Auto'">Auto Activity</option>
                                     <option [ngValue]="'Manual'">Manual Activity</option>
@@ -284,7 +292,8 @@
                 </div>
                 <div class="col-12 my-3 accordion-padding ">
 
-                  <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                  <div class=""
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                     <h6>Email / Whatsapp Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><i class="fa fa-plus fa-sm"></i></button>
@@ -292,12 +301,13 @@
                    placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                   </div>
 
-                  <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                  <div class=""
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                     <div class="form-inline">
                       <ng-container>
                         <div class="form-group">
                           <select class="form-control form-control-sm" id="template" name="model_type"
-                            [(ngModel)]="docName" >
+                            [(ngModel)]="docName">
                             <option [ngValue]="undefined">Select Document</option>
                             <ng-container *ngFor="let document of documents">
                               <option [ngValue]="document.name">
@@ -309,7 +319,7 @@
                           <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
                           <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
-                             (click)="addReferenceDocument()">
+                            (click)="addReferenceDocument()">
                             <i class="fa fa-plus fa-sm"></i></button>
                         </div>
 
@@ -342,7 +352,7 @@
                   </h6>
                 </div>
                 <div class="col-12 my-3">
-                  <div class="form-group accordion-padding mx-3 " >
+                  <div class="form-group accordion-padding mx-3 ">
                     <input type="checkbox" class="form-check-input" id="email" name="email"
                       [(ngModel)]="alertObj.actions.email.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
@@ -350,7 +360,8 @@
 
                     <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                        <div class=""
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -378,8 +389,7 @@
                           <ng-container *ngFor="let item of alertObj.actions.email.recipients; let index = index">
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
-                              <button class="tag-remove" 
-                                (click)="removeUserGroup(index, 'email')"
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'email')"
                                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
                             </span>
                           </ng-container>
@@ -398,7 +408,8 @@
 
                     <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                        <div class=""
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -414,7 +425,7 @@
                               </div>
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
-                                  tooltip="Add"  (click)="addUserGroup('whatsapp')">
+                                  tooltip="Add" (click)="addUserGroup('whatsapp')">
                                   <i class="fa fa-plus fa-sm"></i></button>
                               </div>
                             </ng-container>
@@ -426,8 +437,7 @@
                           <ng-container *ngFor="let item of alertObj.actions.whatsapp.recipients; let index = index">
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
-                              <button class="tag-remove" 
-                                (click)="removeUserGroup(index, 'whatsapp')"
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
                                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
                             </span>
                           </ng-container>
@@ -450,7 +460,8 @@
                       *ngIf="alertObj.actions.sms.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
 
                       <div class="col-auto">
-                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                        <div class=""
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
@@ -466,7 +477,7 @@
                               </div>
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
-                                  tooltip="Add"  (click)="addUserGroup('sms')">
+                                  tooltip="Add" (click)="addUserGroup('sms')">
                                   <i class="fa fa-plus fa-sm"></i></button>
                               </div>
                             </ng-container>
@@ -478,8 +489,7 @@
                           <ng-container *ngFor="let item of alertObj.actions.sms.recipients; let index = index">
                             <span class="tag">
                               <span class="tag-text">{{item}}</span>
-                              <button class="tag-remove" 
-                                (click)="removeUserGroup(index, 'sms')"
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
                                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
                             </span>
                           </ng-container>
@@ -513,7 +523,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} {{selectedTab == 'Asset' ? 'External' : selectedTab}} Alert Condition
+        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} {{selectedTab == 'Asset' ?
+          'External' : selectedTab}} Alert Condition
         </h5>
         <button type="button" class="close" [disabled]="isCreateAlertConditionLoading"
           (click)="onCloseAlertConditionModal()" aria-label="Close">

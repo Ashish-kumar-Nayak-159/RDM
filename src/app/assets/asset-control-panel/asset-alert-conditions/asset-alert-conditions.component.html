@@ -44,12 +44,12 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th style="width: 3%;"></th>
-          <th></th>
-          <th>Alert Code</th>
-          <th>Alert Message</th>
-          <th>Actions</th>
-          <th *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1"></th>
+          <th scope="col"style="width: 3%;"></th>
+          <th scope="col"></th>
+          <th scope="col">Alert Code</th>
+          <th scope="col">Alert Message</th>
+          <th scope="col">Actions</th>
+          <th scope="col"*ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1"></th>
         </tr>
       </thead>
       <tbody>
@@ -176,6 +176,14 @@
                      placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
                   <div class="">
                     <table id="mytable" width="100%" class="">
+                      <thead style="display: none;">
+                        <tr>
+                          <th scope="col">Step</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Activity</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         <ng-container>
                           <tr *ngFor="let step of alertObj.recommendations; let i = index;"

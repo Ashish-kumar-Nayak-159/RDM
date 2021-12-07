@@ -53,7 +53,7 @@
       <div class="tab-bar">
         <form class="form-inline">
           <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
-            (clearHierarchyEvent)="onClearHierarchy($event)">
+            (clearHierarchyEvent)="onClearHierarchy($event)" [closeOnSelection]="false">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
               (click)="currentOffset = 0;assetsList = [];searchAssets()" [disabled]="isAssetListLoading"><i

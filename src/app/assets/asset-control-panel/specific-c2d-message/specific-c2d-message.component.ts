@@ -112,8 +112,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
             this.assets = response.data;
             this.c2dMessageData.asset_id = this.asset.asset_id;
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

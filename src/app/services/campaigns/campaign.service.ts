@@ -32,4 +32,13 @@ export class CampaignService {
   stopJobCampaign(app, campaignCode) {
     return this.http.post(this.url + String.Format(AppUrls.STOP_JOB_CAMPAIGN, app, campaignCode), {});
   }
+  getJobCampaignById(app, id,filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_JOB_CAMPAIGN_BY_ID, app, id), {params});
+  }
 }

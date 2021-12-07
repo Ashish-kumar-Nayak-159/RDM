@@ -279,9 +279,6 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.editRecommendationStep[index] = true;
     });
   }
-
-  onSaveRecommendations() {}
-
   removeDocument(index) {
     this.alertObj.reference_documents.splice(index, 1);
   }

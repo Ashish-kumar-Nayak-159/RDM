@@ -11,6 +11,7 @@ declare var $: any;
 })
 export class HierarchyDropdownComponent implements OnInit, OnChanges {
   @Input() filterObj: any = {};
+  @Input() closeOnSelection: boolean = false;
   originalFilterObj: any = {};
   contextApp: any;
   configureHierarchy: any = {};
@@ -44,16 +45,16 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
   onHierarchyDropdownClick() {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
+        e.stopPropagation();
     });
     if (
       this.showAsset ||
       (this.contextApp?.hierarchy?.levels?.length > 1 &&
         this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length)
-    ) {
+    ) {      
       $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-          e.preventDefault();
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn') && !e.clickEvent.target.className?.includes('fa-search')) {                          
+            e.preventDefault();
         }
       });
     }
@@ -91,7 +92,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     } else {
       const arr = [];
       this.assets = [];
-      console.log(this.originalAssets);
       this.originalAssets.forEach((asset) => {
         let trueFlag = 0;
         let flaseFlag = 0;
@@ -127,12 +127,31 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
+    this.onSaveHierachy();
+    if(!this.showAsset && this.closeOnSelection)
+    {
+      $("#liveDataSelectAssret").removeClass("show");
+    }
   }
 
-  onSaveHierachy() {
+  onSaveHierachy() {    
     if (this.showAsset) {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      this.saveHierarchyEvent.emit();
+      if(!this.closeOnSelection)
+      {        
+        if(Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset'))
+        {
+          this.saveHierarchyEvent.emit();
+        }
+      }
+      else
+      {
+        if(Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset'))
+        {
+          $("#liveDataSelectAssret").removeClass("show");
+          this.saveHierarchyEvent.emit();
+        }
+      }
     } else {
       this.hierarchyString = this.contextApp.app;
       this.displayHierarchyString = this.contextApp.app;

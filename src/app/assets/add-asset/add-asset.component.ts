@@ -28,6 +28,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   addAssetHierarchyArr: any[] = [];
   constantData = CONSTANTS;
   appUsers: any[] = [];
+  filteredUsers:any[] = [];
   @Input() gateways: any[] = [];
   originalGateways: any[] = [];
   assetModels: any[] = [];
@@ -133,7 +134,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     });
   }
 
-  onChangeOfAddAssetHierarchy(i) {
+  onChangeOfAddAssetHierarchy(i) {    
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -160,14 +161,16 @@ export class AddAssetComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
-    console.log(hierarchyObj);
-    console.log(Object.keys(hierarchyObj));
-    if (Object.keys(hierarchyObj).length === 1) {
+
+    //let maxObject = hierarchyObj.fin
+        if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
+      this.filteredUsers = this.appUsers;
     } else {
       const arr = [];
       this.gateways = [];
-      console.log(hierarchyObj);
+      console.log('hierarchyObj',hierarchyObj);
+      this.updateAssetManagerWithHierarchy(hierarchyObj);
       console.log(this.originalGateways);
       this.originalGateways.forEach((asset) => {
         let trueFlag = 0;
@@ -204,7 +207,21 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     // await this.getAssets(hierarchyObj);
   }
-
+  updateAssetManagerWithHierarchy(hierarchyObj)
+  {
+      let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
+      let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
+      this.filteredUsers = this.appUsers.filter(function(user){
+        if (!user.hierarchy.hasOwnProperty(lastObjKey))
+      {
+        let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
+        if(!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
+            return true;
+      }
+      else if(user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+        return true;
+      });
+  }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
       const modelObj = this.assetModels.filter((type) => type.name === this.assetDetail.tags.asset_model)[0];
@@ -212,6 +229,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
         cloud_connectivity: modelObj.cloud_connectivity,
         protocol: modelObj.protocol,
       };
+      const modelTags = {
+        "Cloud_Connectivity" : modelObj.cloud_connectivity,
+        "Protocol" : modelObj.protocol
+      }
+      this.assetDetail.tags['model_tags'] = JSON.stringify(modelTags);
       const obj = { ...this.assetDetail.tags, ...modelObj.tags };
       this.assetDetail.tags = obj;
     } else {
@@ -221,6 +243,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     // this.setupFormData();
   }
 
+
   getApplicationUsers() {
     return new Promise<void>((resolve1, reject) => {
       this.appUsers = [];
@@ -228,6 +251,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
           if (response && response.data) {
             this.appUsers = response.data;
+            this.filteredUsers = this.appUsers;
           }
           resolve1();
         })

@@ -14,16 +14,16 @@
   <div class="tableFixHead" style="max-height: calc(100vh - 10.5rem)">
     <table class="table table-hover">
       <thead>
-        <!-- <th ><input type="checkbox" name="visibleall"
+        <!-- <th scope="col"><input type="checkbox" name="visibleall"
               id="visibleall" (change)="onClickOfAssetAllCheckbox()" [(ngModel)]="isAllAssetSelected"
               placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th> -->
-        <th>No</th>
-        <th>{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
-        <th>{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
-        <th *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
-        <th *ngIf="type !== constantData.NON_IP_ASSET">{{(tabData?.table_key || 'Asset') + ' Status' }}</th>
-        <th>Hierarchy</th>
-        <th>Action</th>
+        <th scope="col">No</th>
+        <th scope="col">{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
+        <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
+        <th scope="col"*ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
+        <th scope="col"*ngIf="type !== constantData.NON_IP_ASSET">{{(tabData?.table_key || 'Asset') + ' Status' }}</th>
+        <th scope="col">Hierarchy</th>
+        <th scope="col">Action</th>
       </thead>
       <tbody>
         <ng-container *ngIf="assetsList.length > 0">
@@ -102,7 +102,7 @@
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading"></app-message-modal>
   </div>
 
 </div>

@@ -223,7 +223,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
         this.filterObj.asset = item.assets;
-        await this.onChangeOfAsset();
+        this.onChangeOfAsset();
         this.onFilterSelection(this.filterObj, false, true);
       }
     }
@@ -371,26 +371,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 item.derived_kpis = false;
                 item.y1axis.forEach((prop) => {
                   // const type = this.propertyList.find((propObj) => propObj.json_key === prop.json_key)?.type;
-                  if (prop.type === 'Derived KPIs') {
-                    item.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    item.edge_derived_props = true;
-                  } else if (prop?.type === 'Cloud Derived Properties') {
-                    item.cloud_derived_props = true;
-                  } else {
-                    item.measured_props = true;
-                  }
+                  this.SetItemDetails(prop, item);
                 });
                 item.y2axis.forEach((prop) => {
-                  if (prop.type === 'Derived KPIs') {
-                    item.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    item.edge_derived_props = true;
-                  } else if (prop?.type === 'Cloud Derived Properties') {
-                    item.cloud_derived_props = true;
-                  } else {
-                    item.measured_props = true;
-                  }
+                  this.SetItemDetails(prop, item);
                 });
               });
               // if (historicalWidgetUpgrade) {
@@ -412,6 +396,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         )
       );
     });
+  }
+
+  private SetItemDetails(prop: any, item: any) {
+    if (prop.type === 'Derived KPIs') {
+      item.derived_kpis = true;
+    } else if (prop?.type === 'Edge Derived Properties') {
+      item.edge_derived_props = true;
+    } else if (prop?.type === 'Cloud Derived Properties') {
+      item.cloud_derived_props = true;
+    } else {
+      item.measured_props = true;
+    }
   }
 
   getLiveWidgets(assetType) {
@@ -599,7 +595,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.getAssetData();
     if (asset_model) {
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
-        await this.getTelemetryMode(this.filterObj.asset.asset_id);
+        this.getTelemetryMode(this.filterObj.asset.asset_id);
       }
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);

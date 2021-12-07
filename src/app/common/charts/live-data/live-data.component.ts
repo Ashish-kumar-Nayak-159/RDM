@@ -137,6 +137,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.scrollable = true;
       chart.legend.labels.template.maxWidth = 30;
       chart.legend.labels.template.truncate = true;
+      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {

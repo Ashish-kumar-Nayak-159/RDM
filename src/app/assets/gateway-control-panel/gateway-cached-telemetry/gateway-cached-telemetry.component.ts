@@ -46,7 +46,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'view';
+    this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.asset.type === CONSTANTS.IP_GATEWAY) {
@@ -144,9 +144,6 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-    } else {
-      filterObj.from_date = filterObj.from_date;
-      filterObj.to_date = filterObj.to_date;
     }
     const obj = { ...filterObj };
 

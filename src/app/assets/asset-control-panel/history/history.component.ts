@@ -748,7 +748,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
 
     if (this.layoutJson && this.historyData.length > 0) {
-      widgetsToLoad.map(async (currentChart) => {
+      widgetsToLoad.forEach(async (currentChart) => {
         this.renderCount++;
         currentChart['chartCount'] = this.renderCount;
         await this.plotChart(currentChart);

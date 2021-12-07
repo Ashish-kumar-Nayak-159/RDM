@@ -1,5 +1,4 @@
 import { ToasterService } from './../../../../services/toaster.service';
-import { filter } from 'rxjs/operators';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
@@ -41,6 +40,7 @@ export class C2dJobsComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    
     if (this.asset.type === CONSTANTS.IP_GATEWAY) {
       this.c2dJobFilter.iot_asset_id = this.asset.asset_id;
     } else {

@@ -29,8 +29,8 @@
     width: 80%;
   }
   #mytable select {
-    background-color: white !important;
     background: url('../../../../assets/img/arrow-down.png') no-repeat right #ddd;
+    background-color: white !important;    
     background-position: 98%;
     padding: 2px 20px 2px 8px;
     padding-right: 20px;

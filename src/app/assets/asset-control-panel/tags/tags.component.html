@@ -43,6 +43,7 @@
         </ng-container>
         <h1 class="h6 mb-3 text-secondary-400">
           <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            Edit Reserved Tags : 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
               (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
@@ -50,6 +51,12 @@
           </ng-container>
         </h1>
         <table class="table table-hover">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>Asset Display Name</td>
@@ -114,21 +121,50 @@
                   <td>Cloud Connectivity</td>
                   <td>{{asset?.tags?.cloud_connectivity}}</td>
                 </tr> -->
-            <tr *ngFor="let tag of assetModel?.tags?.reserved_tags">
-              <td>{{tag.name}}</td>
-              <td>
-                <ng-container *ngIf="!isReservedTagsEditable || tag.nonEditable;else inputTemplate">
-                  {{asset?.tags[tag.key]}}
-                </ng-container>
-                <ng-template #inputTemplate>
-                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="asset?.tags[tag.key]" name="{{tag.name}}">
-                </ng-template>
-              </td>
-            </tr>
+            
           </tbody>
         </table>
 
+      </accordion-group>
+      <accordion-group heading="" [panelClass]="'customClass'">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Model Tags
+          </a>
+        </ng-container>
+        <h1 class="h6 mb-3 text-secondary-400">
+          <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            Edit Model Tags : 
+            <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isModelTagsEditable"
+              (click)="isModelTagsEditable = true;"><i class="fa fa-edit"></i></a>
+            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isModelTagsEditable"
+              (click)="isModelTagsEditable = false;"><i class="fa fa-times"></i></a>
+          </ng-container>
+        </h1>
+        <table class="table table-hover">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="asset.tags.model_tags || assetModel?.tags?.reserved_tags">
+              <tr *ngFor="let tag of assetModelTags">
+                <td>{{tag.name}}</td>
+                <td>
+                  <ng-container *ngIf="(!isModelTagsEditable || (tag.name == 'Protocol' || tag.name == 'Cloud Connectivity')) || tag.nonEditable;else inputTemplate">
+                    {{tag.value}}
+                  </ng-container>
+                  <ng-template #inputTemplate >
+                    <input type="text"  class="form-control form-control-sm bg-light border-0 small"
+                      [(ngModel)]="tag.value" name="{{tag.name}}">
+                  </ng-template>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
       </accordion-group>
       <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
@@ -138,6 +174,9 @@
         </ng-container>
         <h1 class="h6 mb-3 text-secondary-800">
           <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            <span *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1">
+              Edit Custom Tags : 
+            </span> 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
               *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
                 class="fa fa-edit"></i></a>
@@ -145,7 +184,14 @@
               (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
           </ng-container>
         </h1>
+        <!-- {{assetCustomTags |json}} -->
         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
               <ng-container>
@@ -167,7 +213,7 @@
                   <td>
                     <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
                       aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                      (focusout)="checkKeyDuplicacy(tag, i)"
+                      (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                   </td>
                   <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
@@ -176,15 +222,88 @@
                   <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
                 </ng-container>
               </ng-container>
-              <ng-template  #lastRowTemplate >
+              <ng-template #lastRowTemplate>
                 <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                   <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
                     aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                    (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i)">
+                    (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')">
                 </td>
-                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
-                    aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
+                    class="form-control form-control-sm bg-light border-0 small" placeholder="Value" aria-label="Search"
+                    aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
                     (input)="onCustomTagInputChange()"></td>
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+              </ng-template>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+
+      <accordion-group heading="" [panelClass]="'customClass'">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Variables 
+          </a>
+        </ng-container>
+        <h1 class="h6 mb-3 text-secondary-800">
+          <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+            <span *ngIf="!isVariablesEditable && assetVariables.length > 1">
+              Edit Variables : 
+            </span> 
+            <a href="javascript:void(0)" placement="bottom" tooltip="Edit Variables"
+              *ngIf="!isVariablesEditable && assetVariables.length > 1" (click)="isVariablesEditable = true;"><i
+                class="fa fa-edit"></i></a>
+            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isVariablesEditable"
+              (click)="isVariablesEditable = false;"><i class="fa fa-times"></i></a>
+          </ng-container>
+        </h1>
+        <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead style="display: none;">
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!assetVariables || assetVariables.length  == 1 ">
+              <ng-container>
+                Variables not available
+              </ng-container>
+            </tr>
+            <tr *ngFor="let tag of assetVariables;let i = index">
+              <ng-container *ngIf="!tag.editable ; else lastRowTemplate1">
+                <ng-container *ngIf="!isVariablesEditable">
+                  <td>{{tag.name}}</td>
+                  <td>{{tag.value}}</td>
+                  <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                    <a href="javascript:void(0)" (click)="deleteVariable(i)">
+                      <i class="fa fa-fw fa-trash"></i>
+                    </a>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="isVariablesEditable">
+                  <td>
+                    <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
+                      aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                      (focusout)="checkKeyDuplicacy(tag, i,'variable')"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
+                  </td>
+                  <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
+                      aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1"></td>
+                  <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+                </ng-container>
+              </ng-container>
+              <ng-template #lastRowTemplate1>
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
+                    aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                    (input)="onVariableTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i,'variable')">
+                </td>
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
+                    class="form-control form-control-sm bg-light border-0 small" placeholder="Value" aria-label="Search"
+                    aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
+                    (input)="onVariableTagInputChange()"></td>
                 <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
               </ng-template>
             </tr>

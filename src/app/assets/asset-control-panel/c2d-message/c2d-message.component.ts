@@ -8,6 +8,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ActivatedRoute } from '@angular/router';
+import { JsonEditorOptions } from 'ang-jsoneditor';
 declare var $: any;
 @Component({
   selector: 'app-c2d-message',
@@ -33,6 +34,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   @Input() pageType: string;
   contextApp: any;
   isC2dMsgResponsesLoading = false;
+  editorOptions: JsonEditorOptions;
+
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -42,6 +45,9 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.mode = 'code';
+    this.editorOptions.statusBar = false;
     this.c2dMsgFilter.displayJobOptions = true;
     this.c2dMsgFilter.tableType = 'All';
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -88,9 +94,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-    } else {
-      filterObj.from_date = filterObj.from_date;
-      filterObj.to_date = filterObj.to_date;
     }
     const obj = { ...filterObj };
     delete obj.displayOptions;

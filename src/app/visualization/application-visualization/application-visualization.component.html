@@ -16,7 +16,7 @@
             </app-date-range-picker>
           </ng-container>
           <ng-container *ngIf="pageType === 'live'">
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="false" [filterObj]="filterObj"
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [closeOnSelection]="false" [showAsset]="false" [filterObj]="filterObj"
               (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
             </app-hierarchy-dropdown>
           </ng-container>
@@ -54,7 +54,7 @@
       <div class=""
         [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
         <ul class="mail_list list-group list-unstyled alert-scroll"
-          *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+          *ngIf="!isAlertAPILoading && latestAlerts.length > 0" [ngClass]="{'adjust-height':pageType=='history'}">
           <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'
@@ -321,6 +321,14 @@
             <div class="content-scroll content-scroll-alert"
               [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
               <table class="table table-hover">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Activity</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
                     <tr *ngIf="alertCondition.recommendations.length > 0">
@@ -360,10 +368,10 @@
                   <table class="table table-hover">
                     <thead>
                       <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Actions</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -420,7 +428,7 @@
                     <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
                       Documents: NA</p>
                     <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
-                      <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
+                      <!-- <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
                         <p><b>{{file.data.name}}</b></p>
                         <img *ngIf="file.type === 'Image'" class="img-fluid pr-3"
                           [src]="blobStorageURL + file.data.url + sasToken" />
@@ -429,7 +437,13 @@
                         </video>
                         <iframe *ngIf="file.type === 'PDF'" [src]="file.data.sanitizedURL"
                           style="width: 100%;height: 80vh"></iframe>
-                      </ng-container>
+                      </ng-container> -->
+                      <div class="table-responsive">
+                        <div class="tableFixHead">
+                          <app-common-table [tableData]="selectedAlert?.metadata?.files" [tableConfig]="docTableConfig" [isTableFilterSelected]="true"
+                            [isTableDataLoading]="isAlertModalDataLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </ng-template>
@@ -546,10 +560,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <img *ngIf="selectedDocument.type === 'Image'" width="420" height="350"
+        <img *ngIf="selectedDocument.type === 'Image' && selectedDocument.metadata" width="420" height="350"
           [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" />
-        <video *ngIf="selectedDocument.type === 'Video'" width="420" height="350" controls>
+        <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.metadata" width="420" height="350" controls>
           <source [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" type="video/mp4">
+        </video>
+        <img *ngIf="selectedDocument.type === 'Image' && selectedDocument.data" width="420" height="350"
+          [src]="blobStorageURL + selectedDocument.data.url + sasToken" />
+        <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.data" width="420" height="350" controls>
+          <source [src]="blobStorageURL + selectedDocument.data.url + sasToken" type="video/mp4">
         </video>
         <iframe *ngIf="selectedDocument.type === 'PDF'" [src]="selectedDocument.sanitizedURL"
           style="width: 100%;height: 80vh"></iframe>

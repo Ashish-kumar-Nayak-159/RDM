@@ -1,40 +1,9 @@
 <div class="tab-bar">
   <form class="form-inline">
-    <div class="form-group" id="dd-open">
-      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom"
-        [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'" (click)="onAssetFilterBtnClick()"
-        aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': hierarchyString}">
-        <i class="fas fa-fw fa-filter fa-sm button-divider mr-1"></i>{{hierarchyString ? displayHierarchyString :
-        'Select Hierarchy'}} </button>
-      <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
-        <ng-container *ngFor="
-                    let level of contextApp?.hierarchy?.levels;
-                    let index = index
-                  ">
-          <div class="">
-            <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
-              [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
-              (change)="onChangeOfHierarchy(index, 'PG')">
-              <option [ngValue]="undefined">
-                Select {{ level }}
-              </option>
-              <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                {{ tag }}
-              </option>
-            </select>
-            <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
-              disabled class="dropdown-form" />
-          </div>
-        </ng-container>
-        <div class="form-group"
-          *ngIf="contextApp?.hierarchy?.levels?.length > 1 && contextAppUserHierarchyLength !== contextApp?.hierarchy?.levels?.length">
-          <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
-            (click)="onSaveHierachy()">Apply</button>
-          <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
-            (click)="onClearHierarchy()">Clear</button>
-        </div>
-      </div>
-    </div>
+    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="true"
+      [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
+      (clearHierarchyEvent)="onClearHierarchy($event)">
+    </app-hierarchy-dropdown>
     <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
       (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
     </app-date-range-picker>
@@ -56,15 +25,15 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>No</th>
-            <th>Asset Name</th>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Size</th>
-            <!-- <th>Type</th>
-        <th>Frequency</th> -->
-            <th>Action</th>
+            <th scope="col">No</th>
+            <th scope="col">Asset Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Category</th>
+            <th scope="col">Type</th>
+            <th scope="col">Size</th>
+            <!-- <th scope="col">Type</th>
+        <th scope="col">Frequency</th> -->
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -230,9 +199,9 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key" [closeOnSelect]="false"
-                  placeholder="Select Properties" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
-                  [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
+                  [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
+                  name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>
                     <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                       <li *ngIf="props.length !== dropdownPropList.length"> <a href="javascript:void(0)"

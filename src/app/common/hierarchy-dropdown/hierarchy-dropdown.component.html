@@ -4,7 +4,7 @@
     (originalFilterObj?.asset.display_name ? originalFilterObj?.asset.display_name :
     originalFilterObj?.asset.asset_id) : 'Select Asset'" (click)="onHierarchyDropdownClick()" aria-haspopup="true"
     aria-expanded="false">
-    <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+    <span class="fas fa-fw fa-filter fa-sm button-divider"></span>
     {{originalFilterObj?.asset ?
     (originalFilterObj?.asset.display_name ? originalFilterObj?.asset.display_name :
     originalFilterObj?.asset.asset_id) : 'Select Asset'}}
@@ -12,7 +12,7 @@
   <button href="#" *ngIf="!showAsset" role="button" class="dropdown-btn" data-toggle="dropdown"
     [ngClass]="{'active': hierarchyString}" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
     (click)="onHierarchyDropdownClick()" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ?
+    <span class="fas fa-fw fa-filter fa-sm button-divider"></span> {{hierarchyString ?
     displayHierarchyString :
     'Select Hierarchy'}}</button>
   <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
@@ -36,20 +36,20 @@
       </div>
     </ng-container>
     <ng-select [items]="assets" class="custom dropdown-open" bindLabel="display_name" [clearable]="false"
-      [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-      dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset" *ngIf="showAsset">
+      [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+      dropdownPosition="bottom" name="asset-dropdown" (change)="onSaveHierachy()" [(ngModel)]="filterObj.asset" *ngIf="showAsset">
       <ng-template ng-option-tmp let-asset="item">
         <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
           asset.display_name: asset.asset_id}}</span>
       </ng-template>
     </ng-select>
-    <div class="form-group" *ngIf="showAsset ||
+    <!-- <div class="form-group" *ngIf="showAsset ||
     (contextApp?.hierarchy?.levels?.length > 1 &&
       contextAppUserHierarchyLength !== contextApp?.hierarchy?.levels?.length)">
       <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
         (click)="onSaveHierachy()">Apply</button>
       <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
         (click)="onClearHierarchy()">Clear</button>
-    </div>
+    </div> -->
   </div>
 </div>

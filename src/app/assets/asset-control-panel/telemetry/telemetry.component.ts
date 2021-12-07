@@ -200,8 +200,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
             this.assets = response.data;
             this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id });
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }
@@ -268,9 +267,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-    } else {
-      filterObj.from_date = filterObj.from_date;
-      filterObj.to_date = filterObj.to_date;
     }
     const obj = { ...filterObj };
     obj.partition_key = this.asset?.tags?.partition_key;

@@ -110,8 +110,7 @@ export class SpecificTwinChangeComponent implements OnInit {
             this.assets = response.data;
             this.c2dMessageData.asset_id = this.asset.asset_id;
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

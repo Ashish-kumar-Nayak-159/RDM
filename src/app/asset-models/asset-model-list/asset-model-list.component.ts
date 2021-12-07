@@ -55,7 +55,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       this.route.paramMap.subscribe(async (params) => {
         this.assetModelFilterObj.app = this.contextApp.app;
         this.originalAssetsModelFilterObj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
-        await this.getTileName();
+        this.getTileName();
         if (this.iotAssetsTab?.visibility) {
           this.componentState = CONSTANTS.IP_ASSET;
         } else if (this.legacyAssetsTab?.visibility) {

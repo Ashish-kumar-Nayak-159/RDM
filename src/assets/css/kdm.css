@@ -91,7 +91,7 @@ p {
 
 abbr[title],
 abbr[data-original-title] {
-  text-decoration: underline;
+  /* text-decoration: underline; */
   -webkit-text-decoration: underline dotted;
   text-decoration: underline dotted;
   cursor: help;
@@ -9652,7 +9652,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .text-hide {
-  font: 0/0 a;
+  font: 0/0 a,var(--font-family-sans-serif);
   color: transparent;
   text-shadow: none;
   background-color: transparent;
@@ -10118,7 +10118,7 @@ a:focus {
   border: 0;
   font-weight: 900;
   content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
 }
 
 .sidebar .nav-item.dropdown.show .dropdown-toggle::after,
@@ -10400,7 +10400,7 @@ a:focus {
 .sidebar #sidebarToggle::after {
   font-weight: 900;
   content: '\f104';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
   margin-right: 0.1rem;
 }
 
@@ -10419,7 +10419,7 @@ a:focus {
 
 .sidebar.toggled #sidebarToggle::after {
   content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
   margin-left: 0.25rem;
 }
 
@@ -10481,7 +10481,7 @@ a:focus {
   }
   .sidebar .nav-item .nav-link {
     display: block;
-    width: 100%;
+    /* width: 100%; */
     text-align: left;
     padding: 1rem;
     width: 14rem;
@@ -10502,7 +10502,7 @@ a:focus {
     border: 0;
     font-weight: 900;
     content: '\f107';
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 5 Free',sans-serif;
   }
   .sidebar .nav-item .nav-link[data-toggle="collapse"].collapsed::after {
     content: '\f105';
@@ -10760,7 +10760,7 @@ a:focus {
   line-height: 51px;
   font-weight: 900;
   content: '\f107';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
   color: #d1d3e2;
 }
 
@@ -11263,7 +11263,7 @@ body.sidebar-toggled footer.sticky-footer {
   border: 0;
   font-weight: 900;
   content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
 }
 
 .container-fluid .sidebar1 .nav-item.dropdown.show .dropdown-toggle::after,
@@ -11408,7 +11408,7 @@ body.sidebar-toggled footer.sticky-footer {
 .container-fluid .sidebar1 #sidebar1Toggle::after {
   font-weight: 900;
   content: '\f104';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
   margin-right: 0.1rem;
 }
 
@@ -11427,7 +11427,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1.toggled #sidebar1Toggle::after {
   content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free',sans-serif;
   margin-left: 0.25rem;
 }
 
@@ -11501,11 +11501,10 @@ body.sidebar-toggled footer.sticky-footer {
   }
   .container-fluid .sidebar1 .nav-item .nav-link {
     display: block;
-    width: 100%;
+    /* width: 100%; */
     text-align: left;
     padding: 0.5rem 1rem;
     width: 14rem;
-
   }
   .container-fluid .sidebar1 .nav-item .nav-link i {
     font-size: 0.75rem;
@@ -11531,7 +11530,7 @@ body.sidebar-toggled footer.sticky-footer {
     border: 0;
     font-weight: 900;
     content: '\f107';
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 5 Free',sans-serif;
   }
   .container-fluid .sidebar1 .nav-item .nav-link[data-toggle="collapse"].collapsed::after {
     content: '\f105';
@@ -12257,8 +12256,8 @@ body.sidebar1-toggled footer.sticky-footer {
 .timeline {
   position: relative;
   border-color: #dedede;
-      border-left-color: rgb(222, 222, 222);
   border-left: 1px solid #dedede;
+  border-left-color: rgb(222, 222, 222);  
   font-size: 14px;
 }
 .timeline-item p {

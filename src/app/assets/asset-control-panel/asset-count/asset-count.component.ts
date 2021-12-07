@@ -114,8 +114,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
             }
             // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

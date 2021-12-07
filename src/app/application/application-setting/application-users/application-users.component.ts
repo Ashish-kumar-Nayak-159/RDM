@@ -302,7 +302,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   async openDeleteUserModal(user) {
-    const count = await this.checkForOneAppAdminUser();
+    const count = this.checkForOneAppAdminUser();
     if (count < 2 && user.role === CONSTANTS.APP_ADMIN_ROLE) {
       this.toasterService.showError('At least one app admin user required.', 'Delete User Access');
       return;

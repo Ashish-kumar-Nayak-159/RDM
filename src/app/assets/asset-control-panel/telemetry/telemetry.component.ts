@@ -200,8 +200,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
             this.assets = response.data;
             this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id });
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

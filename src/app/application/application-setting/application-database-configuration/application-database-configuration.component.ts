@@ -6,11 +6,5 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./application-database-configuration.component.css']
 })
 export class ApplicationDatabaseConfigurationComponent implements OnInit {
-
-  @Input() applicationData: any;
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

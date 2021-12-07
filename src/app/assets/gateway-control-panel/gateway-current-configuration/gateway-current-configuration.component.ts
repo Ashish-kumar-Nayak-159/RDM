@@ -10,8 +10,6 @@ export class GatewayCurrentConfigurationComponent implements OnInit {
 
   @Input() asset: Asset = new Asset();
   assetMetadataKeys: any[] = [];
-  constructor() { }
-
   ngOnInit(): void {
     this.assetMetadataKeys = Object.keys(this.asset.configuration);
   }

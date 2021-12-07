@@ -81,8 +81,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
             this.assets = response.data;
             this.c2dMessageData.asset_id = this.assets.length > 0 ? this.assets[0].asset_id : undefined;
           }
-        },
-        (errror) => {}
+        }
       )
     );
   }

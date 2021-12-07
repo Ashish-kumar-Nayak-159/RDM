@@ -11,7 +11,6 @@ export class TrendAnalysisComponent implements OnInit {
   viewType: string;
   @Input() asset = new Asset();
   isLayout = false;
-  constructor() { }
 
   ngOnInit(): void {
     this.setViewType('history');

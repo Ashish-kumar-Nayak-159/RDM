@@ -309,8 +309,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         distance: 5,
         delay: 100,
         opacity: 0.6,
-        cursor: 'move',
-        update: () => {},
+        cursor: 'move'
       });
     }, 100);
   }

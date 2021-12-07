@@ -13,8 +13,6 @@ export class TableComponent implements OnInit {
   @Input() isTableFilterSelected = false;
   @Output() viewMessageEvent: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() { }
-
   ngOnInit(): void {
   }
 

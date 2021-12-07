@@ -401,7 +401,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

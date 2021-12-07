@@ -148,8 +148,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         distance: 5,
         delay: 100,
         opacity: 0.6,
-        cursor: 'move',
-        update: () => { },
+        cursor: 'move'
       });
     }, 1000);
   }

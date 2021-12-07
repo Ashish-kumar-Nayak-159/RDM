@@ -1,14 +1,14 @@
 <div class="bg">
   <div class="d-flex justify-content-center align-items-center page-scroll">
     <div class="login-reg-panel d-flex justify-content-center align-items-center">
-      <div class="login-info-box" *ngIf="this.environment === 'DEV'">
+      <div class="login-info-box" *ngIf="this.environment === 'TEST'">
         <h2>Don't have an account?</h2>
         <p>Enter your details and start journey with us</p>
         <label id="label-register" for="log-reg-show">Continue</label>
-        <input type="radio" name="active-log-panel" id="log-reg-show" (click)=Register(); >
+        <input type="radio" name="active-log-panel" id="log-reg-show" (click)=onRegisterToggle(); >
       </div>
 
-      <div class="login-info-box justify-content-center" *ngIf="this.environment !== 'DEV'">
+      <div class="login-info-box justify-content-center" *ngIf="this.environment !== 'TEST'">
         <img src="../../assets/img/rdm.png" class="img-fluid" style="width: 70%;margin: 0 20% 0 10%;">
       </div>
 
@@ -16,7 +16,7 @@
         <h2>Have an account?</h2>
         <p>To keep connected with us, Please login here</p>
         <label id="label-login" for="log-login-show">Login</label>
-        <input type="radio" name="active-log-panel" id="log-login-show" (click)=Register(); checked="checked">
+        <input type="radio" name="active-log-panel" id="log-login-show" (click)=onRegisterToggle(); checked="checked">
       </div>
 
       <div class="white-panel">

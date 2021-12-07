@@ -89,7 +89,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       $('.container-fluid').removeClass('sb-notoggle');
     }
 
-    if (this.environment === 'DEV') {
+    if (this.environment === 'TEST') {
       if (!this.tenantId || this.tenantId === '' || this.tenantId === null) {
         $('.register-info-box').fadeOut();
         $('.login-info-box').fadeIn();
@@ -114,7 +114,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  Register() {
+  onRegisterToggle() {
     if ($('#log-login-show').is(':checked')) {
       $('.register-info-box').fadeOut();
       $('.login-info-box').fadeIn();

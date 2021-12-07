@@ -11515,19 +11515,19 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url(../img/rdm.jpg);
+  background: url(../img/rdm-design.png);
   background-position: center;
   background-size: cover;
 }
 
 .bg-register-image {
-  background: url(../img/rdm.jpg);
+  background: url(../img/rdm-design.png);
   background-position: center;
   background-size: cover;
 }
 
 .bg-password-image {
-  background: url(../img/rdm.jpg);
+  background: url(../img/rdm-design.png);
   background-position: center;
   background-size: cover;
 }

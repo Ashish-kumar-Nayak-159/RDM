@@ -15805,3 +15805,7 @@ form .page .btns button.next {
 label {
   cursor: pointer;
 }
+
+ngx-intl-tel-input input {
+  border: 1px solid #b5b5b5 !important;
+}

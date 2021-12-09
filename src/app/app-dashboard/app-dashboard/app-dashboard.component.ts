@@ -111,12 +111,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-    console.log(this.widgetStringFromMenu);
     this.getTileName();
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaa     ', JSON.stringify(item));
       this.historicalDateFilter.dateOption = item.dateOption;
       if (item.dateOption !== 'Custom Range') {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
@@ -128,7 +126,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.historicalDateFilter.to_date = item.to_date;
         this.historicalDateFilter.last_n_secs = undefined;
       }
-      console.log('aaaaaaaaaaabbbbbbbb     ', JSON.stringify(this.historicalDateFilter));
 
       // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
       // this.historicalDateFilter.to_date = moment().utc().unix();
@@ -218,13 +215,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    console.log(item);
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
         this.filterObj.asset = item.assets;
-        this.onChangeOfAsset();
-        this.onFilterSelection(this.filterObj, false, true);
+        await this.onChangeOfAsset();
+        this.onFilterSelection(this.filterObj, false, true,true);
       }
     }
   }
@@ -549,8 +545,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false) {
-    console.log('aaaaaa   ', filterObj);
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false,isFromMainSearch = true) {
+    console.log('aaaaaa   ', filterObj,isFromMainSearch);
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -607,8 +603,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getLiveWidgetTelemetryDetails(obj);
       } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
         await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
-        // await this.getHistoricalWidgetsDrivedKPIDetails();
-        // this.getHistoricalWidgetTelemetryDetails();
+        await this.getHistoricalWidgetsDrivedKPIDetails();
+        if(!isFromMainSearch){
+          this.getHistoricalWidgetTelemetryDetails();
+        }else{
+          this.isTelemetryDataLoading = false;
+          this.isFilterSelected = true;
+        }
       }
     }
   }
@@ -621,7 +622,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
           this.propList.push(prop.json_key);
           const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
-          kpiCodes += kpiObj.code + ',';
+          kpiCodes += kpiObj?.code + ',';
         }
       });
       widget.y2axis.forEach((prop) => {

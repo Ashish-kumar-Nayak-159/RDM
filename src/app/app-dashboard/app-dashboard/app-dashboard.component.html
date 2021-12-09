@@ -146,7 +146,7 @@
 
         <div class="form-group">
           <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-            (click)="onFilterSelection(this.filterObj)">
+            (click)="onFilterSelection(this.filterObj,true,false,false)">
             <i class="fa fa-search fa-sm"></i>
           </button>
         </div>
@@ -290,7 +290,7 @@
       <div id="historic_charts" class="pl-3 pt-3 w-100">
 
       </div>
-      <div class="pl-3" *ngIf="telemetryData.length === 0 && !isTelemetryDataLoading">No Data available.</div>
+      <!-- <div class="pl-3" *ngIf="telemetryData.length === 0 && !isTelemetryDataLoading">No Data available.</div> -->
     </div>
   </div>
 </ng-container>

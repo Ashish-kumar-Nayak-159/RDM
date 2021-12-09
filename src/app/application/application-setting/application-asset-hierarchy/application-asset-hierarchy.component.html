@@ -108,7 +108,7 @@
   <div class="modal-dialog" role="document" style="max-width:700px!important;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add {{applicationData.hierarchy.levels[levelToAddUpdate]}}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{isEditMode ? 'Edit':'Add'}} {{applicationData.hierarchy.levels[levelToAddUpdate]}}</h5>
         <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCloseHierarchyModal()"
           aria-label="Close" placement="bottom" tooltip="Cancel"><em class="fas fa-times fa-sm"></em></button>
       </div>
@@ -134,7 +134,7 @@
           </div>
           <div class="row">
             <div class="form-group col-md-12">
-              <label for="example-tel-input required">Metadata</label>
+              <label for="example-tel-input required">Tags</label>
             <table class="table table-hover" id="dataTable" aria-describedby="metadata">
               <thead style="display: none;">
                 <tr>

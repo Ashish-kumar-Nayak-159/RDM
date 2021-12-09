@@ -360,7 +360,7 @@ export class AddRuleComponent implements OnInit {
         !this.ruleModel.description ||
         !this.ruleModel.code ||
         !this.ruleModel.operator ||
-        !this.ruleModel.escalation_time_in_sec)
+        (this.ruleModel.rule_type && !this.ruleModel.escalation_time_in_sec))
       || (
         this.ruleModel.name?.trim()?.length <= 0 ||
         this.ruleModel.description?.trim()?.length <= 0 ||

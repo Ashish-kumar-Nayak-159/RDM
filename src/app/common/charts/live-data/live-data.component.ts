@@ -119,8 +119,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         dateAxis.max = date.getTime();
       }
       // dateAxis.renderer.minGridDistance = 70;
-      dateAxis.renderer.grid.template.location = 0.5;
-      dateAxis.renderer.labels.template.location = 0.5;
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.labels.template.location = 0.01;
       // dateAxis.groupData = true;
       // dateAxis.groupCount = 200;
       // const valueAxis = chart.yAxes.push(new am4charts.ValueAxisp());

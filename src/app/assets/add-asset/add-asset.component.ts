@@ -28,6 +28,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   appUsers: any[] = [];
   filteredUsers: any[] = [];
   @Input() gateways: any[] = [];
+  actualGateways : any[] = [];
   originalGateways: any[] = [];
   assetModels: any[] = [];
   userData: any;
@@ -53,7 +54,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
+    debugger
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
+    this.actualGateways = this.gateways;
     await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.addAssetHierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
@@ -136,8 +139,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
             }
             resolve1();
           },
-          (error) => {           
-            
+          (error) => {
+
           }),
       );
     });
@@ -187,10 +190,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
-
+    debugger
     //let maxObject = hierarchyObj.fin
     if (Object.keys(hierarchyObj).length === 1) {
-      this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
+      this.gateways = JSON.parse(JSON.stringify(this.actualGateways));
       this.filteredUsers = this.appUsers;
     } else {
       const arr = [];
@@ -348,6 +351,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
   onWhitelistedAssetChange() {
+    debugger
     this.getAssetsModels(this.componentState);
     if (this.selectedWhitelistAsset === undefined) {
       this.assetDetail.asset_id = null;
@@ -360,8 +364,22 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
       this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
       this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
-      this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
-      
+      if (this.selectedWhitelistAsset.hasOwnProperty('protocol') && this.selectedWhitelistAsset.protocol != null && this.selectedWhitelistAsset.protocol != '')
+        this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
+      if (this.selectedWhitelistAsset.hasOwnProperty('hierarchy_json')) {
+        //this.assetDetail.tags.hierarchy_json = this.selectedWhitelistAsset.hierarchy_json;
+        this.contextApp.hierarchy.levels.forEach((level, index) => {
+          if (index !== 0) {
+            if (this.selectedWhitelistAsset?.hierarchy_json) {
+              this.addAssetConfigureHierarchy[index] = this.selectedWhitelistAsset?.hierarchy_json[level];
+              if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
+                this.onChangeOfAddAssetHierarchy(index);
+              }
+            }
+          }
+        });
+
+      }
     }
   }
   onCreateAsset() {
@@ -456,7 +474,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
-          localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);         
+          localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);
           if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             this.updateGatewayTags(this.assetDetail);
             this.toasterService.showSuccess(

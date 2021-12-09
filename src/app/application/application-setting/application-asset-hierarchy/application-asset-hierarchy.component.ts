@@ -467,12 +467,12 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
       this.applicationService.getHierarchyById(id).subscribe(
         (response: any) => {
           if (response) {
-            debugger
             this.initialForm();
             this.addHierarchyForm.controls['name'].setValue(response.name);
             this.hierarchyForm.level = response.level;
             this.hierarchyForm.parent_id = response.parent_Id;
             this.hierarchyForm.id = response.id;
+            this.levelToAddUpdate =  response.level;
             if (response?.metaData) {
               Object.keys(response?.metaData).forEach((key, index) => {
                 this.assetCustomTags.push({

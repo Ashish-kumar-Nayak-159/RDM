@@ -33,8 +33,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
-    private assetService:AssetService
-  ) {}
+    private assetService: AssetService
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -74,7 +74,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  async redirectToApp(app, index) {    
+  async redirectToApp(app, index) {
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -93,10 +93,10 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
-    console.log('this.applicationData.menu_settings ',this.applicationData.menu_settings);
-    
+    console.log('this.applicationData.menu_settings ', this.applicationData.menu_settings);
+
     this.commonService.refreshSideMenuData.emit(this.applicationData);
-    
+
     // this.router.navigate(['applications', this.applicationData.app]);
     this.redirectToFirstMenu()
     this.isAppDataLoading = undefined;
@@ -107,7 +107,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.main_menu.length > 0
         ? this.applicationData.menu_settings.main_menu
         : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-    for(let i=0;i<menu.length;i++){
+    for (let i = 0; i < menu.length; i++) {
       const menuObj = menu[i];
       if (menuObj.visible) {
         if (menuObj.url?.includes(':appName')) {
@@ -125,11 +125,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.applicationData = undefined;
       this.apiSubscriptions.push(
         this.applicationService.getApplicationDetail(app.app, true).subscribe((response: any) => {
-          console.log('response ',response);
-          
+          console.log('response ', response);
+
           this.applicationData = JSON.parse(JSON.stringify(response));
-          console.log('this.applicationData ',this.applicationData);
-          
+          console.log('this.applicationData ', this.applicationData);
+
           this.applicationData.app = app.app;
 
           this.userData.apps.forEach((appObj) => {
@@ -137,7 +137,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
               this.applicationData.user = appObj.user;
             }
           });
-          
+
           if (
             !this.applicationData.menu_settings.main_menu ||
             this.applicationData.menu_settings.main_menu.length === 0
@@ -179,30 +179,33 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
-            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-            if(response)
-            {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
-            }
-          });
+
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
-            dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel ||'Last 30 Mins',
+            dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel || 'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);
           const assetTypesObj = {
             hierarchy: JSON.stringify(this.applicationData.user.hierarchy),
             type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
-          };  
+          };
+
           this.apiSubscriptions.push(
-            this.assetService.getAndSetAllAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
-              resolve();
+            this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+              localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+              if (response) {
+                this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+                this.apiSubscriptions.push(
+                  this.assetService.getAndSetAllAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
+                    resolve();
+                  })
+                );
+              }
             })
           );
         })

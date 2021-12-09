@@ -226,6 +226,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     const loginObj = this.loginForm.value;
     this.isLoginAPILoading = true;
     const app = environment.app;
+    debugger
     if (app) {
       loginObj.app = app;
     }

@@ -190,8 +190,8 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         date.setUTCSeconds(this.chartEnddate);
         dateAxis.max = date.getTime();
       }
-      dateAxis.renderer.grid.template.location = 0.5;
-      dateAxis.renderer.labels.template.location = 0.5;
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.labels.template.location = 0.01;
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
 

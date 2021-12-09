@@ -111,7 +111,7 @@
                 </div>
               </div>
 
-              <div class="col-auto">
+              <div class="col-auto" *ngIf="!ruleModel.rule_type">
                 <div class="">
                   <div class="">
                     <label for="exampleEmail">Time Aggregation</label>
@@ -145,7 +145,7 @@
               <div class="col-auto">
                 <div class="">
                   <div class="">
-                    <label for="exampleEmail" class="required">Escalation Time</label>
+                    <label for="exampleEmail" [ngClass]="{'required': !ruleModel.rule_type}">Escalation Time</label>
                   </div>
                   <div class="">
                     <!-- <input type="number" class="form-control form-control-sm"

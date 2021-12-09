@@ -761,11 +761,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  getHistoricalWidgetTelemetryDetails() {
-    const children = $('#historic_charts').children();
-    for (const child of children) {
-      $(child).remove();
-    }
+  getHistoricalWidgetTelemetryDetails() {    
+    $('#historic_charts').children().remove();
     if (this.historicalDateFilter?.widgets?.length === 0) {
       this.toasterService.showError(
         'Select at least one ' + this.widgetStringFromMenu + ' to view the data',

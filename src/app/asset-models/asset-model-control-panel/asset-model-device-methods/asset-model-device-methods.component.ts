@@ -40,7 +40,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -241,16 +241,13 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     // this.editor.set(this.assetMethodObj.json_model);
   }
   onKeyPressAlphaNumericWithCharacters(event) {
-    var inp = String.fromCharCode();
-    if (CONSTANTS.METHODNAME_REGEX.test(inp)) {
-      return true;
-    } else {
+    if (CONSTANTS.METHODNAME_REGEX.test(event.key)) { return true; }
+    else {
       event.preventDefault();
-      this.toasterService.showError('Method name only allow alphabet, numbers and underscore.', 'Add Method');
-      return false;
+      this.toasterService.showError('Method name only allow alphabet, numbers and underscore.', 'Add Method'); return false;
     }
   }
-
+  
   onJSONKeyChange() {
     if (this.assetMethodObj.method_name) {
       this.assetMethodObj.json_model.method = this.assetMethodObj.method_name;

@@ -44,6 +44,7 @@ export class DamagePlotChartComponent implements OnInit {
   environmentApp = environment.app;
   decodedToken: any;
   widgetStringFromMenu: any;
+  dataLimitExceeded = false
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
@@ -107,10 +108,13 @@ export class DamagePlotChartComponent implements OnInit {
       });
 
       // this.telemetryData = JSON.parse(JSON.stringify(arr));
+      if(data.length > 4000){
+        this.loader = false;
+        this.dataLimitExceeded = true;
+        this.chart = chart
+        return
+      }
       chart.data = data;
-      // console.log(data.length);
-      // console.log(JSON.stringify(chart.data));
-      // console.log(this.telemetryData);
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -140,8 +144,6 @@ export class DamagePlotChartComponent implements OnInit {
       });
       chart.legend.itemContainers.template.togglable = false;
       chart.legend.itemContainers.template.events.on('hit', (ev) => {
-        console.log(ev);
-        console.log(ev.target.dataItem.dataContext['time']);
         this.seriesArr.forEach((item, index) => {
           const seriesColumn = this.chart.series.getIndex(index);
           if (ev.target.dataItem.dataContext['time'] === item.time) {
@@ -270,7 +272,6 @@ export class DamagePlotChartComponent implements OnInit {
           // chart.cursor.snapToSeries = series;
           // chart.cursor.snapToSeries = series;
           this.seriesArr.push(series);
-          console.log(this.seriesArr);
         }
       });
     });

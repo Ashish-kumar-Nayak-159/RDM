@@ -180,7 +180,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
       this.onChangeOfAsset();
     }
-    console.log(this.originalFilter);
   }
 
   onClearHierarchy() {
@@ -203,13 +202,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.historicalDateFilter.from_date,
         this.historicalDateFilter.to_date
       );
-      console.log(records);
       if (records > this.noOfRecords) {
         this.historicalDateFilter.isTypeEditable = true;
       } else {
         this.historicalDateFilter.isTypeEditable = false;
       }
-      console.log(this.historicalDateFilter.isTypeEditable);
     }
   }
 
@@ -424,14 +421,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 widget.derived_kpis = false;
                 widget.measured_props = false;
                 if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
-                  console.log(widget);
                   widget?.properties.forEach((prop) => {
                     if (prop.property) {
                       prop.json_key = prop.property.json_key;
                     }
                     prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                     prop.type = prop.property?.type;
-                    console.log(prop);
                     if (prop?.property) {
                       this.addPropertyInList(prop.property);
                     }
@@ -453,7 +448,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
-                    console.log(prop);
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -472,7 +466,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
-                    console.log(prop);
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -503,12 +496,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(filterObj) {
-    console.log('1111111111    ', JSON.stringify(this.historicalDateFilter));
     this.historicalDateFilter.from_date = filterObj.from_date;
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
     this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
-    console.log('2222222    ', JSON.stringify(this.historicalDateFilter));
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -546,7 +537,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false,isFromMainSearch = true) {
-    console.log('aaaaaa   ', filterObj,isFromMainSearch);
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -583,7 +573,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
       pagefilterObj['assets'] = filterObj.asset;
-      console.log(pagefilterObj);
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
@@ -595,7 +584,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
-      console.log(this.contextApp.dashboard_config);
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
@@ -725,7 +713,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
               this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
             }
-            // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
                 obj[prop?.json_key] = {
@@ -742,7 +729,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             });
             this.previousProperties = [];
             obj['previous_properties'] = [];
-            // console.log(obj);
             this.telemetryObj = obj;
             this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
             // this.telemetryObj = response.message;
@@ -778,7 +764,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const child of children) {
       $(child).remove();
     }
-    console.log(this.historicalDateFilter);
     if (this.historicalDateFilter?.widgets?.length === 0) {
       this.toasterService.showError(
         'Select at least one ' + this.widgetStringFromMenu + ' to view the data',
@@ -841,7 +826,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const now = moment().utc().unix();
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
-      console.log(dateObj);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;
@@ -849,7 +833,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       filterObj.from_date = this.historicalDateFilter.from_date;
       filterObj.to_date = this.historicalDateFilter.to_date;
     }
-    console.log(JSON.stringify(this.historicalDateFilter));
 
     // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
     // filterObj.to_date = now;
@@ -881,9 +864,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     delete filterObj.count;
     delete filterObj.asset;
     filterObj.order_dir = 'ASC';
-    console.log(this.historicalDateFilter);
     if (this.historicalDateFilter.isTypeEditable) {
-      console.log(this.historicalDateFilter.type);
       if (this.historicalDateFilter.type) {
         if (!this.historicalDateFilter.sampling_time || !this.historicalDateFilter.sampling_format) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
@@ -971,23 +952,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               nullValueArr.push(prop.json_key);
             }
           });
-          console.log(nullValueArr);
+
           let telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
             // item.message_date = new Date(item.message_date);
             item.message_date_obj = new Date(item.message_date);
           });
-          console.log(JSON.stringify(telemetryData));
-          console.log(telemetryData);
-
           telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
           this.isTelemetryDataLoading = false; // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.historicalDateFilter.widgets?.forEach((widget) => {
               let noDataFlag = true;
               widget.y1axis?.forEach((prop, index) => {
-                console.log(nullValueArr.indexOf(prop));
                 if (nullValueArr.indexOf(prop.json_key) === -1) {
                   noDataFlag = false;
                 }
@@ -999,7 +976,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 });
               }
-              console.log(widget, '=======', noDataFlag);
               let componentRef;
               if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
                 componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -1062,7 +1038,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryInterval = interval;
     }
     const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
-    // console.log(this.widgetPropertyList);
     this.widgetPropertyList.forEach((prop) => {
       if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
         obj[prop?.json_key] = {
@@ -1072,7 +1047,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     obj['previous_properties'] = this.previousProperties;
-    // console.log(obj);
     this.telemetryObj = obj;
     this.previousProperties = [];
     Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
@@ -1137,20 +1111,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       minute !== null
     ) {
       const midNightTime = this.midNightHour * 60 + this.midNightMinute;
-      console.log(midNightTime);
       const currentTime = Number(hour) * 60 + Number(minute);
-      console.log(currentTime);
       const diff = currentTime - midNightTime;
-      console.log(diff);
       this.currentHour = Math.floor(diff / 60);
       this.currentMinute = diff - this.currentHour * 60;
-      console.log(this.currentHour);
-      console.log(this.currentMinute);
     }
   }
 
   onAssetSelection() {
-    console.log(this.filterObj);
     if (this.filterObj?.assetArr.length > 0) {
       this.filterObj.asset = this.filterObj.assetArr[0];
     } else {
@@ -1170,7 +1138,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           } else if (response?.derived_kpis) {
             this.derivedKPIs = response.derived_kpis;
           }
@@ -1202,12 +1169,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 : [];
               response.properties.edge_derived_properties.forEach((prop) => {
                 prop.type = 'Edge Derived Properties';
-                console.log(prop);
                 this.propertyList.push(prop);
               });
               response.properties.cloud_derived_properties.forEach((prop) => {
                 prop.type = 'Cloud Derived Properties';
-                console.log(prop);
                 this.propertyList.push(prop);
               });
               this.derivedKPIs.forEach((kpi) => {

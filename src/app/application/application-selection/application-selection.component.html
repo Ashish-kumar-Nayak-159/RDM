@@ -7,29 +7,20 @@
     <div class="row pl-3">
       <ng-container *ngIf="!isUserApplicationLoading && userData?.apps.length > 0">
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
-          <div class="card shadow h-100">
-            <div class="card-body">
-              <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)">
-                <div class="text-center">
-                  <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{ blobStorageURL + (
-                  app?.metadata?.icon?.url
-                    ? app?.metadata?.icon?.url + blobToken
-                    : constantData.DEFAULT_APP_ICON  + blobToken)
-                }}" alt="" />
-                </div>
-                <div class="text-black-50 text-center small">
-                  <h6>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-                      *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></h6>
-                </div>
-              </a>
+          <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)" class="card card-hover">
+            <div class="overlay"></div>
+            <div style="z-index:0">
+              <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{ blobStorageURL + (
+                app?.metadata?.icon?.url
+                  ? app?.metadata?.icon?.url + blobToken
+                  : constantData.DEFAULT_APP_ICON  + blobToken)
+              }}" alt="" />
             </div>
-            <div class="card-desc text-center">
-              <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)">
-                <p class="px-3 pt-3 card-desc-height  truncate">{{app.metadata.description ? app.metadata.description:
-                  'This application is designed to track assets & its data.'}}</p>
-              </a>
-            </div>
-          </div>
+            <p>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+              *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></p>
+            <p class="mx-3 mt-3 text-center text-xs truncate" style="font-size:0.9rem">
+              {{app.metadata.description ? app.metadata.description: 'This application is designed to track assets & its data.'}}</p>   
+          </a>
         </div>
       </ng-container>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserApplicationLoading"></i>

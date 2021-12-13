@@ -1,14 +1,13 @@
-import { ToasterService } from './../../../services/toaster.service';
-import { filter } from 'rxjs/operators';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Asset } from 'src/app/models/asset.model';
-import { Subscription } from 'rxjs';
-import * as moment from 'moment';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JsonEditorOptions } from 'ang-jsoneditor';
+import * as datefns from 'date-fns';
+import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { Asset } from 'src/app/models/asset.model';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-c2d-message',
@@ -204,7 +203,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       ? this.commonService.convertDateToEpoch(message.request_date)
       : message.timestamp;
     obj.from_date = epoch ? epoch - 5 : null;
-    obj.to_date = moment().utc().unix();
+    obj.to_date = datefns.getUnixTime(new Date());
     this.apiSubscriptions.push(
       this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {

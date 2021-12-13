@@ -17,7 +17,7 @@ import { Input } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
@@ -318,7 +318,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       title: this.chartTitle,
       chartType: this.setChartType(),
       chartCount: this.chartCount,
-      chart_Id: 'chart_' + moment().utc().unix(),
+      chart_Id: 'chart_' + datefns.getUnixTime(new Date()),
       showDataTable: this.showDataTable,
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
@@ -370,10 +370,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       const y1Axis = layoutJson.y1axis;
       const y2Axis = layoutJson.y2axis;
       const data = [];
-      const currentDate = moment();
       for (let i = 0; i < 10; i++) {
         const obj = {
-          message_date: currentDate.subtract(i, 'minute').format('DD-MMM-YYYY hh:mm:ss A'),
+          message_date: datefns.format(datefns.subMinutes(new Date(),i), "dd-MM-yyyy HH:mm:ss"),
           message_date_obj: null,
         };
         obj.message_date_obj = new Date(obj.message_date);

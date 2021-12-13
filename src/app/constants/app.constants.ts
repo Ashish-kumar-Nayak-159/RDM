@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
@@ -1732,6 +1732,8 @@ export class CONSTANTS {
     'This Month': [moment().startOf('month'), moment()],
     // 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
   };
+
+
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static ASSETS_LIST = 'assets_list';

@@ -1,12 +1,11 @@
-import { Subscription } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonService } from 'src/app/services/common.service';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({

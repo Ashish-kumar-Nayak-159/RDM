@@ -1,16 +1,14 @@
-import { FileSaverService } from 'ngx-filesaver';
-import { ToasterService } from './../../services/toaster.service';
-import { AssetService } from './../../services/assets/asset.service';
-import { AssetModelService } from './../../services/asset-model/asset-model.service';
-import { Subscription } from 'rxjs';
-import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import * as datefns from 'date-fns';
+import { FileSaverService } from 'ngx-filesaver';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
-import { NgTranscludeDirective } from 'ngx-bootstrap/tabs';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
+import { AssetService } from './../../services/assets/asset.service';
+import { ToasterService } from './../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-pre-generated-reports',
@@ -137,7 +135,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         });
       }
     }
-    console.log(item.dateOption);
+    console.log('filterObj',this.filterObj,item.dateOption);
     if (item.dateOption) {
       this.filterObj.dateOption = item.dateOption;
       if (item.dateOption !== 'Custom Range') {
@@ -152,10 +150,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
-        this.selectedDateRange =
-          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
       }
       this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.getReportsData(false);

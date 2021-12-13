@@ -1,11 +1,10 @@
 import { CommonService } from './../../../services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
+import * as datefns from 'date-fns'
 
 @Component({
   selector: 'app-application-filter-settings',
@@ -21,38 +20,38 @@ export class ApplicationFilterSettingsComponent implements OnInit {
   decodedToken: any;
   mainFilterObj: any = {};
   controlPanelFilterObj: any = {};
-  selectedDateRange = 'Last 24 Hours';
+  selectedDateRange = 'Last 24 Hours'
+
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
-    maxDate: moment(),
+    maxDate: new Date(),
     timePicker: true,
     showCustomRangeLabel: false,
     ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 Hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 3 Hours': [moment().subtract(3, 'hours'), moment()],
-      'Last 6 Hours': [moment().subtract(6, 'hours'), moment()],
-      'Last 12 Hours': [moment().subtract(12, 'hours'), moment()],
-      'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'This Week': [moment().startOf('isoWeek'), moment()],
+      'Last 5 Mins': [datefns.subMinutes(new Date(), 5), datefns.subSeconds(new Date(), 0)],
+      'Last 30 Mins': [datefns.subSeconds(new Date(), 30), datefns.subSeconds(new Date(), 0)],
+      'Last 1 Hour': [datefns.subHours(new Date(), 1), datefns.subSeconds(new Date(), 0)],
+      'Last 3 Hours': [datefns.subHours(new Date(), 3), datefns.subSeconds(new Date(), 0)],
+      'Last 6 Hours': [datefns.subHours(new Date(), 6), datefns.subSeconds(new Date(), 0)],
+      'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
+      'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
+      'Last 7 Days': [datefns.subDays(new Date(), 7), datefns.subSeconds(new Date(), 0)],
+      'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
       'Last 4 Weeks': [
-        moment().subtract(4, 'weeks').startOf('isoWeek'),
-        moment().subtract(1, 'weeks').endOf('isoWeek'),
+        datefns.subWeeks(new Date(), 4),
+        datefns.subWeeks(new Date(), 1),
       ],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
+      'Last Month': [datefns.startOfMonth(datefns.subMonths(new Date(), 1)), datefns.endOfMonth(datefns.subMonths(new Date(), 1))],
     },
   };
   constructor(
-    private assetService: AssetService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -63,21 +62,23 @@ export class ApplicationFilterSettingsComponent implements OnInit {
       this.applicationData.metadata.filter_settings.search_duration = 'Last 24 Hours';
       this.applicationData.metadata.filter_settings.search_duration_control_panel = 'Last 30 Mins';
     }
-    console.log(this.selectedDateRange);
     this.mainFilterObj.dateOption = this.applicationData.metadata.filter_settings.search_duration || 'Last 24 Hours';
     let obj = this.commonService.getMomentStartEndDate(this.mainFilterObj.dateOption);
     this.mainFilterObj.from_date = obj.from_date;
     this.mainFilterObj.to_date = obj.to_date;
-
+    console.log('this.mainFilterObj', this.mainFilterObj);
     this.controlPanelFilterObj.dateOption =
       this.applicationData.metadata.filter_settings.search_duration_control_panel || 'Last 30 Mins';
     obj = this.commonService.getMomentStartEndDate(this.controlPanelFilterObj.dateOption);
     this.controlPanelFilterObj.from_date = obj.from_date;
     this.controlPanelFilterObj.to_date = obj.to_date;
+    console.log('this.controlPanelFilterObj', this.controlPanelFilterObj);
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 
   selectedDate(filterObj, type) {
+    console.log('filterObj', filterObj);
+    console.log('type', type);
     if (type == 'search_duration') {
       this.applicationData.metadata.filter_settings.search_duration = filterObj.dateOption;
     } else {

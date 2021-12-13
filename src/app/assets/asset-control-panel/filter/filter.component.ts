@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-filter',
@@ -51,10 +51,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");
     }
     this.cdr.detectChanges();
   }
@@ -86,10 +83,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterObj.to_date = dateObj.to_date;
       this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");     
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.cdr.detectChanges();

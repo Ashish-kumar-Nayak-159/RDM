@@ -12,7 +12,6 @@ import {
   Injector,
   ViewChild,
 } from '@angular/core';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
@@ -27,6 +26,7 @@ import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.co
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 import { ChartService } from 'src/app/services/chart/chart.service';
+import * as datefns from 'date-fns';
 
 declare var $: any;
 @Component({
@@ -103,7 +103,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {    
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -111,7 +111,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+<<<<<<< HEAD
     this.getTileName();
+=======
+        this.getTileName();
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -126,7 +130,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.historicalDateFilter.to_date = item.to_date;
         this.historicalDateFilter.last_n_secs = undefined;
       }
-
       // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
       // this.historicalDateFilter.to_date = moment().utc().unix();
       // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
@@ -448,6 +451,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
+<<<<<<< HEAD
+=======
+                    
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -466,6 +473,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
+<<<<<<< HEAD
+=======
+                    
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -500,6 +511,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
     this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -536,7 +551,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+<<<<<<< HEAD
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false,isFromMainSearch = true) {
+=======
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false) {
+    
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -641,7 +661,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           obj.from_date = this.historicalDateFilter.from_date;
           obj.to_date = this.historicalDateFilter.to_date;
         }
-
+       
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {
             const itemobj = {
@@ -665,8 +685,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
     obj.count = 1;
-    const midnight = moment().hour(0).minute(0).second(0).utc().unix();
-    const now = moment().utc().unix();
+    const midnight =datefns.getUnixTime(datefns.startOfDay(new Date()));
+    const now = datefns.getUnixTime(new Date());
     obj.from_date = midnight;
     obj.to_date = now;
     obj.last_n_secs = obj.to_date - obj.from_date;
@@ -713,6 +733,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
               this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
             }
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
                 obj[prop?.json_key] = {
@@ -823,9 +847,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
     filterObj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-    const now = moment().utc().unix();
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+<<<<<<< HEAD
+=======
+      
+>>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;
@@ -952,7 +979,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               nullValueArr.push(prop.json_key);
             }
           });
-
           let telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
@@ -1030,11 +1056,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       );
     }
     if (this.telemetryObj) {
-      const interval = Math.round(
-        moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds') / 1000
-      );
-      const diff1 = Math.abs(interval - this.normalModelInterval);
-      const diff2 = Math.abs(interval - this.turboModeInterval);
+      const interval = datefns.differenceInMilliseconds(new Date(telemetryObj.message_date),new Date(this.telemetryObj.message_date)) / 1000;
       this.telemetryInterval = interval;
     }
     const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};

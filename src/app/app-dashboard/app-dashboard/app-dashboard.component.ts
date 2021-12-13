@@ -111,11 +111,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-<<<<<<< HEAD
-    this.getTileName();
-=======
         this.getTileName();
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -451,10 +447,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
-<<<<<<< HEAD
-=======
-                    
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -473,10 +465,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     prop.property = this.propertyList.find(
                       (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                     );
-<<<<<<< HEAD
-=======
-                    
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
                     this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -511,10 +499,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
     this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
-<<<<<<< HEAD
-=======
-    
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -551,12 +535,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-<<<<<<< HEAD
+
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false,isFromMainSearch = true) {
-=======
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false) {
-    
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -733,10 +713,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
               this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
             }
-<<<<<<< HEAD
-=======
-            
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
                 obj[prop?.json_key] = {
@@ -849,10 +825,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
-<<<<<<< HEAD
-=======
-      
->>>>>>> 3d26b91a (replacing moment js with datefns, xlsx library with exportfromjson and removed pdfjs and autotable library with cdn path.)
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;

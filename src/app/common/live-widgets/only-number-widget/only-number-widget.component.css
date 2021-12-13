@@ -1,0 +1,15 @@
+.card-height{
+    min-height: 14rem !important;
+}
+
+.widget-row-separator{
+    /* border-bottom: 1px solid #e3e6f0 !important; */
+    margin-bottom: 1.5rem !important;
+}
+.border-top{
+    border-top: 1px solid #e3e6f0 !important;
+}
+
+.border-right{
+    border-right: 1px solid #e3e6f0 !important;
+}

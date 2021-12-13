@@ -101,9 +101,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private appRef: ApplicationRef,
     private injector: Injector,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
-  async ngOnInit(): Promise<void> {    
+  async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -216,7 +216,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (item.assets) {
         this.filterObj.asset = item.assets;
         await this.onChangeOfAsset();
-        this.onFilterSelection(this.filterObj, false, true,true);
+        this.onFilterSelection(this.filterObj, false, true, true);
       }
     }
   }
@@ -286,9 +286,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
                 ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
                 : 60) -
-                (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-                  ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-                  : 1)
+              (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                : 1)
             );
             resolve1();
           },
@@ -420,12 +420,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 widget.derived_kpis = false;
                 widget.measured_props = false;
                 if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+
                   widget?.properties.forEach((prop) => {
                     if (prop.property) {
                       prop.json_key = prop.property.json_key;
                     }
                     prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                     prop.type = prop.property?.type;
+
                     if (prop?.property) {
                       this.addPropertyInList(prop.property);
                     }
@@ -592,9 +594,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
         await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
         await this.getHistoricalWidgetsDrivedKPIDetails();
-        if(!isFromMainSearch){
+        if (!isFromMainSearch) {
           this.getHistoricalWidgetTelemetryDetails();
-        }else{
+        } else {
           this.isTelemetryDataLoading = false;
           this.isFilterSelected = true;
         }
@@ -641,7 +643,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           obj.from_date = this.historicalDateFilter.from_date;
           obj.to_date = this.historicalDateFilter.to_date;
         }
-       
+
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {
             const itemobj = {
@@ -665,7 +667,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
     obj.count = 1;
-    const midnight =datefns.getUnixTime(datefns.startOfDay(new Date()));
+    const midnight = datefns.getUnixTime(datefns.startOfDay(new Date()));
     const now = datefns.getUnixTime(new Date());
     obj.from_date = midnight;
     obj.to_date = now;
@@ -832,7 +834,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       filterObj.from_date = this.historicalDateFilter.from_date;
       filterObj.to_date = this.historicalDateFilter.to_date;
     }
-
     // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
     // filterObj.to_date = now;
     let method;
@@ -1028,7 +1029,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       );
     }
     if (this.telemetryObj) {
-      const interval = datefns.differenceInMilliseconds(new Date(telemetryObj.message_date),new Date(this.telemetryObj.message_date)) / 1000;
+      const interval = datefns.differenceInMilliseconds(new Date(telemetryObj.message_date), new Date(this.telemetryObj.message_date)) / 1000;
       this.telemetryInterval = interval;
     }
     const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
@@ -1198,8 +1199,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             response?.mode?.toLowerCase() === 'normal'
               ? false
               : response?.mode?.toLowerCase() === 'turbo'
-              ? true
-              : false;
+                ? true
+                : false;
           if (this.signalRModeValue === newMode) {
             // $('#overlay').hide();
             this.isC2dAPILoading = false;

@@ -1722,10 +1722,13 @@ export class CONSTANTS {
     'Last 3 Hours': [datefns.subHours(new Date(), 3), datefns.subSeconds(new Date(), 0)],
     'Last 6 Hours': [datefns.subHours(new Date(), 6), datefns.subSeconds(new Date(), 0)],
     'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
+    'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
     'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
     'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(),1)), datefns.endOfDay(datefns.subDays(new Date(),1))],
     'This Week': [datefns.startOfWeek(new Date(),{weekStartsOn:1}), datefns.subSeconds(new Date(), 0)],
+    'Last Week': [datefns.subWeeks(datefns.startOfWeek(new Date(),{weekStartsOn:1}),1), datefns.subWeeks(datefns.endOfWeek(new Date(),{weekStartsOn:1}),1)],
     'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],    
+    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()),1), datefns.subMonths(datefns.endOfMonth(new Date()),1)]
   };
 
 

@@ -35,6 +35,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
+            <form #mainmenuform="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -50,7 +51,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="(!mainmenuform.valid && (mainmenuform.touched || !mainmenuform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -73,10 +74,12 @@
                     <td>{{item.page}}</td>
                     <td>{{item.system_name}}</td>
                     <td>
-                      <input type="text" class="form-control form-control-sm w-75"
+                      <input #display_name_main_menu="ngModel" validateText type="text" class="form-control form-control-sm w-75"
                         name="display_name_main_menu{{item.index}}" id="display_name_main_menu{{item.index}}"
                         [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
-
+                        <div *ngIf="display_name_main_menu.errors?.whitespace && display_name_main_menu.touched" class="alert-danger">
+                          Please enter valid name.
+                        </div>
                     </td>
                     <td><input type="checkbox" name="visible_menu_{{item.index}}"
                         [disabled]="!isAppSettingsEditable || item.for_admin_only" id="visible_menu_{{item.index}}"
@@ -113,6 +116,7 @@
                 </ng-container>
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
@@ -126,6 +130,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
+            <form #iotassetform="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -139,7 +144,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="(!iotassetform.valid && (iotassetform.touched || !iotassetform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -159,9 +164,13 @@
                       </ng-container>
                     </td>
                     <td>{{item.system_name}}</td>
-                    <td><input type="text" class="form-control form-control-sm w-75"
+                    <td><input #display_name_asset="ngModel" validateText type="text" class="form-control form-control-sm w-75"
                         name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
-                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
+                        <div *ngIf="display_name_asset.errors?.whitespace && display_name_asset.touched" class="alert-danger">
+                          Please enter valid name.
+                        </div>
+                      </td>
                     <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                         id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
                   </tr>
@@ -186,6 +195,7 @@
                 </ng-container>
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
@@ -198,8 +208,8 @@
       </ng-container>
       <div class="row">
         <div class="col-12 p-0">
-
           <div class="col-12 p-0">
+            <form #legacyassetform="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -213,7 +223,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="(!legacyassetform.valid && (legacyassetform.touched || !legacyassetform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -233,11 +243,16 @@
                       </ng-container>
                     </td>
                     <td>{{item.system_name}}</td>
-                    <td><input type="text" class="form-control form-control-sm w-75"
+                    <td><input #display_name_legacy_asset="ngModel" validateText type="text" class="form-control form-control-sm w-75"
                         name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
-                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
+                        <div *ngIf="display_name_legacy_asset.errors?.whitespace && display_name_legacy_asset.touched" class="alert-danger">
+                          Please enter valid name.
+                        </div>
+                      </td>
                     <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                        id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                        id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" />
+                      </td>
                   </tr>
                   <ng-container *ngIf="toggleRows['legacy_asset_' + configIndex]" style="background-color: #fdfeff;">
                     <tr
@@ -261,6 +276,7 @@
                 </ng-container>
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
@@ -274,6 +290,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
+            <form #gatewayform="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -287,7 +304,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="(!gatewayform.valid && (gatewayform.touched || !gatewayform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -306,9 +323,13 @@
                       </ng-container>
                     </td>
                     <td>{{item.system_name}}</td>
-                    <td><input type="text" class="form-control form-control-sm w-75"
+                    <td><input #display_name_gateway="ngModel" validateText type="text" class="form-control form-control-sm w-75"
                         name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
-                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
+                        <div *ngIf="display_name_gateway.errors?.whitespace && display_name_gateway.touched" class="alert-danger">
+                          Please enter valid name.
+                        </div>
+                      </td>
                     <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
                         id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
                   </tr>
@@ -334,6 +355,7 @@
                 </ng-container>
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
@@ -347,6 +369,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
+            <form #modelform="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -360,7 +383,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="(!modelform.valid && (modelform.touched || !modelform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -380,9 +403,13 @@
                       </ng-container>
                     </td>
                     <td>{{item.system_name}}</td>
-                    <td><input type="text" class="form-control form-control-sm w-75"
+                    <td><input #display_name_asset_model="ngModel" validateText type="text" class="form-control form-control-sm w-75"
                         name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
-                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                        [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" />
+                        <div *ngIf="display_name_asset_model.errors?.whitespace && display_name_asset_model.touched" class="alert-danger">
+                          Please enter valid name.
+                        </div>
+                      </td>
                     <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                         id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
                   </tr>
@@ -419,6 +446,7 @@
 
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>

@@ -70,7 +70,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
 
   addTagObject() {
     if (this.tagObj) {
-      if (!this.tagObj.name || !this.tagObj.key) {
+      if (!this.tagObj.name || this.tagObj.name.trim().length === 0 || !this.tagObj.key || this.tagObj.key.trim().length === 0 ) {
         this.toasterService.showError('Please add tag name and key', 'Add Tag');
         return true;
       }

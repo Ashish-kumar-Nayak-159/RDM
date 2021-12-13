@@ -222,7 +222,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   addRecommendationStep() {
-    if (!this.recommendationObj.description || !this.recommendationObj.activity) {
+    if (!this.recommendationObj.description || this.recommendationObj.description.trim().length === 0 || !this.recommendationObj.activity) {
       this.toasterService.showError('Description and Activity is required', 'Add Recommendation Step');
       return;
     }

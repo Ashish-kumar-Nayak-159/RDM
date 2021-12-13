@@ -85,17 +85,23 @@
         </button>
       </div>
       <div class="modal-body" *ngIf="viewType === 'add' || viewType === 'edit'">
-        <form *ngIf="viewType === 'add' || viewType === 'edit'">
+        <form #form="ngForm" *ngIf="viewType === 'add' || viewType === 'edit'">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Control Widget Name:</label>
-            <input type="text" class="form-control form-control-sm" id="name" name="name"
+            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="controlWidget.name" placeholder="Enter Control Widget Name">
+              <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                Please enter valid widget name.
+              </div>
           </div>
 
           <div class="form-group">
             <label for="message-text" class="col-form-label">Description:</label>
-            <input type="text" class="form-control form-control-sm" id="description" name="description"
+            <input #description="ngModel" validateText type="text" class="form-control form-control-sm" id="description" name="description"
               [(ngModel)]="controlWidget.metadata.description" placeholder="Enter Description">
+              <div *ngIf="description.errors?.whitespace && description.touched" class="alert-danger">
+                Please enter valid description.
+              </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label">Widget Type:</label>
@@ -159,13 +165,19 @@
                   <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
                     href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom"
                     tooltip="Remove Property"><i class="fa fa-trash fa-sm"></i></a>
-                  <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+                  <input #title="ngModel" validateText  type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
                     [(ngModel)]="param.name" placeholder="Parameter Display Name">
+                    <div *ngIf="title.errors?.whitespace && title.touched" class="alert-danger">
+                      Please enter valid name.
+                    </div>
                 </div>
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label">Parameter Key:</label>
-                  <input type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
+                  <input #key="ngModel" validateText type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
                     [(ngModel)]="param.key" (change)="onParamKeyChange(i)" placeholder="Parameter Key">
+                    <div *ngIf="key.errors?.whitespace && key.touched" class="alert-danger">
+                      Please enter valid key.
+                    </div>
                 </div>
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label required">Data Type:</label>
@@ -184,10 +196,10 @@
             <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
             </json-editor>
           </div> -->
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading"
+       
+      <div class="modal-footer fixed-bottom bg-white">
+        <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
+        (form.touched || !form.touched)) || isCreateWidgetAPILoading"
           (click)="createControlWidget()">Save</button>
         <button type="button" class="btn btn-white" [disabled]="isCreateWidgetAPILoading"
           (click)="closeCreateWidgetModal()">
@@ -195,6 +207,8 @@
         </button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
       </div>
+    </form>
+  </div>
     </div>
   </div>
 </div>

@@ -17,6 +17,7 @@
 </div>
 
 <div class="tableFixHead table-responsive">
+  <form #form="ngForm">
   <table class="table table-hover">
     <!--<thead>
     <tr>
@@ -29,7 +30,7 @@
       <tr>
         <th scope="col"colspan="3">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
-            [disabled]="saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i
+            [disabled]="(!form.valid && (form.touched || !form.touched)) ||  saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i
               class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
           <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick();"
             [disabled]="!isMetadataEditable">
@@ -50,8 +51,11 @@
             applicationData?.metadata?.description : 'This application is designed to track assets & its data.'}}
           </ng-container>
           <div *ngIf="isMetadataEditable">
-            <input type="text" class="form-control form-control-sm w-75" name="app_description" id="app_description"
+            <input #app_description="ngModel" validateText type="text" class="form-control form-control-sm w-75" name="app_description" id="app_description"
             [(ngModel)]="this.applicationData.metadata.description" [disabled]="!isMetadataEditable" >
+            <div *ngIf="app_description.errors?.whitespace && app_description.touched" class="alert-danger">
+              Please enter valid description.
+            </div>
           </div>
         </td>
       </tr>
@@ -147,6 +151,7 @@
       </tr>
     </tbody>
   </table>
+</form>
 </div>
 
 <div class="modal fade" id="changeLocationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
@@ -159,6 +164,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <form #locationform="ngForm">
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
             value="latitude_longitude" [(ngModel)]="changeLocationOption">
@@ -206,27 +212,36 @@
           <div class="form-row mt-2">
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputEmail4">Latitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input #latitude_value="ngModel" validateText type="text" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="latitude"
                 name="latitude" placeholder="Enter Latitude">
+                <div *ngIf="latitude_value.errors?.whitespace && latitude_value.touched" class="alert-danger">
+                  Please enter valid latitude.
+                </div>
             </div>
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputPassword4">Longitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input #longitude_value="ngModel" validateText type="text" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="longitude"
                 name="longitude" placeholder="Enter Longitude">
+                <div *ngIf="longitude_value.errors?.whitespace && longitude_value.touched" class="alert-danger">
+                  Please enter valid longitude.
+                </div>
             </div>
           </div>
         </ng-container>
-      </div>
+      
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="!changeLocationOption"  (click)="setDefaultLocation()">
+        <button type="button" class="btn btn-primary" [disabled]="(!locationform.valid &&
+        (locationform.touched || !locationform.touched)) || !changeLocationOption"  (click)="setDefaultLocation()">
           Set Location</button>
         <button type="button" class="btn btn-white"
           (click)="onModalClose('changeLocationModal')">
           Cancel
         </button>
       </div>
+    </form>
+    </div>
     </div>
   </div>
 </div>

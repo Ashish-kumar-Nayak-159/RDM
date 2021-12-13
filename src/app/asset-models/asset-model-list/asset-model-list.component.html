@@ -3,29 +3,35 @@
     <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
     </div>
     <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAssetModelModal()"
-    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-    placement="bottom" tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
+      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
+      tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
     <div class="ml-auto">
-      <div class="asset-nav-tabs" >
+      <div class="asset-nav-tabs">
         <nav>
           <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-           <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_ASSET)"
-           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_ASSET}">
-             <i class="fab fa-mixcloud mr-2"></i>
-            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
-           <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_ASSET)"
-           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_ASSET}">
-           <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
-           <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
-           <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
-           href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
-           <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
-           <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
+            <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab"
+              (click)="onTabChange(constantData.IP_ASSET)" href="#{{iotAssetsTab?.tab_name}}" role="tab"
+              aria-controls="nav-home" aria-selected="true"
+              [ngClass]="{'active': componentState === constantData.IP_ASSET}">
+              <i class="fab fa-mixcloud mr-2"></i>
+              <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
+            <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab"
+              data-toggle="tab" (click)="onTabChange(constantData.NON_IP_ASSET)" href="#{{legacyAssetsTab?.tab_name}}"
+              role="tab" aria-controls="nav-profile" aria-selected="false"
+              [ngClass]="{'active': componentState === constantData.NON_IP_ASSET}">
+              <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
+              <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
+            <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab"
+              data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)" href="#{{iotGatewaysTab?.tab_name}}"
+              role="tab" aria-controls="nav-profile" aria-selected="false"
+              [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
+              <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
+              <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
           </div>
         </nav>
-       </div>
+      </div>
     </div>
-   </div>
+  </div>
 </div>
 
 
@@ -67,96 +73,123 @@
 <!-- <div class="table-responsive">
   <div class="tableFixHead" > -->
 
-    <app-common-data-table [tableData]="assetModels" *ngIf="componentState"
-      [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
-  <!-- </div>
+<app-common-data-table [tableData]="assetModels" *ngIf="componentState" [tableConfig]="tableConfig"
+  (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+<!-- </div>
 </div> -->
 
-<div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (assetModel?.metadata?.model_type ? assetModel.metadata.model_type + ' ' : '') + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
-      <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isCreateAssetsModelAPILoading">
-        <span aria-hidden="true" tooltip="Close">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body" *ngIf="assetModel">
-      <form name="createAssetsModelForm">
-        <div class="form-group" *ngIf="!assetModel.id">
-          <label for="message-text" class="col-form-label">App:</label>
-          <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
-        </div>
-        <div class="form-group" *ngIf="!assetModel.id">
-          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
-          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="assetModel.name"
-          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
-        </div>
-        <div class="form-group" *ngIf="!assetModel.id  && !assetModel.metadata.model_type">
-          <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
-          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="assetModel.metadata.model_type">
-            <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}</option>
-            <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
-            <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_ASSET}}</option>
-          </select>
-        </div>
-        <div class="form-group" *ngIf="!assetModel.id">
-          <label for="recipient-name" class="col-form-label required">Protocol:</label>
-          <select class="form-control form-control-sm" id="protocol" name="protocol"
-          (change)="getConnectivityData()" [(ngModel)]="assetModel.tags.protocol">
-            <option [ngValue]="undefined"> Select Protocol</option>
-            <ng-container *ngFor="let protocol of protocolList">
-              <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === assetModel.metadata.model_type">{{protocol.display_name}}</option>
-            </ng-container>
-          </select>
-        </div>
-        <div class="form-group" *ngIf="!assetModel.id">
-          <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
-          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="assetModel.tags.cloud_connectivity">
-            <option [ngValue]="undefined"> Select Connectivity</option>
-          <option *ngFor="let item of connectivityList" [ngValue]="item">
-            {{item}}</option>
-          </select>
-        </div>
-        <!-- <div class="form-group">
-          <label for="message-text" class="col-form-label">Upload Image: </label>
-          {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
-          <input type="file"
-          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
-           class="form-control form-control-sm" id="app_logo" name="app_logo" >
-        </div> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' +
+          (assetModel?.metadata?.model_type ? assetModel.metadata.model_type + ' ' : '') + (tileData && tileData[1] ?
+          tileData[1]?.value : ''))}}</h5>
+        <button type="button" class="close" (click)="onCloseAssetsModelModal()" aria-label="Close"
+          [disabled]="isCreateAssetsModelAPILoading">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+      </div>
 
-        <!-- <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Upload Image:</label>
-          <div class="form-group input-group row m-0">
-            <div class="file-input form-control form-control-sm p-0 col-8">
-             <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" (change)="onLogoFileSelected($event.target.files)">
-
-             <label for="file" class="overflow-text" [tooltip]="(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : ''">
-               {{(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : 'Choose File'}}</label>
+      <div class="modal-body" *ngIf="assetModel">
+        <form name="createAssetsModelForm" #form="ngForm">
+          <div class="form-group" *ngIf="!assetModel.id">
+            <label for="message-text" class="col-form-label">App:</label>
+            <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app"
+              disabled>
+          </div>
+          <div class="form-group" *ngIf="!assetModel.id">
+            <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value :
+              '')}} Name:</label>
+            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
+              [(ngModel)]="assetModel.name"
+              placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name" required>
+            <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+              Please enter valid name.
             </div>
-            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
-               <label for="file" class="bg-secondary text-white">Browse</label>
-            </div>
-            </div>
-        </div> -->
+            <!-- <div [hidden]="name.valid || name.pristine">Please enter valid data</div> -->
+          </div>
+          <div class="form-group" *ngIf="!assetModel.id  && !assetModel.metadata.model_type">
+            <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value
+              : '')}} Type:</label>
+            <select class="form-control form-control-sm" id="template" name="model_type"
+              [(ngModel)]="assetModel.metadata.model_type">
+              <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}
+              </option>
+              <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">
+                {{constantData.IP_GATEWAY}}</option>
+              <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">
+                {{constantData.NON_IP_ASSET}}</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="!assetModel.id">
+            <label for="recipient-name" class="col-form-label required">Protocol:</label>
+            <select class="form-control form-control-sm" id="protocol" name="protocol" (change)="getConnectivityData()"
+              [(ngModel)]="assetModel.tags.protocol">
+              <option [ngValue]="undefined"> Select Protocol</option>
+              <ng-container *ngFor="let protocol of protocolList">
+                <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === assetModel.metadata.model_type">
+                  {{protocol.display_name}}</option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="!assetModel.id">
+            <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData
+              && tileData[1] ? tileData[1]?.value : '')}}:</label>
+            <select class="form-control form-control-sm" id="template" name="connectivity"
+              [(ngModel)]="assetModel.tags.cloud_connectivity">
+              <option [ngValue]="undefined"> Select Connectivity</option>
+              <option *ngFor="let item of connectivityList" [ngValue]="item">
+                {{item}}</option>
+            </select>
+          </div>
+          <!-- <div class="form-group">
+            <label for="message-text" class="col-form-label">Upload Image: </label>
+            {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
+            <input type="file"
+            #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+            class="form-control form-control-sm" id="app_logo" name="app_logo" >
+          </div> -->
 
-        <!-- <div class="form-group">
-          <label for="message-text" class="col-form-label">Manufactured By:</label>
-          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
-          placeholder="Enter Manufacturer" [(ngModel)]="assetModel.tags.manufacturer">
-        </div> -->
+          <!-- <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Upload Image:</label>
+            <div class="form-group input-group row m-0">
+              <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" (change)="onLogoFileSelected($event.target.files)">
 
-      </form>
+              <label for="file" class="overflow-text" [tooltip]="(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : ''">
+                {{(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : 'Choose File'}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
+                <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
+              </div>
+          </div> -->
+
+          <!-- <div class="form-group">
+            <label for="message-text" class="col-form-label">Manufactured By:</label>
+            <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
+            placeholder="Enter Manufacturer" [(ngModel)]="assetModel.tags.manufacturer">
+          </div>
+          
+          <button type="button" class="btn btn-primary add-row" [disabled]="(!myform.valid &&
+          (myform.touched || !myform.touched)) || isCreateAssetsModelAPILoading" (click)="createAssetsModel()">Save</button>
+          -->
+
+          <div class="modal-footer fixed-bottom bg-white" *ngIf="assetModel">
+            <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
+            (form.touched || !form.touched)) || isCreateAssetsModelAPILoading"
+              (click)="createAssetsModel()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetsModelAPILoading"
+              (click)="onCloseAssetsModelModal()">
+              Cancel
+            </button>
+            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetsModelAPILoading"></i>
+          </div>
+
+        </form>
+      </div>
     </div>
-    <div class="modal-footer" *ngIf="assetModel">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAssetsModelAPILoading" (click)="createAssetsModel()">Save</button>
-      <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetsModelAPILoading" (click)="onCloseAssetsModelModal()">
-        Cancel
-      </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetsModelAPILoading"></i>
-    </div>
-  </div>
   </div>
 </div>

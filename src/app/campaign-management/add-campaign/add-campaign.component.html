@@ -145,7 +145,7 @@
             </button>
             <button type="button" class="btn  btn-primary mr-3"
               (click)="visitedSteps = visitedSteps + 1;prepareHierarchyDropdownData()"
-              [disabled]="!campaignObj.expected_start_date || !campaignObj.expected_end_date || !campaignObj.code || campaignObj.code?.length > 6"
+              [disabled]="!campaignObj.expected_start_date || !campaignObj.expected_end_date || !campaignObj.code || campaignObj.code?.length > 6 || campaignObj.code?.trim().length === 0"
               id="nextBtn">
               Next Step
             </button>

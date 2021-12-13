@@ -71,11 +71,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form #form="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Title:</label>
-            <input type="text" class="form-control form-control-sm" id="name" name="name"
+            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="widgetObj.widgetTitle" placeholder="Enter {{widgetStringFromMenu}} Name">
+              <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Type:</label>
@@ -120,15 +123,17 @@
           </app-add-only-number-widget>
 
 
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading"
+        
+      <div class="modal-footer fixed-bottom bg-white">
+        <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
+        (form.touched || !form.touched)) || isCreateWidgetAPILoading"
           (click)="onSaveWidgetObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
           (click)="onCloseAddWidgetModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
       </div>
+    </form>
+  </div>
     </div>
   </div>
 </div>

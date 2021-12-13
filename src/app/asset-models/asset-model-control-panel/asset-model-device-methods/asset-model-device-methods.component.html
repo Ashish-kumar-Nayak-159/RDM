@@ -36,12 +36,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form #form="ngForm" >
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Display Name:</label>
-            <input type="text" class="form-control form-control-sm" id="display_name" name="display_name"
+            <input #display_name="ngModel" validateText type="text" class="form-control form-control-sm" id="display_name" name="display_name"
               [(ngModel)]="assetMethodObj.name" placeholder="Enter Display Name">
-
+              <div *ngIf="display_name.errors?.whitespace && display_name.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Method Name:</label>
@@ -62,13 +64,19 @@
               <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
                 href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom" tooltip="Remove Property"><i
                   class="fa fa-trash fa-sm"></i></a>
-              <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+              <input #title="ngModel" validateText type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
                 [(ngModel)]="param.name" placeholder="Parameter Display Name">
+                <div *ngIf="title.errors?.whitespace && title.touched" class="alert-danger">
+                  Please enter valid name.
+                </div>
             </div>
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Parameter Key:</label>
-              <input type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
+              <input #key="ngModel" validateText type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
                 [(ngModel)]="param.key" (change)="onParamKeyChange(i)" placeholder="Parameter Key">
+                <div *ngIf="key.errors?.whitespace && key.touched" class="alert-danger">
+                  Please enter valid key.
+                </div>
             </div>
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Data Type:</label>
@@ -86,15 +94,17 @@
             <json-editor [options]="editorOptions" name="json" [data]="assetMethodObj.json_model">
             </json-editor>
           </div> -->
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAssetMethodLoading"
+      
+      <div class="modal-footer fixed-bottom bg-white">
+        <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
+        (form.touched || !form.touched)) || isCreateAssetMethodLoading"
           (click)="onSaveassetMethodObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetMethodLoading"
           (click)="onCloseAssetsAssetMethodModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetMethodLoading"></i>
       </div>
+    </form>
+  </div>
     </div>
   </div>
 </div>

@@ -249,7 +249,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   }
 
   async addChart() {
-    if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
+    if (!this.chartTitle || this.chartTitle.trim().length === 0 || !this.selectedChartType || this.y1AxisProps.length === 0) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }

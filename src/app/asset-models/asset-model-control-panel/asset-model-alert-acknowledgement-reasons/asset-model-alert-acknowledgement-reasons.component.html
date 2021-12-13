@@ -35,8 +35,12 @@
       <tbody>
         <tr *ngIf="reasonObj">
           <td></td>
-          <td class="td-padding"><input type="text" min="1" class="form-control form-control-sm w-50" id="name"
-              placeholder="Add Reason *" [(ngModel)]="reasonObj.reason" name="name"></td>
+          <td class="td-padding"><input #name="ngModel" validateText type="text" min="1" class="form-control form-control-sm w-50" id="name"
+              placeholder="Add Reason *" [(ngModel)]="reasonObj.reason" name="name">
+              <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                Please enter valid reason.
+              </div>  
+          </td>
           <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><a
               href="javascript:void(0)" placement="bottom" tooltip="Cancel"
               (click)="reasonObj = undefined; ReasonBtnClicked = false;"><i class="fa fa-times"></i></a>
@@ -53,8 +57,11 @@
                 {{ack.reason}}
               </ng-container>
               <ng-container *ngIf="isEnableEdit && isEnableEdit[i]">
-                <input type="text" class="form-control form-control-sm small w-50" [(ngModel)]="ack.reason"
+                <input #name="ngModel" validateText type="text" class="form-control form-control-sm small w-50" [(ngModel)]="ack.reason"
                   name="{{ack.reason}}">
+                  <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                    Please enter valid reason.
+                  </div>  
               </ng-container>
             </td>
             <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">

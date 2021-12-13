@@ -1,9 +1,8 @@
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild, AfterViewInit, OnChanges } from '@angular/core';
-import * as moment from 'moment';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
-
+import * as datefns from 'date-fns';
 @Component({
   selector: 'app-date-range-picker',
   templateUrl: './date-range-picker.component.html',
@@ -12,10 +11,10 @@ import { DaterangepickerComponent } from 'ng2-daterangepicker';
 export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() filterObj: any;
   @Input() options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
+    locale: { format: 'dd-MM-yyyy HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
-    maxDate: moment(),
+    maxDate: new Date(),
     timePicker: true,
     ranges: CONSTANTS.DATE_OPTIONS,
   };
@@ -24,14 +23,14 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   constructor(private commonService: CommonService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {console.log('selectedDateRange',this.selectedDateRange);}
 
   ngAfterViewInit() {
     console.log(this.filterObj);
     console.log(this.selectedDateRange);
-    this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
-    this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+    this.filterObj.last_n_secs = datefns.getUnixTime(new Date(this.filterObj.to_date)) - datefns.getUnixTime(new Date(this.filterObj.from_date));
+    this.picker.datePicker.setStartDate(datefns.getUnixTime(new Date(this.filterObj.from_date)));
+    this.picker.datePicker.setEndDate(datefns.getUnixTime(new Date(this.filterObj.to_date)));
   }
 
   ngOnChanges(changes) {
@@ -39,43 +38,38 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
     if (changes.filterObj) {
       console.log(this.filterObj);
       if (this.filterObj.dateOption === 'Custom Range') {
-        console.log('hereeeeeeeeeeeee');
-        console.log(moment(this.filterObj.from_date * 1000));
-        console.log(moment(this.filterObj.to_date * 1000));
-        this.selectedDateRange =
-          moment(this.filterObj.from_date * 1000).format('DD-MM-YYYY HH:mm') +
+        this.selectedDateRange = 
+        datefns.format(new Date(this.filterObj.from_date), "dd-MM-yyyy HH:mm") +
           ' to ' +
-          moment(this.filterObj.to_date * 1000).format('DD-MM-YYYY HH:mm');
+          datefns.format(new Date(this.filterObj.to_date),"dd-MM-yyyy HH:mm");
       } else {
         this.selectedDateRange = this.filterObj.dateOption;
         this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
       }
-
-      if (this.picker) {
-        this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-        this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+      if (this.picker) {        
+        this.picker.datePicker.setStartDate(datefns.getUnixTime(new Date(this.filterObj.from_date)));
+        this.picker.datePicker.setEndDate(datefns.getUnixTime(new Date(this.filterObj.to_date)));
       }
     }
   }
 
   selectedDate(value: any) {
-    console.log(JSON.stringify(value));
+    console.log('value',value);
     this.filterObj.dateOption = value.label;
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
+      this.filterObj.from_date = datefns.getUnixTime(dateObj.from_date);
+      this.filterObj.to_date = datefns.getUnixTime(dateObj.to_date);
       this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
+      this.filterObj.from_date = datefns.getUnixTime(new Date(value.start));
+      this.filterObj.to_date = datefns.getUnixTime(new Date(value.end));
       this.filterObj.last_n_secs = undefined;
     }
-
-    console.log(this.filterObj);
+    console.log('from date range component',this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      datefns.format(new Date(value.start),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(new Date(value.end),"dd-MM-yyyy HH:mm");
     } else {
       this.selectedDateRange = value.label;
     }

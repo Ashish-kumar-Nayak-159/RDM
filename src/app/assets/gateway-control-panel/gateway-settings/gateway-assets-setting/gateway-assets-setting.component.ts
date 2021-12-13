@@ -4,7 +4,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 declare var $: any;
 @Component({
@@ -234,7 +234,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         asset_id: this.selectedAsset.asset_id,
         message: obj,
         app: this.contextApp.app,
-        timestamp: moment().unix(),
+        timestamp: datefns.getUnixTime(new Date()),
         acknowledge: 'Full',
         expire_in_min: 2880,
         job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),

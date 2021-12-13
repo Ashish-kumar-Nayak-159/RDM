@@ -46,6 +46,8 @@
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "crypto-js": "^4.1.1",
+    "date-fns": "^2.27.0",
+    "export-from-json": "^1.4.1",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "google-libphonenumber": "^3.2.24",
@@ -53,10 +55,7 @@
     "jquery": "^3.6.0",
     "jquery-ui-dist": "^1.12.1",
     "jsoneditor": "^9.5.6",
-    "jspdf": "^2.4.0",
-    "jspdf-autotable": "^3.5.20",
     "jwt-decode": "^3.1.2",
-    "moment": "^2.29.1",
     "ng2-daterangepicker": "^3.0.1",
     "ngx-bootstrap": "^6.2.0",
     "ngx-color": "^5.1.4",
@@ -70,7 +69,6 @@
     "secure-web-storage": "^1.0.2",
     "tslib": "^2.0.0",
     "typescript-string-operations": "^1.4.1",
-    "xlsx": "^0.16.9",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

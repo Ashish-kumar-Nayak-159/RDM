@@ -1,12 +1,9 @@
-import { AssetModelService } from './../../../services/asset-model/asset-model.service';
-import { ToasterService } from './../../../services/toaster.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AssetService } from 'src/app/services/assets/asset.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from './../../../services/common.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
+import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-asset-management-assets',

@@ -1,12 +1,11 @@
-import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import { ToasterService } from 'src/app/services/toaster.service';
-import { AssetService } from 'src/app/services/assets/asset.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import * as moment from 'moment';
-import { noUndefined } from '@angular/compiler/src/util';
+import { ToasterService } from 'src/app/services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-register-assets',
@@ -206,7 +205,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
       asset_id: this.componentstate !== CONSTANTS.IP_GATEWAY ? asset.asset_id : asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: datefns.getUnixTime(new Date()),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: asset.asset_id + '_' + this.commonService.generateUUID(),

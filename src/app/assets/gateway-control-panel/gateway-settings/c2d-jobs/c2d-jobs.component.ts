@@ -2,7 +2,7 @@ import { ToasterService } from './../../../../services/toaster.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -60,8 +60,8 @@ export class C2dJobsComponent implements OnInit {
   getRecentJobs() {
     this.isC2dMsgsLoading = true;
     this.c2dMsgs = [];
-    this.c2dJobFilter.from_date = moment().hour(0).minute(0).second(0).utc().unix();
-    this.c2dJobFilter.to_date = moment().utc().unix() + 3;
+    this.c2dJobFilter.from_date = datefns.getUnixTime(datefns.startOfDay(new Date()));
+    this.c2dJobFilter.to_date = datefns.getUnixTime(new Date()) + 3;
     const obj = { ...this.c2dJobFilter };
     obj.app = this.asset.app;
     obj.request_type = this.filterObj.request_type;
@@ -132,7 +132,7 @@ export class C2dJobsComponent implements OnInit {
       ? this.commonService.convertDateToEpoch(message.request_date)
       : message.timestamp;
     obj.from_date = epoch ? epoch - 5 : null;
-    obj.to_date = moment().utc().unix();
+    obj.to_date = datefns.getUnixTime(new Date());
     this.apiSubscriptions.push(
       this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {

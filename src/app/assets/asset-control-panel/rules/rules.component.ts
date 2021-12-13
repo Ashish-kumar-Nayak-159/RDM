@@ -7,7 +7,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 declare var $: any;
 
 @Component({
@@ -192,7 +192,7 @@ export class RulesComponent implements OnInit {
       },
       asset_id: this.asset.asset_id,
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: datefns.getUnixTime(new Date()),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.commonService.generateUUID(),

@@ -1,15 +1,14 @@
-import { filter } from 'rxjs/operators';
-import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import * as am4core from '@amcharts/amcharts4/core';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
-import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import * as am4core from '@amcharts/amcharts4/core';
-import * as am4charts from '@amcharts/amcharts4/charts';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
 
 declare var $: any;
 @Component({
@@ -39,21 +38,21 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
-    maxDate: moment(),
+    maxDate: new Date(),
     timePicker: true,
     ranges: {
-      'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'This Week': [moment().startOf('isoWeek'), moment()],
+      'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
+      'Last 7 Days': [datefns.getUnixTime(datefns.subDays(new Date(), 7)), datefns.getUnixTime(datefns.subSeconds(new Date(), 0))],
+      'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
       'Last 4 Weeks': [
-        moment().subtract(4, 'weeks').startOf('isoWeek'),
-        moment().subtract(1, 'weeks').endOf('isoWeek'),
+        datefns.getUnixTime(datefns.subWeeks(new Date(), 4)),
+        datefns.getUnixTime(datefns.subWeeks(new Date(), 1)),
       ],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 6 Months': [moment().subtract(6, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 12 Months': [moment().subtract(12, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
+      'Last Month': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(), 1))), datefns.getUnixTime(datefns.endOfMonth(datefns.subMonths(new Date(), 1)))],
+      'Last 3 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),3))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
+      'Last 6 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),6))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
+      'Last 12 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),12))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
     },
   };
   today = new Date();
@@ -86,16 +85,13 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     this.displayMode = type;
     this.loader = false;
     this.filterObj.dateOption = 'This Month';
-    this.filterObj.from_date = moment().startOf('month').utc().unix();
-    this.filterObj.to_date = moment().endOf('month').utc().unix();
+    this.filterObj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+    this.filterObj.to_date =datefns.getUnixTime(datefns.endOfMonth(new Date()));
     this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");       
     }
     if (type === 'history') {
       this.filterObj.countNotShow = true;
@@ -132,10 +128,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       this.selectedDateRange = this.filterObj.dateOption;
       this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");       
     }
     console.log(this.filterObj);
   }

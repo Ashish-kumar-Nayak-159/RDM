@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
@@ -1716,22 +1716,19 @@ export class CONSTANTS {
   ];
 
   public static DATE_OPTIONS = {
-    'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-    'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-    'Last 1 Hour': [moment().subtract(1, 'hour'), moment()],
-    'Last 3 Hours': [moment().subtract(3, 'hours'), moment()],
-    'Last 6 Hours': [moment().subtract(6, 'hours'), moment()],
-    'Last 12 Hours': [moment().subtract(12, 'hours'), moment()],
-    'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
-    Today: [moment().startOf('day'), moment()],
-    Yesterday: [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
-    'This Week': [moment().startOf('week'), moment()],
-    'Last Week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-    // 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    // 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment()],
-    // 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    'Last 5 Mins': [datefns.subMinutes(new Date(), 5), datefns.subSeconds(new Date(), 0)],
+    'Last 30 Mins': [datefns.subSeconds(new Date(), 30), datefns.subSeconds(new Date(), 0)],
+    'Last 1 Hour': [datefns.subHours(new Date(), 1), datefns.subSeconds(new Date(), 0)],
+    'Last 3 Hours': [datefns.subHours(new Date(), 3), datefns.subSeconds(new Date(), 0)],
+    'Last 6 Hours': [datefns.subHours(new Date(), 6), datefns.subSeconds(new Date(), 0)],
+    'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
+    'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
+    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(),1)), datefns.endOfDay(datefns.subDays(new Date(),1))],
+    'This Week': [datefns.startOfWeek(new Date(),{weekStartsOn:1}), datefns.subSeconds(new Date(), 0)],
+    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],    
   };
+
+
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static ASSETS_LIST = 'assets_list';

@@ -266,7 +266,6 @@ export class CommonService {
     let value = key;
     app.menu_settings.model_control_panel_menu.forEach((item) => {
       if (item.page === page) {
-        console.log(item.accordion_value[key]);
         value = item?.accordion_value[key] || key;
       }
     });
@@ -346,10 +345,6 @@ export class CommonService {
     const centralLongitude = Math.atan2(y, x);
     const centralSquareRoot = Math.sqrt(x * x + y * y);
     const centralLatitude = Math.atan2(z, centralSquareRoot);
-    console.log({
-      latitude: (centralLatitude * 180) / Math.PI,
-      longitude: (centralLongitude * 180) / Math.PI,
-    });
     return {
       latitude: (centralLatitude * 180) / Math.PI,
       longitude: (centralLongitude * 180) / Math.PI,

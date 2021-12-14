@@ -38,7 +38,6 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-      console.log(this.telemetryObj);
       //  this.label.text = changes.value.currentValue;
       this.chartConfig.properties.forEach((prop, index) => {
         if (this.hand[index] && this.chart[index]) {
@@ -89,14 +88,12 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
       range0.axisFill.fillOpacity = 1;
       range0.axisFill.fill = am4core.color(prop.low_color || '#308014');
       range0.axisFill.zIndex = -1;
-      console.log(range0.value, '===range0==', range0.endValue);
       const range1 = axis.axisRanges.create();
       range1.value = prop.normal_min || prop.low_max || prop?.minRangeValue || 50;
       range1.endValue = prop.normal_max || prop.high_min || prop?.maxRangeValue || 80;
       range1.axisFill.fillOpacity = 1;
       range1.axisFill.fill = am4core.color(prop.normal_color || '#fecc4d');
       range1.axisFill.zIndex = -1;
-      console.log(range1.value, '===range1==', range1.endValue);
       const range2 = axis.axisRanges.create();
       range2.value = prop.high_min || prop.normal_max || prop?.minRangeValue || 50;
       range2.endValue = prop.high_max || prop?.maxRangeValue || 100;

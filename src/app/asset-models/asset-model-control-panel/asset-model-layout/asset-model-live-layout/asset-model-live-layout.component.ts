@@ -378,6 +378,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
+    
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {

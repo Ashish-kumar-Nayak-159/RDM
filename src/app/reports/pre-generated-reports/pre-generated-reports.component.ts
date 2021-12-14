@@ -186,7 +186,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       // !this.reportsObj.assets ||
       this.reportsObj.assets.length === 0 ||
       !this.reportsObj.report_name ||
-      this.reportsObj.report_name.trim().length === 0 ||
       !this.reportsObj.report_category ||
       !this.reportsObj.report_frequency ||
       !this.reportsObj.report_type

@@ -169,11 +169,11 @@
       <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary "
           *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
-          [disabled]="(!form.valid && (form.touched || !form.touched)) || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
+          [disabled]="!form.valid || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-primary"
           *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'"
-          [disabled]="(!form.valid && (form.touched || !form.touched))"
+          [disabled]="!form.valid"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
           (click)="onCloseAssetsPropertyModal()">Cancel</button>

@@ -338,7 +338,7 @@
      
       <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary add-row" (click)="onCreateUserGroup()"
-          [disabled]="(!form.valid && (form.touched || !form.touched)) || isCreateUserGroupAPILoading">
+          [disabled]="!form.valid || isCreateUserGroupAPILoading">
           Save
           <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserGroupAPILoading"></i>
         </button>

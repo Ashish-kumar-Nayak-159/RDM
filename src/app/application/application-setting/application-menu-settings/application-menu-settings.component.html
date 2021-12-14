@@ -51,7 +51,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="(!mainmenuform.valid && (mainmenuform.touched || !mainmenuform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="!mainmenuform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -144,7 +144,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="(!iotassetform.valid && (iotassetform.touched || !iotassetform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="!iotassetform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -223,7 +223,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="(!legacyassetform.valid && (legacyassetform.touched || !legacyassetform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="!legacyassetform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -304,7 +304,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="(!gatewayform.valid && (gatewayform.touched || !gatewayform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="!gatewayform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -383,7 +383,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="(!modelform.valid && (modelform.touched || !modelform.touched)) || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
+                      [disabled]="!modelform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>

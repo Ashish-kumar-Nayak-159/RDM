@@ -101,8 +101,7 @@
       <div class="modal-footer fixed-bottom bg-white">
         <!-- <button *ngIf="componentState === constantData.NON_IP_ASSET" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateAssetAPILoading"
           (click)="isAssetEditable ? onEditAsset() : onCreateAsset()">Save</button> -->
-          <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
-          (form.touched || !form.touched)) || isCreateAssetAPILoading"
+          <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateAssetAPILoading"
           (click)="isAssetEditable ? onUpdateAsset() : onCreateAsset()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetAPILoading"
           (click)="onCloseCreateAssetModal()">

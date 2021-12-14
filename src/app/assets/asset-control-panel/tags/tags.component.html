@@ -409,8 +409,7 @@
         </ng-container>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="(!locationform.valid &&
-        (locationform.touched || !locationform.touched)) || isUpdateAPILoading || !changeLocationOption"
+        <button type="button" class="btn btn-primary" [disabled]="!locationform.valid || isUpdateAPILoading || !changeLocationOption"
           (click)="updateAssetTags()">
           Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAPILoading "

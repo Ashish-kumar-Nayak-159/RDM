@@ -30,7 +30,7 @@
       <tr>
         <th scope="col"colspan="3">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
-            [disabled]="(!form.valid && (form.touched || !form.touched)) ||  saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i
+            [disabled]="!form.valid ||  saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i
               class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
           <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick();"
             [disabled]="!isMetadataEditable">
@@ -232,8 +232,7 @@
         </ng-container>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="(!locationform.valid &&
-        (locationform.touched || !locationform.touched)) || !changeLocationOption"  (click)="setDefaultLocation()">
+        <button type="button" class="btn btn-primary" [disabled]="!locationform.valid || !changeLocationOption"  (click)="setDefaultLocation()">
           Set Location</button>
         <button type="button" class="btn btn-white"
           (click)="onModalClose('changeLocationModal')">

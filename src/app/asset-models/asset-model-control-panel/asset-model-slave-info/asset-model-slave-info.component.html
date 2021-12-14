@@ -125,8 +125,7 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slaves'">
 
-            <button type="button" class="btn btn-primary" [disabled]="(!slaveform.valid &&
-            (slaveform.touched || !slaveform.touched)) || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slaveform.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlaveObj() : saveSlaveObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>
@@ -155,8 +154,7 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave positions'">
 
-            <button type="button" class="btn btn-primary" [disabled]="(!slavepositionform.valid &&
-            (slavepositionform.touched || !slavepositionform.touched)) || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slavepositionform.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlavePositionObj() : saveSlavePositionObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>
@@ -174,8 +172,7 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave categories'">
 
-            <button type="button" class="btn btn-primary" [disabled]="(!slavecategoriesform.valid &&
-            (slavecategoriesform.touched || !slavecategoriesform.touched)) || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slavecategoriesform.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlaveCategoryObj() : saveSlaveCategoryObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>

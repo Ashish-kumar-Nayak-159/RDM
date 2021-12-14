@@ -96,8 +96,7 @@
           </div> -->
       
       <div class="modal-footer fixed-bottom bg-white">
-        <button type="button" class="btn btn-primary add-row" [disabled]="(!form.valid &&
-        (form.touched || !form.touched)) || isCreateAssetMethodLoading"
+        <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateAssetMethodLoading"
           (click)="onSaveassetMethodObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetMethodLoading"
           (click)="onCloseAssetsAssetMethodModal()">Cancel</button>

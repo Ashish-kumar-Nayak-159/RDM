@@ -44,7 +44,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private toasterService: ToasterService,
     private fileSaverService: FileSaverService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -111,30 +111,31 @@ export class AssetModelPackageManagementComponent implements OnInit {
         },
       ],
     };
+    if (environment.environment == 'DEV') {
+      this.packageTableConfig.data[3].btnData.push({
+        icon: 'fa fa-fw fa-edit',
+        text: '',
+        id: 'Edit',
+        valueclass: '',
+        tooltip: 'Edit',
+        disableConditions: {
+          key: 'freezed',
+          value: true
+        }
+      })
+      this.packageTableConfig.data[3].btnData.push({
+        icon: 'fa fa-fw fa-trash',
+        text: '',
+        id: 'Delete',
+        valueclass: '',
+        tooltip: 'Delete',
+        disableConditions: {
+          key: 'freezed',
+          value: true
+        }
+      })
+    }
   }
-
-  // {
-  //   icon: 'fa fa-fw fa-edit',
-  //   text: '',
-  //   id: 'Edit',
-  //   valueclass: '',
-  //   tooltip: 'Edit',
-  //   disableConditions: {
-  //     key: 'freezed',
-  //     value: true
-  //   }
-  // },
-  // {
-  //   icon: 'fa fa-fw fa-trash',
-  //   text: '',
-  //   id: 'Delete',
-  //   valueclass: '',
-  //   tooltip: 'Delete',
-  //   disableConditions: {
-  //     key: 'freezed',
-  //     value: true
-  //   }
-  // }
 
   getPackages() {
     this.packages = [];
@@ -226,10 +227,10 @@ export class AssetModelPackageManagementComponent implements OnInit {
           header += arrvalue.toString(16);
         }
         if (allowedZipMagicNumbers.includes(header)) {
-          this.uploadedFile = file;                   
+          this.uploadedFile = file;
         }
-        else {          
-          this.toasterService.showError('Only .zip files are allowed', 'Select File');          
+        else {
+          this.toasterService.showError('Only .zip files are allowed', 'Select File');
         }
         this.packageObj.metadata.file_name = this.uploadedFile.name;
         return;

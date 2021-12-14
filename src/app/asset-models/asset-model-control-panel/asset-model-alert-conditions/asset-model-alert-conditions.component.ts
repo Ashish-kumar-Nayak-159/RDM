@@ -79,6 +79,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     await this.getDocuments();
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');
+    this.onChangeOfAlertSource();
     this.getSlaveData();
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();

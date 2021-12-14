@@ -5,9 +5,8 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import {ChangeDetectorRef, Component, OnInit, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
-
+import * as datefns from 'date-fns';
 declare var $: any;
 @Component({
   selector: 'app-campaign-management-list',
@@ -88,10 +87,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
-        this.selectedDateRange =
-          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
       }
       this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.getCampaignsList();

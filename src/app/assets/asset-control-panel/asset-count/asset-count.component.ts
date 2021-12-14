@@ -1,13 +1,11 @@
-import { filter } from 'rxjs/operators';
-import { AssetModelService } from './../../../services/asset-model/asset-model.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { CommonService } from './../../../services/common.service';
-import { AssetService } from './../../../services/assets/asset.service';
-import { ToasterService } from './../../../services/toaster.service';
-import { ViewChild, AfterViewInit } from '@angular/core';
-import { Component, Input, OnInit } from '@angular/core';
-import * as moment from 'moment';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetModelService } from './../../../services/asset-model/asset-model.service';
+import { AssetService } from './../../../services/assets/asset.service';
+import { CommonService } from './../../../services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
 
 @Component({
   selector: 'app-asset-count',
@@ -88,10 +86,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       } else {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
-        this.selectedDateRange =
-          moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");
       }
     }
     // this.searchTelemetry(this.telemetryFilter, false);
@@ -311,10 +306,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.telemetryFilter.dateOption;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");
     }
   }
 }

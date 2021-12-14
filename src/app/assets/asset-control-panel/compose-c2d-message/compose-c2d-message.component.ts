@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import * as datefns from 'date-fns';
+import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
-import * as moment from 'moment';
-import { ToasterService } from './../../../services/toaster.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from './../../../services/common.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { HttpParams } from '@angular/common/http';
+import { ToasterService } from './../../../services/toaster.service';
 
 @Component({
   selector: 'app-compose-c2d-message',
@@ -52,7 +52,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
           asset_id: this.asset.asset_id,
           gateway_id: this.asset.gateway_id,
           app: this.appName,
-          timestamp: moment().unix(),
+          timestamp: datefns.getUnixTime(new Date()),
           message: null,
           acknowledge: 'Full',
           expire_in_min: 1,
@@ -136,7 +136,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
             this.sendMessageStatus = 'success';
             this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
             this.isSendC2DMessageAPILoading = false;
-            const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
+            const expiryDate = datefns.addMinutes(new Date(),this.sentMessageData.expire_in_min);
             this.timerInterval = setInterval(() => {
               const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
               this.timerObj = this.dhms(time);

@@ -1,15 +1,12 @@
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { Asset } from 'src/app/models/asset.model';
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { ApplicationService } from './../../services/application/application.service';
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import { ToasterService } from './../../services/toaster.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, Input, OnInit, EventEmitter, Output, OnChanges } from '@angular/core';
-import * as moment from 'moment';
-import { Asset } from 'src/app/models/asset.model';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
-import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { ToasterService } from './../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-add-asset',

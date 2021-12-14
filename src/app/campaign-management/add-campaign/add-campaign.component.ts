@@ -1,16 +1,16 @@
-import { AssetService } from 'src/app/services/assets/asset.service';
-import { CampaignService } from './../../services/campaigns/campaign.service';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
-import { ToasterService } from 'src/app/services/toaster.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
-import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import { CommonService } from 'src/app/services/common.service';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { Campaign } from './campaign.model';
-import * as moment from 'moment';
-import { environment } from 'src/environments/environment';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from 'src/app/services/toaster.service';
+import { environment } from 'src/environments/environment';
+import { CampaignService } from './../../services/campaigns/campaign.service';
+import { Campaign } from './campaign.model';
 declare var $: any;
 @Component({
   selector: 'app-add-campaign',
@@ -28,7 +28,7 @@ export class AddCampaignComponent implements OnInit {
     autoUpdateInput: false,
     singleDatePicker: true,
     autoApply: true,
-    minDate: moment(),
+    minDate: new Date(),
   };
   daterange: any = {};
   assetModels: any[] = [];
@@ -205,13 +205,13 @@ export class AddCampaignComponent implements OnInit {
     console.log(value);
     console.log(this.campaignObj);
     if (type === 'start') {
-      this.campaignObj.expected_start_date = moment(value.start).utc().unix();
+      this.campaignObj.expected_start_date = datefns.getUnixTime(new Date(value.start));
       this.campaignObj.expected_start_date_display = this.commonService.convertEpochToOnlyDate(
         this.campaignObj.expected_start_date
       );
     }
     if (type === 'end') {
-      this.campaignObj.expected_end_date = moment(value.start).utc().unix();
+      this.campaignObj.expected_end_date = datefns.getUnixTime(new Date(value.start));
       this.campaignObj.expected_end_date_display = this.commonService.convertEpochToOnlyDate(
         this.campaignObj.expected_end_date
       );

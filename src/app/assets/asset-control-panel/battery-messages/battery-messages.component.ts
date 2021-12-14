@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Asset } from 'src/app/models/asset.model';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { Asset } from 'src/app/models/asset.model';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import * as moment from 'moment';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 
 @Component({

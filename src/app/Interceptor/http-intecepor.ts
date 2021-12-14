@@ -1,13 +1,13 @@
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { CommonService } from './../services/common.service';
-import { ToasterService } from './../services/toaster.service';
+import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpHeaders } from '@angular/common/http';
-
+import * as datefns from 'date-fns';
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
+import { CommonService } from './../services/common.service';
+import { ToasterService } from './../services/toaster.service';
+
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
@@ -18,7 +18,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     let userToken;
     userToken = this.commonService.getToken();
     const decodedUserToken: any = this.commonService.decodeJWTToken(userToken);
-    const now = moment().utc().unix();
+    const now = datefns.getUnixTime(new Date());
     if ((decodedUserToken && decodedUserToken.exp <= now) || (!userToken &&
       !request.url.includes('api/login') &&
       !request.url.includes('api/guest_login') &&

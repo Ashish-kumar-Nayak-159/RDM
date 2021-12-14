@@ -2,7 +2,7 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { HttpParams } from '@angular/common/http';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
@@ -59,7 +59,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.c2dMessageData = {
       asset_id: this.asset.asset_id,
       gateway_id: this.asset.gateway_id || this.asset.tags.gateway_id,
-      timestamp: moment().unix(),
+      timestamp: datefns.getUnixTime(new Date()),
       message: null,
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
       acknowledge: 'Full',
@@ -165,7 +165,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       return;
     }
     try {
-      obj.timestamp = moment().unix();
+      obj.timestamp = datefns.getUnixTime(new Date());
       this.sentMessageData = JSON.parse(JSON.stringify(obj));
       // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     } catch (e) {
@@ -186,7 +186,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
             this.sendMessageStatus = 'success';
             this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
             this.isSendC2DMessageAPILoading = false;
-            const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
+            const expiryDate = datefns.addMinutes(new Date(),this.sentMessageData.expire_in_min);
             this.timerInterval = setInterval(() => {
               const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
               this.timerObj = this.dhms(time);

@@ -5,7 +5,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-rules',
@@ -154,7 +154,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         rules: [],
       },
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: datefns.getUnixTime(new Date()),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.commonService.generateUUID(),

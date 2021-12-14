@@ -1,15 +1,14 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Asset } from 'src/app/models/asset.model';
-import { ToasterService } from './../../../services/toaster.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import { FileSaverService } from 'ngx-filesaver';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { CommonService } from 'src/app/services/common.service';
+import { Asset } from 'src/app/models/asset.model';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
-import { FileSaverService } from 'ngx-filesaver';
+import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-logs',

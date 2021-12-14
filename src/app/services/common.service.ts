@@ -1,6 +1,5 @@
 import { SignalRService } from './signalR/signal-r.service';
 import { Injectable, EventEmitter } from '@angular/core';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from 'src/app/constants/app-url.constants';
@@ -9,6 +8,7 @@ import * as CryptoJS from 'crypto-js';
 import jwt_decode from 'jwt-decode';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
+import * as datefns from 'date-fns'
 
 @Injectable({
   providedIn: 'root',
@@ -67,21 +67,22 @@ export class CommonService {
 
   convertDateToEpoch(date: string) {
     if (date) {
-      return moment.utc(date).unix();
+      return datefns.getUnixTime(new Date());
     }
     return 0;
   }
 
   convertEpochToDate(epoch) {
     if (epoch) {
-      return moment.unix(epoch).format('DD-MMM-YYYY hh:mm:ss A');
+      console.log('convertepochtodate',datefns.format(datefns.fromUnixTime(epoch),'dd-MM-yyyy hh:mm:ss'))
+      return datefns.format(datefns.fromUnixTime(epoch),'dd-MM-yyyy hh:mm:ss');
     }
     return null;
   }
 
   convertEpochToOnlyDate(epoch) {
-    if (epoch) {
-      return moment.unix(epoch).format('DD-MMM-YYYY');
+    if (epoch) {      
+      return datefns.format(datefns.fromUnixTime(epoch),'dd-MM-yyyy');
     }
     return null;
   }
@@ -197,63 +198,66 @@ export class CommonService {
   getMomentStartEndDate(label) {
     const obj: any = {};
     if (label === 'Last 5 Mins') {
-      obj.from_date = moment().subtract(5, 'minutes').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subMinutes(new Date(), 5));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 30 Mins') {
-      obj.from_date = moment().subtract(30, 'minutes').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subSeconds(new Date(), 30));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 1 Hour') {
-      obj.from_date = moment().subtract(1, 'hour').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 1));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 3 Hours') {
-      obj.from_date = moment().subtract(3, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 3));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 6 Hours') {
-      obj.from_date = moment().subtract(6, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 6));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 12 Hours') {
-      obj.from_date = moment().subtract(12, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 12));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 24 Hours') {
-      obj.from_date = moment().subtract(24, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 24));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 7 Days') {
-      obj.from_date = moment().subtract(6, 'days').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subDays(new Date(), 7));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'This Week') {
-      obj.from_date = moment().startOf('isoWeek').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.startOfWeek(new Date(),{weekStartsOn:1}));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last 4 Weeks') {
-      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').utc().unix();
-      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').utc().unix();
-    } else if (label === 'Last 30 Days') {
-      obj.from_date = moment().subtract(29, 'days').utc().unix();
-      obj.to_date = moment().utc().unix();
-    } else if (label === 'This Month') {
-      obj.from_date = moment().startOf('month').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.subWeeks(new Date(),4));
+      obj.to_date = datefns.getUnixTime(datefns.subWeeks(new Date(),1));
+    } 
+     else if (label === 'This Month') {
+      obj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+      obj.to_date = datefns.getUnixTime(new Date());
     } else if (label === 'Last Month') {
-      obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
-    } else if (label === 'Last 3 Months') {
-      obj.from_date = moment().subtract(3, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
-    } else if (label === 'Last 6 Months') {
-      obj.from_date = moment().subtract(6, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
-    } else if (label === 'Last 12 Months') {
-      obj.from_date = moment().subtract(12, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
-    } else if (label === 'Today') {
-      obj.from_date = moment().startOf('day').utc().unix();
-      obj.to_date = moment().utc().unix();
-    } else if (label === 'Yesterday') {
-      obj.from_date = moment().subtract(1, 'days').startOf('day').utc().unix();
-      obj.to_date = moment().subtract(1, 'days').endOf('day').utc().unix();
-    } else if (label === 'Last Week') {
-      obj.from_date = moment().subtract(1, 'week').startOf('week').utc().unix();
-      obj.to_date = moment().subtract(1, 'week').endOf('week').utc().unix();
+      obj.from_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)));
+      obj.to_date = datefns.getUnixTime(datefns.endOfMonth(datefns.subMonths(new Date(),1)));
     }
+    else if (label === 'Last 3 Months') {
+        obj.from_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),3)));
+        obj.to_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)));
+      }
+      else if (label === 'Last 6 Months') {
+        obj.from_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),6)));
+        obj.to_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)));
+      }
+      else if (label === 'Last 12 Months') {
+        obj.from_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),12)));
+        obj.to_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)));
+      }
+    else if (label === 'Today') {
+      obj.from_date = datefns.getUnixTime(datefns.startOfDay(new Date()));
+        obj.to_date = datefns.getUnixTime(new Date());
+      } else if (label === 'Yesterday') {
+        obj.from_date = datefns.getUnixTime(datefns.startOfDay(datefns.subDays(new Date(),1)));
+        obj.to_date = datefns.getUnixTime(datefns.endOfDay(datefns.subDays(new Date(),1)));
+      }
+      else if (label === 'Last Week') {
+           obj.from_date = datefns.getUnixTime(datefns.startOfWeek(datefns.subWeeks(new Date(),1),{weekStartsOn:1}));
+           obj.to_date = datefns.getUnixTime(datefns.endOfWeek(datefns.subWeeks(new Date(),1),{weekStartsOn:1}));
+         }
     return obj;
   }
 
@@ -283,7 +287,7 @@ export class CommonService {
     if (!containerName) {
       containerName = environment.blobContainerName;
     }
-    const epoch = moment().utc().unix();
+    const epoch = datefns.subSeconds(new Date(), 0);
     // const fileNameArr = file.name.split('.');
     // const fileExtension = fileNameArr[fileNameArr.length - 1];
     // fileNameArr.pop();

@@ -1,10 +1,9 @@
-import { ToasterService } from './../../../services/toaster.service';
-import { CommonService } from './../../../services/common.service';
-import { Subscription } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import * as moment from 'moment';
+import { CommonService } from './../../../services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
 
 @Component({
   selector: 'app-gateway-settings',

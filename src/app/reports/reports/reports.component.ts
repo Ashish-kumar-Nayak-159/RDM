@@ -1,19 +1,17 @@
-import { filter } from 'rxjs/operators';
-import { AssetModelService } from './../../services/asset-model/asset-model.service';
-import { ToasterService } from './../../services/toaster.service';
-import { AssetService } from './../../services/assets/asset.service';
-import { ApplicationService } from './../../services/application/application.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { CommonService } from './../../services/common.service';
-import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import exportFromJSON from 'export-from-json';
+import { ApplicationService } from './../../services/application/application.service';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
+import { AssetService } from './../../services/assets/asset.service';
+import { CommonService } from './../../services/common.service';
+import { ToasterService } from './../../services/toaster.service';
 declare var $: any;
+declare var jsPDF: any;
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -104,10 +102,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};    
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(item);
       if (item.dateOption) {
+        console.log('date operation',item);
         this.filterObj.dateOption = item.dateOption;
         if (item.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
@@ -121,10 +120,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (this.filterObj.dateOption !== 'Custom Range') {
           this.selectedDateRange = this.filterObj.dateOption;
         } else {
-          this.selectedDateRange =
-            moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-            ' to ' +
-            moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+          this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
         }
         // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
         //   this.filterObj.isTypeEditable = true;
@@ -153,6 +149,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       //   this.onFilterSelection(false, false);
       // }
     } else {
+      console.log('context user',this.contextApp.user);
       this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
     }
   }
@@ -223,7 +220,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
             }
-          }          
+          }
           resolve();
         })
       );
@@ -347,7 +344,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         const element = document.getElementById('table-wrapper');
         if (
           parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
-            parseFloat(element.scrollHeight.toFixed(0)) &&
+          parseFloat(element.scrollHeight.toFixed(0)) &&
           !this.insideScrollFunFlag
         ) {
           this.currentOffset += this.currentLimit;
@@ -364,7 +361,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
-    } 
+    }
     const obj = { ...this.filterObj };
     let asset_model: any;
     if (obj.asset) {
@@ -703,27 +700,34 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.loadingMessage = 'Preparing Report.';
     this.isFileDownloading = true;
     setTimeout(() => {
-      const pdf = new jsPDF('p', 'pt', 'A3');
+      const pdf = new jsPDF('L', 'pt', 'A3');
       pdf.text(
         this.originalFilterObj.report_type +
-          ' for ' +
-          (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
-          ' for ' +
-          this.commonService.convertEpochToDate(this.newFilterObj.from_date) +
-          ' to ' +
-          this.commonService.convertEpochToDate(this.newFilterObj.to_date),
+        ' for ' +
+        (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
+        ' for ' +
+        this.commonService.convertEpochToDate(this.newFilterObj.from_date) +
+        ' to ' +
+        this.commonService.convertEpochToDate(this.newFilterObj.to_date),
         20,
         50
       );
-      autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
-      const now = moment().utc().unix();
+      var elem = document.getElementById("dataTable1");
+        var res = pdf.autoTableHtmlToJson(elem);        
+        pdf.autoTable(res.columns, res.data,{
+          styles: {
+            overflow: 'linebreak'
+          },
+          margin: {top: 70},
+      });
+      const now = datefns.getUnixTime(new Date());
       pdf.save(
         (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
-          '_' +
-          this.originalFilterObj.report_type +
-          '_' +
-          now +
-          '.pdf'
+        '_' +
+        this.originalFilterObj.report_type +
+        '_' +
+        now +
+        '.pdf'
       );
       this.isFileDownloading = false;
       this.loadingMessage = undefined;
@@ -731,9 +735,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  async saveExcel() {
+  async saveExcel() {    
+    const now = datefns.getUnixTime(new Date());
+    const fileName = (this.originalFilterObj.asset.display_name
+      ? this.originalFilterObj.asset.display_name
+      : this.originalFilterObj.asset.asset_id) +
+      '_' +
+      this.originalFilterObj.report_type +
+      '_' +
+      now;
+    const exportType = exportFromJSON.types.xls;
     this.isFileDownloading = true;
-    let ws: XLSX.WorkSheet;
     let data = [];
     $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
     if (this.originalFilterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
@@ -760,11 +772,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
             Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
             'Acknowledged By': alert.metadata?.user_id,
           });
-        });
-        // const element = document.getElementById('dataTable');
-        ws = XLSX.utils.json_to_sheet(data);
-        
-
+        });              
+        exportFromJSON({ data, fileName, exportType });        
       } else {
         data = [];
         this.telemetry.forEach((telemetryObj) => {
@@ -774,61 +783,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
                 ? this.originalFilterObj.non_ip_asset?.asset_display_name
                 : this.originalFilterObj.non_ip_asset?.asset_id
               : this.assetFilterObj
-              ? this.assetFilterObj.asset_display_name
                 ? this.assetFilterObj.asset_display_name
-                : this.assetFilterObj.asset_id
-              : '',
+                  ? this.assetFilterObj.asset_display_name
+                  : this.assetFilterObj.asset_id
+                : '',
             Time: telemetryObj.local_created_date,
           };
           this.selectedProps.forEach((prop) => {
             obj[prop.id] = telemetryObj[prop.value.json_key];
           });
           data.push(obj);
-        });
-        ws = XLSX.utils.json_to_sheet(data);
+        });      
+        exportFromJSON({ data, fileName, exportType });
       }
-      const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
-      const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
-      // get worksheet range
-      const range = XLSX.utils.decode_range(ws['!ref']);
-      for (let i = range.s.r + 1; i <= range.e.r; ++i) {
-        /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
-        const ref = XLSX.utils.encode_cell({ r: i, c: colA });
-        /* if the particular row did not contain data for the column, the cell will not be generated */
-        if (!ws[ref]) {
-          continue;
-        }
-        /* `.t == "n"` for number cells */
-        if (ws[ref].t !== 'n') {
-          continue;
-        }
-        /* assign the `.z` number format */
-        ws[ref].z = fmt;
-      }
-      let wscols = [],colNames=Object.keys(data[0]);
-      for (let i = range.s.c + 1; i <= range.e.c; ++i) {
-        wscols.push({
-          wch : colNames[i].length + 15
-        })
-      }
-      // width of timestamp col
-      ws['!cols'] = wscols;
-      /* generate workbook and add the worksheet */
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      const now = moment().utc().unix();
-      /* save to file */
-      XLSX.writeFile(
-        wb,
-        (this.originalFilterObj.asset.display_name
-          ? this.originalFilterObj.asset.display_name
-          : this.originalFilterObj.asset.asset_id) +
-          '_' +
-          this.originalFilterObj.report_type +
-          '_' +
-          now +
-          '.xlsx'
-      );
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
     }, 1000);

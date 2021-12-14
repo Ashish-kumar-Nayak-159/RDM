@@ -1,15 +1,12 @@
-import { environment } from './../../../../environments/environment';
-import { Subscription } from 'rxjs';
-import { CommonService } from './../../../services/common.service';
-import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, NgZone, OnInit, PLATFORM_ID, OnDestroy, Input } from '@angular/core';
-import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { ChartService } from 'src/app/services/chart/chart.service';
-import * as moment from 'moment';
-declare var $: any;
-import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import * as am4core from '@amcharts/amcharts4/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { ChartService } from 'src/app/services/chart/chart.service';
+import { environment } from './../../../../environments/environment';
+import { CommonService } from './../../../services/common.service';
+declare var $: any;
 @Component({
   selector: 'app-live-chart-data',
   templateUrl: './live-data.component.html',

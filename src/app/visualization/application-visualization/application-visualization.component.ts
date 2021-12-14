@@ -166,6 +166,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           } else {
             this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
           }
+          console.log('this.selectedDateRange',this.selectedDateRange);
           this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
           this.getLatestAlerts(false);
         }

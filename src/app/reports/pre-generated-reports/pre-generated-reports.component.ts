@@ -135,7 +135,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         });
       }
     }
-    console.log('filterObj',this.filterObj,item.dateOption);
     if (item.dateOption) {
       this.filterObj.dateOption = item.dateOption;
       if (item.dateOption !== 'Custom Range') {

@@ -52,10 +52,17 @@ export class AssetAlertConditionsComponent implements OnInit {
   editDocuments: any = {};
   assetMethods: any[] = [];
   documents: any[] = [];
-  widgetName: string;
+  // widgetName: string;
   recommendationObj: any;
-  docName: any;
-  groupName: any = {};
+  // docName: any;
+  // groupName: any = {};
+  selectedWidgets: any = [];
+  selectedDocuments : any = [];
+  selectedUserGroups : any = {
+    'email':[],
+    'sms':[],
+    'whatsapp':[]
+  };
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
@@ -115,6 +122,9 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.applicationService.getApplicationUserGroups(this.contextApp.app).subscribe((response: any) => {
         if (response && response.data) {
           this.userGroups = response.data;
+          this.userGroups.push({
+            group_name : "Client Field Support"
+          })
         }
       })
     );
@@ -196,25 +206,26 @@ export class AssetAlertConditionsComponent implements OnInit {
 
   addVisualizationWidget() {
     // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-
-    const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === this.widgetName);
-    if (index > -1) {
-      this.toasterService.showError(
-        'Same ' + this.widgetStringFromMenu + ' is already added.',
-        'Add ' + this.widgetStringFromMenu
-      );
-      return;
-    } else if (!this.widgetName) {
-      this.toasterService.showError(
-        'Please select ' + this.widgetStringFromMenu + ' to add',
-        'Add ' + this.widgetStringFromMenu
-      );
-      return;
-    }
-    if (this.widgetName && index === -1) {
-      this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, this.widgetName);
-    }
-    this.widgetName = undefined;
+    this.selectedWidgets.forEach(element => {
+      const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === element.title);
+      if (index > -1) {
+        this.toasterService.showError(
+          'Same ' + this.widgetStringFromMenu + ' is already added.',
+          'Add ' + this.widgetStringFromMenu
+        );
+        return;
+      } else if (!element.title) {
+        this.toasterService.showError(
+          'Please select ' + this.widgetStringFromMenu + ' to add',
+          'Add ' + this.widgetStringFromMenu
+        );
+        return;
+      }
+      if (element.title && index === -1) {
+        this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
+      }
+    });
+    this.selectedWidgets = [];
   }
 
   removeVisualizationWidget(index) {
@@ -235,38 +246,41 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   addReferenceDocument() {
-    const index = this.alertObj.reference_documents.findIndex((doc) => doc === this.docName);
-    if (index > -1) {
-      this.toasterService.showError('Same Document is already added.', 'Add Document');
-      return;
-    } else if (!this.docName) {
-      this.toasterService.showError('Please select document to add', 'Add Document');
-      return;
-    }
-    if (this.docName && index === -1) {
-      this.alertObj.reference_documents.splice(this.alertObj.reference_documents.length, 0, this.docName);
-    }
-    this.docName = undefined;
+    this.selectedDocuments.forEach(element => {
+      const index = this.alertObj.reference_documents.findIndex((doc) => doc === element.name);
+      if (index > -1) {
+        this.toasterService.showError('Same Document is already added.', 'Add Document');
+        return;
+      } else if (!element.name) {
+        this.toasterService.showError('Please select document to add', 'Add Document');
+        return;
+      }
+      if (element.name && index === -1) {
+        this.alertObj.reference_documents.splice(this.alertObj.reference_documents.length, 0, element.name);
+      }
+    });
+    this.selectedDocuments = [];
   }
 
   addUserGroup(key) {
-    console.log(this.alertObj);
-    const index = this.alertObj.actions[key].recipients.findIndex((group) => group === this.groupName[key]);
-    if (index > -1) {
-      this.toasterService.showError('Same User Group is already added.', 'Add User Group');
-      return;
-    } else if (!this.groupName[key]) {
-      this.toasterService.showError('Please select user Group to add', 'Add User Group');
-      return;
-    }
-    if (this.groupName[key] && index === -1) {
-      this.alertObj.actions[key].recipients.splice(
-        this.alertObj.actions[key].recipients.length,
-        0,
-        this.groupName[key]
-      );
-    }
-    this.groupName[key] = undefined;
+    this.selectedUserGroups[key].forEach(element => {
+      const index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
+      if (index > -1) {
+        this.toasterService.showError('Same User Group is already added.', 'Add User Group');
+        return;
+      } else if (!element.group_name) {
+        this.toasterService.showError('Please select user Group to add', 'Add User Group');
+        return;
+      }
+      if (element.group_name && index === -1) {
+        this.alertObj.actions[key].recipients.splice(
+          this.alertObj.actions[key].recipients.length,
+          0,
+          element.group_name
+        );
+      }
+    });
+    this.selectedDocuments[key] = [];
   }
 
   removeUserGroup(index, key) {
@@ -517,5 +531,23 @@ export class AssetAlertConditionsComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  onDeselectAll(e,type) {
+    if (e === [] || e.length === 0) {
+      if(type=='document'){
+        this.selectedDocuments = []
+      }
+      if(type == 'widget'){
+        this.selectedWidgets = [];
+      }
+      if(type == 'userGroups'){
+        this.selectedUserGroups = {
+          'email':[],
+          'sms':[],
+          'whatsapp':[]
+        }
+      }
+    }
   }
 }

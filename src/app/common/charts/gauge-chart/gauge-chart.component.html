@@ -22,12 +22,13 @@
           tooltip="Remove {{widgetStringFromMenu}}"><i class="fa fa-close"></i></a>
       </div>
     </div>
-    <div class="card-body1" style="height: 12rem;">
+    <div class="card-body1 card-height">
       <div class="row text-center " *ngIf="telemetryObj">
-        <div class="col-md-{{12 / chartConfig?.properties?.length}} text-center"
-          *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0}">
+        <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) + 2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
+          *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && i % 4 != 0 ,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
           <p class="text-xs live-widget-title" placement="bottom"
-            [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')">
+            [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
+            [ngClass]= "{'border-top' : i > 3}">
             ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
             (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
             prop?.type === 'Derived KPIs' ? 'DK' : 'M'

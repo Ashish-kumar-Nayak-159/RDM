@@ -1,11 +1,8 @@
-import { ToasterService } from 'src/app/services/toaster.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { EventEmitter, Output } from '@angular/core';
-import { Input } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-manage-applications',

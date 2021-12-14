@@ -3,11 +3,11 @@ import { Component, OnInit, ElementRef, ViewChildren, OnDestroy, AfterViewInit }
 import { ApplicationService } from './../../services/application/application.service';
 import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/app/models/applicationDashboard.model';
 import { Subscription } from 'rxjs';
-import * as moment from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-application-dashboard',
@@ -182,8 +182,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
-      to_date: moment().utc().unix(),
+      from_date: datefns.getUnixTime(datefns.startOfDay(new Date)),
+      to_date: datefns.getUnixTime(new Date),
     };
     this.apiSubscriptions.push(
       this.applicationService.getLastAlerts(obj).subscribe(
@@ -212,8 +212,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
-      to_date: moment().utc().unix(),
+      from_date: datefns.getUnixTime(datefns.startOfDay(new Date)),
+      to_date: datefns.getUnixTime(new Date)
     };
     this.apiSubscriptions.push(
       this.applicationService.getLastNotifications(obj).subscribe(
@@ -242,8 +242,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay,
-      from_date: moment().hour(0).minute(0).second(0).utc().unix(),
-      to_date: moment().utc().unix(),
+      from_date: datefns.getUnixTime(datefns.startOfDay(new Date)),
+      to_date: datefns.getUnixTime(new Date)
     };
     this.apiSubscriptions.push(
       this.applicationService.getAssetLifeCycleEvents(obj).subscribe(
@@ -269,17 +269,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   }
 
   calculateTimeDifference(startDate) {
-    const date = moment().utc().format('M/DD/YYYY h:mm:ss A');
-    const today = moment(this.commonService.convertUTCDateToLocal(date));
-    const startime = moment(this.commonService.convertUTCDateToLocal(startDate));
+    //const date =  moment().utc().format('M/DD/YYYY h:mm:ss A');
+    const today = new Date(this.commonService.convertUTCDateToLocal(new Date()));
+    const startime = new Date(this.commonService.convertUTCDateToLocal(startDate));
     let timeString = '';
-    let diff = today.diff(startime, 'minute');
+    let diff = datefns.differenceInMinutes(today,startime);
     timeString = diff + ' ' + (diff === 1 ? 'minute' : 'minutes') + ' ago';
     if (diff > 60) {
-      diff = today.diff(startime, 'hours');
+      diff = datefns.differenceInHours(today,startime);
       timeString = diff + ' ' + (diff === 1 ? 'hour' : 'hours') + ' ago';
       if (diff > 24) {
-        diff = today.diff(startime, 'days');
+        diff = datefns.differenceInDays(today,startime);
         timeString = diff + ' ' + (diff === 1 ? 'day' : 'days') + ' ago';
       }
     }

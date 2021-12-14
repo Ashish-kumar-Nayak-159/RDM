@@ -39,7 +39,7 @@
     </ng-container>
     <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
       <div class="col-md-12 p-3">
-        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24hours.</span><span
+        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24 hours.</span><span
           *ngIf="pageType === 'history'">{{this.originalFilterObj.dateOption}}. <p
             *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can
             choose large time window.</p>

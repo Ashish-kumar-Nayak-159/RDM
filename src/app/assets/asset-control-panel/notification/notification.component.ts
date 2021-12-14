@@ -1,12 +1,11 @@
-import { ToasterService } from './../../../services/toaster.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy, Output } from '@angular/core';
-import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import * as moment from 'moment';
-import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { Asset } from 'src/app/models/asset.model';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-notification',

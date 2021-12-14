@@ -17,7 +17,7 @@ import { AssetService } from './../../../services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Asset } from 'src/app/models/asset.model';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import { ToasterService } from './../../../services/toaster.service';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
@@ -142,10 +142,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.historyFilter.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.historyFilter.dateOption;
       } else {
-        this.selectedDateRange =
-          moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =datefns.format(datefns.fromUnixTime(this.historyFilter.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date),"dd-MM-yyyy HH:mm");                      
       }
       // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
       //   this.historyFilter.isTypeEditable = true;
@@ -294,7 +291,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
           to_date: undefined,
           last_n_secs: undefined,
         };
-        const now = moment().utc().unix();
         if (this.historyFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
           obj.from_date = dateObj.from_date;
@@ -605,10 +601,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.to_date = dateObj.to_date;
       this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.historyFilter.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date),"dd-MM-yyyy HH:mm");                      
     }
 
     // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
@@ -629,8 +622,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   onDateChange(event) {
-    this.historyFilter.from_date = moment(event.value[0]).utc();
-    this.historyFilter.to_date = moment(event.value[1]).utc();
+    this.historyFilter.from_date = datefns.getUnixTime(new Date(event.value[0]));
+    this.historyFilter.to_date = datefns.getUnixTime(new Date(event.value[1]));
     if (this.historyFilter.dateOption !== 'date range') {
       this.historyFilter.dateOption = undefined;
     }

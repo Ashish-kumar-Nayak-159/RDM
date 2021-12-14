@@ -81,77 +81,61 @@
 <div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' +
-          (assetModel?.metadata?.model_type ? assetModel.metadata.model_type + ' ' : '') + (tileData && tileData[1] ?
-          tileData[1]?.value : ''))}}</h5>
-        <button type="button" class="close" (click)="onCloseAssetsModelModal()" aria-label="Close"
-          [disabled]="isCreateAssetsModelAPILoading">
-          <span aria-hidden="true" tooltip="Close">&times;</span>
-        </button>
-      </div>
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
+      <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isCreateAssetsModelAPILoading">
+        <span aria-hidden="true" tooltip="Close">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="assetModel">
+      <form name="createAssetsModelForm" #form="ngForm">
+        <div class="form-group" *ngIf="!assetModel.id">
+          <label for="message-text" class="col-form-label">App:</label>
+          <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
+        </div>
+        <div class="form-group" *ngIf="!assetModel.id">
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
+          <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="assetModel.name"
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
+          <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+            Please enter valid name.
+          </div>
+        </div>
+        <div class="form-group" *ngIf="!assetModel.id ">
+          <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="assetModel.metadata.model_type">
+            <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}</option>
+            <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
+            <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_ASSET}}</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="!assetModel.id">
+          <label for="recipient-name" class="col-form-label required">Protocol:</label>
+          <select class="form-control form-control-sm" id="protocol" name="protocol"
+          (change)="getConnectivityData()" [(ngModel)]="assetModel.tags.protocol">
+            <option [ngValue]="undefined"> Select Protocol</option>
+            <ng-container *ngFor="let protocol of protocolList">
+              <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === assetModel.metadata.model_type">{{protocol.display_name}}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="!assetModel.id">
+          <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
+          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="assetModel.tags.cloud_connectivity">
+            <option [ngValue]="undefined"> Select Connectivity</option>
+          <option *ngFor="let item of connectivityList" [ngValue]="item">
+            {{item}}</option>
+          </select>
+        </div>
+        <!-- <div class="form-group">
+          <label for="message-text" class="col-form-label">Upload Image: </label>
+          {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
+          <input type="file"
+          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+           class="form-control form-control-sm" id="app_logo" name="app_logo" >
+        </div> -->
 
-      <div class="modal-body" *ngIf="assetModel">
-        <form name="createAssetsModelForm" #form="ngForm">
-          <div class="form-group" *ngIf="!assetModel.id">
-            <label for="message-text" class="col-form-label">App:</label>
-            <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app"
-              disabled>
-          </div>
-          <div class="form-group" *ngIf="!assetModel.id">
-            <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value :
-              '')}} Name:</label>
-            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
-              [(ngModel)]="assetModel.name"
-              placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name" required>
-            <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
-              Please enter valid name.
-            </div>
-            <!-- <div [hidden]="name.valid || name.pristine">Please enter valid data</div> -->
-          </div>
-          <div class="form-group" *ngIf="!assetModel.id  && !assetModel.metadata.model_type">
-            <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value
-              : '')}} Type:</label>
-            <select class="form-control form-control-sm" id="template" name="model_type"
-              [(ngModel)]="assetModel.metadata.model_type">
-              <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}
-              </option>
-              <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">
-                {{constantData.IP_GATEWAY}}</option>
-              <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">
-                {{constantData.NON_IP_ASSET}}</option>
-            </select>
-          </div>
-          <div class="form-group" *ngIf="!assetModel.id">
-            <label for="recipient-name" class="col-form-label required">Protocol:</label>
-            <select class="form-control form-control-sm" id="protocol" name="protocol" (change)="getConnectivityData()"
-              [(ngModel)]="assetModel.tags.protocol">
-              <option [ngValue]="undefined"> Select Protocol</option>
-              <ng-container *ngFor="let protocol of protocolList">
-                <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === assetModel.metadata.model_type">
-                  {{protocol.display_name}}</option>
-              </ng-container>
-            </select>
-          </div>
-          <div class="form-group" *ngIf="!assetModel.id">
-            <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData
-              && tileData[1] ? tileData[1]?.value : '')}}:</label>
-            <select class="form-control form-control-sm" id="template" name="connectivity"
-              [(ngModel)]="assetModel.tags.cloud_connectivity">
-              <option [ngValue]="undefined"> Select Connectivity</option>
-              <option *ngFor="let item of connectivityList" [ngValue]="item">
-                {{item}}</option>
-            </select>
-          </div>
-          <!-- <div class="form-group">
-            <label for="message-text" class="col-form-label">Upload Image: </label>
-            {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
-            <input type="file"
-            #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
-            class="form-control form-control-sm" id="app_logo" name="app_logo" >
-          </div> -->
-
-          <!-- <div class="form-group">
+        <!-- <div class="form-group">
             <label for="recipient-name" class="col-form-label">Upload Image:</label>
             <div class="form-group input-group row m-0">
               <div class="file-input form-control form-control-sm p-0 col-8">

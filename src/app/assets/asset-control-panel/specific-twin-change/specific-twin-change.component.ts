@@ -3,11 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Asset } from 'src/app/models/asset.model';
-import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import { HttpParams } from '@angular/common/http';
-import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({

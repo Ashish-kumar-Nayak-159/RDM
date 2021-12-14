@@ -1,13 +1,12 @@
-import { filter } from 'rxjs/operators';
-import { ToasterService } from './../../../services/toaster.service';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
-import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import * as moment from 'moment';
-import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { Asset } from 'src/app/models/asset.model';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from './../../../services/toaster.service';
+import * as datefns from 'date-fns';
 declare var $: any;
 @Component({
   selector: 'app-telemetry',
@@ -40,7 +39,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   sortOn(key: string, directionColumn: string) {
     this.activeColumn = key;
@@ -70,7 +69,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if(this.contextApp.metadata?.filter_settings?.record_count){
+    if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
@@ -155,10 +154,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       if (item.dateOption === 'Custom Range') {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
-        this.selectedDateRange =
-          moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");
       } else {
         const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
@@ -237,10 +233,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
-      this.selectedDateRange =
-        moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");
     }
 
     // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {

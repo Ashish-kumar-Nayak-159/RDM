@@ -1,12 +1,11 @@
-import { environment } from 'src/environments/environment';
-import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import * as moment from 'moment';
+import { CommonService } from 'src/app/services/common.service';
+import { environment } from 'src/environments/environment';
+import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
 
 @Component({
   selector: 'app-map-view-home',

@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
+import * as datefns from 'date-fns';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 declare var $: any;
@@ -98,10 +98,7 @@ export class DerivedKpisComponent implements OnInit {
       this.filterObj.to_date = dateObj.to_date;
       this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.selectedDateRange =
-        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-        ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");               
     }
     const kpiCode = this.selectedDerivedKPI.code;
     const obj = {
@@ -154,10 +151,7 @@ export class DerivedKpisComponent implements OnInit {
       if (item.dateOption === 'Custom Range') {
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;
-        this.selectedDateRange =
-          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-          ' to ' +
-          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");
       } else {
         const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
         this.filterObj.from_date = dateObj.from_date;

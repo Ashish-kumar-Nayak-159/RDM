@@ -5,8 +5,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
-
+import * as datefns from 'date-fns';
 declare var $: any;
 @Component({
   selector: 'app-fota',
@@ -175,7 +174,7 @@ export class FotaComponent implements OnInit {
         },
       },
       job_id: null,
-      timestamp: moment().utc().unix(),
+      timestamp: datefns.getUnixTime(new Date()),
       sub_job_id: null,
       asset_id: this.asset.asset_id,
       request_type: 'FOTA',

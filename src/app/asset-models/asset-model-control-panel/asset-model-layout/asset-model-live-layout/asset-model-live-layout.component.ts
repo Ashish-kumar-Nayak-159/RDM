@@ -1,14 +1,13 @@
+import { Component, Input, OnInit } from '@angular/core';
+import * as datefns from 'date-fns';
+import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
 import { SignalRService } from './../../../../services/signalR/signal-r.service';
 import { ToasterService } from './../../../../services/toaster.service';
-import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import { Subscription } from 'rxjs';
-import { CommonService } from 'src/app/services/common.service';
-import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import * as moment from 'moment';
-import { AssetService } from 'src/app/services/assets/asset.service';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
-import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -262,7 +261,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
   getTelemetryData() {
     this.telemetryObj = {};
-    this.telemetryObj.message_date = moment().format('DD-MMM-YYYY hh:mm:ss A').toString();
+    this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
     this.propertyList.forEach((prop) => {
       this.telemetryObj[prop.json_key] = {
         value: this.commonService.randomIntFromInterval(
@@ -379,6 +378,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
+    
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {
@@ -451,7 +451,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       if (imgUploadError) this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     this.isCreateWidgetAPILoading = true;
-    this.widgetObj.chartId = 'chart_' + moment().utc().unix();
+    this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');

@@ -130,14 +130,27 @@
                   <div class="form-inline">
                     <ng-container>
                       <div class="form-group">
-                        <select class="form-control form-control-sm" id="template" name="model_type"
-                          [(ngModel)]="widgetName">
-                          <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
-                          <ng-container *ngFor="let widget of widgets">
-                            <option [ngValue]="widget.title">
-                              {{widget.title}}</option>
-                          </ng-container>
-                        </select>
+                        <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
+                          clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
+                          groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                          name="model_type" [(ngModel)]="selectedWidgets"
+                          (onDeSelectAll)="onDeselectAll($event,'widget')">
+                          <ng-template ng-multi-label-tmp let-items="items">
+                            {{items.length}} widgets selected
+                          </ng-template>
+                          <ng-template ng-header-tmp>
+                            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                              <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
+                                  (click)="selectedWidgets = widgets">Select All</a></li>
+                              <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
+                                  (click)="selectedWidgets = []">Deselect All</a></li>
+                            </ul>
+                          </ng-template>
+                          <ng-template ng-option-tmp let-item="item">
+                            <span [tooltip]="item.title">
+                              {{item.title}}</span>
+                          </ng-template>
+                        </ng-select>
                       </div>
                       <div class="form-group">
                         <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
@@ -311,14 +324,27 @@
                     <div class="form-inline">
                       <ng-container>
                         <div class="form-group">
-                          <select class="form-control form-control-sm" id="template" name="model_type"
-                            [(ngModel)]="docName">
-                            <option [ngValue]="undefined">Select Document</option>
-                            <ng-container *ngFor="let document of documents">
-                              <option [ngValue]="document.name">
-                                {{document.name}}</option>
-                            </ng-container>
-                          </select>
+                          <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
+                            clearSearchOnAdd="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
+                            groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            name="model_type" [(ngModel)]="selectedDocuments"
+                            (onDeSelectAll)="onDeselectAll($event,'document')">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                              {{items.length}} documents selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                              <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                <li *ngIf="documents.length !== selectedDocuments.length"> <a href="javascript:void(0)"
+                                    (click)="selectedDocuments = documents">Select All</a></li>
+                                <li *ngIf="documents.length === selectedDocuments.length"> <a href="javascript:void(0)"
+                                    (click)="selectedDocuments = []">Deselect All</a></li>
+                              </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                              <span [tooltip]="item.name">
+                                {{item.name}}</span>
+                            </ng-template>
+                          </ng-select>
                         </div>
                         <div class="form-group">
                           <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
@@ -370,15 +396,32 @@
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
-                                <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName['email']">
-                                  <option [ngValue]="undefined">Select User Group</option>
-                                  <option value="Client Field Support"> Client Field Support</option>
-                                  <ng-container *ngFor="let group of userGroups">
-                                    <option [ngValue]="group.group_name">
-                                      {{group.group_name}}</option>
-                                  </ng-container>
-                                </select>
+                                <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                  class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                  placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                  name="group-dropdown" [(ngModel)]="selectedUserGroups['email']"
+                                  [closeOnSelect]="false" required>
+                                  <ng-template ng-header-tmp>
+                                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                      <li *ngIf="userGroups.length !== selectedUserGroups['email'].length"> <a
+                                          href="javascript:void(0)"
+                                          (click)="selectedUserGroups['email'] = userGroups">Select All</a></li>
+                                      <li *ngIf="userGroups.length === selectedUserGroups['email'].length"> <a
+                                          href="javascript:void(0)" (click)="selectedUserGroups['email'] = []">Deselect
+                                          All</a></li>
+                                    </ul>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item">
+                                    <span>
+                                      {{item.group_name}}
+                                    </span>
+                                  </ng-template>
+                                  <ng-template ng-multi-label-tmp let-items="items">
+                                    {{items.length}} groups selected
+                                  </ng-template>
+                                </ng-select>
+
+
                               </div>
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
@@ -418,15 +461,30 @@
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
-                                <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName['whatsapp']">
-                                  <option [ngValue]="undefined">Select User Group</option>
-                                  <option value="Client Field Support"> Client Field Support</option>
-                                  <ng-container *ngFor="let group of userGroups">
-                                    <option [ngValue]="group.group_name">
-                                      {{group.group_name}}</option>
-                                  </ng-container>
-                                </select>
+                                <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                  class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                  placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                  name="group-dropdown" [(ngModel)]="selectedUserGroups['whatsapp']"
+                                  [closeOnSelect]="false" required>
+                                  <ng-template ng-header-tmp>
+                                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                      <li *ngIf="userGroups.length !== selectedUserGroups['whatsapp'].length"> <a
+                                          href="javascript:void(0)"
+                                          (click)="selectedUserGroups['whatsapp'] = userGroups">Select All</a></li>
+                                      <li *ngIf="userGroups.length === selectedUserGroups['whatsapp'].length"> <a
+                                          href="javascript:void(0)"
+                                          (click)="selectedUserGroups['whatsapp'] = []">Deselect All</a></li>
+                                    </ul>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item">
+                                    <span>
+                                      {{item.group_name}}
+                                    </span>
+                                  </ng-template>
+                                  <ng-template ng-multi-label-tmp let-items="items">
+                                    {{items.length}} groups selected
+                                  </ng-template>
+                                </ng-select>
                               </div>
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
@@ -470,15 +528,30 @@
                           <div class="form-inline">
                             <ng-container>
                               <div class="form-group">
-                                <select class="form-control form-control-sm" id="template" name="model_type"
-                                  [(ngModel)]="groupName['sms']">
-                                  <option [ngValue]="undefined">Select User Group</option>
-                                  <option value="Client Field Support"> Client Field Support</option>
-                                  <ng-container *ngFor="let group of userGroups">
-                                    <option [ngValue]="group.group_name">
-                                      {{group.group_name}}</option>
-                                  </ng-container>
-                                </select>
+                                <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                  class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                  placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                  name="group-dropdown" [(ngModel)]="selectedUserGroups['sms']" [closeOnSelect]="false"
+                                  required>
+                                  <ng-template ng-header-tmp>
+                                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                      <li *ngIf="userGroups.length !== selectedUserGroups['sms'].length"> <a
+                                          href="javascript:void(0)"
+                                          (click)="selectedUserGroups['sms'] = userGroups">Select All</a></li>
+                                      <li *ngIf="userGroups.length === selectedUserGroups['sms'].length"> <a
+                                          href="javascript:void(0)" (click)="selectedUserGroups['sms'] = []">Deselect
+                                          All</a></li>
+                                    </ul>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item">
+                                    <span>
+                                      {{item.group_name}}
+                                    </span>
+                                  </ng-template>
+                                  <ng-template ng-multi-label-tmp let-items="items">
+                                    {{items.length}} groups selected
+                                  </ng-template>
+                                </ng-select>
                               </div>
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
@@ -528,8 +601,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} {{selectedTab == 'Asset' ?
-          'External' : selectedTab}} Alert Condition
+        <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert
         </h5>
         <button type="button" class="close" [disabled]="isCreateAlertConditionLoading"
           (click)="onCloseAlertConditionModal()" aria-label="Close">
@@ -559,7 +631,7 @@
               <option [ngValue]="'Informational'">Informational</option>
             </select>
           </div>
-          <div class="form-group" *ngIf="alertObj?.alert_type == 'undefined'">
+          <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Alert Source:</label>
             <select class="form-control form-control-sm" id="alert_type" name="alert_type"
               [(ngModel)]="alertObj.alert_type" (change)="onChangeOfAlertSource()">
@@ -577,8 +649,7 @@
                 </button>
               </ng-container>
               <app-model-protocol-specific-details [setupForm]="setupForm" [dataObj]="alertObj.metadata"
-                [pageType]="!alertObj.id ? 'add' : 'edit'" [assetModel]="assetModel" [slaveData]="slaveData"
-                *ngIf="setupForm && alertObj">
+                [pageType]="alertObj.id ? 'add' : 'edit'" [assetModel]="assetModel" [slaveData]="slaveData">
               </app-model-protocol-specific-details>
             </accordion-group>
           </accordion>

@@ -1,38 +1,27 @@
-import { filter } from 'rxjs/operators';
+import {
+  ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector,
+  Input, OnDestroy, OnInit, ViewChild
+} from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import * as datefns from 'date-fns';
+import { FileSaverService } from 'ngx-filesaver';
+import { Subscription } from 'rxjs';
+import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
+import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
+import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
+import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { ChartService } from 'src/app/services/chart/chart.service';
+import { SignalRService } from 'src/app/services/signalR/signal-r.service';
+import { environment } from 'src/environments/environment';
 import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
 import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
-import { ToasterService } from './../../services/toaster.service';
-import { FileSaverService } from 'ngx-filesaver';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  EmbeddedViewRef,
-  ApplicationRef,
-  ComponentFactoryResolver,
-  Injector,
-  Input,
-  ViewChild,
-} from '@angular/core';
-import { CONSTANTS } from 'src/app/constants/app.constants';
-import { CommonService } from './../../services/common.service';
 import { AssetService } from './../../services/assets/asset.service';
-import * as moment from 'moment';
-import * as am4core from '@amcharts/amcharts4/core';
-import * as am4charts from '@amcharts/amcharts4/charts';
-import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
-import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
-import { ChartService } from 'src/app/services/chart/chart.service';
-import { SignalRService } from 'src/app/services/signalR/signal-r.service';
-import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { DomSanitizer } from '@angular/platform-browser';
-import { CoordinatesModule } from 'ngx-color';
-import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
-import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
-import { async } from 'rxjs/internal/scheduler/async';
+import { CommonService } from './../../services/common.service';
+import { ToasterService } from './../../services/toaster.service';
+
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -175,11 +164,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           if (this.filterObj.dateOption !== 'Custom Range') {
             this.selectedDateRange = this.filterObj.dateOption;
           } else {
-            this.selectedDateRange =
-              moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
-              ' to ' +
-              moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+            this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
           }
+          console.log('this.selectedDateRange',this.selectedDateRange);
           this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
           this.getLatestAlerts(false);
         }
@@ -312,9 +299,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     delete obj.assetArr;
     if (this.pageType === 'live') {
-      const now = moment().utc().unix();
-      obj.from_date = moment().subtract(24, 'hour').utc().unix();
-      obj.to_date = now;
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(),24));
+      obj.to_date = datefns.getUnixTime(new Date());
       obj.last_n_secs = obj.to_date - obj.from_date;
     } else {
       if (!obj.from_date || !obj.to_date) {
@@ -804,7 +790,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           last_n_secs: undefined,
         };
         console.log(this.filterObj);
-        const now = moment().utc().unix();
         obj.from_date = this.filterObj.from_date;
         obj.to_date = this.filterObj.to_date;
 
@@ -1207,7 +1192,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.from_date = epoch ? epoch - 300 : null;
     obj.to_date = epoch ? epoch + 300 : null;
     obj.metadata['user_id'] = this.userData.email;
-    obj.metadata['acknowledged_date'] = moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A');
+    obj.metadata['acknowledged_date'] = datefns.format(new Date(), "MM/dd/yyyy HH:mm:ss");
     this.subscriptions.push(
       this.assetService.acknowledgeAssetAlert(obj).subscribe(
         (response) => {

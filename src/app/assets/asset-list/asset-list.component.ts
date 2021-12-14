@@ -1,7 +1,7 @@
 
 import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { AssetListFilter } from 'src/app/models/asset.model';
 import { Router } from '@angular/router';
 import { AssetService } from './../../services/assets/asset.service';
@@ -16,7 +16,7 @@ declare var $: any;
   templateUrl: './asset-list.component.html',
   styleUrls: ['./asset-list.component.css'],
 })
-export class AssetListComponent implements OnInit, OnDestroy {
+export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   assetFilterObj: AssetListFilter = new AssetListFilter();
   originalAssetFilterObj: AssetListFilter = new AssetListFilter();
   assetsList: any[] = [];
@@ -87,14 +87,20 @@ export class AssetListComponent implements OnInit, OnDestroy {
     private router: Router,
     private assetService: AssetService,
     private commonService: CommonService,
-    private toasterService: ToasterService
-  ) {}
+    private toasterService: ToasterService,
+    private cdRef:ChangeDetectorRef
+  ) { }  
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetsList = [];
-    this.getTileName();
+    this.getTileName();   
+    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
+    this.protocolList = CONSTANTS.PROTOCOLS;
+  }
+
+  async ngAfterViewInit(): Promise<void> {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     if (item?.type) {
       this.onTabChange(item.type);
@@ -107,12 +113,10 @@ export class AssetListComponent implements OnInit, OnDestroy {
         this.onTabChange(CONSTANTS.IP_GATEWAY);
       }
     }
-    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
-    this.protocolList = CONSTANTS.PROTOCOLS;
+    this.cdRef.detectChanges();
   }
 
   async loadFromCache(item) {
-    console.log('inside load from cache',item);
     this.hierarchyDropdown.updateHierarchyDetail(item);
     this.searchAssets(false);
   }
@@ -166,7 +170,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
         const element = document.getElementById('table-wrapper');
         if (
           parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
-            parseFloat(element.scrollHeight.toFixed(0)) &&
+          parseFloat(element.scrollHeight.toFixed(0)) &&
           !this.insideScrollFunFlag
         ) {
           this.currentOffset += this.currentLimit;
@@ -174,25 +178,18 @@ export class AssetListComponent implements OnInit, OnDestroy {
           this.insideScrollFunFlag = true;
         }
       });
-      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    this.assetsList = [];
-    console.log('item',item);
-    if (item) {
-      this.loadFromCache(item);
-    } else {
-      this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
-      this.searchAssets();
-    }
+
     }, 2000);
+
     this.tableConfig = undefined;
     const obj =
       this.componentState === CONSTANTS.IP_ASSET
         ? this.iotAssetsTab
         : this.componentState === CONSTANTS.NON_IP_ASSET
-        ? this.legacyAssetsTab
-        : this.componentState === CONSTANTS.IP_GATEWAY
-        ? this.iotGatewaysTab
-        : {};
+          ? this.legacyAssetsTab
+          : this.componentState === CONSTANTS.IP_GATEWAY
+            ? this.iotGatewaysTab
+            : {};
     this.tableConfig = {
       type: obj.tab_name,
       is_load_more_required: true,
@@ -280,7 +277,16 @@ export class AssetListComponent implements OnInit, OnDestroy {
         valueclass: '',
         tooltip: 'View Diagnosis panel',
       });
-    }    
+    }
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.assetsList = [];
+    console.log('item', item);
+    if (item) {
+      this.loadFromCache(item);
+    } else {
+      this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
+      this.searchAssets();
+    }
   }
 
   onCurrentPageViewChange(type) {
@@ -458,8 +464,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
               item.icon = {
                 url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
                   ? this.blobURL +
-                    this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                    this.blobToken
+                  this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                  this.blobToken
                   : './assets/img/iot-assets-green.svg',
                 scaledSize: {
                   width: 20,
@@ -504,8 +510,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
               item.icon = {
                 url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
                   ? this.blobURL +
-                    this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                    this.blobToken
+                  this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                  this.blobToken
                   : './assets/img/legacy-assets.svg',
                 scaledSize: {
                   width: 20,

@@ -6,7 +6,7 @@
           <li class="" [ngClass]="{'visited': selectedLevel === 1 || selectedLevel > 1}">
             <a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
               (click)="sentC2DMessage()">Send
-              <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i></a>
+              <em class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></em></a>
           </li>
           <!-- <li class="" ><a href="#">Compose</a></li> -->
           <li class="" [ngClass]="{'visited': selectedLevel === 2 || selectedLevel > 2}">
@@ -26,15 +26,15 @@
       <div class="bg-light px-1 py-1"
         style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
       <div class="justify-content-center align-self-center px-2 red-font" *ngIf="isMessageValidated === 'invalid'">
-        <i class="fa fa-times"></i> Please verify JSON.
+        <em class="fa fa-times"></em> Please verify JSON.
       </div>
       <div class="justify-content-center align-self-center px-2 green-font" *ngIf="isMessageValidated === 'valid'">
-        <i class="fa fa-check"></i> Successfully Validated.
+        <em class="fa fa-check"></em> Successfully Validated.
       </div>
       <div class="justify-content-center align-self-center px-2" *ngIf="sendMessageStatus && sendMessageResponse"
         [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
-        <i class="fa"
-          [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></i>
+        <em class="fa"
+          [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></em>
         {{sendMessageResponse}}
       </div>
       <div class="bg-light px-1 py-1" *ngIf="timerObj"
@@ -68,7 +68,7 @@
       <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
           (click)="sentC2DMessage()">
           <button type="button" class="btn btn-primary"> 1. Send
-            <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></em>
           </button>
         </a></div>
       <div class='px-1'>

@@ -5,14 +5,14 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'view'}" href="javascript:void(0)"
           (click)="displayMode = 'view'; timerObj = undefined;">
-          <i class="fa fa-fw fa-eye"></i>
+          <em class="fa fa-fw fa-eye"></em>
           <span>Jobs</span></a>
       </li>
       <li class="nav-item"
         *ngIf="menuDetail?.accordion_value?.configuration && decodedToken?.privileges?.indexOf('RCC') > -1">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'configure_specific_commands'}"
           href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
-          <i class="fa fa-fw fa-cog"></i>
+          <em class="fa fa-fw fa-cog"></em>
           <span>Configuration</span></a>
       </li>
       <!-- Nav Item - Charts -->
@@ -20,18 +20,18 @@
         *ngIf="menuDetail?.accordion_value?.control && decodedToken?.privileges?.indexOf('RCC') > -1">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'control_specific_commands'}"
           href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
-          <i class="fa fa-fw fa-angle-right"></i>
+          <em class="fa fa-fw fa-angle-right"></em>
           <span>Control</span></a>
       </li>
       <!-- <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'general_commands'}">
       <a class="nav-link" href="javascript:void(0)" (click)="onClickOfGeneralCommands()">
-        <i class="fa fa-fw fa-edit"></i>
+        <em class="fa fa-fw fa-edit"></em>
         <span>Send General Command</span></a>
     </li> -->
       <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge && decodedToken?.privileges?.indexOf('RCP') > -1">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'purge'}" href="javascript:void(0)"
           (click)="displayMode = 'purge'; timerObj = undefined;">
-          <i class="fa fa-fw fa-trash"></i>
+          <em class="fa fa-fw fa-trash"></em>
           <span>Purge</span></a>
       </li>
     </ul>
@@ -74,7 +74,7 @@
             *ngFor="let widget of allControlWidgets; let i = index;">
             <div class="media">
               <!-- <div class="pull-left">
-                <div class="controls"><i class="fa fa-fw fa-exclamation-triangle" ></i></div>
+                <div class="controls"><em class="fa fa-fw fa-exclamation-triangle" ></em></div>
               </div> -->
               <div class="media-body">
                 <a class="m-r-10">
@@ -87,8 +87,8 @@
               <div class="pull-right">
                 <div>
                   <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down"
-                    (click)="onChangeOfDropdownData(widget)"><i aria-hidden="true"
-                      class="fa fa-external-link-alt text-dark"></i></a>
+                    (click)="onChangeOfDropdownData(widget)"><em aria-hidden="true"
+                      class="fa fa-external-link-alt text-dark"></em></a>
                 </div>
               </div>
             </div>

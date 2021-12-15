@@ -3,18 +3,18 @@
     <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="addSlaveToAssetModal()">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add </span></a>
       </li>
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)"  (click)="syncSlavesWithGateway()"
        [class.disabled]="isAPILoading">
-          <i class="fa fa-fw fa-sync"></i>
+          <em class="fa fa-fw fa-sync"></em>
           <span class="text-secondary">Sync </span></a>
       </li> -->
       <li class="nav-item" *ngIf="isAPILoading">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-spinner fa-spin fa-fw"></i>
+          <em class="fa fa-spinner fa-spin fa-fw"></em>
         </a>
       </li>
     </ul>
@@ -24,7 +24,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <div *ngIf="isGetSlaveAPILoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </div>
     <div class="m-3" *ngIf="!isGetSlaveAPILoading && slaveData.length === 0">
       No slave data available.
@@ -37,19 +37,19 @@
           </button>
           <div class="float-right mt-1 mr-3">
             <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">
-            <i class="fa fa-check" style="color: green;"></i>
+            <em class="fa fa-check" style="color: green;"></em>
           </div> -->
             <a class="mt-1 mr-2" tooltip="Provisioned" placement="left"
               *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned';else Deprovisioned">
-              <i class="fa fa-check" style="color: green;"></i>
+              <em class="fa fa-check" style="color: green;"></em>
             </a>
             <ng-template #Deprovisioned>
               <a class="mt-1 mr-2" tooltip="Not Provisioned" placement="left">
-                <i class="fa fa-ban" style="color: red;"></i>
+                <em class="fa fa-ban" style="color: red;"></em>
               </a>
             </ng-template>
             <a class="mt-1" *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1" href="javascript:void(0)"
-              (click)="removeSlaveFromAsset(slave)"><i class="fa fa-close" tooltip="Remove Slave" placement="left"></i></a>
+              (click)="removeSlaveFromAsset(slave)"><em class="fa fa-close" tooltip="Remove Slave" placement="left"></em></a>
           </div>
         </ng-container>
         <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1">
@@ -251,7 +251,7 @@
               <button type="button" class="btn btn-primary" class="btn btn-primary" [disabled]="isAddSlaveAPILoading"
                 (click)="updateSlaveObj(slave)">Save</button>
             </ng-template>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></em>
           </div>
         </form>
 
@@ -485,7 +485,7 @@
           </ng-template>
           <button type="button" class="btn btn-secondary" [disabled]="isAddSlaveAPILoading"
             (click)="onCloseModal('addSlaveModal')">Cancel</button>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></em>
         </div>
       </div>
     </div>

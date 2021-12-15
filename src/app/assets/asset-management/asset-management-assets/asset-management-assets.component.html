@@ -2,7 +2,7 @@
   <ul class="nav nav-pills">
     <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
      <a class="nav-link" href="javascript:void(0)" (click)="openAssetCreateModal()" >
-     <i class="fas fa-fw fa-plus-circle"></i>
+     <em class="fas fa-fw fa-plus-circle"></em>
      <span class="text-secondary">Provision</span></a>
     </li>
    </ul>
@@ -42,30 +42,30 @@
             <td>
               <!-- <a href="javascript:void(0)" (click)="openAssetCreateModal()"
                   *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
-                    <i class="fas fa-fw fa-plus-circle"></i>
+                    <em class="fas fa-fw fa-plus-circle"></em>
                    </a> -->
               <a href="javascript:void(0)" (click)="openAssetCreateModal(asset);" tooltip="Edit"
                 *ngIf="asset.provision_status !== 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
-                <i class="fas fa-fw fa-edit"></i>
+                <em class="fas fa-fw fa-edit"></em>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision', asset)" tooltip="Deprovision"
                 *ngIf="asset.provision_status === 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
-                <i class="fas fa-fw fa-times-circle"></i>
+                <em class="fas fa-fw fa-times-circle"></em>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2"
                 tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                   && asset.status.toLowerCase() === 'disabled'">
-                <i class="fas fa-fw fa-toggle-on"></i>
+                <em class="fas fa-fw fa-toggle-on"></em>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2"
                 tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                    && asset.status.toLowerCase() === 'enabled'">
-                <i class="fas fa-fw fa-toggle-off"></i>
+                <em class="fas fa-fw fa-toggle-off"></em>
               </a>
               <!-- <a href="javascript:void(0)" (click)="onSingleOperationClick('Package Management', asset)" class="ml-2"
                 tooltip="Package Management"
                 *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('RCC') > -1">
-                <i class="fas fa-fw fa">&#xf021;</i>
+                <em class="fas fa-fw fa">&#xf021;</em>
               </a> -->
             </td>
           </tr>
@@ -80,7 +80,7 @@
         <ng-container *ngIf="isAssetListLoading">
           <tr>
             <td [attr.colspan]="type !== constantData.NON_IP_ASSET ? 7 : 5">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
             </td>
           </tr>
         </ng-container>

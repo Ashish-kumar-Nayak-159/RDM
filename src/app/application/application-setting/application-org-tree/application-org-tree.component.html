@@ -3,10 +3,10 @@
     <div class="h6 m-0 p-0">
       Org Tree
       <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Tree Node"
-          (click)="onAddNewNodeObj()"><i class="fa fa-plus"></i></a> -->
+          (click)="onAddNewNodeObj()"><em class="fa fa-plus"></em></a> -->
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onAddNewNodeObj()" placement="bottom"
-          tooltip="Add Tree Node"><i class="fas fa-plus fa-sm"></i></button>
+          tooltip="Add Tree Node"><em class="fas fa-plus fa-sm"></em></button>
       </ng-container>
     </div>
   </div>
@@ -18,8 +18,8 @@
       <tr>
         <th scope="col"colspan="3">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveNodes()"
-            [disabled]="isSaveNodeAPILoading || !isAppSetingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-              *ngIf="isSaveNodeAPILoading"></i></button>
+            [disabled]="isSaveNodeAPILoading || !isAppSetingsEditable">SAVE <em class="fa fa-spinner fa-spin fa-fw fa-2x"
+              *ngIf="isSaveNodeAPILoading"></em></button>
           <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick()"
             [disabled]="!isAppSetingsEditable">CANCEL</button>
         </th>
@@ -44,11 +44,11 @@
           </td>
           <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
             <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Node" class="ml-1" *ngIf="!isAppSetingsEditable[i]"
-          (click)="isAppSetingsEditable[i] = true;"><i class="fa fa-edit"></i></a>
+          (click)="isAppSetingsEditable[i] = true;"><em class="fa fa-edit"></em></a>
           <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable[i]"
-          (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
+          (click)="onCancelClick();"><em class="fa fa-times"></em></a> -->
             <a class="ml-2" href="javascript:void(0)" (click)="openConfirmNodeDeleteModal(item, i)">
-              <i class="fa fa-trash" placement="bottom" tooltip="Delete Node"></i>
+              <em class="fa fa-trash" placement="bottom" tooltip="Delete Node"></em>
             </a>
           </td>
         </tr>

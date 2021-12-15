@@ -25,7 +25,7 @@
             <tr>
               <td>
                 <a href="javascript:void(0)" (click)="onToggleRows(i)">
-                  <i [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                  <em [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                 </a>
               </td>
               <td>{{i + 1}}</td>
@@ -35,7 +35,7 @@
               <td>{{kpi.kpi_json_key}}</td>
               <td>{{kpi.kpi_result}}</td>
               <td><a href="javascript:void(0)" (click)="onToggleRows(i)" class="mr-1" placement="bottom" tooltip="View">
-                  <i class="fa fa-fw fa-eye"></i>
+                  <em class="fa fa-fw fa-eye"></em>
                 </a></td>
             </tr>
             <tr *ngIf="toggleRows[i]" style="background-color:#fdfeff;">
@@ -46,13 +46,13 @@
                     (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
                   </app-date-range-picker>
                   <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
-                      class="btn btn-sm searchBtn btn-primary" (click)="getDerivedKPIsHistoricData()"><i
-                        class="fas fa-search fa-sm"></i></button></div>
+                      class="btn btn-sm searchBtn btn-primary" (click)="getDerivedKPIsHistoricData()"><em
+                        class="fas fa-search fa-sm"></em></button></div>
                 </form>
                 <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading && !loader"> No
                   {{selectedDerivedKPI?.name}}
                   data found.</p>
-                <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+                <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{loadingMessage}}</span>
                 <ng-container *ngIf="!isDerivedKPIDataLoading && derivedKPIData.length > 0">
                   <div id="derivedKPIChart_{{kpi.kpi_json_key}}" class="mt-2"
                     *ngIf="selectedDerivedKPI.data_type?.toLowerCase() === 'number'; else NoNumberTable"
@@ -86,7 +86,7 @@
         </ng-container>
         <ng-container *ngIf="isderivedKPILoading">
           <tr>
-            <td colspan="8"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+            <td colspan="8"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="!isderivedKPILoading && derivedKPIs.length === 0">

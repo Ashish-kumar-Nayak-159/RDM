@@ -4,7 +4,7 @@
       Roles
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Add Role"
-          (click)="openCreateUserModal()"><i class="fas fa-plus fa-sm"></i></button>
+          (click)="openCreateUserModal()"><em class="fas fa-plus fa-sm"></em></button>
       </ng-container>
     </div>
   </div>
@@ -26,22 +26,22 @@
           <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
           <td>
             <a href="javascript:void(0)" (click)="toggleRows[configIndex] && pageType === 'view' ? onToggleRows(configIndex, 'view', 'toggle') :  onToggleRows(configIndex, 'view', 'notoggle') ">
-              <!-- <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'" placement="bottom" tooltip="View Role"></i> -->
-              <i class="fa fa-eye" placement="bottom" tooltip="View Role"></i>
+              <!-- <em [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'" placement="bottom" tooltip="View Role"></em> -->
+              <em class="fa fa-eye" placement="bottom" tooltip="View Role"></em>
             </a>
             <a href="javascript:void(0)" (click)="toggleRows[configIndex] && pageType === 'edit' ? onToggleRows(configIndex, 'edit', 'toggle') : onToggleRows(configIndex, 'edit', 'notoggle') " class="ml-2"
               *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-              <!-- <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'" placement="bottom" tooltip="Edit Role"></i> -->
-              <i class="fa fa-edit" placement="bottom" tooltip="Edit Role"></i>
+              <!-- <em [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'" placement="bottom" tooltip="Edit Role"></em> -->
+              <em class="fa fa-edit" placement="bottom" tooltip="Edit Role"></em>
             </a>
             <!-- <a href="javascript:void(0)" (click)="onSaveRoles()"
               *ngIf="item.role !== constantData.APP_ADMIN_ROLE && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
               class="ml-2">
-              <i [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role"></i>
+              <em [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role"></em>
             </a> -->
             <a *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
               href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
-              <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
+              <em class="fa fa-trash" placement="bottom" tooltip="Delete Role"></em>
             </a>
           </td>
         </tr>
@@ -52,8 +52,8 @@
                 <tr *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"> 
                   <td colspan="3">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveRoles(configIndex)"
-                      [disabled]="saveRoleAPILoading || pageType === 'view'">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></i></button>
+                      [disabled]="saveRoleAPILoading || pageType === 'view'">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="pageType === 'view'">CANCEL</button>
                   </td>
@@ -92,7 +92,7 @@
       </ng-container>
       <ng-container *ngIf="isUserRolesAPILoading">
         <tr>
-          <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+          <td colspan="5"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!isUserRolesAPILoading && userRoles.length === 0">
@@ -160,7 +160,7 @@
         <button type="button" class="btn btn-primary add-row" (click)="onSaveRoles('add')"
           [disabled]="isCreateUserAPILoading">
           Save
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></em>
         </button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading"
           (click)="onCloseCreateUserModal()">

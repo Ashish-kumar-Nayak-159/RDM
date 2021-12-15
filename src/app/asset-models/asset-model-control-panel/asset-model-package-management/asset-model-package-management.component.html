@@ -5,7 +5,7 @@ decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddPackageModal()"
           [class.disabled]="assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Package</span></a>
       </li>
     </ul>
@@ -91,7 +91,7 @@ decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
           (click)="onSavePackageObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePackageAPILoading || isFileUploading"
           (click)="onCloseAddPackageModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading || isFileUploading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading || isFileUploading"></em>
       </div>
     </div>
   </div>

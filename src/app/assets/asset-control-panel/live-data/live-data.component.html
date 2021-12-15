@@ -24,7 +24,7 @@
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="getTelemetryData()" placement="bottom"
-          tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
+          tooltip="Search"><em class="fa fa-search fa-sm"></em></button>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-white" (click)="onDeSelectAll()" placement="bottom"
@@ -37,7 +37,7 @@
 </div>
 <div class="table-responsive">
   <div class="tableFixHead live-table-fix-head" id="mainChartDiv">
-    <i *ngIf="isTelemetryDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <em *ngIf="isTelemetryDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && telemetryObj">
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of selectedWidgets">

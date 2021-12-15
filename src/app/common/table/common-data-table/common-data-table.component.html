@@ -18,7 +18,7 @@
                     aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
                     placement="left"
                     [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'">
-                    <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                    <em class="fa fa-fw fa-search fa-sm ml-1"></em>
                   </a>
                   <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown1">
                     <div class="dropdown-filter-search">
@@ -38,7 +38,7 @@
                     aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
                     [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'"
                     placement="left">
-                    <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                    <em class="fa fa-fw fa-search fa-sm ml-1"></em>
                   </a>
                   <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown2">
                     <div class="dropdown-filter-search">
@@ -59,7 +59,7 @@
                     aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': tableFilterObj[item.data_key]}"
                     [tooltip]="tableFilterObj[item.data_key] ? tableFilterObj[item.data_key] : 'Search'"
                     placement="left">
-                    <i class="fa fa-fw fa-filter fa-sm ml-1"></i></a>
+                    <em class="fa fa-fw fa-filter fa-sm ml-1"></em></a>
                   <div class="dropdown-menu dropdown-filter-content" id="table-filter" aria-labelledby="userDropdown3">
                     <div class="checkbox-container">
                       <div class="dropdown-filter-item">
@@ -97,7 +97,7 @@
       >
       <div class="status-icon-circle"   [tooltip]="dataItem?.map_content?.healthy === true ? 'Health Status : Healthy' : (dataItem?.map_content?.healthy === false ? 'Health Status : Unhealthy' : 'Health Status : Unknown')"
       [ngClass]="dataItem?.map_content?.healthy === true ? 'bg-success' : (dataItem?.map_content?.healthy  === false ? 'bg-danger' : 'bg-white-asset')">
-        <i class="fas text-white" [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></i>
+        <em class="fas text-white" [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></em>
       </div>
       </td>
       <td [ngClass]="{'pl-3': !tableConfig.border_left_key}">
@@ -126,7 +126,7 @@
                 <ng-container *ngFor="let btn of item.btn_list">
                   <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
                     (click)="onClickOfButton(dataItem, btn.id)">
-                    <i class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></i>
+                    <em class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
                     {{btn.text}}
                   </a>
                 </ng-container>
@@ -142,7 +142,7 @@
     </ng-container>
     <ng-container *ngIf="tableConfig.is_table_data_loading">
       <tr>
-        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)"> <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i></td>
+        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)"> <em class="fa fa-spinner fa-spin fa-fw fa-2x" ></em></td>
       </tr>
     </ng-container>
   </tbody>
@@ -160,5 +160,5 @@
 </div>
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" (click)="scrollToTop()">
-  <i class="fas fa-angle-up"></i>
+  <em class="fas fa-angle-up"></em>
 </a>

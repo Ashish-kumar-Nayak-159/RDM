@@ -4,18 +4,18 @@
       <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('UMV') > -1">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Access Control')"
           [ngClass]="{'active': selectedTab === 'Access Control'}">
-          <i class="fa fa-fw fa-users"></i>
+          <em class="fa fa-fw fa-users"></em>
           <span class="text-secondary">Access Control</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Recipients')"
           [ngClass]="{'active': selectedTab === 'Recipients'}">
-          <i class="fa fa-fw fa-envelope"></i>
+          <em class="fa fa-fw fa-envelope"></em>
           <span class="text-secondary">Recipients</span></a>
       </li>
       <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Recipient</span></a>
       </li>
     </ul>
@@ -48,7 +48,7 @@
               <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                 <a href="javascript:void(0)" (click)="openConfirmModal(i)" class="mr-1" placement="bottom"
                   tooltip="Delete User Access">
-                  <i class="fa fa-fw fa-trash"></i>
+                  <em class="fa fa-fw fa-trash"></em>
                 </a>
               </td>
             </tr>
@@ -83,7 +83,7 @@
                 <!-- <td>
                 <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
                   placement="bottom" tooltip="Delete User Access">
-                    <i class="fa fa-fw fa-trash" ></i>
+                    <em class="fa fa-fw fa-trash" ></em>
                 </a>
               </td> -->
               </tr>
@@ -153,7 +153,7 @@
           (click)="onAddUserAccess()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading"
           (click)="onModalClose()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></em>
       </div>
     </div>
   </div>

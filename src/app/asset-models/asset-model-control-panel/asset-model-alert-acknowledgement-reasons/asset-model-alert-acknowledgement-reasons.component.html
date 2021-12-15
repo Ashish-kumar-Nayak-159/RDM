@@ -4,17 +4,17 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="addReason()"
           [class.disabled]="ReasonBtnClicked || isUpdateReasonsAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add</span></a>
       </li>
       <!-- <li class="nav-item">
           <a class="nav-link" href="javascript:void(0)" (click)="updateReason()" [class.disabled]="isUpdateReasonsAPILoading || assetModel.freezed">
-            <i class="fa fa-fw fa-save"></i>
+            <em class="fa fa-fw fa-save"></em>
             <span class="text-secondary">Save</span></a>
         </li> -->
       <li class="nav-item" *ngIf="isUpdateReasonsAPILoading">
         <a href="javascript:void(0)">
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </a>
       </li>
     </ul>
@@ -39,9 +39,9 @@
               placeholder="Add Reason *" [(ngModel)]="reasonObj.reason" name="name"></td>
           <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><a
               href="javascript:void(0)" placement="bottom" tooltip="Cancel"
-              (click)="reasonObj = undefined; ReasonBtnClicked = false;"><i class="fa fa-times"></i></a>
+              (click)="reasonObj = undefined; ReasonBtnClicked = false;"><em class="fa fa-times"></em></a>
             <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason"
-              (click)="updateReason()"><i class="fa fa-check"></i></a>
+              (click)="updateReason()"><em class="fa fa-check"></em></a>
           </td>
         </tr>
         <ng-container *ngIf="ackReasons.length > 0">
@@ -59,16 +59,16 @@
             </td>
             <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
               <a href="javascript:void(0)" placement="bottom" tooltip="Edit Reasons"
-                [class.disabled]="assetModel.freezed" *ngIf="isEnableEdit && !isEnableEdit[i]"><i class="fa fa-edit"
-                  (click)="enableEditMethod(i)"></i></a>
+                [class.disabled]="assetModel.freezed" *ngIf="isEnableEdit && !isEnableEdit[i]"><em class="fa fa-edit"
+                  (click)="enableEditMethod(i)"></em></a>
               <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isEnableEdit && isEnableEdit[i]"
-                (click)="onCancelClick(ack.reason, ack.id, i);"><i class="fa fa-times"></i></a>
+                (click)="onCancelClick(ack.reason, ack.id, i);"><em class="fa fa-times"></em></a>
               <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason"
-                *ngIf="isEnableEdit && isEnableEdit[i]" (click)="onSaveReason(ack.reason, ack.id, i);"><i
-                  class="fa fa-check"></i></a>
+                *ngIf="isEnableEdit && isEnableEdit[i]" (click)="onSaveReason(ack.reason, ack.id, i);"><em
+                  class="fa fa-check"></em></a>
               <a href="javascript:void(0)" class="ml-2" placement="bottom" tooltip="Delete"
                 [class.disabled]="assetModel.freezed" (click)="openModal('confirmMessageModal', ack.id, i)">
-                <i class="fa fa-trash fa-sm"></i> </a>
+                <em class="fa fa-trash fa-sm"></em> </a>
             </td>
           </tr>
         </ng-container>

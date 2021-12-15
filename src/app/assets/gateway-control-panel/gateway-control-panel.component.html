@@ -1,15 +1,15 @@
-<i class="fa fa-spinner fa-spin fa-fw fa-2x text-center" *ngIf="isAssetDataLoading"></i>
+<em class="fa fa-spinner fa-spin fa-fw fa-2x text-center" *ngIf="isAssetDataLoading"></em>
 <div id="wrapper">
   <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetDataLoading">
     Loading Asset Data...
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></em>
   </div>
   <!-- Sidebar -->
   <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isAssetDataLoading">
 
     <div class="sidebar1-heading sidebar1-top-heading">
       <span>Diagnosis Panel </span>
-      <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">DP</i>
+      <em class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">DP</em>
     </div>
     <div class="scrollbox scrollbox_delayed" tabindex="0">
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
@@ -26,7 +26,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name">
-                <i class="{{menu.icon}}" placement="bottom" ></i>
+                <em class="{{menu.icon}}" placement="bottom" ></em>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>
@@ -57,7 +57,7 @@
           </div>
           <!-- Sidebar Toggle (Topbar) -->
           <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
-      <i class="fa fa-bars"></i>
+      <em class="fa fa-bars"></em>
     </button> -->
           <div class="">
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_overview" role="tabpanel">

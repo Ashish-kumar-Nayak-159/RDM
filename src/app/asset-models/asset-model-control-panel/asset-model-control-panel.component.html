@@ -1,7 +1,7 @@
 <div id="wrapper">
   <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetModelDataLoading">
     Loading Model Data...
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></em>
   </div>
 
   <!-- Sidebar -->
@@ -10,7 +10,7 @@
     <div class="sidebar1-heading sidebar1-top-heading">
       <span>Model Definition </span>
       <!-- <button class="d-none d-md-inline mb-0" id="sidebar1Toggle" placement="bottom" tooltip="Minimize" (click)="onSidebarToggle()"></button> -->
-      <i class="fa fa-fw fa">MD</i>
+      <em class="fa fa-fw fa">MD</em>
     </div>
     <div class="scrollbox scrollbox_delayed" tabindex="0">
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
@@ -28,7 +28,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
-                <i class="{{menu.icon}}" placement="bottom"></i>
+                <em class="{{menu.icon}}" placement="bottom"></em>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>
@@ -53,12 +53,12 @@
                 {{assetModel?.name}}
                 <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <a href="javascript:void(0)" (click)="openUnfreezeModal()"
-                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="assetModel.freezed"><i
-                      class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></i></a>
+                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="assetModel.freezed"><em
+                      class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></em></a>
                   <a href="javascript:void(0)" (click)="freezeModel()"
-                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><i
+                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><em
                       class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
-                      *ngIf="!assetModel.freezed"></i></a>
+                      *ngIf="!assetModel.freezed"></em></a>
                 </ng-container>
               </div>
             </div>
@@ -174,8 +174,8 @@
             <label for="message-text" class="col-form-label required">Password:</label>
             <input type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm"
               id="display_name" name="display_name" [(ngModel)]="password" placeholder="Enter Your Password">
-            <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
-              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
+            <em class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></em>
           </div>
         </form>
       </div>
@@ -187,7 +187,7 @@
           [disabled]="isModelFreezeUnfreezeAPILoading">
           Cancel
         </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></em>
       </div>
     </div>
   </div>

@@ -4,13 +4,13 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'events'}" href="javascript:void(0)"
           (click)="onTabChange('events');">
-          <i class="fa fa-fw fa-angle-right"></i>
+          <em class="fa fa-fw fa-angle-right"></em>
           <span>TBF Events</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)"
           (click)="onTabChange('history');">
-          <i class="fa fa-fw fa-eye"></i>
+          <em class="fa fa-fw fa-eye"></em>
           <span>Historical MTBF</span></a>
       </li>
     </ul>
@@ -33,7 +33,7 @@
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-          (click)="searchMTBFEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
+          (click)="searchMTBFEvents(this.filterObj)"><em class="fa fa-search fa-sm"></em></button>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters"
@@ -94,7 +94,7 @@
           <ng-container *ngIf="isLifeCycleEventsLoading">
             <tr>
               <td colspan="4">
-                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
               </td>
             </tr>
           </ng-container>
@@ -102,7 +102,7 @@
       </table>
     </ng-container>
     <ng-container *ngIf="displayMode === 'history'">
-      <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+      <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{loadingMessage}}</span>
       <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select
         filter
         and press search button to load the TBF data.</p>

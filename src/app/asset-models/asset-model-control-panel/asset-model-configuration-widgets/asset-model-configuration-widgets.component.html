@@ -8,7 +8,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddWidgetModal()"
           [class.disabled]="assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Configuration Widget</span></a>
       </li>
     </ul>
@@ -21,7 +21,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <div *ngIf="isGetControlWidgetAPILoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </div>
     <accordion [closeOthers]="'true'" *ngIf="controlWidgets.length > 0 && !isGetControlWidgetAPILoading"
       class="mb-2 p-3">
@@ -33,11 +33,11 @@
             <div class="float-right pull-right mt-2 mr-3" >
               <a href="javascript:void(0)" class="pr-2" [class.disabled]="assetModel.freezed"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-                (click)="openAddWidgetModal(widget)"><i class="fa fa-edit" placement="left" tooltip="Edit Widget"></i></a>
+                (click)="openAddWidgetModal(widget)"><em class="fa fa-edit" placement="left" tooltip="Edit Widget"></em></a>
   
               <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-                (click)="openConfirmModal(widget)"><i class="fa fa-close" placement="left" tooltip="Remove Widget"></i></a>
+                (click)="openConfirmModal(widget)"><em class="fa fa-close" placement="left" tooltip="Remove Widget"></em></a>
             </div>
         </ng-container>
         <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through
@@ -153,11 +153,11 @@
                 <div class="form-group">
                   <label for="message-text" class="col-form-label">Extra Parameters </label>
                   <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
-                    href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><i
-                      class="fa fa-plus fa-sm text-white"></i></a>
+                    href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><em
+                      class="fa fa-plus fa-sm text-white"></em></a>
                   <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
                     href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom"
-                    tooltip="Remove Property"><i class="fa fa-trash fa-sm"></i></a>
+                    tooltip="Remove Property"><em class="fa fa-trash fa-sm"></em></a>
                   <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
                     [(ngModel)]="param.name" placeholder="Parameter Display Name">
                 </div>
@@ -192,7 +192,7 @@
           (click)="closeCreateWidgetModal()">
           Cancel
         </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
       </div>
     </div>
   </div>

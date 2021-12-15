@@ -2,15 +2,15 @@
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">Menu Settings
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
-      (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
+      (click)="isAppSettingsEditable = true;"><em class="fa fa-edit"></em></a> -->
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;"
-          *ngIf="!isAppSettingsEditable" placement="bottom" tooltip="Edit Menu Settings"><i
-            class="fas fa-edit fa-sm"></i></button>
+          *ngIf="!isAppSettingsEditable" placement="bottom" tooltip="Edit Menu Settings"><em
+            class="fas fa-edit fa-sm"></em></button>
         <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
-      (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
+      (click)="onCancelClick();"><em class="fa fa-times"></em></a> -->
         <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
-          *ngIf="isAppSettingsEditable" placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+          *ngIf="isAppSettingsEditable" placement="bottom" tooltip="Cancel"><em class="fas fa-times fa-sm"></em></button>
       </ng-container>
     </div>
   </div>
@@ -25,11 +25,11 @@
         <div class="float-right pull-right mt-2 mr-4">
           <a href="javascript:void(0)"
             *ngIf="isAppSettingsEditable && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-            (click)="openReorderMainMenuModal()" tooltip="Reorder Menu Item" placement="left"><i class="fa fa-cog"></i></a>
+            (click)="openReorderMainMenuModal()" tooltip="Reorder Menu Item" placement="left"><em class="fa fa-cog"></em></a>
 
           <!-- <a  href="javascript:void(0)" [class.disabled]="assetModel.freezed"
             *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-            (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a> -->
+            (click)="openConfirmModal(widget)"><em class="fa fa-close"></em></a> -->
         </div>
       </ng-container>
       <div class="row">
@@ -50,8 +50,8 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
                   </th>
@@ -65,8 +65,8 @@
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + item.index)">
-                          <i
-                            [ngClass]="toggleRows['main_menu_' + item.index] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          <em
+                            [ngClass]="toggleRows['main_menu_' + item.index] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                         </a>
                       </ng-container>
                     </td>
@@ -139,8 +139,8 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
                   </th>
@@ -154,7 +154,7 @@
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('asset_' + configIndex)">
-                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          <em [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                         </a>
                       </ng-container>
                     </td>
@@ -213,8 +213,8 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
                   </th>
@@ -228,7 +228,7 @@
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('legacy_asset_' + configIndex)">
-                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          <em [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                         </a>
                       </ng-container>
                     </td>
@@ -287,8 +287,8 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
                   </th>
@@ -301,7 +301,7 @@
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('gateway_' + configIndex)">
-                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          <em [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                         </a>
                       </ng-container>
                     </td>
@@ -360,8 +360,8 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i
-                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></i></button>
+                      [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                        class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
                   </th>
@@ -375,7 +375,7 @@
                     <td>
                       <ng-container *ngIf="item.showAccordion?.length > 0">
                         <a href="javascript:void(0)" (click)="onToggleRows('asset_model_' + configIndex)">
-                          <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                          <em [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                         </a>
                       </ng-container>
                     </td>

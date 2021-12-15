@@ -4,7 +4,7 @@
     </div>
     <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCampaignCreateModal()"
       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
-      tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
+      tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em class="fas fa-plus fa-sm"></em></button>
   </div>
 </div>
 
@@ -15,7 +15,7 @@
     </app-date-range-picker>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-        (click)="getCampaignsList()"><i class="fa fa-search fa-sm"></i></button>
+        (click)="getCampaignsList()"><em class="fa fa-search fa-sm"></em></button>
     </div>
   </form>
 </div>
@@ -48,11 +48,11 @@
             <td>{{item.objective}}</td>
             <td>{{item.status}}</td>
             <td *ngIf="decodedToken?.privileges?.indexOf('ASCMM') > -1">
-              <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><i
-                  class="fa fa-sm fa-eye"></i></a> -->
+              <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><em
+                  class="fa fa-sm fa-eye"></em></a> -->
               <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
                 (click)="viewCampaign(item,'viewCampaignModal')" placement="bottom" tooltip="View Campaign">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
               <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
                 [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'running' || item.status?.toLowerCase() === 'completed'"
                 (click)="startStopCampaign(item, index, 'start')" placement="bottom" tooltip="Start Campaign"><img
@@ -62,7 +62,7 @@
                 [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'completed' || item.status?.toLowerCase() === 'pending'"
                 (click)="startStopCampaign(item, index, 'end')" placement="bottom" tooltip="End Campaign"><img
                   style="width: 10px;" src="./assets/img/stop.svg" /></a>
-              <i class="fa fa-fw fa-spin fa-spinner" *ngIf="isAPILoading[index]"></i>
+              <em class="fa fa-fw fa-spin fa-spinner" *ngIf="isAPILoading[index]"></em>
             </td>
           </tr>
         </ng-container>
@@ -80,7 +80,7 @@
         <ng-container *ngIf="isGetCampaignAPILoading">
           <tr>
             <td colspan="8">
-              <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+              <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
             </td>
           </tr>
         </ng-container>

@@ -9,7 +9,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openaddAssetMethodModal()"
           [class.disabled]="assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Direct Method</span></a>
       </li>
     </ul>
@@ -57,11 +57,11 @@
             <div class="form-group">
               <label for="message-text" class="col-form-label">Parameter </label>
               <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
-                href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><i
-                  class="fa fa-plus fa-sm text-white"></i></a>
+                href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><em
+                  class="fa fa-plus fa-sm text-white"></em></a>
               <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
-                href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom" tooltip="Remove Property"><i
-                  class="fa fa-trash fa-sm"></i></a>
+                href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom" tooltip="Remove Property"><em
+                  class="fa fa-trash fa-sm"></em></a>
               <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
                 [(ngModel)]="param.name" placeholder="Parameter Display Name">
             </div>
@@ -93,7 +93,7 @@
           (click)="onSaveassetMethodObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetMethodLoading"
           (click)="onCloseAssetsAssetMethodModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetMethodLoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetMethodLoading"></em>
       </div>
     </div>
   </div>

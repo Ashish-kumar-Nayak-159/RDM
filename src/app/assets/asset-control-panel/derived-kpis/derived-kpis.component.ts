@@ -96,7 +96,7 @@ export class DerivedKpisComponent implements OnInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
-      this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
+      // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
       this.selectedDateRange =datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");               
     }
@@ -105,7 +105,7 @@ export class DerivedKpisComponent implements OnInit {
       asset_id: this.selectedDerivedKPI.asset_id,
       from_date: this.filterObj.from_date,
       to_date: this.filterObj.to_date,
-      last_n_secs: this.filterObj.last_n_secs,
+      // last_n_secs: this.filterObj.last_n_secs,
       epoch: true,
       asset_model: this.selectedDerivedKPI.asset_model,
     };
@@ -166,7 +166,7 @@ export class DerivedKpisComponent implements OnInit {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
-    this.filterObj.last_n_secs = filterObj.last_n_secs;
+    // this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   plotChart() {

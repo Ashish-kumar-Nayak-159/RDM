@@ -67,7 +67,8 @@ export class CommonService {
 
   convertDateToEpoch(date: string) {
     if (date) {
-      return datefns.getUnixTime(new Date());
+      var ldate = this.convertUTCDateToLocal(date)
+      return datefns.getUnixTime(new Date(ldate));
     }
     return 0;
   }

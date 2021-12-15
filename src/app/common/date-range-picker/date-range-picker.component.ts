@@ -26,7 +26,7 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
   ngOnInit(): void {}
 
   ngAfterViewInit() {
-    this.filterObj.last_n_secs = datefns.getUnixTime(new Date(this.filterObj.to_date)) - datefns.getUnixTime(new Date(this.filterObj.from_date));
+    // this.filterObj.last_n_secs = datefns.getUnixTime(new Date(this.filterObj.to_date)) - datefns.getUnixTime(new Date(this.filterObj.from_date));
     this.picker.datePicker.setStartDate(datefns.getUnixTime(new Date(this.filterObj.from_date)));
     this.picker.datePicker.setEndDate(datefns.getUnixTime(new Date(this.filterObj.to_date)));
   }
@@ -40,7 +40,7 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
           datefns.format(new Date(this.filterObj.to_date  * 1000),"dd-MM-yyyy HH:mm");
       } else {
         this.selectedDateRange = this.filterObj.dateOption;
-        this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
+        // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
       }
       if (this.picker) {        
         this.picker.datePicker.setStartDate(datefns.getUnixTime(new Date(this.filterObj.from_date)));
@@ -53,13 +53,13 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
     this.filterObj.dateOption = value.label;
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = datefns.getUnixTime(dateObj.from_date);
-      this.filterObj.to_date = datefns.getUnixTime(dateObj.to_date);
-      this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
+      this.filterObj.from_date = datefns.getUnixTime(dateObj.from_date) * 1000;
+      this.filterObj.to_date = datefns.getUnixTime(dateObj.to_date) * 1000;
+      // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
       this.filterObj.from_date = datefns.getUnixTime(new Date(value.start));
       this.filterObj.to_date = datefns.getUnixTime(new Date(value.end));
-      this.filterObj.last_n_secs = undefined;
+      // this.filterObj.last_n_secs = undefined;
     }
     if (value.label === 'Custom Range') {
       this.selectedDateRange =
@@ -67,7 +67,6 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
     } else {
       this.selectedDateRange = value.label;
     }
-    console.log(JSON.stringify(this.filterObj));
     this.selectedDateApplyEmitter.emit(this.filterObj);
   }
 }

@@ -160,7 +160,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
         this.selectedDateRange = this.telemetryFilter.dateOption;
-        this.telemetryFilter.last_n_secs = item.to_date - item.from_date;
+        // this.telemetryFilter.last_n_secs = item.to_date - item.from_date;
       }
       // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       //   this.telemetryFilter.isTypeEditable = true;
@@ -202,15 +202,19 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(filterObj) {
+    console.log('filterObj ',filterObj);
+    
     this.telemetryFilter.from_date = filterObj.from_date;
     this.telemetryFilter.to_date = filterObj.to_date;
     this.telemetryFilter.dateOption = filterObj.dateOption;
-    this.telemetryFilter.last_n_secs = filterObj.last_n_secs;
+    // this.telemetryFilter.last_n_secs = filterObj.last_n_secs;
     const records = this.commonService.calculateEstimatedRecords(
       this.frequency,
       this.telemetryFilter.from_date,
       this.telemetryFilter.to_date
     );
+    console.log('records ',records);
+    
     if (records > this.noOfRecords) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
@@ -228,7 +232,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
-      this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;

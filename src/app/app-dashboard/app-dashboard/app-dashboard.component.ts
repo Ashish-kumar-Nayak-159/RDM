@@ -120,11 +120,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.historicalDateFilter.from_date = dateObj.from_date;
         this.historicalDateFilter.to_date = dateObj.to_date;
-        this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+        // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
       } else {
         this.historicalDateFilter.from_date = item.from_date;
         this.historicalDateFilter.to_date = item.to_date;
-        this.historicalDateFilter.last_n_secs = undefined;
+        // this.historicalDateFilter.last_n_secs = undefined;
       }
       // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
       // this.historicalDateFilter.to_date = moment().utc().unix();
@@ -500,7 +500,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.historicalDateFilter.from_date = filterObj.from_date;
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
-    this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
+    // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
@@ -632,13 +632,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
-          last_n_secs: undefined,
+          // last_n_secs: undefined,
         };
         if (this.historicalDateFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
-          obj.last_n_secs = this.historicalDateFilter.last_n_secs;
+          // obj.last_n_secs = this.historicalDateFilter.last_n_secs;
         } else {
           obj.from_date = this.historicalDateFilter.from_date;
           obj.to_date = this.historicalDateFilter.to_date;
@@ -671,7 +671,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const now = datefns.getUnixTime(new Date());
     obj.from_date = midnight;
     obj.to_date = now;
-    obj.last_n_secs = obj.to_date - obj.from_date;
+    // obj.last_n_secs = obj.to_date - obj.from_date;
     obj.app = this.contextApp.app;
     obj.partition_key = this.filterObj.asset.partition_key;
     delete obj.assetArr;
@@ -796,7 +796,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // filterObj.message_props = '';
     filterObj.from_date = null;
     filterObj.to_date = null;
-    filterObj.last_n_secs = null;
+    // filterObj.last_n_secs = null;
     const propArr = [];
     this.propertyList.forEach((propObj) => {
       this.propList.forEach((prop) => {
@@ -829,7 +829,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-      filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;
+      // filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;
     } else {
       filterObj.from_date = this.historicalDateFilter.from_date;
       filterObj.to_date = this.historicalDateFilter.to_date;

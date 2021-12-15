@@ -81,7 +81,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
-        this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
         this.selectedDateRange = this.telemetryFilter.dateOption;
       } else {
         this.telemetryFilter.from_date = item.from_date;
@@ -160,7 +160,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-      filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
     }
 
     const obj = { ...filterObj };
@@ -289,7 +289,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   selectedDate(filterObj) {
     this.telemetryFilter.from_date = filterObj.from_date;
     this.telemetryFilter.to_date = filterObj.to_date;
-    this.telemetryFilter.last_n_secs = filterObj.last_n_secs;
+    // this.telemetryFilter.last_n_secs = filterObj.last_n_secs;
     this.telemetryFilter.dateOption = filterObj.dateOption;
   }
 
@@ -303,7 +303,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
-      this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // this.telemetryFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.telemetryFilter.dateOption;
     } else {
       this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");

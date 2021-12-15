@@ -132,7 +132,7 @@
                       <div class="form-group">
                         <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
                           clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
-                          groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                          groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
                           name="model_type" [(ngModel)]="selectedWidgets"
                           (onDeSelectAll)="onDeselectAll($event,'widget')">
                           <ng-template ng-multi-label-tmp let-items="items">
@@ -321,7 +321,7 @@
                         <div class="form-group">
                           <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
                             clearSearchOnAdd="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
-                            groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            groupBy="type" placeholder="Select Document" dropdownPosition="bottom" name="widget-dropdown1" id="template"
                             name="model_type" [(ngModel)]="selectedDocuments"
                             (onDeSelectAll)="onDeselectAll($event,'document')">
                             <ng-template ng-multi-label-tmp let-items="items">

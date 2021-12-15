@@ -85,7 +85,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     this.filterObj.dateOption = 'This Month';
     this.filterObj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
     this.filterObj.to_date =datefns.getUnixTime(datefns.endOfMonth(new Date()));
-    this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
+    // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
@@ -107,7 +107,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-      filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
+      // filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
     } 
     
     const obj = { ...filterObj };
@@ -179,7 +179,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
-    this.filterObj.last_n_secs = filterObj.last_n_secs;
+    // this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   clear() {
@@ -193,7 +193,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
-      this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
       this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");

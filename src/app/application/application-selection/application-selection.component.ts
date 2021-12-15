@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { AssetService } from 'src/app/services/assets/asset.service';
 
 @Component({
   selector: 'app-application-selection',
@@ -32,7 +33,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private assetService:AssetService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  async redirectToApp(app, index) {
+  async redirectToApp(app, index) {    
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -181,7 +183,15 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel ||'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
-          resolve();
+          const assetTypesObj = {
+            hierarchy: JSON.stringify(this.applicationData.user.hierarchy),
+            type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+          };  
+          this.apiSubscriptions.push(
+            this.assetService.getIPAndLegacyAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
+              resolve();
+            })
+          );
         })
       );
     });

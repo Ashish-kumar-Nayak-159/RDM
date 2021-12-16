@@ -407,7 +407,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else {
       methodToCall = this.assetService.updateAssetTags(obj, this.contextApp.app);
     }
-    if (this.asset?.tags?.display_name === '') {
+    if (this.asset?.tags?.display_name.trim().length === 0) {
       this.toasterService.showError('Asset display name should not be empty', 'Set Tags');
       this.isUpdateAPILoading = false;
     } else {

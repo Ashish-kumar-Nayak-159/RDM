@@ -74,16 +74,22 @@
         </button>
       </div>
       <div class="modal-body">
-        <form *ngIf="mainSelectedTab === 'slaves'">
+        <form *ngIf="mainSelectedTab === 'slaves'" #slaveForm="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave ID:</label>
-            <input type="text" class="form-control form-control-sm" id="slave_id" name="slave_id"
+            <input #slaveid="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_id" name="slave_id"
               [(ngModel)]="slaveObj.slave_id" placeholder="Enter Slave ID">
+              <div *ngIf="slaveid.errors?.whitespace && slaveid.touched" class="alert-danger">
+                Please enter valid id.
+              </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave Name:</label>
-            <input type="text" class="form-control form-control-sm" id="slave_name" name="slave_name"
+            <input #slavename="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_name" name="slave_name"
               [(ngModel)]="slaveObj.slave_name" placeholder="Enter Display Name">
+              <div *ngIf="slavename.errors?.whitespace && slavename.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Slave Type:</label>
@@ -117,8 +123,16 @@
             <option value="Middle">Middle</option> -->
             </select>
           </div>
+          <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slaves'">
+
+            <button type="button" class="btn btn-primary" [disabled]="!slaveForm.valid || isCreateSlaveAPILoading"
+              (click)="slaveObj.id ? updateSlaveObj() : saveSlaveObj()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
+              (click)="onCloseModal('addSlaveModal')">Cancel</button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
+          </div>
         </form>
-        <form *ngIf="mainSelectedTab === 'slave positions'">
+        <form *ngIf="mainSelectedTab === 'slave positions'" #slavePositionForm="ngForm">
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Slave Category:</label>
             <select class="form-control form-control-sm" id="slave_category" name="slave_category"
@@ -132,43 +146,41 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave Position:</label>
-            <input type="text" class="form-control form-control-sm" id="slave_position_name" name="slave_position_name"
+            <input #slavepositionname="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_position_name" name="slave_position_name"
               [(ngModel)]="slaveObj.slave_position" placeholder="Enter Slave Position Name">
+              <div *ngIf="slavepositionname.errors?.whitespace && slavepositionname.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
           </div>
+          <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave positions'">
 
+            <button type="button" class="btn btn-primary" [disabled]="!slavePositionForm.valid || isCreateSlaveAPILoading"
+              (click)="slaveObj.id ? updateSlavePositionObj() : saveSlavePositionObj()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
+              (click)="onCloseModal('addSlaveModal')">Cancel</button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
+          </div>
         </form>
-        <form *ngIf="mainSelectedTab === 'slave categories'">
+        <form *ngIf="mainSelectedTab === 'slave categories'" #slaveCategoriesForm="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave Category:</label>
-            <input type="text" class="form-control form-control-sm" id="slave_category_name" name="slave_category_name"
+            <input #slavecategoryname="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_category_name" name="slave_category_name"
               [(ngModel)]="slaveObj.slave_category" placeholder="Enter Slave Category">
+              <div *ngIf="slavecategoryname.errors?.whitespace && slavecategoryname.touched" class="alert-danger">
+                Please enter valid category.
+              </div>
+          </div>
+          <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave categories'">
+
+            <button type="button" class="btn btn-primary" [disabled]="!slaveCategoriesForm.valid || isCreateSlaveAPILoading"
+              (click)="slaveObj.id ? updateSlaveCategoryObj() : saveSlaveCategoryObj()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
+              (click)="onCloseModal('addSlaveModal')">Cancel</button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
           </div>
         </form>
       </div>
-      <div class="modal-footer" *ngIf="mainSelectedTab === 'slaves'">
-
-        <button type="button" class="btn btn-primary" [disabled]="isCreateSlaveAPILoading"
-          (click)="slaveObj.id ? updateSlaveObj() : saveSlaveObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
-          (click)="onCloseModal('addSlaveModal')">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
-      </div>
-      <div class="modal-footer" *ngIf="mainSelectedTab === 'slave positions'">
-
-        <button type="button" class="btn btn-primary" [disabled]="isCreateSlaveAPILoading"
-          (click)="slaveObj.id ? updateSlavePositionObj() : saveSlavePositionObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
-          (click)="onCloseModal('addSlaveModal')">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
-      </div>
-      <div class="modal-footer" *ngIf="mainSelectedTab === 'slave categories'">
-
-        <button type="button" class="btn btn-primary" [disabled]="isCreateSlaveAPILoading"
-          (click)="slaveObj.id ? updateSlaveCategoryObj() : saveSlaveCategoryObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
-          (click)="onCloseModal('addSlaveModal')">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
-      </div>
+  
     </div>
   </div>
 </div>

@@ -341,6 +341,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <form #locationForm="ngForm">
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
             value="latitude_longitude" [(ngModel)]="changeLocationOption">
@@ -388,21 +389,27 @@
           <div class="form-row mt-2">
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputEmail4">Latitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input #latitude_value="ngModel" validateText type="text" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="asset?.tags.latitude"
                 name="latitude" placeholder="Enter Latitude">
+                <div *ngIf="latitude_value.errors?.whitespace && latitude_value.touched" class="alert-danger">
+                  Please enter valid latitude.
+                </div>
             </div>
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputPassword4">Longitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input #longitude_value="ngModel" validateText type="text" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="asset?.tags.longitude"
                 name="longitude" placeholder="Enter Longitude">
+                <div *ngIf="longitude_value.errors?.whitespace && longitude_value.touched" class="alert-danger">
+                  Please enter valid longitude.
+                </div>
             </div>
           </div>
         </ng-container>
-      </div>
+      
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading || !changeLocationOption"
+        <button type="button" class="btn btn-primary" [disabled]="!locationForm.valid || isUpdateAPILoading || !changeLocationOption"
           (click)="updateAssetTags()">
           Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAPILoading "
@@ -411,6 +418,8 @@
         </button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></em>
       </div>
+      </form>
+    </div>
     </div>
   </div>
 </div>

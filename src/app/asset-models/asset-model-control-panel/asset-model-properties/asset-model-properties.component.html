@@ -55,17 +55,23 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form #form="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Display Name:</label>
-            <input type="text" class="form-control form-control-sm" id="display_name" name="display_name"
+            <input #display_name="ngModel" validateText type="text" class="form-control form-control-sm" id="display_name" name="display_name"
               [(ngModel)]="propertyObj.name" placeholder="Enter Property Name">
+              <div *ngIf="display_name.errors?.whitespace && display_name.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">JSON Key:</label>
-            <input type="text" class="form-control form-control-sm" id="name" name="name"
+            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="propertyObj.json_key" placeholder="Enter Key Name" (change)="onJSONKeyChange()"
               [disabled]="propertyObj.edit">
+              <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                Please enter valid key.
+              </div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Data Type:</label>
@@ -159,20 +165,22 @@
               </div>
             </div>
           </ng-container>
-        </form>
-      </div>
-      <div class="modal-footer">
+      
+      <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary "
           *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
-          [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
+          [disabled]="!form.valid || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-primary"
           *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'"
+          [disabled]="!form.valid"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
           (click)="onCloseAssetsPropertyModal()">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></em>
       </div>
+    </form>
+  </div>
     </div>
   </div>
 </div>

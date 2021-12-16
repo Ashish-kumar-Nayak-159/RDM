@@ -35,6 +35,7 @@ import { CylinderWidgetComponent } from './charts/cylinder-widget/cylinder-widge
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { CommonWidgetComponent } from './charts/common-widget/common-widget.component';
 import { ColumnchartLivedataComponentComponent } from './charts/columnchart-livedata-component/columnchart-livedata-component.component';
+import { FormValidatorDirective } from '../validator/form-validator.directive';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { ColumnchartLivedataComponentComponent } from './charts/columnchart-live
     CylinderWidgetComponent,
     CommonWidgetComponent,
     ColumnchartLivedataComponentComponent,
+    FormValidatorDirective
   ],
   imports: [
     CommonModule,
@@ -104,6 +106,7 @@ import { ColumnchartLivedataComponentComponent } from './charts/columnchart-live
     HierarchyDropdownComponent,
     RectangleWidgetComponent,
     CylinderWidgetComponent,
+    FormValidatorDirective
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

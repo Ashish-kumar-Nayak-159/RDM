@@ -226,10 +226,14 @@
         </button>
       </div>
       <div class="modal-body">
+        <form #form="ngForm">
         <div class="form-group">
           <label for="message-text" class="col-form-label required">User Group Name:</label>
-          <input type="text" class="form-control form-control-sm" name="user_group_name" id="user_group_name"
+          <input #user_group_name="ngModel" validateText type="text" class="form-control form-control-sm" name="user_group_name" id="user_group_name"
             placeholder="Enter User Group name" [(ngModel)]="groupObj.group_name" />
+            <div *ngIf="user_group_name.errors?.whitespace && user_group_name.touched" class="alert-danger">
+              Please enter valid group name.
+            </div>
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label required">Email Recipients:</label>
@@ -331,10 +335,10 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
+     
+      <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary add-row" (click)="onCreateUserGroup()"
-          [disabled]="isCreateUserGroupAPILoading">
+          [disabled]="!form.valid || isCreateUserGroupAPILoading">
           Save
           <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserGroupAPILoading"></em>
         </button>
@@ -343,6 +347,8 @@
           Cancel
         </button>
       </div>
+      </form>
+     </div>
     </div>
   </div>
 </div>

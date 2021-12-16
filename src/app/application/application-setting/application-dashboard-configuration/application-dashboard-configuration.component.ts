@@ -1,7 +1,6 @@
 import { CommonService } from './../../../services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -22,7 +21,6 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   widgetStringFromMenu: any;
   uploadedFiles: any = {};
   constructor(
-    private assetService: AssetService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private commonService: CommonService
@@ -31,7 +29,6 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
     if (!this.applicationData.dashboard_config) {

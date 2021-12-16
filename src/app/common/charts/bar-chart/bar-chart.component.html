@@ -15,7 +15,7 @@ test
         <a *ngIf="hideCancelButton && decodedToken?.privileges?.indexOf('ASMMM') > -1"
           class="float-right pull-right mt-1" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
           placement="bottom" tooltip="Remove {{widgetStringFromMenu}}">
-          <i class="fa fa-close"></i></a>
+          <em class="fa fa-close"></em></a>
       </div>
     </ng-container>
     <div class="row">
@@ -23,7 +23,7 @@ test
         <div class="card shadow h-100">
           <div class="card-body1" style="max-height: 27rem; overflow-y: auto;"
             *ngIf="telemetryData.length > 0 else noData;">
-            <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
+            <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{loaderMessage}}</span>
             <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
             <div class="overlay" *ngIf="isOverlayVisible">
               <div style="font-family:'Arial Black',sans-serif; font-size: 40px;">Sample Chart</div>

@@ -3,19 +3,19 @@
     <ul class="nav">
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-fw fa-eye"></i>
+          <em class="fa fa-fw fa-eye"></em>
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)"
           (click)="setViewType('history')">
-          <i class="fa fa-fw fa-history"></i>
+          <em class="fa fa-fw fa-history"></em>
           <span class="text-secondary">Historical {{widgetStringFromMenu}}</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)"
           (click)="setViewType('live')">
-          <i class="fa fa-fw fa-bar-chart"></i>
+          <em class="fa fa-fw fa-bar-chart"></em>
           <span class="text-secondary">Live {{widgetStringFromMenu}}</span></a>
       </li>
 

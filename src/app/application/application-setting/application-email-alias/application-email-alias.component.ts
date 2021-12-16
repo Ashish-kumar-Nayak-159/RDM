@@ -1,7 +1,7 @@
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CountryISO, SearchCountryField } from 'ngx-intl-tel-input';

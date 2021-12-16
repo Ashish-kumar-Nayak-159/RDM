@@ -5,7 +5,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddDocumentModal()"
           [class.disabled]="assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Reference Document</span></a>
       </li>
     </ul>
@@ -90,7 +90,7 @@
           (click)="onSaveDocumentObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDocumentLoading || isFileUploading"
           (click)="onCloseAddDocModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDocumentLoading || isFileUploading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDocumentLoading || isFileUploading"></em>
       </div>
     </div>
   </div>

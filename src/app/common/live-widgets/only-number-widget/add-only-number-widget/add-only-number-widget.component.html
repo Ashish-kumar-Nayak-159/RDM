@@ -4,19 +4,19 @@
     <div class="form-group">
       <label for="message-text" class="col-form-label required">Property </label>
       <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1"
-        href="javascript:void(0)" (click)="addProperty()" placement="bottom" tooltip="Add Property"><i
-          class="fa fa-plus fa-sm text-white"></i></a>
+        href="javascript:void(0)" (click)="addProperty()" placement="bottom" tooltip="Add Property"><em
+          class="fa fa-plus fa-sm text-white"></em></a>
       <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm ml-2 mb-1"
-        href="javascript:void(0)" (click)="removeProperty(i)" placement="bottom" tooltip="Remove Property"><i
-          class="fa fa-trash fa-sm"></i></a>
+        href="javascript:void(0)" (click)="removeProperty(i)" placement="bottom" tooltip="Remove Property"><em
+          class="fa fa-trash fa-sm"></em></a>
 
       <ng-select [items]="propertyList" class="custom-dropdown sm" bindLabel="name" [clearable]="false"
         [searchable]="true" [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
         dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
         (clear)="onPropertyDeselect(prop)">
         <ng-template ng-option-tmp let-item="item">
-          <span> <i
-              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+          <span> <em
+              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
             {{item.name}}</span>
         </ng-template>
       </ng-select>
@@ -47,7 +47,7 @@
     </div> -->
     <!-- <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
   <label for="message-text" class="col-form-label ">Image
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>:</label>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></em>:</label>
   <input type="file" [disabled]="isFileUploading"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files, i)"
            class="form-control" id="app_logo" name="app_logo" >
@@ -69,7 +69,7 @@
           <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
         </div>
       </div>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></em>
     </div>
     <ng-container *ngIf="widgetObj.widgetType === 'GaugeChart'">
       <div class="form-group">
@@ -98,7 +98,7 @@
         </div>
         <div class="form-group col-1">
           <span [(colorPicker)]="prop.low_color" placement="bottom" tooltip="Pick Color">
-            <i class="fa fa-paint-brush"></i>
+            <em class="fa fa-paint-brush"></em>
           </span>
         </div>
         <div class="form-group col-1">
@@ -121,7 +121,7 @@
         </div>
         <div class="form-group col-1">
           <span [(colorPicker)]="prop.normal_color" placement="bottom" tooltip="Pick Color">
-            <i class="fa fa-paint-brush"></i>
+            <em class="fa fa-paint-brush"></em>
           </span>
         </div>
         <div class="form-group col-1">
@@ -144,7 +144,7 @@
         </div>
         <div class="form-group col-1">
           <span [(colorPicker)]="prop.high_color" placement="bottom" tooltip="Pick Color">
-            <i class="fa fa-paint-brush"></i>
+            <em class="fa fa-paint-brush"></em>
           </span>
         </div>
         <div class="form-group col-1">
@@ -201,8 +201,8 @@
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i
-            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+        <span [tooltip]="item.name"> <em
+            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
           {{item.name}}</span>
       </ng-template>
     </ng-select>
@@ -224,8 +224,8 @@
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i
-            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+        <span [tooltip]="item.name"> <em
+            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
           {{item.name}}</span>
       </ng-template>
     </ng-select>
@@ -239,7 +239,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.color" placement="bottom" tooltip="Pick Color">
-        <i class="fa fa-paint-brush"></i>
+        <em class="fa fa-paint-brush"></em>
       </span>
     </div>
     <div class="form-group col-3">
@@ -252,7 +252,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.color" placement="bottom" tooltip="Pick Color">
-        <i class="fa fa-paint-brush"></i>
+        <em class="fa fa-paint-brush"></em>
       </span>
     </div>
     <div class="form-group col-3">

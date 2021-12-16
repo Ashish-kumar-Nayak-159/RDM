@@ -1,7 +1,7 @@
 <!-- Header for Normal routes except login app selection -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
   <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3" (click)="onSidebarToggle()">
-    <i class="fa fa-bars"></i>
+    <em class="fa fa-bars"></em>
   </button>
   <a class="d-flex align-items-center" *ngIf="!userData?.is_super_admin" href="javascript:void(0)"
     (click)="redirectToFirstMenu()">
@@ -27,36 +27,36 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
         <!-- <a class="dropdown-item" href="javascript:void(0)">
-          <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+          <em class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></em>
           {{ uiMessages.PROFILE_LABEL }}
         </a> -->
         <a class="dropdown-item" href="javascript:void(0)" (click)="openChangePasswordModal()"
           *ngIf="isGuestUser !== 'true'">
-          <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+          <em class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></em>
           {{ uiMessages.CHANGE_PASSWORD_LABEL }}
         </a>
         <!-- <a class="dropdown-item" href="javascript:void(0)">
-            <i class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></em>
             {{ uiMessages.ACTIVITY_LOG_LABEL }}
           </a> -->
         <div class="dropdown-divider" *ngIf="isGuestUser !== 'true'"></div>
         <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMV') > -1">
           <a class="dropdown-item" [routerLink]="['applications', this.contextApp?.app, 'settings']"
             routerLinkActive="active">
-            <i class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></em>
             {{ uiMessages.SETTINGS_LABEL }}
           </a>
           <div class="dropdown-divider"></div>
         </ng-container>
         <ng-container *ngIf="userData?.apps?.length > 1">
           <a class="dropdown-item" [routerLink]="['applications', 'selection']" routerLinkActive="active">
-            <i class="fa fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-th-large fa-sm fa-fw mr-2 text-gray-400"></em>
             {{ uiMessages.CHANGE_APPLICATION_LABEL }}
           </a>
           <div class="dropdown-divider"></div>
         </ng-container>
         <a class="dropdown-item" href="javascript:void(0)" (click)="openLogoutModal()">
-          <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          <em class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></em>
           {{ uiMessages.LOGOUT_LABEL }}
         </a>
       </div>
@@ -124,15 +124,15 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
           <!-- <a class="dropdown-item" href="javascript:void(0)">
-            <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></em>
             Profile
           </a> -->
           <a class="dropdown-item" href="javascript:void(0)" (click)="openChangePasswordModal()">
-            <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></em>
             Change Password
           </a>
           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-            <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            <em class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></em>
             Logout
           </a>
         </div>

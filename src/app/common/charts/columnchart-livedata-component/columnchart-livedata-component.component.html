@@ -14,7 +14,7 @@
           <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1"
             class="mt-1" [ngClass]="hideCancelButtonAddOnClass?.length > 0 ? hideCancelButtonAddOnClass : ''" 
             href="javascript:void(0)" (click)="modalOpenEvents.emit()"
-            placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"><i class="fa fa-close"></i></a>
+            placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
         </div>
       </ng-container>
       <div class="row">
@@ -22,7 +22,7 @@
           <div class="dvRowCardHeaderClass?.length > 0 ? dvRowCardHeaderClass? : ''">
             <div class="dvRowCardBodyClass?.length > 0 ? dvRowCardBodyClass? : ''" style="max-height: 27rem; overflow-y: auto;"
               *ngIf="telemetryData.length > 0 else noData;">
-              <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
+              <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{loaderMessage}}</span>
               <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
               <div class="overlay" *ngIf="isOverlayVisible">
                 <div style="font-family:'Arial Black',sans-serif; font-size: 40px;">Sample Chart</div>

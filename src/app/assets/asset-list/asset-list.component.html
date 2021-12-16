@@ -5,16 +5,16 @@
       <div id="view-tabs">
         <nav>
           <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <!-- <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"><i class="fas fa-list"></i></a>
-           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" href="#Asset" role="tab" aria-controls="nav-profile" aria-selected="false"><i class="fa fa-map-marker-alt" aria-hidden="true"></i></a> -->
+            <!-- <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"><em class="fas fa-list"></em></a>
+           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" href="#Asset" role="tab" aria-controls="nav-profile" aria-selected="false"><em class="fa fa-map-marker-alt" aria-hidden="true"></em></a> -->
             <a href="javascript:void(0)" class="nav-item nav-link border-0"
               [ngClass]="{'active': currentPageView === 'list'}" placement="bottom" tooltip="List View"
               (click)="onCurrentPageViewChange('list')">
-              <i class="fas fa-list"></i></a>
+              <em class="fas fa-list"></em></a>
             <a href="javascript:void(0)" class="nav-item nav-link border-0"
               [ngClass]="{'active': currentPageView === 'map'}" placement="bottom" tooltip="Map View"
               (click)="onCurrentPageViewChange('map')">
-              <i class="fa fa-map-marker-alt"></i></a>
+              <em class="fa fa-map-marker-alt"></em></a>
           </div>
         </nav>
       </div>
@@ -27,19 +27,19 @@
               (click)="onTabChange(constantData.IP_ASSET)" href="#{{iotAssetsTab?.tab_name}}" role="tab"
               aria-controls="nav-home" aria-selected="true"
               [ngClass]="{'active': componentState === constantData.IP_ASSET}">
-              <i class="fab fa-mixcloud mr-2"></i>
+              <em class="fab fa-mixcloud mr-2"></em>
               <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
             <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab"
               data-toggle="tab" (click)="onTabChange(constantData.NON_IP_ASSET)" href="#{{legacyAssetsTab?.tab_name}}"
               role="tab" aria-controls="nav-profile" aria-selected="false"
               [ngClass]="{'active': componentState === constantData.NON_IP_ASSET}">
-              <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
+              <em class="fa fa-microchip mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
             <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab"
               data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)" href="#{{iotGatewaysTab?.tab_name}}"
               role="tab" aria-controls="nav-profile" aria-selected="false"
               [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
-              <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
+              <em class="fas fa-sitemap mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
           </div>
         </nav>
@@ -56,8 +56,8 @@
             (clearHierarchyEvent)="onClearHierarchy($event)" [closeOnSelection]="false">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="currentOffset = 0;assetsList = [];searchAssets()" [disabled]="isAssetListLoading"><i
-                class="fas fa-search fa-sm"></i></button></div>
+              (click)="currentOffset = 0;assetsList = [];searchAssets()" [disabled]="isAssetListLoading"><em
+                class="fas fa-search fa-sm"></em></button></div>
         </form>
       </div>
       <div class="">

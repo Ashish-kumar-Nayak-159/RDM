@@ -77,7 +77,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.batteryMessageFilter.from_date = dateObj.from_date;
         this.batteryMessageFilter.to_date = dateObj.to_date;
-        this.batteryMessageFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.batteryMessageFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.batteryMessageFilter.from_date = item.from_date;
         this.batteryMessageFilter.to_date = item.to_date;

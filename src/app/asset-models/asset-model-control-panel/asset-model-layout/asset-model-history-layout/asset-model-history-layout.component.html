@@ -10,7 +10,7 @@
           [closeOnSelect]="true" placeholder="Select {{widgetStringFromMenu}} Type" dropdownPosition="bottom"
           name="asset-dropdown" [(ngModel)]="selectedChartType" (change)="onWidgetTypeChange()">
           <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-            <span [tooltip]="item"><i class="fa {{chartIcons[index]}}"></i>&nbsp;{{item}}</span>
+            <span [tooltip]="item"><em class="fa {{chartIcons[index]}}"></em>&nbsp;{{item}}</span>
           </ng-template>
         </ng-select>
       </div>
@@ -35,8 +35,8 @@
             </ul>
           </ng-template>
           <ng-template ng-option-tmp let-item="item">
-            <span [tooltip]="item.name"> <i
-                [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+            <span [tooltip]="item.name"> <em
+                [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
               {{item.name}}</span>
           </ng-template>
         </ng-select>
@@ -58,20 +58,20 @@
             </ul>
           </ng-template>
           <ng-template ng-option-tmp let-item="item">
-            <span [tooltip]="item.name"> <i
-                [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+            <span [tooltip]="item.name"> <em
+                [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
               {{item.name}}</span>
           </ng-template>
         </ng-select>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom"
-          tooltip="Add {{widgetStringFromMenu}}" (click)="addChart()" [disabled]="assetModel.freezed"><i
-            class="fa fa-plus fa-sm"></i></button>
+          tooltip="Add {{widgetStringFromMenu}}" (click)="addChart()" [disabled]="assetModel.freezed"><em
+            class="fa fa-plus fa-sm"></em></button>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-success" placement="bottom" tooltip="Save"
-          (click)="saveLayout()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button>
+          (click)="saveLayout()" [disabled]="assetModel.freezed"><em class="fa fa-save fa-sm"></em></button>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear"
@@ -87,7 +87,7 @@
     <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
       No Historical {{widgetStringFromMenu}} found.
     </p>
-    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <em *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <div id="layoutWidgetContainer" class="showLayout p-3">
     </div>
   </div>

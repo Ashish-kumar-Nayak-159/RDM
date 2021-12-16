@@ -67,7 +67,8 @@ export class CommonService {
 
   convertDateToEpoch(date: string) {
     if (date) {
-      return datefns.getUnixTime(new Date());
+      var ldate = this.convertUTCDateToLocal(date)
+      return datefns.getUnixTime(new Date(ldate));
     }
     return 0;
   }
@@ -230,8 +231,13 @@ export class CommonService {
     } 
      else if (label === 'This Month') {
       obj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last Month') {
+      obj.to_date = datefns.getUnixTime(datefns.subSeconds(new Date(), 0));
+    } 
+    else if (label === 'Last 30 Days') {
+      obj.from_date = datefns.getUnixTime(datefns.subDays(new Date(),29));
+      obj.to_date =  datefns.getUnixTime(new Date());
+    }
+    else if (label === 'Last Month') {
       obj.from_date = datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)));
       obj.to_date = datefns.getUnixTime(datefns.endOfMonth(datefns.subMonths(new Date(),1)));
     }

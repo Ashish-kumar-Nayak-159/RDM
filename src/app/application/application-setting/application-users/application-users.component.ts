@@ -7,7 +7,6 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
@@ -48,7 +47,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getApplicationUserRoles();
     this.getApplicationUsers();

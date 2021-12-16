@@ -29,7 +29,6 @@ export class ApplicationOrgTreeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (!this.applicationData?.hierarchy?.levels) {
       this.applicationData.hierarchy.levels = [];

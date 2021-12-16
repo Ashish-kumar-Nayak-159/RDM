@@ -99,7 +99,7 @@
             <td class="required align-middle">Start Date</td>
             <td>
               <div class="left-inner-addon">
-                <i class="fa fa-calendar"></i>
+                <em class="fa fa-calendar"></em>
                 <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_start_date_display"
                   [options]="options" (selected)="selectedDate($event, 'start')" style="width: 20rem!important"
@@ -111,7 +111,7 @@
             <td class="required align-middle">End Date</td>
             <td>
               <div class="left-inner-addon">
-                <i class="fa fa-calendar"></i>
+                <em class="fa fa-calendar"></em>
                 <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_end_date_display"
                   [options]="options" (selected)="selectedDate($event, 'end')" style="width: 20rem!important"
@@ -401,8 +401,8 @@
                 <ui-switch size="small" class="mr-1" defaultBgColor="red" uncheckedTextColor="white"
                   switchColor="#EFEFEF" checkedTextColor="white" checkedLabel="ON" uncheckedLabel="OFF" name="tpye"
                   [(ngModel)]="campaignObj.job_request.mode">
-                  <i class="fa fa-check" style="color: green;" *ngIf="campaignObj.job_request.mode"></i>
-                  <i class="fa fa-times" style="color: red" *ngIf="!campaignObj.job_request.mode"></i>
+                  <em class="fa fa-check" style="color: green;" *ngIf="campaignObj.job_request.mode"></em>
+                  <em class="fa fa-times" style="color: red" *ngIf="!campaignObj.job_request.mode"></em>
                 </ui-switch>
               </td>
             </tr>
@@ -616,7 +616,7 @@
             <button type="button" class="btn btn-primary mr-3" (click)="createCampaign()" id="camopaignCReateBtn"
               [disabled]="isCreateCampaignAPILoading || campaignAssets.length === 0">
               Create
-              <i class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isCreateCampaignAPILoading"></i>
+              <em class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isCreateCampaignAPILoading"></em>
             </button>
 
             <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading"
@@ -667,7 +667,7 @@
             <ng-container *ngIf="isGetCampaignAssetAPILoading">
               <tr>
                 <td colspan="3">
-                  <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                  <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
                 </td>
               </tr>
             </ng-container>

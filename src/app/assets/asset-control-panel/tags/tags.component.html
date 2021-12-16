@@ -3,30 +3,30 @@
     <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateAssetTags()" [class.disabled]="isUpdateAPILoading">
-          <i class="fa fa-fw fa-save"></i>
+          <em class="fa fa-fw fa-save"></em>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item" *ngIf="menuDetail?.accordion_value?.delete">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmdeleteTagsModal')"
           [class.disabled]="isUpdateAPILoading">
-          <i class="fa fa-fw fa-trash"></i>
+          <em class="fa fa-fw fa-trash"></em>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmResetTagsModal')"
           [class.disabled]="isUpdateAPILoading">
-          <i class="fa fa-fw fa-undo"></i>
+          <em class="fa fa-fw fa-undo"></em>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('changeLocationModal')"
           [class.disabled]="isUpdateAPILoading">
-          <i class="fa fa-fw fa-map-marker"></i>
+          <em class="fa fa-fw fa-map-marker"></em>
           <span class="text-secondary delete-row">Change Asset Location</span></a>
       </li>
       <li class="nav-item" *ngIf="isUpdateAPILoading">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-spinner fa-spin fa-fw"></i>
+          <em class="fa fa-spinner fa-spin fa-fw"></em>
         </a>
       </li>
     </ul>
@@ -45,9 +45,9 @@
           <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
             Edit Reserved Tags : 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
-              (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
+              (click)="isReservedTagsEditable = true;"><em class="fa fa-edit"></em></a>
             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
-              (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
+              (click)="isReservedTagsEditable = false;"><em class="fa fa-times"></em></a>
           </ng-container>
         </h1>
         <table class="table table-hover">
@@ -136,9 +136,9 @@
           <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
             Edit Model Tags : 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isModelTagsEditable"
-              (click)="isModelTagsEditable = true;"><i class="fa fa-edit"></i></a>
+              (click)="isModelTagsEditable = true;"><em class="fa fa-edit"></em></a>
             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isModelTagsEditable"
-              (click)="isModelTagsEditable = false;"><i class="fa fa-times"></i></a>
+              (click)="isModelTagsEditable = false;"><em class="fa fa-times"></em></a>
           </ng-container>
         </h1>
         <table class="table table-hover">
@@ -178,10 +178,10 @@
               Edit Custom Tags : 
             </span> 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
-              *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
-                class="fa fa-edit"></i></a>
+              *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><em
+                class="fa fa-edit"></em></a>
             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isCustomTagsEditable"
-              (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
+              (click)="isCustomTagsEditable = false;"><em class="fa fa-times"></em></a>
           </ng-container>
         </h1>
         <!-- {{assetCustomTags |json}} -->
@@ -205,7 +205,7 @@
                   <td>{{tag.value}}</td>
                   <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                     <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
-                      <i class="fa fa-fw fa-trash"></i>
+                      <em class="fa fa-fw fa-trash"></em>
                     </a>
                   </td>
                 </ng-container>
@@ -251,10 +251,10 @@
               Edit Variables : 
             </span> 
             <a href="javascript:void(0)" placement="bottom" tooltip="Edit Variables"
-              *ngIf="!isVariablesEditable && assetVariables.length > 1" (click)="isVariablesEditable = true;"><i
-                class="fa fa-edit"></i></a>
+              *ngIf="!isVariablesEditable && assetVariables.length > 1" (click)="isVariablesEditable = true;"><em
+                class="fa fa-edit"></em></a>
             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isVariablesEditable"
-              (click)="isVariablesEditable = false;"><i class="fa fa-times"></i></a>
+              (click)="isVariablesEditable = false;"><em class="fa fa-times"></em></a>
           </ng-container>
         </h1>
         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -277,7 +277,7 @@
                   <td>{{tag.value}}</td>
                   <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                     <a href="javascript:void(0)" (click)="deleteVariable(i)">
-                      <i class="fa fa-fw fa-trash"></i>
+                      <em class="fa fa-fw fa-trash"></em>
                     </a>
                   </td>
                 </ng-container>
@@ -416,7 +416,7 @@
           (click)="onModalClose('changeLocationModal')">
           Cancel
         </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></em>
       </div>
       </form>
     </div>

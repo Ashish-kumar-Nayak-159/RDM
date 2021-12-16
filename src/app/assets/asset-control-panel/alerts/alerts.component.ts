@@ -89,7 +89,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.alertFilter.from_date = dateObj.from_date;
         this.alertFilter.to_date = dateObj.to_date;
-        this.alertFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        console.log(dateObj);
+        // this.alertFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.alertFilter.from_date = item.from_date;
         this.alertFilter.to_date = item.to_date;

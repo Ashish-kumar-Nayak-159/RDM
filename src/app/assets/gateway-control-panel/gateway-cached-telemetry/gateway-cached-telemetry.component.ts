@@ -127,7 +127,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
-        this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;

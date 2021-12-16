@@ -3,14 +3,14 @@
     <div class="h6 m-0 p-0">User Groups
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserGroupModal()"
-          placement="bottom" tooltip="Add User Group"><i class="fas fa-plus fa-sm"></i></button>
+          placement="bottom" tooltip="Add User Group"><em class="fas fa-plus fa-sm"></em></button>
       </ng-container>
     </div>
   </div>
 </div>
 <div class="table-responsive">
   <div class="tableFixHead">
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
     <!-- <h6 class="m-3" *ngIf="userGroups.length === 0 && !isUserGroupsAPILoading"> No User Groups available.</h6> -->
     <accordion [closeOthers]="true" class="p-3">
       <accordion-group heading="" [panelClass]="'customClass'">
@@ -26,7 +26,7 @@
             <button class="btn" type="button">{{userGroup.group_name}}</button>
             <a class="float-right pull-right px-3 py-2 mr-3 close-btn" href="javascript:void(0)"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-              (click)="openConfirmModal(userGroup)"><i class="fa fa-close" placement="left" tooltip="Remove User Group"></i></a>
+              (click)="openConfirmModal(userGroup)"><em class="fa fa-close" placement="left" tooltip="Remove User Group"></em></a>
           </ng-container>
           <accordion [closeOthers]="true" class="p-3" id="ac2">
             <accordion-group heading="" [panelClass]="'customClass1'">
@@ -40,18 +40,18 @@
                   <p *ngIf="userGroup?.recipients?.email?.length === 0" class="mb-0"> No Email Recipients added yet.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                   <p *ngIf="userGroup?.recipients?.email?.length > 0;" class="mb-0"> Following Email Recipients have
                     been
                     added so far. You can add more.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                 </div>
                 <div class="col-12  my-2 accordion-padding"
@@ -65,7 +65,7 @@
                       <div class="form-group">
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                           (click)="addEmailRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
+                          <em class="fa fa-plus fa-sm"></em></button>
                       </div>
                     </ng-container>
                   </div>
@@ -97,18 +97,18 @@
                     Recipients added yet.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                   <p *ngIf="userGroup?.recipients?.sms?.length > 0" class="mb-0"> Following SMS Recipients have been
                     added
                     so far. You can add more.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                 </div>
                 <div class="col-12  my-2 accordion-padding"
@@ -126,7 +126,7 @@
                       <div class="form-group">
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                           (click)="addSMSRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
+                          <em class="fa fa-plus fa-sm"></em></button>
                       </div>
                     </ng-container>
                   </div>
@@ -157,18 +157,18 @@
                     class="mb-0"> No Whatsapp Recipients added yet.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                   <p *ngIf="userGroup?.recipients?.whatsapp?.length > 0" class="mb-0"> Following Whatsapp Recipients
                     have
                     been added so far. You can add more.
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i
-                        class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
                   </p>
                 </div>
                 <div class="col-12  my-2 accordion-padding"
@@ -189,7 +189,7 @@
                       <div class="form-group">
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                           (click)="addWhatsappRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
+                          <em class="fa fa-plus fa-sm"></em></button>
                       </div>
                     </ng-container>
                   </div>
@@ -247,7 +247,7 @@
                 <div class="form-group col-1">
                   <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                     (click)="addEmailRecipient('add')">
-                    <i class="fa fa-plus fa-sm"></i></button>
+                    <em class="fa fa-plus fa-sm"></em></button>
                 </div>
               </ng-container>
             </div>
@@ -281,7 +281,7 @@
                 <div class="form-group col-1">
                   <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                     (click)="addSMSRecipient('add')">
-                    <i class="fa fa-plus fa-sm"></i></button>
+                    <em class="fa fa-plus fa-sm"></em></button>
                 </div>
               </ng-container>
             </div>
@@ -317,7 +317,7 @@
                 <div class="form-group col-1">
                   <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                     (click)="addWhatsappRecipient('add')">
-                    <i class="fa fa-plus fa-sm"></i></button>
+                    <em class="fa fa-plus fa-sm"></em></button>
                 </div>
               </ng-container>
             </div>
@@ -340,7 +340,7 @@
         <button type="button" class="btn btn-primary add-row" (click)="onCreateUserGroup()"
           [disabled]="!form.valid || isCreateUserGroupAPILoading">
           Save
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserGroupAPILoading"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserGroupAPILoading"></em>
         </button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateUserGroupAPILoading"
           (click)="onCloseCreateUserGroupModal()">

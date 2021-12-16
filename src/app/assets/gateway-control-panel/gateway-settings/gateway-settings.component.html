@@ -4,50 +4,50 @@
       <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
           (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-plug"></i>
+          <em class="fa fa-fw fa-plug"></em>
           <span class="text-secondary">Test Connection</span></a>
       </li>
       <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'FOTA'}" href="javascript:void(0)"
           (click)="onClickOfTab('FOTA')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-image"></i>
+          <em class="fa fa-fw fa-image"></em>
           <span class="text-secondary">FOTA</span></a>
       </li>
       <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Applications'}" href="javascript:void(0)"
           (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-microchip"></i>
+          <em class="fa fa-fw fa-microchip"></em>
           <span class="text-secondary">Manage Applications</span></a>
       </li>
       <li class="nav-item" *ngIf="componentState !== constantData.IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Assets'}" href="javascript:void(0)"
           (click)="onClickOfTab('Manage Assets')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-laptop"></i>
+          <em class="fa fa-fw fa-laptop"></em>
           <span class="text-secondary">Manage Assets</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-building"></i>
+          <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Properties</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Slaves'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Slaves')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-building"></i>
+          <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Slaves</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Rules'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Rules')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-building"></i>
+          <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Rules</span></a>
       </li>
       <li class="nav-item"
         *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && decodedToken?.privileges?.indexOf('ASMS') > -1">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Settings'}" href="javascript:void(0)"
           (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-cog"></i>
+          <em class="fa fa-fw fa-cog"></em>
           <span class="text-secondary">Settings</span></a>
       </li>
     </ul>
@@ -71,7 +71,7 @@
           (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
           Test Connection</a>
       </div>
-      <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
       <div class="mt-1 col-md-12 pl-3" *ngIf="testConnectionMessage">
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
         'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}}
@@ -105,7 +105,7 @@
         (click)="syncRules()" [class.disabled]="isRuleSyncAPILoading || !asset.sync_rules_enabled">
           Sync Rules</a>
       </div>
-      <i *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
       <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter1" ></app-c2d-jobs>
       </div>
       </div> -->

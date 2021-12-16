@@ -1,6 +1,6 @@
 <div class="table-responsive">
   <div class="tableFixHead">
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></em>
     <table class="table table-hover" *ngIf="!isAssetsAPILoading">
       <thead>
         <tr>
@@ -30,8 +30,8 @@
               ? 'Registered' : 'Not Registered') : 'Not Registered'}}
             </td>
             <td> <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="javascript:void(0)"
-                [class.disabled]="!asset.register_enabled" (click)="onRegisterBtnClick(asset)"><i
-                  class="fa fa- fa-sm text-white-50"></i> Register</a></td>
+                [class.disabled]="!asset.register_enabled" (click)="onRegisterBtnClick(asset)"><em
+                  class="fa fa- fa-sm text-white-50"></em> Register</a></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="assets.length === 0 && !isAssetsAPILoading">
@@ -75,7 +75,7 @@
             </div>
           </ng-container>
 
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></em>
         </div>
       </div>
       <div class="modal-footer">

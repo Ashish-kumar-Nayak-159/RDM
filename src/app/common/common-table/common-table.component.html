@@ -21,13 +21,13 @@
             <ng-container *ngIf="header.type === 'text'">
 
               <span *ngIf="header.key">
-                <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
+                <em class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
                   (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                   (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                   (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                   (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                   )
-                  )" placement="bottom" [tooltip]="data?.severity"></i>&nbsp;{{resolve(data, header.key)}}  </span>
+                  )" placement="bottom" [tooltip]="data?.severity"></em>&nbsp;{{resolve(data, header.key)}}  </span>
             </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
@@ -35,20 +35,20 @@
                 <a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf(btnData.privilege_key) > -1 && resolve(data, 'source') !== 'Model'"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <i class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
+                  <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
                   [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
-                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
+                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
                   {{btnData.text}}
                 </a>
               </ng-container>
               <ng-template #normalBtns>
                 <a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <i class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
+                  <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
                   [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
-                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
+                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
                   {{btnData.text}}
                 </a>
               </ng-template>
@@ -71,7 +71,7 @@
     <ng-container *ngIf="isTableDataLoading">
       <tr>
         <td [attr.colspan]="tableConfig.data.length + 1">
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </td>
       </tr>
     </ng-container>

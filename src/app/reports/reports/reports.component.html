@@ -9,7 +9,7 @@
               id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
               aria-controls="nav-pre-generated" aria-selected="true" (click)="onTabSelect('pre-generated')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1">
-              <i class="fas fa-chart-line mr-2"></i>
+              <em class="fas fa-chart-line mr-2"></em>
               <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value :
                 ''}}</span>
             </a>
@@ -17,7 +17,7 @@
               data-toggle="tab" href="#custom" role="tab" aria-controls="nav-custom" aria-selected="false"
               (click)="onTabSelect('custom')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
-              <i class="fa fa-chart-pie mr-2" aria-hidden="true"></i>
+              <em class="fa fa-chart-pie mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
             </a>
           </div>
@@ -49,7 +49,7 @@
               (filterObj.asset.display_name ? filterObj.asset.display_name :
               filterObj.asset.asset_id) : 'Select Asset'" (click)="onAssetFilterBtnClick()" aria-haspopup="true"
                 aria-expanded="false">
-                <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+                <em class="fas fa-fw fa-filter fa-sm button-divider"></em>
                 {{filterObj?.asset ?
                 (filterObj.asset.display_name ? filterObj.asset.display_name :
                 filterObj.asset.asset_id) : 'Select Asset'}}</button>
@@ -126,8 +126,8 @@
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item">
                     <span [tooltip]="item.id">
-                      <i
-                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></i>
+                      <em
+                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></em>
                       {{item.id}}
                     </span>
                   </ng-template>
@@ -189,24 +189,24 @@
             </ng-container>
             <div class="form-group" *ngIf=" filterObj.report_type !== 'Process Parameter Report'">
               <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-                (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true, true)"><i
-                  class="fa fa-search fa-sm"></i></button>
+                (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true, true)"><em
+                  class="fa fa-search fa-sm"></em></button>
             </div>
             <div class="form-group" *ngIf=" filterObj.report_type === 'Process Parameter Report'">
               <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
                 (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true, true)"
-                [disabled]="isTelemetryLoading"><i class="fa fa-search fa-sm"></i></button>
+                [disabled]="isTelemetryLoading"><em class="fa fa-search fa-sm"></em></button>
             </div>
           </form>
         </div>
         <p class="m-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</p>
         <div class="filter-bar" *ngIf="isFilterSelected || isTelemetryLoading">
           <h5 class="mb-0" *ngIf="isFilterSelected || isTelemetryLoading">{{originalFilterObj.report_type}}
-            <a href="javascript:void(0)" (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><i
-                class="fa fa-sm fa-file-pdf-o"></i></a>
+            <a href="javascript:void(0)" (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><em
+                class="fa fa-sm fa-file-pdf-o"></em></a>
             <a href="javascript:void(0)" (click)="saveExcel()" placement="bottom" tooltip="Export as Excel"
-              class="ml-1"><i class="fa fa-sm fa-file-excel-o"></i></a>
-            <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
+              class="ml-1"><em class="fa fa-sm fa-file-excel-o"></em></a>
+            <!-- <em  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></em> -->
           </h5>
         </div>
         <div class="table-responsive">
@@ -220,9 +220,9 @@
                       <th scope="col"></th>
                       <th scope="col"class="w-10">Asset Name</th>
                       <th scope="col"class="w-17">Time</th>
-                      <th scope="col"class="report-td" *ngFor="let property of selectedProps" [tooltip]="property.id"> <i
+                      <th scope="col"class="report-td" *ngFor="let property of selectedProps" [tooltip]="property.id"> <em
                           class="icon icon-function"
-                          *ngIf="property.value.type === 'Edge Derived Properties' || property.value.type === 'Cloud Derived Properties'"></i>
+                          *ngIf="property.value.type === 'Edge Derived Properties' || property.value.type === 'Cloud Derived Properties'"></em>
                         {{property.id}}</th>
                     </tr>
                   </thead>
@@ -256,7 +256,7 @@
                       <tr>
                         <td [attr.colspan]="3 + selectedProps.length">
                           {{loadingMessage}}
-                          <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
                         </td>
                       </tr>
                     </ng-container>
@@ -288,13 +288,13 @@
                       <tr *ngFor="let alert of latestAlerts; let i = index;"
                         [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
                         <td>{{i + 1}}</td>
-                        <td><i class="fa fa-exclamation-triangle" [style.color]="
+                        <td><em class="fa fa-exclamation-triangle" [style.color]="
                         (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                         (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
                         (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                         (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                         )
-                        )" placement="bottom" [tooltip]="alert.severity"></i></td>
+                        )" placement="bottom" [tooltip]="alert.severity"></em></td>
                         <td>{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</td>
                         <td>{{ alert.local_created_date }}</td>
                         <td>{{ alert.message }}</td>
@@ -318,7 +318,7 @@
                     <ng-container *ngIf="isTelemetryLoading">
                       <tr>
                         <td [attr.colspan]="8">
-                          <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
                         </td>
                       </tr>
                     </ng-container>
@@ -350,13 +350,13 @@
                     <tr *ngFor="let alert of latestAlerts; let i = index"
                       [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
                       <td>{{i + 1}}</td>
-                      <td><i class="fa fa-exclamation-triangle" [style.color]="
+                      <td><em class="fa fa-exclamation-triangle" [style.color]="
                     (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                     (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
                     (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                     (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                     )
-                    )" placement="bottom" [tooltip]="alert.severity"></i></td>
+                    )" placement="bottom" [tooltip]="alert.severity"></em></td>
 
                       <td>{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</td>
 
@@ -383,7 +383,7 @@
                   <ng-container *ngIf="latestAlerts.length === 0 && isTelemetryLoading">
                     <tr>
                       <td [attr.colspan]="6">
-                        <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                        <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
                       </td>
                     </tr>
                   </ng-container>
@@ -411,7 +411,7 @@
       <div class="modal-body">
         <ng-container>
           {{loadingMessage}}
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </ng-container>
       </div>
       <div class="modal-footer" *ngIf="loadingMessage?.toLowerCase().includes('loading')">
@@ -423,5 +423,5 @@
 </div>
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top1 rounded" (click)="scrollToTop()">
-  <i class="fas fa-angle-up"></i>
+  <em class="fas fa-angle-up"></em>
 </a>

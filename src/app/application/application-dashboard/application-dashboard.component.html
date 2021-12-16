@@ -29,10 +29,10 @@
                   />
                 </div>
                 <div class="text-center">
-                  <i
+                  <em
                     *ngIf="isDashboardSnapshotLoading"
                     class="fa fa-spinner fa-spin fa-fw"
-                  ></i>
+                  ></em>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
                     dashboardSnapshot?.asset_count
                   }}</span>
@@ -58,10 +58,10 @@
                   />
                 </div>
                 <div class="text-center">
-                  <i
+                  <em
                     *ngIf="isDashboardSnapshotLoading"
                     class="fa fa-spinner fa-spin fa-fw"
-                  ></i>
+                  ></em>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
                     dashboardSnapshot?.connected_asset_count
                   }}</span>
@@ -87,10 +87,10 @@
                   />
                 </div>
                 <div class="text-center">
-                  <i
+                  <em
                     *ngIf="isDashboardSnapshotLoading"
                     class="fa fa-spinner fa-spin fa-fw"
-                  ></i>
+                  ></em>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
                     dashboardSnapshot?.disconnected_asset_count
                   }}</span>
@@ -146,8 +146,8 @@
               font-size: 0.75rem;
             "
           >
-            <i class="fa fa-calendar"></i>&nbsp; <span></span>
-            <i class="fa fa-caret-down"></i>
+            <em class="fa fa-calendar"></em>&nbsp; <span></span>
+            <em class="fa fa-caret-down"></em>
           </div> -->
         </div>
 
@@ -172,20 +172,6 @@
                 </ng-container>
                 </agm-marker-cluster>
                 </agm-map>
-
-                <!-- <div>
-                  <canvas
-                    style="height: 20rem"
-                    baseChart
-                    #d2cChart
-                    [datasets]="barChartData"
-                    [labels]="barChartLabels"
-                    [options]="barChartOptions"
-                    [legend]="barChartLegend"
-                    [chartType]="barChartType"
-                  >
-                  </canvas>
-                </div> -->
               </div>
             </div>
             <!-- /.tab-pane -->
@@ -223,7 +209,7 @@
             <span class="float-right">
               <a [routerLink]="['notifications']"
                 class="watch-eye"
-                ><i class="fa fa-eye" aria-hidden="true"></i
+                ><em class="fa fa-eye" aria-hidden="true"></em
               ></a>
             </span>
           </h6>
@@ -231,10 +217,10 @@
 
         <div class="card-body1">
           <div class="notifications">
-            <i
+            <em
               *ngIf="isLastNotificationDataLoading"
               class="fa fa-spinner fa-spin fa-2x fa-fw"
-            ></i>
+            ></em>
             <ul
               class="timeline"
               *ngIf="
@@ -271,17 +257,17 @@
             Recent Alerts
             <span class="float-right">
               <a class="watch-eye" [routerLink]="['alerts']"
-                ><i class="fa fa-eye" aria-hidden="true"></i
+                ><em class="fa fa-eye" aria-hidden="true"></em
               ></a>
             </span>
           </h6>
         </div>
         <div class="card-body1">
           <div class="notifications">
-            <i
+            <em
               *ngIf="isLastAlertDataLoading"
               class="fa fa-spinner fa-spin fa-2x fa-fw"
-            ></i>
+            ></em>
             <ul
               class="timeline"
               *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length > 0"
@@ -314,17 +300,16 @@
             Asset Life Cycle Events
             <span class="float-right">
               <a class="watch-eye" [routerLink]="['events']"
-                ><i class="fa fa-eye" aria-hidden="true"></i
-              ></a>
+                ><em class="fa fa-eye" aria-hidden="true"></em></a>
             </span>
           </h6>
         </div>
         <div class="card-body1">
           <div class="notifications">
-            <i
+            <em
               *ngIf="isLastEventDataLoading"
               class="fa fa-spinner fa-spin fa-2x fa-fw"
-            ></i>
+            ></em>
             <ul
               class="timeline"
               *ngIf="!isLastEventDataLoading && lastGeneratedEvents.length > 0"

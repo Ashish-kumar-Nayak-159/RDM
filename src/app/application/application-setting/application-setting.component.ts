@@ -1,8 +1,7 @@
-import { filter } from 'rxjs/operators';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Subscription } from 'rxjs';
 

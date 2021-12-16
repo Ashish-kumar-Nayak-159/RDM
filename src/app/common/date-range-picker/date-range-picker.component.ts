@@ -26,9 +26,9 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
   ngOnInit(): void {}
 
   ngAfterViewInit() {
-    // this.filterObj.last_n_secs = datefns.getUnixTime(new Date(this.filterObj.to_date)) - datefns.getUnixTime(new Date(this.filterObj.from_date));
-    this.picker.datePicker.setStartDate(datefns.getUnixTime(new Date(this.filterObj.from_date)));
-    this.picker.datePicker.setEndDate(datefns.getUnixTime(new Date(this.filterObj.to_date)));
+    //this.filterObj.last_n_secs = datefns.getUnixTime(new Date(this.filterObj.to_date)) - datefns.getUnixTime(new Date(this.filterObj.from_date));
+    this.picker.datePicker.setStartDate(new Date(this.filterObj.from_date * 1000));
+    this.picker.datePicker.setEndDate(new Date(this.filterObj.to_date * 1000));    
   }
 
   ngOnChanges(changes) {

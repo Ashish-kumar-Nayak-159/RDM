@@ -425,11 +425,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         asset_model: this.selectedAsset.asset_model || this.selectedAsset?.tags?.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id),
       };
-      this.alertCondition = undefined;
+      this.alertCondition = undefined;      
       if (this.selectedAlert.code) {
         filterObj['code'] = this.selectedAlert.code;
         let method;
-        if (this.selectedAlert.code.includes('A_')) {
+        if (this.selectedAlert.code.startsWith('A_')) {
           method = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
         } else {
           method = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);

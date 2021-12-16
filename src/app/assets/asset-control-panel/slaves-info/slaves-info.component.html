@@ -30,9 +30,9 @@
       No slave data available.
     </div>
     <accordion [closeOthers]="'true'" *ngIf="slaveData.length > 0 && !isGetSlaveAPILoading" class="mb-2 p-3">
-      <accordion-group heading="" *ngFor="let slave of slaveData" [panelClass]="'customClass'">
+      <accordion-group heading="" *ngFor="let slave of slaveData" (click)="onClickOfSlaveAccordion(slave)" [panelClass]="'customClass'">
         <ng-container accordion-heading>
-          <button class="btn" type="button" (click)="onClickOfSlaveAccordion(slave)">
+          <button class="btn" type="button">
             {{slave.slave_name}}&nbsp; ({{slave.slave_id}})
           </button>
           <div class="float-right mt-1 mr-3">

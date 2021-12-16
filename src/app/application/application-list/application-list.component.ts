@@ -4,7 +4,6 @@ import { ApplicationService } from './../../services/application/application.ser
 import { environment } from 'src/environments/environment';
 import { ToasterService } from './../../services/toaster.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;

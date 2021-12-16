@@ -7,7 +7,6 @@ import { CommonService } from './../../services/common.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
 

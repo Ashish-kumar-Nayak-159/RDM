@@ -28,7 +28,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.applicationData.menu_settings = {};
     if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {

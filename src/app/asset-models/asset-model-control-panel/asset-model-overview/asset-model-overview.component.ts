@@ -79,7 +79,28 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.overviewFile = files.item(0);
-    this.updatedAssetModel.metadata.image = this.overviewFile;
+    // console.log('size', this.overviewFile.size);
+    // console.log('type', this.overviewFile.type);
+    // this.updatedAssetModel.metadata.image = this.overviewFile;
+
+    if (this.overviewFile.size > 2000000){
+      this.toasterService.showError('file size exceeded 2MB', 'Upload file');
+    }
+    else {
+      const image = new Image();
+      image.src = URL.createObjectURL(this.overviewFile);
+
+      image.onload = (e: any) => {
+        const selectedImage = e.path[0] as HTMLImageElement;
+        // console.log('width', selectedImage.width);
+        // console.log('height', selectedImage.height);
+        if (selectedImage.width <= 2000 && selectedImage.height <= 2000){
+          this.updatedAssetModel.metadata.image = this.overviewFile;
+        } else {
+          this.toasterService.showError('Image size exceeded 2000 x 2000 px', 'Upload file');
+        }
+      };
+    }
   }
 
   async uploadFile(): Promise<void>{

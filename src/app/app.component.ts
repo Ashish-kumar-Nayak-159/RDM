@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
               node.type = 'text/javascript';
               node.async = false;
               document.getElementsByTagName('head')[0].appendChild(node);
-            }, 500);
+            }, 700);
           }
         }
       })
@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.showLoader = true;
     }
     if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-      setTimeout(() => (this.showLoader = false), 300);
+      setTimeout(() => (this.showLoader = false), 500);
     }
   }
 

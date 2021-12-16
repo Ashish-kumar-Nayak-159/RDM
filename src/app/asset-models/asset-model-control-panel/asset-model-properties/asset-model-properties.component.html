@@ -81,7 +81,7 @@
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
-          <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]"
+          <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]" [type]="type"
             *ngIf="propertyObj.json_key && propertyObj.data_type && propertyObj?.json_model[propertyObj.json_key]">
           </app-data-type-fields>
           <div class="form-group" *ngIf="type.includes('measured')">

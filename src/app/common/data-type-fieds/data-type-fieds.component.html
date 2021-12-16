@@ -18,16 +18,16 @@
         [(ngModel)]="obj.precision" placeholder="Precision">
     </div>
     <div class="form-group col-lg-6">
-      <label for="recipient-name" class="col-form-label">Default Value:</label>
-      <input type="number" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
-        [(ngModel)]="obj.defaultValue" placeholder="Default Value">
-    </div>
-  </div>
-  <div class="row col-lg-12 p-0">
-    <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Unit:</label>
       <input type="text" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.units"
         placeholder="Unit">
+    </div>
+  </div>
+  <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
+    <div class="form-group col-lg-6">
+      <label for="recipient-name" class="col-form-label">Default Value:</label>
+      <input type="number" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+        [(ngModel)]="obj.defaultValue" placeholder="Default Value">
     </div>
   </div>
 </ng-container>
@@ -45,7 +45,7 @@
     </div>
   </div>
   <div class="row col-lg-12 p-0">
-    <div class="form-group col-lg-6">
+    <div class="form-group col-lg-6" *ngIf="type !== 'measured_properties'">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
       <input type="text" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
         [(ngModel)]="obj.defaultValue" placeholder="Default Value">
@@ -58,7 +58,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="obj.type?.toLowerCase() === 'boolean'">
-  <div class="row col-lg-12 p-0">
+  <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
       <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue">
@@ -122,7 +122,7 @@
       </ng-container>
     </div>
   </div>
-  <div class="row col-lg-12 p-0">
+  <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
       <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue">

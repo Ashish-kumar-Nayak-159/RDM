@@ -78,16 +78,50 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   //   // this.blobState.uploadItems(files);
   // }
 
-  onFileSelected(files: FileList,type){
-    if(type=="header_logo"){
+  onFileSelected(files: FileList, type){
+    if (type === "header_logo") {
       this.uploadedLogoFile = files.item(0);
-      if(!this.applicationData.metadata.header_logo) this.applicationData.metadata.header_logo = {}
-      this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+      if (!this.applicationData.metadata.header_logo) {
+        this.applicationData.metadata.header_logo = {};
+      }
+      // this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+      if (this.uploadedLogoFile.size > 1500000){
+        this.toasterService.showError('file size exceeded 1.5MB', 'Upload file');
+      }
+      else {
+        const image = new Image();
+        image.src = URL.createObjectURL(this.uploadedLogoFile);
+        image.onload = (e: any) => {
+          const selectedImage = e.path[0] as HTMLImageElement;
+          if (selectedImage.width <= 1120 && selectedImage.height <= 480){
+            this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+          } else {
+            this.toasterService.showError('Image size exceeded 1120 x 480px', 'Upload file');
+          }
+        };
+      }
     }
-    if(type=="icon"){
+    if (type === "icon") {
       this.uploadedIconFile = files.item(0);
-      if(!this.applicationData.metadata.icon) this.applicationData.metadata.icon = {}
-      this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+      if (!this.applicationData.metadata.icon) {
+        this.applicationData.metadata.icon = {};
+      }
+      // this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+      if (this.uploadedIconFile.size > 1000000){
+        this.toasterService.showError('file size exceeded 1MB', 'Upload file');
+      }
+      else {
+        const image = new Image();
+        image.src = URL.createObjectURL(this.uploadedIconFile);
+        image.onload = (e: any) => {
+          const selectedImage = e.path[0] as HTMLImageElement;
+          if (selectedImage.width <= 560 && selectedImage.height <= 560){
+            this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+          } else {
+            this.toasterService.showError('Image size exceeded 560 x 560px', 'Upload file');
+          }
+        };
+      }
     }
   }
 

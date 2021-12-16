@@ -64,9 +64,26 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
     if (!this.applicationData.dashboard_config.map_icons[assetType]) {
       this.applicationData.dashboard_config.map_icons[assetType] = {};
     }
-    if (!this.uploadedFiles[assetType]) this.uploadedFiles[assetType] = {}
-    this.uploadedFiles[assetType][iconType] = files.item(0)
-    this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0)
+    if (!this.uploadedFiles[assetType]) {
+      this.uploadedFiles[assetType] = {};
+    }
+    this.uploadedFiles[assetType][iconType] = files.item(0);
+    // this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0);
+    if (this.uploadedFiles[assetType][iconType].size > 1000000){
+      this.toasterService.showError('file size exceeded 1MB', 'Upload file');
+    }
+    else {
+      const image = new Image();
+      image.src = URL.createObjectURL(this.uploadedFiles[assetType][iconType]);
+      image.onload = (e: any) => {
+        const selectedImage = e.path[0] as HTMLImageElement;
+        if (selectedImage.width <= 200 && selectedImage.height <= 200){
+          this.applicationData.dashboard_config.map_icons[assetType][iconType] = this.uploadedFiles[assetType][iconType];
+        } else {
+          this.toasterService.showError('image size exceeded 200 x 200px', 'Upload file');
+        }
+      };
+    }
   }
 
   async uploadFile() {

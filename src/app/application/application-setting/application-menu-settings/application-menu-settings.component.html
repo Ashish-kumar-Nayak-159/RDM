@@ -35,7 +35,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #mainmenuform="ngForm">
+            <form #mainMenuForm="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -51,7 +51,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="!mainmenuform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                      [disabled]="!mainMenuForm.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -130,7 +130,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #iotassetform="ngForm">
+            <form #iotAssetForm="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -144,7 +144,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="!iotassetform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                      [disabled]="!iotAssetForm.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -209,7 +209,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #legacyassetform="ngForm">
+            <form #legacyAssetForm="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -223,7 +223,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="!legacyassetform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                      [disabled]="!legacyAssetForm.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -290,7 +290,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #gatewayform="ngForm">
+            <form #gatewayForm="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -304,7 +304,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="!gatewayform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                      [disabled]="!gatewayForm.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>
@@ -369,7 +369,7 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #modelform="ngForm">
+            <form #modelForm="ngForm">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -383,7 +383,7 @@
                 <tr>
                   <th scope="col"colspan="5">
                     <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                      [disabled]="!modelform.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
+                      [disabled]="!modelForm.valid || saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <em
                         class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMenuSettingAPILoading"></em></button>
                     <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()"
                       [disabled]="!isAppSettingsEditable">CANCEL</button>

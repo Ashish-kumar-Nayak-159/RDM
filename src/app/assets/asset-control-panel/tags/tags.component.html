@@ -341,7 +341,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form #locationform="ngForm">
+        <form #locationForm="ngForm">
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
             value="latitude_longitude" [(ngModel)]="changeLocationOption">
@@ -409,7 +409,7 @@
         </ng-container>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="!locationform.valid || isUpdateAPILoading || !changeLocationOption"
+        <button type="button" class="btn btn-primary" [disabled]="!locationForm.valid || isUpdateAPILoading || !changeLocationOption"
           (click)="updateAssetTags()">
           Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAPILoading "

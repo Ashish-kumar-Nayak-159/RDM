@@ -95,9 +95,8 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetsList = [];
-    this.getTileName();   
-    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
-    this.protocolList = CONSTANTS.PROTOCOLS;
+    this.getTileName();  
+    this.protocolList = CONSTANTS.PROTOCOLS;     
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -113,6 +112,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
         this.onTabChange(CONSTANTS.IP_GATEWAY);
       }
     }
+    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);    
     this.cdRef.detectChanges();
   }
 

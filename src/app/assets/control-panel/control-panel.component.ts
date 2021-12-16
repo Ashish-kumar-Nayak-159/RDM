@@ -33,7 +33,7 @@ export class ControlPanelComponent implements OnInit {
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (params.get('assetId') && this.validAssets.length > 0) {
-          let searchAsset = this.validAssets.filter(function (entry) { return entry.asset_id === params.get('assetId'); });
+          let searchAsset = this.validAssets.filter(entry => { return entry.asset_id === params.get('assetId'); });
           if (searchAsset && searchAsset.length > 0) {
             this.asset = new Asset();
             this.asset.asset_id = params.get('assetId');

@@ -93,6 +93,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
+    console.log('this.applicationData.menu_settings ',this.applicationData.menu_settings);
+    
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     
     // this.router.navigate(['applications', this.applicationData.app]);
@@ -123,7 +125,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.applicationData = undefined;
       this.apiSubscriptions.push(
         this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
-          this.applicationData = response;
+          console.log('response ',response);
+          
+          this.applicationData = JSON.parse(JSON.stringify(response));
+          console.log('this.applicationData ',this.applicationData);
+          
           this.applicationData.app = app.app;
 
           this.userData.apps.forEach((appObj) => {
@@ -157,7 +163,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           if (
-            this.applicationData.menu_settings.model_control_panel_menu ||
+            !this.applicationData.menu_settings.model_control_panel_menu ||
             this.applicationData.menu_settings.model_control_panel_menu.length === 0
           ) {
             this.applicationData.menu_settings.model_control_panel_menu = JSON.parse(
@@ -165,7 +171,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           if (
-            this.applicationData.menu_settings.gateway_control_panel_menu ||
+            !this.applicationData.menu_settings.gateway_control_panel_menu ||
             this.applicationData.menu_settings.gateway_control_panel_menu.length === 0
           ) {
             this.applicationData.menu_settings.gateway_control_panel_menu = JSON.parse(

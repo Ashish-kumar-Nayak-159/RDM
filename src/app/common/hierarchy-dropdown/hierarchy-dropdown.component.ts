@@ -61,7 +61,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   onChangeOfHierarchy(i) {    
-    console.log('this.configureHierarchy',this.configureHierarchy);
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -73,7 +72,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
     let nextHierarchy = this.contextApp.hierarchy.tags;
-    console.log('this.nextHierarchy',nextHierarchy);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];

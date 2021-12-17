@@ -1717,7 +1717,7 @@ export class CONSTANTS {
 
   public static DATE_OPTIONS = {
     'Last 5 Mins': [datefns.subMinutes(new Date(), 5), datefns.subSeconds(new Date(), 0)],
-    'Last 30 Mins': [datefns.subSeconds(new Date(), 30), datefns.subSeconds(new Date(), 0)],
+    'Last 30 Mins': [datefns.subMinutes(new Date(), 30), datefns.subSeconds(new Date(), 0)],
     'Last 1 Hour': [datefns.subHours(new Date(), 1), datefns.subSeconds(new Date(), 0)],
     'Last 3 Hours': [datefns.subHours(new Date(), 3), datefns.subSeconds(new Date(), 0)],
     'Last 6 Hours': [datefns.subHours(new Date(), 6), datefns.subSeconds(new Date(), 0)],
@@ -1726,10 +1726,10 @@ export class CONSTANTS {
     'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
     'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(),1)), datefns.endOfDay(datefns.subDays(new Date(),1))],
     'This Week': [datefns.startOfWeek(new Date(),{weekStartsOn:1}), datefns.subSeconds(new Date(), 0)],
-    'Last Week': [datefns.subWeeks(datefns.startOfWeek(new Date(),{weekStartsOn:1}),1), datefns.subWeeks(datefns.endOfWeek(new Date(),{weekStartsOn:1}),1)],
+    'Last Week': [datefns.subWeeks(datefns.startOfWeek(new Date()), 1),datefns.subWeeks(datefns.endOfWeek(new Date()), 1)],
     'Last 30 Days': [datefns.subDays(new Date(),29), datefns.subSeconds(new Date(), 0)],
     'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],    
-    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()),1), datefns.subMonths(datefns.endOfMonth(new Date()),1)]
+    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.subMonths(datefns.endOfMonth(new Date()), 1)]
   };
 
 

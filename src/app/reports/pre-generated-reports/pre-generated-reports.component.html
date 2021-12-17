@@ -1,6 +1,6 @@
 <div class="tab-bar">
   <form class="form-inline">
-    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="true"
+    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="false"
       [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
       (clearHierarchyEvent)="onClearHierarchy($event)">
     </app-hierarchy-dropdown>

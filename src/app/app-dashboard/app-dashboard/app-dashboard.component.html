@@ -18,7 +18,7 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="false" [filterObj]="filterObj"
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
             [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"

@@ -262,8 +262,8 @@ export class CommonService {
       obj.to_date = datefns.getUnixTime(datefns.subDays(datefns.endOfDay(new Date()), 1));
     }
     else if (label === 'Last Week') {
-      obj.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfWeek(new Date()), 1));
-      obj.to_date = datefns.getUnixTime(datefns.subWeeks(datefns.endOfWeek(new Date()), 1));
+      obj.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1));
+      obj.to_date = datefns.getUnixTime(datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1));
     }
     return obj;
   }

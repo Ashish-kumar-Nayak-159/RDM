@@ -43,7 +43,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     }
   }
 
-  onHierarchyDropdownClick() {
+  onHierarchyDropdownClick() {    
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
         e.stopPropagation();
     });
@@ -60,7 +60,8 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     }
   }
 
-  onChangeOfHierarchy(i) {
+  onChangeOfHierarchy(i) {    
+    console.log('this.configureHierarchy',this.configureHierarchy);
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -72,6 +73,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
     let nextHierarchy = this.contextApp.hierarchy.tags;
+    console.log('this.nextHierarchy',nextHierarchy);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -127,8 +129,8 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
-    this.onSaveHierachy();
-    if(!this.showAsset && this.closeOnSelection)
+    this.onSaveHierachy();    
+    if(!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length))
     {
       $("#liveDataSelectAssret").removeClass("show");
     }

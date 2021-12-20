@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as datefns from 'date-fns';
 import { FileSaverService } from 'ngx-filesaver';
 import { Subscription } from 'rxjs';
+import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
@@ -33,6 +34,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isFilterSelected = false;
   reports: any[] = [];
   isReportDataLoading = false;
+  @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   @ViewChild('dtInput1', { static: false }) dtInput1: any;
   @ViewChild('dtInput2', { static: false }) dtInput2: any;
   blobStorageURL = environment.blobURL;
@@ -122,6 +124,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   loadFromCache(item) {
+    this.hierarchyDropdown.updateHierarchyDetail(item);
     if (item.hierarchy) {
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {

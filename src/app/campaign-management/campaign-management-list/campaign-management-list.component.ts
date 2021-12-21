@@ -221,7 +221,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   getAssetNames(obj)
   {
     var result = this.assetList.filter(function (asset){
-      return !obj.find(item => asset.asset_id === item.asset_id);
+      return obj.find(item => asset.asset_id === item.asset_id);
     });
     return result;
   }

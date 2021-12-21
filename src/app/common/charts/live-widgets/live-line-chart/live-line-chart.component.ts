@@ -296,8 +296,8 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       if (prop.color) {
         series.stroke = am4core.color(prop.color);
       }
-      series.tooltip.getFillFromObject = false;
-      series.tooltip.background.fill = am4core.color(prop.color);
+      //series.tooltip.getFillFromObject = false;
+      //series.tooltip.background.fill = am4core.color(prop.color);
 
       series.strokeWidth = 2;
       series.strokeOpacity = 1;

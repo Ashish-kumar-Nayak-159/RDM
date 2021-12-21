@@ -291,9 +291,9 @@
                 </div>
               </div>
 
-              <hr>
+              <hr *ngIf="!ruleModel.rule_type">
 
-              <div class="form-group mx-3">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
                 <input type="checkbox" class="form-check-input" id="notification" name="notification"
                   [(ngModel)]="ruleModel.actions.notification.enabled" [disabled]="isView"
                   (change)="onChangeOfSendEmailCheckbox()">
@@ -343,9 +343,9 @@
                 </div>
               </div>
 
-              <hr>
+              <hr *ngIf="!ruleModel.rule_type">
 
-              <div class="form-group mx-3">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
                 <input type="checkbox" class="form-check-input" id="asset_control" name="asset_control"
                   [(ngModel)]="ruleModel.actions.asset_control.enabled" (change)="onChangeOfDisableAssetCheckbox()"
                   [disabled]="isView">

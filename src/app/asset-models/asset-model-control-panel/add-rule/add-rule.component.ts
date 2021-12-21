@@ -287,6 +287,7 @@ export class AddRuleComponent implements OnInit {
   onSwitchValueChange(event) {
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
     this.ruleModel.rule_type = event;
+    this.ruleModel.actions.alert_management.enabled = event;
   }
 
   onChangeOfAssetCondition() {
@@ -354,10 +355,10 @@ export class AddRuleComponent implements OnInit {
     this.isUpdateApiCall = true;
     let str = '';
     this.ruleModel.properties = [];
-    this.ruleModel.conditions.forEach((element) => {
+    this.ruleModel.conditions.forEach((element,index) => {
       str +=
         ' %' +
-        element.property +
+        (index + 1) +
         '% ' +
         this.findOperator(element.operator) +
         ' ' +

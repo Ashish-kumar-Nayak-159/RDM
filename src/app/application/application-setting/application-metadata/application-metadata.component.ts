@@ -78,16 +78,50 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   //   // this.blobState.uploadItems(files);
   // }
 
-  onFileSelected(files: FileList,type){
-    if(type=="header_logo"){
+  onFileSelected(files: FileList, type){
+    if (type === "header_logo") {
       this.uploadedLogoFile = files.item(0);
-      if(!this.applicationData.metadata.header_logo) this.applicationData.metadata.header_logo = {}
-      this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+      if (!this.applicationData.metadata.header_logo) {
+        this.applicationData.metadata.header_logo = {};
+      }
+      // this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+      if (this.uploadedLogoFile.size > CONSTANTS.APP_LOGO_SIZE){
+        this.toasterService.showError('File size exceeded' + " " + CONSTANTS.APP_LOGO_SIZE / 1000000 + " " + 'MB', 'Upload file');
+      }
+      else {
+        const image = new Image();
+        image.src = URL.createObjectURL(this.uploadedLogoFile);
+        image.onload = (e: any) => {
+          const selectedImage = e.path[0] as HTMLImageElement;
+          if (selectedImage.width <= CONSTANTS.APP_LOGO_WIDTH && selectedImage.height <= CONSTANTS.APP_LOGO_HEIGHT){
+            this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
+          } else {
+            this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.APP_LOGO_WIDTH + " " + 'x' + " " + CONSTANTS.APP_LOGO_HEIGHT + " " + 'px', 'Upload file');
+          }
+        };
+      }
     }
-    if(type=="icon"){
+    if (type === "icon") {
       this.uploadedIconFile = files.item(0);
-      if(!this.applicationData.metadata.icon) this.applicationData.metadata.icon = {}
-      this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+      if (!this.applicationData.metadata.icon) {
+        this.applicationData.metadata.icon = {};
+      }
+      // this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+      if (this.uploadedIconFile.size > CONSTANTS.APP_ICON_SIZE){
+        this.toasterService.showError('File size exceeded' + " " + CONSTANTS.APP_ICON_SIZE / 1000000 + " " + 'MB', 'Upload file');
+      }
+      else {
+        const image = new Image();
+        image.src = URL.createObjectURL(this.uploadedIconFile);
+        image.onload = (e: any) => {
+          const selectedImage = e.path[0] as HTMLImageElement;
+          if (selectedImage.width <= CONSTANTS.APP_ICON_WIDTH && selectedImage.height <= CONSTANTS.APP_ICON_HEIGHT){
+            this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
+          } else {
+            this.toasterService.showError('Image size exceeded' + " " +  CONSTANTS.APP_ICON_WIDTH  + " " + 'x' + " " + CONSTANTS.APP_ICON_HEIGHT  + " " +  'px', 'Upload file');
+          }
+        };
+      }
     }
   }
 

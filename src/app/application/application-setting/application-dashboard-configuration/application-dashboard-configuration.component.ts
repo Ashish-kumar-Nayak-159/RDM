@@ -61,9 +61,26 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
     if (!this.applicationData.dashboard_config.map_icons[assetType]) {
       this.applicationData.dashboard_config.map_icons[assetType] = {};
     }
-    if (!this.uploadedFiles[assetType]) this.uploadedFiles[assetType] = {}
-    this.uploadedFiles[assetType][iconType] = files.item(0)
-    this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0)
+    if (!this.uploadedFiles[assetType]) {
+      this.uploadedFiles[assetType] = {};
+    }
+    this.uploadedFiles[assetType][iconType] = files.item(0);
+    // this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0);
+    if (this.uploadedFiles[assetType][iconType].size > CONSTANTS.ASSET_STATUS_ICON_SIZE){
+      this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_STATUS_ICON_SIZE / 1000000 + " " + 'MB', 'Upload file');
+    }
+    else {
+      const image = new Image();
+      image.src = URL.createObjectURL(this.uploadedFiles[assetType][iconType]);
+      image.onload = (e: any) => {
+        const selectedImage = e.path[0] as HTMLImageElement;
+        if (selectedImage.width <= CONSTANTS.ASSET_STATUS_ICON_WIDTH && selectedImage.height <= CONSTANTS.ASSET_STATUS_ICON_HEIGHT){
+          this.applicationData.dashboard_config.map_icons[assetType][iconType] = this.uploadedFiles[assetType][iconType];
+        } else {
+          this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_STATUS_ICON_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_STATUS_ICON_HEIGHT + " " + 'px', 'Upload file');
+        }
+      };
+    }
   }
 
   async uploadFile() {

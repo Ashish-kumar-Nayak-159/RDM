@@ -13,6 +13,7 @@ declare var $: any;
 export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() chartId: string;
   @Input() property: string;
+  @Input() asset: any;
   @Input() telemetryObj;
   @Input() chartConfig: any;
   private chart: am4charts.XYChart;

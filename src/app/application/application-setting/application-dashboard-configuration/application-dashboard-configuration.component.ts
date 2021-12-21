@@ -69,18 +69,18 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
     }
     this.uploadedFiles[assetType][iconType] = files.item(0);
     // this.applicationData.dashboard_config.map_icons[assetType][iconType] = files.item(0);
-    if (this.uploadedFiles[assetType][iconType].size > 1000000){
-      this.toasterService.showError('file size exceeded 1MB', 'Upload file');
+    if (this.uploadedFiles[assetType][iconType].size > CONSTANTS.ASSET_STATUS_ICON_SIZE){
+      this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_STATUS_ICON_SIZE / 1000000 + " " + 'MB', 'Upload file');
     }
     else {
       const image = new Image();
       image.src = URL.createObjectURL(this.uploadedFiles[assetType][iconType]);
       image.onload = (e: any) => {
         const selectedImage = e.path[0] as HTMLImageElement;
-        if (selectedImage.width <= 200 && selectedImage.height <= 200){
+        if (selectedImage.width <= CONSTANTS.ASSET_STATUS_ICON_WIDTH && selectedImage.height <= CONSTANTS.ASSET_STATUS_ICON_HEIGHT){
           this.applicationData.dashboard_config.map_icons[assetType][iconType] = this.uploadedFiles[assetType][iconType];
         } else {
-          this.toasterService.showError('image size exceeded 200 x 200px', 'Upload file');
+          this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_STATUS_ICON_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_STATUS_ICON_HEIGHT + " " + 'px', 'Upload file');
         }
       };
     }

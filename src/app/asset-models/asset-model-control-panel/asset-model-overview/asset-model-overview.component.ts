@@ -83,8 +83,8 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     // console.log('type', this.overviewFile.type);
     // this.updatedAssetModel.metadata.image = this.overviewFile;
 
-    if (this.overviewFile.size > 2000000){
-      this.toasterService.showError('file size exceeded 2MB', 'Upload file');
+    if (this.overviewFile.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
+      this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
     }
     else {
       const image = new Image();
@@ -94,10 +94,10 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
         const selectedImage = e.path[0] as HTMLImageElement;
         // console.log('width', selectedImage.width);
         // console.log('height', selectedImage.height);
-        if (selectedImage.width <= 2000 && selectedImage.height <= 2000){
+        if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
           this.updatedAssetModel.metadata.image = this.overviewFile;
         } else {
-          this.toasterService.showError('Image size exceeded 2000 x 2000 px', 'Upload file');
+          this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
         }
       };
     }

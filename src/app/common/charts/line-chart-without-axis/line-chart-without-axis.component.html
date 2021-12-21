@@ -1,1 +1,7 @@
-<div id="{{ chartId }}" style=" height: 140px;margin-bottom: -2rem"></div>
+<div *ngIf="asset">
+    <div id="{{ chartId }}" style=" height: 140px;margin-bottom: -2rem"></div>
+</div>
+<div *ngIf="!asset" style="height:7rem;">
+    <div class="NumberWithTrend"></div>
+</div>
+

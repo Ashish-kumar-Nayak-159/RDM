@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="card-body1 card-height">
-        <div class="row text-center " *ngIf="telemetryObj">
+        <div class="row text-center " *ngIf="telemetryObj && asset">
           <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
             *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
             <p class="text-xs live-widget-title mb-0" placement="bottom"
@@ -37,9 +37,6 @@
             <div>
               <div id="{{chartConfig.chartId}}_chart_{{i}}" [ngClass]="innerClass.length > 0 ? innerClass : 'mt-n4'"
                 [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
-              <div class="live-overlay" *ngIf="!asset" style="width: 150px; height:20px" [ngStyle]="{'left': overlayLeft.length > 0 ? overlayLeft : '60px'}">
-                <div style="font-family:'Arial Black',sans-serif; font-size: 10px;">Sample Chart</div>
-              </div>
               <div class="text-darkblue display-5 font-weight-bold" [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
                 {{ (telemetryObj[prop?.json_key] && (telemetryObj[prop?.json_key]?.value !== undefined
                 && telemetryObj[prop?.json_key]?.value !== null)) ?
@@ -55,6 +52,38 @@
             </div>
           </div>
         </div>
+
+        <div class="row text-center " *ngIf="telemetryObj && !asset">
+          <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
+            *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
+            <p class="text-xs live-widget-title mb-0" placement="bottom"
+              [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
+              [ngClass]= "{'border-top' : i > 3}">
+              ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
+              (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
+              prop?.type === 'Derived KPIs' ? 'DK' : 'M'
+              )))}}) {{prop.title}}
+              {{prop.property?.json_model[prop.json_key].units ? ('(' +
+              prop.property?.json_model[prop.json_key].units + ')') : ''}}
+            </p>
+           
+            <div class="text-center" >
+                <div style="height: 6.25rem;" *ngIf="chartConfig.widgetType === 'RectangleWidget'">
+                  <div class="rectangle-widget"></div>
+                </div>
+                <div style="height:6rem;" *ngIf="chartConfig.widgetType === 'CylinderWidget'">
+                  <div class="cylinder-widget"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 50px;">
+              <span class="text-grey">
+                {{telemetryObj[prop.json_key]?.date}}
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

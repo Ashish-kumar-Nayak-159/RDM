@@ -38,12 +38,9 @@
             prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
           </p>
 
-          <div class="live-overlay" *ngIf="!asset">
-            <div style="font-family:'Arial Black',sans-serif; font-size: 10px;">Sample Chart</div>
-          </div>
 
           <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
-            <app-line-chart-without-axis
+            <app-line-chart-without-axis [asset]="asset"
               [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
               [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
             </app-line-chart-without-axis>
@@ -52,7 +49,10 @@
             <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
                 }}" alt="" />
           </div>
-          <div
+          <div *ngIf="(chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget') && !asset" style="height:7rem;">
+            <div class="OnlyNumber"></div>
+          </div>
+          <div *ngIf="asset"
             [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}">
             <span class="text-darkblue display-5 font-weight-bold"
               [ngStyle]="{'font-size': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
@@ -80,7 +80,8 @@
 
             </span>
           </div>
-          <div>
+          <div [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}"
+          [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }"  >
             <span class="text-grey">
               <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
                 {{telemetryObj[prop.property?.json_key]?.date || telemetryObj[prop.property?.json_key]?.message_date}}

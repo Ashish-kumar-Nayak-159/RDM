@@ -4,21 +4,21 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Asset')"
           [ngClass]="{'active': selectedTab === 'Asset'}">
-          <i class="fa fa-fw fa-laptop"></i>
+          <em class="fa fa-fw fa-laptop"></em>
           <span class="text-secondary">External Alerts
           </span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
-          <i class="fab fa-fw fa-edge"></i>
+          <em class="fab fa-fw fa-edge"></em>
           <span class="text-secondary">Edge Alerts
           </span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
           [ngClass]="{'active': selectedTab === 'Cloud'}">
-          <i class="fa fa-fw fa-cloud"></i>
+          <em class="fa fa-fw fa-cloud"></em>
           <span class="text-secondary">Cloud Alerts
           </span></a>
       </li>
@@ -26,7 +26,7 @@
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
           [class.disabled]="assetModel.freezed"
           *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add Alert Condition
           </span></a>
       </li>
@@ -61,17 +61,17 @@
             <tr [ngClass]="{ 'accordion-bg' : alertObj?.code === alert.code }">
               <td>
                 <a href="javascript:void(0)" (click)="onToggleRows(i)">
-                  <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                  <em [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                 </a>
               </td>
               <td>{{i + 1}}</td>
-              <td><i placement="bottom" [tooltip]="alert.severity" [style.color]="
+              <td><em placement="bottom" [tooltip]="alert.severity" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" class="fa fa-exclamation-triangle"></i>
+                )" class="fa fa-exclamation-triangle"></em>
                 {{alert.code}}</td>
               <td>{{alert.message}}</td>
               <td>
@@ -85,22 +85,22 @@
                 </a>
                 <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Attachments"
                   (click)="onClickOfViewActionIcon('Attachments', i)">
-                  <i class="fa fa-paperclip"></i>
+                  <em class="fa fa-paperclip"></em>
                 </a>
 
                 <a href="javascript:void(0)" placement="bottom" tooltip="Actions"
                   (click)="onClickOfViewActionIcon('Actions', i)">
-                  <i class="fa fa-tasks"></i>
+                  <em class="fa fa-tasks"></em>
                 </a>
               </td>
               <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                 <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
                   [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
-                  <i class="fa fa-fw fa-edit"></i>
+                  <em class="fa fa-fw fa-edit"></em>
                 </a>
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)" placement="bottom"
                   tooltip="Delete Alert Condition" [class.disabled]="assetModel.freezed">
-                  <i class="fa fa-fw fa-trash"></i>
+                  <em class="fa fa-fw fa-trash"></em>
                 </a>
               </td>
             </tr>
@@ -112,16 +112,16 @@
                   You can define more.
 
                   <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
-                    placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><i class="fa fa-plus fa-sm"></i></button> -->
+                    placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><em class="fa fa-plus fa-sm"></em></button> -->
                   <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
-                    (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
+                    (click)="editWidgets()"><em class="fa fa-edit fa-sm"></em></button> -->
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     [disabled]="isCreateAlertConditionLoading || assetModel.freezed" placement="bottom" tooltip="Save"
                     (click)="onUpdateAlertConditions()"
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><i
-                      class="fa fa-save fa-sm"></i></button>
-                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><em
+                      class="fa fa-save fa-sm"></em></button>
+                  <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></em>
 
                 </div>
 
@@ -132,7 +132,7 @@
                       <div class="form-group">
                         <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
                           clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
-                          groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                          groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
                           name="model_type" [(ngModel)]="selectedWidgets"
                           (onDeSelectAll)="onDeselectAll($event,'widget')">
                           <ng-template ng-multi-label-tmp let-items="items">
@@ -154,10 +154,10 @@
                       </div>
                       <div class="form-group">
                         <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
-                        <i class="fa fa-plus fa-sm"></i> </a> -->
+                        <em class="fa fa-plus fa-sm"></em> </a> -->
                         <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
                           (click)="addVisualizationWidget()">
-                          <i class="fa fa-plus fa-sm"></i></button>
+                          <em class="fa fa-plus fa-sm"></em></button>
                       </div>
                     </ng-container>
                   </div>
@@ -179,15 +179,15 @@
                   configure more.
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
-                    tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i
-                      class="fa fa-save fa-sm"></i></button>
+                    tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
+                      class="fa fa-save fa-sm"></em></button>
                 </div>
                 <div class="col-12 my-2 accordion-padding">
                   <h6>Debugging Steps: </h6>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
-                  placement="bottom" tooltip="Add" (click)="addRecommendationStep()" ><i class="fa fa-plus fa-sm"></i></a> -->
+                  placement="bottom" tooltip="Add" (click)="addRecommendationStep()" ><em class="fa fa-plus fa-sm"></em></a> -->
                   <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
-                   placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
+                   placement="bottom" tooltip="Edit" (click)="editSteps()"><em class="fa fa-edit fa-sm"></em></button> -->
                   <div class="">
                     <form #form="ngForm">
                     <table id="mytable" width="100%" class="">
@@ -212,7 +212,7 @@
                                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                                 <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)"
                                   placement="bottom" tooltip="Remove" [class.disabled]="assetModel.freezed">
-                                  <i class="fa fa-trash fa-sm"></i> </a>
+                                  <em class="fa fa-trash fa-sm"></em> </a>
                               </td>
                             </ng-container>
                           </tr>
@@ -250,9 +250,9 @@
                                 <td>
                                   <a href="javascript:void(0)" class="ml-2" [class.disabled]="assetModel.freezed"
                                     (click)="addRecommendationStep()" placement="bottom" tooltip="Add"  [class.disabled]="!form.valid">
-                                    <i class="fa fa-plus fa-sm"></i> </a>
+                                    <em class="fa fa-plus fa-sm"></em> </a>
                                   <!-- <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add" (click)="addRecommendationStep()" >
-                                <i class="fa fa-plus fa-sm"></i></button> -->
+                                <em class="fa fa-plus fa-sm"></em></button> -->
                                 </td>
 
                               </ng-container>
@@ -282,7 +282,7 @@
                       </select>
                       </div><div class="form-group" >
                         <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add" [disabled]="assetModel.freezed" (click)="addReferenceDocument()" >
-                          <i class="fa fa-plus fa-sm"></i></button>
+                          <em class="fa fa-plus fa-sm"></em></button>
                     </div>
 
                   </ng-container>
@@ -305,8 +305,8 @@
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
-                    tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i
-                      class="fa fa-save fa-sm"></i></button>
+                    tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
+                      class="fa fa-save fa-sm"></em></button>
                 </div>
                 <div class="col-12 my-3 accordion-padding ">
 
@@ -314,9 +314,9 @@
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                     <h6>Email / Whatsapp Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
-                   placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><i class="fa fa-plus fa-sm"></i></button>
+                   placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><em class="fa fa-plus fa-sm"></em></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
-                   placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
+                   placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><em class="fa fa-edit fa-sm"></em></button> -->
                   </div>
 
                   <div class=""
@@ -326,7 +326,7 @@
                         <div class="form-group">
                           <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
                             clearSearchOnAdd="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
-                            groupBy="type" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            groupBy="type" placeholder="Select Document" dropdownPosition="bottom" name="widget-dropdown1" id="template"
                             name="model_type" [(ngModel)]="selectedDocuments"
                             (onDeSelectAll)="onDeselectAll($event,'document')">
                             <ng-template ng-multi-label-tmp let-items="items">
@@ -348,10 +348,10 @@
                         </div>
                         <div class="form-group">
                           <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
-                        <i class="fa fa-plus fa-sm"></i> </a> -->
+                        <em class="fa fa-plus fa-sm"></em> </a> -->
                           <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
                             (click)="addReferenceDocument()">
-                            <i class="fa fa-plus fa-sm"></i></button>
+                            <em class="fa fa-plus fa-sm"></em></button>
                         </div>
 
                       </ng-container>
@@ -379,7 +379,7 @@
                     <button type="button" class="btn btn-success btn-sm mx-1"
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                       placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"
-                      [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button>
+                      [disabled]="assetModel.freezed"><em class="fa fa-save fa-sm"></em></button>
                   </h6>
                 </div>
                 <div class="col-12 my-3">
@@ -426,7 +426,7 @@
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
                                   tooltip="Add" [disabled]="assetModel.freezed" (click)="addUserGroup('email')">
-                                  <i class="fa fa-plus fa-sm"></i></button>
+                                  <em class="fa fa-plus fa-sm"></em></button>
                               </div>
                             </ng-container>
                           </div>
@@ -489,7 +489,7 @@
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
                                   tooltip="Add" (click)="addUserGroup('whatsapp')">
-                                  <i class="fa fa-plus fa-sm"></i></button>
+                                  <em class="fa fa-plus fa-sm"></em></button>
                               </div>
                             </ng-container>
                           </div>
@@ -556,7 +556,7 @@
                               <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
                                   tooltip="Add" (click)="addUserGroup('sms')">
-                                  <i class="fa fa-plus fa-sm"></i></button>
+                                  <em class="fa fa-plus fa-sm"></em></button>
                               </div>
                             </ng-container>
                           </div>
@@ -584,7 +584,7 @@
         </ng-container>
         <ng-container *ngIf="isAlertConditionsLoading">
           <tr>
-            <td colspan="6"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+            <td colspan="6"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
@@ -666,7 +666,7 @@
         </ng-template>
         <button type="button" class="btn btn-white" [disabled]="isCreateAlertConditionLoading"
           (click)="onCloseAlertConditionModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></em>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <div class="tab-bar">
   <form class="form-inline">
-    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="true"
+    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="false"
       [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
       (clearHierarchyEvent)="onClearHierarchy($event)">
     </app-hierarchy-dropdown>
@@ -9,11 +9,11 @@
     </app-date-range-picker>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-        (click)="reports = [];currentOffset = 0;getReportsData(true)"><i class="fa fa-search fa-sm"></i></button>
+        (click)="reports = [];currentOffset = 0;getReportsData(true)"><em class="fa fa-search fa-sm"></em></button>
     </div>
     <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
       <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom"
-        tooltip="Configure New PreGenerated Report"><i class="fa fa-cog fa-sm text-white"></i></button>
+        tooltip="Configure New PreGenerated Report"><em class="fa fa-cog fa-sm text-white"></em></button>
     </div>
   </form>
 </div>
@@ -57,8 +57,8 @@
               <td>{{reportObj.metadata?.file_size}}</td>
               <td>
                 <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
-                  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><i
-                    class="fa fa-sm fa-download"></i></a>
+                  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
+                    class="fa fa-sm fa-download"></em></a>
                 <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
                 </ng-container>
               </td>
@@ -78,7 +78,7 @@
           <ng-container *ngIf="isReportDataLoading">
             <tr>
               <td colspan="7">
-                <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
               </td>
             </tr>
           </ng-container>
@@ -108,7 +108,7 @@
       <div class="modal-body">
         <ng-container>
           Downloading Report. Please wait...
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </ng-container>
       </div>
       <div class="modal-footer" *ngIf="isDownloadCloseOptionAvailable">
@@ -120,7 +120,7 @@
 </div>
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" (click)="scrollToTop()">
-  <i class="fas fa-angle-up"></i>
+  <em class="fas fa-angle-up"></em>
 </a>
 <div class="modal right fade" id="configurePGRModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
@@ -218,8 +218,8 @@
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item">
                     <span [tooltip]="item.id">
-                      <i
-                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></i>
+                      <em
+                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></em>
                       {{item.id}}
                     </span>
                   </ng-template>
@@ -250,7 +250,7 @@
           (click)="onCreateNewPGReports()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
           (click)="onCloseConfigurePGRModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
       </div>
     </form>
   </div>

@@ -79,7 +79,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
-        this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;
@@ -106,7 +106,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     const obj = {
       from_date: this.filterObj.from_date,
       to_date: this.filterObj.to_date,
-      last_n_secs: this.filterObj.last_n_secs,
+      // last_n_secs: this.filterObj.last_n_secs,
     };
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Report');
@@ -142,7 +142,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
-    this.filterObj.last_n_secs = filterObj.last_n_secs;
+    // this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   startStopCampaign(campaignObj, index, type) {
@@ -182,7 +182,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       const obj = {
         from_date: this.filterObj.from_date,
         to_date: this.filterObj.to_date,
-        last_n_secs: this.filterObj.last_n_secs,
+        // last_n_secs: this.filterObj.last_n_secs,
       };
       this.campaignService.getJobCampaignById(this.contextApp.app, item.id,obj)
       .subscribe(
@@ -221,7 +221,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   getAssetNames(obj)
   {
     var result = this.assetList.filter(function (asset){
-      return !obj.find(item => asset.asset_id === item.asset_id);
+      return obj.find(item => asset.asset_id === item.asset_id);
     });
     return result;
   }

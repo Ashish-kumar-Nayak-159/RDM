@@ -31,12 +31,12 @@
             <td>
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
             <td>
               <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Response">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
           </tr>
         </ng-container>
@@ -59,7 +59,7 @@
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
             <td colspan="7">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
             </td>
           </tr>
         </ng-container>
@@ -97,12 +97,12 @@
             <td *ngIf="type !== 'response'">
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
             <td>
               <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Response">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
           </tr>
         </ng-container>
@@ -125,7 +125,7 @@
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
             <td colspan="8">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
             </td>
           </tr>
         </ng-container>
@@ -156,12 +156,12 @@
             <td>
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
             <td>
               <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Response">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
           </tr>
         </ng-container>
@@ -184,7 +184,7 @@
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
             <td colspan="6">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
             </td>
           </tr>
         </ng-container>
@@ -212,13 +212,13 @@
           </h5>
           <a (click)="loadResponseDetail(selectedMessage, true)" href="javascript:void(0)" placement="bottom"
             tooltip="View Response" class="ml-2 mt-2">
-            <i class="fa fa-fw fa-refresh"></i></a>
+            <em class="fa fa-fw fa-refresh"></em></a>
           <button type="button" class="close" aria-label="Close" (click)="onModalEvents('close')">
             <span aria-hidden="true" tooltip="Close">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <ng-container *ngIf="isC2dMsgResponsesLoading"><i class="fa fa-spinner fa-spin fa-fw"></i></ng-container>
+          <ng-container *ngIf="isC2dMsgResponsesLoading"><em class="fa fa-spinner fa-spin fa-fw"></em></ng-container>
           <ng-container *ngIf="!isC2dMsgResponsesLoading">
             <!-- <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dResponseDetail | json"></pre> -->
             <json-editor *ngIf="!isC2dMsgResponsesLoading" [options]="editorOptions" style="min-height: 40rem;" name="json"

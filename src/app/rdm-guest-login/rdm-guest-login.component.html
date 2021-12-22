@@ -70,7 +70,7 @@
                 class="btn btn-primary btn-user btn-block text-white " [disabled]=" (!loginForm.valid &&
                 (loginForm.touched || !loginForm.touched)) || isLoginAPILoading">
                 Login
-                <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+                <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
               </button>
             </form>
             <form class="g-user" (submit)="onSignIn()" *ngIf="otpData?.user_id">
@@ -84,7 +84,7 @@
               <button type="submit" style="background-color:#1a5a9e"
                 class="btn btn-primary btn-user btn-block text-white " [class.disabled]="isLoginAPILoading">
                 Verify
-                <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+                <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
               </button>
             </form>
             <hr>

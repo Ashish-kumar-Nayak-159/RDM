@@ -28,7 +28,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.applicationData.menu_settings = {};
     if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
@@ -96,6 +95,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       });
       this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
     }
+    // debugger
     if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
@@ -107,7 +107,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             flag = true;
             item.display_name = menu.display_name;
             item.visible = menu.visible;
-            arr.push(item);
+            arr.push(menu);
           }
         });
         if (!flag) {
@@ -115,6 +115,8 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
+      console.log('model menu ',this.applicationData.menu_settings.model_control_panel_menu);
+      
     }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
       this.sideMenuList.forEach((menu, i) => {

@@ -5,24 +5,24 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable"
           [class.disabled]="isSaveSettingAPILoading  || assetModel.freezed">
-          <i class="fa fa-fw fa-edit"></i>
+          <em class="fa fa-fw fa-edit"></em>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable"
           [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-close"></i>
+          <em class="fa fa-fw fa-close"></em>
           <span class="text-secondary">Cancel</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable"
           [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-save"></i>
+          <em class="fa fa-fw fa-save"></em>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item" *ngIf="isSaveSettingAPILoading">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </a>
       </li>
     </ul>

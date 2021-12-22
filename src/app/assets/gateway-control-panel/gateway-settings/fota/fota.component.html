@@ -1,7 +1,7 @@
-<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isGetAPILoading"></i>
+<em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isGetAPILoading"></em>
 <div class="table-responsive responsive-height" *ngIf="!isGetAPILoading">
   <div class="tableFixHead">
-    <div *ngIf="!assetTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
+    <div *ngIf="!assetTwin; else packageTemplate"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
     <ng-template #packageTemplate>
       <ng-container *ngIf="assetPackages.length === 0">
         <p class="m-3"> No Packages are added for this asset. Please add it first.</p>
@@ -27,7 +27,7 @@
             <p class="" *ngIf="installPackages.length > 0">
               <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
                 href="javascript:void(0)" (click)="openConfirmDialog('Install')"
-                [class.disabled]="!selectedAssetPackage"><i class="fa fa- fa-sm text-white-50"></i> Install</a>
+                [class.disabled]="!selectedAssetPackage"><em class="fa fa- fa-sm text-white-50"></em> Install</a>
             </p>
 
             <table class="table table-hover">
@@ -66,8 +66,8 @@
             </ng-container>
             <p class=" float-right" *ngIf="updatePackages.length > 0">
               <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="javascript:void(0)"
-                (click)="openConfirmDialog('Upgrade')" [class.disabled]="!selectedAssetPackage"><i
-                  class="fa fa- fa-sm text-white-50"></i> Upgrade/Downgrade</a>
+                (click)="openConfirmDialog('Upgrade')" [class.disabled]="!selectedAssetPackage"><em
+                  class="fa fa- fa-sm text-white-50"></em> Upgrade/Downgrade</a>
 
             </p>
             <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
@@ -110,7 +110,7 @@
             <p *ngIf="uninstallPackages.length > 0">
               <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
                 href="javascript:void(0)" (click)="openConfirmDialog('Uninstall')"
-                [class.disabled]="!selectedAssetPackage"><i class="fa fa- fa-sm text-white-50"></i> Uninstall</a>
+                [class.disabled]="!selectedAssetPackage"><em class="fa fa- fa-sm text-white-50"></em> Uninstall</a>
             </p>
             <table class="table table-hover">
               <thead>

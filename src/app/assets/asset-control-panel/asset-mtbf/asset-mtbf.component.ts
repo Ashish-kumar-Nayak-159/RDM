@@ -37,21 +37,21 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
-    maxDate:  new Date(),
+    maxDate: new Date(),
     timePicker: true,
     ranges: {
       'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
-      'Last 7 Days': [datefns.getUnixTime(datefns.subDays(new Date(), 7)), datefns.getUnixTime(datefns.subSeconds(new Date(), 0))],
-      'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
+      'Last 7 Days': [datefns.subDays(new Date(), 6), datefns.subSeconds(new Date(), 0)],
+      'This Week': [datefns.startOfISOWeek(new Date()), datefns.subSeconds(new Date(), 0)],
       'Last 4 Weeks': [
-        datefns.getUnixTime(datefns.subWeeks(new Date(), 4)),
-        datefns.getUnixTime(datefns.subWeeks(new Date(), 1)),
+        datefns.subWeeks(datefns.startOfISOWeek(new Date()), 4),
+        datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1),
       ],
-      'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
-      'Last Month': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(), 1))), datefns.getUnixTime(datefns.endOfMonth(datefns.subMonths(new Date(), 1)))],
-      'Last 3 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),3))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
-      'Last 6 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),6))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
-      'Last 12 Months': [datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),12))), datefns.getUnixTime(datefns.startOfMonth(datefns.subMonths(new Date(),1)))],
+      'This Month': [datefns.startOfMonth(new Date()), datefns.endOfMonth(new Date())],
+      'Last Month': [datefns.startOfMonth(datefns.subMonths(new Date(), 1)), datefns.endOfMonth(datefns.subMonths(new Date(), 1))],
+      'Last 3 Months': [datefns.startOfMonth(datefns.subMonths(new Date(), 3)), datefns.subMonths(datefns.endOfMonth(new Date()), 1)],
+      'Last 6 Months': [datefns.startOfMonth(datefns.subMonths(new Date(), 6)), datefns.subMonths(datefns.endOfMonth(new Date()), 1)],
+      'Last 12 Months': [datefns.startOfMonth(datefns.subMonths(new Date(), 12)), datefns.subMonths(datefns.endOfMonth(new Date()), 1)],
     },
   };
 
@@ -63,7 +63,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private toasterService: ToasterService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.filterObj.countNotShow = true;
@@ -84,13 +84,13 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     this.displayMode = type;
     this.filterObj.dateOption = 'This Month';
     this.filterObj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
-    this.filterObj.to_date =datefns.getUnixTime(datefns.endOfMonth(new Date()));
-    this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
+    this.filterObj.to_date = datefns.getUnixTime(datefns.endOfMonth(new Date()));
+    // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
       this.selectedDateRange =
-      datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");       
+        datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
     }
     if (type === 'history' && this.chart) {
       this.chart.dispose();
@@ -107,9 +107,9 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
-      filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
-    } 
-    
+      // filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
+    }
+
     const obj = { ...filterObj };
     delete obj.countNotShow;
     if (!obj.date_frequency) {
@@ -171,7 +171,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     let hDisplay = h > 0 ? h + (h == 1 ? ' Hr, ' : ' Hrs, ') : '';
     let mDisplay = m > 0 ? m + (m == 1 ? ' Min, ' : ' Minutes, ') : '';
     let sDisplay = s > 0 ? s + (s == 1 ? ' Second' : ' Seconds') : '';
-    if(sDisplay == '') mDisplay = mDisplay.replace(', ','');
+    if (sDisplay == '') mDisplay = mDisplay.replace(', ', '');
     return dDisplay + hDisplay + mDisplay + sDisplay;
   }
 
@@ -179,7 +179,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = filterObj.dateOption;
-    this.filterObj.last_n_secs = filterObj.last_n_secs;
+    // this.filterObj.last_n_secs = filterObj.last_n_secs;
   }
 
   clear() {
@@ -193,10 +193,10 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
-      this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
-      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
     }
   }
 

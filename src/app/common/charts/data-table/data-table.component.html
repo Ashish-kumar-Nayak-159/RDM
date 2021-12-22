@@ -13,7 +13,7 @@
         <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
         <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1"
           (click)="openConfirmRemoveWidgetModal()" placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"
-          class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
+          class="float-right pull-right mt-1" href="javascript:void(0)"><em class="fa fa-close"></em></a>
       </div>
     </ng-container>
     <div class="row">
@@ -29,15 +29,15 @@
                     <th scope="col">Date</th>
                     <ng-container *ngFor="let item of y1AxisProps">
                       <th scope="col"*ngIf="!item.hidden">
-                        <i class="icon icon-function"
-                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>{{getPropertyName(item.json_key)}}
+                        <em class="icon icon-function"
+                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</em>{{getPropertyName(item.json_key)}}
                       </th>
                     </ng-container>
                     <ng-container *ngFor="let item of y2AxisProps">
                       <th scope="col"*ngIf="!item.hidden">
 
-                        <i class="icon icon-function"
-                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>
+                        <em class="icon icon-function"
+                          *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</em>
                         {{getPropertyName(item.json_key)}}
                       </th>
                     </ng-container>

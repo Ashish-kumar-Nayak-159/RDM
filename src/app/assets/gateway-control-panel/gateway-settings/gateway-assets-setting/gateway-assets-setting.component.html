@@ -1,6 +1,6 @@
 <div class="table-responsive responsive-height">
   <div class="tableFixHead">
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></em>
     <h6 class="m-3" *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
     <accordion *ngIf="!isAssetsAPILoading" class="p-3">
       <accordion-group heading="" [isOpen]="constantData.IP_GATEWAY === componentState ? false : true"
@@ -14,13 +14,13 @@
           <div class="ml-auto">
             <!-- <a class="d-none d-sm-inline-block btn btn-sm btn-primary text-white shadow-sm mr-3"
               (click)="openGroupPropertyModel()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
-              <i class="fa fa-fw fa-cog"></i>
+              <em class="fa fa-fw fa-cog"></em>
               Configure Properties</a> -->
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="javascript:void(0)"
               (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
-              <i class="fa fa-fw fa-save"></i>
+              <em class="fa fa-fw fa-save"></em>
               Save</a>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading || isAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading || isAPILoading"></em>
           </div>
         </div>
         <accordion [closeOthers]="'true'" *ngIf="!isAssetsAPILoading" id="ac2">

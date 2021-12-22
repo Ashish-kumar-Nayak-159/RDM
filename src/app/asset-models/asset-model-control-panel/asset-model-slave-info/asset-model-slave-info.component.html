@@ -4,19 +4,19 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" [ngClass]="{'active': mainSelectedTab === 'slave categories'}"
           (click)="onTabClick('slave categories')">
-          <i class="fa fa-fw fa-keyboard-o"></i>
+          <em class="fa fa-fw fa-keyboard-o"></em>
           <span class="text-secondary">Slave Categories</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" [ngClass]="{'active': mainSelectedTab === 'slave positions'}"
           (click)="onTabClick('slave positions')">
-          <i class="fa fa-fw fa-hand-o-left"></i>
+          <em class="fa fa-fw fa-hand-o-left"></em>
           <span class="text-secondary">Slave Positions </span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" [ngClass]="{'active': mainSelectedTab === 'slaves'}"
           (click)="onTabClick('slaves')">
-          <i class="fa fa-fw fa-bookmark"></i>
+          <em class="fa fa-fw fa-bookmark"></em>
           <span class="text-secondary">Sources / Slaves / Sensors </span></a>
       </li>
 
@@ -31,15 +31,15 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="addSlaveInfoInModal()"
           [class.disabled]="assetModel.freezed" *ngIf="mainSelectedTab === 'slaves'">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add </span></a>
         <a class="nav-link" href="javascript:void(0)" (click)="addSlaveInfoInModal()"
           [class.disabled]="assetModel.freezed" *ngIf="mainSelectedTab === 'slave positions'">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add </span></a>
         <a class="nav-link" href="javascript:void(0)" (click)="addSlaveInfoInModal()"
           [class.disabled]="assetModel.freezed" *ngIf="mainSelectedTab === 'slave categories'">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add </span></a>
       </li>
     </ul>
@@ -74,7 +74,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form *ngIf="mainSelectedTab === 'slaves'" #slaveform="ngForm">
+        <form *ngIf="mainSelectedTab === 'slaves'" #slaveForm="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave ID:</label>
             <input #slaveid="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_id" name="slave_id"
@@ -125,14 +125,14 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slaves'">
 
-            <button type="button" class="btn btn-primary" [disabled]="!slaveform.valid || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slaveForm.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlaveObj() : saveSlaveObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
           </div>
         </form>
-        <form *ngIf="mainSelectedTab === 'slave positions'" #slavepositionform="ngForm">
+        <form *ngIf="mainSelectedTab === 'slave positions'" #slavePositionForm="ngForm">
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Slave Category:</label>
             <select class="form-control form-control-sm" id="slave_category" name="slave_category"
@@ -154,14 +154,14 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave positions'">
 
-            <button type="button" class="btn btn-primary" [disabled]="!slavepositionform.valid || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slavePositionForm.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlavePositionObj() : saveSlavePositionObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
           </div>
         </form>
-        <form *ngIf="mainSelectedTab === 'slave categories'" #slavecategoriesform="ngForm">
+        <form *ngIf="mainSelectedTab === 'slave categories'" #slaveCategoriesForm="ngForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave Category:</label>
             <input #slavecategoryname="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_category_name" name="slave_category_name"
@@ -172,11 +172,11 @@
           </div>
           <div class="modal-footer fixed-bottom bg-white" *ngIf="mainSelectedTab === 'slave categories'">
 
-            <button type="button" class="btn btn-primary" [disabled]="!slavecategoriesform.valid || isCreateSlaveAPILoading"
+            <button type="button" class="btn btn-primary" [disabled]="!slaveCategoriesForm.valid || isCreateSlaveAPILoading"
               (click)="slaveObj.id ? updateSlaveCategoryObj() : saveSlaveCategoryObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateSlaveAPILoading"
               (click)="onCloseModal('addSlaveModal')">Cancel</button>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateSlaveAPILoading"></em>
           </div>
         </form>
       </div>

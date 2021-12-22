@@ -10,7 +10,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddPropertiesModal()"
           [class.disabled]="assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('controllable') ? 'Controllable ' : (
             type.includes('configurable') ? 'Configurable ' : (
@@ -118,8 +118,8 @@
           <ng-container *ngIf="type == 'edge_derived_properties'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>
-              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"><i
-                  class="fas fa fa-plus"></i>
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"><em
+                  class="fas fa fa-plus"></em>
               </button>
               <div class="bg-light p-3">
                 <ng-container
@@ -131,8 +131,8 @@
                         groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
                         [(ngModel)]="propObj.property">
                         <ng-template ng-option-tmp let-item="item">
-                          <span [tooltip]="item.name"> <i
-                              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+                          <span [tooltip]="item.name"> <em
+                              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
                             {{item.name}}</span>
                         </ng-template>
                       </ng-select>
@@ -177,7 +177,7 @@
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
           (click)="onCloseAssetsPropertyModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></em>
       </div>
     </form>
   </div>

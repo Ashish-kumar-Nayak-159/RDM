@@ -3,7 +3,7 @@
       <div class="main-heading">App Management&nbsp;
       </div>
       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()"
-              placement="bottom" tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
+              placement="bottom" tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button>
     <div class="ml-auto">
       <div class="asset-nav-tabs">
         <nav>
@@ -11,12 +11,12 @@
             <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
               (click)="isProvisioned = 'true';searchApplications()" href="#" role="tab" aria-controls="nav-provisioned"
               aria-selected="true" [ngClass]="{'active': isProvisioned == 'true'}">
-              <i class="fab fa-mixcloud mr-2"></i>
+              <em class="fab fa-mixcloud mr-2"></em>
               <span class="d-none d-md-inline-block">Provisioned</span></a>
             <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
               (click)="isProvisioned = 'false';searchApplications()" href="#" role="tab" aria-controls="nav-unprovisioned"
               aria-selected="false" [ngClass]="{'active': isProvisioned == 'false'}">
-              <i class="fa fa-cloud mr-2" aria-hidden="true"></i>
+              <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Un-Provisioned</span></a>
           </div>
         </nav>
@@ -194,7 +194,7 @@
           (click)="onCloseCreateAppModal('createAppModal')">
           Cancel
         </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></em>
       </div>
     </div>
   </div>

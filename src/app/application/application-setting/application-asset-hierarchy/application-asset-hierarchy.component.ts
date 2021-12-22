@@ -1,6 +1,5 @@
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
-import { element } from 'protractor';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
@@ -38,7 +37,6 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData.hierarchy.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];

@@ -1,7 +1,7 @@
 <div style="bottom:30px; position:fixed; z-index:40; width: calc(100vw - 16rem); min-height: 13rem;">
   <div class="tab-bar" style="border-top: 1px solid #89a7ff; background-color: #e9eff9;">
     <h6 class="mt-2">Recent Jobs
-      <a href="javascript:void(0)" (click)="getRecentJobs()"><i class="fa fa-sync ml-2"></i>
+      <a href="javascript:void(0)" (click)="getRecentJobs()"><em class="fa fa-sync ml-2"></em>
       </a>
     </h6>
   </div>
@@ -30,11 +30,11 @@
             <td>
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
             <td>
               <a (click)="loadResponseDetail(msg)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
-                <i class="fa fa-fw fa-eye"></i></a>
+                <em class="fa fa-fw fa-eye"></em></a>
             </td>
           </tr>
         </ng-container>
@@ -47,7 +47,7 @@
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
             <td colspan="7">
-              <i class="fa fa-spinner fa-spin fa-fw"></i>
+              <em class="fa fa-spinner fa-spin fa-fw"></em>
             </td>
           </tr>
         </ng-container>
@@ -75,13 +75,13 @@
           </h5>
           <a class="ml-2 mt-2" (click)="loadResponseDetail(selectedMessage)" href="javascript:void(0)"
             placement="bottom" tooltip="Refresh Response">
-            <i class="fa fa-fw fa-refresh"></i></a>
+            <em class="fa fa-fw fa-refresh"></em></a>
           <button type="button" class="close" aria-label="Close" (click)="onModalEvents('close')">
             <span aria-hidden="true" tooltip="Close">&times;</span>
           </button>
         </div> -->
         <!-- <div class="modal-body"> -->
-          <ng-container *ngIf="isC2dMsgResponsesLoading"><i class="fa fa-spinner fa-spin fa-fw"></i></ng-container>
+          <ng-container *ngIf="isC2dMsgResponsesLoading"><em class="fa fa-spinner fa-spin fa-fw"></em></ng-container>
           <ng-container *ngIf="!isC2dMsgResponsesLoading">
             <!-- <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dResponseDetail | json"></pre> -->
             <app-message-modal *ngIf="modalConfig?.jsonDisplay" [bodyMessage]="c2dResponseDetail"

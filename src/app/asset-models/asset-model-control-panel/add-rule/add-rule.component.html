@@ -21,7 +21,7 @@
         </ng-select>
       </div>
       <div class="col-1 margin-left-loader" >
-        <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isRulesLoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw" *ngIf="isRulesLoading"></em>
       </div>
     </div>
   </div>
@@ -59,11 +59,11 @@
           <div class="form-group row">
             <label for="examplePassword" class="col-3">Type</label>
             <div class="col-auto">
-              Cloud Rule
-              <!-- <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white"
+              <!-- Cloud Rule -->
+              <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
                 [disabled]="isView" uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
-              </ui-switch> -->
+              </ui-switch>
             </div>
           </div>
         </form>
@@ -181,8 +181,8 @@
                   bindValue="json_key" [(ngModel)]="condition.property" required>
                   <ng-template ng-option-tmp let-item="item">
                     <span [tooltip]="item.id">
-                      <i [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' ||
-                                                  item.value.type === 'Cloud Derived Properties'}"></i>
+                      <em [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' ||
+                                                  item.value.type === 'Cloud Derived Properties'}"></em>
                       {{item.id}}
                     </span>
                   </ng-template>
@@ -220,14 +220,14 @@
               </div>
               <div class="col-auto" *ngIf="!isView">
                 <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"
-                  (click)="deleteCondition(i);"><i class="fas fa fa-trash"></i>
+                  (click)="deleteCondition(i);"><em class="fas fa fa-trash"></em>
                 </button>
               </div>
             </div>
             <hr>
           </form>
           <button *ngIf="!isView" id="insert-more" (click)="addNewCondition();"
-            class="btn btn-sm btn-primary cursor-pointer"><i class="fas fa fa-plus-circle mr-1 my-1"></i>
+            class="btn btn-sm btn-primary cursor-pointer"><em class="fas fa fa-plus-circle mr-1 my-1"></em>
             Condition</button>
         </div>
       </div>
@@ -291,9 +291,9 @@
                 </div>
               </div>
 
-              <hr>
+              <hr *ngIf="!ruleModel.rule_type">
 
-              <div class="form-group mx-3">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
                 <input type="checkbox" class="form-check-input" id="notification" name="notification"
                   [(ngModel)]="ruleModel.actions.notification.enabled" [disabled]="isView"
                   (change)="onChangeOfSendEmailCheckbox()">
@@ -343,9 +343,9 @@
                 </div>
               </div>
 
-              <hr>
+              <hr *ngIf="!ruleModel.rule_type">
 
-              <div class="form-group mx-3">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
                 <input type="checkbox" class="form-check-input" id="asset_control" name="asset_control"
                   [(ngModel)]="ruleModel.actions.asset_control.enabled" (change)="onChangeOfDisableAssetCheckbox()"
                   [disabled]="isView">
@@ -359,7 +359,7 @@
     </accordion-group>
   </accordion>
   <div *ngIf="!isView">
-    <i *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <em *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <button type="button" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
       [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
       ? 'Update' :

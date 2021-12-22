@@ -349,4 +349,8 @@ ngx-intl-tel-input input[disabled] {
 .date-range-picker[readonly] {
   background-color: white !important;
 }
+
+json-editor > div{
+  height: 100%;
+}
 /* end */

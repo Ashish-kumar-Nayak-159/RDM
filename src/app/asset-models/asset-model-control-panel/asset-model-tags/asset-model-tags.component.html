@@ -3,36 +3,36 @@
     <ul class="nav">
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-fw fa-eye"></i>
+          <em class="fa fa-fw fa-eye"></em>
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="addTagObject()"
           [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           <span class="text-secondary">Add</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateAssetModelTags()"
           [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-save"></i>
+          <em class="fa fa-fw fa-save"></em>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)"
           [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-trash"></i>
+          <em class="fa fa-fw fa-trash"></em>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)"
           [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
-          <i class="fa fa-fw fa-undo"></i>
+          <em class="fa fa-fw fa-undo"></em>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
       <li class="nav-item" *ngIf="isUpdateTagsAPILoading">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
         </a>
       </li>
     </ul>
@@ -52,7 +52,7 @@
         Following tags will be added when asset is instantiated with this model.
         <button type="button" class="btn btn-primary btn-sm mx-2 my-1"  [disabled]="assetModel.freezed"
         placement="bottom" tooltip="Add Tag" (click)="addTagObject()" >
-          <i class="fa fa-plus fa-sm"></i></button>
+          <em class="fa fa-plus fa-sm"></em></button>
       </p>
       <hr> -->
 
@@ -76,7 +76,7 @@
             <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
               <a *ngIf="!tag.nonEditable" href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete"
                 (click)="openModal('confirmMessageModal', 'single', i)" [class.disabled]="assetModel.freezed">
-                <i class="fa fa-trash fa-sm"></i> </a>
+                <em class="fa fa-trash fa-sm"></em> </a>
             </td>
           </tr>
         </ng-container>

@@ -5,20 +5,20 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'network_failure'}" href="javascript:void(0)"
           (click)="onTabChange('network_failure');displayMode = 'network_failure'">
-          <i class="fa fa-fw fa-angle-right"></i>
+          <em class="fa fa-fw fa-angle-right"></em>
           <span>Network Failure Events</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'machine_failure'}" href="javascript:void(0)"
           (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
-          <i class="fa fa-fw fa-cog"></i>
+          <em class="fa fa-fw fa-cog"></em>
           <span>Machine Failure Events</span></a>
       </li>
       <!-- Nav Item - Charts -->
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)"
           (click)="onTabChange('history');displayMode = 'history'">
-          <i class="fa fa-fw fa-eye"></i>
+          <em class="fa fa-fw fa-eye"></em>
           <span>Historical MTTR</span></a>
       </li>
     </ul>
@@ -45,7 +45,7 @@
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-          (click)="searchEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
+          (click)="searchEvents(this.filterObj)"><em class="fa fa-search fa-sm"></em></button>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters"
@@ -85,7 +85,7 @@
               <td>{{event.mttrString}}</td>
               <td *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1">
                 <a href="javascript:void(0)" (click)="openModal(event)">
-                  <i class="fa fa-edit"></i>
+                  <em class="fa fa-edit"></em>
                 </a>
               </td>
             </tr>
@@ -111,7 +111,7 @@
           <ng-container *ngIf="isLifeCycleEventsLoading">
             <tr>
               <td colspan="5">
-                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
               </td>
             </tr>
           </ng-container>
@@ -131,7 +131,7 @@
           <p class="pt-2">You can choose different time window.</p>
         </ng-template>
       </p>
-      <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+      <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{loadingMessage}}</span>
       <div id="mttrChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
         [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
 
@@ -170,7 +170,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="acknowledgeEvent()">Acknowledge</button>
         <button type="button" class="btn btn-secondary add-row" (click)="closeModal()">Cancel</button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isEventAcknowledgeAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isEventAcknowledgeAPILoading"></em>
 
       </div>
     </div>

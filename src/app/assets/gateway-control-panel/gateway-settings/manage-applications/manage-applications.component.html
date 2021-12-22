@@ -37,7 +37,7 @@
             (click)="restartApp(app, i)" placement="bottom" tooltip="Restart" [class.disabled]="isAPILoading[i] || !app.is_restart
             || assetTwin.twin_properties.reported[app.type][app.name] === undefined"
             ><img style="width: 12px;" src="./assets/img/restart.svg"/></a>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading && isAPILoading[i]"></i>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading && isAPILoading[i]"></em>
           </td>
         </tr>
       </tbody>

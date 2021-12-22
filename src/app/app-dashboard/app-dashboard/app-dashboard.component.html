@@ -10,20 +10,20 @@
         <ui-switch size="small" class="mr-1" defaultBgColor="red" [disabled]="isC2dAPILoading"
           uncheckedTextColor="white" switchColor="#EFEFEF" checkedTextColor="white" checkedLabel="ON"
           uncheckedLabel="OFF" name="tpye" [(ngModel)]="signalRModeValue" (valueChange)="onSwitchValueChange($event)">
-          <i class="fa fa-check" style="color: green;" *ngIf="signalRModeValue"></i>
-          <i class="fa fa-times" style="color: red" *ngIf="!signalRModeValue"></i>
+          <em class="fa fa-check" style="color: green;" *ngIf="signalRModeValue"></em>
+          <em class="fa fa-times" style="color: red" *ngIf="!signalRModeValue"></em>
         </ui-switch>
       </div>
     </div>
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="false" [filterObj]="filterObj"
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
             [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><i
-                class="fas fa-search fa-sm"></i></button></div>
+              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
+                class="fas fa-search fa-sm"></em></button></div>
         </form>
       </div>
     </div>
@@ -147,7 +147,7 @@
         <div class="form-group">
           <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
             (click)="onFilterSelection(this.filterObj,true,false,false)">
-            <i class="fa fa-search fa-sm"></i>
+            <em class="fa fa-search fa-sm"></em>
           </button>
         </div>
       </form>
@@ -160,7 +160,7 @@
       *ngIf="!isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
         aria-expanded="false">
-        <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+        <em class="fas fa-fw fa-filter fa-sm button-divider"></em>
         Select Filter</button>
       <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
         <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
@@ -171,7 +171,7 @@
 <ng-container>
   <div class="content-scroll content-scroll-live-data">
     <div class="pl-3 pt-3" *ngIf="isTelemetryDataLoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </div>
     <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
       <div class="m-3" *ngIf="historicalWidgets.length === 0 && isFilterSelected

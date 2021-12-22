@@ -7,8 +7,8 @@ import { CommonService } from './../../services/common.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { AssetService } from 'src/app/services/assets/asset.service';
 
 @Component({
   selector: 'app-application-selection',
@@ -32,7 +32,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private assetService:AssetService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +74,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  async redirectToApp(app, index) {
+  async redirectToApp(app, index) {    
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -92,6 +93,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
+    console.log('this.applicationData.menu_settings ',this.applicationData.menu_settings);
+    
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     
     // this.router.navigate(['applications', this.applicationData.app]);
@@ -122,7 +125,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.applicationData = undefined;
       this.apiSubscriptions.push(
         this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
-          this.applicationData = response;
+          console.log('response ',response);
+          
+          this.applicationData = JSON.parse(JSON.stringify(response));
+          console.log('this.applicationData ',this.applicationData);
+          
           this.applicationData.app = app.app;
 
           this.userData.apps.forEach((appObj) => {
@@ -156,7 +163,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           if (
-            this.applicationData.menu_settings.model_control_panel_menu ||
+            !this.applicationData.menu_settings.model_control_panel_menu ||
             this.applicationData.menu_settings.model_control_panel_menu.length === 0
           ) {
             this.applicationData.menu_settings.model_control_panel_menu = JSON.parse(
@@ -164,7 +171,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           if (
-            this.applicationData.menu_settings.gateway_control_panel_menu ||
+            !this.applicationData.menu_settings.gateway_control_panel_menu ||
             this.applicationData.menu_settings.gateway_control_panel_menu.length === 0
           ) {
             this.applicationData.menu_settings.gateway_control_panel_menu = JSON.parse(
@@ -181,7 +188,15 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel ||'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
-          resolve();
+          const assetTypesObj = {
+            hierarchy: JSON.stringify(this.applicationData.user.hierarchy),
+            type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+          };  
+          this.apiSubscriptions.push(
+            this.assetService.getIPAndLegacyAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
+              resolve();
+            })
+          );
         })
       );
     });

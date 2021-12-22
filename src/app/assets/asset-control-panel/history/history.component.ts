@@ -134,7 +134,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.historyFilter.from_date = dateObj.from_date;
         this.historyFilter.to_date = dateObj.to_date;
-        this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.historyFilter.from_date = item.from_date;
         this.historyFilter.to_date = item.to_date;
@@ -249,7 +249,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.from_date = filterObj.from_date;
     this.historyFilter.to_date = filterObj.to_date;
     this.historyFilter.dateOption = filterObj.dateOption;
-    this.historyFilter.last_n_secs = filterObj.last_n_secs;
+    // this.historyFilter.last_n_secs = filterObj.last_n_secs;
     const records = this.commonService.calculateEstimatedRecords(
       this.frequency,
       this.historyFilter.from_date,
@@ -289,13 +289,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
-          last_n_secs: undefined,
+          // last_n_secs: undefined,
         };
         if (this.historyFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
-          obj.last_n_secs = this.historyFilter.last_n_secs;
+          // obj.last_n_secs = this.historyFilter.last_n_secs;
         } else {
           obj.from_date = this.historyFilter.from_date;
           obj.to_date = this.historyFilter.to_date;
@@ -579,7 +579,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter = {};
     this.historyFilter.from_date = undefined;
     this.historyFilter.to_date = undefined;
-    this.historyFilter.last_n_secs = undefined;
+    // this.historyFilter.last_n_secs = undefined;
     this.historyFilter.epoch = true;
     this.historyFilter.asset_id = this.asset.asset_id;
     this.historyFilter.app = this.contextApp.app;
@@ -599,7 +599,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
       this.historyFilter.from_date = dateObj.from_date;
       this.historyFilter.to_date = dateObj.to_date;
-      this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+      // this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
       this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.historyFilter.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date),"dd-MM-yyyy HH:mm");                      
     }

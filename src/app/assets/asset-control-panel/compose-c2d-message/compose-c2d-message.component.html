@@ -6,7 +6,7 @@
     <div class='px-1'><hr></div>
     <div><a  href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="sentC2DMessage()" >
       <button type="button" class="btn btn-primary" > 2. Send
-        <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
+        <em class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></em>
       </button>
     </a></div>
     <div class='px-1'><hr></div>
@@ -20,12 +20,12 @@
     <div class="row" >
     <div class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
     <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
-      <i class="fa fa-times" ></i> Please verify JSON.</div>
+      <em class="fa fa-times" ></em> Please verify JSON.</div>
       <div class="justify-content-center align-self-center px-1 green-font" *ngIf="isMessageValidated === 'valid'">
-        <i class="fa fa-check" ></i>  Successfully Validated.</div>
+        <em class="fa fa-check" ></em>  Successfully Validated.</div>
       <div class="justify-content-center align-self-center px-1"
       *ngIf="sendMessageStatus && sendMessageResponse" [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
-      <i class="fa" [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}" ></i>
+      <em class="fa" [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}" ></em>
       {{sendMessageResponse}}</div>
 
     <div *ngIf="timerObj" class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>

@@ -4,25 +4,25 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
           [ngClass]="{'active': selectedTab === 'Cloud'}">
-          <i class="fa fa-fw fa-cloud"></i>
+          <em class="fa fa-fw fa-cloud"></em>
           Cloud Rules</a>
       </li>
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
-          <i class="fab fa-fw fa-edge"></i>
+          <em class="fab fa-fw fa-edge"></em>
           Edge Rules</a>
-      </li> -->
+      </li>
       <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1">
         <a class="nav-link" (click)="addRule()" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
           [ngClass]="{'active': isAddRule }">
-          <i class="fa fa-fw fa-plus"></i>
+          <em class="fa fa-fw fa-plus"></em>
           Add</a>
       </li>
       <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1">
         <a class="nav-link" (click)="cloneRule()" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
           [ngClass]="{'active': isCloneRule }">
-          <i class="fa fa-fw fa-clone"></i>
+          <em class="fa fa-fw fa-clone"></em>
           Clone</a>
       </li>
     </ul>
@@ -70,7 +70,7 @@
               <tr>
                 <td class="pl-3">
                   <a href="javascript:void(0)" (click)="toggleRows[selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1">
-                    <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                    <em [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                   </a>
                 </td>
                 <td>{{i + 1}}</td>
@@ -86,17 +86,17 @@
                 <td>
                   <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1" placement="bottom"
                     tooltip="View">
-                    <i class="fa fa-fw fa-eye" ></i>
+                    <em class="fa fa-fw fa-eye" ></em>
                   </a>
                   <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isEdit ? onToggleRows(i, rule, false, true, 'toggle') : onToggleRows(i, rule, false, true, 'notoggle')" class="mr-1"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false"
                     [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
-                    <i class="fa fa-fw fa-edit"></i>
+                    <em class="fa fa-fw fa-edit"></em>
                   </a>
                   <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false"
                     placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
-                    <i class="fa fa-fw fa-trash"></i>
+                    <em class="fa fa-fw fa-trash"></em>
                   </a>
                   <ng-container *ngIf="rule.type === 'Cloud' ">
                     <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="
@@ -104,14 +104,14 @@
               rule.is_editable !== false &&
               ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
                       tooltip="Deploy" [class.disabled]="assetModel.freezed">
-                      <i class="fa fa-fw fa-sync"></i>
+                      <em class="fa fa-fw fa-sync"></em>
                     </a>
                     <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="
               decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
               rule.is_editable !== false &&
                 ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
                       tooltip="Revert" [class.disabled]="assetModel.freezed">
-                      <i class="fa fa-fw fa-undo"></i>
+                      <em class="fa fa-fw fa-undo"></em>
                     </a>
                   </ng-container>
                   <ng-container *ngIf="rule.type === 'Edge' ">
@@ -120,17 +120,17 @@
                   rule.is_editable !== false &&
                   ( !rule.epoch_synced_on || rule.epoch_updated_date - rule.epoch_synced_on > 0)" placement="bottom"
                       tooltip="Sync" [class.disabled]="assetModel.freezed">
-                      <i class="fa fa-fw fa-sync"></i>
+                      <em class="fa fa-fw fa-sync"></em>
                     </a>
                     <a href="javascript:void(0)" (click)="deployEdgeRule(rule, true)" *ngIf="
                   decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                   rule.is_editable !== false &&
                     ( rule.epoch_synced_on && rule.epoch_updated_date - rule.epoch_synced_on < 0)" placement="bottom"
                       tooltip="Revert" [class.disabled]="assetModel.freezed">
-                      <i class="fa fa-fw fa-undo"></i>
+                      <em class="fa fa-fw fa-undo"></em>
                     </a>
                   </ng-container>
-                  <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteRuleLoading"></i> -->
+                  <!-- <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteRuleLoading"></em> -->
                 </td>
               </tr>
               <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
@@ -145,7 +145,7 @@
           </ng-container>
           <tr *ngIf="isRulesLaoading">
             <td colspan="7">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
             </td>
           </tr>
           <tr *ngIf="!isRulesLaoading && rules.length === 0">

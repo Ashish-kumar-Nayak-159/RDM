@@ -85,7 +85,7 @@
         <div class="form-group">
           <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
             (click)="renderLayout()">
-            <i class="fa fa-search fa-sm"></i>
+            <em class="fa fa-search fa-sm"></em>
           </button>
         </div>
         <div class="form-group">
@@ -103,7 +103,7 @@
     <ng-container *ngIf="!isShowOpenFilter">
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
         aria-expanded="false">
-        <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+        <em class="fas fa-fw fa-filter fa-sm button-divider"></em>
         Select Filter</button>
       <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
         <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
@@ -140,7 +140,7 @@
     </p>
     <p class="m-3" *ngIf="isHistoryAPILoading">
       {{loadingMessage}}
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </p>
 
 

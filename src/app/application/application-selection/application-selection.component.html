@@ -16,14 +16,14 @@
                   : constantData.DEFAULT_APP_ICON  + blobToken)
               }}" alt="" />
             </div>
-            <p>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x"
-              *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></p>
+            <p>{{app.app}} <em class="fa fa-spinner fa-spin fa-fw fa-2x"
+              *ngIf="isAppDataLoading && isAppDataLoading[index]"></em></p>
             <p class="mx-3 mt-3 text-center text-xs truncate" style="font-size:0.9rem">
               {{app.metadata.description ? app.metadata.description: 'This application is designed to track assets & its data.'}}</p>   
           </a>
         </div>
       </ng-container>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserApplicationLoading"></i>
+      <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserApplicationLoading"></em>
     </div>
   </div>
 </div>

@@ -39,8 +39,8 @@
             <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}"
               class="form-control form-control-user  bg-white" name="exampleInputPassword"
               placeholder="{{uiMessages.PASSWORD_PLACEHOLDER}}" formControlName="password">
-            <i class="fa fa-fw  field-icon toggle-password mt-n5" (click)="togglePasswordVisibility()"
-              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
+            <em class="fa fa-fw  field-icon toggle-password mt-n5" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></em>
             <div *ngIf="loginForm.get('password').errors &&  loginForm.get('password').touched" class="alert-danger">
               <div *ngIf="loginForm.get('password').errors.required">
                 {{uiMessages.PASSWORD_LABEL}} {{uiMessages.IS_REQUIRED}}
@@ -55,12 +55,12 @@
             <button type="submit" style="background-color:#1a5a9e" class="btn btn-primary text-white "
               [disabled]="(!loginForm?.valid) || isLoginAPILoading">
               {{uiMessages.LOGIN_LABEL}}
-              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+              <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
             </button>
           </form>
           <div>
             <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
-            <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
+            <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></em>
           </div>
         </div>
         <div class="login-show">
@@ -118,7 +118,7 @@
               class="btn btn-primary btn-user btn-block text-white " [disabled]=" (!registerForm.valid &&
               (registerForm.touched || !registerForm.touched)) || isLoginAPILoading">
               Login
-              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+              <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
             </button>
           </form>
           <form class="" (submit)="onSignIn()" *ngIf="otpData?.user_id">
@@ -132,7 +132,7 @@
             <button type="submit" style="background-color:#1a5a9e"
               class="btn btn-primary btn-user btn-block text-white " [class.disabled]="isLoginAPILoading">
               Verify
-              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+              <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
             </button>
           </form>
         </div>

@@ -1,7 +1,7 @@
 <div id="wrapper">
   <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetDataLoading">
     Loading Asset Data...
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></em>
   </div>
 
   <!-- Sidebar -->
@@ -10,7 +10,7 @@
     <div class="sidebar1-heading sidebar1-top-heading">
       <span>Control Panel </span>
       <!-- <button class="d-none d-md-inline mb-0" id="sidebar1Toggle" placement="bottom" tooltip="Minimize" (click)="onSidebarToggle()"></button> -->
-      <i class="fa fa-fw fa">CP</i>
+      <em class="fa fa-fw fa">CP</em>
     </div>
     <div class="scrollbox scrollbox_delayed" tabindex="0">
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
@@ -27,7 +27,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
-                <i class="{{menu.icon}}" placement="bottom"></i>
+                <em class="{{menu.icon}}" placement="bottom"></em>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>

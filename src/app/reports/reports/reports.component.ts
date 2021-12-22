@@ -112,7 +112,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
           this.filterObj.from_date = dateObj.from_date;
           this.filterObj.to_date = dateObj.to_date;
-          this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+          // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
         } else {
           this.filterObj.from_date = item.from_date;
           this.filterObj.to_date = item.to_date;
@@ -186,7 +186,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = this.originalFilterObj.from_date = filterObj.from_date;
     this.filterObj.to_date = this.originalFilterObj.to_date = filterObj.to_date;
     this.filterObj.dateOption = this.originalFilterObj.dateOption = filterObj.dateOption;
-    this.filterObj.last_n_secs = this.originalFilterObj.last_n_secs = filterObj.last_n_secs;
+    // this.filterObj.last_n_secs = this.originalFilterObj.last_n_secs = filterObj.last_n_secs;
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,

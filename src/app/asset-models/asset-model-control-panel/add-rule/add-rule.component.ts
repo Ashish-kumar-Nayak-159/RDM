@@ -1,12 +1,11 @@
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { EventEmitter } from '@angular/core';
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter, Component, Input, OnInit, Output } from '@angular/core';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { AlertCondition, Conditions, Rule } from './add-rule.model';
+import { AlertCondition, Rule } from './add-rule.model';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Subscription } from 'rxjs';
 declare var $: any;
@@ -288,6 +287,7 @@ export class AddRuleComponent implements OnInit {
   onSwitchValueChange(event) {
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
     this.ruleModel.rule_type = event;
+    this.ruleModel.actions.alert_management.enabled = event;
   }
 
   onChangeOfAssetCondition() {
@@ -355,10 +355,10 @@ export class AddRuleComponent implements OnInit {
     this.isUpdateApiCall = true;
     let str = '';
     this.ruleModel.properties = [];
-    this.ruleModel.conditions.forEach((element) => {
+    this.ruleModel.conditions.forEach((element,index) => {
       str +=
         ' %' +
-        element.property +
+        (index + 1) +
         '% ' +
         this.findOperator(element.operator) +
         ' ' +

@@ -39,7 +39,7 @@
             </ul>
           </ng-template>
           <ng-template ng-option-tmp let-item="item">
-            <span> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i>
+            <span> <em [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></em>
               {{item.name}}</span>
           </ng-template>
         </ng-select>
@@ -63,9 +63,9 @@
             </select>
       </div> -->
       <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
-          class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)"><i
-            class="fas fa-search fa-sm"></i></button></div>
-      <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" placement="bottom" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
+          class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)"><em
+            class="fas fa-search fa-sm"></em></button></div>
+      <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" placement="bottom" tooltip="Search" ><em class="fa fa-search fa-sm"></em></button> -->
       <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom"
           tooltip="Clear Filters" (click)="clear();"> <img class="filter-clear-icon"
             src="./assets/img/filter.svg"></button></div>

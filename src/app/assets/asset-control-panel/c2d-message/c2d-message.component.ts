@@ -77,7 +77,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.c2dMsgFilter.from_date = dateObj.from_date;
         this.c2dMsgFilter.to_date = dateObj.to_date;
-        this.c2dMsgFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        // this.c2dMsgFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
       } else {
         this.c2dMsgFilter.from_date = item.from_date;
         this.c2dMsgFilter.to_date = item.to_date;

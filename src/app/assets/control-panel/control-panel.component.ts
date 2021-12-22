@@ -23,13 +23,23 @@ export class ControlPanelComponent implements OnInit {
     private route: ActivatedRoute,
     private commonService: CommonService,
     private assetService: AssetService,
-    private toasterService : ToasterService,
+    private toasterService: ToasterService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.validAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.validAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
+    if (this.validAssets == undefined) {
+      const assetTypesObj = {
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+      };
+      this.assetService.getIPAndLegacyAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data)
+          this.validAssets = response.data;
+      })
+    }
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (params.get('assetId') && this.validAssets.length > 0) {

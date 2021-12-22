@@ -456,6 +456,16 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
+          localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+          const assetTypesObj = {
+            hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+            type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+          };  
+          this.subscriptions.push(
+            this.assetService.getIPAndLegacyAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {
+              
+            }),            
+          );
           if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             this.updateGatewayTags(this.assetDetail);
             this.toasterService.showSuccess(

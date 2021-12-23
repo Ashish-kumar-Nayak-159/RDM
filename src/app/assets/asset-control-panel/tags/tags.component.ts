@@ -355,7 +355,8 @@ export class TagsComponent implements OnInit, OnDestroy {
   updateAssetTags() {
     console.log('this.asset.tags ',this.asset.tags);
     
-    if((this.asset.tags.latitude && !this.asset.tags.longitude) || (!this.asset.tags.latitude && this.asset.tags.longitude)){
+    if((!this.asset.tags.latitude || !this.asset.tags.longitude || !(this.asset.tags.latitude.toString().trim()) || !(this.asset.tags.longitude.toString().trim()) || 
+    this.asset.tags.latitude && !this.asset.tags.longitude) || (!this.asset.tags.latitude && this.asset.tags.longitude)){
       this.toasterService.showError("Select proper location", 'Set Asset Location');
       return;
     }

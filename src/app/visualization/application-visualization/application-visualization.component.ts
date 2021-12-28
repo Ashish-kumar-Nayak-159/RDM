@@ -108,7 +108,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     private injector: Injector,
     private sanitizer: DomSanitizer,
     private singalRService: SignalRService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -166,7 +166,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           } else {
             this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
           }
-          console.log('this.selectedDateRange',this.selectedDateRange);
+          console.log('this.selectedDateRange', this.selectedDateRange);
           this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
           this.getLatestAlerts(false);
         }
@@ -299,7 +299,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     delete obj.assetArr;
     if (this.pageType === 'live') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(),24));
+      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 24));
       obj.to_date = datefns.getUnixTime(new Date());
       // obj.last_n_secs = obj.to_date - obj.from_date;
     } else {
@@ -387,7 +387,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.end_event_message_date = obj?.timestamp || obj.ts;
       const alertObj = this.latestAlerts.find((alert) => alert.message_id === obj.message_id);
       alertObj.local_end_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
-    }else{
+    } else {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
       obj.start_event_message_date = obj?.timestamp || obj.ts;
       obj.message_date = obj.timestamp || obj?.ts;
@@ -425,7 +425,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         asset_model: this.selectedAsset.asset_model || this.selectedAsset?.tags?.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id),
       };
-      this.alertCondition = undefined;      
+      this.alertCondition = undefined;
       if (this.selectedAlert.code) {
         filterObj['code'] = this.selectedAlert.code;
         let method;
@@ -510,8 +510,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(fileObj) {
-    console.log('fileObj ',fileObj);
-    
+    console.log('fileObj ', fileObj);
+
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
@@ -720,7 +720,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       file['name'] = file.data.name;
       file['data']['type'] = file.type;
       file.data.sanitizedURL = this.sanitizeURL(file.data.url);
-      file['sanitizedURL'] = file.data.sanitizedURL 
+      file['sanitizedURL'] = file.data.sanitizedURL
     });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
@@ -1053,7 +1053,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
+              if (widget.value.chartType === 'Table')
+                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData.reverse();
+              else
+                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.value.y1axis;
@@ -1143,15 +1146,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     this.uploadedFiles.push({
-      'file':files?.item(0),
+      'file': files?.item(0),
       'index': index
-    }) 
+    })
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
   }
 
-  async uploadFile(){
+  async uploadFile() {
     this.isFileUploading = true;
-    await Promise.all(this.uploadedFiles.map(async(file)=>{
+    await Promise.all(this.uploadedFiles.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
@@ -1248,10 +1251,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         isDisplayCancel: false,
       };
       this.downloadFile(obj.metadata ?? obj.data);
-    }  else if (obj.for === 'View Document') {
+    } else if (obj.for === 'View Document') {
       this.openModal('viewDocModal');
-      this.selectedDocument = obj.metadata ?? obj.data ;
-    } 
+      this.selectedDocument = obj.metadata ?? obj.data;
+    }
   }
 
   setUpDocumentData() {
@@ -1279,7 +1282,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           type: 'button',
           headerClass: '',
           btnData: [
-            
+
             {
               icon: 'fa fa-fw fa-eye',
               text: '',

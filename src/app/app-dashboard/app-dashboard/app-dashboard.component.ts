@@ -111,7 +111,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-        this.getTileName();
+    this.getTileName();
 
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -538,7 +538,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false,isFromMainSearch = true) {
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -991,7 +991,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
+              if (widget.chartType === 'Table')
+                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData.reverse();
+              else
+                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.y1axis;
               componentRef.instance.y2AxisProps = widget.y2axis;

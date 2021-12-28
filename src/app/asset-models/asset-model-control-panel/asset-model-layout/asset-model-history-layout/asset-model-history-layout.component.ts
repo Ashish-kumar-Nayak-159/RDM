@@ -129,7 +129,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     private injector: Injector,
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService
-  ) {}
+  ) { }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -164,8 +164,8 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type === 'Object' && prop.data_type !== 'Array'
       );
-    } 
-    else if(this.selectedChartType !== 'Pie Chart' && this.selectedChartType !== 'Vibration Damage Plot' && this.selectedChartType !== 'Data Table'){
+    }
+    else if (this.selectedChartType !== 'Pie Chart' && this.selectedChartType !== 'Vibration Damage Plot' && this.selectedChartType !== 'Data Table') {
       this.filteredPropList = this.propertyList.filter(
         (prop) => prop.data_type === 'Number'
       );
@@ -372,7 +372,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       const data = [];
       for (let i = 0; i < 10; i++) {
         const obj = {
-          message_date: datefns.format(datefns.subMinutes(new Date(),i), "dd-MM-yyyy HH:mm:ss"),
+          message_date: datefns.format(datefns.subMinutes(new Date(), i), "dd-MM-yyyy HH:mm:ss"),
           message_date_obj: null,
         };
         obj.message_date_obj = new Date(obj.message_date);
@@ -387,10 +387,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
               } else if (prop.data_type === 'Enum') {
                 obj[prop.json_key] =
                   prop.json_model[prop.json_key].enum[
-                    this.commonService.randomIntFromInterval(
-                      0,
-                      prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
-                    )
+                  this.commonService.randomIntFromInterval(
+                    0,
+                    prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                  )
                   ];
               }
             }
@@ -407,10 +407,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
               } else if (prop.data_type === 'Enum') {
                 obj[prop.json_key] =
                   prop.json_model[prop.json_key].enum[
-                    this.commonService.randomIntFromInterval(
-                      0,
-                      prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
-                    )
+                  this.commonService.randomIntFromInterval(
+                    0,
+                    prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                  )
                   ];
               }
             }
@@ -432,7 +432,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       } else if (layoutJson.chartType === 'VibrationDamagePlot') {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
-      componentRef.instance.telemetryData = data;
+      if (layoutJson.chartType === 'Table')
+        componentRef.instance.telemetryData = data.reverse();
+      else
+        componentRef.instance.telemetryData = data;
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

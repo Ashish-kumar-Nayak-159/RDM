@@ -82,7 +82,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private appRef: ApplicationRef,
     private injector: Injector,
     private chartService: ChartService
-  ) {}
+  ) { }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -142,7 +142,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.historyFilter.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.historyFilter.dateOption;
       } else {
-        this.selectedDateRange =datefns.format(datefns.fromUnixTime(this.historyFilter.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date),"dd-MM-yyyy HH:mm");                      
+        this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.historyFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date), "dd-MM-yyyy HH:mm");
       }
       // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
       //   this.historyFilter.isTypeEditable = true;
@@ -601,7 +601,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.to_date = dateObj.to_date;
       // this.historyFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
     } else {
-      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.historyFilter.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date),"dd-MM-yyyy HH:mm");                      
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.historyFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.historyFilter.to_date), "dd-MM-yyyy HH:mm");
     }
 
     // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
@@ -703,7 +703,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
       console.log(noDataFlag, '======', this.historyData);
-      componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData;
+      if (layoutJson.chartType === 'Table')
+        componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData.reverse();
+      else
+        componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData;
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

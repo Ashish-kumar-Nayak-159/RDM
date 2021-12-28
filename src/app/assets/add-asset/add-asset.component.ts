@@ -20,12 +20,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
   @Output() cancelModal: EventEmitter<any> = new EventEmitter<any>();
   @Input() assetDetail: any;
   isCreateAssetAPILoading = false;
+  decodedToken: any;
   contextApp: any;
   addAssetConfigureHierarchy = {};
   addAssetHierarchyArr: any[] = [];
   constantData = CONSTANTS;
   appUsers: any[] = [];
-  filteredUsers:any[] = [];
+  filteredUsers: any[] = [];
   @Input() gateways: any[] = [];
   originalGateways: any[] = [];
   assetModels: any[] = [];
@@ -34,17 +35,25 @@ export class AddAssetComponent implements OnInit, OnChanges {
   // setupForm: FormGroup;
   protocolList = CONSTANTS.PROTOCOLS;
   isAssetEditable = false;
+  isWhiteLablePriviledge = false;
+  whiteListedAssets: any[] = [];
+  selectedWhitelistAsset: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
+    debugger;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
+    if (this.decodedToken?.privileges?.indexOf('ASMW') > -1) {
+      this.getWhiteListedAsset();
+    }
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
@@ -113,6 +122,28 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
   }
 
+  getWhiteListedAsset() {
+    const obj = {
+      type: this.componentState,
+    };
+    return new Promise<void>((resolve1, reject) => {
+      this.whiteListedAssets = [];
+      this.subscriptions.push(
+        this.assetService.getWhiteListedAsset(obj, this.contextApp.app).subscribe(
+          (response: any) => {
+            if (response && response.data) {
+              this.whiteListedAssets = response.data;
+            }
+            resolve1();
+          },
+          (error) => {
+            debugger;
+            /// Note: remove once api ready          
+            this.whiteListedAssets = [{ "asset_id": "1", "tags": { "display_name": "asset1" } }, { "asset_id": "2", "tags": { "display_name": "asset2" } }];
+          }),
+      );
+    });
+  }
   getAssetsModels(type) {
     return new Promise<void>((resolve, reject) => {
       this.assetModels = [];
@@ -131,7 +162,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     });
   }
 
-  onChangeOfAddAssetHierarchy(i) {    
+  onChangeOfAddAssetHierarchy(i) {
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -160,13 +191,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
     });
 
     //let maxObject = hierarchyObj.fin
-        if (Object.keys(hierarchyObj).length === 1) {
+    if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
       this.filteredUsers = this.appUsers;
     } else {
       const arr = [];
       this.gateways = [];
-      console.log('hierarchyObj',hierarchyObj);
+      console.log('hierarchyObj', hierarchyObj);
       this.updateAssetManagerWithHierarchy(hierarchyObj);
       console.log(this.originalGateways);
       this.originalGateways.forEach((asset) => {
@@ -204,20 +235,18 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     // await this.getAssets(hierarchyObj);
   }
-  updateAssetManagerWithHierarchy(hierarchyObj)
-  {
-      let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-      let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-      this.filteredUsers = this.appUsers.filter(function(user){
-        if (!user.hierarchy.hasOwnProperty(lastObjKey))
-      {
+  updateAssetManagerWithHierarchy(hierarchyObj) {
+    let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
+    let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
+    this.filteredUsers = this.appUsers.filter(function (user) {
+      if (!user.hierarchy.hasOwnProperty(lastObjKey)) {
         let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
-        if(!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
-            return true;
+        if (!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
+          return true;
       }
-      else if(user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+      else if (user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
         return true;
-      });
+    });
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
@@ -227,8 +256,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
         protocol: modelObj.protocol,
       };
       const modelTags = {
-        "Cloud_Connectivity" : modelObj.cloud_connectivity,
-        "Protocol" : modelObj.protocol
+        "Cloud_Connectivity": modelObj.cloud_connectivity,
+        "Protocol": modelObj.protocol
       }
       this.assetDetail.tags['model_tags'] = JSON.stringify(modelTags);
       const obj = { ...this.assetDetail.tags, ...modelObj.tags };
@@ -322,8 +351,20 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
     );
   }
-
+  onWhitelistedAssetChange() {
+    debugger;
+  }
   onCreateAsset() {
+    if (this.decodedToken?.privileges?.indexOf('ASMW') > -1 && this.decodedToken?.privileges?.indexOf('ASMP') > -1) {
+      // Note:Validate eighter selected whitelisted asset or manual detail added
+    }
+    else if(this.decodedToken?.privileges?.indexOf('ASMP') > -1) {
+      // Note:validate manual entry set
+    }
+    else if(this.decodedToken?.privileges?.indexOf('ASMW') > -1) {
+      // Note:validate dropdown is selected
+    }
+    // Note: remove unnecesssary validion with whitelisted asset
     if (
       !this.assetDetail.asset_id ||
       !this.assetDetail.tags.display_name ||

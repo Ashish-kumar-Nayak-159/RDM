@@ -224,7 +224,7 @@ export class CONSTANTS {
     },
   ];
 
-  public static DEFAULT_PRIVILEGES = {
+  public static DEFAULT_PRIVILEGES = {    
     APMM: {
       display_name: 'App Management - Manage',
       enabled: true,
@@ -275,6 +275,10 @@ export class CONSTANTS {
     },
     ASMVC: {
       display_name: 'Asset Management - View Creds',
+      enabled: true,
+    },
+    ASMW: {
+      display_name: 'App Management - WhiteList Asset',
       enabled: true,
     },
     RCC: {

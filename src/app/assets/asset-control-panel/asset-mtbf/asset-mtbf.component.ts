@@ -139,6 +139,7 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
             item.local_event_end_time = this.commonService.convertUTCDateToLocalDate(item.end_time);
             item.mtbfString = this.splitTime(item.mtbf);
             item.uptime = this.splitTime(item.metadata?.total_uptime_in_sec || 0);
+            item.breakdown = item.metadata?.machine_failure_breakdown_count;
             console.log(item.uptime);
           });
           if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
@@ -246,10 +247,11 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     // series.fillOpacity = 0;
     if (this.originalFilterObj.date_frequency === 'weekly') {
       series.columns.template.tooltipText =
-        'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mtbfString}[/]';
+        'Start Date: {openDateX} \n End Date: {dateX} \n Number of breakdowns: {metadata.machine_failure_breakdown_count} \n {name}: [bold]{mtbfString}[/]';
     } else {
-      series.columns.template.tooltipText = 'Date: {openDateX} \n  {name}: [bold]{mtbfString}[/]';
+      series.columns.template.tooltipText = 'Date: {openDateX} \n Number of breakdowns: {metadata.machine_failure_breakdown_count} \n  {name}: [bold]{mtbfString}[/]';
     }
+
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;

@@ -56,6 +56,7 @@
           <th scope="col">Date</th>
           <th scope="col">TBF</th>
           <th scope="col">Asset Uptime</th>
+          <th scope="col">Number of breakdowns</th>      
         </thead>
         <!-- <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
                 <tr>
@@ -72,6 +73,7 @@
               <td *ngIf="originalFilterObj.date_frequency === 'daily'">{{event.local_event_start_time}}</td>
               <td>{{event.mtbfString}}</td>
               <td>{{event.uptime}}</td>
+              <td>{{event.breakdown}}</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">

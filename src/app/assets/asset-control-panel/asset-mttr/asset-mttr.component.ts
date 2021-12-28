@@ -190,6 +190,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
               item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
               item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
               item.mttrString = this.splitTime(item.event_timespan_in_sec);
+              item.breakdown = item.metadata?.machine_failure_breakdown_count;
               if (this.displayMode === 'history') {
                 item.mttrString = this.splitTime(item.mttr);
               }
@@ -306,9 +307,9 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     // series.fillOpacity = 0;
     if (this.originalFilterObj.date_frequency === 'weekly') {
       series.columns.template.tooltipText =
-        'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mttrString} [/]';
+        'Start Date: {openDateX} \n End Date: {dateX} \n Number of breakdowns: {metadata.machine_failure_breakdown_count} \n {name}: [bold]{mttrString} [/]';
     } else {
-      series.columns.template.tooltipText = 'Date: {openDateX} \n {name}: [bold]{mttrString} [/]';
+      series.columns.template.tooltipText = 'Date: {openDateX} \n Number of breakdowns: {metadata.machine_failure_breakdown_count} \n {name}: [bold]{mttrString} [/]';
     }
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());

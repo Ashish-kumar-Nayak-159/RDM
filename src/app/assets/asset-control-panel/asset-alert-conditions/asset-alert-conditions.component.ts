@@ -98,6 +98,8 @@ export class AssetAlertConditionsComponent implements OnInit {
   onClickOfTab(type) {
     this.selectedTab = type;
     this.toggleRows = {};
+    this.alertObj = {};    
+    this.alertObj.alert_type = this.selectedTab;
     this.getAlertConditions();
   }
 
@@ -358,6 +360,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
     } else {
       this.alertObj = {};
+      this.alertObj.alert_type = this.selectedTab;
     }
     this.toggleRows = {};
     this.editRecommendationStep = {};

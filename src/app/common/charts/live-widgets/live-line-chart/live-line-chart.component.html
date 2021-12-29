@@ -20,12 +20,19 @@
           tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
       </div>
     </div>
-    <div class="card-body1" style="height: 12rem;">
-      <div class="row text-center " *ngIf="telemetryObj">
+    <div class="card-body1" style="height: 14rem;">
+      <div class="row text-center " *ngIf="telemetryObj && asset">
         <div id="{{ chartConfig.chartId }}" [ngStyle]="{'width': '95%', 'height': '11.5rem'}"></div>
       </div>
-      <div class="live-overlay" *ngIf="!asset" style="width: 150px;">
-        <div style="font-family:'Arial Black',sans-serif; font-size: 20px;">Sample Chart</div>
+      <div class="row text-center " *ngIf="telemetryObj && !asset">
+        <div class="text-center">
+          <div *ngIf="chartConfig.widgetType === 'LineChart'">
+            <div class="line-chart"></div>
+          </div>
+          <div *ngIf="chartConfig.widgetType === 'AreaChart'">
+            <div class="area-chart"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

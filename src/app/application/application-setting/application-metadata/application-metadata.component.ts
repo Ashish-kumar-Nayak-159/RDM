@@ -219,7 +219,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLocation() {
-    if((this.latitude && !this.longitude) || (!this.latitude && this.longitude)){
+    if(!this.latitude || !this.longitude || !(this.latitude.toString().trim()) || !(this.longitude.toString().trim()) || (this.latitude && !this.longitude) || (!this.latitude && this.longitude)){
       this.toasterService.showError("Select proper location", 'Save Menu Settings');
       return;
     }

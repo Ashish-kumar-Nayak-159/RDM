@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AssetListComponent } from './asset-list/asset-list.component';
 import { AuthGuardService } from '../services/auth-guard/auth-guard.service';
+import { WhiteListAssetComponent } from './white-list-asset/white-list-asset.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,11 @@ const routes: Routes = [
   {
     path: 'management',
     component: AssetManagementComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'whitelist',
+    component: WhiteListAssetComponent,
     canActivate: [AuthGuardService],
   },
   {

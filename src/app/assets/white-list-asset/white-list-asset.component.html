@@ -1,0 +1,95 @@
+<div class="blue-nav-bar">
+    <div class="d-flex align-items-center">
+        <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>&nbsp;
+        <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openImportWhiteListModal()"
+            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('WASMI') > -1"
+            placement="bottom" tooltip="Upload Template"><em class="fa fa-upload fa-sm"></em></button>
+        &nbsp;&nbsp;
+        <a href="{{blobStorageURL + templateFileName + sasToken}}"
+            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('WASMI') > -1">
+            <button type="submit" class="btn btn-sm searchBtn btn-primary" placement="bottom"
+                tooltip="Download Template">
+                <em class="fa fa-download fa-sm"></em>
+            </button>
+        </a>
+        <div class="ml-auto">
+            <div class="asset-nav-tabs">
+                <nav>
+                    <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab"
+                            data-toggle="tab" (click)="onTabChange(constantData.IP_ASSET)"
+                            href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true"
+                            [ngClass]="{'active': componentState === constantData.IP_ASSET}">
+                            <em class="fab fa-mixcloud mr-2"></em>
+                            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
+                        <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab"
+                            data-toggle="tab" (click)="onTabChange(constantData.NON_IP_ASSET)"
+                            href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile"
+                            aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_ASSET}">
+                            <em class="fa fa-microchip mr-2" aria-hidden="true"></em>
+                            <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
+                        <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab"
+                            data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
+                            href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile"
+                            aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
+                            <em class="fas fa-sitemap mr-2" aria-hidden="true"></em>
+                            <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="">
+    <div id="assetTabContent" class="tab-content">
+        <div class="tab-pane fade show active">
+            <app-white-list-asset-list [type]="componentState" *ngIf="componentState === constantData.IP_ASSET">
+            </app-white-list-asset-list>
+            <app-white-list-asset-list [type]="componentState" *ngIf="componentState === constantData.NON_IP_ASSET">
+            </app-white-list-asset-list>
+            <app-white-list-asset-list [type]="componentState" *ngIf="componentState === constantData.IP_GATEWAY">
+            </app-white-list-asset-list>
+        </div>
+    </div>
+</div>
+
+<div class="modal right fade" id="addWhieListAsset" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import Whitelist Asset</h5>
+                <button type="button" class="close" [disabled]="isCreatePackageAPILoading"
+                    (click)="onCloseModal('addWhieListAsset')" aria-label="Close">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label required">Upload:</label>
+                        <div class="form-group input-group row m-0">
+                            <div class="file-input form-control form-control-sm p-0 col-8">
+                                <input type="file" accept=".xls,.xlsx" id="file" class="file"
+                                    onclick="this.value = null" (change)="onFileSelected($event)">
+                                <!-- <label for="file" class="overflow-text"
+                  title="Choose File">Choose File</label> -->
+                                <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label>
+                            </div>
+                            <div class="file-input form-control form-control-sm p-0 col-4"
+                                style="background-color:#ccc !important">
+                                <input type="file" accept=".xls,.xlsx" id="file" class="file">
+                                <label for="file" class="bg-secondary text-white">Browse</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary add-row" (click)="onUploadWhitelistedAsset()"
+                    [disabled]="isCreatePackageAPILoading || !isCanUploadFile">Save</button>
+                <button type="button" class="btn btn-secondary">Cancel</button>
+                <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></em>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,9 @@
 <div class="blue-nav-bar">
   <div class="d-flex align-items-center">
-      <div class="main-heading">App Management&nbsp;
-      </div>
-      <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()"
-              placement="bottom" tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button>
+    <div class="main-heading">App Management&nbsp;
+    </div>
+    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()" placement="bottom"
+      tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button>
     <div class="ml-auto">
       <div class="asset-nav-tabs">
         <nav>
@@ -14,8 +14,8 @@
               <em class="fab fa-mixcloud mr-2"></em>
               <span class="d-none d-md-inline-block">Provisioned</span></a>
             <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-              (click)="isProvisioned = 'false';searchApplications()" href="#" role="tab" aria-controls="nav-unprovisioned"
-              aria-selected="false" [ngClass]="{'active': isProvisioned == 'false'}">
+              (click)="isProvisioned = 'false';searchApplications()" href="#" role="tab"
+              aria-controls="nav-unprovisioned" aria-selected="false" [ngClass]="{'active': isProvisioned == 'false'}">
               <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Un-Provisioned</span></a>
           </div>
@@ -184,6 +184,40 @@
               </accordion-group>
             </accordion>
           </ng-container>
+          <accordion class="mb-2" [closeOthers]="'true'">
+            <accordion-group heading="" [panelClass]="'customClass'">
+              <ng-container accordion-heading>
+                <a class="btn">
+                  Privileges
+                </a>
+              </ng-container>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">App Privileges:</label>
+                    <div>
+                      <input type="checkbox" name="visibleall_add" id="visibleall_add"
+                        (change)="onClickOfAllCheckbox('add')" [(ngModel)]="isAllprivilegeSelected['add']" [ngModelOptions]="{standalone: true}"
+                        placement="bottom" [tooltip]="isAllprivilegeSelected['add'] ? 'Deselect All' : 'Select All'" />
+                      <label for="visibleall_add" class="ml-2 mb-0">{{isAllprivilegeSelected['add'] ? 'Deselect All' :
+                        'Select All'}}</label>
+                    </div>
+                    <div  *ngFor="let group of privilegeGroups | keyvalue">
+                      <h6 class="my-3">{{group.key}}</h6>
+                      <div  *ngFor="let privilege of group.value" class="ml-3">
+                        <input type="checkbox" name="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                          id="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                          (change)="onPrivilegeSelection('add')" [ngModelOptions]="{standalone: true}"
+                          [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled" />
+                        <label for="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                          class="col-form-label">&nbsp;&nbsp;{{privilegeObj['add'].privileges[privilege].display_name}}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+          </accordion>
         </form>
       </div>
       <div class="modal-footer">
@@ -199,7 +233,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1">
   <div class="modal-dialog" role="document">
@@ -251,6 +284,53 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onCloseCreateAppModal('viewPartitionIconModal')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal right fade" id="editPrivilegeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel3"
+  style="overflow-y: hidden;">
+  <div class="modal-dialog modal-lg my-3" role="document">
+    <div class="modal-content" *ngIf="selectedApp">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Privilege: {{selectedApp.app}}</h5>
+        <button type="button" class="close" (click)="onCloseCreateAppModal('editPrivilegeModal')">
+          <span aria-hidden="true" tooltip="Close" placement="left">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="roleId > 0 && onValidateLength(appPrivilegeObj)  && onValidateLength(privilegeGroups)">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">App Privileges:</label>
+            <div>
+              <input type="checkbox" name="visibleall_add" id="visibleall_add" (change)="onClickOfAllCheckbox('add')"
+                [(ngModel)]="isAllprivilegeSelected['add']" placement="bottom"
+                [tooltip]="isAllprivilegeSelected['add'] ? 'Deselect All' : 'Select All'" />
+              <label for="visibleall_add" class="ml-2 mb-0">{{isAllprivilegeSelected['add'] ? 'Deselect All' : 'Select
+                All'}}</label>
+            </div>
+            <div *ngFor="let group of privilegeGroups | keyvalue">
+              <h6 class="my-3">{{group.key}}</h6>
+              <div *ngFor="let privilege of group.value" class="ml-3">
+                <input type="checkbox" name="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                  id="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                  (change)="onPrivilegeSelection('add')"
+                  [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled" />
+                <label for="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
+                  class="col-form-label">&nbsp;&nbsp;{{privilegeObj['add'].privileges[privilege].display_name}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAPILoading"
+          (click)="updatePrivilege()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading"
+          (click)="onCloseCreateAppModal('editPrivilegeModal')">
           Close
         </button>
       </div>

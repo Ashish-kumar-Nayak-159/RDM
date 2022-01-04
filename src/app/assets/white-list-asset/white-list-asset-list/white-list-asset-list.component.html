@@ -1,0 +1,73 @@
+<div class="table-responsive">
+    <div class="tableFixHead" style="max-height: calc(100vh - 10.5rem)">
+        <table class="table table-hover">
+            <thead>
+                <th scope="col">No</th>
+                <th scope="col">{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
+                <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
+                <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>                
+                <!-- <th scope="col">Action</th> -->
+            </thead>
+            <tbody>
+                <ng-container *ngIf="assetsList.length > 0">
+                    <tr *ngFor="let asset of assetsList; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{asset.display_name}}</td>
+                        <td>{{asset.asset_id}}</td>
+                        <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' : 'Non-Provisioned'}}</td>                        
+                        <!-- <td>
+                            <a href="javascript:void(0)" (click)="openAssetCreateModal(asset);" tooltip="Edit"
+                                *ngIf="asset.provision_status !== 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
+                                <em class="fas fa-fw fa-edit"></em>
+                            </a>
+                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision', asset)"
+                                tooltip="Deprovision"
+                                *ngIf="asset.provision_status === 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
+                                <em class="fas fa-fw fa-times-circle"></em>
+                            </a>
+                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2"
+                                tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
+                    && asset.status.toLowerCase() === 'disabled'">
+                                <em class="fas fa-fw fa-toggle-on"></em>
+                            </a>
+                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2"
+                                tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
+                     && asset.status.toLowerCase() === 'enabled'">
+                                <em class="fas fa-fw fa-toggle-off"></em>
+                            </a>
+                        </td> -->
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="assetsList.length === 0 && !isAssetListLoading">
+                    <tr>
+                        <td [attr.colspan]="type !== constantData.NON_IP_ASSET ? 7 : 5">
+                            No {{(tabData?.table_key || 'Asset')}} data found.
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="isAssetListLoading">
+                    <tr>
+                        <td [attr.colspan]="type !== constantData.NON_IP_ASSET ? 7 : 5">
+                            <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && assetsList.length > 0">
+        <a href="javascript:void(0)" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;getAssets(false);" placement="bottom"
+            tooltip="Load More Records...">Load More...</a>
+    </span>
+</div>
+<!-- <app-add-asset *ngIf="isOpenAssetCreateModal" [gateways]="gateways" [assetDetail]="selectedAsset"
+    (getAssetEmit)="assetsList = [];getAssets();" [componentState]="type" [tileData]="tabData"
+    (cancelModal)="onCreateAssetCancelModal()"></app-add-asset> -->
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+            (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+        </app-message-modal>
+    </div>
+</div>

@@ -184,19 +184,32 @@ export class AssetService {
   createAsset(assetObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
-    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
-    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
-    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    this.RemoveLocalStorageOnAppUpdation();
     return this.http.post(this.url + AppUrls.CREATE_ASSET, assetObj, { params });
+  }
+  createWhitelistedAsset(assetObj,assetId ,app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    this.RemoveLocalStorageOnAppUpdation();
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_ASSET, encodeURIComponent(app.app),assetId),assetObj);    
+  }
+  createWhitelistedLegacyAsset(assetObj,assetId ,app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    this.RemoveLocalStorageOnAppUpdation();
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_LEGACY_ASSET, encodeURIComponent(app.app),assetId),assetObj);    
   }
 
   createNonIPAsset(assetObj, app) {
+    this.RemoveLocalStorageOnAppUpdation();
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_ASSET, encodeURIComponent(app)), assetObj);
+  }
+
+  private RemoveLocalStorageOnAppUpdation() {
     localStorage.removeItem(CONSTANTS.ASSETS_LIST);
     localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_ASSET, encodeURIComponent(app)), assetObj);
   }
 
   enableAsset(assetId, appId) {
@@ -1316,5 +1329,14 @@ export class AssetService {
       bodyObj,
       { params }
     );
+  }
+  uploadWhitelistedAsset(app, formData) {
+    return this.http.post(this.url + String.Format(AppUrls.UPLOAD_WHITELISTED_ASSET, encodeURIComponent(app)), formData);
+  }
+  allocateAsset(assetId,userId, formData) {
+    return this.http.post(this.url + String.Format(AppUrls.ALLOCATE_ASSET, assetId,userId), formData);
+  }
+  deallocateAsset(assetId, formData) {
+    return this.http.put(this.url + String.Format(AppUrls.DEALLOCATE_ASSET, assetId), formData);
   }
 }

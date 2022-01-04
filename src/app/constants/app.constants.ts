@@ -224,7 +224,7 @@ export class CONSTANTS {
     },
   ];
 
-  public static DEFAULT_PRIVILEGES = {    
+  public static DEFAULT_PRIVILEGES = {
     APMM: {
       display_name: 'App Management - Manage',
       enabled: true,
@@ -325,18 +325,30 @@ export class CONSTANTS {
       display_name: 'User Management - View',
       enabled: true,
     },
+    WASMP: {
+      display_name: 'Whitelisting Asset Management - Provision',
+      enabled: true
+    },
+    WASMV: {
+      display_name: 'Whitelisting Asset Management - View',
+      enabled: true
+    },
+    WASMI: {
+      display_name: 'Whitelisting Asset Management - Import',
+      enabled: true
+    }
   };
 
   public static PRIVILEGE_GROUPS = {
     'App Management': ['APMV', 'APMM'],
-    Assets: ['ASMV', 'ASMVC', 'ASMM', 'ASMS'],
+    'Assets': ['ASMV', 'ASMVC', 'ASMM', 'ASMS'],
     'Asset Management': ['ASMP', 'ASMD', 'ASMED'],
     'Asset Campaign Management': ['ASCMV', 'ASCMM'],
     'Asset Model Management': ['ASMMV', 'ASMMM'],
     'Remote Control': ['RCV', 'RCC', 'RCP'],
     'Rules & KPIs': ['RKPIV', 'RKPIM'],
     'Remote Monitoring': ['RMV', 'RMM'],
-    Reports: ['RV', 'RSM'],
+    'Reports': ['RV', 'RSM'],
     'User Management': ['UMV', 'UMM'],
   };
 
@@ -431,6 +443,34 @@ export class CONSTANTS {
       visible: true,
       showAccordion: [{ name: 'Title', value: 'Asset Management' }],
       privileges_required: ['ASMP', 'ASMD', 'ASMED'],
+      priority: 1,
+    },
+    {
+      page: 'Asset Whitelist',
+      system_name: 'Asset Whitelist',
+      url: 'applications/:appName/assets/whitelist',
+      display_name: 'Asset Whitelist',
+      for_admin_only: true,
+      exactMatch: true,
+      icon: 'fa fa-fw fa-cogs',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Asset Whitelist' },
+        { name: 'Records Limit', value: 20, type: 'number' },
+        { name: 'IoT Assets', type: 'checkbox', value: true },
+        { name: 'Legacy Assets', type: 'checkbox', value: true },
+        { name: 'IoT Gateways', type: 'checkbox', value: true },
+        { name: 'IoT Asset', value: 'IoT Asset' },
+        { name: 'IoT Assets Tab Name', value: 'IoT Assets' },
+        { name: 'IoT Assets Table Key Name', value: 'Asset' },
+        { name: 'IoT Gateway', value: 'IoT Gateway' },
+        { name: 'IoT Gateways Tab Name', value: 'IoT Gateways' },
+        { name: 'IoT Gateways Table Key Name', value: 'Gateway' },
+        { name: 'Legacy Asset', value: 'Legacy Asset' },
+        { name: 'Legacy Assets Tab Name', value: 'Legacy Assets' },
+        { name: 'Legacy Assets Table Key Name', value: 'Asset' },
+      ],
+      privileges_required: ['WASMV'],
       priority: 1,
     },
     {
@@ -1728,11 +1768,11 @@ export class CONSTANTS {
     'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
     'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
     'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
-    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(),1)), datefns.endOfDay(datefns.subDays(new Date(),1))],
-    'This Week': [datefns.startOfWeek(new Date(),{weekStartsOn:1}), datefns.subSeconds(new Date(), 0)],
-    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1),datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],
-    'Last 30 Days': [datefns.subDays(new Date(),29), datefns.subSeconds(new Date(), 0)],
-    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],    
+    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.endOfDay(datefns.subDays(new Date(), 1))],
+    'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
+    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],
+    'Last 30 Days': [datefns.subDays(new Date(), 29), datefns.subSeconds(new Date(), 0)],
+    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
     'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.subMonths(datefns.endOfMonth(new Date()), 1)]
   };
 
@@ -1782,8 +1822,5 @@ export class CONSTANTS {
   public static ASSET_MODEL_IMAGE_WIDTH = 2000;
   public static ASSET_MODEL_IMAGE_HEIGHT = 2000;
   public static ASSET_MODEL_IMAGE_SIZE = 2000000;
-  // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
-  // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.png';
-  // public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/default_app_header_logo.png';
-  // public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/default_asset_icon.svg';
+  public static DEFAULT_WHITELISTED_EXCEL_FILE = environment.blobContainerName + '/WhiteListedAssets.xlsx';
 }

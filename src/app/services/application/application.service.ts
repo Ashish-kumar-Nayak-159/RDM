@@ -14,7 +14,7 @@ import { catchError, map } from 'rxjs/operators';
 export class ApplicationService {
   url = environment.appServerURL;
   refreshAppData: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private http: HttpClient, private commonService: CommonService) {}
+  constructor(private http: HttpClient, private commonService: CommonService) { }
 
   getApplicationOfUser(filterObj) {
     let params = new HttpParams();
@@ -70,6 +70,78 @@ export class ApplicationService {
     return this.http.get(this.url + AppUrls.GET_DBPARTITION, { params });
   }
 
+  getAllPriviledges() {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALL_PRIVILEDGES)).pipe(
+      map((data: any) => {        
+        if (data?.count > 0) {     
+          let priviledgeGroup = this.GroupPriviledges(data);
+          let priviledges = this.Refactorriviledges(data);
+          // Note : Bifurecate PriviledgeGroup and priviledges seperately
+          data.data = { PrivilegeGroup: priviledgeGroup, Priviledges: priviledges }
+          return data;
+        }
+        return new Observable((observer) => {
+          observer.next({
+            data: { PrivilegeGroup: CONSTANTS.PRIVILEGE_GROUPS, Priviledges: CONSTANTS.DEFAULT_PRIVILEGES },
+          });
+        });
+      }),
+      catchError((error) => {
+        return new Observable((observer) => {
+          observer.next({
+            data: { PrivilegeGroup: CONSTANTS.PRIVILEGE_GROUPS, Priviledges: CONSTANTS.DEFAULT_PRIVILEGES },
+          });
+        });
+      })
+    );
+  }
+  private GroupPriviledges(data: any) {
+    return data.data.reduce((acc, value) => {
+      // Group initialization
+      if (!acc[value.module]) {
+        acc[value.module] = [];
+      }
+      // Grouping
+      acc[value.module].push(value.key);
+      return acc;
+    }, {});
+  }
+  private Refactorriviledges(data: any) {
+    return data.data.reduce((acc, value) => {
+      // Group initialization
+      if (!acc[value.key]) {
+        value.display_name = value.module + ' - ' + value.type;
+        value.enabled = value.default_enabled;
+        acc[value.key] = value;
+      }                    
+      return acc;
+    }, {});
+  }
+
+  getAppPriviledges(app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_PRIVILEDGES, encodeURIComponent(app))).pipe(
+      map((data: any) => {        
+        if (data?.count > 0) {               
+          // Note : Bifurecate PriviledgeGroup and priviledges seperately
+          data.data = { Priviledges: data.data }
+          return data;
+        }
+        return new Observable((observer) => {
+          observer.next({
+            data: { Priviledges: CONSTANTS.DEFAULT_PRIVILEGES },
+          });
+        });
+      }),
+      catchError((error) => {
+        return new Observable((observer) => {
+          observer.next({
+            data: { Priviledges: CONSTANTS.DEFAULT_PRIVILEGES },
+          });
+        });
+      })
+    );
+  }
+
   getApplicationDetail(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, encodeURIComponent(app)));
   }
@@ -88,6 +160,10 @@ export class ApplicationService {
       this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURIComponent(appObj.app)),
       appObj
     );
+  }
+
+  updatePrivilege(app,roleId,obj) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APPADMIN_PRIVILEGE, encodeURIComponent(app),roleId),obj );
   }
 
   getLastAlerts(filterObj: any) {
@@ -185,12 +261,12 @@ export class ApplicationService {
     });
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_APP_USERROLES,
-          encodeURIComponent(app),
-          encodeURIComponent(filterObj.id),
-          filterObj.role
-        ),
+      String.Format(
+        AppUrls.DELETE_APP_USERROLES,
+        encodeURIComponent(app),
+        encodeURIComponent(filterObj.id),
+        filterObj.role
+      ),
       { params }
     );
     // return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),

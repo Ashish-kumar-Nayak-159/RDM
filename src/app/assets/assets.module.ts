@@ -72,6 +72,8 @@ import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert
 import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
 import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-derived-properties/cloud-derived-properties.component';
 import { WorkProgressComponent } from './asset-control-panel/work-progress/work-progress.component';
+import { WhiteListAssetComponent } from './white-list-asset/white-list-asset.component';
+import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset-list/white-list-asset-list.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +130,8 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     C2dJobsComponent,
     CloudDerivedPropertiesComponent,
     WorkProgressComponent,
+    WhiteListAssetComponent,
+    WhiteListAssetListComponent,
   ],
   imports: [
     CommonModule,

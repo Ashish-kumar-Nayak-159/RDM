@@ -47,11 +47,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    debugger;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
-    if (this.decodedToken?.privileges?.indexOf('ASMW') > -1) {
+    if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
@@ -125,6 +124,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   getWhiteListedAsset() {
     const obj = {
       type: this.componentState,
+      provisioned: false
     };
     return new Promise<void>((resolve1, reject) => {
       this.whiteListedAssets = [];
@@ -139,7 +139,43 @@ export class AddAssetComponent implements OnInit, OnChanges {
           (error) => {
             debugger;
             /// Note: remove once api ready          
-            this.whiteListedAssets = [{ "asset_id": "1", "tags": { "display_name": "asset1" } }, { "asset_id": "2", "tags": { "display_name": "asset2" } }];
+            let response = {
+              "data": [
+                {
+
+                  "asset_id": "111",
+                  "gateway_id": "G1",
+                  "app": "DimpleDevApp",
+                  "type": "legacyassets",
+                  "cloud_connectivity": "ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud",
+                  "asset_model": null,
+                  "display_name": "test l asset model 11",
+                  "protocol": "Modbus_TCP",
+                  "custom_tags": "{\"lextra1\": \"lx1\", \"lextra2\": \"lx2\"}",
+                  "partition_key": "111",
+                  "provisioned": false
+                },
+
+                {
+
+                  "asset_id": "222",
+                  "gateway_id": "G2",
+                  "app": "DimpleDevApp",
+                  "type": "legacyassets",
+                  "cloud_connectivity": "Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud",
+                  "asset_model": null,
+                  "display_name": "test l asset model 22",
+                  "protocol": "Siemens_TCP_IP",
+                  "partition_key": "222",
+                  "provisioned": false
+
+                }
+
+              ],
+
+              "count": 2
+            };
+            this.whiteListedAssets = response.data;
           }),
       );
     });
@@ -197,9 +233,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     } else {
       const arr = [];
       this.gateways = [];
-      console.log('hierarchyObj', hierarchyObj);
       this.updateAssetManagerWithHierarchy(hierarchyObj);
-      console.log(this.originalGateways);
       this.originalGateways.forEach((asset) => {
         let trueFlag = 0;
         let flaseFlag = 0;
@@ -352,19 +386,20 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
   onWhitelistedAssetChange() {
-    debugger;
+    if (this.selectedWhitelistAsset === undefined) {
+      this.assetDetail.asset_id = null;
+      this.assetDetail.tags.display_name = null;
+      this.assetDetail.tags.cloud_connectivity = undefined;
+      this.assetDetail.tags.protocol = undefined;
+    }
+    else {
+      this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
+      this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
+      this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
+      this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
+    }
   }
   onCreateAsset() {
-    if (this.decodedToken?.privileges?.indexOf('ASMW') > -1 && this.decodedToken?.privileges?.indexOf('ASMP') > -1) {
-      // Note:Validate eighter selected whitelisted asset or manual detail added
-    }
-    else if(this.decodedToken?.privileges?.indexOf('ASMP') > -1) {
-      // Note:validate manual entry set
-    }
-    else if(this.decodedToken?.privileges?.indexOf('ASMW') > -1) {
-      // Note:validate dropdown is selected
-    }
-    // Note: remove unnecesssary validion with whitelisted asset
     if (
       !this.assetDetail.asset_id ||
       !this.assetDetail.tags.display_name ||
@@ -452,10 +487,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
     console.log(this.assetDetail);
-    const methodToCall =
-      this.componentState === CONSTANTS.NON_IP_ASSET
-        ? this.assetService.createNonIPAsset(obj, this.contextApp.app)
-        : this.assetService.createAsset(obj, this.contextApp.app);
+    const methodToCall = this.SetMethodCallOnCondition(obj);
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
@@ -485,6 +517,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
 
+  private SetMethodCallOnCondition(obj: any) {
+    return this.componentState === CONSTANTS.NON_IP_ASSET
+      ? this.selectedWhitelistAsset === undefined ? this.assetService.createNonIPAsset(obj, this.contextApp.app) : this.assetService.createWhitelistedLegacyAsset(obj, this.assetDetail.asset_id, this.contextApp)
+      : this.selectedWhitelistAsset === undefined ? this.assetService.createAsset(obj, this.contextApp.app) : this.assetService.createWhitelistedAsset(obj, this.assetDetail.asset_id, this.contextApp);
+  }
+
   updateGatewayTags(assetObj) {
     const obj = {
       asset_id: assetObj.asset_id,
@@ -508,7 +546,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       )
     );
   }
-
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();

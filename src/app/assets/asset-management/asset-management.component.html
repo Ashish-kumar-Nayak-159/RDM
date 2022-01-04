@@ -4,7 +4,7 @@
 
    <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>&nbsp;
    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()"
-   *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMP') > -1 || decodedToken.privileges.indexOf('ASMW') > -1)"
+   *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMP') > -1 || decodedToken.privileges.indexOf('WASMP') > -1)"
    placement="bottom" tooltip="Provision"><em class="fas fa-plus fa-sm"></em></button>
 
    <div class="ml-auto">

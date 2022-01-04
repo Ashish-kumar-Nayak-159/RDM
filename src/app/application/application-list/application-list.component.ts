@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { environment } from 'src/environments/environment';
 import { ToasterService } from './../../services/toaster.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators,ReactiveFormsModule  } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
@@ -25,8 +25,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   databaseTableConfig: any;
   selectedApp: any;
   createApplicationForm: FormGroup;
-  isProvisioned : string = 'true';
-  constructor(private applicationService: ApplicationService, private toasterService: ToasterService) {}
+  isProvisioned: string = 'true';
+  isAllprivilegeSelected: any = {};
+  privilegeObj: any = {};
+  privilegeGroups: any = {};
+  appPrivilegeObj: any = {};
+  roleId : number = 0;
+  constructor(private applicationService: ApplicationService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
     this.tableConfig = {
@@ -83,6 +88,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           key: undefined,
           data_type: 'button',
           btn_list: [
+            {
+              icon: 'fa fa-fw fa-edit',
+              text: '',
+              id: 'EditPrivilege',
+              valueclass: '',
+              tooltip: 'Edit Privilege',
+            },
             {
               icon: 'fa fa-fw fa-eye',
               text: '',
@@ -167,13 +179,26 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTableFunctionCall(obj) {
+  onTableFunctionCall(obj) {    
     if (obj.for === 'View') {
-      this.openViewIconModal(obj.data);
+      this.onOpenViewIconModal(obj.data);
     }
-    if (obj.for === 'Partition') {
+    else if (obj.for === 'Partition') {
       this.openPartitionIconModal(obj.data);
     }
+    else if (obj.for === 'EditPrivilege') {    
+      this.roleId = 0;
+      this.privilegeObj = {};
+      this.privilegeGroups = {};
+      this.appPrivilegeObj = {};
+      this.getAppPriviledges(obj.data);
+      this.getAllPriviledges(obj.data);
+      this.isCreateAPILoading = false;
+    }
+  }
+  onValidateLength(obj)
+  {
+    return Object.keys(obj).length > 0;
   }
 
   onCheckboxValueChange() {
@@ -206,7 +231,47 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
   }
 
+  getAllPriviledges(app = undefined) {  
+    return new Promise<void>((resolve1, reject) => {
+      this.apiSubscriptions.push(
+        this.applicationService.getAllPriviledges().subscribe((response: any) => {
+          if (response && response.data) {
+            this.privilegeObj['add'] = {};
+            // Note : Set Privilege with api call    
+            this.isAllprivilegeSelected['add'] = true;
+            this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(response.data.Priviledges));
+            this.privilegeGroups = response.data.PrivilegeGroup;            
+            this.onPrivilegeSelection('add', app === undefined ? false : true);
+            if (app !== undefined && Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0 ) {              
+              this.onOpenModal('editPrivilegeModal', app);
+            }
+            resolve1();
+          }
+        })
+      );
+    });
+  }
+  getAppPriviledges(app) {
+    return new Promise<void>((resolve1, reject) => {
+      this.apiSubscriptions.push(
+        this.applicationService.getAppPriviledges(app.app).subscribe((response: any) => {
+          if (response && response.data) {
+            this.roleId = response.data.Priviledges[0].id;
+            this.appPrivilegeObj = JSON.parse(JSON.stringify(response.data.Priviledges[0].privileges));
+            if (Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0 ) 
+            {
+              this.onOpenModal('editPrivilegeModal', app);
+            }
+            resolve1();
+          }
+        })
+      );
+    });
+  }
+
   openCreateAppModal() {
+    this.getAllPriviledges();
+    this.appPrivilegeObj = undefined;
     this.createApplicationForm = new FormGroup({
       app: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
       admin_name: new FormControl(null, [Validators.required]),
@@ -227,16 +292,19 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             sub_partition_strategy: new FormControl(null),
           }),
         }),
-      }),
+      })
     });
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  openViewIconModal(app) {
+  onOpenViewIconModal(app) {
     this.selectedApp = app;
     $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
-
+  onOpenModal(modelId, app) {
+    this.selectedApp = app;
+    $('#' + modelId).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
   openPartitionIconModal(app) {
     this.selectedApp = app;
     console.log(this.selectedApp);
@@ -319,7 +387,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       {
         role: 'App Admin',
         level: 0,
-        privileges: CONSTANTS.DEFAULT_PRIVILEGES,
+        privileges: this.privilegeObj?.add?.privileges,
       },
     ];
     const env = environment.environment;
@@ -355,7 +423,62 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
     }
   }
+  async updatePrivilege() {
+    let priviledges = { privileges: this.privilegeObj?.add?.privileges };
+    this.isCreateAPILoading = true;
+    const methodToCall = this.applicationService.updatePrivilege(this.selectedApp.app, this.roleId, priviledges);
+    if (methodToCall) {
+      this.apiSubscriptions.push(
+        methodToCall.subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Create App');
+            this.onCloseCreateAppModal('editPrivilegeModal');
+            this.searchApplications();
+            this.isCreateAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Create App');
+            this.isCreateAPILoading = false;
+          }
+        )
+      );
+    }
+  }
+  onPrivilegeSelection(index, initialLoad = false) {
+    let count = 0;
+    Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => {
+      if (initialLoad && this.appPrivilegeObj !== undefined) {
+        this.SetPreloadPrivilegeOfApp(privilege, index, count);
+        if (this.privilegeObj[index].privileges[privilege].enabled)
+          count++;
+      }
+      else {
+        if (this.privilegeObj[index].privileges[privilege].enabled) {
+          count++;
+        }
+      }
+    });
+    if (count === Object.keys(this.privilegeObj[index].privileges).length) {
+      this.isAllprivilegeSelected[index] = true;
+    } else {
+      this.isAllprivilegeSelected[index] = false;
+    }
+  }
+  private SetPreloadPrivilegeOfApp(privilege: string, index: any, count: number) {
+    if (this.appPrivilegeObj.hasOwnProperty(privilege)) {
+      this.privilegeObj[index].privileges[privilege].enabled = this.appPrivilegeObj[privilege].enabled;
+    }
+    else
+      this.privilegeObj[index].privileges[privilege].enabled = true;
+  }
 
+  onClickOfAllCheckbox(index) {
+    if (this.isAllprivilegeSelected[index]) {
+      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = true));
+    } else {
+      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = false));
+    }
+  }
   ngOnDestroy() {
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
   }

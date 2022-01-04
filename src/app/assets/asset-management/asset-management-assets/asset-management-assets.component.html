@@ -20,8 +20,8 @@
         <th scope="col">No</th>
         <th scope="col">{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
         <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
-        <th scope="col"*ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
-        <th scope="col"*ngIf="type !== constantData.NON_IP_ASSET">{{(tabData?.table_key || 'Asset') + ' Status' }}</th>
+        <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
+        <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">{{(tabData?.table_key || 'Asset') + ' Status' }}</th>
         <th scope="col">Hierarchy</th>
         <th scope="col">Action</th>
       </thead>
@@ -67,6 +67,16 @@
                 *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('RCC') > -1">
                 <em class="fas fa-fw fa">&#xf021;</em>
               </a> -->
+              <!-- Start Allocation & Deallocation -->
+              <a href="javascript:void(0)" (click)="onOpenModelToAllocateDeallocate(true,asset)" class="ml-2"
+                tooltip="Allocate">
+                <em class="fas fa-plus fa-sm"></em>
+              </a>
+              <a href="javascript:void(0)" (click)="onOpenModelToAllocateDeallocate(false,asset)" class="ml-2"
+                tooltip="DeAllocate">
+                <em class="fas fa-fw fa-times-circle"></em>
+              </a>
+              <!-- End Allocation & Deallocation -->
             </td>
           </tr>
         </ng-container>
@@ -102,7 +112,71 @@
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading"></app-message-modal>
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+    </app-message-modal>
   </div>
-
 </div>
+
+<!-- Start Allocation & Deallocation -->
+<div class="modal right fade" *ngIf="allocationObj" id="allocateDeallocateModal" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel3" style="overflow-y: hidden;">
+  <div class="modal-dialog modal-lg my-3" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{isAllocation ? 'Allocate' : 'De-Allocate'}} - {{selectedAsset ?
+          selectedAsset.display_name : ''}}</h5>
+        <button type="button" class="close" (click)="onCloseModal('allocateDeallocateModal')">
+          <span aria-hidden="true" tooltip="Close" placement="left">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="isAllocation !== undefined">
+        <div class="col-12">
+          <form #form="ngForm">
+            <div *ngIf="isAllocation">
+              <div class="form-group">
+                <label for="user" class="col-form-label required">User:</label>
+                <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="allocationObj.userId">
+                  <option [ngValue]="undefined">Select User
+                  </option>
+                  <option *ngFor="let user of filteredUsers" [ngValue]="user.user_email">{{user.user_name}}
+                    ({{user.user_email}})</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="allocatedate" class="col-form-label required">Allocation Date:</label>
+                <input type="datetime-local" class="form-control form-control-sm" id="allocationdate"
+                  name="allocationdate" [(ngModel)]="allocationObj.allocationDate" placeholder="Choose Allocation Date">
+              </div>
+              <div class="form-group">
+                <label for="allocatedate" class="col-form-label required">Hourly Rate:</label>
+                <input type="number" min="0" class="form-control form-control-sm" id="hourlyRate" name="hourlyRate"
+                  [(ngModel)]="allocationObj.hourlyRate" placeholder="Hourly Rate">
+              </div>
+            </div>
+            <div *ngIf="!isAllocation">
+              <div class="form-group">
+                <label for="deallocatedate" class="col-form-label required">De-Allocation Date:</label>
+                <input type="datetime-local" class="form-control form-control-sm" id="deallocationDate"
+                  name="deallocationDate" [(ngModel)]="allocationObj.deallocationDate"
+                  placeholder="Choose De-Allocation Date">
+              </div>
+            </div>
+            <div class="modal-footer fixed-bottom bg-white">
+              <button type="button" class="btn btn-primary add-row" [disabled]="isAPILoading"
+                (click)="allocateDeAllocateAsset()">Save</button>
+              <button type="button" class="btn btn-secondary" [disabled]="isAPILoading"
+                (click)="onCloseModal('allocateDeallocateModal')">
+                Close
+              </button>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></em>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Allocation & Deallocation -->

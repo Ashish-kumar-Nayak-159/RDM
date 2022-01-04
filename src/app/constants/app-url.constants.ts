@@ -28,6 +28,8 @@ export class AppUrls {
   public static DISABLE_ASSET = 'DLM_DisableAsset';
   public static DELETE_ASSET = 'DLM_DeleteAsset';
   public static CREATE_ASSET = 'DLM_CreateAsset';
+  public static CREATE_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets/{1}';
+  public static CREATE_WHITELISTED_LEGACY_ASSET = 'apps/{0}/whitelisted_legacy_assets/{1}';
   public static SEND_C2D_MESSAGE = 'apps/{0}/iot_assets/{1}/c2d_messages';
   public static LOGIN = 'login';
   public static GUEST_SIGNUP = 'guest_signup';
@@ -43,6 +45,8 @@ export class AppUrls {
   public static UPDATE_NON_IP_ASSET_TAGS = 'apps/{0}/legacy_assets/{1}/tags';
   public static GE_NON_IP_ASSETS_COUNT = 'apps/{0}/legacy_assets_count';
   public static GET_APP_DETAILS = 'apps/{0}';
+  public static GET_ALL_PRIVILEDGES = 'privileges';
+  public static GET_APP_PRIVILEDGES = 'apps/{0}/privileges';
   public static GET_APP_USERS = 'apps/{0}/users';
   public static GET_APP_USERGROUPS = 'apps/{0}/user_groups';
   public static UPDATE_APP_USERGROUPS = 'apps/{0}/user_groups/{1}';
@@ -164,7 +168,7 @@ export class AppUrls {
   public static UPDATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static DELETE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets';
-  public static WHITELISTED_ASSETS = 'apps/{0}/whitelisted_assets';
+  public static WHITELISTED_ASSETS = 'apps/{0}/whitelistedassets';
   public static UPDATE_NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets/{1}/tags';
   public static GET_ASSET_ALERT_CONDITIONS = 'apps/{0}/assets/{1}/alert_conditions';
   public static CREATE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions';
@@ -193,4 +197,8 @@ export class AppUrls {
   public static STOP_JOB_CAMPAIGN = 'apps/{0}/job_campaigns/{1}/end';
 
   public static GET_USERS_APPLICATION = 'user_apps';
+  public static UPLOAD_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets';
+  public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
+  public static ALLOCATE_ASSET = 'tool/{0}/user/{1}/allocate';
+  public static DEALLOCATE_ASSET = 'allocate/{0}';
 }

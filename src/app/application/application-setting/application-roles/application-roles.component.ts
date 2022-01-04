@@ -19,6 +19,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   userRoles: any[] = [];
   privilegeObj: any = {};
   privilegeGroups: any;
+  privileges: any = {};
   saveRoleAPILoading = false;
   selectedRole: any;
   isDeleteRoleAPILoading = false;
@@ -28,19 +29,22 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   pageType: any;
   isAllprivilegeSelected: any = {};
   constantData = CONSTANTS;
+  contextApp: any = {};
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    this.privilegeGroups = CONSTANTS.PRIVILEGE_GROUPS;
+    this.getAllPriviledges();
     this.getApplicationUserRoles();
+
   }
 
   getApplicationUserRoles() {
@@ -72,10 +76,11 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     this.pageType = type;
   }
 
+
   openCreateUserModal() {
     this.privilegeObj['add'] = {};
     this.privilegeObj['add'].app = this.applicationData.app;
-    this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(CONSTANTS.DEFAULT_PRIVILEGES));
+    this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(this.privileges));
     this.isAllprivilegeSelected['add'] = true;
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -162,11 +167,16 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   onPrivilegeSelection(index) {
     let count = 0;
-    Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => {
+    Object.keys(this.privileges).forEach((privilege) => {
+      if(this.privilegeObj[index].privileges[privilege] == undefined)
+      {
+        this.privilegeObj[index].privileges[privilege] = {enabled : false,display_name : this.privileges[privilege].display_name}
+      }
       if (this.privilegeObj[index].privileges[privilege].enabled) {
         count++;
       }
     });
+
     if (count === Object.keys(this.privilegeObj[index].privileges).length) {
       this.isAllprivilegeSelected[index] = true;
     } else {
@@ -188,5 +198,19 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  getAllPriviledges() {
+    this.apiSubscriptions.push(
+      this.applicationService.getAllPriviledges().subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.privileges = response.data.Priviledges;
+            this.privilegeGroups = response.data.PrivilegeGroup;
+          }
+        },
+        () => { }
+      )
+    );
   }
 }

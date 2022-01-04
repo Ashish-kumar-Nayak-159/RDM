@@ -1,18 +1,17 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from './../../../services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
+
 @Component({
-  selector: 'app-asset-management-assets',
-  templateUrl: './asset-management-assets.component.html',
-  styleUrls: ['./asset-management-assets.component.css'],
+  selector: 'app-white-list-asset-list',
+  templateUrl: './white-list-asset-list.component.html',
+  styleUrls: ['./white-list-asset-list.component.css']
 })
-export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
+export class WhiteListAssetListComponent implements OnInit {
   @Input() type: any;
   assetsList: any[] = [];
   isAssetListLoading = false;
@@ -53,14 +52,10 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   tabData: any;
   decodedToken: any;
   selectedAsset: any;
-  isAllocation = undefined;
-  allocationObj: any;
-  filteredUsers: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
-    private toasterService: ToasterService,
-    private applicationService: ApplicationService
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -69,15 +64,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
-    this.getAssets();
-    // if (this.type === 'legacy-assets') {
-    //   this.componentState = CONSTANTS.NON_IP_ASSET;
-    // } else if (this.type === 'iot-assets') {
-    //   this.componentState = CONSTANTS.IP_ASSET;
-    // } else if (this.type === 'iot-gateways') {
-    //   this.componentState = CONSTANTS.IP_GATEWAY;
-    // }
-    setTimeout(() => {
+    this.getAssets(); setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
         if (
@@ -92,27 +79,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       });
     }, 2000);
   }
-
-  getGatewayList() {
-    this.gateways = [];
-    const obj = {
-      app: this.contextApp.app,
-      type: CONSTANTS.IP_GATEWAY,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-    };
-    this.subscriptions.push(
-      this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
-        if (response.data) {
-          this.gateways = response.data;
-          this.assetsList.forEach((item) => {
-            const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
-            item.gateway_display_name = name ? name : item.gateway_id;
-          });
-        }
-      })
-    );
-  }
-
   getTileName() {
     let selectedItem;
     this.contextApp.menu_settings.main_menu.forEach((item) => {
@@ -150,25 +116,9 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
-    if (flag) {
-      await this.getNonProvisionedAssets();
-    }
-    const obj: any = {};
-    obj.app = this.contextApp.app;
-    obj.offset = this.currentOffset;
-    obj.count = this.currentLimit;
-    // obj.provision_status = 'Pending,Completed';
-    if (this.contextApp) {
-      obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
-    }
+    const obj: any = {type : this.type};
     let methodToCall;
-    if (this.type === CONSTANTS.NON_IP_ASSET) {
-      obj.type = CONSTANTS.NON_IP_ASSET;
-      methodToCall = this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
-    } else {
-      obj.type = this.type;
-      methodToCall = this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
-    }
+    methodToCall = this.assetService.getWhiteListedAsset(obj, this.contextApp.app);
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
@@ -204,54 +154,13 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
         (error) => {
           this.isAssetListLoading = false;
           this.insideScrollFunFlag = false;
+          this.assetsList = [];
         }
       )
     );
   }
 
-  getNonProvisionedAssets() {
-    return new Promise<void>((resolve1) => {
-      this.isAssetListLoading = true;
-      const obj: any = {};
-      obj.type = this.type;
-      this.subscriptions.push(
-        this.assetService.getNonProvisionedAsset(obj, this.contextApp.app).subscribe(
-          (response: any) => {
-            if (response.data) {
-              response.data.forEach((item) => {
-                if (!item.display_name) {
-                  item.display_name = item.asset_id;
-                }
-                if (item.hierarchy) {
-                  item.hierarchyString = '';
-                  const keys = Object.keys(item.hierarchy);
-                  this.contextApp.hierarchy.levels.forEach((key, index) => {
-                    item.hierarchyString += item.hierarchy[key]
-                      ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                      : '';
-                  });
-                }
-                if (!item.provision_status) {
-                  item.provision_status = 'Pending';
-                }
-              });
-              this.assetsList = [...this.assetsList, ...response.data];
-            }
-            resolve1();
-            this.isAssetListLoading = false;
-          },
-          (error) => {
-            this.isAssetListLoading = false;
-          }
-        )
-      );
-    });
-  }
-
   openAssetCreateModal(asset = undefined) {
-    if (this.type === CONSTANTS.NON_IP_ASSET) {
-      this.getGatewayList();
-    }
     this.selectedAsset = asset;
     this.isOpenAssetCreateModal = true;
   }
@@ -474,118 +383,5 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-  }
-  onOpenModelToAllocateDeallocate(isAllocate = false, asset) {
-    this.getUsers();
-    this.selectedAsset = asset;
-    this.allocationObj = undefined;
-    if (isAllocate) {
-      this.allocationObj = {
-        metadata: { project: null },
-        hourlyRate: 1,
-        allocationDate: Date.now(),
-        userId: undefined
-      };
-    }
-    else
-      this.allocationObj = { deallocationDate: new Date() };
-    this.isAllocation = isAllocate;
-    $('#allocateDeallocateModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  }
-  onCloseModal(modalId) {
-    this.isAllocation = undefined;
-    this.selectedAsset = undefined;
-    $('#' + modalId).modal('hide');
-  }
-  allocateDeAllocateAsset() {
-    this.isAPILoading = true;
-    let messageHeader = this.isAllocation ? 'Allocation Asset' : 'De-Allocation Asset'
-    if (this.validateAllocationDeallocationObj(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, messageHeader)) {
-      let obj = {};
-      const methodToCall = this.isAllocation ? this.assetService.allocateAsset(this.selectedAsset.asset_id, this.allocationObj.userId, obj) : this.assetService.deallocateAsset(this.selectedAsset.asset_id, obj);
-      this.subscriptions.push(
-        methodToCall.subscribe(
-          (response: any) => {
-            this.toasterService.showSuccess(
-              response.message, messageHeader);
-            this.onCloseModal('allocateDeallocateModal');
-            this.isAPILoading = false;
-          },
-          (error) => {
-            debugger
-            this.toasterService.showError(
-              error.message, messageHeader);
-            this.onCloseModal('allocateDeallocateModal');
-            this.isAPILoading = false;
-          }
-        )
-      );
-    }
-  }
-  validateAllocationDeallocationObj(allRequiredMessage, messageHeader) {
-    if (this.isAllocation) {
-      if (!this.allocationObj.hourlyRate || !this.allocationObj.userId || !this.allocationObj.allocationDate) {
-        this.toasterService.showError(allRequiredMessage, messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.userId === undefined || this.allocationObj.userId.length <= 0) {
-        this.toasterService.showError('User Selection is compulsory.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.allocationDate === undefined) {
-        this.toasterService.showError('Please add valid allocation date.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if(new Date(this.allocationObj.allocationDate) > new Date()) {
-        this.toasterService.showError('Allocation date should not be greater than now.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.hourlyRate === undefined || this.allocationObj.hourlyRate <= 0) {
-        this.toasterService.showError('Hourly rate must be greater than 0.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-    }
-    else {
-      if (!this.allocationObj.deallocationDate || this.allocationObj.deallocationDate === undefined) {
-        this.toasterService.showError(allRequiredMessage, messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-    }
-    return true;
-  }
-  getUsers() {
-    let appUsers = [];
-    this.filteredUsers = appUsers;
-    this.subscriptions.push(
-      this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
-        if (response && response.data) {
-          appUsers = response.data;
-          if (Object.keys(this.contextApp.app).length === 1) {
-            this.filteredUsers = appUsers;
-          } else {
-            this.updateAssetManagerWithHierarchy(this.contextApp.app, appUsers);
-          }
-        }
-      })
-    );
-  }
-  updateAssetManagerWithHierarchy(hierarchyObj, users) {
-    let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-    let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    this.filteredUsers = users.filter(function (user) {
-      if (!user.hierarchy.hasOwnProperty(lastObjKey)) {
-        let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
-        if (!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
-          return true;
-      }
-      else if (user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
-        return true;
-    });
   }
 }

@@ -4,7 +4,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
           {{isAssetEditable ? ('Edit ' + (tileData?.table_key || 'Asset')) :
-            ('Add New ' + (tileData?.table_key || 'Asset'))}}
+          ('Add New ' + (tileData?.table_key || 'Asset'))}}
         </h5>
         <button type="button" class="close" (click)="onCloseCreateAssetModal()" aria-label="Close"
           [disabled]="isCreateAssetAPILoading">
@@ -14,65 +14,78 @@
       <div class="modal-body" *ngIf="assetDetail && assetDetail.tags">
         <form #form="ngForm">
           <ng-container>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">App:</label>
-            <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
-          </div>
-          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index">
-            <div class="form-group" *ngIf="hIndex !== 0">
-              <label for="message-text" class="col-form-label">{{level}}:</label>
-              <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
-                [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
-                (change)="onChangeOfAddAssetHierarchy(hIndex)">
-                <option [ngValue]="undefined"> Select {{level}}</option>
-                <option [ngValue]="tag" *ngFor="let tag of addAssetHierarchyArr[hIndex]">{{tag}}</option>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">App:</label>
+              <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app"
+                disabled>
+            </div>
+            <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index">
+              <div class="form-group" *ngIf="hIndex !== 0">
+                <label for="message-text" class="col-form-label">{{level}}:</label>
+                <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
+                  [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
+                  (change)="onChangeOfAddAssetHierarchy(hIndex)">
+                  <option [ngValue]="undefined"> Select {{level}}</option>
+                  <option [ngValue]="tag" *ngFor="let tag of addAssetHierarchyArr[hIndex]">{{tag}}</option>
+                </select>
+              </div>
+            </ng-container>
+
+            <!-- Start Whitelist Asset -->
+            <div class="form-group" *ngIf="decodedToken?.privileges?.indexOf('WASMP') > -1">
+              <label for="whitelist_asset" class="col-form-label">WhiteListed Asset:</label>
+              <select class="form-control form-control-sm" id="whitelist_asset" name="whitelist_asset"
+                (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset">
+                <option [ngValue]="undefined">Select Asset</option>
+                <option *ngFor="let asset of whiteListedAssets" [ngValue]="asset">{{asset.display_name}}</option>
               </select>
             </div>
-          </ng-container>
-          <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
-            <label for="message-text" class="col-form-label required">{{(tileData  ? tileData.table_key : '')}} ID:</label>
-            <input #asset_id="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_id" name="asset_id"
-              [(ngModel)]="assetDetail.asset_id"
-              placeholder="Enter {{(tileData  ? tileData.table_key : '')}} ID">
+            <!-- End Whitelist Asset -->
+            <label for="or"
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1 && decodedToken.privileges.indexOf('WASMP') > -1">OR</label>
+            <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
+              <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
+                ID:</label>
+              <input #asset_id="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_id"
+                name="asset_id" [(ngModel)]="assetDetail.asset_id"
+                placeholder="Enter {{(tileData  ? tileData.table_key : '')}} ID">
               <div *ngIf="asset_id.errors?.whitespace && asset_id.touched" class="alert-danger">
                 Please enter valid ID.
               </div>
-          </div>
-          <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
-            <label for="message-text" class="col-form-label required">{{(tileData  ? tileData.table_key : '')}} Display Name:</label>
-            <input #asset_name="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_name" name="asset_name"
-              [(ngModel)]="assetDetail.tags.display_name"
-              placeholder="Enter {{(tileData  ? tileData.table_key : '')}} Display Name">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}} Display
+                Name:</label>
+              <input #asset_name="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_name"
+                name="asset_name" [(ngModel)]="assetDetail.tags.display_name"
+                placeholder="Enter {{(tileData  ? tileData.table_key : '')}} Display Name">
               <div *ngIf="asset_name.errors?.whitespace && asset_name.touched" class="alert-danger">
                 Please enter valid name.
               </div>
-          </div>
-          <label for="or" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1 && decodedToken.privileges.indexOf('ASMW') > -1">OR</label>
-          <div class="form-group" *ngIf="decodedToken?.privileges?.indexOf('ASMW') > -1">
-            <label for="whitelist_asset" class="col-form-label required">Asset:</label>
-            <select class="form-control form-control-sm" id="whitelist_asset" name="whitelist_asset"
-              (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset">
-              <option [ngValue]="undefined">Select Whitelisted Asset</option>
-              <option *ngFor="let asset of whiteListedAssets" [ngValue]="asset">{{asset.tags.display_name}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label required">{{(tileData  ? tileData.table_key : '')}} Manager:</label>
-            <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="assetDetail.tags.asset_manager">
-              <option [ngValue]="undefined">Select {{(tileData  ? tileData.table_key : '')}} Manager
-              </option>
-              <option *ngFor="let user of filteredUsers" [ngValue]="user.user_email">{{user.user_name}} ({{user.user_email}})</option>
-            </select>
-          </div>
-          <div class="form-group" *ngIf="componentState === constantData.NON_IP_ASSET">
-            <label for="message-text" class="col-form-label required">Gateway:</label>
-            <select class="form-control form-control-sm" id="template" name="gateway_id" [(ngModel)]="assetDetail.gateway_id">
-              <option [ngValue]="undefined"> Select Gateway</option>
-              <option *ngFor="let item of gateways" [ngValue]="item.asset_id">
-                {{item.display_name ? item.display_name : item.asset_id}}</option>
-            </select>
-          </div>
-          <!-- <div class="form-group" *ngIf="componentState === constantData.NON_IP_ASSET">
+            </div>
+
+
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
+                Manager:</label>
+              <select class="form-control form-control-sm" id="user" name="user"
+                [(ngModel)]="assetDetail.tags.asset_manager">
+                <option [ngValue]="undefined">Select {{(tileData ? tileData.table_key : '')}} Manager
+                </option>
+                <option *ngFor="let user of filteredUsers" [ngValue]="user.user_email">{{user.user_name}}
+                  ({{user.user_email}})</option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="componentState === constantData.NON_IP_ASSET">
+              <label for="message-text" class="col-form-label required">Gateway:</label>
+              <select class="form-control form-control-sm" id="template" name="gateway_id"
+                [(ngModel)]="assetDetail.gateway_id">
+                <option [ngValue]="undefined"> Select Gateway</option>
+                <option *ngFor="let item of gateways" [ngValue]="item.asset_id">
+                  {{item.display_name ? item.display_name : item.asset_id}}</option>
+              </select>
+            </div>
+            <!-- <div class="form-group" *ngIf="componentState === constantData.NON_IP_ASSET">
             <label for="message-text" class="col-form-label required">Asset Category:</label>
             <select class="form-control form-control-sm" id="template" name="gateway_id"
             [(ngModel)]="assetDetail.tags.category">
@@ -81,46 +94,48 @@
               {{item.name}}</option>
             </select>
           </div> -->
-          <div class="form-group" *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
-            <label for="recipient-name" class="col-form-label required">Partition Key:</label>
-            <input type="text" class="form-control form-control-sm" id="partition_key" name="partition_key"
-              [(ngModel)]="assetDetail.tags.partition_key" placeholder="Partition Key">
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">{{(tileData  ? tileData.table_key : '')}} Model:</label>
-            <select class="form-control form-control-sm" id="asset_model" name="asset_model"
-              [(ngModel)]="assetDetail.tags.asset_model" (change)="onChangeAssetsModel()">
-              <option [ngValue]="undefined"> Select {{(tileData  ? tileData.table_key : '')}} Model</option>
-              <option *ngFor="let item of assetModels" [ngValue]="item.name">
-                {{item.name}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Protocol:</label>
-            <input type="text" class="form-control form-control-sm" id="protocol" name="protocol"
-              [(ngModel)]="assetDetail.tags.protocol" placeholder="Protocol" disabled>
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{(tileData  ? tileData.table_key : '')}}:</label>
-            <input type="text" class="form-control form-control-sm" id="cloud_connectivity" name="cloud_connectivity"
-              [(ngModel)]="assetDetail.tags.cloud_connectivity" placeholder="Cloud Connectivity" disabled>
-          </div>
+            <div class="form-group"
+              *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
+              <label for="recipient-name" class="col-form-label required">Partition Key:</label>
+              <input type="text" class="form-control form-control-sm" id="partition_key" name="partition_key"
+                [(ngModel)]="assetDetail.tags.partition_key" placeholder="Partition Key">
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
+                Model:</label>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                [(ngModel)]="assetDetail.tags.asset_model" (change)="onChangeAssetsModel()">
+                <option [ngValue]="undefined"> Select {{(tileData ? tileData.table_key : '')}} Model</option>
+                <option *ngFor="let item of assetModels" [ngValue]="item.name">
+                  {{item.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Protocol:</label>
+              <input type="text" class="form-control form-control-sm" id="protocol" name="protocol"
+                [(ngModel)]="assetDetail.tags.protocol" placeholder="Protocol" disabled>
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{(tileData ?
+                tileData.table_key : '')}}:</label>
+              <input type="text" class="form-control form-control-sm" id="cloud_connectivity" name="cloud_connectivity"
+                [(ngModel)]="assetDetail.tags.cloud_connectivity" placeholder="Cloud Connectivity" disabled>
+            </div>
           </ng-container>
-       
-      <div class="modal-footer fixed-bottom bg-white">
-        <!-- <button *ngIf="componentState === constantData.NON_IP_ASSET" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateAssetAPILoading"
+
+          <div class="modal-footer fixed-bottom bg-white">
+            <!-- <button *ngIf="componentState === constantData.NON_IP_ASSET" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateAssetAPILoading"
           (click)="isAssetEditable ? onEditAsset() : onCreateAsset()">Save</button> -->
-          <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateAssetAPILoading"
-          (click)="isAssetEditable ? onUpdateAsset() : onCreateAsset()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetAPILoading"
-          (click)="onCloseCreateAssetModal()">
-          Cancel
-        </button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetAPILoading"></em>
+            <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateAssetAPILoading"
+              (click)="isAssetEditable ? onUpdateAsset() : onCreateAsset()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetAPILoading"
+              (click)="onCloseCreateAssetModal()">
+              Cancel
+            </button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetAPILoading"></em>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
     </div>
   </div>
 </div>
-

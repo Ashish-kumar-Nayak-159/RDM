@@ -269,6 +269,8 @@ export class WhiteListAssetListComponent implements OnInit {
         this.enableAsset();
       } else if (this.btnClickType === 'Disable') {
         this.disableAsset();
+      } else if (this.btnClickType === 'Deprovision') {
+        this.deleteAsset();
       }
       this.btnClickType = undefined;
     } else {

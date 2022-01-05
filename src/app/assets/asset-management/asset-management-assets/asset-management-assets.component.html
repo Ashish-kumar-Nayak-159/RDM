@@ -145,13 +145,20 @@
               <div class="form-group">
                 <label for="allocatedate" class="col-form-label required">Allocation Date:</label>
                 <input type="datetime-local" class="form-control form-control-sm" id="allocationdate"
-                  name="allocationdate" [(ngModel)]="allocationObj.allocationDate" placeholder="Choose Allocation Date">
+                  name="allocationdate" [(ngModel)]="allocationObj.allocationDate" 
+                  placeholder="Choose Allocation Date">
               </div>
               <div class="form-group">
-                <label for="allocatedate" class="col-form-label required">Hourly Rate:</label>
+                <label for="deallocatedate" class="col-form-label required">De-Allocation Date:</label>
+                <input type="datetime-local" class="form-control form-control-sm" id="deallocationDate"
+                  name="deallocationDate" [(ngModel)]="allocationObj.deallocationDate"
+                  placeholder="Choose De-Allocation Date">
+              </div>
+              <div class="form-group">
+                <label for="hourlyRate" class="col-form-label required">Hourly Rate:</label>
                 <input type="number" min="0" class="form-control form-control-sm" id="hourlyRate" name="hourlyRate"
                   [(ngModel)]="allocationObj.hourlyRate" placeholder="Hourly Rate">
-              </div>
+              </div>              
             </div>
             <div *ngIf="!isAllocation">
               <div class="form-group">

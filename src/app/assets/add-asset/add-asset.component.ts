@@ -124,7 +124,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   getWhiteListedAsset() {
     const obj = {
       type: this.componentState,
-      provisioned: false
+      provisioned: 'false'
     };
     return new Promise<void>((resolve1, reject) => {
       this.whiteListedAssets = [];

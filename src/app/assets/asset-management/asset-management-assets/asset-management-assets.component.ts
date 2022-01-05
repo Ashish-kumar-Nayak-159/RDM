@@ -481,10 +481,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.allocationObj = undefined;
     if (isAllocate) {
       this.allocationObj = {
-        metadata: { project: null },
+        metadata: { project: this.contextApp.app },
         hourlyRate: 1,
         allocationDate: Date.now(),
-        userId: undefined
+        userId: undefined,
+        deallocationDate: new Date()
       };
     }
     else
@@ -500,9 +501,8 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   allocateDeAllocateAsset() {
     this.isAPILoading = true;
     let messageHeader = this.isAllocation ? 'Allocation Asset' : 'De-Allocation Asset'
-    if (this.validateAllocationDeallocationObj(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, messageHeader)) {
-      let obj = {};
-      const methodToCall = this.isAllocation ? this.assetService.allocateAsset(this.selectedAsset.asset_id, this.allocationObj.userId, obj) : this.assetService.deallocateAsset(this.selectedAsset.asset_id, obj);
+    if (this.validateAllocationDeallocationObj(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, messageHeader)) {      
+      const methodToCall = this.isAllocation ? this.assetService.allocateAsset(this.selectedAsset.asset_id, this.allocationObj.userId, this.allocationObj) : this.assetService.deallocateAsset(this.selectedAsset.asset_id, this.allocationObj);
       this.subscriptions.push(
         methodToCall.subscribe(
           (response: any) => {
@@ -512,7 +512,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
             this.isAPILoading = false;
           },
           (error) => {
-            debugger
             this.toasterService.showError(
               error.message, messageHeader);
             this.onCloseModal('allocateDeallocateModal');
@@ -524,7 +523,8 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   }
   validateAllocationDeallocationObj(allRequiredMessage, messageHeader) {
     if (this.isAllocation) {
-      if (!this.allocationObj.hourlyRate || !this.allocationObj.userId || !this.allocationObj.allocationDate) {
+      if (!this.allocationObj.hourlyRate || !this.allocationObj.userId || !this.allocationObj.allocationDate
+        || !this.allocationObj.deallocationDate) {
         this.toasterService.showError(allRequiredMessage, messageHeader);
         this.isAPILoading = false;
         return false;
@@ -546,6 +546,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       }
       if (this.allocationObj.hourlyRate === undefined || this.allocationObj.hourlyRate <= 0) {
         this.toasterService.showError('Hourly rate must be greater than 0.', messageHeader);
+        this.isAPILoading = false;
+        return false;
+      }
+      if (!this.allocationObj.deallocationDate || this.allocationObj.deallocationDate === undefined) {
+        this.toasterService.showError(allRequiredMessage, messageHeader);
         this.isAPILoading = false;
         return false;
       }

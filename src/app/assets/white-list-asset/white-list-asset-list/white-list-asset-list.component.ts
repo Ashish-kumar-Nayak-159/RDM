@@ -116,7 +116,7 @@ export class WhiteListAssetListComponent implements OnInit {
 
   async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
-    const obj: any = {type : this.type};
+    const obj: any = {type : this.type,provisioned: 'false'};
     let methodToCall;
     methodToCall = this.assetService.getWhiteListedAsset(obj, this.contextApp.app);
     this.subscriptions.push(

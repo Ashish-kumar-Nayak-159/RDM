@@ -95,8 +95,9 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetsList = [];
-    this.getTileName();  
-    this.protocolList = CONSTANTS.PROTOCOLS;     
+    this.getTileName();
+    this.protocolList = CONSTANTS.PROTOCOLS;
+    this.setAllAssetList();
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -307,6 +308,18 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
       }
     }
     this.currentPageView = type;
+  }
+
+  setAllAssetList()
+  {
+    const assetTypesObj = {
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+    };  
+    this.subscriptions.push(
+      this.assetService.getAndSetAllAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {              
+      }),            
+    );
   }
 
   getTileName() {

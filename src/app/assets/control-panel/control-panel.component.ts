@@ -29,13 +29,13 @@ export class ControlPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.validAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
-    if (this.validAssets == undefined) {
+    this.validAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+    if (this.validAssets === undefined) {
       const assetTypesObj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
       };
-      this.assetService.getIPAndLegacyAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {
+      this.assetService.getAndSetAllAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {
         if (response?.data)
           this.validAssets = response.data;
       })

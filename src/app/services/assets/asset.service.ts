@@ -47,6 +47,34 @@ export class AssetService {
         );
     }
   }
+  getAndSetAllAssets(filterObj, app) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+    if (assets) {
+      return new Observable((observer) => {
+        observer.next({
+          data: assets,
+        });
+      });
+    } else {
+      return this.http
+        .get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
+        .pipe(
+          map((data: any) => {
+            this.commonService.setItemInLocalStorage(CONSTANTS.ALL_ASSETS_LIST, data.data);
+            return data;
+          }),
+          catchError((error) => {
+            return throwError(error);
+          })
+        );
+    }
+  }
 
   getAllGatewaysAndAssetsList(filterObj, app) {
     let params = new HttpParams();

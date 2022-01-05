@@ -1736,6 +1736,7 @@ export class CONSTANTS {
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static ASSETS_LIST = 'assets_list';
+  public static ALL_ASSETS_LIST = 'all_assets_list';
   public static ASSETS_GATEWAYS_LIST = 'assets_gateways_list';
   public static ASSET_MODELS_LIST = 'asset_models_list';
   public static ASSET_MODEL_DATA = 'asset_model_data';

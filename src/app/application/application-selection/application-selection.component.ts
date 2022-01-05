@@ -188,12 +188,13 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration_control_panel ||'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
+          localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);
           const assetTypesObj = {
             hierarchy: JSON.stringify(this.applicationData.user.hierarchy),
             type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
           };  
           this.apiSubscriptions.push(
-            this.assetService.getIPAndLegacyAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
+            this.assetService.getAndSetAllAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
               resolve();
             })
           );

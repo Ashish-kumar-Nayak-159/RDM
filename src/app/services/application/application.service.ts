@@ -121,8 +121,7 @@ export class ApplicationService {
   getAppPriviledges(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_PRIVILEDGES, encodeURIComponent(app))).pipe(
       map((data: any) => {        
-        if (data?.count > 0) {               
-          // Note : Bifurecate PriviledgeGroup and priviledges seperately
+        if (data?.count > 0) {                         
           data.data = { Priviledges: data.data }
           return data;
         }

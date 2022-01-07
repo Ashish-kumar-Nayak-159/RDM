@@ -6,7 +6,9 @@
                 <th scope="col">{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
                 <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
                 <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>                
-                <!-- <th scope="col">Action</th> -->
+                <th scope="col">Protocol</th>
+                <th scope="col">Cloud Connectivity</th>
+                <!-- <th scope="col">Other Info</th> -->
             </thead>
             <tbody>
                 <ng-container *ngIf="assetsList.length > 0">
@@ -14,27 +16,12 @@
                         <td>{{i + 1}}</td>
                         <td>{{asset.display_name}}</td>
                         <td>{{asset.asset_id}}</td>
-                        <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' : 'Non-Provisioned'}}</td>                        
+                        <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' : 'Non-Provisioned'}}</td>                                              
+                        <td>{{asset.protocol}}</td>
+                        <td>{{asset.cloud_connectivity}}</td>
                         <!-- <td>
-                            <a href="javascript:void(0)" (click)="openAssetCreateModal(asset);" tooltip="Edit"
-                                *ngIf="asset.provision_status !== 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
-                                <em class="fas fa-fw fa-edit"></em>
-                            </a>
-                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision', asset)"
-                                tooltip="Deprovision"
-                                *ngIf="asset.provision_status === 'Completed' && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
-                                <em class="fas fa-fw fa-times-circle"></em>
-                            </a>
-                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2"
-                                tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
-                    && asset.status.toLowerCase() === 'disabled'">
-                                <em class="fas fa-fw fa-toggle-on"></em>
-                            </a>
-                            <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2"
-                                tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
-                     && asset.status.toLowerCase() === 'enabled'">
-                                <em class="fas fa-fw fa-toggle-off"></em>
-                            </a>
+                            <label>Name : Value</label><br/>
+                            <label>Name : Value</label><br/>
                         </td> -->
                     </tr>
                 </ng-container>

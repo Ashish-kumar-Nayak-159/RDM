@@ -136,46 +136,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
             }
             resolve1();
           },
-          (error) => {
-            debugger;
-            /// Note: remove once api ready          
-            let response = {
-              "data": [
-                {
-
-                  "asset_id": "111",
-                  "gateway_id": "G1",
-                  "app": "DimpleDevApp",
-                  "type": "legacyassets",
-                  "cloud_connectivity": "ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud",
-                  "asset_model": null,
-                  "display_name": "test l asset model 11",
-                  "protocol": "Modbus_TCP",
-                  "custom_tags": "{\"lextra1\": \"lx1\", \"lextra2\": \"lx2\"}",
-                  "partition_key": "111",
-                  "provisioned": false
-                },
-
-                {
-
-                  "asset_id": "222",
-                  "gateway_id": "G2",
-                  "app": "DimpleDevApp",
-                  "type": "legacyassets",
-                  "cloud_connectivity": "Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud",
-                  "asset_model": null,
-                  "display_name": "test l asset model 22",
-                  "protocol": "Siemens_TCP_IP",
-                  "partition_key": "222",
-                  "provisioned": false
-
-                }
-
-              ],
-
-              "count": 2
-            };
-            this.whiteListedAssets = response.data;
+          (error) => {           
+            
           }),
       );
     });
@@ -386,6 +348,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
   onWhitelistedAssetChange() {
+    this.getAssetsModels(this.componentState);
     if (this.selectedWhitelistAsset === undefined) {
       this.assetDetail.asset_id = null;
       this.assetDetail.tags.display_name = null;
@@ -397,6 +360,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
       this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
       this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
+      this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
+      
     }
   }
   onCreateAsset() {

@@ -3,13 +3,13 @@
         <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>&nbsp;
         <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openImportWhiteListModal()"
             *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('WASMI') > -1"
-            placement="bottom" tooltip="Upload Template"><em class="fa fa-upload fa-sm"></em></button>
+            placement="bottom" tooltip="Upload Template">Upload</button>
         &nbsp;&nbsp;
         <a href="{{blobStorageURL + templateFileName + sasToken}}"
             *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('WASMI') > -1">
             <button type="submit" class="btn btn-sm searchBtn btn-primary" placement="bottom"
                 tooltip="Download Template">
-                <em class="fa fa-download fa-sm"></em>
+                Download
             </button>
         </a>
         <div class="ml-auto">
@@ -71,8 +71,6 @@
                             <div class="file-input form-control form-control-sm p-0 col-8">
                                 <input type="file" accept=".xls,.xlsx" id="file" class="file"
                                     onclick="this.value = null" (change)="onFileSelected($event)">
-                                <!-- <label for="file" class="overflow-text"
-                  title="Choose File">Choose File</label> -->
                                 <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label>
                             </div>
                             <div class="file-input form-control form-control-sm p-0 col-4"

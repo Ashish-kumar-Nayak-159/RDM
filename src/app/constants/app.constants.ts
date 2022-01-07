@@ -350,6 +350,7 @@ export class CONSTANTS {
     'Remote Monitoring': ['RMV', 'RMM'],
     'Reports': ['RV', 'RSM'],
     'User Management': ['UMV', 'UMM'],
+    'Whitelisting Asset Management' : ['WASMI','WASMP','WASMV']
   };
 
   public static SIDE_MENU_LIST = [
@@ -442,7 +443,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-cogs',
       visible: true,
       showAccordion: [{ name: 'Title', value: 'Asset Management' }],
-      privileges_required: ['ASMP', 'ASMD', 'ASMED'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED','WASMV'],
       priority: 1,
     },
     {

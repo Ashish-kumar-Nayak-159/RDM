@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from './../../../services/common.service';
@@ -60,12 +59,10 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService,
-    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
@@ -474,123 +471,5 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-  }
-  onOpenModelToAllocateDeallocate(isAllocate = false, asset) {
-    this.getUsers();
-    this.selectedAsset = asset;
-    this.allocationObj = undefined;
-    if (isAllocate) {
-      this.allocationObj = {
-        metadata: { project: this.contextApp.app },
-        hourlyRate: 1,
-        allocationDate: Date.now(),
-        userId: undefined,
-        deallocationDate: new Date()
-      };
-    }
-    else
-      this.allocationObj = { deallocationDate: new Date() };
-    this.isAllocation = isAllocate;
-    $('#allocateDeallocateModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  }
-  onCloseModal(modalId) {
-    this.isAllocation = undefined;
-    this.selectedAsset = undefined;
-    $('#' + modalId).modal('hide');
-  }
-  allocateDeAllocateAsset() {
-    this.isAPILoading = true;
-    let messageHeader = this.isAllocation ? 'Allocation Asset' : 'De-Allocation Asset'
-    if (this.validateAllocationDeallocationObj(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, messageHeader)) {      
-      const methodToCall = this.isAllocation ? this.assetService.allocateAsset(this.selectedAsset.asset_id, this.allocationObj.userId, this.allocationObj) : this.assetService.deallocateAsset(this.selectedAsset.asset_id, this.allocationObj);
-      this.subscriptions.push(
-        methodToCall.subscribe(
-          (response: any) => {
-            this.toasterService.showSuccess(
-              response.message, messageHeader);
-            this.onCloseModal('allocateDeallocateModal');
-            this.isAPILoading = false;
-          },
-          (error) => {
-            this.toasterService.showError(
-              error.message, messageHeader);
-            this.onCloseModal('allocateDeallocateModal');
-            this.isAPILoading = false;
-          }
-        )
-      );
-    }
-  }
-  validateAllocationDeallocationObj(allRequiredMessage, messageHeader) {
-    if (this.isAllocation) {
-      if (!this.allocationObj.hourlyRate || !this.allocationObj.userId || !this.allocationObj.allocationDate
-        || !this.allocationObj.deallocationDate) {
-        this.toasterService.showError(allRequiredMessage, messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.userId === undefined || this.allocationObj.userId.length <= 0) {
-        this.toasterService.showError('User Selection is compulsory.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.allocationDate === undefined) {
-        this.toasterService.showError('Please add valid allocation date.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if(new Date(this.allocationObj.allocationDate) > new Date()) {
-        this.toasterService.showError('Allocation date should not be greater than now.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (this.allocationObj.hourlyRate === undefined || this.allocationObj.hourlyRate <= 0) {
-        this.toasterService.showError('Hourly rate must be greater than 0.', messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-      if (!this.allocationObj.deallocationDate || this.allocationObj.deallocationDate === undefined) {
-        this.toasterService.showError(allRequiredMessage, messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-    }
-    else {
-      if (!this.allocationObj.deallocationDate || this.allocationObj.deallocationDate === undefined) {
-        this.toasterService.showError(allRequiredMessage, messageHeader);
-        this.isAPILoading = false;
-        return false;
-      }
-    }
-    return true;
-  }
-  getUsers() {
-    let appUsers = [];
-    this.filteredUsers = appUsers;
-    this.subscriptions.push(
-      this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
-        if (response && response.data) {
-          appUsers = response.data;
-          if (Object.keys(this.contextApp.app).length === 1) {
-            this.filteredUsers = appUsers;
-          } else {
-            this.updateAssetManagerWithHierarchy(this.contextApp.app, appUsers);
-          }
-        }
-      })
-    );
-  }
-  updateAssetManagerWithHierarchy(hierarchyObj, users) {
-    let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-    let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    this.filteredUsers = users.filter(function (user) {
-      if (!user.hierarchy.hasOwnProperty(lastObjKey)) {
-        let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
-        if (!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
-          return true;
-      }
-      else if (user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
-        return true;
-    });
   }
 }

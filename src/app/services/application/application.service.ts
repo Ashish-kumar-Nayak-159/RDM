@@ -161,6 +161,7 @@ export class ApplicationService {
     );
   }
 
+<<<<<<< HEAD
   updatePrivilege(app,roleId,obj) {
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APPADMIN_PRIVILEGE, encodeURIComponent(app),roleId),obj );
   }
@@ -170,6 +171,8 @@ export class ApplicationService {
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, encodeURIComponent(appObj.app)), appObj);
   }
 
+=======
+>>>>>>> 9513353e (K-1-I513 - resolved multiple click issue on button while getting widget data.)
   getLastAlerts(filterObj: any) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

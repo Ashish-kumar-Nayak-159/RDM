@@ -77,7 +77,6 @@ export class AppUrls {
   public static DELETE_CONTROL_WIDGET = 'apps/{0}/asset_models/{1}/control_widget/{2}';
   public static DELETE_CONFIGURATION_WIDGET = 'apps/{0}/asset_models/{1}/configuration_widget/{2}';
   public static UPDATE_APP_HIERARCHY = 'apps/{0}/hierarchy';
-  public static UPDATE_APP_ROLES = 'apps/{0}/roles';
   public static FORGOT_PASSWORD = 'users/forgot_password';
   public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetAssetAlertMessage';

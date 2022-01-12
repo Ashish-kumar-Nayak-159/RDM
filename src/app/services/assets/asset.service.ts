@@ -1305,10 +1305,7 @@ export class AssetService {
   uploadWhitelistedAsset(app, formData) {
     return this.http.post(this.url + String.Format(AppUrls.UPLOAD_WHITELISTED_ASSET, encodeURIComponent(app)), formData);
   }
-  allocateAsset(assetId,userId, formData) {
-    return this.http.post('https://sasken-functions-dev.azurewebsites.net/api/' + String.Format(AppUrls.ALLOCATE_ASSET, assetId,userId), formData);
-  }
-  deallocateAsset(assetId, formData) {
-    return this.http.put('https://sasken-functions-dev.azurewebsites.net/api/' + String.Format(AppUrls.DEALLOCATE_ASSET, assetId), formData);
+  deWhitelistedAsset(app, assetId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DE_WHITELIST_ASSET, encodeURIComponent(app),assetId));
   }
 }

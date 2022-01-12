@@ -453,7 +453,7 @@ export class CONSTANTS {
       display_name: 'Asset Whitelist',
       for_admin_only: true,
       exactMatch: true,
-      icon: 'fa fa-fw fa-cogs',
+      icon: 'fa fa-fw fa-tasks',
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Asset Whitelist' },

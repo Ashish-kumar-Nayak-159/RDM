@@ -198,6 +198,5 @@ export class AppUrls {
   public static GET_USERS_APPLICATION = 'user_apps';
   public static UPLOAD_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets';
   public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
-  public static ALLOCATE_ASSET = 'tool/{0}/user/{1}/allocate';
-  public static DEALLOCATE_ASSET = 'allocate/{0}';
+ public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';
 }

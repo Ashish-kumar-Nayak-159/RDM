@@ -64,20 +64,8 @@ export class WhiteListAssetListComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
-    this.getAssets(); setTimeout(() => {
-      $('#table-wrapper').on('scroll', () => {
-        const element = document.getElementById('table-wrapper');
-        if (
-          parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
-          parseFloat(element.scrollHeight.toFixed(0)) &&
-          !this.insideScrollFunFlag
-        ) {
-          this.currentOffset += this.currentLimit;
-          this.getAssets();
-          this.insideScrollFunFlag = true;
-        }
-      });
-    }, 2000);
+    this.getAssets(); 
+    this.getAssetTimeout();
   }
   getTileName() {
     let selectedItem;
@@ -114,6 +102,23 @@ export class WhiteListAssetListComponent implements OnInit {
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
+  getAssetTimeout()
+  {
+    setTimeout(() => {
+      $('#table-wrapper').on('scroll', () => {
+        const element = document.getElementById('table-wrapper');
+        if (
+          parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+          parseFloat(element.scrollHeight.toFixed(0)) &&
+          !this.insideScrollFunFlag
+        ) {
+          this.currentOffset += this.currentLimit;
+          this.getAssets();
+          this.insideScrollFunFlag = true;
+        }
+      });
+    }, 2000);
+  }
   async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
     const obj: any = {type : this.type,provisioned: 'false'};
@@ -264,8 +269,6 @@ export class WhiteListAssetListComponent implements OnInit {
         this.enableAsset();
       } else if (this.btnClickType === 'Disable') {
         this.disableAsset();
-      } else if (this.btnClickType === 'Deprovision') {
-        this.deleteAsset();
       }
       this.btnClickType = undefined;
     } else {
@@ -384,4 +387,29 @@ export class WhiteListAssetListComponent implements OnInit {
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
+
+  unWhitelistAsset(assetId)
+  {
+    const asset = this.selectedAssets[0];
+    this.isAPILoading = true;
+    let methodToCall =  this.assetService.deWhitelistedAsset(this.contextApp.app,assetId);    
+    this.subscriptions.push(
+      methodToCall.subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Un-Whitelist Asset');
+          this.isAPILoading = false;
+          this.assetsList = [];
+          this.selectedAssets = [];
+          this.getAssets(); 
+          this.getAssetTimeout();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Un-Whitelist Asset');
+          this.isAPILoading = false;
+        }
+      )
+    );
+
+  }
+
 }

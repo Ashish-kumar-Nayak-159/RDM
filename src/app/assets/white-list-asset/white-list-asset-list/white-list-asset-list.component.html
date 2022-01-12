@@ -5,10 +5,10 @@
                 <th scope="col">No</th>
                 <th scope="col">{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
                 <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
-                <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>                
+                <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
                 <th scope="col">Protocol</th>
                 <th scope="col">Cloud Connectivity</th>
-                <!-- <th scope="col">Other Info</th> -->
+                <th scope="col">Un-Whitelist</th>
             </thead>
             <tbody>
                 <ng-container *ngIf="assetsList.length > 0">
@@ -16,13 +16,14 @@
                         <td>{{i + 1}}</td>
                         <td>{{asset.display_name}}</td>
                         <td>{{asset.asset_id}}</td>
-                        <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' : 'Non-Provisioned'}}</td>                                              
+                        <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' :
+                            'Non-Provisioned'}}</td>
                         <td>{{asset.protocol}}</td>
                         <td>{{asset.cloud_connectivity}}</td>
-                        <!-- <td>
-                            <label>Name : Value</label><br/>
-                            <label>Name : Value</label><br/>
-                        </td> -->
+                        <td>
+                            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel"
+                                (click)="unWhitelistAsset(asset.asset_id);"><em class="fa fa-times"></em></a>
+                        </td>
                     </tr>
                 </ng-container>
                 <ng-container *ngIf="assetsList.length === 0 && !isAssetListLoading">

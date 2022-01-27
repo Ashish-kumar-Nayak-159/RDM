@@ -267,11 +267,23 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
 
   async registerRules(asset) {
     await this.getEdgeRules(asset);
+    const rulePayloadToBeSynced = this.rules.map(rule => {
+      const ruleObj = {
+        rule_id : rule.rule_id,
+        actions: rule.actions,
+        code: rule.code,
+        condition: rule.condition,
+        properties: rule.properties,
+        escalation_time_in_sec: rule.escalation_time_in_sec        
+      };
+      if (rule.metadata?.sid) ruleObj["sid"] = rule.metadata?.sid
+      return ruleObj;
+    })
     const obj = {
       asset_id: asset.asset_id,
       message: {
         command: 'set_asset_rules',
-        rules: this.rules,
+        rules: rulePayloadToBeSynced,
       },
       app: this.contextApp.app,
       timestamp: datefns.getUnixTime(new Date()),

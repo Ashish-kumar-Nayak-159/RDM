@@ -24,6 +24,7 @@ export class Rule {
     constructor() {
         this.properties = [];
         this.conditions = [];
+        this.metadata = {};
     }
 }
 
@@ -36,7 +37,7 @@ export class Conditions {
     property: string;
     operator: string;
     threshold: any;
-    aggregation_type: string;
+    aggregation_type: string;    
 }
 
 export class AlertCondition {

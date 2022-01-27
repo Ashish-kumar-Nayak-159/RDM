@@ -165,6 +165,11 @@
         <div class="col-12">
           <form #form3="ngForm">
             <div class="form-group row" *ngFor="let condition of ruleModel.conditions; let i = index;">
+              <div class="col-auto">
+                <label for="slaveid " class="mb-2 required">Slave Id</label>
+                <input type="text"  name="sid" class="form-control form-control-sm" required style="width:100px;" required
+                  placeholder="Slave Id" [(ngModel)]="ruleModel.metadata.sid" [disabled]="isView">
+              </div>
               <div class="col-3">
                 <label for="examplePassword" class="mb-2 required">Telemetry</label>
                 <!-- <select placeholder="Telemetry" name="telemetry_{{i}}"

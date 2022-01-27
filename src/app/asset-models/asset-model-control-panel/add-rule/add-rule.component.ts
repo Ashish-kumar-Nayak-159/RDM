@@ -51,7 +51,7 @@ export class AddRuleComponent implements OnInit {
     private assetModelService: AssetModelService,
     private assetService: AssetService,
     private applicationService: ApplicationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
@@ -161,6 +161,8 @@ export class AddRuleComponent implements OnInit {
       this.ruleModel.conditions = this.ruleData.condition;
     }
     this.ruleModel.created_by = this.ruleData.created_by;
+    if (this.ruleData?.metadata?.sid)
+      this.ruleModel.metadata.sid = this.ruleData.metadata.sid;
     this.ruleModel.escalation_time_in_sec = this.ruleData.escalation_time_in_sec;
     this.ruleModel.properties = this.ruleData.properties;
     this.ruleModel.aggregation_enabled = this.ruleData.aggregation_enabled;
@@ -223,7 +225,7 @@ export class AddRuleComponent implements OnInit {
       // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
-        if(prop.data_type=='Number' || prop.data_type == 'Boolean'){
+        if (prop.data_type == 'Number' || prop.data_type == 'Boolean') {
           this.dropdownPropList.push({
             id: prop.name,
             type: prop.type,
@@ -320,7 +322,7 @@ export class AddRuleComponent implements OnInit {
       property: null,
       operator: '',
       threshold: 0,
-      aggregation_type: null,
+      aggregation_type: null
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -332,12 +334,12 @@ export class AddRuleComponent implements OnInit {
   createNewRule() {
     if (
       (!this.ruleModel.name ||
-      !this.ruleModel.description ||
-      !this.ruleModel.code ||
-      !this.ruleModel.operator ||
-      !this.ruleModel.escalation_time_in_sec) 
+        !this.ruleModel.description ||
+        !this.ruleModel.code ||
+        !this.ruleModel.operator ||
+        !this.ruleModel.escalation_time_in_sec)
       || (
-        this.ruleModel.name?.trim()?.length <=0 ||
+        this.ruleModel.name?.trim()?.length <= 0 ||
         this.ruleModel.description?.trim()?.length <= 0 ||
         this.ruleModel.code?.trim()?.length <= 0
       )
@@ -355,7 +357,9 @@ export class AddRuleComponent implements OnInit {
     this.isUpdateApiCall = true;
     let str = '';
     this.ruleModel.properties = [];
-    this.ruleModel.conditions.forEach((element,index) => {
+
+    this.ruleModel.conditions.forEach((element, index) => {
+      console.log('element', element);
       str +=
         ' %' +
         (index + 1) +

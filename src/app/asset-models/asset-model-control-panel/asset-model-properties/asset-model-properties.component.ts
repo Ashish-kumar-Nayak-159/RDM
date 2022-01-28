@@ -46,7 +46,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -196,10 +196,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         if (this.type.includes('edge_derived')) {
           response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
-          if(response.properties?.measured_properties){
+          if (response.properties?.measured_properties) {
             response.properties?.measured_properties.forEach(element => {
-              if(element.data_type == "Number"){
-                this.dependentProperties.push(element)      
+              if (element.data_type == "Number") {
+                this.dependentProperties.push(element)
               }
             });
           }
@@ -352,7 +352,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   onSavePropertyObj() {
-    console.log(this.propertyObj.metadata);
+    console.log('save property obj', this.propertyObj.thresholdthis.propertyObj.metadata);
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
     }
@@ -480,6 +480,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         this.toasterService.showError('H3 must be greater than H2', 'Add Property');
         return;
       }
+      this.validateSetThreshold();
     }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
@@ -500,6 +501,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       )
     );
+  }
+
+  validateSetThreshold() {
+    if (this.propertyObj.threshold.l1 == null && this.propertyObj.threshold.l2 == null && this.propertyObj.threshold.l3 == null && this.propertyObj.threshold.h1 == null && this.propertyObj.threshold.h2 == null && this.propertyObj.threshold.h3 == null) {
+      this.propertyObj.threshold = {};
+    }
   }
 
   deleteProperty() {
@@ -551,15 +558,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
     }
-    if(this.propertyObj.json_key.length <= 0 || this.propertyObj.name.length <= 0 
-      || this.propertyObj.data_type.length <= 0 || this.propertyObj.data_type === 'undefined' )
-  {
-    this.toasterService.showError(
-      UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
-      'Add ' + this.getPropertyNameToAddOrUpdate()
-    );
-    return;
-  }
+    if (this.propertyObj.json_key.length <= 0 || this.propertyObj.name.length <= 0
+      || this.propertyObj.data_type.length <= 0 || this.propertyObj.data_type === 'undefined') {
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        'Add ' + this.getPropertyNameToAddOrUpdate()
+      );
+      return;
+    }
     if (this.type === 'edge_derived_properties') {
       let flag = false;
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
@@ -612,7 +618,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     console.log(JSON.stringify(this.propertyObj.metadata));
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
-
+    this.validateSetThreshold();
     if (this.propertyObj?.edit) {
       // this.propertyObj.derived_function = this.code;
       this.properties[this.type].splice(index, 0, this.propertyObj);
@@ -732,16 +738,15 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-  getPropertyNameToAddOrUpdate()
-  {
+  getPropertyNameToAddOrUpdate() {
     return (this.type.includes('measured') ? 'Measured Property' : (
       this.type.includes('controllable') ? 'Controllable Property' : (
-      this.type.includes('configurable') ? 'Configurable Property' : (
-      this.type.includes('edge_derived') ? 'Edge Derived Property' : (
-      this.type.includes('cloud_derived') ? 'Cloud Derived Property' : ''
+        this.type.includes('configurable') ? 'Configurable Property' : (
+          this.type.includes('edge_derived') ? 'Edge Derived Property' : (
+            this.type.includes('cloud_derived') ? 'Cloud Derived Property' : ''
+          )
+        )
       )
-      )
-      )
-      ))
+    ))
   }
 }

@@ -32,6 +32,7 @@ export class AddRuleComponent implements OnInit {
   alertConditionList: any[] = [];
   isUpdateApiCall = false;
   isRulesLoading = false;
+  slaveData: any[] = [];
   selectedAlertCondition: AlertCondition = new AlertCondition();
   rules: any[] = [];
   selectedRule: Rule = new Rule();
@@ -57,6 +58,7 @@ export class AddRuleComponent implements OnInit {
     this.title = this.isEdit ? 'Update' : 'Create';
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.getSlaveData();
     if (!this.ruleModel.actions) {
       this.ruleModel.actions = {
         alert_management: { enabled: false, alert_condition_code: null },
@@ -93,7 +95,21 @@ export class AddRuleComponent implements OnInit {
     if (this.isClone) {
       this.getRules();
     }
-    this.getApplicationUserGroups();
+    this.getApplicationUserGroups();    
+  }
+
+  getSlaveData() {
+    this.slaveData = [];
+    const filterObj = {};
+    this.subscriptions.push(
+      this.assetModelService
+        .getModelSlaveDetails(this.contextApp.app, this.asset ? this.asset.tags.asset_model : this.name, filterObj)
+        .subscribe((response: any) => {
+          if (response?.data) {
+            this.slaveData = response.data;
+          }
+        })
+    );
   }
 
   getApplicationUserGroups() {
@@ -225,13 +241,16 @@ export class AddRuleComponent implements OnInit {
       // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
-        if (prop.data_type == 'Number' || prop.data_type == 'Boolean') {
-          this.dropdownPropList.push({
-            id: prop.name,
-            type: prop.type,
-            json_key: prop.json_key,
-            value: prop,
-          });
+        if (prop.data_type == 'Number' || prop.data_type == 'Boolean') { 
+          console.log('this.ruleData?.metadata?.sid',this.ruleModel?.metadata?.sid);        
+          if(!this.ruleModel?.metadata?.sid ||  prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid){
+            this.dropdownPropList.push({
+              id: prop.name,
+              type: prop.type,
+              json_key: prop.json_key,
+              value: prop,
+            });
+          }
         }
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
@@ -270,6 +289,10 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfSendAlertCheckbox() {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
+  }
+  onSlaveSelection()
+  {
+    this.getAssetsModelProperties();
   }
 
   onChangeOfSendEmailCheckbox() {

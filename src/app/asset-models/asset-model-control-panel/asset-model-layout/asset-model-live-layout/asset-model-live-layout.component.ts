@@ -33,6 +33,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   decodedToken: any;
   derivedKPIs: any[] = [];
   filteredPropList: any[] = [];
+  slaveList : any[] = [{
+    slave_name:'Select Slave'
+  }]
+  selectedSlave:any = {slave_name:'Select Slave'}
   widgetStringFromMenu: any;
   constructor(
     private commonService: CommonService,
@@ -48,8 +52,22 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();
-    await this.getAssetsModelProperties();
+    await this.getAssetsModelProperties({});
     this.getLiveWidgets();
+    this.getModelSlaveDetails();
+  }
+
+  getModelSlaveDetails(){
+    this.assetModelService.getModelSlaveDetails(this.contextApp.app,this.assetModel.name,{}).subscribe((res:any)=>{
+      this.slaveList = res?.data ?? [{
+        slave_name:'Select Slave'
+      }]
+      this.slaveList.unshift({'slave_name':'Select Slave'})
+    })
+  }
+
+  async onSlaveSelection(selectedSlave){    
+    await this.getAssetsModelProperties(selectedSlave);
   }
 
   getAssetModelsderivedKPIs() {
@@ -68,7 +86,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     });
   }
 
-  getAssetsModelProperties() {
+  getAssetsModelProperties(selectedSlave) {
+    this.filteredPropList = []
+    this.propertyList = []
     // this.properties = {};
     return new Promise<void>((resolve) => {
       const obj = {
@@ -80,8 +100,13 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.measured_properties = response.properties.measured_properties
             ? response.properties.measured_properties
             : [];
-          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
-          this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+            response.properties?.measured_properties?.forEach((prop) => {
+              prop.type = 'Measured Properties'
+              if(!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id){
+                this.propertyList.push(prop)
+              }
+            });
+            // this.propertyList = response.properties.measured_properties ??  [];
           response.properties.edge_derived_properties = response.properties.edge_derived_properties
             ? response.properties.edge_derived_properties
             : [];
@@ -90,11 +115,23 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             : [];
           response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop);
+            let matchCount = 0
+            prop.metadata?.properties.forEach((actualProp)=>{
+              if(!selectedSlave?.slave_id || actualProp?.property?.metadata?.slave_id == selectedSlave?.slave_id){
+                matchCount++
+              }
+            })
+            if(matchCount > 0){
+              this.propertyList.push(prop)
+            }
+
           });
           response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
-            this.propertyList.push(prop);
+            if(!selectedSlave?.slave_id ||  prop?.metadata?.slave_id == selectedSlave?.slave_id){
+              this.propertyList.push(prop)
+            }
+
           });
           this.derivedKPIs.forEach((kpi) => {
             const obj: any = {};
@@ -103,8 +140,17 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_key = kpi.kpi_json_key;
             obj.json_model = {};
             obj.json_model[obj.json_key] = {};
-            this.propertyList.push(obj);
+            if(!selectedSlave?.slave_id ||  kpi?.metadata?.slave_id == selectedSlave?.slave_id){
+              this.propertyList.push(obj);
+            }
+
           });
+          this.propertyList.forEach((prop) => {
+            if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+              this.filteredPropList.push(prop);
+            }
+          });
+
           resolve();
         })
       );
@@ -452,6 +498,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }
     this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
+    this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');

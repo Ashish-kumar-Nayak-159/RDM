@@ -66,17 +66,7 @@
                 tooltip="Package Management"
                 *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('RCC') > -1">
                 <em class="fas fa-fw fa">&#xf021;</em>
-              </a> -->
-              <!-- Start Allocation & Deallocation -->
-              <a href="javascript:void(0)" (click)="onOpenModelToAllocateDeallocate(true,asset)" class="ml-2"
-                tooltip="Allocate">
-                <em class="fas fa-plus fa-sm"></em>
-              </a>
-              <a href="javascript:void(0)" (click)="onOpenModelToAllocateDeallocate(false,asset)" class="ml-2"
-                tooltip="DeAllocate">
-                <em class="fas fa-fw fa-times-circle"></em>
-              </a>
-              <!-- End Allocation & Deallocation -->
+              </a> -->             
             </td>
           </tr>
         </ng-container>

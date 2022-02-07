@@ -165,11 +165,6 @@ export class ApplicationService {
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APPADMIN_PRIVILEGE, encodeURIComponent(app),roleId),obj );
   }
 
-  updateAppRoles(appObj) {
-    localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, encodeURIComponent(appObj.app)), appObj);
-  }
-
   getLastAlerts(filterObj: any) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

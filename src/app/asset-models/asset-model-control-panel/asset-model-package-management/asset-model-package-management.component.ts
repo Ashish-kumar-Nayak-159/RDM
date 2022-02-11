@@ -205,15 +205,16 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
-    if (!files?.item(0).type.includes('zip')) {
-      this.toasterService.showError('Only .zip files are allowed', 'Select File');
+    debugger;
+    if (!(files?.item(0).type.includes('zip')||files?.item(0).type.includes('hex'))) {
+      this.toasterService.showError('Only .zip, .hex files are allowed', 'Select File');
       return;
     }
     this.uploadedFile = files?.item(0) || [];
     this.packageObj.metadata.file_name = this.uploadedFile.name;
   }
   onFileSelected(event) {
-    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304"];
+    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304","61647361"];
     this.uploadedFile = [];
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;
@@ -226,11 +227,12 @@ export class AssetModelPackageManagementComponent implements OnInit {
         for (let arrvalue of arr) {
           header += arrvalue.toString(16);
         }
+        console.log("header "+header);
         if (allowedZipMagicNumbers.includes(header)) {
           this.uploadedFile = file;
         }
         else {
-          this.toasterService.showError('Only .zip files are allowed', 'Select File');
+          this.toasterService.showError('Only .zip, .hex files are allowed', 'Select File');
         }
         this.packageObj.metadata.file_name = this.uploadedFile.name;
         return;
@@ -260,6 +262,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onSavePackageObj() {
+    debugger
     await this.uploadDocument();
     if (
       !this.packageObj.name ||

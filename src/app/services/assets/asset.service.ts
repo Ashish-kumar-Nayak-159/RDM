@@ -511,7 +511,17 @@ export class AssetService {
       message
     );
   }
-
+  sync_asset_data(filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    
+    return this.http.post(
+      this.url + String.Format(AppUrls.SYNC_ASSET_DATA),filterObj,{params} );
+  }
   getNonIPAssetCount(filterObj) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

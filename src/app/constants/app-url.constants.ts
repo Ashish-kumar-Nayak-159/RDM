@@ -31,6 +31,7 @@ export class AppUrls {
   public static CREATE_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets/{1}';
   public static CREATE_WHITELISTED_LEGACY_ASSET = 'apps/{0}/whitelisted_legacy_assets/{1}';
   public static SEND_C2D_MESSAGE = 'apps/{0}/iot_assets/{1}/c2d_messages';
+  public static SYNC_ASSET_DATA = 'sync_asset_data';
   public static LOGIN = 'login';
   public static GUEST_SIGNUP = 'guest_signup';
   public static GUEST_LOGIN = 'guest_login';

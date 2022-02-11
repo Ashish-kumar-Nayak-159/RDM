@@ -44,7 +44,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
@@ -155,7 +155,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
                       this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
                         .asset_configuration &&
                       this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[
-                        asset.asset_id
+                      asset.asset_id
                       ]
                     ) {
                       asset.register_enabled = true;
@@ -269,12 +269,12 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     await this.getEdgeRules(asset);
     const rulePayloadToBeSynced = this.rules.map(rule => {
       const ruleObj = {
-        rule_id : rule.rule_id,
+        rule_id: rule.rule_id,
         actions: rule.actions,
         code: rule.code,
         condition: rule.condition,
         properties: rule.properties,
-        escalation_time_in_sec: rule.escalation_time_in_sec        
+        escalation_time_in_sec: rule.escalation_time_in_sec
       };
       if (rule.metadata?.sid) ruleObj["sid"] = rule.metadata?.sid
       return ruleObj;
@@ -406,6 +406,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       // controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
       // configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
       edge_derived_properties: this.optionsValue.edge_derived_properties ? {} : undefined,
+      
     };
     if (this.optionsValue.measured_properties) {
       this.properties.measured_properties.forEach((prop) => {
@@ -414,6 +415,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
+    
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach((prop) => {
         obj.alerts[prop.code] = prop.metadata;
@@ -426,14 +428,62 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.edge_derived_properties[prop.json_key].g = prop.group;
       });
     }
+
     // if (this.optionsValue.controllable_properties) {
     //   this.properties.controllable_properties.forEach(prop => {
     //     obj.controllable_properties[prop.json_key] = prop.metadata;
     //   });
     // }
-    this.callC2dMethod(obj);
-  }
+   
+    if (this.optionsValue.chunk_data_send) {
+      this.sync_asset_data(obj);
 
+    }
+    else {
+      this.callC2dMethod(obj);
+    }
+  }
+  sync_asset_data(obj) {
+
+console.log(obj);
+    this.isAPILoading = true;
+    const syncObj = {
+      asset_id: this.selectedAsset.asset_id,
+      iot_asset_id:  this.selectedAsset.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id,
+      should_sync_in_chunk:this.optionsValue.chunk_data_send,
+      should_sync_alert:this.optionsValue.alerts==undefined?"false":this.optionsValue.alerts,
+      should_sync_measured_property:this.optionsValue.measured_properties==undefined?"false":this.optionsValue.measured_properties,
+      should_sync_edge_derived_property:this.optionsValue.edge_derived_properties==undefined?"false":this.optionsValue.edge_derived_properties,
+      metadata:{ "acknowledge": "Full",  "expire_in_min": "2880" }
+
+    };
+    
+    this.subscriptions.push(
+      this.assetService
+        .sync_asset_data(
+          syncObj
+        
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(
+              response.message,
+              'Register Properties/Alerts'
+            );
+            this.assetService.refreshRecentJobs.emit();
+            this.onModalClose();
+            this.isAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Register Properties/Alerts');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+            clearInterval(this.c2dResponseInterval);
+          }
+        )
+    );
+
+  }
   callC2dMethod(obj) {
     console.log(obj);
     this.isAPILoading = true;

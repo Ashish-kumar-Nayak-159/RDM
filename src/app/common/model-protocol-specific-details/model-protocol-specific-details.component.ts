@@ -15,7 +15,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.pageType === 'edit') {
+      if (this.pageType === 'edit') {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.onChangeOfSetupType(this.dataObj);
         this.onChangeOfSetupSecondaryType(this.dataObj);

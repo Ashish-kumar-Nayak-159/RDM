@@ -365,6 +365,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
               ]),
               a: new FormControl(true),
               fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
+              bn: new FormControl(alertObj?.metadata?.bn, [Validators.required])
             });
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({

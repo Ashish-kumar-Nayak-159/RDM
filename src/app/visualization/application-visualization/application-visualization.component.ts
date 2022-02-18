@@ -1095,7 +1095,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
-    this.acknowledgedAlert = alert;
+      this.acknowledgedAlert = alert;
     this.acknowledgedAlertIndex = this.latestAlerts.findIndex((alertObj) => alertObj.id === alert.id);
     if (!this.acknowledgedAlert || !this.acknowledgedAlert.metadata) {
       this.acknowledgedAlert.metadata = {
@@ -1167,6 +1167,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }))
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
+    console.log("uploadFile ",this.acknowledgedAlert.metadata);
   }
 
   async acknowledgeAlert() {
@@ -1177,8 +1178,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         files.push(file);
       }
     });
-    this.acknowledgedAlert.metadata.files = files;
-    console.log(JSON.stringify(this.acknowledgedAlert));
+    // this.acknowledgedAlert.metadata.files = files;
+    console.log("acknowledgedAlert" ,JSON.stringify(this.acknowledgedAlert));
     const obj = {
       app: this.contextApp.app,
       asset_id: this.acknowledgedAlert.asset_id,
@@ -1202,6 +1203,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
           this.getLatestAlerts();
           this.closeAcknowledgementModal();
+          this.acknowledgedAlert = {}
+          this.acknowledgedAlertIndex = -1
           // this.getAlarms();
         },
         (error) => {

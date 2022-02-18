@@ -648,8 +648,8 @@
                   Alert Register Details
                 </button>
               </ng-container>
-              <app-model-protocol-specific-details [setupForm]="setupForm" [dataObj]="alertObj.metadata"
-                [pageType]="alertObj.id ? 'add' : 'edit'" [assetModel]="assetModel" [slaveData]="slaveData">
+              <app-model-protocol-specific-details [setupForm]="setupForm" [dataObj]="alertObj?.metadata"
+                [pageType]="!alertObj.id ? 'add' : 'edit'" [assetModel]="assetModel" [slaveData]="slaveData">
               </app-model-protocol-specific-details>
             </accordion-group>
           </accordion>

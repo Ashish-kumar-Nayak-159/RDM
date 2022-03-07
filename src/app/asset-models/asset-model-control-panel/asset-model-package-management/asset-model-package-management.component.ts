@@ -214,7 +214,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     this.packageObj.metadata.file_name = this.uploadedFile.name;
   }
   onFileSelected(event) {
-    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304","61647361","07466f"];
+    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304","61647361","07466f","16da30"];
     this.uploadedFile = [];
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;

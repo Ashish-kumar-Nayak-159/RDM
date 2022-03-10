@@ -352,7 +352,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   onSavePropertyObj() {
-    console.log('save property obj', this.propertyObj.thresholdthis.propertyObj.metadata);
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
     }

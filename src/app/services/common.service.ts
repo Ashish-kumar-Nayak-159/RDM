@@ -297,7 +297,7 @@ export class CommonService {
     if (!containerName) {
       containerName = environment.blobContainerName;
     }
-    const epoch = datefns.subSeconds(new Date(), 0);
+    const epoch = datefns.subSeconds(new Date(), 0).getTime();
     // const fileNameArr = file.name.split('.');
     // const fileExtension = fileNameArr[fileNameArr.length - 1];
     // fileNameArr.pop();
@@ -313,7 +313,9 @@ export class CommonService {
     if (!containerClient.exists()) {
       await containerClient.create();
     }
-    const client = containerClient.getBlockBlobClient(folderName + '/' + epoch + '/' + file.name);
+    const blobUrl = folderName + '/' + epoch + '/' + file.name;
+    const encodedBlobUrl = encodeURI(folderName) + '/' + epoch + '/' + encodeURI(file.name);
+    const client = containerClient.getBlockBlobClient(blobUrl);
     const response = await client.uploadBrowserData(file, {
       blockSize: 4 * 1024 * 1024, // 4MB block size
       concurrency: 20, // 20 concurrency
@@ -321,7 +323,7 @@ export class CommonService {
     });
     if (response._response.status === 201) {
       return {
-        url: containerName + '/' + folderName + '/' + epoch + '/' + file.name,
+        url: containerName + '/' + encodedBlobUrl,
         name: file.name,
       };
     }

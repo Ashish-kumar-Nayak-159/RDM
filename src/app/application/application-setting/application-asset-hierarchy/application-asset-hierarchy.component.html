@@ -23,7 +23,6 @@
 </div>
 
 <div class="p-3 scrolling-wrapper-flexbox">
-
   <div class="row">
     <ng-container *ngFor="let level of applicationData.hierarchy.levels; let i = index; trackBy:trackByFn">
       <div class="col-3 pr-3" *ngIf="i !== 0">
@@ -31,46 +30,46 @@
           <div class="card-header p-2">
             <div class="d-flex align-items-center">
               <div class="hierarchy-heading">{{level}}</div>
-              <div class="ml-auto" *ngIf="selectedHierarchyData[i]">
-                <button type="submit" class="btn btn-sm searchBtn1 btn-primary"
-                  *ngIf="isAppSetingsEditable && !isAddHierarchyThere" (click)="addTag(i)">
+              <div class="ml-auto" *ngIf="hierachyWithData[i]">
+                <button type="submit" class="btn btn-sm searchBtn1 btn-primary" *ngIf="isAppSetingsEditable"
+                  (click)="onShowHierarchyModal(i)">
                   <em class="fas fa-plus fa-sm"></em></button>
               </div>
             </div>
           </div>
           <div class="card-body-p0" style="overflow-y:auto;">
             <ul class="hierarchy_list list-group list-unstyled">
-              <ng-container *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length > 0">
+              <ng-container *ngIf="hierachyWithData[i] && hierachyWithData[i].length > 0">
                 <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
-                  *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
+                  *ngFor="let tag of hierachyWithData[i];let tagIndex = index; trackBy:trackByFn1">
                   <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
-                    *ngIf="originalHierarchyArr[i] && originalHierarchyArr[i][tagIndex]">
+                    *ngIf="hierachyWithData[i] && hierachyWithData[i][tagIndex]">
                     <div class="media">
                       <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]"
-                        (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
-                      <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]">{{tag}}</div>
+                        (click)="getAllHierarchy(i + 1, tag.id)">{{tag.name}}</div>
+                      <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]">{{tag.name}}</div>
                       <div class="ml-auto">
                         <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
-                          (click)="onRemoveTag(i, tagIndex)"><em class="fa fa-trash"></em></a>
+                          (click)="deleteHierarchy(tag.id,tag.level,tag.parent_id)"><em class="fa fa-trash"></em></a>
                         <span>
                           <em class="fa fa-angle-right fa-lg"></em>
                         </span>
                       </div>
                     </div>
                   </a>
-                  <ng-container *ngIf="originalHierarchyArr[i] && !originalHierarchyArr[i][tagIndex]">
+                  <ng-container *ngIf="hierachyWithData[i] && !hierachyWithData[i][tagIndex]">
                     <div class="media">
                       <input type="text" class="form-control form-control-sm w-10" name="tag_{{level}}_{{i}}"
                         [(ngModel)]="addedTagItem" />
-                      <a href="javascript:void(0)" placement="bottom" class="ml-2" (click)="onAddNewTag(i, tagIndex)"><em
-                          class="fa fa-check"></em></a>
+                      <a href="javascript:void(0)" placement="bottom" class="ml-2"
+                        (click)="onAddNewTag(i, tagIndex)"><em class="fa fa-check"></em></a>
                       <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel"
                         (click)="onAddTagCancel(i, tagIndex);"><em class="fa fa-times"></em></a>
                     </div>
                   </ng-container>
                 </li>
               </ng-container>
-              <li class="list-group-item" *ngIf="!selectedHierarchyData[i]">
+              <li class="list-group-item" *ngIf="!hierachyWithData[i]">
                 <a href="javascript:void(0)">
                   <div class="media">
                     <div class="overflow" style="white-space: break-spaces;">
@@ -96,10 +95,112 @@
 
       </div>
     </ng-container>
-    <ng-container *ngIf="applicationData.hierarchy.levels.length == 1">
-      <div class="col-3 pr-3">
-        No nodes available in Org Tree
+  </div>
+</div>
+
+<div class="modal fade" *ngIf="addHierarchyForm" id="addHierarchyModal" data-backdrop="static" tabindex="-1"
+  role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="max-width:700px!important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add {{applicationData.hierarchy.levels[levelToAddUpdate]}}</h5>
+        <button type="button" class="close" (click)="onCloseHierarchyModal()" aria-label="Close">
+          <i aria-hidden="true" class="ki ki-close"></i>
+        </button>
       </div>
-    </ng-container>
+      <form [formGroup]="addHierarchyForm">
+        <div class="modal-body">
+          <div class=" row">
+            <div class="form-group col-md-6">
+              <label for="example-tel-input required">{{applicationData.hierarchy.levels[levelToAddUpdate]}} Name</label>
+              <input maxlength="50" class="form-control customplaceholder" formControlName="name" type="text" id="name"
+                [ngClass]="{'is-invalid': submitted && f.name.errors }" placeholder="{{applicationData.hierarchy.levels[levelToAddUpdate]}} name">
+              <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                <div *ngIf="f.name.errors.required">{{applicationData.hierarchy.levels[levelToAddUpdate]}} name is required.</div>
+                <div *ngIf="f.name.errors.minlength">
+                  {{applicationData.hierarchy.levels[levelToAddUpdate]}} name must not be greater than 2 character</div>
+                <div *ngIf="f.name.errors.maxlength">
+                  {{applicationData.hierarchy.levels[levelToAddUpdate]}} name should not be greater than 50 character</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="row">
+              <!-- <table class="table table-hover" id="dataTable" aria-describedby="metadata">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
+                    <ng-container>
+                      Custom tags not available
+                    </ng-container>
+                  </tr>
+                  <tr *ngFor="let tag of assetCustomTags;let i = index">
+                    <ng-container *ngIf="!tag.editable ; else lastRowTemplate">
+                      <ng-container *ngIf="!isCustomTagsEditable">
+                        <td>{{tag.name}}</td>
+                        <td>{{tag.value}}</td>
+                        <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                          <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
+                            <em class="fa fa-fw fa-trash"></em>
+                          </a>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="isCustomTagsEditable">
+                        <td>
+                          <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
+                            aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                            (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')"
+                            [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
+                            aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"
+                            [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1"></td>
+                        <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+                      </ng-container>
+                    </ng-container>
+                    <ng-template #lastRowTemplate>
+                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                        <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
+                          aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
+                          (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')">
+                      </td>
+                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
+                          class="form-control form-control-sm bg-light border-0 small" placeholder="Value" aria-label="Search"
+                          aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
+                          (input)="onCustomTagInputChange()"></td>
+                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+                    </ng-template>
+                  </tr>
+                </tbody>
+              </table> -->
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onSaveHierarchy()" [disabled]="loader">
+          Save
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
+        </button>
+        <button type="button" class="btn btn-secondary" [disabled]="loader" (click)="onCloseHierarchyModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig"
+      [bodyMessage]="'Are you sure you want to delete ' + applicationData.hierarchy.levels[levelToAddUpdate]  +'? all child hierarchy related to this ' + applicationData.hierarchy.levels[this.levelToAddUpdate]  +' will be deleted.'"
+      [headerMessage]="'Remove ' + hierarchyName + ' ' + applicationData.hierarchy.levels[levelToAddUpdate]"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
+    </app-confirm-modal>
   </div>
 </div>

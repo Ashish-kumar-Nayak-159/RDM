@@ -333,8 +333,9 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getMessageData(dataobj) {
+    debugger
     return new Promise((resolve) => {
-      const obj = {
+      let obj = {
         app: dataobj.app,
         id: dataobj.id,
         asset_id: this.asset.asset_id,
@@ -343,7 +344,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
         epoch: true,
         partition_key: this.asset?.tags?.partition_key,
       };
-      const epoch = this.commonService.convertDateToEpoch(dataobj.message_date);
+      let epoch = this.commonService.convertDateToEpoch(dataobj.message_date);
       obj.from_date = epoch ? epoch - 300 : null;
       obj.to_date = epoch ? epoch + 300 : null;
       this.apiSubscriptions.push(
@@ -366,6 +367,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openTelemetryMessageModal(obj) {
+    debugger
     // if (obj.type === this.telemetryTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,

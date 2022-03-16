@@ -129,9 +129,9 @@ export class AddCampaignComponent implements OnInit {
         this.hierarchyArr[index] = [];
       });
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
@@ -156,7 +156,7 @@ export class AddCampaignComponent implements OnInit {
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
+    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -175,7 +175,7 @@ export class AddCampaignComponent implements OnInit {
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
     }
   }

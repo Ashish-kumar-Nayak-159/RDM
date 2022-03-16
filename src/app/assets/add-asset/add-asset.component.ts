@@ -56,7 +56,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      this.addAssetHierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
@@ -171,7 +171,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.addAssetHierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
+    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
       if (this.addAssetConfigureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.addAssetConfigureHierarchy[index + 1]];
@@ -226,7 +226,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (count === 0) {
       this.addAssetHierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.addAssetHierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
     }
     // await this.getAssets(hierarchyObj);

@@ -208,7 +208,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   getAppHierarchy(obj)
   {
     let tempObj = {};
-    if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {      
+    if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {      
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (obj.hasOwnProperty(level)) {
           console.log('level',level);

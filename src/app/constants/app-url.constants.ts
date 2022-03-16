@@ -200,4 +200,11 @@ export class AppUrls {
   public static UPLOAD_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets';
   public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
  public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';
+
+ public static GET_EXPORTED_HIERARCHY = 'export_hierarchy';
+ public static UPLOAD_HIERARCHY = 'import_hierarchy';
+ public static GET_HIERARCHIES = 'hierarchies_new'
+ public static GET_HIERARCHY_BY_ID = 'hierarchies_new/{0}'
+ public static HIERARCHIES = 'hierarchy_new'
+ public static DELETE_HIERARCHIES = 'hierarchy_new/{0}'
 }

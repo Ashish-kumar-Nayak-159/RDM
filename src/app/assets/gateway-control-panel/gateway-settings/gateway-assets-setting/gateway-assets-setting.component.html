@@ -214,10 +214,10 @@
                     <td style="width: 50%;"> {{item.key}} </td>
                     <td>
                       <select class="form-control form-control-sm" id="group" name="group"
-                        [(ngModel)]="properties[property.key][item.key]">
-                        <option value="g1">G1</option>
-                        <option value="g2">G2</option>
-                        <option value="g3">G3</option>
+                        [(ngModel)]="properties[property.key][item.key]" (ngModelChange)="properties[property.key][item.key] = $event.toUpperCase()">
+                        <option value="G1">G1</option>
+                        <option value="G2">G2</option>
+                        <option value="G3">G3</option>
                       </select>
                     </td>
                   </tr>

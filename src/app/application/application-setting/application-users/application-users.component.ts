@@ -95,17 +95,25 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   getUserHierarchy(userObj) {
-    let hierarchy = '';
-    let userHierarchy = '';
-    const keyList = Object.keys(userObj.hierarchy);
-    keyList.forEach((key, index) => {
-      hierarchy = hierarchy + userObj.hierarchy[key] + (userObj.hierarchy[keyList[index + 1]] ? ' / ' : '');
-      userHierarchy = userHierarchy + (this.applicationData.user.hierarchy[key] ?  this.applicationData.user.hierarchy[key] : '')  + (this.applicationData.user.hierarchy[keyList[index + 1]] ? ' / ' : '')
+    const keyList = this.applicationData.hierarchy.levels;
+
+    // keyList.forEach((key, index) => {
+    //   hierarchy = hierarchy + userObj.hierarchy[key] + (userObj.hierarchy[keyList[index + 1]] ? ' / ' : '');
+    //   userHierarchy = userHierarchy + (this.applicationData.user.hierarchy[key] ?  this.applicationData.user.hierarchy[key] : '')  + (this.applicationData.user.hierarchy[keyList[index + 1]] ? ' / ' : '')
+    // });
+    // if(hierarchy.substr(0,userHierarchy.length ) == userHierarchy && hierarchy.length >= userHierarchy.length){
+    //   userObj['isEditable'] = true
+    // }
+    let userHierarchyItems = [];
+    let currentUserHierarchyItems = [];
+    keyList.forEach(level => {
+      if (userObj.hierarchy.hasOwnProperty(level)) 
+        userHierarchyItems.push(userObj.hierarchy[level]);
+      if (this.applicationData.user.hierarchy.hasOwnProperty(level)) 
+        currentUserHierarchyItems.push(this.applicationData.user.hierarchy[level]);
     });
-    if(hierarchy.substr(0,userHierarchy.length ) == userHierarchy && hierarchy.length >= userHierarchy.length){
-      userObj['isEditable'] = true
-    }
-    return hierarchy;
+    userObj["isEditable"] = currentUserHierarchyItems < userHierarchyItems;
+    return userHierarchyItems.join(" / ");
   }
 
   // tslint:disable-next-line: no-unnecessary-initializer
@@ -180,7 +188,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.applicationData.hierarchy.tags;
+    
+    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -199,7 +208,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.applicationData.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.applicationData.hierarchy.tags);
+        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
     }
   }
@@ -208,6 +217,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.hierarchyList = [];
     let hierarchy = '';
     const roleObj = this.userRoles.filter((role) => role.role === this.addUserForm.value.role)[0];
+    debugger
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       if (index <= roleObj?.level) {
         hierarchy = hierarchy + element + ' / ';
@@ -217,7 +227,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       }
     });
     if (this.hierarchyList.length > 1) {
-      this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
+      this.hierarchyArr['1'] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
     if (hierarchy.slice(-2) === '/ ') {
       hierarchy = hierarchy.substring(0, hierarchy.length - 2);

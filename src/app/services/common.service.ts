@@ -23,6 +23,7 @@ export class CommonService {
   constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) { }
 
   convertUTCDateToLocal(utcDate) {
+    debugger
     if (utcDate) {
       const options = {
         year: 'numeric',
@@ -31,7 +32,7 @@ export class CommonService {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        fractionalSecondDigits: 3,
+        //fractionalSecondDigits: 3,
         hour12: true,
       } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
@@ -66,9 +67,12 @@ export class CommonService {
   }
 
   convertDateToEpoch(date: string) {
+    debugger
     if (date) {
       var ldate = this.convertUTCDateToLocal(date)
-      return datefns.getUnixTime(new Date(ldate));
+      let dt = new Date(ldate);
+      let epoch = datefns.getUnixTime(dt);
+      return epoch
     }
     return 0;
   }

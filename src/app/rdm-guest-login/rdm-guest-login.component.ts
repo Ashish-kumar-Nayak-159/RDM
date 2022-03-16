@@ -162,7 +162,7 @@ export class RdmGuestLoginComponent implements OnInit {
     return new Promise<void>((resolve) => {
       this.applicationData = undefined;
       this.subscriptions.push(
-        this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
+        this.applicationService.getApplicationDetail(app.app, true).subscribe((response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.applicationData.user = app.user;
@@ -187,7 +187,13 @@ export class RdmGuestLoginComponent implements OnInit {
             );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
+          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+            if(response)
+            {
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+            }
+          });
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',

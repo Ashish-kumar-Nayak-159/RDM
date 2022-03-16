@@ -124,7 +124,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       this.applicationData = undefined;
       this.apiSubscriptions.push(
-        this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
+        this.applicationService.getApplicationDetail(app.app, true).subscribe((response: any) => {
           console.log('response ',response);
           
           this.applicationData = JSON.parse(JSON.stringify(response));
@@ -179,6 +179,13 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
+          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+            if(response)
+            {
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+            }
+          });
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',

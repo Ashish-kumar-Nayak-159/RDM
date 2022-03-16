@@ -1780,6 +1780,7 @@ export class CONSTANTS {
 
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
+  public static HIERARCHY_TAGS = 'hierarchytags';
   public static ASSETS_LIST = 'assets_list';
   public static ALL_ASSETS_LIST = 'all_assets_list';
   public static ASSETS_GATEWAYS_LIST = 'assets_gateways_list';
@@ -1823,5 +1824,5 @@ export class CONSTANTS {
   public static ASSET_MODEL_IMAGE_WIDTH = 2000;
   public static ASSET_MODEL_IMAGE_HEIGHT = 2000;
   public static ASSET_MODEL_IMAGE_SIZE = 2000000;
-  public static DEFAULT_WHITELISTED_EXCEL_FILE = environment.blobContainerName + '/WhiteListedAssets.xlsx';
+  public static DEFAULT_WHITELISTED_EXCEL_FILE = environment.blobContainerName + '/WhiteListedAssets_KPIX.xlsx';
 }

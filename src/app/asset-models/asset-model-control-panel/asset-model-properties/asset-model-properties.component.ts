@@ -666,6 +666,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
+      if(!this.propertyObj.threshold)
+      {
+        this.propertyObj.threshold = {};
+      }
+      if(this.propertyObj?.group)
+      {
+        this.propertyObj.group = this.propertyObj?.group.toUpperCase();
+      }
       this.propertyObj.edit = true;
       if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
         this.setupForm = new FormGroup({

@@ -107,7 +107,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
     if (item) {
       this.loadFromCache(item);
@@ -126,7 +126,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
     if (item.hierarchy) {
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = item.hierarchy[level];
@@ -435,7 +435,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
+    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -512,7 +512,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
     }
   }

@@ -72,8 +72,8 @@ export class ApplicationService {
 
   getAllPriviledges() {
     return this.http.get(this.url + String.Format(AppUrls.GET_ALL_PRIVILEDGES)).pipe(
-      map((data: any) => {        
-        if (data?.count > 0) {     
+      map((data: any) => {
+        if (data?.count > 0) {
           let priviledgeGroup = this.GroupPriviledges(data);
           let priviledges = this.Refactorriviledges(data);
           // Note : Bifurecate PriviledgeGroup and priviledges seperately
@@ -113,15 +113,15 @@ export class ApplicationService {
         value.display_name = value.module + ' - ' + value.type;
         value.enabled = value.default_enabled;
         acc[value.key] = value;
-      }                    
+      }
       return acc;
     }, {});
   }
 
   getAppPriviledges(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_PRIVILEDGES, encodeURIComponent(app))).pipe(
-      map((data: any) => {        
-        if (data?.count > 0) {                         
+      map((data: any) => {
+        if (data?.count > 0) {
           data.data = { Priviledges: data.data }
           return data;
         }
@@ -141,8 +141,12 @@ export class ApplicationService {
     );
   }
 
-  getApplicationDetail(app) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, encodeURIComponent(app)));
+  getApplicationDetail(app, logging = false) {
+    let params = new HttpParams();
+    if (logging) {
+      params = params.set('logging', logging);
+    }
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, encodeURIComponent(app)), { params });
   }
 
   createApp(appObj) {
@@ -155,14 +159,14 @@ export class ApplicationService {
 
   updateAppHierarchy(appObj) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.put(
-      this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURIComponent(appObj.app)),
+    return this.http.post(
+      this.url + String.Format(AppUrls.UPLOAD_HIERARCHY, encodeURIComponent(appObj.app)),
       appObj
     );
   }
 
-  updatePrivilege(app,roleId,obj) {
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APPADMIN_PRIVILEGE, encodeURIComponent(app),roleId),obj );
+  updatePrivilege(app, roleId, obj) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APPADMIN_PRIVILEGE, encodeURIComponent(app), roleId), obj);
   }
 
   getLastAlerts(filterObj: any) {
@@ -270,5 +274,36 @@ export class ApplicationService {
     );
     // return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
     // encodeURIComponent(obj.id)), obj);
+  }
+  getExportedHierarchy() {
+    return this.http.get(this.url + AppUrls.GET_EXPORTED_HIERARCHY);
+  }
+  getHierarchies(filterObj: any) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_HIERARCHIES, { params });
+  }
+  addHierarchy(obj: any) {
+    return this.http.post(this.url + AppUrls.HIERARCHIES, obj);
+  }
+  updateHierarchy(obj: any) {
+    return this.http.patch(this.url + AppUrls.HIERARCHIES, obj);
+  }
+  getHierarchyById(id)
+  {
+    return this.http.get(this.url + String.Format(AppUrls.GET_HIERARCHY_BY_ID,id));
+  }
+  deleteHierarchy(filterObj,id) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_HIERARCHIES,id), { params });
   }
 }

@@ -39,7 +39,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.displayHierarchyString = this.contextApp.app;
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
   }
 
@@ -71,7 +71,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
+    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -124,7 +124,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
       }
     }
     this.onSaveHierachy();    
@@ -178,7 +178,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
@@ -208,7 +208,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
   updateHierarchyDetail(hierarchyObj) {
     if (hierarchyObj.hierarchy) {
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = hierarchyObj.hierarchy[level];

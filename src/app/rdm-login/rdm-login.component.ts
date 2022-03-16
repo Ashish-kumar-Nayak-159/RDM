@@ -311,7 +311,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Promise<void>((resolve) => {
       this.applicationData = undefined;
       this.subscriptions.push(
-        this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
+        this.applicationService.getApplicationDetail(app.app, true).subscribe((response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.userData.apps.forEach((appObj) => {
@@ -349,6 +349,13 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',
           };
+          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+            if(response)
+            {
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+            }
+          });
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
             dateOption:

@@ -58,7 +58,7 @@
             (change)="toggleLiveCheckbox()" [checked]="applicationData.dashboard_config.show_live_widgets" />
         </td>
       </tr>
-      <tr>
+      <tr  *ngIf="defaultAppName === 'SopanCMS'">
         <td class="align-middle">Healthy IoT Asset Map Icon</td>
         <td>
           <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.iot_asset?.healthy ?
@@ -80,7 +80,7 @@
           </div>
         </td>
       </tr>
-      <tr>
+      <tr  *ngIf="defaultAppName === 'SopanCMS'">
         <td class="align-middle">Unhealthy IoT Asset Map Icon</td>
         <td>
           <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.iot_asset?.unhealthy ?
@@ -124,7 +124,7 @@
           </div>
         </td>
       </tr> -->
-      <tr>
+      <tr  *ngIf="defaultAppName === 'SopanCMS'">
         <td class="align-middle">Healthy Legacy Asset Map Icon</td>
         <td>
           <ng-container *ngIf="!isConfigEditable">{{applicationData?.dashboard_config?.map_icons?.legacy_asset?.healthy
@@ -148,7 +148,7 @@
           </div>
         </td>
       </tr>
-      <tr>
+      <tr  *ngIf="defaultAppName === 'SopanCMS'">
         <td class="align-middle">Unhealthy Legacy Asset Map Icon</td>
         <td>
           <ng-container *ngIf="!isConfigEditable">

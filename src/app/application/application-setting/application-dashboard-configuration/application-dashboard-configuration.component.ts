@@ -4,6 +4,9 @@ import { ApplicationService } from 'src/app/services/application/application.ser
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { environment } from '../../../../environments/environment';
+import { CoreEnvironment } from '@angular/compiler/src/compiler_facade_interface';
+
 
 @Component({
   selector: 'app-application-dashboard-configuration',
@@ -20,6 +23,8 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   isFileUploading = false;
   widgetStringFromMenu: any;
   uploadedFiles: any = {};
+  defaultAppName = environment.app;
+  
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,

@@ -133,7 +133,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout','widget');
     this.selectedChartType = this.widgetStringFromMenu + ' Type';
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();

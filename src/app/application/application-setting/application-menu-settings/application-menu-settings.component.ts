@@ -4,6 +4,7 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { mn } from 'date-fns/locale';
 declare var $: any;
 @Component({
   selector: 'app-application-menu-settings',
@@ -95,18 +96,26 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       });
       this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
     }
-    // debugger
+     
     if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
       CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST.forEach((item) => {
+
         let flag = false;
         this.applicationData.menu_settings.model_control_panel_menu.forEach((menu) => {
           if (menu.system_name === item.system_name) {
             flag = true;
             item.display_name = menu.display_name;
             item.visible = menu.visible;
+            if(menu.page === 'layout' && !menu.hasOwnProperty('showAccordion'))
+            {
+              debugger
+              menu.showAccordion = item.showAccordion;
+              menu.accordion_value = item.accordion_value;
+
+            }
             arr.push(menu);
           }
         });
@@ -115,7 +124,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
-      console.log('model menu ',this.applicationData.menu_settings.model_control_panel_menu);
+      console.log('model menu ',JSON.stringify(this.applicationData.menu_settings.model_control_panel_menu));
       
     }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
@@ -136,7 +145,10 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             item.visible = menu.visible;
             item.index = menu.index;
             let aFlag = false;
+            // debugger
             item.showAccordion?.forEach((aItem) => {
+              console.log("aItem",aItem)
+  
               menu.showAccordion?.forEach((mItem) => {
                 if (aItem.name === mItem.name) {
                   aFlag = true;

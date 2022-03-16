@@ -277,7 +277,7 @@ export class CommonService {
     let value = key;
     app.menu_settings.model_control_panel_menu.forEach((item) => {
       if (item.page === page) {
-        value = item?.accordion_value[key] || key;
+        value = item.hasOwnProperty('accordion_value') ? item?.accordion_value[key] : key ;
       }
     });
     return value;

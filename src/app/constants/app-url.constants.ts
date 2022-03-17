@@ -207,4 +207,5 @@ export class AppUrls {
  public static GET_HIERARCHY_BY_ID = 'hierarchies_new/{0}'
  public static HIERARCHIES = 'hierarchy_new'
  public static DELETE_HIERARCHIES = 'hierarchy_new/{0}'
+ public static UPDATE_HIERARCHIES = 'hierarchy_new/{0}'
 }

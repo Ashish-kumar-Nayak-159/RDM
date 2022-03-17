@@ -1,6 +1,6 @@
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -14,7 +14,7 @@ declare var $: any;
 
 export class WhiteListAssetComponent implements OnInit {
 
-  contextApp: any;
+  contextApp: any = {};
   tileData: any;
   iotAssetsTab: any;
   legacyAssetsTab: any;
@@ -26,19 +26,19 @@ export class WhiteListAssetComponent implements OnInit {
   gateways: any[] = [];
   blobStorageURL = environment.blobURL;
   sasToken = environment.blobKey;
-  templateFileName = CONSTANTS.DEFAULT_WHITELISTED_EXCEL_FILE;
+  templateFileName = environment.blobContainerName + '/' + CONSTANTS.DEFAULT_WHITELISTED_EXCEL_FILE;
   subscriptions: any[] = [];
   tabData: { tab_name: any; table_key: any };
   uploadedFile: any = []
   isCanUploadFile: boolean = false;
   isCreatePackageAPILoading: boolean = false;
-  fileName : string = 'Choose File';
+  fileName: string = 'Choose File';
   constructor(private commonService: CommonService, private toasterService: ToasterService,
-     private assetService: AssetService,private sanitizer: DomSanitizer) { }
-
+    private assetService: AssetService, private sanitizer: DomSanitizer) {
+  }
   async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);   
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     if (this.iotAssetsTab?.visibility) {
       this.componentState = CONSTANTS.IP_ASSET;
@@ -49,6 +49,9 @@ export class WhiteListAssetComponent implements OnInit {
     } else if (this.iotGatewaysTab?.visibility) {
       this.componentState = CONSTANTS.IP_GATEWAY;
       await this.onTabChange(this.componentState);
+    }
+    if (this.contextApp.metadata?.whitelist && this.contextApp.metadata?.whitelist.hasOwnProperty('importfile')) {
+      this.templateFileName = environment.blobContainerName + '/' + this.contextApp.metadata.whitelist.importfile;
     }
   }
 
@@ -101,7 +104,7 @@ export class WhiteListAssetComponent implements OnInit {
   onCloseModal(id) {
     $('#' + id).modal('hide');
   }
-  onFileSelected(event) {    
+  onFileSelected(event) {
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0"];
     this.uploadedFile = [];
@@ -117,14 +120,14 @@ export class WhiteListAssetComponent implements OnInit {
           header += arrvalue.toString(16);
         }
         if (allowedZipMagicNumbers.includes(header)) {
-          this.uploadedFile = file;      
-          this.isCanUploadFile = true;   
-          this.fileName  = file.name;
+          this.uploadedFile = file;
+          this.isCanUploadFile = true;
+          this.fileName = file.name;
         }
         else {
           this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
-          this.fileName  = 'Choose File';
-        }        
+          this.fileName = 'Choose File';
+        }
         return;
       }
       filereader.readAsArrayBuffer(file);

@@ -8,9 +8,9 @@
             class="fas fa-edit fa-sm"></em></button>
         <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Edit Hierarchy" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><em class="fa fa-edit"></em></a> -->
-        <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()"
+        <!-- <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()"
           *ngIf="isAppSetingsEditable" placement="bottom" tooltip="Save Hierarchy"><em
-            class="fas fa-check fa-sm"></em></button>
+            class="fas fa-check fa-sm"></em></button> -->
         <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Hierarchy" *ngIf="isAppSetingsEditable"
         (click)="onSaveHierarchyTags();"><em class="fa fa-check"></em></a> -->
         <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
@@ -49,6 +49,11 @@
                         (click)="getAllHierarchy(i + 1, tag.id)">{{tag.name}}</div>
                       <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]">{{tag.name}}</div>
                       <div class="ml-auto">
+                        <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
+                        (click)="getHierarchy(tag.id)"><em class="fa fa-edit"></em></a>
+                      <span>
+                        <em class="fa fa-angle-right fa-lg"></em>
+                      </span>
                         <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
                           (click)="deleteHierarchy(tag.id,tag.level,tag.parent_id)"><em class="fa fa-trash"></em></a>
                         <span>
@@ -104,80 +109,84 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add {{applicationData.hierarchy.levels[levelToAddUpdate]}}</h5>
-        <button type="button" class="close" (click)="onCloseHierarchyModal()" aria-label="Close">
-          <i aria-hidden="true" class="ki ki-close"></i>
-        </button>
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCloseHierarchyModal()"
+          aria-label="Close" placement="bottom" tooltip="Cancel"><em class="fas fa-times fa-sm"></em></button>
       </div>
       <form [formGroup]="addHierarchyForm">
         <div class="modal-body">
           <div class=" row">
             <div class="form-group col-md-6">
-              <label for="example-tel-input required">{{applicationData.hierarchy.levels[levelToAddUpdate]}} Name</label>
+              <label for="example-tel-input required">{{applicationData.hierarchy.levels[levelToAddUpdate]}}
+                Name</label>
               <input maxlength="50" class="form-control customplaceholder" formControlName="name" type="text" id="name"
-                [ngClass]="{'is-invalid': submitted && f.name.errors }" placeholder="{{applicationData.hierarchy.levels[levelToAddUpdate]}} name">
+                [ngClass]="{'is-invalid': submitted && f.name.errors }"
+                placeholder="{{applicationData.hierarchy.levels[levelToAddUpdate]}} name">
               <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-                <div *ngIf="f.name.errors.required">{{applicationData.hierarchy.levels[levelToAddUpdate]}} name is required.</div>
+                <div *ngIf="f.name.errors.required">{{applicationData.hierarchy.levels[levelToAddUpdate]}} name is
+                  required.</div>
                 <div *ngIf="f.name.errors.minlength">
                   {{applicationData.hierarchy.levels[levelToAddUpdate]}} name must not be greater than 2 character</div>
                 <div *ngIf="f.name.errors.maxlength">
-                  {{applicationData.hierarchy.levels[levelToAddUpdate]}} name should not be greater than 50 character</div>
+                  {{applicationData.hierarchy.levels[levelToAddUpdate]}} name should not be greater than 50 character
+                </div>
               </div>
             </div>
           </div>
-          <div>
-            <div class="row">
-              <!-- <table class="table table-hover" id="dataTable" aria-describedby="metadata">
-                <thead style="display: none;">
-                  <tr>
-                    <th scope="col">Key</th>
-                    <th scope="col">Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
-                    <ng-container>
-                      Custom tags not available
-                    </ng-container>
-                  </tr>
-                  <tr *ngFor="let tag of assetCustomTags;let i = index">
-                    <ng-container *ngIf="!tag.editable ; else lastRowTemplate">
-                      <ng-container *ngIf="!isCustomTagsEditable">
-                        <td>{{tag.name}}</td>
-                        <td>{{tag.value}}</td>
-                        <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                          <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
-                            <em class="fa fa-fw fa-trash"></em>
-                          </a>
-                        </td>
-                      </ng-container>
-                      <ng-container *ngIf="isCustomTagsEditable">
-                        <td>
-                          <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
-                            aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                            (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')"
-                            [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
-                        </td>
-                        <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
-                            aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"
-                            [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1"></td>
-                        <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
-                      </ng-container>
-                    </ng-container>
-                    <ng-template #lastRowTemplate>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label for="example-tel-input required">Metadata</label>
+            <table class="table table-hover" id="dataTable" aria-describedby="metadata">
+              <thead style="display: none;">
+                <tr>
+                  <th scope="col">Key</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
+                  <ng-container>
+                    Custom tags not available
+                  </ng-container>
+                </tr>
+                <tr *ngFor="let tag of assetCustomTags;let i = index">
+                  <ng-container *ngIf="!tag.editable ; else lastRowTemplate">
+                    <ng-container *ngIf="!isCustomTagsEditable">
+                      <td>{{tag.name}}</td>
+                      <td>{{tag.value}}</td>
                       <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                        <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
-                          aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                          (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')">
+                        <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
+                          <em class="fa fa-fw fa-trash"></em>
+                        </a>
                       </td>
-                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
-                          class="form-control form-control-sm bg-light border-0 small" placeholder="Value" aria-label="Search"
-                          aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
-                          (input)="onCustomTagInputChange()"></td>
+                    </ng-container>
+                    <ng-container *ngIf="isCustomTagsEditable">
+                      <td>
+                        <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                          aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" [ngModelOptions]="{standalone: true}" name="name"
+                          (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')"
+                          [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
+                      </td>
+                      <td><input type="text" class="form-control form-control-sm bg-light border-0 small"
+                          aria-label="Value" aria-describedby="basic-addon3" [(ngModel)]="tag.value" [ngModelOptions]="{standalone: true}" name="value"
+                          [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1"></td>
                       <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
-                    </ng-template>
-                  </tr>
-                </tbody>
-              </table> -->
+                    </ng-container>
+                  </ng-container>
+                  <ng-template #lastRowTemplate>
+                    <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                      <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
+                        aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" [ngModelOptions]="{standalone: true}" name="name"
+                        (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i,'custom_tags')">
+                    </td>
+                    <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
+                        class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
+                        aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" [ngModelOptions]="{standalone: true}" name="value"
+                        (input)="onCustomTagInputChange()"></td>
+                    <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
+                  </ng-template>
+                </tr>
+              </tbody>
+            </table>
             </div>
           </div>
         </div>

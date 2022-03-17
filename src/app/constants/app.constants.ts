@@ -1824,5 +1824,5 @@ export class CONSTANTS {
   public static ASSET_MODEL_IMAGE_WIDTH = 2000;
   public static ASSET_MODEL_IMAGE_HEIGHT = 2000;
   public static ASSET_MODEL_IMAGE_SIZE = 2000000;
-  public static DEFAULT_WHITELISTED_EXCEL_FILE = environment.blobContainerName + '/WhiteListedAssets_KPIX.xlsx';
+  public static DEFAULT_WHITELISTED_EXCEL_FILE = 'WhiteListedAssets_KPIX.xlsx';
 }

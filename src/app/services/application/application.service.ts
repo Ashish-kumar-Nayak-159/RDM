@@ -291,7 +291,7 @@ export class ApplicationService {
     return this.http.post(this.url + AppUrls.HIERARCHIES, obj);
   }
   updateHierarchy(obj: any) {
-    return this.http.patch(this.url + AppUrls.HIERARCHIES, obj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_HIERARCHIES,obj.id), obj);
   }
   getHierarchyById(id)
   {

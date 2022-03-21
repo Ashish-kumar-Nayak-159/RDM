@@ -85,7 +85,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary add-row" (click)="onUploadWhitelistedAsset()"
                     [disabled]="isCreatePackageAPILoading || !isCanUploadFile">Save</button>
-                <button type="button" class="btn btn-secondary">Cancel</button>
+                <button type="button" class="btn btn-secondary" (click)="onCloseModal('addWhieListAsset')" >Cancel</button>
                 <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></em>
             </div>
         </div>

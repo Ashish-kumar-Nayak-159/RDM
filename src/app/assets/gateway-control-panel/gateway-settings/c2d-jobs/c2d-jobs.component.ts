@@ -120,7 +120,7 @@ export class C2dJobsComponent implements OnInit {
     this.openC2DMessageModal();
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
-    console.log(message);
+    console.log("CheckDifferent", JSON.stringify(message));
     this.isC2dMsgResponsesLoading = true;
     const obj = {
       sub_job_id: message.sub_job_id,
@@ -136,19 +136,23 @@ export class C2dJobsComponent implements OnInit {
     this.apiSubscriptions.push(
       this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {
+          console.log("CheckingResponse", JSON.stringify(response))
           if (response.data) {
             this.c2dResponseDetail = response.data;
           }
-          if (this.c2dResponseDetail.length === 0) {
-            this.modalConfig.jsonDisplay = false;
-            this.modalConfig.stringDisplay = true;
-          } else {
-            this.modalConfig.jsonDisplay = true;
-            this.modalConfig.stringDisplay = false;
-          }
+          // if (this.c2dResponseDetail.length === 0) {
+          //   this.modalConfig.jsonDisplay = false;
+          //   this.modalConfig.stringDisplay = true;
+          // } else {
+          //   this.modalConfig.jsonDisplay = true;
+          //   this.modalConfig.stringDisplay = false;
+          // }
+          this.modalConfig.jsonDisplay = true;
           this.isC2dMsgResponsesLoading = false;
         },
-        (error) => (this.isC2dMsgResponsesLoading = false)
+        (error) => {
+          (this.isC2dMsgResponsesLoading = false)
+        }
       )
     );
   }

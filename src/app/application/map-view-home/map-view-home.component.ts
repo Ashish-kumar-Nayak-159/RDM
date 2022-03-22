@@ -271,10 +271,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onAssetFilterApply(updateFilterObj = true) {
+    debugger
     this.activeCircle = 'all';
     this.assets = this.hierarchyDropdown.getAssets();
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-    console.log(this.mapAssets);
+    console.log("CheckingMap", JSON.stringify(this.mapAssets));
     this.healthyAssetCount = 0;
     this.unhealthyAssetCount = 0;
     this.assets.forEach((assetObj) => {
@@ -300,6 +301,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+      
       // this.zoom = 8;
     } else {
       // this.mapFitBounds = true;

@@ -18,6 +18,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   hierarchyArr: any = {};
   @Input() assets: any[] = [];
   originalAssets: any[] = [];
+  actualAssets:any[]= [];
   @Input() showAsset = false;
   hierarchyString: string;
   contextAppUserHierarchyLength = 0;
@@ -27,7 +28,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   constructor(private commonService: CommonService, private toasterService: ToasterService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+    this.originalAssets = this.actualAssets;
   }
 
   ngOnInit(): void {
@@ -38,6 +39,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.hierarchyString = this.contextApp.app;
     this.displayHierarchyString = this.contextApp.app;
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+    this.actualAssets = this.originalAssets;
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
@@ -86,7 +88,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
-
     if (Object.keys(hierarchyObj).length === 1) {
       this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {

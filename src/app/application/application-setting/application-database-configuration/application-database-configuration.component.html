@@ -1,17 +1,198 @@
-
 <div class="tab-bar">
   <div class="d-flex align-items-center">
     <div class="h6 m-0 p-0">Database Configuration
     </div>
-</div>
+  </div>
 </div>
 <div class="tableFixHead table-responsive">
+  <accordion class="mb-2 p-3" [closeOthers]="'true'">
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Database
+        </a>       
+      </ng-container>
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="col-12 p-0">
+            <form #mainMenuForm="ngForm">
+              <table class="table table-hover" aria-describedby="databaseconfiguration">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Separate Database Required?</td>
+                    <td>{{applicationData?.metadata?.db_info?.default ? 'No' : 'Yes'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Database Name</td>
+                    <td>{{applicationData?.metadata?.db_info?.database_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Host Name</td>
+                    <td>{{applicationData?.metadata?.db_info?.host_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>User Name</td>
+                    <td>{{applicationData?.metadata?.db_info?.user_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Port</td>
+                    <td>{{applicationData?.metadata?.db_info?.port}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </div>
+      </div>
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          App Schema
+        </a>
+      </ng-container>
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="col-12 p-0">
+            <form #mainMenuForm="ngForm">
+              <table class="table table-hover" aria-describedby="schemaconfiguration">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Separate App specific schema required?</td>
+                    <td>{{applicationData?.metadata?.schema_info?.default ? 'No' : 'Yes'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Schema Name</td>
+                    <td>{{applicationData?.metadata?.schema_info?.schema_name}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </div>
+      </div>
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          App Telemetry
+        </a>
+      </ng-container>
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="col-12 p-0">
+            <form #mainMenuForm="ngForm">
+              <table class="table table-hover" aria-describedby="telemetryconfiguration">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Separate App telemetry specific schema required?</td>
+                    <td>{{applicationData?.metadata?.telemetry_schema_info?.default ? 'No' : 'Yes'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Schema Name</td>
+                    <td>{{applicationData?.metadata?.telemetry_schema_info?.schema_name}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </div>
+      </div>
+    </accordion-group>
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Partition
+        </a>
+      </ng-container>
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="col-12 p-0">
+            <form #mainMenuForm="ngForm">
+              <table class="table table-hover" aria-describedby="partitionconfiguration">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Telemetry Partition Technique</td>
+                    <td>{{applicationData?.metadata?.partition?.telemetry?.partition_strategy}}</td>
+                  </tr>
+                  <tr>
+                    <td>Telemetry Sub-Partition Technique </td>
+                    <td>{{applicationData?.metadata?.partition?.telemetry?.sub_partition_strategy}}</td>
+                  </tr>
+                  <ng-container *ngFor="let arrObj of partitionArray">
+                    <ng-container *ngFor="let item of arrObj | keyvalue">
+                      <tr>
+                        <td>{{item.key | titlecase}} Partition Technique</td>
+                        <td>{{item.value['partition_strategy']}}</td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </div>
+      </div>
+    </accordion-group>
+
+
+    <!-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////
+
+
 <table class="table table-hover" aria-describedby="databaseconfiguration">
   <thead style="display: none;">
     <tr>
-      <th scope="col">Project Name</th>
-      <th scope="col">Employer</th>
-      <th scope="col">Awards</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -37,4 +218,4 @@
     </tr>
   </tbody>
 </table>
-</div>
+</div> -->

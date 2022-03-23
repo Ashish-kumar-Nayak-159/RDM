@@ -397,7 +397,7 @@ export class CommonService {
         });
       }
     }
-  }
+  } 
 
   getLowestValueFromList(arr) {
     return Math.min(...arr) || 60;

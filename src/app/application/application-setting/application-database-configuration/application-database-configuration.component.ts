@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-application-database-configuration',
@@ -6,6 +6,20 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./application-database-configuration.component.css']
 })
 export class ApplicationDatabaseConfigurationComponent implements OnInit {
+  
   @Input() applicationData: any;
-  ngOnInit(): void { }
+  partitionArray = [];
+  ngOnInit(): void {    
+    if (this.applicationData && this.applicationData?.metadata?.partition) {
+      let partitionObj = this.applicationData?.metadata?.partition;
+      let arr = [];     
+      Object.keys(partitionObj).map(function (key) {   
+        if (key != 'telemetry') {
+          arr.push({ [key]: partitionObj[key] })
+          return arr;
+        }
+      });
+      this.partitionArray = arr;
+    }
+  }
 }

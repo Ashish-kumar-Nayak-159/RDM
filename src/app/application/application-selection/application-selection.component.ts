@@ -91,15 +91,26 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
     }
-    localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
-    await this.getApplicationData(app);
-    console.log('this.applicationData.menu_settings ', this.applicationData.menu_settings);
+    const decodedToken = this.commonService.decodeJWTToken(app.token);
+    if (decodedToken?.privileges && decodedToken.privileges.indexOf('APV') <= -1) {
+      this.toasterService.showError(
+        'You are not authorized to access admin portal',
+        UIMESSAGES.MESSAGES.CONTACT_ADMINISTRATOR
+      );
+      localStorage.clear();
+      return;
+    }
+    else {
+      localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
+      await this.getApplicationData(app);
+      console.log('this.applicationData.menu_settings ', this.applicationData.menu_settings);
 
-    this.commonService.refreshSideMenuData.emit(this.applicationData);
+      this.commonService.refreshSideMenuData.emit(this.applicationData);
 
-    // this.router.navigate(['applications', this.applicationData.app]);
-    this.redirectToFirstMenu()
-    this.isAppDataLoading = undefined;
+      // this.router.navigate(['applications', this.applicationData.app]);
+      this.redirectToFirstMenu()
+      this.isAppDataLoading = undefined;
+    }
   }
 
   redirectToFirstMenu() {
@@ -206,7 +217,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
                   })
                 );
               }
-            })
+            },
+              (error) => resolve())
           );
         })
       );

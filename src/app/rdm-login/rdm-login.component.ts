@@ -258,8 +258,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['applications']);
       this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, data);
     } else {
-      // if user is logged in for first time force the user to change password
-      if (data.password_created_date === '') {
+      // if user is logged in for first time force the user to change password      
+      if (data.password_created_date === '' || data.password_created_date === null) {
         this.isResetPassword = true;
         return;
       }
@@ -288,6 +288,14 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               UIMESSAGES.MESSAGES.CONTACT_ADMINISTRATOR
             );
             this.commonService.onLogOut();
+            return;
+          }
+          if (decodedToken?.privileges && decodedToken.privileges.indexOf('APV') <= -1) {
+            this.toasterService.showError(
+              'You are not authorized to access admin portal',
+              UIMESSAGES.MESSAGES.CONTACT_ADMINISTRATOR
+            );
+            localStorage.clear();
             return;
           }
           const obj = {
@@ -349,21 +357,22 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',
-          };
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
-            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-            if(response)
-            {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
-            }
-          });
+          };         
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
             dateOption:
               this.applicationData?.metadata?.filter_settings?.search_duration_control_panel || 'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
-          resolve();
+          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+            if(response)
+            {
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+              resolve();
+            }
+          },
+          (error)=> resolve());          
         })
       );
     });

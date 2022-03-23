@@ -48,7 +48,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   /**
    * Creates an instance of customers component.
    */
-  constructor(private commonService: CommonService, private toasterService: ToasterService) {}
+  constructor(private commonService: CommonService, private toasterService: ToasterService) { }
   /**
    * on init method
    * A callback method that is invoked immediately after the directive is instantiated.
@@ -82,7 +82,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   noWhitespaceValidator(control: FormControl) {
-    return (control.value || '').trim().length === 0 ? { whitespace: true } : null;
+    if(control.value == null)
+      return null
+    if ((control.value as string).indexOf(' ') >= 0) {
+      return { whitespace: true }
+    }
+    return null;
   }
   /**
    * Calls the change password api.

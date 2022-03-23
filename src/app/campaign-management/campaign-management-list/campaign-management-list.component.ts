@@ -68,11 +68,9 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       }
     });
     this.tileData = selectedItem;
-    console.log(this.tileData);
   }
 
   loadFromCache(item) {
-    console.log(item.dateOption);
     if (item.dateOption) {
       this.filterObj.dateOption = item.dateOption;
       if (item.dateOption !== 'Custom Range') {
@@ -211,7 +209,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {      
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (obj.hasOwnProperty(level)) {
-          console.log('level',level);
           tempObj[level] = obj[level];
         }
       });

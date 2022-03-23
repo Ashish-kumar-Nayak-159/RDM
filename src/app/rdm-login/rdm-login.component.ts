@@ -50,11 +50,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     // if (!this.previousURL || this.previousURL === '' || this.previousURL === null) {
     //   this.previousURL = 'cms_dev';
     // }
-    // console.log(this.previousURL);
     this.route.paramMap.subscribe(params => {
       this.tenantId = params.get("tenantId");
     });
-    console.log(this.tenantId);
     // if (this.tenantId || this.tenantId !== '' || this.tenantId !== null) {
     //   this.istenantId = true;
     // }
@@ -85,7 +83,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       $('body').removeClass('sb-toggle');
     }
     if ($('.container-fluid').hasClass('sb-notoggle')) {
-      console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
 
@@ -206,12 +203,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     loginObj.phone = loginObj.phone?.e164Number || null;
     this.isLoginAPILoading = true;
     // loginObj.app = this.tenantId;
-    console.log(loginObj);
     this.subscriptions.push(
       this.commonService.userSignUp(loginObj).subscribe(
         async (response: any) => {
           this.otpData = response;
-          console.log(this.otpData);
           this.isLoginAPILoading = false;
         },
         (error) => {

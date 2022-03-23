@@ -71,11 +71,9 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.filterSearch.emit(this.originalFilterObj);
     // this.datepicker.datePicker.setStartDate(null);
     // this.datepicker.datePicker.setEndDate(null);
-    console.log(JSON.stringify(this.originalFilterObj));
     this.filterObj = {};
     this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
     this.filterObj.dateOption = 'Last 30 Mins';
-    console.log(this.filterObj);
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);

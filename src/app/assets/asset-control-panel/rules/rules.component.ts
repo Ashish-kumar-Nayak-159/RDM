@@ -126,7 +126,6 @@ export class RulesComponent implements OnInit {
                 this.assetRules.push(rule);
               }
             });
-            console.log(this.modelrules);
             if (this.modelrules.length === 0) {
               this.selectedAccrodionType = 'Asset';
             }
@@ -157,8 +156,6 @@ export class RulesComponent implements OnInit {
       deployed_by: this.userData.email + ' (' + this.userData.name + ')',
       is_revert: isRevert,
     };
-    console.log(this.ruleData);
-    console.log(obj);
     this.assetService
       .deployCloudAssetRule(this.contextApp.app, this.asset.asset_id, this.ruleData.rule_id, obj)
       .subscribe(

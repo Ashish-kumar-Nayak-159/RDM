@@ -122,7 +122,6 @@ export class AddRuleComponent implements OnInit {
         this.userGroups.splice(0, 0, {
           group_name: 'Client Field Support',
         });
-        console.log('userGroups    ', this.userGroups);
       })
     );
   }
@@ -242,7 +241,6 @@ export class AddRuleComponent implements OnInit {
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
         if (prop.data_type == 'Number' || prop.data_type == 'Boolean') { 
-          console.log('this.ruleData?.metadata?.sid',this.ruleModel?.metadata?.sid);        
           if(!this.ruleModel?.metadata?.sid ||  prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid){
             this.dropdownPropList.push({
               id: prop.name,
@@ -383,7 +381,6 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.properties = [];
 
     this.ruleModel.conditions.forEach((element, index) => {
-      console.log('element', element);
       str +=
         ' %' +
         (index + 1) +

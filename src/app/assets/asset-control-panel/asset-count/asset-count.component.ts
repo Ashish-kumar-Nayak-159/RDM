@@ -154,7 +154,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   }
 
   async searchTelemetry(filterObj, updateFilterObj = true) {
-    console.log(filterObj);
     this.telemetry = [];
     if (filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);

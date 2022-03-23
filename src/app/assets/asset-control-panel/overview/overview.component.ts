@@ -56,8 +56,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    console.log(this.decodedToken);
-    console.log(this.decodedToken?.privileges?.indexOf('ASMM'));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
@@ -70,15 +68,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
         assetItem = item.showAccordion;
       }
     });
-    console.log(this.asset);
     assetItem.forEach((item) => {
-      console.log(item.name, '======', item.value, '&&&&&&&&', item.name === this.componentState && item.value);
       if (item.name === this.asset.type && item.value) {
         name = item.value;
       }
     });
-    console.log(this.componentState);
-    console.log(name);
     this.asset.local_type = name || this.componentState;
     if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
       this.getAssetCredentials();
@@ -91,7 +85,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   getAssetCredentials() {
     this.assetCredentials = undefined;
-    console.log(this.asset);
     const id = this.componentState === CONSTANTS.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id;
     this.subscriptions.push(
       this.assetService.getAssetCredentials(id, this.contextApp.app).subscribe((response) => {

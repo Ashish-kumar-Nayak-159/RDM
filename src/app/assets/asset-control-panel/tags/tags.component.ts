@@ -261,7 +261,6 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.asset.tags.local_created_date = this.commonService.convertUTCDateToLocal(this.asset.tags.created_date);
       }
     }
-    console.log(this.assetCustomTags);
     
     this.originalAsset = null;
     this.originalAsset = JSON.parse(JSON.stringify(this.asset));
@@ -353,7 +352,6 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   updateAssetTags() {
-    console.log('this.asset.tags ',JSON.stringify(this.asset.tags));
     debugger
     // if((!this.asset.tags.latitude || !this.asset.tags.longitude || !(this.asset.tags.latitude.toString().trim()) || !(this.asset.tags.longitude.toString().trim()) || 
     // this.asset.tags.latitude && !this.asset.tags.longitude) || (!this.asset.tags.latitude && this.asset.tags.longitude)){
@@ -488,7 +486,6 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   public mapReadyHandler(map: google.maps.Map): void {
-    console.log('map ready');
     navigator.geolocation.getCurrentPosition(this.showPosition)
     this.asset.tags.latitude = this.centerLatitude;
     this.asset.tags.longitude = this.centerLongitude;

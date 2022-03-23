@@ -67,7 +67,6 @@ export class OthersComponent implements OnInit, OnDestroy {
   }
 
   searchOther(filterObj, updateFilterObj = true) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isOthersLoading = true;
     if (filterObj.dateOption !== 'Custom Range') {

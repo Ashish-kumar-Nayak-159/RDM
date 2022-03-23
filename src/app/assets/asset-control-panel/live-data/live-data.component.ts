@@ -54,7 +54,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           } else if (response?.derived_kpis) {
             this.derivedKPIs = response.derived_kpis;
           }
@@ -125,11 +124,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 if (prop.property) {
                   prop.json_key = prop.property.json_key;
                 }
-                console.log(prop.json_key);
-                console.log(this.propertyList);
                 prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop.property?.type || prop.type;
-                console.log(prop);
                 if (prop?.property) {
                   this.addPropertyInList(prop.property);
                 }
@@ -151,7 +147,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 prop.property = this.propertyList.find(
                   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                 );
-                console.log(prop);
                 this.addPropertyInList(prop);
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
@@ -170,7 +165,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 prop.property = this.propertyList.find(
                   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                 );
-                console.log(prop);
                 this.addPropertyInList(prop);
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
@@ -195,7 +189,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   }
 
   addPropertyInList(prop) {
-    console.log(prop);
     if (this.widgetPropertyList.length === 0) {
       this.widgetPropertyList.push(prop);
     } else {
@@ -280,7 +273,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           obj = JSON.parse(JSON.stringify(this.telemetryObj));
         }
         this.telemetryObj = undefined;
-        // console.log(this.widgetPropertyList);
         this.widgetPropertyList.forEach((prop) => {
           if (prop?.json_key && data[prop.json_key] !== undefined && data[prop.json_key] !== null) {
             obj[prop?.json_key] = {
@@ -302,7 +294,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};
-            // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
               if (prop.type !== 'Derived KPIs') {
                 obj[prop?.json_key] = {
@@ -317,7 +308,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 };
               }
             });
-            // console.log(obj);
             this.telemetryObj = obj;
             this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
             // this.telemetryObj = response.message;

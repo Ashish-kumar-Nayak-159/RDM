@@ -41,7 +41,6 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    console.log(this.componentstate);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
     this.c2dJobFilter.request_type = 'Register Asset,Deregister Asset';
@@ -81,7 +80,6 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
           }
         }
       }
-      console.log(this.asset);
       this.asset.display_name = this.asset.tags.display_name;
       this.assets.push(this.asset);
     }
@@ -198,7 +196,6 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   }
 
   callC2dMethod(obj, asset, type) {
-    console.log(obj);
     this.isAPILoading = true;
     this.headerMessage = type;
     const c2dObj = {

@@ -47,7 +47,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.c2dJobFilter.job_type = 'Message';
     if (this.pageType === 'Register Properties') {
@@ -69,8 +68,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       this.asset.register_enabled = false;
       if (this.asset.metadata?.package_app) {
         this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
-        console.log(this.asset.appObj);
-        console.log(this.assetTwin);
         if (
           this.assetTwin &&
           this.assetTwin.twin_properties.reported &&
@@ -181,7 +178,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     } else if (this.pageType === 'Register Rules') {
       this.registerRules(asset);
     } else if (this.pageType === 'Register Slaves') {
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
       this.syncSlaves(asset);
     }
   }
@@ -255,7 +251,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
           (response: any) => {
             if (response?.data) {
               this.rules = response.data;
-              console.log(this.rules);
             }
             resolve1();
           },
@@ -445,7 +440,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   }
   sync_asset_data(obj) {
 
-console.log(obj);
     this.isAPILoading = true;
     const syncObj = {
       asset_id: this.selectedAsset.asset_id,
@@ -485,7 +479,6 @@ console.log(obj);
 
   }
   callC2dMethod(obj) {
-    console.log(obj);
     this.isAPILoading = true;
     const c2dObj = {
       asset_id: this.selectedAsset.asset_id,

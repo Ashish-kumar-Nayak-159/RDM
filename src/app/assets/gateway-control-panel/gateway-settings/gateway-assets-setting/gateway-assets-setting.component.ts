@@ -79,8 +79,6 @@ export class GatewayAssetsSettingComponent implements OnInit {
       this.asset.settings_enabled = false;
       if (this.asset.metadata?.package_app) {
         this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
-        console.log(this.asset.appObj);
-        console.log(this.assetTwin);
         if (
           this.assetTwin.twin_properties.reported &&
           this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
@@ -192,7 +190,6 @@ export class GatewayAssetsSettingComponent implements OnInit {
   }
 
   async changeTelemetrySetting() {
-    console.log(this.selectedAsset);
     const obj = {
       command: 'set_asset_configuration',
       app_name: this.selectedAsset?.metadata?.package_app,
@@ -221,13 +218,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
       g3_ingestion_frequency_in_ms:
         this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms * 1000,
     };
-    console.log(this.telemetrySettings);
     await this.callC2dMethod(obj, 'Change Asset Settings');
   }
 
   callC2dMethod(obj, type) {
     return new Promise<void>((resolve1, reject) => {
-      console.log(this.selectedAsset);
       this.isAPILoading = true;
       this.headerMessage = type;
       const c2dObj = {
@@ -385,6 +380,5 @@ export class GatewayAssetsSettingComponent implements OnInit {
   }
 
   updatePropertyData() {
-    console.log(this.properties);
   }
 }

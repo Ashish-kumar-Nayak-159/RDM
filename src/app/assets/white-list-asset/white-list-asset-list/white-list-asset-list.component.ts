@@ -70,7 +70,6 @@ export class WhiteListAssetListComponent implements OnInit {
   getTileName() {
     let selectedItem;
     this.contextApp.menu_settings.main_menu.forEach((item) => {
-      console.log(item.page);
       if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }

@@ -146,7 +146,6 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       defaultValue: this.assetModel.tags.protocol,
       nonEditable: true,
     });
-    console.log(this.assetModel.tags);
     this.assetModel.tags.reserved_tags.push({
       name: 'Cloud Connectivity',
       key: 'cloud_connectivity',

@@ -281,7 +281,6 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     }
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.assetsList = [];
-    console.log('item', item);
     if (item) {
       this.loadFromCache(item);
     } else {
@@ -291,9 +290,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   }
 
   onCurrentPageViewChange(type) {
-    console.log(type);
     if (type === 'map') {
-      console.log('here');
       if (this.assetsList.length > 0) {
         this.mapFitBounds = false;
         const center = this.commonService.averageGeolocation(this.assetsList);
@@ -500,7 +497,6 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
               this.componentState === this.constantData.IP_GATEWAY &&
               item?.connection_state?.toLowerCase() === 'connected'
             ) {
-              console.log('11111111111111111111111111');
               item.icon = {
                 url: './assets/img/iot-gateways-green.svg',
                 scaledSize: {
@@ -539,7 +535,6 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
                 item.hierarchyString += item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
               });
             }
-            console.log(item.asset_id, '=====', item.icon);
           });
           this.assetsList = [...this.assetsList, ...response.data];
           this.originalAssetsList = JSON.parse(JSON.stringify(this.assetsList));

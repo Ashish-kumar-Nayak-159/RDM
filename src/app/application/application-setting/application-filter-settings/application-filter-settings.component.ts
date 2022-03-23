@@ -66,19 +66,15 @@ export class ApplicationFilterSettingsComponent implements OnInit {
     let obj = this.commonService.getMomentStartEndDate(this.mainFilterObj.dateOption);
     this.mainFilterObj.from_date = obj.from_date;
     this.mainFilterObj.to_date = obj.to_date;
-    console.log('this.mainFilterObj', this.mainFilterObj);
     this.controlPanelFilterObj.dateOption =
       this.applicationData.metadata.filter_settings.search_duration_control_panel || 'Last 30 Mins';
     obj = this.commonService.getMomentStartEndDate(this.controlPanelFilterObj.dateOption);
     this.controlPanelFilterObj.from_date = obj.from_date;
     this.controlPanelFilterObj.to_date = obj.to_date;
-    console.log('this.controlPanelFilterObj', this.controlPanelFilterObj);
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 
   selectedDate(filterObj, type) {
-    console.log('filterObj', filterObj);
-    console.log('type', type);
     if (type == 'search_duration') {
       this.applicationData.metadata.filter_settings.search_duration = filterObj.dateOption;
     } else {

@@ -120,7 +120,6 @@ export class C2dJobsComponent implements OnInit {
     this.openC2DMessageModal();
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
-    console.log("CheckDifferent", JSON.stringify(message));
     this.isC2dMsgResponsesLoading = true;
     const obj = {
       sub_job_id: message.sub_job_id,
@@ -136,7 +135,6 @@ export class C2dJobsComponent implements OnInit {
     this.apiSubscriptions.push(
       this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          console.log("CheckingResponse", JSON.stringify(response))
           if (response.data) {
             this.c2dResponseDetail = response.data;
           }

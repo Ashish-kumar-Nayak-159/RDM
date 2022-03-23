@@ -202,7 +202,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(filterObj) {
-    console.log('filterObj ',filterObj);
     
     this.telemetryFilter.from_date = filterObj.from_date;
     this.telemetryFilter.to_date = filterObj.to_date;
@@ -213,7 +212,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryFilter.from_date,
       this.telemetryFilter.to_date
     );
-    console.log('records ',records);
     
     if (records > this.noOfRecords) {
       this.telemetryFilter.isTypeEditable = true;
@@ -223,7 +221,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clear() {
-    console.log('before', JSON.stringify(this.originalTelemetryFilter));
     this.telemetryFilter = {};
     this.telemetryFilter = JSON.parse(JSON.stringify(this.originalTelemetryFilter));
     this.telemetryFilter.dateOption = 'Last 30 Mins';
@@ -255,7 +252,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.telemetryFilter.isTypeEditable = false;
     }
-    console.log(this.telemetryFilter);
   }
 
   searchTelemetry(filterObj, updateFilterObj = true) {

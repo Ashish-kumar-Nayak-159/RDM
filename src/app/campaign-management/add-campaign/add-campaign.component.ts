@@ -118,7 +118,6 @@ export class AddCampaignComponent implements OnInit {
     this.campaignObj.communication_method = objective.communication_method;
     this.visitedSteps === 1;
     this.campaignObj.job_request = {};
-    console.log(this.campaignObj);
     this.searchAssetsModels();
   }
 
@@ -135,7 +134,6 @@ export class AddCampaignComponent implements OnInit {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-            console.log(this.configureHierarchy);
             if (this.contextApp.user.hierarchy[level]) {
               this.onChangeOfHierarchy(index);
             }
@@ -202,8 +200,6 @@ export class AddCampaignComponent implements OnInit {
   }
 
   selectedDate(value: any, type) {
-    console.log(value);
-    console.log(this.campaignObj);
     if (type === 'start') {
       this.campaignObj.expected_start_date = datefns.getUnixTime(new Date(value.start));
       this.campaignObj.expected_start_date_display = this.commonService.convertEpochToOnlyDate(
@@ -296,7 +292,6 @@ export class AddCampaignComponent implements OnInit {
     this.campaignAssets = [];
     this.isGetCampaignAssetAPILoading = true;
     const hierarchy = { App: this.contextApp.app };
-    console.log(this.configureHierarchy);
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -332,7 +327,6 @@ export class AddCampaignComponent implements OnInit {
         // (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' -/- ' : '');
       }
     });
-    console.log('hierarchy str ', this.campaignObj.hierarchyString);
   }
 
   getPackages() {
@@ -417,19 +411,16 @@ export class AddCampaignComponent implements OnInit {
   }
 
   checkForFrequencyValue() {
-    console.log(this.campaignObj.job_request);
     let flag = true;
     const keys = Object.keys(this.campaignObj.job_request) || [];
     if (keys.length === 0) {
       flag = true;
     }
-    console.log(keys);
     keys.forEach((key) => {
       if (this.campaignObj.job_request[key] !== undefined && this.campaignObj.job_request[key] !== null) {
         flag = false;
       }
     });
-    console.log(flag);
     if (flag) {
       this.toasterService.showError('At least one frequency value is required.', 'Create Campaign');
       return;
@@ -451,7 +442,6 @@ export class AddCampaignComponent implements OnInit {
           .subscribe((response: any) => {
             if (response?.data) {
               this.rules = response.data;
-              console.log(this.rules);
             }
             resolve();
           })
@@ -488,7 +478,6 @@ export class AddCampaignComponent implements OnInit {
         obj['measured_properties'][prop.json_key] = prop?.metadata || {};
         obj['measured_properties'][prop.json_key].g = prop.group;
       });
-      console.log(obj);
     }
     if (this.campaignObj.job_request.type.indexOf('Edge Derived Properties') > -1) {
       obj['edge_derived_properties'] = {};
@@ -496,14 +485,12 @@ export class AddCampaignComponent implements OnInit {
         obj['edge_derived_properties'][prop.json_key] = prop?.metadata || {};
         obj['edge_derived_properties'][prop.json_key].g = prop.group;
       });
-      console.log(obj);
     }
     if (this.campaignObj.job_request.type.indexOf('Alerts') > -1) {
       obj['alerts'] = {};
       this.alertConditions.forEach((prop) => {
         obj['alerts'][prop.code] = prop.metadata;
       });
-      console.log(obj);
     }
     return obj;
   }
@@ -610,7 +597,6 @@ export class AddCampaignComponent implements OnInit {
   }
 
   onCloseCampaignModal() {
-    console.log(this.campaignObj);
     this.cancelEvent.emit();
   }
 }

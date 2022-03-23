@@ -175,7 +175,6 @@ export class AssetModelService {
               name: assetModelName,
               derived_kpis: data.data,
             };
-            console.log(obj);
             this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
             return data;
           }),
@@ -904,7 +903,6 @@ export class AssetModelService {
         params = params.set(key, filterObj[key]);
       }
     });
-    console.log(params);
     return this.http.post(
       this.url +
         String.Format(

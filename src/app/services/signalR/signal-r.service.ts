@@ -33,7 +33,6 @@ export class SignalRService {
       // connection start
       connection.start().then(() => {
         connection.on('notify', (data) => {
-          console.log(data);
           if (connectionObj.type === 'telemetry') {
             this.signalRTelemetryData.emit(JSON.parse(data));
           } else if (connectionObj.type === 'alert' && type === '') {
@@ -78,7 +77,6 @@ export class SignalRService {
       let arr = [];
       arr = [...this.alertOverlayConnections];
       arr.forEach((connection, i) => {
-        console.log(connection.connectionState);
         if (connection.connectionState === 'Connected') {
           connection.stop();
           this.alertOverlayConnections.splice(i, 1);

@@ -187,7 +187,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   showPosition = (position)=> {
-    console.log('in show position');
     
     this.latitude =  position?.coords?.latitude || this.latitude;  
     this.longitude = position.coords.longitude || this.longitude;
@@ -203,7 +202,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
           
           this.ngZone.run(() => {
             const place: google.maps.places.PlaceResult = autocomplete.getPlace();
-            console.log('place ',place);
             if (place.geometry === undefined || place.geometry === null) {
               return;
             }

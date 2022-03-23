@@ -217,7 +217,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         sub_partition_strategy: null,
       });
     }
-    console.log(this.createApplicationForm.value);
     if (this.createApplicationForm.value?.metadata?.app_specific_db) {
       dbGroup.addControl('host_name', new FormControl(null));
       dbGroup.addControl('user_name', new FormControl(null));
@@ -307,7 +306,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
   openPartitionIconModal(app) {
     this.selectedApp = app;
-    console.log(this.selectedApp);
     this.databasePartitionConfig();
     $('#viewPartitionIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

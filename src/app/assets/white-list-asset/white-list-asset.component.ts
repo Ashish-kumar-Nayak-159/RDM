@@ -64,7 +64,6 @@ export class WhiteListAssetComponent implements OnInit {
       // Note : Need to add whitelist checking after app created.
     });
     this.tileData = selectedItem;
-    console.log(this.tileData);
     selectedItem.forEach((item) => {
       this.tileData[item.name] = item.value;
     });

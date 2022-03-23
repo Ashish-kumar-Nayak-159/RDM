@@ -158,7 +158,6 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   removeParameter(index) {
-    console.log(index);
     this.assetMethodObj.json_model.params.splice(index, 1);
     // this.editor.set(this.assetMethodObj.json_model);
   }
@@ -237,7 +236,6 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     } else {
       param.json = {};
     }
-    console.log(JSON.stringify(this.assetMethodObj));
     // this.editor.set(this.assetMethodObj.json_model);
   }
   onKeyPressAlphaNumericWithCharacters(event) {

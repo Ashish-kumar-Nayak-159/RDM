@@ -217,7 +217,6 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   closeModal(id) {
-    console.log('hereeee');
     $('#' + id).modal('hide');
     this.selectedDocument = undefined;
   }
@@ -238,7 +237,6 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       return;
     }
     this.uploadedFile = files?.item(0) || [];
-    console.log(this.documentObj);
     if(!this.documentObj.metadata) this.documentObj.metadata = {}
     this.documentObj.metadata.name = this.uploadedFile.name;
   }

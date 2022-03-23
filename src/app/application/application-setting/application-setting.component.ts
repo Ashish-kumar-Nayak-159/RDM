@@ -76,10 +76,8 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
             this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
           }
           if (this.applicationData?.menu_settings?.legacy_asset_control_panel_menu?.length === 0) {
-            console.log('in igf');
             this.applicationData.menu_settings.legacy_asset_control_panel_menu =
               CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
-            console.log(this.applicationData?.menu_settings?.legacy_asset_control_panel_menu.length);
           }
           if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
             this.applicationData.menu_settings.gateway_control_panel_menu =

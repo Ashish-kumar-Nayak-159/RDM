@@ -140,7 +140,6 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
             item.mtbfString = this.splitTime(item.mtbf);
             item.uptime = this.splitTime(item.metadata?.total_uptime_in_sec || 0);
             item.breakdown = item.metadata?.machine_failure_breakdown_count;
-            console.log(item.uptime);
           });
           if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
             setTimeout(() => {
@@ -204,7 +203,6 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
-    console.log(document.getElementById('mtbfChart'));
     const chart = am4core.create('mtbfChart', am4charts.XYChart);
     const data = [];
     // this.lifeCycleEvents.reverse();
@@ -217,7 +215,6 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
       newObj.mtbfHr = obj.mtbf / 3600;
       data.splice(data.length, 0, newObj);
     });
-    console.log(JSON.stringify(data));
     chart.data = data;
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';

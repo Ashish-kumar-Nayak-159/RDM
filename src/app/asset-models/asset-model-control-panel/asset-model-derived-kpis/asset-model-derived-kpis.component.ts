@@ -64,7 +64,6 @@ export class AssetModelDerivedKpisComponent implements OnInit {
     this.subscriptions.push(
       this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe(
         (response: any) => {
-          console.log(response);
           if (response?.data) {
             this.derivedKPIs = response.data;
           } else if (response?.derived_kpis) {

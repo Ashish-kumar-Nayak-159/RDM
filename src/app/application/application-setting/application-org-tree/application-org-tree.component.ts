@@ -113,8 +113,6 @@ export class ApplicationOrgTreeComponent implements OnInit {
     this.isAppSetingsEditable = false;
     this.forceUpdate = true;
     this.selectedItemForDelete = item;
-    console.log('beforee', JSON.stringify(this.applicationData.hierarchy.levels));
-    console.log(this.originalAppData.hierarchy.levels.indexOf(this.selectedItemForDelete));
     if (this.originalAppData.hierarchy.levels.indexOf(this.selectedItemForDelete) !== -1) {
       this.modalConfig = {
         stringDisplay: true,
@@ -128,7 +126,6 @@ export class ApplicationOrgTreeComponent implements OnInit {
       const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
       this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     }
-    console.log('aftererrr', JSON.stringify(this.applicationData.hierarchy.levels));
   }
 
   onModalEvents(eventType) {
@@ -141,9 +138,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
   }
 
   deleteNode() {
-    console.log(this.selectedItemForDelete);
     const index = this.applicationData.hierarchy.levels.indexOf(this.selectedItemForDelete);
-    console.log(index);
     const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
     // this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     const levels = [];
@@ -154,7 +149,6 @@ export class ApplicationOrgTreeComponent implements OnInit {
     });
     // this.applicationData.hierarchy.levels = JSON.parse(JSON.stringify(levels));
     this.forceUpdate = true;
-    console.log(JSON.stringify(this.applicationData.hierarchy));
     this.updateAppData({
       "tags": tags,
       "levels": levels
@@ -166,9 +160,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
       return {};
     }
     Object.keys(tags).forEach((tag) => {
-      console.log(tag);
       tags[tag] = this.removeHierarchyIndexTags(tags[tag], index - 1);
-      console.log('22222222', tags[tag]);
     });
     return tags;
   }

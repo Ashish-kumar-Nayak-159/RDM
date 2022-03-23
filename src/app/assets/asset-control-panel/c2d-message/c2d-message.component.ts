@@ -192,7 +192,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     }
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
-    console.log(message.job_type);
     const obj = {
       sub_job_id: message.sub_job_id,
       from_date: null,

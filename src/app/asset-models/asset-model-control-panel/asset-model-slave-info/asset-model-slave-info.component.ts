@@ -302,7 +302,6 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   }
 
   saveSlaveObj() {
-    console.log(this.slaveObj);
     if (!this.slaveObj.slave_id || !this.slaveObj.slave_name || !this.slaveObj.slave_type) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave Detail');
       return;
@@ -327,7 +326,6 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   }
 
   updateSlaveObj() {
-    console.log(this.slaveObj);
     if (!this.slaveObj.slave_id || !this.slaveObj.slave_name || !this.slaveObj.slave_type) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Detail');
       return;
@@ -415,7 +413,6 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   }
 
   updateSlavePositionObj() {
-    console.log(this.slaveObj);
     if (!this.slaveObj.slave_position || !this.slaveObj.slave_category) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Position');
       return;
@@ -489,7 +486,6 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   }
 
   updateSlaveCategoryObj() {
-    console.log(this.slaveObj);
     if (!this.slaveObj.slave_category) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Category');
       return;

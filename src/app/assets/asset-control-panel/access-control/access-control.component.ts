@@ -112,7 +112,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   onUserSelectionChange() {
     const user = this.addUserForm.value.userObj;
-    console.log(user);
     if (user) {
       this.addUserForm.patchValue({
         name: user.user_name,
@@ -128,7 +127,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
         whatsapp: null,
       });
     }
-    console.log(this.addUserForm.value);
   }
 
   openAddUserModal() {
@@ -167,7 +165,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
   }
 
   onCloseConfirmModal() {
-    console.log('aaaaaaaaaaa');
     $('#confirmMessageModal').modal('hide');
     this.assetUserForDelete = undefined;
   }

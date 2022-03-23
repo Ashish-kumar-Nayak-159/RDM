@@ -162,7 +162,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions('xlsx').useLocale = false;
       chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-      console.log(JSON.stringify(chart.data));
       if (chart.data.length > 0) {
         chart.exporting.title =
           this.chartTitle +
@@ -314,7 +313,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
           : proptype === 'Derived KPIs'
           ? 'DK'
           : 'M';
-      console.log('rrrrrrrrrrrrrrr', series);
       series.propKey = prop.json_key;
       series.columns.template.fillOpacity = 0.8;
       series.compareText = true;

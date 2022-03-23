@@ -43,7 +43,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     // const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    console.log(this.assetModel);
     if (!this.assetModel.metadata?.image) {
       this.assetModel.metadata.image = {
         url: CONSTANTS.DEFAULT_MODEL_IMAGE,
@@ -79,8 +78,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.overviewFile = files.item(0);
-    // console.log('size', this.overviewFile.size);
-    // console.log('type', this.overviewFile.type);
+ 
     // this.updatedAssetModel.metadata.image = this.overviewFile;
 
     if (this.overviewFile.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
@@ -92,8 +90,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
       image.onload = (e: any) => {
         const selectedImage = e.path[0] as HTMLImageElement;
-        // console.log('width', selectedImage.width);
-        // console.log('height', selectedImage.height);
         if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
           this.updatedAssetModel.metadata.image = this.overviewFile;
         } else {
@@ -111,7 +107,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     );
     if (data) {
       this.updatedAssetModel.metadata.image = data;
-      console.log('file uploaded ');
       
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -124,7 +119,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     //upload file
     await this.uploadFile();
     this.assetModel = JSON.parse(JSON.stringify(this.updatedAssetModel));
-    console.log(this.assetModel);
     if (
       !this.assetModel.name ||
       !this.assetModel.tags.protocol ||

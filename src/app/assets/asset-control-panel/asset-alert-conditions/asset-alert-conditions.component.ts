@@ -451,7 +451,6 @@ export class AssetAlertConditionsComponent implements OnInit {
       return;
     }
     this.isCreateAlertConditionLoading = true;
-    console.log(this.alertObj.code);
     this.subscriptions.push(
       this.assetService
         .updateAlertCondition(this.alertObj, this.asset.app, this.asset.asset_id, this.alertObj.id)
@@ -507,7 +506,6 @@ export class AssetAlertConditionsComponent implements OnInit {
       whatsapp: { enabled: false },
       sms: { enabled: false },
     };
-    console.log(alertObj.code);
     this.subscriptions.push(
       this.assetService.createAlertCondition(alertObj, this.asset.app, this.asset.asset_id).subscribe(
         (response: any) => {

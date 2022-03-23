@@ -18,7 +18,6 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.tableData);
     this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
     if (this.tableData.length === 0) {
       this.noTableDataMessage = 'No data available.';
@@ -86,7 +85,6 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   resetFilterData(index, data) {
     const keys = Object.keys(this.tableFilterObj);
     const key = keys[index];
-    console.log('key  ', key);
     const arr = [];
     data.forEach(dataItem => {
       if (dataItem[key]?.toString()?.toLowerCase().includes(this.tableFilterObj[key].toString()?.toLowerCase())) {

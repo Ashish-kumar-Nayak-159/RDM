@@ -55,7 +55,6 @@ export class DerivedKpisComponent implements OnInit {
         (response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           }
           this.isderivedKPILoading = false;
         },
@@ -82,7 +81,6 @@ export class DerivedKpisComponent implements OnInit {
 
   openHistoricKPIData(obj) {
     this.selectedDerivedKPI = obj;
-    console.log(this.selectedDerivedKPI);
     // this.getDerivedKPIsHistoricData();
     // $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
     setTimeout(() => this.loadFromCache(), 50);
@@ -125,7 +123,6 @@ export class DerivedKpisComponent implements OnInit {
               newObj.spc = Number(obj.kpi_result) || null;
               this.derivedKPIData.splice(this.derivedKPIData.length, 0, newObj);
             });
-            console.log(this.derivedKPIData.length);
             // this.derivedKPILatestData.reverse();
             this.isDerivedKPIDataLoading = false;
             if (this.derivedKPIData.length > 0 && this.selectedDerivedKPI.data_type?.toLowerCase() === 'number') {
@@ -184,8 +181,6 @@ export class DerivedKpisComponent implements OnInit {
     date = new Date(0);
     date.setUTCSeconds(this.filterObj.to_date + 60);
     dateAxis.max = date.getTime();
-    console.log(dateAxis.min);
-    console.log(dateAxis.max);
     dateAxis.renderer.minGridDistance = 70;
     // dateAxis.baseInterval = { count: 1, timeUnit: 'day' };
     // dateAxis.strictMinMax = true;

@@ -134,7 +134,6 @@ export class CommandsComponent implements OnInit, OnDestroy {
         // };
         param.value = param?.json?.defaultValue || null;
         this.jsonModelKeys.push(param);
-        console.log(this.jsonModelKeys);
       });
     }, 500);
   }

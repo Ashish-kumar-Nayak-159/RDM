@@ -54,7 +54,6 @@ export class AssetManagementComponent implements OnInit {
       }
     });
     this.tileData = selectedItem;
-    console.log(this.tileData);
     selectedItem.forEach((item) => {
       this.tileData[item.name] = item.value;
     });
@@ -76,7 +75,6 @@ export class AssetManagementComponent implements OnInit {
       tab_name: assetDataItem['IoT Gateways Tab Name'],
       table_key: assetDataItem['IoT Gateways Table Key Name'],
     };
-    console.log(this.tileData);
     if (this.componentState === CONSTANTS.IP_ASSET) {
       this.tabData = {
         tab_name: assetDataItem['IoT Assets Tab Name'],
@@ -95,7 +93,6 @@ export class AssetManagementComponent implements OnInit {
         table_key: assetDataItem['IoT Gateways Table Key Name'],
       };
     }
-    console.log(this.tabData);
   }
 
   onTabChange(type) {

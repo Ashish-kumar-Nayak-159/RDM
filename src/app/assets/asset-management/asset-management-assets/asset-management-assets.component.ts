@@ -113,7 +113,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.menu_settings.main_menu.forEach((item) => {
-      console.log(item.page);
       if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }

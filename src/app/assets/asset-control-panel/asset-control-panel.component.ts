@@ -253,7 +253,6 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
                   falseCount++;
                 }
               });
-              console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
               if (trueCount > 0) {
                 menu.visible = true;
               } else {
@@ -263,7 +262,6 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
               }
             }
             if (menu.isTitle) {
-              console.log(count);
               if (titleObj) {
                 titleObj.isDisplay = count > 0 ? true : false;
               }

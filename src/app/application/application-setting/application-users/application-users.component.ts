@@ -71,8 +71,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
               this.rolesList.push(role.role);
             }
           })
-          console.log('userRoles ', this.userRoles)
-          console.log('this.applicationData ', this.applicationData)
+        
         }
       })
     );

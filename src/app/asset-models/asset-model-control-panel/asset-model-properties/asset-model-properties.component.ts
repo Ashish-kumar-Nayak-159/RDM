@@ -290,7 +290,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             d: new FormControl(null, [Validators.required]),
           });
         }
-        console.log(this.setupForm);
       }
     }
     // this.assetModel.tags.app = this.contextApp.app;
@@ -299,9 +298,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
 
   onJSONKeyChange() {
     if (this.propertyObj.json_key) {
-      console.log(this.propertyObj.json_key);
       const keys = Object.keys(this.propertyObj.json_model);
-      console.log(keys);
       const obj = {};
       if (keys && keys.length > 0) {
         obj[this.propertyObj.json_key] = this.propertyObj.json_model[keys[0]];
@@ -309,8 +306,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       } else {
         this.propertyObj.json_model = {};
         obj[this.propertyObj.json_key] = {};
-        console.log(obj);
-        console.log(this.propertyObj);
         if (this.propertyObj.data_type) {
           this.onDataTypeChange();
         } else {
@@ -320,13 +315,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else {
       this.propertyObj.json_model = {};
     }
-    console.log('aaaaaaaa   ', JSON.stringify(this.propertyObj));
     // this.editor.set(this.propertyObj.json_model);
   }
 
   onDataTypeChange() {
     const obj = {};
-    console.log(this.propertyObj);
     if (this.propertyObj.data_type && this.propertyObj.json_key) {
       const validations = this.dataTypeList.find((type) => type.name === this.propertyObj.data_type).validations;
       validations.forEach((item) => {
@@ -340,14 +333,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           obj[item] = null;
         }
       });
-      console.log(validations);
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] = obj;
       this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
     } else {
       this.propertyObj.json_model = {};
     }
-    console.log('from data type', this.propertyObj.json_model);
     // this.editor.set(this.propertyObj.json_model);
   }
 
@@ -421,7 +412,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       );
       return;
     }
-    console.log(JSON.stringify(this.propertyObj.metadata));
     if (this.propertyObj.threshold && this.type === 'measured_properties') {
       if (
         this.propertyObj.threshold.l1 &&
@@ -614,7 +604,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       );
       return;
     }
-    console.log(JSON.stringify(this.propertyObj.metadata));
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
     this.validateSetThreshold();

@@ -161,7 +161,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.historyFilter.type = true;
-    console.log(this.historyFilter);
   }
 
   onNumberChange(event, type) {
@@ -181,7 +180,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           } else if (response?.derived_kpis) {
             this.derivedKPIs = response.derived_kpis;
           }
@@ -322,7 +320,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (const child of children) {
         $(child).remove();
       }
-      console.log('wdigetssss', this.selectedWidgets);
       this.propList = [];
       if (this.selectedWidgets.length === 0) {
         this.toasterService.showError(
@@ -544,7 +541,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
                   this.nullValueArr.push(prop.json_key);
                 }
               });
-              console.log(this.nullValueArr);
               this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
               this.historyData.forEach((item) => {
                 item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
@@ -702,7 +698,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (layoutJson.chartType === 'VibrationDamagePlot') {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
-      console.log(noDataFlag, '======', this.historyData);
       if (layoutJson.chartType === 'Table')
         componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData.reverse();
       else

@@ -78,7 +78,6 @@ export class DataTableComponent implements OnInit {
   }
 
   toggleProperty(property) {
-    console.log(property);
     this.y1AxisProps.forEach((prop) => {
       if (prop.json_key === property) {
         prop.hidden = !prop.hidden;

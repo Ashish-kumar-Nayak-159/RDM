@@ -63,8 +63,6 @@ export class SlavesInfoComponent implements OnInit {
             this.assetTwin = response;
             if (this.asset.metadata?.package_app) {
               this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
-              console.log(this.asset.appObj);
-              console.log(this.assetTwin);
               if (
                 this.assetTwin &&
                 this.assetTwin.twin_properties.reported &&
@@ -96,7 +94,6 @@ export class SlavesInfoComponent implements OnInit {
                 }
               }
             }
-            console.log(this.slaveProvisionedStatus);
             resolve();
           })
       );
@@ -143,7 +140,6 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   setupFormData(obj = undefined) {
-    console.log(obj);
     let setupformGroup: FormGroup;
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
       setupformGroup = new FormGroup({

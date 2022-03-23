@@ -260,7 +260,6 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       }
       data['asset_model'] = obj.data.name;
       data['type'] = obj.data.model_type;
-      console.log(data);
       this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY, data);
       this.router.navigate(['applications', this.contextApp.app, 'assets']);
     }
@@ -346,14 +345,12 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       type: 'all_props_at_fixed_interval',
     };
     this.assetModel.tags.reserved_tags = [];
-    console.log(this.assetModel.tags);
     this.assetModel.tags.reserved_tags.push({
       name: 'Protocol',
       key: 'protocol',
       defaultValue: this.assetModel.tags.protocol,
       nonEditable: true,
     });
-    console.log(this.assetModel.tags);
     this.assetModel.tags.reserved_tags.push({
       name: 'Cloud Connectivity',
       key: 'cloud_connectivity',

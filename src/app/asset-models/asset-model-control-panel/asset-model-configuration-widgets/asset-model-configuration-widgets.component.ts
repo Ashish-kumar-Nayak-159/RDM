@@ -215,14 +215,12 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     } else {
       param.json = {};
     }
-    console.log(JSON.stringify(this.extraParams));
     // this.editor.set(this.assetMethodObj.json_model);
   }
 
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       const propObj = event.value || event;
-      console.log(propObj.name);
       this.controlWidget.json = {
         method_name: propObj.method_name,
         params: propObj?.json_model?.params || [],
@@ -275,7 +273,6 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     // }
 
     this.extraParams.forEach((param) => this.controlWidget.json.params.push(param));
-    console.log(this.controlWidget);
     if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
       const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
       this.controlWidget.properties = [prop];

@@ -29,7 +29,6 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    console.log(this.userData);
     if (this.userData) {
       await this.processUserData(this.userData);
     }
@@ -96,7 +95,6 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
       $('body').removeClass('sb-toggle');
     }
     if ($('#container-fluid-div').hasClass('sb-notoggle')) {
-      console.log('in sb-notoggle');
       $('#container-fluid-div').removeClass('sb-notoggle');
     }
   }

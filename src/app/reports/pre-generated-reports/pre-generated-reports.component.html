@@ -242,6 +242,7 @@
                 <option [ngValue]="undefined">Select Report Frequency</option>
                 <option [ngValue]="'Daily'">Daily</option>
                 <option [ngValue]="'Weekly'">Weekly</option>
+                <option [ngValue]="'Monthly'"  *ngIf="reportsObj.report_category === 'alert'">Monthly</option>               
               </select>
             </div>
          

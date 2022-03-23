@@ -42,7 +42,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.apiSubscriptions.push(
       this.commonService.refreshSideMenuData.subscribe((list) => {
-        console.log(list);
         this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
         if (this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
           this.contextApp.metadata.header_logo = {

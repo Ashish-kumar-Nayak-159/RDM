@@ -166,7 +166,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           } else {
             this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
           }
-          console.log('this.selectedDateRange', this.selectedDateRange);
           this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
           this.getLatestAlerts(false);
         }
@@ -330,7 +329,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
       }
     }
-    console.log(obj);
     this.subscriptions.push(
       this.assetService.getAssetAlertAndAlertEndEvents(obj).subscribe(
         (response: any) => {
@@ -355,8 +353,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.isAlertAPILoading = false;
           this.singalRService.disconnectFromSignalR('alert');
           this.signalRAlertSubscription?.unsubscribe();
-          console.log(obj);
-          console.log('filterObj', this.filterObj);
           if (this.pageType === 'live') {
             const obj1 = {
               levels: this.contextApp.hierarchy.levels,
@@ -365,7 +361,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               app: this.contextApp.app,
               asset_id: obj.asset_id,
             };
-            console.log(obj1);
             this.singalRService.connectToSignalR(obj1);
             this.signalRAlertSubscription = this.singalRService.signalRAlertData.subscribe((msg) => {
               this.getLiveAlerts(msg);
@@ -382,7 +377,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getLiveAlerts(obj) {
-    console.log(obj);
     if (obj.type === 'alertendevent') {
       obj.end_event_message_date = obj?.timestamp || obj.ts;
       const alertObj = this.latestAlerts.find((alert) => alert.message_id === obj.message_id);
@@ -418,7 +412,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getAlertConditions() {
     return new Promise<void>((resolve, reject) => {
-      console.log(this.selectedAsset);
       const filterObj = {
         app: this.contextApp.app,
         asset_id: this.selectedAlert.asset_id,
@@ -510,8 +503,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(fileObj) {
-    console.log('fileObj ', fileObj);
-
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
@@ -667,7 +658,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             });
             this.dropdownWidgetList = JSON.parse(JSON.stringify(this.dropdownWidgetList));
             // this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
-            console.log(JSON.stringify(this.selectedWidgetsForSearch));
             if (this.selectedWidgetsForSearch.length > 0) {
               this.getAssetTelemetryData();
             } else {
@@ -724,8 +714,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
-    console.log(this.selectedAlert);
-    console.log(this.originalAssets);
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
     // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();
@@ -789,7 +777,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           to_date: undefined,
           // last_n_secs: undefined,
         };
-        console.log(this.filterObj);
         obj.from_date = this.filterObj.from_date;
         obj.to_date = this.filterObj.to_date;
 
@@ -805,7 +792,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
           });
           this.derivedKPIHistoricData.reverse();
-          console.log(this.derivedKPIHistoricData);
           // this.derivedKPIHistoricData = response.data;
           resolve1();
         });
@@ -993,7 +979,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           if (this.derivedKPIHistoricData && this.derivedKPIHistoricData.length > 0) {
             this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
           }
-          console.log(this.telemetryData);
           this.nullValueArr = [];
           propArr.forEach((prop) => {
             let flag = false;
@@ -1009,7 +994,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.nullValueArr.push(prop.json_key);
             }
           });
-          console.log(this.nullValueArr);
           const telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
           this.isChartViewOpen = true;
           telemetryData.forEach((item) => {
@@ -1019,7 +1003,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
           this.isTelemetryDataLoading = false;
-          console.log(JSON.stringify(telemetryData));
           // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.selectedWidgets.forEach((widget) => {
@@ -1036,7 +1019,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                   }
                 });
               }
-              console.log(noDataFlag, '======', widget);
               let componentRef;
               if (widget.value.chartType === 'LineChart' || widget.value.chartType === 'AreaChart') {
                 componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -1167,7 +1149,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }))
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
-    console.log("uploadFile ",this.acknowledgedAlert.metadata);
   }
 
   async acknowledgeAlert() {
@@ -1179,7 +1160,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     // this.acknowledgedAlert.metadata.files = files;
-    console.log("acknowledgedAlert" ,JSON.stringify(this.acknowledgedAlert));
     const obj = {
       app: this.contextApp.app,
       asset_id: this.acknowledgedAlert.asset_id,

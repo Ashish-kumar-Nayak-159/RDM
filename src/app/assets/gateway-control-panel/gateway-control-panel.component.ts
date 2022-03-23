@@ -64,7 +64,6 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
                   falseCount++;
                 }
               });
-              console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
               if (trueCount > 0) {
                 menu.visible = true;
               } else {
@@ -79,14 +78,11 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
             //   menu.visible = true;
             // }
             if (menu.isTitle) {
-              console.log(count);
               if (titleObj) {
                 titleObj.isDisplay = count > 0 ? true : false;
-                console.log('isideeeeee', titleObj);
               }
               count = 0;
               titleObj = menu;
-              console.log(titleObj);
             } else {
               if (menu.visible) {
                 count++;
@@ -94,15 +90,12 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
               if (!this.menuItems[index + 1]) {
                 if (titleObj) {
                   titleObj.isDisplay = count > 0 ? true : false;
-                  console.log('isideeeeee', titleObj);
                 }
                 count = 0;
                 titleObj = menu;
               }
-              console.log(count);
             }
           });
-          console.log(JSON.stringify(this.menuItems));
         }
         if (params.get('assetId')) {
           // if (params.get('listName')) {

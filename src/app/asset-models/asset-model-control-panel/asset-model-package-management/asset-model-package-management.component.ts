@@ -227,7 +227,6 @@ export class AssetModelPackageManagementComponent implements OnInit {
         for (let arrvalue of arr) {
           header += arrvalue.toString(16);
         }
-        console.log("header "+header);
         if (allowedZipMagicNumbers.includes(header)) {
           this.uploadedFile = file;
         }

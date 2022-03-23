@@ -83,8 +83,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
           const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
-          // console.log(lastTemletryObj['date']);
-          // console.log(this.telemetryObj[prop.json_key]['date']);
           this.telemetryData = [];
           this.chartConfig.y1AxisProps?.forEach((prop) => {
             if (

@@ -60,7 +60,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       if (item) {
-        console.log(this.assets);
         this.loadFromCache(item);
       } else {
         this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
@@ -69,18 +68,15 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.assets = this.hierarchyDropdown.getAssets();
       if (this.assets.length > 0) {
         const center = this.commonService.averageGeolocation(this.assets);
-        console.log(center);
         this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
         this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
         if(!center.latitude && !this.contextApp.metadata?.latitude){
           navigator.geolocation.getCurrentPosition(this.showPosition)
         }
-        console.log(this.centerLatitude, '====', this.centerLongitude);
         if(!this.centerLatitude || !this.centerLongitude){
           
           this.centerLatitude = 23.0225;
           this.centerLongitude = 72.5714;
-          console.log('lat lng nt defined ',this.centerLatitude,this.centerLongitude);
         }
         this.mapFitBounds = false;
       } else {
@@ -210,11 +206,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     },
                   };
                 }
-                console.log(asset.asset_id, '=====', asset.icon);
               });
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
               const center = this.commonService.averageGeolocation(this.assets);
-              console.log(center);
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
               this.mapFitBounds = false;
@@ -243,7 +237,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.activeCircle = type;
     if (type !== 'all') {
       this.assets.forEach((asset) => {
-        console.log(asset.kpiValue === false);
         if (type === 'healthy' && asset?.map_content?.healthy === true) {
           arr.push(asset);
         }
@@ -275,7 +268,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.activeCircle = 'all';
     this.assets = this.hierarchyDropdown.getAssets();
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-    console.log("CheckingMap", JSON.stringify(this.mapAssets));
     this.healthyAssetCount = 0;
     this.unhealthyAssetCount = 0;
     this.assets.forEach((assetObj) => {

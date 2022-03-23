@@ -171,7 +171,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.alertConditions = response.data;
-            console.log(this.alertConditions);
             let arr = [];
             this.alertConditions.forEach((alert) => {
               arr = [];
@@ -262,7 +261,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   addUserGroup(key) {
-    console.log('this.selectedUserGroups ',this.selectedUserGroups);
     
     this.selectedUserGroups[key].forEach(element => {
       const index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
@@ -544,7 +542,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     }
     this.isCreateAlertConditionLoading = true;
 
-    console.log(this.alertObj);
     this.subscriptions.push(
       this.assetModelService
         .updateAlertCondition(this.alertObj, this.assetModel.app, this.assetModel.name, this.alertObj.id)

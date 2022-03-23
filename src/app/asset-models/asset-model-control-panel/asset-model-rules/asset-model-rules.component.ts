@@ -122,8 +122,6 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       deployed_by: this.userData.email + ' (' + this.userData.name + ')',
       is_revert: isRevert,
     };
-    console.log(this.ruleData);
-    console.log(obj);
     this.assetModelService
       .deployCloudModelRule(this.contextApp.app, this.assetModel.name, this.ruleData.rule_id, obj)
       .subscribe(

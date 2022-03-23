@@ -149,7 +149,6 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       const propObj = event.value || event;
-      console.log(propObj);
       this.controlWidget.json = {
         method_name: propObj.method_name,
         params: propObj?.json_model?.params || [],
@@ -280,8 +279,6 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
       this.controlWidget.properties = [prop];
     }
-    console.log(this.controlWidget);
-    console.log(Object.keys(this.controlWidget.json).length);
     if (
       this.controlWidget.metadata.communication_technique !== 'Direct Method' &&
       this.controlWidget.json.params?.length < 1

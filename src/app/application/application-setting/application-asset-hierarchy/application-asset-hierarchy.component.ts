@@ -122,17 +122,13 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   }
 
   onHierarchyConfigurationChange(i, tag) {
-    console.log(i);
-    console.log(JSON.stringify(this.selectedHierarchyData));
     const obj = JSON.parse(JSON.stringify(this.selectedHierarchyData));
     Object.keys(this.selectedHierarchyData).forEach((key) => {
-      console.log(key, '======', i);
       if (key > i) {
         delete obj[key];
       }
     });
     this.selectedHierarchyData = JSON.parse(JSON.stringify(obj));
-    console.log(JSON.stringify(this.selectedHierarchyData));
     this.selectedHierarchyData[i + 1] = tag;
     this.configureHierarchy[i] = tag;
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -140,24 +136,19 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
         delete this.configureHierarchy[key];
       }
     });
-    console.log(this.configureHierarchy);
     Object.keys(this.hierarchyArr).forEach((key) => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
     });
-    console.log(this.hierarchyArr);
     let nextHierarchy = this.hierarchyTags;
     Object.keys(this.configureHierarchy).forEach((_, index) => {
       nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
     });
-    console.log(nextHierarchy);
     if (nextHierarchy) {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
-    console.log(this.hierarchyArr);
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
-    console.log(this.selectedHierarchyData);
   }
 
   addTag(index) {
@@ -183,28 +174,19 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
       }
     });
     obj[this.addedTagItem] = {};
-    console.log(obj);
     this.addedTagItem = undefined;
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
   }
 
   onRemoveTag(index, tagIndex) {
-    console.log(JSON.stringify(this.configureHierarchy));
     this.hierarchyArr[index].splice(tagIndex, 1);
-    console.log(this.hierarchyArr);
     let obj = this.hierarchyTags;
-    console.log(JSON.stringify(this.configureHierarchy));
     Object.keys(this.configureHierarchy).forEach((_, i) => {
-      console.log(index);
-      console.log(i + 1, this.configureHierarchy[i + 1]);
       if (index > i + 1) {
         obj = obj[this.configureHierarchy[i + 1]];
-        console.log(obj);
       }
     });
-    console.log(obj);
     const keys = Object.keys(obj);
-    console.log(obj[keys[tagIndex]]);
     delete obj[keys[tagIndex]];
     const configureHierarchyObj = JSON.parse(JSON.stringify(this.configureHierarchy));
     Object.keys(configureHierarchyObj).forEach((_, i) => {
@@ -212,7 +194,6 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
         delete this.configureHierarchy[i + 1];
       }
     });
-    console.log(this.configureHierarchy);
     const arr = [];
     this.applicationData.hierarchy.levels.forEach((_, i) => {
       arr[i] = [];
@@ -225,20 +206,14 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
 
     let nextHierarchy = this.hierarchyTags;
     Object.keys(this.configureHierarchy).forEach((_, i) => {
-      console.log('1111111 ', nextHierarchy);
-      console.log(this.configureHierarchy[i + 1]);
       nextHierarchy = nextHierarchy[this.configureHierarchy[i + 1]];
       this.selectedHierarchyData[i + 2] = nextHierarchy;
-      console.log('2222222   ', nextHierarchy);
       if (nextHierarchy) {
         arr[i + 2] = Object.keys(nextHierarchy);
-        console.log('333333333   ', arr);
       }
     });
     this.hierarchyArr = JSON.parse(JSON.stringify(arr));
-    console.log(this.hierarchyArr);
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
-    console.log(this.selectedHierarchyData);
   }
 
   trackByFn(index: any, item: any) {

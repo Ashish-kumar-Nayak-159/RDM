@@ -93,7 +93,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
-    console.log('this.applicationData.menu_settings ', this.applicationData.menu_settings);
 
     this.commonService.refreshSideMenuData.emit(this.applicationData);
 
@@ -125,10 +124,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.applicationData = undefined;
       this.apiSubscriptions.push(
         this.applicationService.getApplicationDetail(app.app, true).subscribe((response: any) => {
-          console.log('response ', response);
 
           this.applicationData = JSON.parse(JSON.stringify(response));
-          console.log('this.applicationData ', this.applicationData);
 
           this.applicationData.app = app.app;
 

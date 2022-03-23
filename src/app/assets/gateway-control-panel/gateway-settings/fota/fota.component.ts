@@ -81,7 +81,6 @@ export class FotaComponent implements OnInit {
           (response: any) => {
             if (response.data?.length > 0) {
               this.assetPackages = response.data;
-              console.log('packagesssss   ', this.assetPackages);
               this.assetPackages.forEach((packageObj) => {
                 if (this.assetApps.indexOf(packageObj.name) === -1) {
                   this.assetApps.push(packageObj.name);

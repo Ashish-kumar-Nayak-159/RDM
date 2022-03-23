@@ -148,7 +148,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
           if (response && response.data) {
             this.derivedKPIs = response.data;
-            console.log(this.derivedKPIs);
           } else if (response?.derived_kpis) {
             this.derivedKPIs = response.derived_kpis;
           }
@@ -219,7 +218,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             };
             this.propertyList.push(obj);
           });
-          console.log(this.propertyList);
           resolve();
         })
       );
@@ -243,7 +241,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   setChartType() {
     return this.chartTypeValues.find((type) => {
-      console.log(type.name, '======', this.selectedChartType, '======', type);
       return type.name === this.selectedChartType;
     })?.value;
   }
@@ -257,7 +254,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       let flag = false;
       const arr = [];
       this.y1AxisProps.forEach((prop) => {
-        console.log(prop);
         if (prop.data_type === 'Object') {
           arr.push({
             json_key: prop.json_key,
@@ -290,7 +286,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       let arr = [];
 
       this.y1AxisProps.forEach((prop) => {
-        console.log(prop);
         if (prop.data_type !== 'Object') {
           arr.push({
             json_key: prop.json_key,

@@ -105,7 +105,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   ngAfterViewInit() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
     }
@@ -130,7 +129,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = item.hierarchy[level];
-            console.log(this.configureHierarchy);
             if (item.hierarchy[level]) {
               this.onChangeOfHierarchy(index, 'PG');
             }
@@ -210,7 +208,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     obj['m'] = measured_message_props ? measured_message_props : undefined;
     obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
     obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-    console.log(obj);
     this.reportsObj.properties = { ...obj };
     // const assets = [];
     // if (this.reportsObj.asset.length > 0) {
@@ -219,7 +216,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     //   }
     // )};
     // this.reportsObj.assets = assets;
-    console.log(this.reportsObj);
     const reportObj = { ...this.reportsObj };
     reportObj.file_type = 'XLSX';
     delete reportObj.asset_model;
@@ -229,7 +225,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.isCreateReportAPILoading = false;
           this.toasterService.showSuccess('New Report Created', 'Create Report');
           this.onCloseConfigurePGRModal();
-          console.log(response);
         },
         (error) => {
           this.isCreateReportAPILoading = false;
@@ -328,7 +323,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
-          console.log(this.dropdownPropList);
           // this.props = [...this.dropdownPropList];
           resolve();
         })
@@ -477,7 +471,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     } else {
       this.reportsObj.assets = [];
       this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
-      console.log(this.reportsObj.hierarchy);
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
       } else {
@@ -600,7 +593,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     obj.hierarchy = { App: this.contextApp.app };
-    console.log(this.configureHierarchy);
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];

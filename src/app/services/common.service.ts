@@ -79,7 +79,6 @@ export class CommonService {
 
   convertEpochToDate(epoch) {
     if (epoch) {
-      console.log('convertepochtodate', datefns.format(datefns.fromUnixTime(epoch), 'dd-MM-yyyy hh:mm:ss'))
       return datefns.format(datefns.fromUnixTime(epoch), 'dd-MM-yyyy hh:mm:ss');
     }
     return null;
@@ -150,14 +149,12 @@ export class CommonService {
   sortObjectBasedOnKey(obj) {
     // const newObj = {};
     const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
-    // console.log(keys);
     // keys.forEach((key) => {
     //   newObj[key] = obj[key];
     // });
     // const newObj = Object.entries(obj)
     //   .sort(([, a], [, b]) => Number(a) - Number(b))
     //   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-    // console.log(JSON.stringify(newObj));
     return keys;
   }
 
@@ -176,7 +173,6 @@ export class CommonService {
         }
         return key;
       } catch (e) {
-        console.log(e);
       }
     }
     return undefined;

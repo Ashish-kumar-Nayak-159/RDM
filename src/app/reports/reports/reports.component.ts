@@ -106,7 +106,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(item);
       if (item.dateOption) {
-        console.log('date operation',item);
         this.filterObj.dateOption = item.dateOption;
         if (item.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
@@ -142,14 +141,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
           }
         }
       }
-      console.log(this.originalFilterObj);
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      console.log(this.originalFilterObj);
       // if (this.filterObj.asset) {
       //   this.onFilterSelection(false, false);
       // }
     } else {
-      console.log('context user',this.contextApp.user);
       this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
     }
   }
@@ -172,7 +168,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     this.onAssetSelection();
 
-    console.log(this.originalFilterObj);
   }
 
   onClearHierarchy() {
@@ -229,7 +224,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onChangeOfAsset(event) {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === event.asset_id);
-    console.log(asset.metadata);
     const frequencyArr = [];
     frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
@@ -462,7 +456,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.aggregation_minutes = 1;
       this.filterObj.aggregation_format = 'AVG';
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      console.log(this.originalFilterObj.report_type);
       this.telemetry = [];
       this.latestAlerts = [];
       this.isFilterOpen = true;
@@ -647,7 +640,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
               });
             });
             this.telemetry = [...this.telemetry, ...response.data];
-            console.log(JSON.stringify(this.telemetry));
             this.isFilterOpen = false;
             if (response.data.length === this.currentLimit) {
               this.insideScrollFunFlag = false;

@@ -64,7 +64,6 @@ export class RdmGuestLoginComponent implements OnInit {
       $('body').removeClass('sb-toggle');
     }
     if ($('.container-fluid').hasClass('sb-notoggle')) {
-      console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
   }
@@ -147,7 +146,6 @@ export class RdmGuestLoginComponent implements OnInit {
       this.commonService.userSignUp(loginObj).subscribe(
         async (response: any) => {
           this.otpData = response;
-          console.log(this.otpData);
           this.isLoginAPILoading = false;
         },
         (error) => {

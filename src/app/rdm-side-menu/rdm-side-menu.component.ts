@@ -35,7 +35,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
-          console.log(msg);
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
@@ -53,8 +52,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             ? list.menu_settings.main_menu
             : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
         config = JSON.parse(JSON.stringify(config));
-        console.log('sidemenu list ', list);
-        console.log('sidemenu config ', config);
         this.processSideMenuData(config, list);
       })
     );
@@ -86,7 +83,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           data = arr;
         }
         data = data.sort((a, b) => a.index - b.index);
-        console.log('in process app menu data ', data);
 
         this.processSideMenuData(data, this.contextApp);
       }
@@ -101,7 +97,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         this.connectToSignalR();
         this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
           if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
-            console.log(msg);
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
@@ -128,7 +123,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   processSideMenuData(data, list) {
-    console.log('data ', data);
 
     const arr = JSON.parse(JSON.stringify(data));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);

@@ -131,7 +131,6 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     } else {
       this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
     }
-    console.log(this.filterObj);
   }
 
   searchEvents(filterObj) {
@@ -278,7 +277,6 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       newObj.mttrHr = obj.mttr / 3600;
       data.splice(data.length, 0, newObj);
     });
-    console.log(JSON.stringify(data));
     chart.data = data;
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';

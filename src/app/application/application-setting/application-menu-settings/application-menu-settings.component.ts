@@ -70,7 +70,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      console.log(arr);
       this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...arr];
     }
     if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
@@ -124,7 +123,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
-      console.log('model menu ',JSON.stringify(this.applicationData.menu_settings.model_control_panel_menu));
       
     }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
@@ -147,7 +145,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             let aFlag = false;
             // debugger
             item.showAccordion?.forEach((aItem) => {
-              console.log("aItem",aItem)
   
               menu.showAccordion?.forEach((mItem) => {
                 if (aItem.name === mItem.name) {
@@ -255,8 +252,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         b.index
     );
     this.applicationData.menu_settings.main_menu = [...this.sideMenuList];
-    console.log(JSON.stringify(this.applicationData.menu_settings.main_menu));
-    console.log(this.sideMenuList);
     this.apiSubscriptions.push(
       this.applicationService.updateApp(this.applicationData).subscribe(
         (response: any) => {
@@ -277,7 +272,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     const that = this;
     setTimeout(() => {
       const fixHelperModified = (e, tr) => {
-        console.log(tr);
 
         const $originals = tr.children();
         const $helper = tr.clone();
@@ -292,7 +286,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         $('td.index', ui.item.parent()).each(function (i) {
           $(this).html((i + 1) + '');
         });
-        console.log(ui.item.next());
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.applicationData.menu_settings.main_menu.length; j++) {
@@ -309,7 +302,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             }
           }
         });
-        console.log('menu item',that.applicationData.menu_settings.main_menu);
       };
 
       $('#myFavTable tbody')

@@ -105,7 +105,6 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       // valueAxis.renderer.labels.template.disabled = true;
       // valueAxis.renderer.minLabelPosition = 0.05;
       // valueAxis.renderer.maxLabelPosition = 0.95;
-      console.log(valueAxis.min, valueAxis.max, prop?.minCapacityValue, prop?.maxCapacityValue);
       // valueAxis.renderer.labels.template.adapter.add("text", function(text) {
       //   if (+text < valueAxis.min || +text > valueAxis.max) {
       //     return "";

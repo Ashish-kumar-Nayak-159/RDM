@@ -204,7 +204,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
         let flaseFlag = 0;
 
         Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          console.log(asset.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             trueFlag++;
           } else {
@@ -312,7 +311,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
 
   onUpdateAsset() {
     this.isCreateAssetAPILoading = true;
-    console.log(this.assetDetail);
     if (
       !this.assetDetail.tags.asset_manager ||
       !this.assetDetail.tags.display_name ||
@@ -335,7 +333,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     const tags = {
       tags: this.assetDetail.tags,
     };
-    console.log(tags);
     this.assetService.updateNonProvisionedAsset(this.contextApp.app, this.assetDetail.asset_id, tags).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Update Asset');
@@ -469,7 +466,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     });
     this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
-    console.log(this.assetDetail);
     const methodToCall = this.SetMethodCallOnCondition(obj);
     this.subscriptions.push(
       methodToCall.subscribe(

@@ -125,6 +125,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
       
     }
+    debugger
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
       this.sideMenuList.forEach((menu, i) => {
         if (menu.index === undefined || menu.index === null) {
@@ -134,6 +135,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.main_menu = this.sideMenuList;
     } else {
       const arr = [];
+      let index = 0;
       this.sideMenuList.forEach((item) => {
         let flag = false;
         this.applicationData.menu_settings.main_menu.forEach((menu) => {
@@ -141,7 +143,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             flag = true;
             item.display_name = menu.display_name;
             item.visible = menu.visible;
-            item.index = menu.index;
+            item.index = index;
             let aFlag = false;
             // debugger
             item.showAccordion?.forEach((aItem) => {
@@ -154,6 +156,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
               });
             });
             arr.push(item);
+            index++;
           }
           arr.forEach((element1) => {
             if (menu.visible) {

@@ -15,7 +15,6 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #mainMenuForm="ngForm">
               <table class="table table-hover" aria-describedby="databaseconfiguration">
                 <thead style="display: none;">
                   <tr>
@@ -47,7 +46,6 @@
                   </tr>
                 </tbody>
               </table>
-            </form>
           </div>
         </div>
       </div>
@@ -61,7 +59,6 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #mainMenuForm="ngForm">
               <table class="table table-hover" aria-describedby="schemaconfiguration">
                 <thead style="display: none;">
                   <tr>
@@ -81,7 +78,6 @@
                   </tr>
                 </tbody>
               </table>
-            </form>
           </div>
         </div>
       </div>
@@ -95,7 +91,6 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #mainMenuForm="ngForm">
               <table class="table table-hover" aria-describedby="telemetryconfiguration">
                 <thead style="display: none;">
                   <tr>
@@ -115,7 +110,6 @@
                   </tr>
                 </tbody>
               </table>
-            </form>
           </div>
         </div>
       </div>
@@ -129,7 +123,6 @@
       <div class="row">
         <div class="col-12 p-0">
           <div class="col-12 p-0">
-            <form #mainMenuForm="ngForm">
               <table class="table table-hover" aria-describedby="partitionconfiguration">
                 <thead style="display: none;">
                   <tr>
@@ -157,65 +150,36 @@
                   </ng-container>
                 </tbody>
               </table>
-            </form>
           </div>
         </div>
       </div>
     </accordion-group>
 
-
-    <!-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////
-
-
-<table class="table table-hover" aria-describedby="databaseconfiguration">
-  <thead style="display: none;">
-    <tr>
-      <th scope="col"></th>
-      <th scope="col"></th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Separate Database Required?</td>
-      <td>{{applicationData?.metadata?.app_specific_db ? 'Yes' : 'No'}}</td>
-    </tr>
-    <tr>
-      <td>Separate App specific schema required?</td>
-      <td>{{applicationData?.metadata?.app_specific_schema ? 'Yes' : 'No'}}</td>
-    </tr>
-    <tr>
-      <td>Separate App telemetry specific schema required?</td>
-      <td>{{applicationData?.metadata?.app_telemetry_specific_schema ? 'Yes' : 'No'}}</td>
-    </tr>
-    <tr>
-      <td>Telemetry Partition Technique</td>
-      <td>{{applicationData?.metadata?.partition?.telemetry?.partition_strategy}}</td>
-    </tr>
-    <tr>
-      <td>Telemetry Sub-Partition Technique</td>
-      <td>{{applicationData?.metadata?.partition?.telemetry?.sub_partition_strategy}}</td>
-    </tr>
-  </tbody>
-</table>
-</div> -->
+    <accordion-group heading="" [panelClass]="'customClass'">
+      <ng-container accordion-heading>
+        <a class="btn">
+          Other Info
+        </a>
+      </ng-container>
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="col-12 p-0">
+              <table class="table table-hover" aria-describedby="otherconfiguration">
+                <thead style="display: none;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Time Zone</td>
+                    <td>{{applicationData?.metadata?.time_zone}}</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+    </accordion-group>

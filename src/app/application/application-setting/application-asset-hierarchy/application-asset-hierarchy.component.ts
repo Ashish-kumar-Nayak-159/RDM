@@ -224,51 +224,6 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     return index;
   }
 
-  onSaveHierarchyTags() {
-    let flag;
-    this.applicationData.hierarchy.levels.forEach((item) => {
-      if (!item || item.trim().length === 0) {
-        flag = 'Blank Name is not allowed.';
-        return;
-      }
-      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
-        if (item.includes(char)) {
-          flag = `Hierarchy name should not contain space, dot '#' and '$'`;
-          return;
-        }
-      });
-    });
-    if (flag) {
-      this.toasterService.showError(flag, 'Save Asset Hierarchy');
-      return;
-    }
-    const obj = {
-      app: this.applicationData.app,
-      hierarchy: this.applicationData.hierarchy,
-      force_update: this.forceUpdate ? this.forceUpdate : undefined,
-    };
-    this.saveHierarchyAPILoading = true;
-    this.apiSubscriptions.push(
-      this.applicationService.updateAppHierarchy(obj).subscribe(
-        (response: any) => {
-          this.toasterService.showSuccess(response.message, 'Save Asset Hierarchy');
-          this.selectedHierarchyItem = undefined;
-          this.addedTagItem = undefined;
-          if (this.forceUpdate) {
-            this.isAppSetingsEditable = false;
-          }
-          this.saveHierarchyAPILoading = false;
-          this.isAppSetingsEditable = false;
-          this.applicationService.refreshAppData.emit();
-        },
-        (error) => {
-          this.toasterService.showError(error.message, 'Save Asset Hierarchy');
-          this.saveHierarchyAPILoading = false;
-        }
-      )
-    );
-  }
-
   onAddTagCancel(index, tagIndex) {
     this.hierarchyArr[index].splice(tagIndex, 1);
     this.isAddHierarchyThere = false;

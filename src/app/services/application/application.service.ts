@@ -157,10 +157,10 @@ export class ApplicationService {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_APP, encodeURIComponent(appObj.app)), appObj);
   }
 
-  updateAppHierarchy(appObj) {
+  updateAppHierarchy( appObj) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.post(
-      this.url + String.Format(AppUrls.UPLOAD_HIERARCHY, encodeURIComponent(appObj.app)),
+    return this.http.put(
+      this.url + String.Format(AppUrls.UPDATE_HIERARCHY_LEVELS, encodeURIComponent(appObj.app)),
       appObj
     );
   }

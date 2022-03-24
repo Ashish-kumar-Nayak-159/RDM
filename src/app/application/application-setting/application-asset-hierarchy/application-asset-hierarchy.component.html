@@ -2,21 +2,12 @@
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
       Hierarchy
-      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('AHTM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSetingsEditable = true;"
           *ngIf="!isAppSetingsEditable" placement="bottom" tooltip="Edit Hierarchy"><em
             class="fas fa-edit fa-sm"></em></button>
-        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Edit Hierarchy" *ngIf="!isAppSetingsEditable"
-          (click)="isAppSetingsEditable = true;"><em class="fa fa-edit"></em></a> -->
-        <!-- <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()"
-          *ngIf="isAppSetingsEditable" placement="bottom" tooltip="Save Hierarchy"><em
-            class="fas fa-check fa-sm"></em></button> -->
-        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Hierarchy" *ngIf="isAppSetingsEditable"
-        (click)="onSaveHierarchyTags();"><em class="fa fa-check"></em></a> -->
         <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
           *ngIf="isAppSetingsEditable" placement="bottom" tooltip="Cancel"><em class="fas fa-times fa-sm"></em></button>
-        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
-          (click)="onCancelClick();"><em class="fa fa-times"></em></a> -->
       </ng-container>
     </div>
   </div>

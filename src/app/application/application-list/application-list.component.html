@@ -113,7 +113,7 @@
                       <label class="form-check-label" for="contains-db">Separate Database Required?</label>
                     </div>
                     <ng-container *ngIf="createApplicationForm.get('metadata').get('app_specific_db').value">
-                      <ng-container formGroupName="database_settings">
+                      <ng-container formGroupName="db_info">
                         <div class="form-group">
                           <label for="message-text" class="col-form-label">Host name:</label>
                           <input type="text" class="form-control form-control-sm" id="host_name" name='host_name'
@@ -139,18 +139,52 @@
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="contains-app-schema"
                         name="contains-app-schema" formControlName="app_specific_schema"
-                        (change)="onCheckboxValueChange()">
+                        (change)="onShemaValueChange()">
                       <label class="form-check-label" for="contains-app-schema">Separate App specific schema
                         required?</label>
                     </div>
+                    <ng-container *ngIf="createApplicationForm.get('metadata').get('app_specific_schema').value">
+                      <ng-container formGroupName="schema_info">
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Schema name:</label>
+                          <input type="text" class="form-control form-control-sm" id="schema_name" name='schema_name'
+                            formControlName="schema_name" placeholder="Enter Schema name">
+                        </div>
+                      </ng-container>
+                    </ng-container>
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="contains-app-telemetry-schema"
                         name="contains-app-telemetry-schema" formControlName="app_telemetry_specific_schema"
-                        (change)="onCheckboxValueChange()">
+                        (change)="onTelemetryShemaValueChange()">
                       <label class="form-check-label" for="contains-app-telemetry-schema">Separate App telemetry
                         specific
                         schema required?
                       </label>
+                    </div>
+                    <ng-container
+                      *ngIf="createApplicationForm.get('metadata').get('app_telemetry_specific_schema').value">
+                      <ng-container formGroupName="telemetry_schema_info">
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Schema name:</label>
+                          <input type="text" class="form-control form-control-sm" id="schema_name" name='schema_name'
+                            formControlName="schema_name" placeholder="Enter Schema name">
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                        formControlName="partition_detach">
+                      <label class="form-check-label" for="contains-db">Partition Detach Required?</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                        formControlName="partition_delete">
+                      <label class="form-check-label" for="contains-db">Partition Delete Required?</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                        formControlName="backup_required">
+                      <label class="form-check-label" for="contains-db">Backup Required?</label>
                     </div>
                     <ng-container
                       *ngIf="createApplicationForm.get('metadata').get('app_specific_schema').value || createApplicationForm.get('metadata').get('app_specific_db').value || createApplicationForm.get('metadata').get('app_telemetry_specific_schema').value">
@@ -161,8 +195,8 @@
                             <select class="form-control form-control-sm" id="alertReason"
                               formControlName="partition_strategy" name="alertReason">
                               <option [ngValue]="null">Select Partition Technique</option>
-                              <option [ngValue]="'Asset ID'">Asset ID</option>
-                              <option [ngValue]="'Partition Key'">Partition Key</option>
+                              <option [ngValue]="'asset_id'">Asset ID</option>
+                              <option [ngValue]="'partition_key'">Partition Key</option>
                             </select>
                           </div>
                           <div class="form-group">
@@ -171,14 +205,32 @@
                             <select class="form-control form-control-sm" id="alertReason"
                               formControlName="sub_partition_strategy" name="alertReason">
                               <option [ngValue]="null">Select Sub-Partition Technique</option>
-                              <option [ngValue]="'Daily'">Daily</option>
-                              <option [ngValue]="'Weekly'">Weekly</option>
-                              <option [ngValue]="'Monthly'">Monthly</option>
+                              <option [ngValue]="'daily'">Daily</option>
+                              <option [ngValue]="'weekly'">Weekly</option>
+                              <option [ngValue]="'monthly'">Monthly</option>
+                            </select>
+                          </div>
+                        </ng-container>
+                        <ng-container formGroupName="alert">
+                          <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Alert Partition Technique:</label>
+                            <select class="form-control form-control-sm" id="alertReason"
+                              formControlName="partition_strategy" name="alertReason">
+                              <option [ngValue]="null">Select Partition Technique</option>
+                              <option [ngValue]="'asset_id'">Asset ID</option>
+                              <option [ngValue]="'partition_key'">Partition Key</option>
                             </select>
                           </div>
                         </ng-container>
                       </ng-container>
                     </ng-container>
+                    <div class="form-group">
+                      <label for="timezone-text" class="col-form-label">Timezone:</label>
+                      <ng-select formControlName="time_zone_hours" (change)="onTimeZoneChange()"
+                        placeholder="Select Timezone" [clearable]="true">
+                        <ng-option *ngFor="let item of timezones" [value]="item.value">{{item.label}}</ng-option>
+                      </ng-select>
+                    </div>
                   </div>
                 </div>
               </accordion-group>
@@ -197,14 +249,15 @@
                     <label for="recipient-name" class="col-form-label required">App Privileges:</label>
                     <div>
                       <input type="checkbox" name="visibleall_add" id="visibleall_add"
-                        (change)="onClickOfAllCheckbox('add')" [(ngModel)]="isAllprivilegeSelected['add']" [ngModelOptions]="{standalone: true}"
-                        placement="bottom" [tooltip]="isAllprivilegeSelected['add'] ? 'Deselect All' : 'Select All'" />
+                        (change)="onClickOfAllCheckbox('add')" [(ngModel)]="isAllprivilegeSelected['add']"
+                        [ngModelOptions]="{standalone: true}" placement="bottom"
+                        [tooltip]="isAllprivilegeSelected['add'] ? 'Deselect All' : 'Select All'" />
                       <label for="visibleall_add" class="ml-2 mb-0">{{isAllprivilegeSelected['add'] ? 'Deselect All' :
                         'Select All'}}</label>
                     </div>
-                    <div  *ngFor="let group of privilegeGroups | keyvalue">
+                    <div *ngFor="let group of privilegeGroups | keyvalue">
                       <h6 class="my-3">{{group.key}}</h6>
-                      <div  *ngFor="let privilege of group.value" class="ml-3">
+                      <div *ngFor="let privilege of group.value" class="ml-3">
                         <input type="checkbox" name="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                           id="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                           (change)="onPrivilegeSelection('add')" [ngModelOptions]="{standalone: true}"
@@ -301,7 +354,8 @@
           <span aria-hidden="true" tooltip="Close" placement="left">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="roleId > 0 && onValidateLength(appPrivilegeObj)  && onValidateLength(privilegeGroups)">
+      <div class="modal-body"
+        *ngIf="roleId > 0 && onValidateLength(appPrivilegeObj)  && onValidateLength(privilegeGroups)">
         <div class="col-12">
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">App Privileges:</label>

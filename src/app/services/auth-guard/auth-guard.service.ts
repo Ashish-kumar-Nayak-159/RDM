@@ -34,12 +34,6 @@ export class AuthGuardService {
           this.commonService.onLogOut();
           return false;
         }
-        const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
-        // const decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-        // if (!token || !decodedToken || !decodedToken.privileges || decodedToken.privileges?.length === 0) {
-        //   this.commonService.onLogOut();
-        //   return;
-        // }
         return true;
       } else {
         this.router.navigate(['applications', appData.app]);

@@ -31,6 +31,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   privilegeGroups: any = {};
   appPrivilegeObj: any = {};
   roleId : number = 0;
+  timezones = CONSTANTS.TIME_ZONES;
   constructor(private applicationService: ApplicationService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
@@ -202,7 +203,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   onCheckboxValueChange() {
-    const dbGroup = this.createApplicationForm.get('metadata')?.get('database_settings') as FormGroup;
+    const dbGroup = this.createApplicationForm.get('metadata')?.get('db_info') as FormGroup;
     const metadataTelemetryGroup = this.createApplicationForm
       .get('metadata')
       ?.get('partition')
@@ -217,16 +218,51 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         sub_partition_strategy: null,
       });
     }
+    const metadataAlertGroup = this.createApplicationForm
+      .get('metadata')
+      ?.get('partition')
+      ?.get('alert') as FormGroup;
+    if (
+      !this.createApplicationForm.value?.metadata.app_specific_schema &&
+      !this.createApplicationForm.value?.metadata.app_specific_db &&
+      !this.createApplicationForm.value?.metadata.app_telemetry_specific_schema
+    ) {
+      metadataAlertGroup.patchValue({
+        partition_strategy: null
+      });
+    }
     if (this.createApplicationForm.value?.metadata?.app_specific_db) {
+      dbGroup.addControl('default', new FormControl(false));
       dbGroup.addControl('host_name', new FormControl(null));
       dbGroup.addControl('user_name', new FormControl(null));
       dbGroup.addControl('database_name', new FormControl(null));
       dbGroup.addControl('port', new FormControl(null));
     } else {
+      dbGroup.addControl('default', new FormControl(true));
       dbGroup.removeControl('host_name');
       dbGroup.removeControl('user_name');
       dbGroup.removeControl('database_name');
       dbGroup.removeControl('port');
+    }
+  }
+  onShemaValueChange() {
+    const dbGroup = this.createApplicationForm.get('metadata')?.get('schema_info') as FormGroup;   
+    if (this.createApplicationForm.value?.metadata?.app_specific_schema) {
+      dbGroup.addControl('default', new FormControl(false));
+      dbGroup.addControl('schema_name', new FormControl(null));
+    } else {
+      dbGroup.addControl('default', new FormControl(true));
+      dbGroup.removeControl('schema_name');
+    }
+  }
+  onTelemetryShemaValueChange() {
+    const dbGroup = this.createApplicationForm.get('metadata')?.get('telemetry_schema_info') as FormGroup;   
+    if (this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema) {
+      dbGroup.addControl('default', new FormControl(false));
+      dbGroup.addControl('schema_name', new FormControl(null));
+    } else {
+      dbGroup.addControl('default', new FormControl(true));
+      dbGroup.removeControl('schema_name');
     }
   }
 
@@ -267,6 +303,25 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
     });
   }
+  
+  onTimeZoneChange() {
+    const dbGroup = this.createApplicationForm.get('metadata') as FormGroup;
+    let formControl = dbGroup.get('time_zone');
+    const formTimeZoneControl = dbGroup.get('time_zone_hours');
+    if (!formControl) {
+      dbGroup.addControl('time_zone', new FormControl(0));
+    }
+    let positiveNegative = formTimeZoneControl.value.charAt(0);
+    let timeZoneValue = formTimeZoneControl.value.substring(1);
+    var a = timeZoneValue.split(':');
+    let minutes = (+a[0]) * 60 + (+a[1]);
+    if(positiveNegative == '-')
+    {
+      minutes *= -1;
+    }
+    formControl = dbGroup.get('time_zone');
+    formControl.setValue(minutes);
+  }
 
   openCreateAppModal() {
     this.getAllPriviledges();
@@ -280,9 +335,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           name: new FormControl(null),
           address: new FormControl(null),
         }),
+        time_zone_hours : new FormControl(null),
         description: new FormControl(null),
         app_specific_db: new FormControl(false),
-        database_settings: new FormGroup({}),
+        db_info: new FormGroup({}),
+        schema_info: new FormGroup({}),
+        telemetry_schema_info: new FormGroup({}),
         app_specific_schema: new FormControl(false),
         app_telemetry_specific_schema: new FormControl(false),
         partition: new FormGroup({
@@ -290,7 +348,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             partition_strategy: new FormControl(null),
             sub_partition_strategy: new FormControl(null),
           }),
+          alert: new FormGroup({
+            partition_strategy: new FormControl(null)
+          }),
         }),
+        partition_detach: new FormControl(false),
+        partition_delete: new FormControl(false),
+        backup_required: new FormControl(false)
       })
     });
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -358,8 +422,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       !applicationDetail.metadata.app_specific_db &&
       !applicationDetail.metadata.app_telemetry_specific_schema
     ) {
-      applicationDetail.metadata.partition.telemetry.partition_strategy = 'Asset ID';
-      applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'Weekly';
+      applicationDetail.metadata.partition.telemetry.partition_strategy = 'asset_id';
+      applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'weekly';
     }
     if (
       this.checkDatabaseConfigOption(
@@ -403,6 +467,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       gateway_control_panel_menu: [],
       legacy_asset_control_panel_menu: [],
     };
+
     const methodToCall = this.applicationService.createApp(applicationDetail);
     if (methodToCall) {
       this.apiSubscriptions.push(

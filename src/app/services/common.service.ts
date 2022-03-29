@@ -101,13 +101,8 @@ export class CommonService {
     return this.http.get(url);
   }
 
-  getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  getRandomColor() {    
+    return '#' + (Math.floor(((crypto.getRandomValues(new Uint32Array(1))[0]) / (0xffffffff + 1)) * (0xffffff - 1) ).toString(16));    
   }
 
   loginUser(obj) {
@@ -280,13 +275,7 @@ export class CommonService {
   }
 
   generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      // tslint:disable-next-line: no-bitwise
-      const r = (Math.random() * 16) | 0;
-      // tslint:disable-next-line: no-bitwise
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    crypto.randomUUID()
   }
 
   async uploadImageToBlob(file, folderName, containerName = undefined) {
@@ -327,7 +316,14 @@ export class CommonService {
   }
 
   randomIntFromInterval(min, max): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    var byteArray = new Uint8Array(1);
+    window.crypto.getRandomValues(byteArray);
+
+    var range = max - min + 1;
+    var max_range = 256;
+    if (byteArray[0] >= Math.floor(max_range / range) * range)
+        return this.randomIntFromInterval(min, max);
+    return min + (byteArray[0] % range);
   }
 
   averageGeolocation(coords) {

@@ -275,7 +275,7 @@ export class CommonService {
   }
 
   generateUUID() {
-    crypto.randomUUID()
+    CryptoJS.randomUUID;
   }
 
   async uploadImageToBlob(file, folderName, containerName = undefined) {

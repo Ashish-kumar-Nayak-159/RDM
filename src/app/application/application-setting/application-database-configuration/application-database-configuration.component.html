@@ -177,6 +177,18 @@
                     <td>Time Zone</td>
                     <td>{{applicationData?.metadata?.time_zone_hours}}</td>
                   </tr>
+                  <tr>
+                    <td>Partition Detach Required?</td>
+                    <td>{{applicationData?.metadata?.partition_detach ? 'Yes' : 'No'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Partition Delete Required?</td>
+                    <td>{{applicationData?.metadata?.partition_delete ? 'Yes' : 'No'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Backup Required?</td>
+                    <td>{{applicationData?.metadata?.backup_required ? 'Yes' : 'No'}}</td>
+                  </tr>
                 </tbody>
               </table>
           </div>

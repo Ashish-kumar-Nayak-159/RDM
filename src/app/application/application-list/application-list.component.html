@@ -225,7 +225,7 @@
                       </ng-container>
                     </ng-container>
                     <div class="form-group">
-                      <label for="timezone-text" class="col-form-label">Timezone:</label>
+                      <label for="timezone-text" class="col-form-label required">Timezone:</label>
                       <ng-select formControlName="time_zone_hours" (change)="onTimeZoneChange()"
                         placeholder="Select Timezone" [clearable]="true">
                         <ng-option *ngFor="let item of timezones" [value]="item.value">{{item.label}}</ng-option>

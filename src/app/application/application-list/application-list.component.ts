@@ -335,7 +335,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           name: new FormControl(null),
           address: new FormControl(null),
         }),
-        time_zone_hours : new FormControl(null),
+        time_zone_hours : new FormControl(null, [Validators.required]),
         description: new FormControl(null),
         app_specific_db: new FormControl(false),
         db_info: new FormGroup({ default : new FormControl(true)}),
@@ -352,8 +352,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             partition_strategy: new FormControl(null)
           }),
         }),
-        partition_detach: new FormControl(false),
-        partition_delete: new FormControl(false),
+        partition_detach: new FormControl(true),
+        partition_delete: new FormControl(true),
         backup_required: new FormControl(false)
       })
     });

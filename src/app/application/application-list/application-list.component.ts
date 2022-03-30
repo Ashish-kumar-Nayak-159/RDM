@@ -338,9 +338,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         time_zone_hours : new FormControl(null),
         description: new FormControl(null),
         app_specific_db: new FormControl(false),
-        db_info: new FormGroup({}),
-        schema_info: new FormGroup({}),
-        telemetry_schema_info: new FormGroup({}),
+        db_info: new FormGroup({ default : new FormControl(true)}),
+        schema_info: new FormGroup({default : new FormControl(true)}),
+        telemetry_schema_info: new FormGroup({default : new FormControl(true)}),
         app_specific_schema: new FormControl(false),
         app_telemetry_specific_schema: new FormControl(false),
         partition: new FormGroup({

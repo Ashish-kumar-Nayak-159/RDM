@@ -705,13 +705,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.selectedAlert.metadata.acknowledged_date
       );
     }
-    this.selectedAlert?.metadata?.files?.forEach((file) => {
-      file['url'] = file.data.url;
-      file['name'] = file.data.name;
-      file['data']['type'] = file.type;
-      file.data.sanitizedURL = this.sanitizeURL(file.data.url);
-      file['sanitizedURL'] = file.data.sanitizedURL
-    });
+    if (this.selectedAlert?.metadata?.files && this.selectedAlert?.metadata?.files.constructor == Object && Object.keys(this.selectedAlert?.metadata?.files).length > 0) {
+      this.selectedAlert?.metadata?.files?.forEach((file) => {
+        file['url'] = file?.data?.url;
+        file['name'] = file?.data?.name;
+        file['data']['type'] = file?.type;
+        if (file?.data?.url) {
+          file.data.sanitizedURL = this.sanitizeURL(file.data.url);
+          file['sanitizedURL'] = file.data.sanitizedURL
+        }
+      });
+    }
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
@@ -1077,7 +1081,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
-      this.acknowledgedAlert = alert;
+    this.acknowledgedAlert = alert;
     this.acknowledgedAlertIndex = this.latestAlerts.findIndex((alertObj) => alertObj.id === alert.id);
     if (!this.acknowledgedAlert || !this.acknowledgedAlert.metadata) {
       this.acknowledgedAlert.metadata = {

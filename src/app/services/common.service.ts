@@ -23,7 +23,6 @@ export class CommonService {
   constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) { }
 
   convertUTCDateToLocal(utcDate) {
-    debugger
     if (utcDate) {
       const options = {
         year: 'numeric',
@@ -67,7 +66,6 @@ export class CommonService {
   }
 
   convertDateToEpoch(date: string) {
-    debugger
     if (date) {
       var ldate = this.convertUTCDateToLocal(date)
       let dt = new Date(ldate);
@@ -274,8 +272,10 @@ export class CommonService {
     return value;
   }
 
-  generateUUID() {
-    crypto.randomUUID();
+  generateUUID() : any {
+    let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
+    let guid = [u.substr(0,8), u.substr(8,4), '4000-8' + u.substr(13,3), u.substr(16,12)].join('-');
+    return guid
   }
 
   async uploadImageToBlob(file, folderName, containerName = undefined) {

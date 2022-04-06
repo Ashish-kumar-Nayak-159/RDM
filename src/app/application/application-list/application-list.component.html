@@ -108,9 +108,9 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                      <input type="checkbox" class="form-check-input" id="contains-db-sp" name="contains-db-sp"
                         formControlName="app_specific_db" (change)="onCheckboxValueChange()">
-                      <label class="form-check-label" for="contains-db">Separate Database Required?</label>
+                      <label class="form-check-label" for="contains-db-sp">Separate Database Required?</label>
                     </div>
                     <ng-container *ngIf="createApplicationForm.get('metadata').get('app_specific_db').value">
                       <ng-container formGroupName="db_info">
@@ -172,19 +172,19 @@
                       </ng-container>
                     </ng-container>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                      <input type="checkbox" class="form-check-input" id="contains-db-part" name="contains-db-part"
                         formControlName="partition_detach">
-                      <label class="form-check-label" for="contains-db">Partition Detach Required?</label>
+                      <label class="form-check-label" for="contains-db-part">Partition Detach Required?</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                      <input type="checkbox" class="form-check-input" id="contains-db-del" name="contains-db-del"
                         formControlName="partition_delete">
-                      <label class="form-check-label" for="contains-db">Partition Delete Required?</label>
+                      <label class="form-check-label" for="contains-db-del">Partition Delete Required?</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                      <input type="checkbox" class="form-check-input" id="contains-db-back" name="contains-db-back"
                         formControlName="backup_required">
-                      <label class="form-check-label" for="contains-db">Backup Required?</label>
+                      <label class="form-check-label" for="contains-db-back">Backup Required?</label>
                     </div>
                     <ng-container
                       *ngIf="createApplicationForm.get('metadata').get('app_specific_schema').value || createApplicationForm.get('metadata').get('app_specific_db').value || createApplicationForm.get('metadata').get('app_telemetry_specific_schema').value">

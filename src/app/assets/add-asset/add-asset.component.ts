@@ -347,37 +347,39 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
     );
   }
-  onWhitelistedAssetChange() {
-    debugger
-    this.getAssetsModels(this.componentState);
-    if (this.selectedWhitelistAsset === undefined) {
-      this.assetDetail.asset_id = null;
-      this.assetDetail.tags.display_name = null;
-      this.assetDetail.tags.cloud_connectivity = undefined;
-      this.assetDetail.tags.protocol = undefined;
-    }
-    else {
-      this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
-      this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
-      this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
-      this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
-      if (this.selectedWhitelistAsset.hasOwnProperty('protocol') && this.selectedWhitelistAsset.protocol != null && this.selectedWhitelistAsset.protocol != '')
-        this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
-      if (this.selectedWhitelistAsset.hasOwnProperty('hierarchy_json')) {
-        //this.assetDetail.tags.hierarchy_json = this.selectedWhitelistAsset.hierarchy_json;
-        this.contextApp.hierarchy.levels.forEach((level, index) => {
-          if (index !== 0) {
-            if (this.selectedWhitelistAsset?.hierarchy_json) {
-              this.addAssetConfigureHierarchy[index] = this.selectedWhitelistAsset?.hierarchy_json[level];
-              if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
-                this.onChangeOfAddAssetHierarchy(index);
+  async onWhitelistedAssetChange() {
+    let newPromise = await this.getAssetsModels(this.componentState);    
+    Promise.resolve(newPromise).then(res => {
+      if (this.selectedWhitelistAsset === undefined) {
+        this.assetDetail.asset_id = null;
+        this.assetDetail.tags.display_name = null;
+        this.assetDetail.tags.cloud_connectivity = undefined;
+        this.assetDetail.tags.protocol = undefined;
+      }
+      else {
+        debugger
+        this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
+        this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
+        this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
+        this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
+        if (this.selectedWhitelistAsset.hasOwnProperty('protocol') && this.selectedWhitelistAsset.protocol != null && this.selectedWhitelistAsset.protocol != '')
+          this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
+        if (this.selectedWhitelistAsset.hasOwnProperty('hierarchy_json')) {
+          //this.assetDetail.tags.hierarchy_json = this.selectedWhitelistAsset.hierarchy_json;
+          this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+              if (this.selectedWhitelistAsset?.hierarchy_json) {
+                this.addAssetConfigureHierarchy[index] = this.selectedWhitelistAsset?.hierarchy_json[level];
+                if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
+                  this.onChangeOfAddAssetHierarchy(index);
+                }
               }
             }
-          }
-        });
-
+          });
+  
+        }
       }
-    }
+    })  
   }
   onCreateAsset() {
     if (
@@ -406,6 +408,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     if (
       this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' &&
+      this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'asset_id' &&
       !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.assetDetail.tags.partition_key)
     ) {
       this.toasterService.showError(
@@ -414,7 +417,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       );
       return;
     }
-    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Asset ID') {
+    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Asset ID' || this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'asset_id') {
       this.assetDetail.tags.partition_key = this.assetDetail.asset_id;
     }
 

@@ -42,6 +42,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   hierarchyId = 0;
   hierarchyName = '';
   isEditMode = false;
+  selectedLevelHierarchy = {};
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private toasterService: ToasterService,
@@ -92,6 +93,12 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     ];
   }
   async getAllHierarchy(level, parentId = 0) {
+    if (level !== 1) {
+      this.selectedLevelHierarchy[level - 1] = parentId;
+      for (let index = level; index <= Object.keys(this.selectedLevelHierarchy).length; index++) {
+        delete this.selectedLevelHierarchy[index];
+      }
+    }
     const obj = {
       level: level,
       parent_id: parentId
@@ -276,12 +283,12 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
           this.toasterService.showSuccess(response.message, 'Hierarchy');
           this.getAllHierarchy(this.hierarchyForm.level, this.hierarchyForm.parent_id);
           this.onCloseHierarchyModal();
-          this.assetCustomTags=[];
+          this.assetCustomTags = [];
         },
         (error) => {
           this.loader = false;
           this.toasterService.showError(error.message, 'Hierarchy');
-          this.assetCustomTags=[];
+          this.assetCustomTags = [];
         }
       )
     );
@@ -295,7 +302,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     })
   }
   onCloseHierarchyModal() {
-    this.assetCustomTags=[];
+    this.assetCustomTags = [];
     this.initialForm();
     $('#addHierarchyModal').modal('hide');
   }
@@ -402,7 +409,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
             this.hierarchyForm.level = response.level;
             this.hierarchyForm.parent_id = response.parent_Id;
             this.hierarchyForm.id = response.id;
-            this.levelToAddUpdate =  response.level;
+            this.levelToAddUpdate = response.level;
             if (response?.metaData) {
               Object.keys(response?.metaData).forEach((key, index) => {
                 this.assetCustomTags.push({

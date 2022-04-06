@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { environment } from 'src/environments/environment';
 import { ToasterService } from './../../services/toaster.service';
-import { FormGroup, FormControl, Validators,ReactiveFormsModule  } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
@@ -30,7 +30,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   privilegeObj: any = {};
   privilegeGroups: any = {};
   appPrivilegeObj: any = {};
-  roleId : number = 0;
+  roleId: number = 0;
   timezones = CONSTANTS.TIME_ZONES;
   constructor(private applicationService: ApplicationService, private toasterService: ToasterService) { }
 
@@ -180,14 +180,14 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTableFunctionCall(obj) {    
+  onTableFunctionCall(obj) {
     if (obj.for === 'View') {
       this.onOpenViewIconModal(obj.data);
     }
     else if (obj.for === 'Partition') {
       this.openPartitionIconModal(obj.data);
     }
-    else if (obj.for === 'EditPrivilege') {    
+    else if (obj.for === 'EditPrivilege') {
       this.roleId = 0;
       this.privilegeObj = {};
       this.privilegeGroups = {};
@@ -197,8 +197,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       this.isCreateAPILoading = false;
     }
   }
-  onValidateLength(obj)
-  {
+  onValidateLength(obj) {
     return Object.keys(obj).length > 0;
   }
 
@@ -232,13 +231,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       });
     }
     if (this.createApplicationForm.value?.metadata?.app_specific_db) {
-      dbGroup.addControl('default', new FormControl(false));
+      dbGroup.addControl('default', new FormControl(true));
       dbGroup.addControl('host_name', new FormControl(null));
       dbGroup.addControl('user_name', new FormControl(null));
       dbGroup.addControl('database_name', new FormControl(null));
       dbGroup.addControl('port', new FormControl(null));
     } else {
-      dbGroup.addControl('default', new FormControl(true));
+      dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('host_name');
       dbGroup.removeControl('user_name');
       dbGroup.removeControl('database_name');
@@ -246,27 +245,27 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
   }
   onShemaValueChange() {
-    const dbGroup = this.createApplicationForm.get('metadata')?.get('schema_info') as FormGroup;   
+    const dbGroup = this.createApplicationForm.get('metadata')?.get('schema_info') as FormGroup;
     if (this.createApplicationForm.value?.metadata?.app_specific_schema) {
-      dbGroup.addControl('default', new FormControl(false));
+      dbGroup.addControl('default', new FormControl(true));
       dbGroup.addControl('schema_name', new FormControl(null));
     } else {
-      dbGroup.addControl('default', new FormControl(true));
+      dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('schema_name');
     }
   }
   onTelemetryShemaValueChange() {
-    const dbGroup = this.createApplicationForm.get('metadata')?.get('telemetry_schema_info') as FormGroup;   
+    const dbGroup = this.createApplicationForm.get('metadata')?.get('telemetry_schema_info') as FormGroup;
     if (this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema) {
-      dbGroup.addControl('default', new FormControl(false));
+      dbGroup.addControl('default', new FormControl(true));
       dbGroup.addControl('schema_name', new FormControl(null));
     } else {
-      dbGroup.addControl('default', new FormControl(true));
+      dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('schema_name');
     }
   }
 
-  getAllPriviledges(app = undefined) {  
+  getAllPriviledges(app = undefined) {
     return new Promise<void>((resolve1, reject) => {
       this.apiSubscriptions.push(
         this.applicationService.getAllPriviledges().subscribe((response: any) => {
@@ -275,9 +274,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             // Note : Set Privilege with api call    
             this.isAllprivilegeSelected['add'] = true;
             this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(response.data.Priviledges));
-            this.privilegeGroups = response.data.PrivilegeGroup;            
+            this.privilegeGroups = response.data.PrivilegeGroup;
             this.onPrivilegeSelection('add', app === undefined ? false : true);
-            if (app !== undefined && Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0 ) {              
+            if (app !== undefined && Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0) {
               this.onOpenModal('editPrivilegeModal', app);
             }
             resolve1();
@@ -293,8 +292,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           if (response && response.data) {
             this.roleId = response.data.Priviledges[0].id;
             this.appPrivilegeObj = JSON.parse(JSON.stringify(response.data.Priviledges[0].privileges));
-            if (Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0 ) 
-            {
+            if (Object.keys(this.privilegeGroups).length > 0 && Object.keys(this.appPrivilegeObj).length > 0) {
               this.onOpenModal('editPrivilegeModal', app);
             }
             resolve1();
@@ -303,7 +301,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
     });
   }
-  
+
   onTimeZoneChange() {
     const dbGroup = this.createApplicationForm.get('metadata') as FormGroup;
     let formControl = dbGroup.get('time_zone');
@@ -315,8 +313,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     let timeZoneValue = formTimeZoneControl.value.substring(1);
     var a = timeZoneValue.split(':');
     let minutes = (+a[0]) * 60 + (+a[1]);
-    if(positiveNegative == '-')
-    {
+    if (positiveNegative == '-') {
       minutes *= -1;
     }
     formControl = dbGroup.get('time_zone');
@@ -335,12 +332,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           name: new FormControl(null),
           address: new FormControl(null),
         }),
-        time_zone_hours : new FormControl(null, [Validators.required]),
+        time_zone_hours: new FormControl(null, [Validators.required]),
         description: new FormControl(null),
         app_specific_db: new FormControl(false),
-        db_info: new FormGroup({ default : new FormControl(true)}),
-        schema_info: new FormGroup({default : new FormControl(true)}),
-        telemetry_schema_info: new FormGroup({default : new FormControl(true)}),
+        db_info: new FormGroup({ default: new FormControl(false) }),
+        schema_info: new FormGroup({ default: new FormControl(false) }),
+        telemetry_schema_info: new FormGroup({ default: new FormControl(false) }),
         app_specific_schema: new FormControl(false),
         app_telemetry_specific_schema: new FormControl(false),
         partition: new FormGroup({
@@ -414,6 +411,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   async createApp() {
     const applicationDetail = this.createApplicationForm.value;
+    debugger
     // if (!applicationDetail.metadata.description) {
     //   applicationDetail.metadata.description = 'App Description';
     // }
@@ -438,6 +436,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
     }
     this.isCreateAPILoading = true;
+      applicationDetail.metadata.db_info.default = !this.createApplicationForm.value?.metadata?.app_specific_db;
+      applicationDetail.metadata.schema_info.default = !this.createApplicationForm.value?.metadata?.app_specific_schema;
+      applicationDetail.metadata.telemetry_schema_info.default = !this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema;
     applicationDetail.dashboard_config = {
       show_live_widgets: true,
     };

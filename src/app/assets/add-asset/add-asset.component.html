@@ -95,7 +95,7 @@
             </select>
           </div> -->
             <div class="form-group"
-              *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
+              *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' && contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'asset_id'">
               <label for="recipient-name" class="col-form-label required">Partition Key:</label>
               <input type="text" class="form-control form-control-sm" id="partition_key" name="partition_key"
                 [(ngModel)]="assetDetail.tags.partition_key" placeholder="Partition Key">

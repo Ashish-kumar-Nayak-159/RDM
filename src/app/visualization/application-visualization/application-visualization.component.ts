@@ -332,13 +332,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.assetService.getAssetAlertAndAlertEndEvents(obj).subscribe(
         (response: any) => {
-          this.latestAlerts = response.data;
+          this.latestAlerts = response.data;          
+          this.selectedAlert = undefined;
           if (this.latestAlerts.length > 0) {
-            this.selectedAlert = undefined;
             this.onClickOfViewGraph(this.latestAlerts[this.acknowledgedAlertIndex || 0]);
             this.acknowledgedAlertIndex = undefined;
           } else {
-            this.selectedAlert = undefined;
             this.selectedTab = undefined;
           }
           this.latestAlerts.forEach((item, i) => {
@@ -705,17 +704,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.selectedAlert.metadata.acknowledged_date
       );
     }
-    if (this.selectedAlert?.metadata?.files && this.selectedAlert?.metadata?.files.constructor == Object && Object.keys(this.selectedAlert?.metadata?.files).length > 0) {
-      this.selectedAlert?.metadata?.files?.forEach((file) => {
-        file['url'] = file?.data?.url;
-        file['name'] = file?.data?.name;
-        file['data']['type'] = file?.type;
-        if (file?.data?.url) {
-          file.data.sanitizedURL = this.sanitizeURL(file.data.url);
-          file['sanitizedURL'] = file.data.sanitizedURL
-        }
-      });
-    }
+    this.selectedAlert?.metadata?.files?.forEach((file) => {      file['url'] = file.data.url;      file['name'] = file.data.name;      file['data']['type'] = file.type;      file.data.sanitizedURL = this.sanitizeURL(file.data.url);      file['sanitizedURL'] = file.data.sanitizedURL    });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
@@ -1163,7 +1152,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         files.push(file);
       }
     });
-    // this.acknowledgedAlert.metadata.files = files;
+    this.acknowledgedAlert.metadata.files = files;
     const obj = {
       app: this.contextApp.app,
       asset_id: this.acknowledgedAlert.asset_id,
@@ -1187,8 +1176,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
           this.getLatestAlerts();
           this.closeAcknowledgementModal();
-          this.acknowledgedAlert = {}
-          this.acknowledgedAlertIndex = -1
+          this.acknowledgedAlert = undefined
+          //this.acknowledgedAlertIndex = -1
           // this.getAlarms();
         },
         (error) => {
@@ -1207,7 +1196,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.acknowledgedAlert = undefined;
   }
 
   ngOnDestroy(): void {

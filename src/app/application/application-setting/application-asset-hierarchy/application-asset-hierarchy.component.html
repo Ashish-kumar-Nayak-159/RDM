@@ -31,8 +31,8 @@
           <div class="card-body-p0" style="overflow-y:auto;">
             <ul class="hierarchy_list list-group list-unstyled">
               <ng-container *ngIf="hierachyWithData[i] && hierachyWithData[i].length > 0">
-                <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
-                  *ngFor="let tag of hierachyWithData[i];let tagIndex = index; trackBy:trackByFn1">
+                <li class="list-group-item" *ngFor="let tag of hierachyWithData[i];let tagIndex = index; trackBy:trackByFn1"
+                [ngClass]="{'active': selectedLevelHierarchy[i] == tag.id}">
                   <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
                     *ngIf="hierachyWithData[i] && hierachyWithData[i][tagIndex]">
                     <div class="media">
@@ -41,15 +41,12 @@
                       <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]">{{tag.name}}</div>
                       <div class="ml-auto">
                         <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
-                        (click)="getHierarchy(tag.id)"><em class="fa fa-edit"></em></a>
-                      <span>
-                        <em class="fa fa-angle-right fa-lg"></em>
-                      </span>
+                        (click)="getHierarchy(tag.id)"><em class="fa fa-edit"></em></a>                      
                         <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
-                          (click)="deleteHierarchy(tag.id,tag.level,tag.parent_id)"><em class="fa fa-trash"></em></a>
-                        <span>
-                          <em class="fa fa-angle-right fa-lg"></em>
-                        </span>
+                          (click)="deleteHierarchy(tag.id,tag.level,tag.parent_id)"><em class="fa fa-trash"></em></a>                       
+                          <span *ngIf="!isAppSetingsEditable">
+                            <em class="fa fa-angle-right fa-lg"></em>
+                          </span>
                       </div>
                     </div>
                   </a>
@@ -125,7 +122,7 @@
           </div>
           <div class="row">
             <div class="form-group col-md-12">
-              <label for="example-tel-input required">Tags</label>
+              <label for="example-tel-input required">Other Information</label>
             <table class="table table-hover" id="dataTable" aria-describedby="metadata">
               <thead style="display: none;">
                 <tr>
@@ -134,11 +131,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
+                <!-- <tr *ngIf="!assetCustomTags || assetCustomTags.length  == 1 ">
                   <ng-container>
-                    Custom tags not available
+                    Other information not available
                   </ng-container>
-                </tr>
+                </tr> -->
                 <tr *ngFor="let tag of assetCustomTags;let i = index">
                   <ng-container *ngIf="!tag.editable ; else lastRowTemplate">
                     <ng-container *ngIf="!isCustomTagsEditable">

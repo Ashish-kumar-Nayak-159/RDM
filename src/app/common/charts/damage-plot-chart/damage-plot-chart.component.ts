@@ -45,8 +45,7 @@ export class DamagePlotChartComponent implements OnInit {
   decodedToken: any;
   widgetStringFromMenu: any;
   dataLimitExceeded = false
-  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
-
+  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) { }
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -88,27 +87,32 @@ export class DamagePlotChartComponent implements OnInit {
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
-      const data = [];
+      let data = [];
       this.telemetryData.forEach((obj, i) => {
         this.y1AxisProps.forEach((prop) => {
           if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            const keys = this.commonService.sortObjectBasedOnKey(obj[prop.json_key]);
+            let keys = this.commonService.sortObjectBasedOnKey(obj[prop.json_key]);
             keys.forEach((key, index) => {
-              const newObj: any = {};
+              let newObj: any = {};
               if (obj[prop.json_key][key] !== null && obj[prop.json_key][key] !== undefined) {
                 newObj['frequency' + i] = Number(key);
                 newObj[prop.json_key + '_' + i] = obj[prop.json_key][key];
               }
-              if (Object.keys(newObj).length > 0) {
+              let flag = false;
+              let item = data.filter(f => f['frequency' + i] == newObj['frequency' + i] && f[prop.json_key + '_' + i] == newObj[prop.json_key + '_' + i])
+              if (item.length > 0) {
+                flag = true;
+              }
+              if (!flag && Object.keys(newObj).length > 0) {
                 data.splice(data.length, 0, newObj);
               }
             });
           }
         });
       });
-
+      console.log('data', JSON.stringify(data));
       // this.telemetryData = JSON.parse(JSON.stringify(arr));
-      if(data.length > 4000){
+      if (data.length > 4000) {
         this.loader = false;
         this.dataLimitExceeded = true;
         this.chart = chart
@@ -215,11 +219,13 @@ export class DamagePlotChartComponent implements OnInit {
     let unit;
     this.propertyList.forEach((propobj) => {
       if (propobj.json_key === this.y1AxisProps[0].json_key) {
-        unit = propobj.json_model[propobj.json_key].units;
+        if (propobj.json_model[propobj.json_key] && propobj.json_model[propobj.json_key]?.units)
+          unit = propobj.json_model[propobj.json_key].units;
       }
     });
     valueYAxis.title.text = this.chartTitle + (unit ? ' (' + unit + ')' : '');
     // const arr = this.y1AxisProps;
+    console.log('tel data', this.telemetryData);
     this.telemetryData.forEach((data, index) => {
       const color = this.commonService.getRandomColor();
       let count = 0;
@@ -233,10 +239,10 @@ export class DamagePlotChartComponent implements OnInit {
             proptype === 'Edge Derived Properties'
               ? 'ED'
               : proptype === 'Cloud Derived Properties'
-              ? 'CD'
-              : proptype === 'Derived KPIs'
-              ? 'DK'
-              : 'M';
+                ? 'CD'
+                : proptype === 'Derived KPIs'
+                  ? 'DK'
+                  : 'M';
           series.propKey = prop.json_key;
           // series.xAxis = axis;
           series.stroke = color;
@@ -248,7 +254,7 @@ export class DamagePlotChartComponent implements OnInit {
           series.strokeWidth = 2;
           const time = data.message_date;
           series.time = time;
-          series.connect = false;
+          series.connect = true;
           // series.connect = false;
           // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
           // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
@@ -275,6 +281,7 @@ export class DamagePlotChartComponent implements OnInit {
         }
       });
     });
+    console.log(' this.seriesArr', this.seriesArr);
     valueYAxis.tooltip.disabled = true;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     valueYAxis.renderer.minWidth = 35;
@@ -303,7 +310,7 @@ export class DamagePlotChartComponent implements OnInit {
           item.show();
           this.propertyList.forEach((propObj) => {
             if (prop === propObj.json_key) {
-              const units = propObj.json_model[propObj.json_key].units;
+              const units = propObj.json_model[propObj.json_key]?.units;
               this.chartDataFields[prop] = propObj.name + (units ? ' (' + units + ')' : '');
             }
           });
@@ -365,7 +372,7 @@ export class DamagePlotChartComponent implements OnInit {
     }
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

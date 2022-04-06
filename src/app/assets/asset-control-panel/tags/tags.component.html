@@ -87,7 +87,7 @@
                 <span *ngFor="let user of asset?.tags?.asset_users_arr">{{user}}<br /></span>
               </td>
             </tr>
-            <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID'">
+            <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' && contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'asset_id'">
               <td>Partition Key</td>
               <td>{{asset?.tags?.partition_key}}</td>
             </tr>

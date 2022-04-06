@@ -494,6 +494,7 @@
             <textarea type="text" rows="3" class="form-control form-control-sm" id="note" name="note"
               [(ngModel)]="acknowledgedAlert.metadata.note" placeholder="Enter Notes"></textarea>
           </div>
+          <ng-container *ngIf="acknowledgedAlert?.metadata?.files">
           <ng-container *ngFor="let file of acknowledgedAlert.metadata.files; let i = index;">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Type:
@@ -539,6 +540,7 @@
               </div>
             </div>
           </ng-container>
+        </ng-container>
         </form>
       </div>
       <div class="modal-footer">

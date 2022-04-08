@@ -6,11 +6,17 @@ import { AuthGuardService } from './../services/auth-guard/auth-guard.service';
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
+import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
 
 const routes: Routes = [
   {
     path: 'selection',
     component: ApplicationSelectionComponent,
+    canActivate: [AuthGuardService],
+  },  
+  {
+    path: 'gateway-monitoring',
+    component: ApplicationGatewayMonitoringComponent,
     canActivate: [AuthGuardService],
   },
   {

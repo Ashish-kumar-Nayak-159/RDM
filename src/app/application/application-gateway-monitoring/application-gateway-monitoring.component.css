@@ -1,0 +1,12 @@
+.total-gateway:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}
+.online:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}
+.offline:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}

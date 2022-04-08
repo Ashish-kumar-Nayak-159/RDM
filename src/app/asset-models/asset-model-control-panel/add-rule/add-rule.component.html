@@ -1,5 +1,5 @@
 <div class="p-3">
-  <p *ngIf="ruleData.updated_date && (isEdit || isView)">This rule is last updated on {{ruleData.local_updated_date}} by
+  <p *ngIf="ruleData.updated_date && (isEdit || isView)">This rule is last {{ruleData.updated_date == ruleData.created_date ? 'created' : 'updated'}} on {{ruleData.local_updated_date}} by
     {{ruleData.updated_by}}.</p>
   <p *ngIf="ruleData.deployed_on && (isEdit || isView)">This rule is last deployed on {{ruleData.local_deployed_on}} by
     {{ruleData.deployed_by}}.</p>
@@ -59,7 +59,6 @@
           <div class="form-group row">
             <label for="examplePassword" class="col-3">Type</label>
             <div class="col-auto">
-              <!-- Cloud Rule -->
               <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
                 [disabled]="isView" uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">

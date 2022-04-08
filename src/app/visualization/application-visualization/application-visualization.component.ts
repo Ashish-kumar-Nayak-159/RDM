@@ -677,6 +677,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfViewGraph(alert) {
+    this.uploadedFiles = [];
+
     this.selectedAlert = undefined;
     this.onTabClick('visualization');
     const children = $('#charts').children();
@@ -1116,26 +1118,32 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onDocumentFileSelected(files: FileList, index) {
+    console.log("index", index)
     if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
-    this.uploadedFiles.push({
+    this.uploadedFiles.splice(index,1,{
       'file': files?.item(0),
       'index': index
     })
+    console.log("uploadfiles", this.uploadedFiles)
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
   }
 
   async uploadFile() {
     this.isFileUploading = true;
+  
     await Promise.all(this.uploadedFiles.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
       );
       if (data) {
-        this.acknowledgedAlert.metadata.files[file.index].data = data;
+        this.acknowledgedAlert.metadata.files[file.index].data = data; 
+       
+        // console.log("Checking", JSON.stringify(this.acknowledgedAlert.metadata.files[file.index].data))
+        // this.acknowledgedAlert.metadata.files[file.index].data = data;
       } else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
       }
@@ -1177,6 +1185,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.getLatestAlerts();
           this.closeAcknowledgementModal();
           this.acknowledgedAlert = undefined
+          
           //this.acknowledgedAlertIndex = -1
           // this.getAlarms();
         },
@@ -1190,6 +1199,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   closeAcknowledgementModal(flag = false): void {
     $('#acknowledgemenConfirmModal').modal('hide');
     if (flag) {
+      debugger
       this.latestAlerts.forEach((alert) => {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};

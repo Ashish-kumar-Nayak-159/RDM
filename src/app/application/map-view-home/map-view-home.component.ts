@@ -54,6 +54,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
 
   async ngOnInit(): Promise<void> {
+    debugger
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getAllAssets();
@@ -79,12 +80,21 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
           this.centerLongitude = 72.5714;
         }
         this.mapFitBounds = false;
-      } else {
+      }
+       else {
         this.centerLatitude = this.contextApp.metadata?.latitude ;
         this.centerLongitude = this.contextApp.metadata?.longitude ;
         this.mapFitBounds = false;
       }
-    }, 200);
+
+      
+      const center = this.commonService.averageGeolocation(this.assets);
+       if(!center.latitude && !center.longitude){
+       this.centerLatitude = this.contextApp.metadata?.latitude ;
+        this.centerLongitude = this.contextApp.metadata?.longitude ;
+        this.mapFitBounds = false;
+       }
+      }, 200);
   }
 
   showPosition = (position)=> {

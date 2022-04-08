@@ -353,7 +353,6 @@ export class AddRuleComponent implements OnInit {
   }
 
   createNewRule() {
-    debugger
     if (
       (!this.ruleModel.name ||
         !this.ruleModel.description ||

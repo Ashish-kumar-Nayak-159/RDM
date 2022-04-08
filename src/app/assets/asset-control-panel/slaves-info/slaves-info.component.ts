@@ -27,8 +27,8 @@ export class SlavesInfoComponent implements OnInit {
   deleteSlaveObj: any;
   isDeleteSlaveAPILoading = false;
   isAPILoading = false;
-  addSetupForm: FormGroup;
-  editSetupForm: FormGroup;
+  addSetupForm: FormGroup = null;
+  editSetupForm: FormGroup = null;
   constantData = CONSTANTS;
   decodedToken: any;
   assetTwin: any;
@@ -132,11 +132,13 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   addSlaveToAssetModal() {
+   // this.accordianflag = false;
     this.slaveObj = {
       metadata: {},
     };
     this.openModal('addSlaveModal');
     this.setupFormData();
+
   }
 
   setupFormData(obj = undefined) {
@@ -145,7 +147,6 @@ export class SlavesInfoComponent implements OnInit {
       setupformGroup = new FormGroup({
         host_address: new FormControl(
           obj &&
-          obj.metadata &&
           obj.metadata &&
           obj.metadata.host_address !== undefined &&
           obj.metadata.host_address !== null
@@ -236,14 +237,23 @@ export class SlavesInfoComponent implements OnInit {
       });
     }
     if (obj) {
-      this.editSetupForm = setupformGroup;
+             this.editSetupForm = setupformGroup;
     } else {
-      this.addSetupForm = setupformGroup;
+       this.addSetupForm = setupformGroup;
     }
   }
 
+  get f() { return this.editSetupForm.controls; }
+
+
   onClickOfSlaveAccordion(slave) {
     this.setupFormData(slave);
+    // this.accordianflag = true;
+    // setTimeout(() => {
+    //   this.setupFormData(slave);
+    //   this.accordianflag =false
+
+    // }, 200);
   }
 
   onModalEvents(eventType) {

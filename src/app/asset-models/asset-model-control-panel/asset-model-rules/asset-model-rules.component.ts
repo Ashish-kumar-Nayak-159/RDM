@@ -68,7 +68,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.getRules();
   }
 
-  onToggleRows(i, rule, isView = false, isEdit = false, action) {
+  onToggleRows(i, rule, isView = true, isEdit = false, action) {
     if (this.toggleRows[this.selectedTab + '_' + i]) {
       if (action === 'toggle') {
         this.toggleRows = {};
@@ -128,6 +128,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.onCloseDeleteModal();
           this.getRules();
+          this.toggleRows ={}
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,

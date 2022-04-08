@@ -52,26 +52,33 @@
               (click)="removeSlaveFromAsset(slave)"><em class="fa fa-close" tooltip="Remove Slave" placement="left"></em></a>
           </div>
         </ng-container>
-        <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1">
+        <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1 && editSetupForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label">MAC Address:</label>
             <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
               [(ngModel)]="slave.mac_id" placeholder="Enter MAC Address">
           </div>
+          
           <form *ngIf="asset.tags.protocol" [formGroup]="editSetupForm">
             <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Host Address:</label>
                 <div class="input-group">
                   <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
-                    formControlName="host_address" placeholder="Host Address">
+                  formControlName="host_address" placeholder="Host Address" >
                 </div>
-                <div *ngIf="editSetupForm.get('host_address').errors &&
+                <div *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)" class="alert-danger">
+                  <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
+                    Host Address is required.
+                  </div>
+                 
+                </div>
+                <!-- <div *ngIf="editSetupForm.get('host_address').errors &&
                    editSetupForm.get('host_address').touched" class="alert-danger">
                   <div *ngIf="editSetupForm.get('host_address').errors.required">
                     Host Address is required.
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Port Number:</label>
@@ -79,12 +86,18 @@
                   <input type="number" class="form-control form-control-sm" id="port_number" name="port_number"
                     formControlName="port_number" placeholder="Port Number" min="0">
                 </div>
-                <div *ngIf="editSetupForm.get('port_number').errors &&  editSetupForm.get('port_number').touched"
+                <div *ngIf="(editSetupForm.get('port_number')?.errors && editSetupForm.get('port_number')?.touched)" class="alert-danger">
+                  <div *ngIf="editSetupForm.get('port_number')?.errors?.required">
+                    Port Number is required.
+                  </div>
+                 
+                </div>
+                <!-- <div *ngIf="editSetupForm.get('port_number').errors &&  editSetupForm.get('port_number').touched"
                   class="alert-danger">
                   <div *ngIf="editSetupForm.get('port_number').errors.required">
                     Port Number is required.
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Modbus Slave ID:</label>
@@ -92,12 +105,18 @@
                   <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
                     formControlName="slave_id" placeholder="Modbus Slave ID">
                 </div>
-                <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
+                <div *ngIf="(editSetupForm.get('slave_id')?.errors && editSetupForm.get('slave_id')?.touched)" class="alert-danger">
+                  <div *ngIf="editSetupForm.get('slave_id')?.errors?.required">
+                    Modbus Slave ID is required.
+                  </div>
+                 
+                </div>
+                <!-- <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
                   class="alert-danger">
                   <div *ngIf="editSetupForm.get('slave_id').errors.required">
                     Modbus Slave ID is required.
                   </div>
-                </div>
+                </div> -->
               </div>
             </ng-container>
             <ng-container *ngIf="asset.tags.protocol === 'SiemensTCPIP'">
@@ -107,9 +126,9 @@
                   <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
                     formControlName="host_address" placeholder="Host Address">
                 </div>
-                <div *ngIf="editSetupForm.get('host_address').errors && editSetupForm.get('host_address').touched"
+                <div *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)"
                   class="alert-danger">
-                  <div *ngIf="editSetupForm.get('host_address').errors.required">
+                  <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
                     Host Address is required.
                   </div>
                 </div>
@@ -271,7 +290,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form>
+          <form *ngIf="addSetupForm">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Select Slave:</label>
               <select class="form-control form-control-sm" id="slave_position" name="slave_position"
@@ -289,7 +308,7 @@
               <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
                 [(ngModel)]="slaveObj.mac_id" placeholder="Enter MAC Address">
             </div>
-            <form *ngIf="asset.tags.protocol && addSetupForm" [formGroup]="addSetupForm">
+            <form *ngIf="asset.tags.protocol" [formGroup]="addSetupForm">
               <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label required">Host Address:</label>

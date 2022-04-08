@@ -27,6 +27,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { ApplicationFilterSettingsComponent } from './application-setting/application-filter-settings/application-filter-settings.component';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -43,7 +44,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     ApplicationOrgTreeComponent,
     ApplicationDashboardConfigurationComponent,
     ApplicationEmailAliasComponent,
-    ApplicationFilterSettingsComponent
+    ApplicationFilterSettingsComponent,
+    ApplicationGatewayMonitoringComponent
   ],
   imports: [
     CommonModule,

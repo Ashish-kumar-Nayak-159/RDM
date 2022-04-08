@@ -4,6 +4,8 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
+import { Component } from '@angular/core';
+import { ApplicationGatewayMonitoringComponent } from './application/application-gateway-monitoring/application-gateway-monitoring.component';
 
 const routes: Routes = [
   {
@@ -39,7 +41,6 @@ const routes: Routes = [
     path: 'applications/:applicationId/assets',
     loadChildren: () => import('./assets/assets.module').then((module) => module.AssetsModule),
   },
-
   {
     path: 'login',
     component: RDMLoginComponent,

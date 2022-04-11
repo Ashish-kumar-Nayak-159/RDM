@@ -306,4 +306,13 @@ export class ApplicationService {
     });
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_HIERARCHIES,id), { params });
   }
+
+  getAssetStatistics(app){
+    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)))
+  }
+
+  getAssetMonitoring(app){
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)))
+  }
+
 }

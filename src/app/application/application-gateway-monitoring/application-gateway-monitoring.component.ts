@@ -38,12 +38,12 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     total_telemetry: 0,
     day_telemetry: 0
   }
-
+  loader = false;
 
   constructor(private commonService: CommonService, private applicationService: ApplicationService, private assetService: AssetService) { }
 
   ngOnInit(): void {
-
+    // this.loader = true;
     const obj = {
       environment: environment.environment,
       provisioned: this.isProvisioned
@@ -58,9 +58,10 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         this.selectedApp = newArray[0];
         this.appName();
       }
-      else
-        this.appsList = [];
-    })
+      else { this.appsList = []; }
+      // this.loader = false;
+    },
+      (error) => this.loader = false)
 
     this.tableConfig = {
       type: 'Applications',
@@ -145,7 +146,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
 
   appName() {
-    console.log("select app name", this.selectedApp);
     if (this.selectedApp) {
       this.assetStatic(this.selectedApp);
       this.assetMonitor(this.selectedApp)
@@ -163,6 +163,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   assetStatic(appReceive) {
+    this.loader= true;
     this.applicationService.getAssetStatistics(appReceive).subscribe((response: any) => {
       console.log("gateway asset static api res...", response)
       this.countData = {
@@ -173,16 +174,18 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         day_telemetry: response?.day_telemetry ?? 0
 
       }
-    })
+    },(err)=>{this.loader = false})
   }
 
   assetMonitor(appReceive) {
+    this.loader = true;
     this.applicationService.getAssetMonitoring(appReceive).subscribe((response) => {
       console.log("gateway asset monitoring api res..", response);
       this.applications = []
       this.applications = response
-
-    })
+      this.loader = false;
+    },
+      (error) => this.loader = false)
   }
 
   onTableFunctionCall(obj) {

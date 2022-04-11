@@ -512,7 +512,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-object-group',
       visible: true,
       exactMatch: true,
-      privileges_required: ['ASCMV'],
+      privileges_required: ['ASCMV','ASCMM'],
       showAccordion: [{ name: 'Title', value: 'Campaigns' }],
       priority: 1,
     },

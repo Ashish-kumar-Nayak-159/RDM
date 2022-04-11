@@ -7,7 +7,6 @@ import { AssetModelService } from './../../../services/asset-model/asset-model.s
 import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
@@ -205,8 +204,8 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
-    debugger;
-    if (!(files?.item(0).type.includes('zip')||files?.item(0).type.includes('hex')||files?.item(0).type.includes('bin'))) {
+    let extension = files.item(0).name.slice((files.item(0).name.lastIndexOf(".") - 1 >>> 0) + 2);
+    if (!(extension === 'zip' || extension ==='hex' || extension ==='bin')) {
       this.toasterService.showError('Only .zip, .hex,.bin files are allowed', 'Select File');
       return;
     }

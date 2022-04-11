@@ -71,7 +71,7 @@ decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
               <div class="file-input form-control form-control-sm p-0 col-8">
                 <input type="file" accept=".zip,.rar,.7zip,.hex,.bin" id="file" class="file"
                   onclick="this.value = null"
-                  (change)="onFileSelected($event)">
+                  (change)="onDocumentFileSelected($event.target.files)">
                 <label for="file" class="overflow-text"
                   [tooltip]="(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : ''">
                   {{(packageObj && packageObj.metadata && packageObj.metadata.file_name) ?

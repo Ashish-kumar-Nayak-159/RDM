@@ -34,6 +34,7 @@ export class SlavesInfoComponent implements OnInit {
   assetTwin: any;
   applications = CONSTANTS.ASSETAPPPS;
   slaveProvisionedStatus: any = {};
+  isAddSetupForm = false;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private commonService: CommonService,
@@ -137,11 +138,13 @@ export class SlavesInfoComponent implements OnInit {
       metadata: {},
     };
     this.openModal('addSlaveModal');
+    this.isAddSetupForm = true;
     this.setupFormData();
 
   }
 
   setupFormData(obj = undefined) {
+    debugger
     let setupformGroup: FormGroup;
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
       setupformGroup = new FormGroup({
@@ -237,7 +240,7 @@ export class SlavesInfoComponent implements OnInit {
       });
     }
     if (obj) {
-             this.editSetupForm = setupformGroup;
+             this.editSetupForm = setupformGroup ?? obj;
     } else {
        this.addSetupForm = setupformGroup;
     }
@@ -306,6 +309,7 @@ export class SlavesInfoComponent implements OnInit {
           this.toasterService.showSuccess(response.message, 'Add Slave');
           this.isAddSlaveAPILoading = false;
           this.onCloseModal('addSlaveModal');
+          this.isAddSetupForm = false;
           this.getSlaveData();
           this.addSetupForm = undefined;
           this.slaveObj = undefined;

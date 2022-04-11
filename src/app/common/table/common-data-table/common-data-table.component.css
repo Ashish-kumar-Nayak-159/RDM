@@ -7,7 +7,7 @@
   justify-content: center
 }
 .table_class{
-  overflow: auto;
+  overflow: scroll;
   height: 16rem;
   margin-bottom: 28px ;
 }

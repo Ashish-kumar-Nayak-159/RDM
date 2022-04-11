@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="main-heading pr-3">
-           {{countData.total_telemetry}} Telemetry / {{countData.day_telemetry}} Day&nbsp;
+           {{countData.day_telemetry}} Telemetry/ Day | {{countData.total_telemetry}} &nbsp;
         </div>
     </div>
   
@@ -64,7 +64,10 @@
    <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
 </select>
 
-<div>
+<div *ngIf="!loader">
     <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
       (btnClickEvent)="onTableFunctionCall($event)" ></app-common-data-table>
+</div><br/>
+<div class="text-center">
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
 </div>

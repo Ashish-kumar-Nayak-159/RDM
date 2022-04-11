@@ -10,3 +10,9 @@
     box-shadow: 7px 0px 5px 0px gray;
     cursor: pointer;
 }
+
+.table_class{
+   overflow: auto !important;
+   height: 16.625rem !important;
+   margin-bottom: 28px !important;
+}

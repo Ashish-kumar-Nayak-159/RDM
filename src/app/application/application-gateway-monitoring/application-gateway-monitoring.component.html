@@ -57,7 +57,14 @@
            {{countData.total_telemetry}} Telemetry / {{countData.day_telemetry}} Day&nbsp;
         </div>
     </div>
-    
+  
 </div><br/>
-<app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
-  (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+<select class="col-sm-3 pl-3 form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
+    <option [ngValue]="undefined">Select App</option>
+   <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
+</select>
+
+<div>
+    <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
+      (btnClickEvent)="onTableFunctionCall($event)" ></app-common-data-table>
+</div>

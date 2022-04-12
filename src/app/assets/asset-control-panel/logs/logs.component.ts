@@ -43,7 +43,7 @@ export class LogsComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.asset.type === CONSTANTS.IP_GATEWAY) {
-      this.filterObj.gateway_id = this.asset.asset_id;
+      this.filterObj.asset_id = this.asset.asset_id;
     } else {
       this.filterObj.asset_id = this.asset.asset_id;
     }

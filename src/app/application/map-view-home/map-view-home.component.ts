@@ -54,10 +54,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
 
   async ngOnInit(): Promise<void> {
-    debugger
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getAllAssets();
+    await this.getAssets(this.contextApp.user.hierarchy);
     setTimeout(() => {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       if (item) {
@@ -110,6 +110,24 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
+  }
+
+  async getAssets(hierarchy) {
+    return new Promise<void>((resolve1) => {
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+      };
+      this.apiSubscriptions.push(
+        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+          if (response?.data) {
+            this.assets = response.data;
+            this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, this.assets);
+          }
+          resolve1();
+        })
+      );
+    });
   }
 
   loadFromCache(item) {
@@ -274,7 +292,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onAssetFilterApply(updateFilterObj = true) {
-    debugger
     this.activeCircle = 'all';
     this.assets = this.hierarchyDropdown.getAssets();
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));

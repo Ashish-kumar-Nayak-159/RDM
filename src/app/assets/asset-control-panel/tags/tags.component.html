@@ -389,13 +389,13 @@
           <div class="form-row mt-2">
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputEmail4">Latitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input type="number" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="asset?.tags.latitude"
                 name="latitude" placeholder="Enter Latitude">
             </div>
             <div class="form-group col-md-4 col-sm-6">
               <label for="inputPassword4">Longitude:</label>
-              <input type="text" class="form-control form-control-sm"
+              <input type="number" class="form-control form-control-sm"
                 [disabled]="changeLocationOption !== 'latitude_longitude'" [(ngModel)]="asset?.tags.longitude"
                 name="longitude" placeholder="Enter Longitude">
             </div>

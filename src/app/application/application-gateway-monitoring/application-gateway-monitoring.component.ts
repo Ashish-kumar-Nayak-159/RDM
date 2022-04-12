@@ -15,6 +15,9 @@ import { countInterface } from './count-interface';
 export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   appsList: any = []
+  insideScrollFunFlag = false;
+  currentOffset = 0;
+  currentLimit = 10;
   selectedApp: string;
   hierarchyString: any;
   hierarchyArr: any = {};
@@ -29,8 +32,9 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   configureHierarchy: any = {};
   isProvisioned: string = 'true';
   isApplicationListLoading = false;
-  applications: any = [];
+  applications: any =[];
   tableConfig: any;
+  CUSTOM_DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss a';
   countData: countInterface = {
     iot_assets: 0,
     online: 0,
@@ -93,7 +97,10 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
-          data_key: 'status',
+          data_key: 'connection_state',
+          value_class : '',
+          data_tooltip:'offline_since',
+          data_cellclass:'cssclass'
         },
         {
           header_name: 'Ingestion Status',
@@ -102,6 +109,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'ingestion_status',
+          data_tooltip:'last_ingestion_on'
         },
         {
           header_name: 'CreatedOn',
@@ -146,9 +154,12 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
 
   appName() {
+    this.applications = []
+    this.currentOffset = 0;
+    this.currentLimit = 10;
     if (this.selectedApp) {
-      this.assetStatic(this.selectedApp);
-      this.assetMonitor(this.selectedApp)
+      this.assetStatic();
+      this.assetMonitor()
     }
     else {
       this.countData = {
@@ -158,13 +169,13 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         total_telemetry: 0,
         day_telemetry: 0
       };
-      this.applications = [];
+      this.applications = []
     }
   }
 
-  assetStatic(appReceive) {
+  assetStatic() {
     this.loader= true;
-    this.applicationService.getAssetStatistics(appReceive).subscribe((response: any) => {
+    this.applicationService.getAssetStatistics(this.selectedApp).subscribe((response: any) => {
       console.log("gateway asset static api res...", response)
       this.countData = {
         iot_assets: response?.iot_assets ?? 0,
@@ -177,12 +188,35 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     },(err)=>{this.loader = false})
   }
 
-  assetMonitor(appReceive) {
+  assetMonitor() {
+    const custObj = {
+      offset: this.currentOffset,
+      count: this.currentLimit,
+    }
     this.loader = true;
-    this.applicationService.getAssetMonitoring(appReceive).subscribe((response) => {
+    this.applicationService.getAssetMonitoring(this.selectedApp,custObj).subscribe((response:any) => {
+
       console.log("gateway asset monitoring api res..", response);
-      this.applications = []
-      this.applications = response
+      response.forEach((item)=>{
+    
+        item.created_date =  this.commonService.convertUTCDateToLocalDate(item.created_date,"MMM-dd-yyyy hh:mm:ss"); 
+        if(item.offline_since)
+        item.offline_since = 'Offline Since: '+ this.commonService.convertUTCDateToLocalDate(item.offline_since,"MMM-dd-yyyy hh:mm:ss"); 
+        if(item.last_ingestion_on)
+        item.last_ingestion_on = 'Last Ingestion On: '+ this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on,"MMM-dd-yyyy hh:mm:ss"); 
+        
+        if(item.connection_state =="Disconnected"){          
+             item.connection_state ="Offline"
+             item.cssclass="offline";
+          }
+          else{
+             item.connection_state = "Online"
+             item.cssclass="online";
+          }
+          return item
+      })
+
+      this.applications =[...this.applications,...response]
       this.loader = false;
     },
       (error) => this.loader = false)

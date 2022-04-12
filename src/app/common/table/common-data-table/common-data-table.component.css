@@ -7,10 +7,17 @@
   justify-content: center
 }
 .table_class{
-  overflow: scroll;
-  height: 16rem;
+  overflow-y: scroll;
+  height: 15.625rem;
   margin-bottom: 28px ;
 }
 .status-icon-circle i {
   font-size: 0.5rem;
+}
+
+.online{
+  color:green;
+}
+.offline{
+  color: red;
 }

@@ -2,7 +2,7 @@
   <table class="table table-hover" *ngIf="tableConfig">
     <thead>
       <tr>
-        <th scope="col"*ngIf="tableConfig.border_left_key"></th>
+        <th scope="col" *ngIf="tableConfig.border_left_key"></th>
         <th scope="col">No</th>
         <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
           <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
@@ -70,9 +70,8 @@
                       <div class="dropdown-divider"></div>
                       <div class="dropdown-filter-item " *ngFor="let data of item.fixed_value_list;let i = index">
                         <input type="radio" value="{{data}}" name="{{item.header_name}}_{{headerIndex}}"
-                          [(ngModel)]="tableFilterObj[item.data_key]"
-                          id="{{item.header_name}}_{{headerIndex}}_{{i}}" />
-                          <label for="{{item.header_name}}_{{headerIndex}}_{{i}}">{{data}}</label>
+                          [(ngModel)]="tableFilterObj[item.data_key]" id="{{item.header_name}}_{{headerIndex}}_{{i}}" />
+                        <label for="{{item.header_name}}_{{headerIndex}}_{{i}}">{{data}}</label>
                       </div>
                     </div>
                     <div class="form-group"><button type="button" placement="left" tooltip="Search"
@@ -83,29 +82,30 @@
                   </div>
                 </ng-container>
 
-            </span>
-            <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
-          </th>
-        </ng-template>
-      </ng-container>
-    </tr>
-  </thead>
-  <tbody >
-    <ng-container *ngIf="filteredTableData.length > 0">
-    <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
-      <td class="pl-3" *ngIf="tableConfig.border_left_key"
-      >
-      <div class="status-icon-circle"   [tooltip]="dataItem?.map_content?.healthy === true ? 'Health Status : Healthy' : (dataItem?.map_content?.healthy === false ? 'Health Status : Unhealthy' : 'Health Status : Unknown')"
-      [ngClass]="dataItem?.map_content?.healthy === true ? 'bg-success' : (dataItem?.map_content?.healthy  === false ? 'bg-danger' : 'bg-white-asset')">
-        <em class="fas text-white" [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></em>
-      </div>
-      </td>
-      <td [ngClass]="{'pl-3': !tableConfig.border_left_key}">
-        {{dataIndex + 1}}
-      </td>
-      <ng-container *ngFor="let item of tableConfig.data">
-      <td class="{{item.value_class}}">
-        <ng-container *ngIf="item.data_type === 'text' && item.btn_list?.length > 0">
+              </span>
+              <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
+            </th>
+          </ng-template>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="filteredTableData.length > 0">
+        <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
+          <td class="pl-3" *ngIf="tableConfig.border_left_key">
+            <div class="status-icon-circle"
+              [tooltip]="dataItem?.map_content?.healthy === true ? 'Health Status : Healthy' : (dataItem?.map_content?.healthy === false ? 'Health Status : Unhealthy' : 'Health Status : Unknown')"
+              [ngClass]="dataItem?.map_content?.healthy === true ? 'bg-success' : (dataItem?.map_content?.healthy  === false ? 'bg-danger' : 'bg-white-asset')">
+              <em class="fas text-white"
+                [ngClass]="dataItem?.map_content?.healthy === true ? 'fa-check' : (dataItem?.map_content?.healthy === false ? 'fa-times' : 'fa-check')"></em>
+            </div>
+          </td>
+          <td [ngClass]="{'pl-3': !tableConfig.border_left_key}">
+            {{dataIndex + 1}}
+          </td>
+          <ng-container *ngFor="let item of tableConfig.data">
+            <td class="{{item.value_class}}">
+              <ng-container *ngIf="item.data_type === 'text' && item.btn_list?.length > 0">
 
                 <!-- {{resolve(dataItem, item.data_key)}} -->
                 <ng-container *ngFor="let btn of item.btn_list">
@@ -116,7 +116,12 @@
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="item.data_type === 'text' && (!item.btn_list || item.btn_list.length === 0) ">
-                {{resolve(dataItem, item.data_key)}}
+                <ng-container *ngIf="item?.data_tooltip">
+                  <span [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''" [tooltip]="resolve(dataItem, item.data_tooltip)">{{resolve(dataItem, item.data_key)}}</span>
+                </ng-container>
+                <ng-container *ngIf="!item?.data_tooltip">
+                  <span [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''">{{resolve(dataItem, item.data_key)}}</span>
+                </ng-container>
               </ng-container>
               <ng-container *ngIf="item.data_type === 'list'">
                 <!-- {{resolve(dataItem, item.data_key)}} -->
@@ -135,18 +140,22 @@
           </ng-container>
         </tr>
       </ng-container>
-    <ng-container *ngIf="filteredTableData.length === 0 && !tableConfig.is_table_data_loading">
-      <tr>
-        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)">{{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>
-      </tr>
-    </ng-container>
-    <ng-container *ngIf="tableConfig.is_table_data_loading">
-      <tr>
-        <td [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)"> <em class="fa fa-spinner fa-spin fa-fw fa-2x" ></em></td>
-      </tr>
-    </ng-container>
-  </tbody>
-  <!-- <tfoot>
+      <ng-container *ngIf="filteredTableData.length === 0 && !tableConfig.is_table_data_loading">
+        <tr>
+          <td
+            [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)">
+            {{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="tableConfig.is_table_data_loading">
+        <tr>
+          <td
+            [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)">
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
+        </tr>
+      </ng-container>
+    </tbody>
+    <!-- <tfoot>
     <tr>
       <td  [attr.colspan]="tableConfig?.data?.length + 1" class="text-right">
         <span class="pull-right mt-1 mr-1" *ngIf="tableData.length > 0">

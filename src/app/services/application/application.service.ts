@@ -311,8 +311,16 @@ export class ApplicationService {
     return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)))
   }
 
-  getAssetMonitoring(app){
-    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)))
+  getAssetMonitoring(app,filterObj){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)),{params})
+    
   }
 
 }

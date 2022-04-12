@@ -27,7 +27,7 @@
     </div>
 
 </div>
-<div class="blue-nav-bar">
+<div class="blue-nav-bar mt-3">
     <div class="d-flex align-items-center">
         <div class="main-heading pl-3">
             Gateway Monitoring&nbsp;
@@ -67,6 +67,12 @@
 <div *ngIf="!loader">
     <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
       (btnClickEvent)="onTableFunctionCall($event)" ></app-common-data-table>
+
+      <span class="pull-right mt-0 mr-1" *ngIf="!insideScrollFunFlag && applications.length > 0">
+        <a href="javascript:;" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()"
+            placement="bottom" tooltip="Load More Records...">{{'Load_More'}}</a>
+    </span>
 </div><br/>
 <div class="text-center">
     <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>

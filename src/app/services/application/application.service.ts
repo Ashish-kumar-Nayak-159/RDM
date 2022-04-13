@@ -275,8 +275,16 @@ export class ApplicationService {
     // return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
     // encodeURIComponent(obj.id)), obj);
   }
-  getExportedHierarchy() {
-    return this.http.get(this.url + AppUrls.GET_EXPORTED_HIERARCHY);
+  getExportedHierarchy(filterObj = null) {
+    let params = new HttpParams();
+    if (filterObj) {
+      Object.keys(filterObj).forEach((key) => {
+        if (filterObj[key]) {
+          params = params.set(key, filterObj[key]);
+        }
+      });
+    }
+    return this.http.get(this.url + AppUrls.GET_EXPORTED_HIERARCHY, { params });
   }
   getHierarchies(filterObj: any) {
     let params = new HttpParams();

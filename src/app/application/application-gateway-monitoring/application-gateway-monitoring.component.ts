@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
 import { countInterface } from './count-interface';
+
+declare var $: any;
+
 
 @Component({
   selector: 'app-application-gateway-monitoring',
@@ -14,6 +18,13 @@ import { countInterface } from './count-interface';
 
 export class ApplicationGatewayMonitoringComponent implements OnInit {
 
+  isSelectedAppData = false;
+  receivedAppName: string;
+  isFilterSelected = false;
+  historicalDateFilter: any = {};
+  frequency: any;
+  originalFilter: any;
+  noOfRecords = CONSTANTS.NO_OF_RECORDS;
   appsList: any = []
   insideScrollFunFlag = false;
   currentOffset = 0;
@@ -32,9 +43,12 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   configureHierarchy: any = {};
   isProvisioned: string = 'true';
   isApplicationListLoading = false;
-  applications: any =[];
+  applications: any = [];
   tableConfig: any;
+  loadMoreVisibility: boolean = true;
   CUSTOM_DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss a';
+  hierarchy:any;
+  configuredHierarchy: any = {};
   countData: countInterface = {
     iot_assets: 0,
     online: 0,
@@ -43,30 +57,36 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     day_telemetry: 0
   }
   loader = false;
+  @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
-  constructor(private commonService: CommonService, private applicationService: ApplicationService, private assetService: AssetService) { }
+  constructor(private commonService: CommonService, private applicationService: ApplicationService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     // this.loader = true;
+
     const obj = {
       environment: environment.environment,
       provisioned: this.isProvisioned
     };
+
+    this.route.queryParams.subscribe((res) => {
+      this.receivedAppName = res.appName
+    })
+
     this.applicationService.getApplications(obj).subscribe((response: any) => {
       if (response.data && response.data.length > 0) {
-        console.log("get applications", response.data);
         var newArray: any = response.data.map((item) => {
           return item.app
         })
         this.appsList = newArray
-        this.selectedApp = newArray[0];
+        this.selectedApp = this.receivedAppName ? this.receivedAppName : newArray[0]
+        this.getHierarchy();
         this.appName();
       }
       else { this.appsList = []; }
       // this.loader = false;
     },
       (error) => this.loader = false)
-
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -98,9 +118,9 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'connection_state',
-          value_class : '',
-          data_tooltip:'offline_since',
-          data_cellclass:'cssclass'
+          value_class: '',
+          data_tooltip: 'offline_since',
+          data_cellclass: 'cssclass'
         },
         {
           header_name: 'Ingestion Status',
@@ -109,7 +129,8 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'ingestion_status',
-          data_tooltip:'last_ingestion_on'
+          data_tooltip: 'last_ingestion_on',
+          data_cellclass: 'ingestionCss'
         },
         {
           header_name: 'CreatedOn',
@@ -152,11 +173,31 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   }
 
-
+  getHierarchy() {
+    this.getAppData();
+    let appObj = {
+      app: this.selectedApp
+    }
+    this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
+      this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+    })
+  }
+  getAppData()
+  {
+    this.isSelectedAppData = false;
+    localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);  
+    this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
+      response.app = this.selectedApp;       
+      this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
+      this.isSelectedAppData = true;
+    });
+  }
   appName() {
     this.applications = []
+    this.loadMoreVisibility = true
     this.currentOffset = 0;
     this.currentLimit = 10;
+    this.getHierarchy();
     if (this.selectedApp) {
       this.assetStatic();
       this.assetMonitor()
@@ -174,7 +215,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   assetStatic() {
-    this.loader= true;
+    this.loader = true;
     this.applicationService.getAssetStatistics(this.selectedApp).subscribe((response: any) => {
       console.log("gateway asset static api res...", response)
       this.countData = {
@@ -185,42 +226,58 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         day_telemetry: response?.day_telemetry ?? 0
 
       }
-    },(err)=>{this.loader = false})
+    }, (err) => { this.loader = false })
   }
 
   assetMonitor() {
+    debugger
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
+     // hierarchy: JSON.stringify({"App":"Indygo","ManagementCompany":"IndyGo","Client":"Kumo-India","Location":"Ahmedabad"}),
+      hierarchy:this.hierarchy
+      // {App:Indygo,Management}
     }
     this.loader = true;
-    this.applicationService.getAssetMonitoring(this.selectedApp,custObj).subscribe((response:any) => {
+    this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {
 
       console.log("gateway asset monitoring api res..", response);
-      response.forEach((item)=>{
-    
-        item.created_date =  this.commonService.convertUTCDateToLocalDate(item.created_date,"MMM-dd-yyyy hh:mm:ss"); 
-        if(item.offline_since)
-        item.offline_since = 'Offline Since: '+ this.commonService.convertUTCDateToLocalDate(item.offline_since,"MMM-dd-yyyy hh:mm:ss"); 
-        if(item.last_ingestion_on)
-        item.last_ingestion_on = 'Last Ingestion On: '+ this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on,"MMM-dd-yyyy hh:mm:ss"); 
-        
-        if(item.connection_state =="Disconnected"){          
-             item.connection_state ="Offline"
-             item.cssclass="offline";
-          }
-          else{
-             item.connection_state = "Online"
-             item.cssclass="online";
-          }
-          return item
-      })
+      response.forEach((item) => {
 
-      this.applications =[...this.applications,...response]
+        item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date, "MMM-dd-yyyy hh:mm:ss");
+        if (item.offline_since)
+          item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, "MMM-dd-yyyy hh:mm:ss");
+        if (item.last_ingestion_on)
+          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM-dd-yyyy hh:mm:ss");
+
+        if (item.ingestion_status === "Stopped") {
+          item.ingestionCss = "offline"
+        }
+        else {
+          item.ingestionCss = "working"
+        }
+
+        if (item.connection_state == "Disconnected") {
+          item.connection_state = "Offline"
+          item.cssclass = "offline";
+        }
+        else {
+          item.connection_state = "Online"
+          item.cssclass = "online";
+        }
+        return item
+      })
+      if (response.length == 0) {
+        this.loadMoreVisibility = false
+      }
+
+      this.applications = [ ...response]
       this.loader = false;
     },
       (error) => this.loader = false)
   }
+
+  
 
   onTableFunctionCall(obj) {
     // if (obj.for === 'View') {
@@ -240,161 +297,63 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     // }
   }
 
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
-    if (
-      this.contextApp?.hierarchy?.levels?.length > 1 &&
-      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
-    ) {
-      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-          e.preventDefault();
-        }
-      });
-    }
-  }
-
-
-  async onChangeOfHierarchy(i, flag, persistAssetSelection = true) {
-    this.selectedOem = this.configureHierarchy['1']
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (key > i) {
-        delete this.configureHierarchy[key];
-      }
-    });
-    Object.keys(this.hierarchyArr).forEach((key) => {
-      if (key > i) {
-        this.hierarchyArr[key] = [];
-      }
-    });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
-
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
-
-
-    if (flag) {
-      const hierarchyObj: any = { App: this.contextApp.app };
-
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-        }
-      });
-      if (Object.keys(hierarchyObj).length === 1) {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      } else {
-        const arr = [];
-        this.assets = [];
-        this.originalAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
-            }
-          });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
-          }
-        });
-        this.assets = JSON.parse(JSON.stringify(arr));
-      }
-      if (this.assets?.length === 1) {
-        this.filterObj.asset = this.assets[0];
-      }
-      if (persistAssetSelection) {
-        this.filterObj.assetArr = undefined;
-        this.filterObj.asset = undefined;
-      }
-
-    }
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
-      }
-    });
-    if (count === 0) {
-      this.hierarchyArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      }
-    }
-
-
-  }
-
   onSaveHierachy() {
-
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
-
-  }
-
-  onClearHierarchy() {
-
-    this.hierarchyArr = {};
-    this.configureHierarchy = {};
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    this.originalFilter = {};
+    if (this.filterObj.asset) {
+      this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+      this.onChangeOfAsset();
     }
-
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += ' > ' + this.configureHierarchy[key];
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
   }
 
-  onAssetFilterApply(updateFilterObj = true) {
+  onClearHierarchy(configuredHierarchy) {
+    this.isFilterSelected = false;
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
+    this.frequency = undefined;
+    this.assetMonitor();
+  }
 
-    this.activeCircle = 'all';
-
-    this.onSaveHierachy();
-
-    if (updateFilterObj) {
-      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      pagefilterObj['hierarchy'] = this.configureHierarchy;
-      pagefilterObj.hierarchy = { App: this.contextApp.app };
-      pagefilterObj.dateOption = 'Last 30 Mins';
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+  onChangeOfAsset() {
+    const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+    const frequencyArr = [];
+    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.historicalDateFilter.from_date,
+        this.historicalDateFilter.to_date
+      );
+      if (records > this.noOfRecords) {
+        this.historicalDateFilter.isTypeEditable = true;
+      } else {
+        this.historicalDateFilter.isTypeEditable = false;
+      }
+    }
+  }
+filteredHiearchyObj()
+{
+  debugger
+  const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+  this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    var obj1 = {};
+    obj1["hierarchy"] = {};
+    if (this.contextApp) {
+      obj1 = { App: this.contextApp.app };
+      Object.keys(configuredHierarchy).forEach((key) => {
+        if (configuredHierarchy[key]) {
+          obj1[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
         }
       });
-      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+      obj1= JSON.stringify(obj1); 
     }
+    this.hierarchy = obj1;
+      this.assetMonitor()
+    console.log('hiearchy selected',obj1);
 
-  }
+}
 
 }

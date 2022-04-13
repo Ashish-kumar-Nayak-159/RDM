@@ -32,7 +32,7 @@
         <div class="main-heading pl-3">
             Gateway Monitoring&nbsp;
         </div>
-       
+
         <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
         tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
         <div class="ml-auto">
@@ -54,26 +54,49 @@
             </div>
         </div>
         <div class="main-heading pr-3">
-           {{countData.day_telemetry}} Telemetry/ Day | {{countData.total_telemetry}} &nbsp;
+            {{countData.day_telemetry}} Telemetry/ Day | {{countData.total_telemetry}} &nbsp;
         </div>
     </div>
-  
-</div><br/>
-<select class="col-sm-3 pl-3 form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
-    <option [ngValue]="undefined">Select App</option>
-   <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
-</select>
+
+</div><br />
+<div class="row">
+
+    <div class="col-sm-3 pl-3">
+
+        <select class="form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
+            <option [ngValue]="undefined">Select App</option>
+            <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
+        </select>
+    </div>
+
+    <div class="col-sm-4" *ngIf="isSelectedAppData">
+        <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false"
+            [closeOnSelection]="false" [filterObj]="filterObj" (saveHierarchyEvent)="onSaveHierachy()"
+            (clearHierarchyEvent)="onClearHierarchy($event)">
+        </app-hierarchy-dropdown>
+    
+    </div>
+        
+      <div class="col-sm-2 pl-3">
+        <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+            (click)="filteredHiearchyObj()"><em
+              class="fas fa-search fa-sm"></em></button></div>
+      </div>  
+
+    
+</div>
 
 <div *ngIf="!loader">
     <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
-      (btnClickEvent)="onTableFunctionCall($event)" ></app-common-data-table>
+        (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
-      <span class="pull-right mt-0 mr-1" *ngIf="!insideScrollFunFlag && applications.length > 0">
-        <a href="javascript:;" class="mr-1"
-            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()"
-            placement="bottom" tooltip="Load More Records...">{{'Load_More'}}</a>
+    <span class="pull-right mr-1 mr-5" style="margin-top: -10px;"
+        *ngIf="!insideScrollFunFlag && applications.length > 0 && loadMoreVisibility">
+        <a href="javascript:;" style="text-decoration: none;" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()" placement="bottom"
+            tooltip="Load More Records...">{{'Load_More'}}</a>
     </span>
-</div><br/>
+</div><br />
 <div class="text-center">
     <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
 </div>

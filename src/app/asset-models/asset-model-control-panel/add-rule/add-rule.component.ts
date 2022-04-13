@@ -132,13 +132,13 @@ export class AddRuleComponent implements OnInit {
     let method;
     if (this.asset) {
       const obj: any = {};
-      obj.type = 'Cloud';
+      obj.type =  this.ruleModel.rule_type ? 'Edge' : 'Cloud';
       obj.source = 'Asset';
       method = this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj);
     } else {
       const asset_model = this.asset ? this.asset.tags.asset_model : this.name;
       const obj: any = {};
-      obj.type = 'Cloud';
+      obj.type =  this.ruleModel.rule_type ? 'Edge' : 'Cloud';
       method = this.assetModelService.getRules(this.contextApp.app, asset_model, obj);
     }
 

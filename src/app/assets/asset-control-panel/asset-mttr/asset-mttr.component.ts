@@ -169,7 +169,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       method = this.assetService.getAssetNetworkFailureEvents(this.asset.app, this.asset.asset_id, obj);
     } else if (this.displayMode === 'machine_failure') {
       delete obj.date_frequency;
-      delete obj.count;
+      //delete obj.count;
       method = this.assetService.getAssetMachineFailureEvents(this.asset.app, this.asset.asset_id, obj);
     } else if (this.displayMode === 'history') {
       delete obj.count;

@@ -379,15 +379,9 @@ export class CommonService {
         location.reload();
       });
     } else {
-      if (isGuestUser === 'true') {
-        this.router.navigate([app.app, 'guest-login']).then(() => {
-          location.reload();
-        });
-      } else {
         this.router.navigate(['']).then(() => {
           location.reload();
         });
-      }
     }
   } 
 

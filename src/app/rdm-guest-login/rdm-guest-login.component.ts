@@ -184,14 +184,7 @@ export class RdmGuestLoginComponent implements OnInit {
               JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST)
             );
           }
-          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
-            localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-            if(response)
-            {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
-            }
-          });
+          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);         
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',

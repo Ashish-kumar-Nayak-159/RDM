@@ -37,6 +37,8 @@ export class AssetManagementComponent implements OnInit {
     } else if (this.iotGatewaysTab?.visibility) {
       this.componentState = CONSTANTS.IP_GATEWAY;
       await this.onTabChange(this.componentState);
+    }else{
+      this.decodedToken = null;
     }
     // this.getTabData();
   }

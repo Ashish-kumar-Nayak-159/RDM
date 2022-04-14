@@ -34,7 +34,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   asset: any;
   decodedToken: any;
   widgetStringFromMenu: any;
-  constructor(private commonService: CommonService) {}
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -45,26 +45,30 @@ export class PieChartComponent implements OnInit, OnDestroy {
   }
 
   plotChart() {
+    this.xAxisProps = "display_name";
     am4core.options.autoDispose = true;
     const chart = am4core.create(this.chartId, am4charts.PieChart);
 
     const data = [];
-    this.telemetryData.forEach((telemetryObj, i) => {
+
+    this.y1AxisProps.forEach((yaxis) => {
+      let filteredProperty = this.propertyList.filter(r => r.json_key === yaxis.json_key);
+      let filteredTelData = this.telemetryData.filter(r => r.hasOwnProperty(yaxis.json_key) && r[yaxis.json_key] !== null)
       const item: any = {};
-      let foundIndex = -1;
-      data.forEach((dataObj, i2) => {
-        if (dataObj[this.xAxisProps] === telemetryObj[this.xAxisProps]) {
-          foundIndex = i2;
-        }
-      });
-      if (foundIndex !== -1) {
-        data[foundIndex].value += 1;
-      } else {
-        item[this.xAxisProps] = telemetryObj[this.xAxisProps];
-        item['value'] = 1;
-        data.push(item);
-      }
+      item["display_name"] = filteredProperty[0].name;
+      item['value'] = filteredTelData.length;
+      data.push(item);  
     });
+    this.y2AxisProps.forEach((yaxis) => {
+      let filteredProperty = this.propertyList.filter(r => r.json_key === yaxis.json_key);
+      let filteredTelData = this.telemetryData.filter(r => r.hasOwnProperty(yaxis.json_key) && r[yaxis.json_key] !== null)
+      const item: any = {};
+      item["display_name"] = filteredProperty[0].name;
+      item['value'] = filteredTelData.length;
+      data.push(item);  
+    });
+   
+
     chart.data = data;
 
     // Add and configure Series
@@ -157,7 +161,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

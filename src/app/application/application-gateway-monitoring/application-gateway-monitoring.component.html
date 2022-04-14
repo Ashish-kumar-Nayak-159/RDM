@@ -63,7 +63,6 @@
 <div class="row">
 
     <div class="col-sm-3 pl-3" *ngIf="appsList.length>1">
-
         <select class="outline-none form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
             <option [ngValue]="undefined">Select App</option>
             <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
@@ -94,8 +93,8 @@
     <span class="d-flex justify-content-center w-100" style="margin-top: -25px;margin-right:10px;"
         *ngIf="!insideScrollFunFlag && applications.length > 0 && loadMoreVisibility">
         <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
-            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()" placement="bottom"
-            >{{'Load More...'}}</a>
+            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()" placement="bottom">{{'Load
+            More...'}}</a>
     </span>
 </div><br />
 <div class="text-center">

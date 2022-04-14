@@ -70,10 +70,13 @@
     </div>
 
     <div class="col-sm-4" *ngIf="isSelectedAppData">
-        <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false"
+        <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
+        (clearHierarchyEvent)="onClearHierarchy()" [closeOnSelection]="false">
+      </app-hierarchy-dropdown>
+        <!-- <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false"
             [closeOnSelection]="false" [filterObj]="filterObj" (saveHierarchyEvent)="onSaveHierachy()"
             (clearHierarchyEvent)="onClearHierarchy($event)">
-        </app-hierarchy-dropdown>
+        </app-hierarchy-dropdown> -->
     
     </div>
         
@@ -90,11 +93,11 @@
     <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
-    <span class="pull-right mr-1 mr-5" style="margin-top: -10px;"
+    <span class="pull-right mr-1 mr-5" style="margin-top: -30px;"
         *ngIf="!insideScrollFunFlag && applications.length > 0 && loadMoreVisibility">
         <a href="javascript:;" style="text-decoration: none;" class="mr-1"
             (click)="currentOffset = currentOffset + currentLimit;assetMonitor()" placement="bottom"
-            tooltip="Load More Records...">{{'Load_More'}}</a>
+            tooltip="Load More Records...">{{'Load More'}}</a>
     </span>
 </div><br />
 <div class="text-center">

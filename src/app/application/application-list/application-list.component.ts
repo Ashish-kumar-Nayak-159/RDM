@@ -175,7 +175,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         data_type: 'button',
         btn_list: [
           {
-            icon: 'fa fa-fw fa-play',
+            icon: 'fas fa-desktop',
             text: '',
             id: 'Button',
             valueclass: '',

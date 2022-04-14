@@ -332,7 +332,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.assetService.getAssetAlertAndAlertEndEvents(obj).subscribe(
         (response: any) => {
-          this.latestAlerts = response.data;          
+          this.latestAlerts = response.data;
           this.selectedAlert = undefined;
           if (this.latestAlerts.length > 0) {
             this.onClickOfViewGraph(this.latestAlerts[this.acknowledgedAlertIndex || 0]);
@@ -706,7 +706,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.selectedAlert.metadata.acknowledged_date
       );
     }
-    this.selectedAlert?.metadata?.files?.forEach((file) => {      file['url'] = file.data.url;      file['name'] = file.data.name;      file['data']['type'] = file.type;      file.data.sanitizedURL = this.sanitizeURL(file.data.url);      file['sanitizedURL'] = file.data.sanitizedURL    });
+    this.selectedAlert?.metadata?.files?.forEach((file) => { file['url'] = file.data.url; file['name'] = file.data.name; file['data']['type'] = file.type; file.data.sanitizedURL = this.sanitizeURL(file.data.url); file['sanitizedURL'] = file.data.sanitizedURL });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
@@ -1030,8 +1030,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              if (widget.value.chartType === 'Table')
-                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData.reverse();
+              if (widget.chartType === 'Table') {
+                let reverseTelemetry = Object.assign([], telemetryData);
+                componentRef.instance.telemetryData = noDataFlag ? [] : reverseTelemetry.reverse();
+              }
               else
                 componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));
@@ -1123,7 +1125,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
-    this.uploadedFiles.splice(index,1,{
+    this.uploadedFiles.splice(index, 1, {
       'file': files?.item(0),
       'index': index
     })
@@ -1133,15 +1135,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async uploadFile() {
     this.isFileUploading = true;
-  
+
     await Promise.all(this.uploadedFiles.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code
       );
       if (data) {
-        this.acknowledgedAlert.metadata.files[file.index].data = data; 
-       
+        this.acknowledgedAlert.metadata.files[file.index].data = data;
+
         // console.log("Checking", JSON.stringify(this.acknowledgedAlert.metadata.files[file.index].data))
         // this.acknowledgedAlert.metadata.files[file.index].data = data;
       } else {
@@ -1185,7 +1187,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.getLatestAlerts();
           this.closeAcknowledgementModal();
           this.acknowledgedAlert = undefined
-          
+
           //this.acknowledgedAlertIndex = -1
           // this.getAlarms();
         },

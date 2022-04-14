@@ -761,7 +761,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  getHistoricalWidgetTelemetryDetails() {    
+  getHistoricalWidgetTelemetryDetails() {
     $('#historic_charts').children().remove();
     if (this.historicalDateFilter?.widgets?.length === 0) {
       this.toasterService.showError(
@@ -988,8 +988,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   .resolveComponentFactory(DamagePlotChartComponent)
                   .create(this.injector);
               }
-              if (widget.chartType === 'Table')
-                componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData.reverse();
+              if (widget.chartType === 'Table') {
+                let reverseTelemetry = Object.assign([], telemetryData);
+                componentRef.instance.telemetryData = noDataFlag ? [] : reverseTelemetry.reverse();
+              }
               else
                 componentRef.instance.telemetryData = noDataFlag ? [] : telemetryData;
               componentRef.instance.propertyList = this.propertyList;

@@ -9,6 +9,7 @@ import { Asset } from 'src/app/models/asset.model';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { String } from 'typescript-string-operations';
 
 @Component({
   selector: 'app-specific-c2d-message',
@@ -44,13 +45,14 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   selectedAssetValue: any;
   slaves = [];
   selectedLevel = 0;
+  canSend = true;
   constructor(
     private toasterService: ToasterService,
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute,
     private assetModelService: AssetModelService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -135,74 +137,86 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   }
 
   sentC2DMessage() {
-    this.selectedLevel = 1;
-    this.displayType = 'compose';
-    this.isMessageValidated = undefined;
-    this.remainingTime = null;
-    const obj = JSON.parse(JSON.stringify(this.c2dMessageData));
-    // this.c2dMessageData.job_id = this.c2dMessageData.asset_id + '_' + this.commonService.generateUUID();
-    obj.sub_job_id = obj.job_id + '_1';
-    if (this.componentState === CONSTANTS.IP_GATEWAY) {
-      obj.gateway_id = this.asset.asset_id;
-    }
-    this.sentMessageData = undefined;
-    obj.message = {};
-    obj.message['slave_id'] = this.selectedSlaveValue;
-    obj.message['asset_id'] = this.selectedAssetValue;
-    this.jsonModelKeys.forEach((item) => {
-      if (item.value !== null || item.value !== undefined) {
-        if (item.json.type === 'boolean') {
-          obj.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
-        } else {
-          obj.message[item.key] = item.value;
-        }
+    if (this.canSend) {
+      this.selectedLevel = 1;
+      this.displayType = 'compose';
+      this.isMessageValidated = undefined;
+      this.remainingTime = null;
+      const obj = JSON.parse(JSON.stringify(this.c2dMessageData));
+      // this.c2dMessageData.job_id = this.c2dMessageData.asset_id + '_' + this.commonService.generateUUID();
+      obj.sub_job_id = obj.job_id + '_1';
+      if (this.componentState === CONSTANTS.IP_GATEWAY) {
+        obj.gateway_id = this.asset.asset_id;
       }
-    });
-    // obj.request_type = 'Custom';
-    // obj.message['timestamp'] = moment().unix();
-    if (!obj.message) {
-      this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
-      return;
-    }
-    try {
-      obj.timestamp = datefns.getUnixTime(new Date());
-      this.sentMessageData = JSON.parse(JSON.stringify(obj));
-      // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
-    } catch (e) {
-      this.isMessageValidated = 'invalid';
       this.sentMessageData = undefined;
-      return;
-    }
-    delete obj.gateway_id;
-    this.isSendC2DMessageAPILoading = true;
-    this.apiSubscriptions.push(
-      this.assetService
-        .sendC2DMessage(this.sentMessageData, this.contextApp.app, this.asset?.gateway_id || this.asset.asset_id)
-        .subscribe(
-          (response: any) => {
-            this.getMessageDetails();
-            this.isMessageValidated = undefined;
-            this.sendMessageResponse = 'Successfully sent.';
-            this.sendMessageStatus = 'success';
-            this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
-            this.isSendC2DMessageAPILoading = false;
-            const expiryDate = datefns.addMinutes(new Date(),this.sentMessageData.expire_in_min);
-            this.timerInterval = setInterval(() => {
-              const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
-              this.timerObj = this.dhms(time);
-            }, 1000);
-            this.onClickOfFeedback();
-          },
-          (error) => {
-            this.sendMessageResponse =
-              error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
-            this.sendMessageStatus = 'error';
-            this.toasterService.showError(error.message, 'Send C2D Message');
-            this.isSendC2DMessageAPILoading = false;
-            this.sentMessageData = undefined;
+      obj.message = {};
+      obj.message['slave_id'] = this.selectedSlaveValue;
+      obj.message['asset_id'] = this.selectedAssetValue;
+      let validateRequired = true;
+      this.jsonModelKeys.forEach((item) => {
+        if (item.value !== null || item.value !== undefined) {
+          if (item.json.type === 'boolean') {
+            obj.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
+          } else {
+            obj.message[item.key] = item.value;
           }
-        )
-    );
+        }
+        if (item.json.hasOwnProperty("required") && item.json.required && item.value === null) {
+          validateRequired = false;
+        }
+      });
+      if (!validateRequired) {
+        this.toasterService.showError('Please set all required fields', 'Validate Message Detail');
+        return;
+      }
+      // obj.request_type = 'Custom';
+      // obj.message['timestamp'] = moment().unix();
+      if (!obj.message) {
+        this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
+        return;
+      }
+      try {
+        obj.timestamp = datefns.getUnixTime(new Date());
+        this.sentMessageData = JSON.parse(JSON.stringify(obj));
+        // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
+      } catch (e) {
+        this.isMessageValidated = 'invalid';
+        this.sentMessageData = undefined;
+        return;
+      }
+      delete obj.gateway_id;
+      this.isSendC2DMessageAPILoading = true;
+      this.apiSubscriptions.push(
+        this.assetService
+          .sendC2DMessage(this.sentMessageData, this.contextApp.app, this.asset?.gateway_id || this.asset.asset_id)
+          .subscribe(
+            (response: any) => {
+              this.getMessageDetails();
+              this.isMessageValidated = undefined;
+              this.sendMessageResponse = 'Successfully sent.';
+              this.sendMessageStatus = 'success';
+              this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
+              this.isSendC2DMessageAPILoading = false;
+              const expiryDate = datefns.addMinutes(new Date(), this.sentMessageData.expire_in_min);
+              this.timerInterval = setInterval(() => {
+                const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
+                this.timerObj = this.dhms(time);
+              }, 1000);
+              this.onClickOfFeedback();
+            },
+            (error) => {
+              this.sendMessageResponse =
+                error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
+              this.sendMessageStatus = 'error';
+              this.toasterService.showError(error.message, 'Send C2D Message');
+              this.isSendC2DMessageAPILoading = false;
+              this.sentMessageData = undefined;
+            }
+          )
+      );
+    }
+    else
+      this.canSend = true;
   }
 
   getMessageDetails() {
@@ -317,5 +331,24 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     clearInterval(this.messageIdInterval);
     clearInterval(this.timerInterval);
     this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
+  }
+  onNumberFocusOut(min, max, value, index) {
+    if (min && max && value && (value < min || value > max)) {
+      this.canSend = false;
+      this.jsonModelKeys[index].value = null;
+      this.toasterService.showError(String.Format('Value must between {0} and {1}', min, max), 'Validate Message Detail');
+      return;
+    }
+    this.canSend = true;
+  }
+  onStringFocusOut(min, max, value, index) {
+    debugger
+    if (min && max && value && (value < min || value > max)) {
+      this.canSend = false;
+      this.jsonModelKeys[index].value = null;
+      this.toasterService.showError(String.Format('length must between {0} and {1}', min, max), 'Validate Message Detail');
+      return;
+    }
+    this.canSend = true;
   }
 }

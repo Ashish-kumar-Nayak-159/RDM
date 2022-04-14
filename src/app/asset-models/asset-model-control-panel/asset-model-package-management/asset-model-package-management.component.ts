@@ -149,7 +149,8 @@ export class AssetModelPackageManagementComponent implements OnInit {
     );
   }
 
-  openAddPackageModal(obj = undefined) {
+  openAddPackageModal(obj = undefined) {    
+    this.uploadedFile = [];
     if (!obj) {
       this.packageObj = {
         metadata: {},
@@ -260,7 +261,6 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onSavePackageObj() {
-    debugger
     await this.uploadDocument();
     if (
       !this.packageObj.name ||
@@ -277,6 +277,11 @@ export class AssetModelPackageManagementComponent implements OnInit {
         UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
         (this.packageObj.id ? 'Edit' : 'Add') + ' Package'
       );
+      return;
+    }
+    if(!this.uploadedFile || this.uploadedFile.length === 0)
+    {
+      this.toasterService.showError("please upload package file.", (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
       return;
     }
 

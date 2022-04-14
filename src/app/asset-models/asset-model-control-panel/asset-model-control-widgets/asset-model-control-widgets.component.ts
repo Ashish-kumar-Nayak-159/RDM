@@ -210,10 +210,13 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
           obj[item] = true;
         } else if (item === 'falseValue') {
           obj[item] = false;
+        } else if (item === 'required') {
+          obj[item] = false;
         } else {
           obj[item] = null;
         }
       });
+      debugger
       param.json = {};
       param.json = obj;
       param.json.type = param.data_type.toLowerCase();

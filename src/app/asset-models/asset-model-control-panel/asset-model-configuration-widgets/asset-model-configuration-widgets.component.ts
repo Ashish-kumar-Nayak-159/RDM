@@ -174,6 +174,8 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
           obj[item] = true;
         } else if (item === 'falseValue') {
           obj[item] = false;
+        }else if (item === 'required') {
+          obj[item] = false;
         } else {
           obj[item] = null;
         }

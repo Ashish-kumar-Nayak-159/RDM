@@ -698,8 +698,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (layoutJson.chartType === 'VibrationDamagePlot') {
         componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
-      if (layoutJson.chartType === 'Table')
-        componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData.reverse();
+      if (layoutJson.chartType === 'Table') {
+        let reverseTelemetry = Object.assign([], this.historyData);
+        componentRef.instance.telemetryData = noDataFlag ? [] : reverseTelemetry.reverse();
+      }
       else
         componentRef.instance.telemetryData = noDataFlag ? [] : this.historyData;
       componentRef.instance.propertyList = this.propertyList;

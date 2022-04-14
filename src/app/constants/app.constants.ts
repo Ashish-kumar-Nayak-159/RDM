@@ -1740,23 +1740,23 @@ export class CONSTANTS {
   public static PROPERTY_DATA_TYPE_LIST = [
     {
       name: 'Number',
-      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue'],
+      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue','required'],
     },
     {
       name: 'Boolean',
-      validations: ['trueValue', 'falseValue', 'defaultValue'],
+      validations: ['trueValue', 'falseValue', 'defaultValue','required'],
     },
     {
       name: 'String',
-      validations: ['minLength', 'maxLength', 'units', 'defaultValue'],
+      validations: ['minLength', 'maxLength', 'units', 'defaultValue','required'],
     },
     {
       name: 'Enum',
-      validations: ['enum', 'defaultValue'],
+      validations: ['enum', 'defaultValue','required'],
     },
     {
       name: 'Array',
-      validations: [],
+      validations: ['required'],
     },
   ];
 

@@ -13,7 +13,9 @@ export class DataTypeFieldsComponent implements OnInit {
   enumObj: any = {};
   constructor(private toasterService: ToasterService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    console.log('obj',this.obj);
+  }
 
   addEnumValue() {
     const index = this.obj.enum.findIndex((item) => item.label === this.enumObj.label);

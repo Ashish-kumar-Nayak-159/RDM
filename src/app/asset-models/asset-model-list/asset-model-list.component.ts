@@ -62,6 +62,8 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
           this.componentState = CONSTANTS.NON_IP_ASSET;
         } else if (this.iotGatewaysTab?.visibility) {
           this.componentState = CONSTANTS.IP_GATEWAY;
+        }else{
+          this.decodedToken = null;
         }
         this.tableConfig = {
           type: this.tileData && this.tileData[1] ? this.tileData[1]?.value : '',

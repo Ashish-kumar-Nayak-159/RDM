@@ -86,7 +86,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           data_key: 'updated_by',
         },
         {
-          header_name: 'Icons',
+          header_name: 'Actions',
           key: undefined,
           data_type: 'button',
           btn_list: [

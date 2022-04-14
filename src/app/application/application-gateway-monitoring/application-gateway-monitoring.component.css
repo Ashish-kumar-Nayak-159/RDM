@@ -19,3 +19,14 @@
 .card-body{
     padding: 1rem;
 }
+
+.outline-none{
+    border: 1px solid #89a7ff;
+}
+
+.outline-none:focus
+,.outline-none:hover{
+    outline: none;
+    /* border: 1px solid #d1d3e2; */
+    box-shadow: none;
+}

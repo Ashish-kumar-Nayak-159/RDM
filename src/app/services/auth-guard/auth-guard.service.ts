@@ -9,7 +9,7 @@ import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
   providedIn: 'root',
 })
 export class AuthGuardService {
-  constructor(public router: Router, private commonService: CommonService) {}
+  constructor(public router: Router, private commonService: CommonService) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -37,10 +37,15 @@ export class AuthGuardService {
         }
         return true;
       } else {
-        this.router.navigate(['applications', appData.app]);        
-        setTimeout(() => {
-          location.reload();
-        }, 500);
+        if (userData.is_super_admin) {
+          return true
+        }
+        else {
+          this.router.navigate(['applications', appData.app]);
+          setTimeout(() => {
+            location.reload();
+          }, 500);
+        }
       }
     } else {
       return true;

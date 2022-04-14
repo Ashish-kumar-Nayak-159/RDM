@@ -89,6 +89,11 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       // this.loader = false;
     },
       (error) => this.loader = false)
+
+      setInterval(()=>{
+          this.appName()
+      },1800000) //
+
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -214,6 +219,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       this.applications = []
     }
   }
+
 
   assetStatic() {
     this.loader = true;

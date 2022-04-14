@@ -1,5 +1,6 @@
 export class AppUrls {
   public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}/asset_statistics';
+  public static GET_ASSET_MONITORING = 'apps/{0}/asset_monitoring';
   public static GET_ASSET_FILTER_LIST = 'DLM_GetAssets';
   public static GET_ASSET_DATA = 'apps/{0}/iot_assets/{1}/tags';
   public static UPDATE_ASSET_TAGS = 'apps/{0}/iot_assets/{1}/tags';

@@ -6,6 +6,7 @@ import { ToasterService } from './../../services/toaster.service';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 declare var $: any;
 @Component({
   selector: 'app-application-list',
@@ -32,7 +33,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   appPrivilegeObj: any = {};
   roleId: number = 0;
   timezones = CONSTANTS.TIME_ZONES;
-  constructor(private applicationService: ApplicationService, private toasterService: ToasterService) { }
+  constructor(private applicationService: ApplicationService, private toasterService: ToasterService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.tableConfig = {
@@ -85,7 +86,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           data_key: 'updated_by',
         },
         {
-          header_name: 'Icons',
+          header_name: 'Actions',
           key: undefined,
           data_type: 'button',
           btn_list: [
@@ -111,7 +112,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
               tooltip: 'Database Partition',
             }
           ],
-        },
+        }
       ],
     };
     this.searchApplications();
@@ -156,6 +157,35 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   searchApplications() {
+    if(this.isProvisioned === "false")
+    {
+        for (var i = 0; i < this.tableConfig.data.length; i++) { 
+          if (this.tableConfig.data[i].header_name == "Monitoring") {  
+            this.tableConfig.data.splice(i, 1);  
+            i--;  
+          }  
+        }
+    }
+    else
+    {
+      let dataobj = 
+      {
+        header_name: 'Monitoring',
+        key: undefined,
+        data_type: 'button',
+        btn_list: [
+          {
+            icon: 'fas fa-desktop',
+            text: '',
+            id: 'Button',
+            valueclass: '',
+            // tooltip: 'Edit Privilege',
+          },
+          
+        ],
+      };
+      this.tableConfig.data.push(dataobj);
+    }
     this.isApplicationListLoading = true;
     this.tableConfig.is_table_data_loading = true;
     this.applications = [];
@@ -183,6 +213,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   onTableFunctionCall(obj) {
     if (obj.for === 'View') {
       this.onOpenViewIconModal(obj.data);
+    }
+    else if(obj.for === 'Button'){
+       this.openGatewayMonitoring(obj.data);  
     }
     else if (obj.for === 'Partition') {
       this.openPartitionIconModal(obj.data);
@@ -369,6 +402,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.selectedApp = app;
     this.databasePartitionConfig();
     $('#viewPartitionIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  openGatewayMonitoring(app){
+
+      this.router.navigate(['gateway-monitoring'],{relativeTo: this.route, queryParams:{
+        appName: app.app
+      }})
   }
 
   onCloseCreateAppModal(modalId) {

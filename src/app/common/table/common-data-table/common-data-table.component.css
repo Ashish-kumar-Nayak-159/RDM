@@ -6,9 +6,21 @@
   align-items: center;
   justify-content: center
 }
-
-
-
+.table_class{
+  overflow-y: scroll;
+  height: 15.625rem;
+  margin-bottom: 28px ;
+}
 .status-icon-circle i {
   font-size: 0.5rem;
+}
+
+.online{
+  color:green;
+}
+.offline{
+  color: red;
+}
+.working{
+  color: yellow;
 }

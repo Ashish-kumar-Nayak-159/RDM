@@ -32,6 +32,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    debugger
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
@@ -63,6 +64,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   onChangeOfHierarchy(i) {    
+    debugger
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -208,6 +210,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   updateHierarchyDetail(hierarchyObj) {
+    debugger
     if (hierarchyObj.hierarchy) {
       if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {

@@ -48,18 +48,26 @@ export class CommonService {
     return null;
   }
 
-  convertUTCDateToLocalDate(utcDate) {
+  convertUTCDateToLocalDate(utcDate: any, format: string = '') {
     if (utcDate) {
       const options = { year: 'numeric', month: 'short', day: '2-digit' } as const;
-      if (utcDate.includes('T') && utcDate.includes('Z')) {
-        // 2011-06-29T16:52:48.000Z
-        return new Date(utcDate).toLocaleString('en-US', options);
-      } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
-        // 2011-06-29T16:52:48.000
-        return new Date(utcDate + 'Z').toLocaleString('en-US', options);
-      } else {
-        // 1/20/2021 10:47:59 AM
-        return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
+      if (format.length > 0) {
+        if (utcDate.includes('T') && utcDate.includes('Z')) {
+          return datefns.format(new Date(utcDate), format);
+        } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
+          return datefns.format(new Date(utcDate + 'Z'), format);
+        } else {
+          return datefns.format(new Date(utcDate + ' UTC'), format);
+        }
+      }
+      else {
+        if (utcDate.includes('T') && utcDate.includes('Z')) {
+          return new Date(utcDate).toLocaleString('en-US', options);
+        } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
+          return new Date(utcDate + 'Z').toLocaleString('en-US', options);
+        } else {
+          return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
+        }
       }
     }
     return null;

@@ -1,0 +1,32 @@
+.total-gateway:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}
+.online:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}
+.offline:hover{
+    box-shadow: 7px 0px 5px 0px gray;
+    cursor: pointer;
+}
+
+.table_class{
+   overflow: auto !important;
+   height: 16.625rem !important;
+   margin-bottom: 28px !important;
+}
+.card-body{
+    padding: 1rem;
+}
+
+.outline-none{
+    border: 1px solid #89a7ff;
+}
+
+.outline-none:focus
+,.outline-none:hover{
+    outline: none;
+    /* border: 1px solid #d1d3e2; */
+    box-shadow: none;
+}

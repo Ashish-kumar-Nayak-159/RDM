@@ -8,6 +8,7 @@
           <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
             <th scope="col"><span>{{item.header_name}}</span>
               <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
+             &nbsp;<i *ngIf="item?.is_sort" (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)" class="my-icon fa fa-chevron-up"></i>
             </th>
           </ng-container>
           <ng-template #filterTemplate>
@@ -83,6 +84,7 @@
                 </ng-container>
 
               </span>
+              &nbsp;<i *ngIf="item?.is_sort" (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)" class="my-icon fa fa-chevron-up"></i>
               <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
             </th>
           </ng-template>

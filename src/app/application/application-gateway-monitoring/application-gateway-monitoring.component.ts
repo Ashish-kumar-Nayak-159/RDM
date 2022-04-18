@@ -92,7 +92,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
       setInterval(()=>{
           this.appName()
-      },1800000) //
+      },120000) //
 
     this.tableConfig = {
       type: 'Applications',
@@ -108,6 +108,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'asset_id',
+          is_sort: true
         },
         {
           header_name: 'Name',
@@ -117,6 +118,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'name',
+          is_sort: true
         },
         {
           header_name: 'Status',
@@ -127,7 +129,8 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           data_key: 'connection_state',
           value_class: '',
           data_tooltip: 'offline_since',
-          data_cellclass: 'cssclass'
+          data_cellclass: 'cssclass',
+          is_sort: true
         },
         {
           header_name: 'Ingestion Status',
@@ -146,6 +149,8 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'created_date',
+          is_sort: true,
+          sort_by_key:'created_date_time'
         },
         // {
         //   header_name: 'Icons',
@@ -202,13 +207,14 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     this.loadMoreVisibility = true
     this.currentOffset = 0;
     this.currentLimit = 10;
-    this.getHierarchy();
     if (this.selectedApp) {
+      this.getHierarchy();
       this.hierarchy = { App: this.selectedApp };
       this.assetStatic();
       this.assetMonitor()
     }
     else {
+      this.isSelectedAppData = false;
       this.countData = {
         iot_assets: 0,
         online: 0,
@@ -251,30 +257,36 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       console.log("gateway asset monitoring api res..", response);
       response.forEach((item) => {
 
-        item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date, "MMM-dd-yyyy hh:mm:ss");
-        if (item.offline_since)
-          item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, "MMM-dd-yyyy hh:mm:ss");
+        item.created_date_time = item.created_date
+        item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
+        
         if (item.last_ingestion_on)
-          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM-dd-yyyy hh:mm:ss");
+          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on);
 
         if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
         }
         else {
-          item.ingestionCss = "working"
+          item.ingestionCss = "online"
         }
 
         if (item.connection_state == "Disconnected") {
           item.connection_state = "Offline"
           item.cssclass = "offline";
+          if(item.offline_since){
+            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since);
+          }
         }
         else {
           item.connection_state = "Online"
           item.cssclass = "online";
+          if(item.connection_state == "Online"){
+            item.offline_since = undefined
+          }
         }
         return item
       })
-      if (response.length == 0) {
+      if (response.length < 10) {
         this.loadMoreVisibility = false
       }
 

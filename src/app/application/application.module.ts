@@ -28,6 +28,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { ApplicationFilterSettingsComponent } from './application-setting/application-filter-settings/application-filter-settings.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
+import { MatSortModule } from '@angular/material/sort';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -64,7 +65,8 @@ import { ApplicationGatewayMonitoringComponent } from './application-gateway-mon
     TooltipModule,
     NgxIntlTelInputModule,
     GoogleMapsModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSortModule
   ],
 })
 export class ApplicationModule {}

@@ -14,11 +14,14 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   filteredTableData: any[] = [];
   noTableDataMessage: string;
   tableFilterObj = {};
+  sortDir = 1;
   isFilterSelected = false;
   constructor() { }
 
   ngOnInit(): void {
     this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
+    console.log("Checking", JSON.stringify(this.filteredTableData))
+
     if (this.tableData.length === 0) {
       this.noTableDataMessage = 'No data available.';
     }
@@ -37,11 +40,11 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
     this.loadMoreEvent.emit();
   }
 
-  scrollToTop(){
+  scrollToTop() {
     $('#table-top').animate({ scrollTop: "0px" });
   }
-  
-  resolve(obj, path){
+
+  resolve(obj, path) {
     path = path.split('.');
     let current = obj;
     while (path.length) {
@@ -80,6 +83,43 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
     this.tableFilterObj[item.data_key] = undefined;
     this.onStringValueChange();
 
+  }
+
+  onSortClick(event, filterBy) {
+    console.log(event.currentTarget.classList)
+    let target = event.currentTarget,
+      classList = target.classList;
+
+    if (classList.contains('fa-chevron-up')) {
+      classList.remove('fa-chevron-up');
+      classList.add('fa-chevron-down');
+      this.sortDir = -1;
+    } else {
+      classList.add('fa-chevron-up');
+      classList.remove('fa-chevron-down');
+      this.sortDir = 1;
+    }
+    this.sortArr(filterBy);
+  }
+  sortArr(key: any) {
+    debugger
+    let dateParse = Date.parse(this.filteredTableData[0][key]);
+    let isDate = isNaN(dateParse);
+    this.filteredTableData.sort((a, b) => {
+
+      if (!isDate) {
+        let x:any = new Date(a[key])
+        let y:any = new Date(b[key])
+        return x.getTime() - y.getTime(); 
+      }
+      else {
+        a = a[key].toLowerCase();
+        console.log(a)
+        b = b[key].toLowerCase();
+        console.log(b)
+        return a.localeCompare(b) * this.sortDir;
+      }
+    });
   }
 
   resetFilterData(index, data) {

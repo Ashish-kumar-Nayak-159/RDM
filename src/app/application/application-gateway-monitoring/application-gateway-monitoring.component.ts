@@ -75,7 +75,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
     this.applicationService.getApplications(obj).subscribe((response: any) => {
       if (response.data && response.data.length > 0) {
-        debugger
         let respData = response.data.map((item) => {
           return item.app
         })
@@ -243,7 +242,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   assetMonitor() {
-    debugger
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
@@ -355,7 +353,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
   filteredHiearchyObj() {
-    debugger
     this.applications = [];
     this.currentOffset = 0;
     this.loadMoreVisibility = true;

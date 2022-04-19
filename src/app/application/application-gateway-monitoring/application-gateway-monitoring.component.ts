@@ -261,7 +261,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
         
         if (item.last_ingestion_on)
-          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on);
+          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
 
         if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
@@ -274,7 +274,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           item.connection_state = "Offline"
           item.cssclass = "offline";
           if(item.offline_since){
-            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since);
+            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
           }
         }
         else {

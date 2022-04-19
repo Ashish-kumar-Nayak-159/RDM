@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges } from '@angular/core';
+import { ApplicationService } from 'src/app/services/application/application.service';
 
 @Component({
   selector: 'app-common-data-table',
@@ -16,7 +17,7 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   tableFilterObj = {};
   sortDir = 1;
   isFilterSelected = false;
-  constructor() { }
+  constructor(private applicationService: ApplicationService) { }
 
   ngOnInit(): void {
     this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
@@ -99,9 +100,9 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
       classList.remove('fa-chevron-down');
       this.sortDir = 1;
     }
-    this.sortArr(filterBy);
+    this.sortArr(filterBy,classList);
   }
-  sortArr(key: any) {
+  sortArr(key: any,classList?) {
     debugger
     let dateParse = Date.parse(this.filteredTableData[0][key]);
     let isDate = isNaN(dateParse);
@@ -110,7 +111,13 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
       if (!isDate) {
         let x:any = new Date(a[key])
         let y:any = new Date(b[key])
-        return x.getTime() - y.getTime(); 
+         if(classList.contains('fa-chevron-up')){
+
+           return x.getTime() - y.getTime(); 
+         }
+         else{
+           return y.getTime()  - x.getTime();
+         }
       }
       else {
         a = a[key].toLowerCase();

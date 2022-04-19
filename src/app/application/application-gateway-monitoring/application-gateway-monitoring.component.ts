@@ -92,7 +92,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
       setInterval(()=>{
           this.appName()
-      },120000) //
+      },1800000)
 
     this.tableConfig = {
       type: 'Applications',
@@ -286,7 +286,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         }
         return item
       })
-      if (response.length < 10) {
+      if (response.length < this.currentLimit) {
         this.loadMoreVisibility = false
       }
 

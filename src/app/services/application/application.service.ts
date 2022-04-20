@@ -319,7 +319,7 @@ export class ApplicationService {
     return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)))
   }
 
-  getAssetMonitoring(app,filterObj){
+  getAssetMonitoring(app,filterObj?){
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {

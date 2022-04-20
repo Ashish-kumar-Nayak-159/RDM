@@ -75,7 +75,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
     this.applicationService.getApplications(obj).subscribe((response: any) => {
       if (response.data && response.data.length > 0) {
-        debugger
         let respData = response.data.map((item) => {
           return item.app
         })
@@ -92,7 +91,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
       setInterval(()=>{
           this.appName()
-      },120000) //
+      },1800000)
 
     this.tableConfig = {
       type: 'Applications',
@@ -258,7 +257,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
         
         if (item.last_ingestion_on)
-          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on);
+          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
 
         if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
@@ -271,7 +270,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           item.connection_state = "Offline"
           item.cssclass = "offline";
           if(item.offline_since){
-            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since);
+            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
           }
         }
         else {
@@ -283,7 +282,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         }
         return item
       })
-      if (response.length < 10) {
+      if (response.length < this.currentLimit) {
         this.loadMoreVisibility = false
       }
 
@@ -352,7 +351,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
   filteredHiearchyObj() {
-    debugger
     this.applications = [];
     this.currentOffset = 0;
     this.loadMoreVisibility = true;

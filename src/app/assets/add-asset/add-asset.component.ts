@@ -54,7 +54,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
-    debugger
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     this.actualGateways = this.gateways;
     await this.getApplicationUsers();
@@ -190,7 +189,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
-    debugger
     //let maxObject = hierarchyObj.fin
     if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.actualGateways));
@@ -357,7 +355,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.tags.protocol = undefined;
       }
       else {
-        debugger
         this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
         this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
         this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;

@@ -20,7 +20,6 @@ export class AuthGuardService {
     }
     const resolvedRoute = this.getResolvedUrl(route);
     if (appData) {
-      debugger
       if (resolvedRoute?.includes(encodeURIComponent(appData.app)) || resolvedRoute?.includes('selection')) {
         if (resolvedRoute === '/applications/' && !userData.is_super_admin) {
           this.commonService.onLogOut();

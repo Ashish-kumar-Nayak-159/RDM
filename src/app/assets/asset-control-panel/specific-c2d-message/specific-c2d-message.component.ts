@@ -342,7 +342,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.canSend = true;
   }
   onStringFocusOut(min, max, value, index) {
-    debugger
     if (min && max && value && (value < min || value > max)) {
       this.canSend = false;
       this.jsonModelKeys[index].value = null;

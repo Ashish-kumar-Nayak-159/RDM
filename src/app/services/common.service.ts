@@ -400,4 +400,7 @@ export class CommonService {
   forgotPassword(obj) {
     return this.http.post(this.url + AppUrls.FORGOT_PASSWORD, obj);
   }
+  refreshToken(obj:any){
+    return this.http.post(this.url + AppUrls.REFRESH_TOKEN, obj)
+  }
 }

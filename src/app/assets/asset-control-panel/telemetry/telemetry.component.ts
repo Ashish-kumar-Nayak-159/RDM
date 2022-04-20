@@ -329,7 +329,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getMessageData(dataobj) {
-    debugger
     return new Promise((resolve) => {
       let obj = {
         app: dataobj.app,
@@ -363,7 +362,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openTelemetryMessageModal(obj) {
-    debugger
     // if (obj.type === this.telemetryTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,

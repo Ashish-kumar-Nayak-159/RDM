@@ -216,7 +216,6 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
           obj[item] = null;
         }
       });
-      debugger
       param.json = {};
       param.json = obj;
       param.json.type = param.data_type.toLowerCase();

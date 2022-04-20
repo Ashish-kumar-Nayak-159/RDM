@@ -451,7 +451,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   async createApp() {
     const applicationDetail = this.createApplicationForm.value;
-    debugger
     // if (!applicationDetail.metadata.description) {
     //   applicationDetail.metadata.description = 'App Description';
     // }

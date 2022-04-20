@@ -170,6 +170,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
               localStorage.removeItem(CONSTANTS.APP_TOKEN);
               localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
+              localStorage.setItem(CONSTANTS.REFRESH_TOKEN, this.userData.refreshtoken);
               const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
               const obj = {
                 hierarchy: decodedToken.hierarchy,
@@ -221,7 +222,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     const loginObj = this.loginForm.value;
     this.isLoginAPILoading = true;
     const app = environment.app;
-    debugger
     if (app) {
       loginObj.app = app;
     }
@@ -250,6 +250,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     if (data.is_super_admin) {
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
       localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
+      localStorage.setItem(CONSTANTS.REFRESH_TOKEN, this.userData.refreshtoken);
       this.router.navigate(['applications']);
       this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, data);
     } else {
@@ -271,11 +272,13 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             };
             app.user = obj;
           });
+          localStorage.setItem(CONSTANTS.REFRESH_TOKEN, this.userData.refreshtoken);
           this.router.navigate(['applications', 'selection']);
           // if user is having only one application access redirect it to home page directly
         } else if (this.userData.apps && this.userData.apps.length === 1) {
           localStorage.removeItem(CONSTANTS.APP_TOKEN);
           localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
+          localStorage.setItem(CONSTANTS.REFRESH_TOKEN, this.userData.refreshtoken);
           const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
           if (!decodedToken.privileges || decodedToken.privileges.length === 0) {
             this.toasterService.showError(

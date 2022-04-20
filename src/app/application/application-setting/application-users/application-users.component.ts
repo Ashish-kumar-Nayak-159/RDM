@@ -216,7 +216,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.hierarchyList = [];
     let hierarchy = '';
     const roleObj = this.userRoles.filter((role) => role.role === this.addUserForm.value.role)[0];
-    debugger
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       if (index <= roleObj?.level) {
         hierarchy = hierarchy + element + ' / ';

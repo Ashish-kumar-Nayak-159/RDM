@@ -1804,6 +1804,7 @@ export class CONSTANTS {
   public static MAIN_MENU_FILTERS = 'main_menu_filter';
   public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
   public static APP_TOKEN = 'app_token';
+  public static REFRESH_TOKEN = 'refresh_token';
   public static GUEST_USER = 'guest_user_details';
   public static SYSTEM_RESERVED_KEYWORDS = ['asset_id', 'slave_id'];
   public static NO_OF_RECORDS = 500;

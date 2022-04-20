@@ -144,7 +144,6 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   setupFormData(obj = undefined) {
-    debugger
     let setupformGroup: FormGroup;
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
       setupformGroup = new FormGroup({

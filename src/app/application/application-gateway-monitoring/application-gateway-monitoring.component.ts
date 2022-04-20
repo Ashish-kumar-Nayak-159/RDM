@@ -243,7 +243,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   assetMonitor() {
-    debugger
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,

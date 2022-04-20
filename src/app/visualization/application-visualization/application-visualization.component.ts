@@ -1201,7 +1201,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   closeAcknowledgementModal(flag = false): void {
     $('#acknowledgemenConfirmModal').modal('hide');
     if (flag) {
-      debugger
       this.latestAlerts.forEach((alert) => {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};

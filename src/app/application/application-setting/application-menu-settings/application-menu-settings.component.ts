@@ -110,7 +110,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             item.visible = menu.visible;
             if(menu.page === 'layout' && !menu.hasOwnProperty('showAccordion'))
             {
-              debugger
               menu.showAccordion = item.showAccordion;
               menu.accordion_value = item.accordion_value;
 
@@ -125,7 +124,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
       
     }
-    debugger
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
       this.sideMenuList.forEach((menu, i) => {
         if (menu.index === undefined || menu.index === null) {
@@ -145,7 +143,6 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             item.visible = menu.visible;
             item.index = index;
             let aFlag = false;
-            // debugger
             item.showAccordion?.forEach((aItem) => {
   
               menu.showAccordion?.forEach((mItem) => {

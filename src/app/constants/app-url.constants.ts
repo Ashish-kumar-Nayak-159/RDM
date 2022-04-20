@@ -210,4 +210,6 @@ export class AppUrls {
  public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/hierarchy';
  public static DELETE_HIERARCHIES = 'hierarchy_new/{0}'
  public static UPDATE_HIERARCHIES = 'hierarchy_new/{0}'
+
+ public static REFRESH_TOKEN = 'refresh-token'
 }

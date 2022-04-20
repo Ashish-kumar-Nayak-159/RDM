@@ -121,7 +121,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
-            this.assets = response.data;
+            //this.assets = response.data;
             this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, this.assets);
           }
           resolve1();

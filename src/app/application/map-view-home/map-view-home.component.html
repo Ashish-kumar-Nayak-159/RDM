@@ -4,7 +4,7 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <ng-container>
+          <ng-container *ngIf="environmentApp === 'SopanCMS'">
             <div class="form-group">
               <div class="numberCircle" [ngClass]="{'active': activeCircle === 'all'}" tooltip="All Assets">
                 <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{assets.length}}</a>

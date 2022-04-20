@@ -246,9 +246,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
-      // hierarchy: JSON.stringify({"App":"Indygo","ManagementCompany":"IndyGo","Client":"Kumo-India","Location":"Ahmedabad"}),
       hierarchy: JSON.stringify(this.hierarchy)
-      // {App:Indygo,Management}
     }
     this.loader = true;
     this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {

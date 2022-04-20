@@ -6,7 +6,7 @@
   <a class="d-flex align-items-center" *ngIf="!userData?.is_super_admin" href="javascript:void(0)"
     (click)="redirectToFirstMenu()">
     <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
-      class="d-block img-fluid img-logo">
+    [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo">
   </a>
   <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin" [routerLink]="['applications']">
     <img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" class="d-block img-fluid img-logo">
@@ -91,13 +91,20 @@
 <!-- Header for Login route -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" style="height:5rem !important"
   *ngIf="isLoginRoute  && url.includes('login')">
-  <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
+  <ng-container *ngIf="defaultAppName !== 'SopanCMS' && defaultAppName !== 'MyEquipos'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;"
-            class="d-block img-fluid"></a>
+      <div class=""><a><img
+        src="{{defaultAppName !== 'Indygo' ? '../../assets/img/KemPaas-Logo-Blue.png' : '../../assets/img/indygo.png'}}"
+         style="width: 60%;" class="d-block img-fluid"></a>
       </div>
       <div class="ml-auto"><a><img src="../../assets/img/Kemsys-Logo.png" style="width: 80%;"
             class="d-none d-md-block img-fluid"></a>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="defaultAppName === 'MyEquipos'">
+    <div class="container" id="header">
+      <div class=""><a><img src="../../assets/img/telawne-logo.png" style="width: 40%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
@@ -109,8 +116,10 @@
   *ngIf="isLoginRoute && !url.includes('login')">
   <div class="container">
     <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
-      <a class="d-flex align-items-center ">
-        <img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" class="d-block img-fluid">
+      <a class="d-flex align-items-center">
+        <img
+          src="{{defaultAppName !== 'Indygo' ? '../../assets/img/KemPaas-Logo-Blue.png' : '../../assets/img/indygo.png'}}"
+          style="width: 60%;" class="d-block img-fluid">
       </a>
     </ng-container>
     <ul class="navbar-nav ml-auto" *ngIf="!url.includes('login')">
@@ -123,16 +132,16 @@
           </span>
         </a>
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-          <!-- <a class="dropdown-item" href="javascript:void(0)">
-            <em class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></em>
+          <a class="dropdown-item" href="javascript:void(0)">
+            <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
             Profile
-          </a> -->
+          </a>
           <a class="dropdown-item" href="javascript:void(0)" (click)="openChangePasswordModal()">
-            <em class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></em>
+            <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
             Change Password
           </a>
           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-            <em class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></em>
+            <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             Logout
           </a>
         </div>

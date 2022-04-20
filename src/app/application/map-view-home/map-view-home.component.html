@@ -46,8 +46,21 @@
             [latitude]="asset.latitude" [longitude]="asset.longitude" (mouseOver)="onMarkerClick(infowindow, gm)"
             [iconUrl]="asset.icon">
             <agm-info-window #infowindow>
-              <b> <a class="blue-font" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ?
-                  asset.display_name: asset.asset_id}}</a></b>
+              <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
+                  <label>{{asset.display_name ? asset.display_name: asset.asset_id}}</label><br/>
+        
+                      <a *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1" href="javascript:void(0)" style="z-index: 1;"
+                        (click)="redirectToAsset(asset)" class="float-left" >
+                        <em class="fa fa-fw fa-table" title="View Control Panel" style="font-size: 15px;padding-bottom: 10px;"></em>
+                      </a>&nbsp;&nbsp;
+                      <a *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 )" href="javascript:void(0)" style="z-index: 1;margin-left: 10px;"
+                        (click)="redirectToLiveData()" class="float-left" >
+
+                        <em *ngIf="contextApp?.dashboard_config?.show_live_widgets" class="fa fa-chart-bar fa-fw" title="View Live Data" style="font-size: 15px;padding-bottom: 10px;"></em>
+                        <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw" title="View Historic Data"  style="font-size: 15px;padding-bottom: 10px;"></em>
+                      </a>
+                
+                  <br/>
               <ng-container>
                 <hr>
                 <div *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">

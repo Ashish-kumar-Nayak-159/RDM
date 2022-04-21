@@ -539,6 +539,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    this.propertyList = [];
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);

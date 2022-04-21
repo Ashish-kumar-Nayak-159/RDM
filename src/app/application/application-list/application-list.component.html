@@ -217,8 +217,9 @@
                             <select class="form-control form-control-sm" id="alertReason"
                               formControlName="partition_strategy" name="alertReason">
                               <option [ngValue]="null">Select Partition Technique</option>
-                              <option [ngValue]="'asset_id'">Asset ID</option>
-                              <option [ngValue]="'partition_key'">Partition Key</option>
+                              <option [ngValue]="'daily'">Daily</option>
+                              <option [ngValue]="'weekly'">Weekly</option>
+                              <option [ngValue]="'monthly'">Monthly</option>
                             </select>
                           </div>
                         </ng-container>

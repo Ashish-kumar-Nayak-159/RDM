@@ -63,6 +63,10 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   ngOnInit(): void {
     // this.loader = true;
+    const userData = localStorage.getItem(CONSTANTS.USER_DETAILS);
+    const selectedAppData = localStorage.getItem(CONSTANTS.SELECTED_APP_DATA);
+    let userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
+    console.log("userdata from local", userDataFromLocal);
 
     const obj = {
       environment: environment.environment,
@@ -73,25 +77,37 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       this.receivedAppName = res.appName
     })
 
-    this.applicationService.getApplications(obj).subscribe((response: any) => {
-      if (response.data && response.data.length > 0) {
-        let respData = response.data.map((item) => {
-          return item.app
-        })
-        this.appsList = respData
-        this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
-        this.hierarchy = { App: this.selectedApp };
-        this.getHierarchy();
-        this.appName();
-      }
-      else { this.appsList = []; }
-      // this.loader = false;
-    },
-      (error) => this.loader = false)
+  
+    if (userDataFromLocal.is_super_admin) {
+      this.applicationService.getApplications(obj).subscribe((response: any) => {
+        if (response.data && response.data.length > 0) {
+          let respData = response.data.map((item) => {
+            return item.app
+          })
+          this.appsList = respData
+          this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
+          this.hierarchy = { App: this.selectedApp };
+          this.getHierarchy();
+          this.appName();
+        }
+        else { this.appsList = []; }
+        // this.loader = false;
+      },
+        (error) => this.loader = false)
+    }
+    else if(selectedAppData && !userDataFromLocal.is_super_admin){
 
-      setInterval(()=>{
-          this.appName()
-      },1800000)
+      let appDataFromLocal = JSON.parse(this.commonService.decryptString(selectedAppData))
+      this.selectedApp = appDataFromLocal.app
+      this.appsList.push(this.selectedApp)
+      console.log("this.selectedApp",this.selectedApp);
+      this.appName();
+    }
+
+  
+    setInterval(() => {
+      this.appName()
+    }, 1800000)
 
     this.tableConfig = {
       type: 'Applications',
@@ -149,7 +165,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           data_type: 'text',
           data_key: 'created_date',
           is_sort: true,
-          sort_by_key:'created_date_time'
+          sort_by_key: 'created_date_time'
         },
         // {
         //   header_name: 'Icons',
@@ -255,9 +271,9 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
         item.created_date_time = item.created_date
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
-        
+
         if (item.last_ingestion_on)
-          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
+          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
 
         if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
@@ -269,14 +285,14 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         if (item.connection_state == "Disconnected") {
           item.connection_state = "Offline"
           item.cssclass = "offline";
-          if(item.offline_since){
-            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since,"MMM dd, yyyy, HH:mm:ss aaaaa'm'");
+          if (item.offline_since) {
+            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
           }
         }
         else {
           item.connection_state = "Online"
           item.cssclass = "online";
-          if(item.connection_state == "Online"){
+          if (item.connection_state == "Online") {
             item.offline_since = undefined
           }
         }

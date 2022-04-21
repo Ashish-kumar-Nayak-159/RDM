@@ -389,6 +389,23 @@ export class CONSTANTS {
       priority: 1,
     },
     {
+      page: 'GateWay Monitoring',
+      system_name: 'Gateway Monitoring',
+      url: 'applications/:appName/gateway-monitoring',
+      display_name: 'Gateway Monitoring',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMED'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Gateway Monitoring',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Live Alerts',
       system_name: 'Live Alerts',
       url: 'applications/:appName/alerts/visualization',

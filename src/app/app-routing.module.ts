@@ -18,6 +18,11 @@ const routes: Routes = [
       import('./campaign-management/campaign-management.module').then((module) => module.CampaignManagementModule),
   },
   {
+    path: 'applications/:applicationId/maintenance',
+    loadChildren: () =>
+      import('./app-maintenance/app-maintenance.module').then((module) => module.AppMaintenanceModule),
+  },
+  {
     path: 'applications/:applicationId/alerts/visualization',
     loadChildren: () => import('./visualization/visualization.module').then((module) => module.VisualizationModule),
   },

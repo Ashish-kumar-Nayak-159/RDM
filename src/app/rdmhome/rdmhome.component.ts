@@ -86,6 +86,10 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  mailto(emailAddress: string, emailSubject: any) {
+    return "mailto:" + emailAddress + "?subject=" + emailSubject
+}
+
   ngAfterViewInit(): void {
     $('body').css({ 'overflow-y': 'auto' });
     if ($('body').hasClass('sb-notoggle')) {

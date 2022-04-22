@@ -10,7 +10,7 @@
 .bg {
   /* background: url("https://i.imgur.com/HgflTDf.jpg") center bottom no-repeat; */
   /* background: url("../../assets/img/bg.jpg") center bottom no-repeat; */
-  background: -webkit-image-set(url('../../assets/img/bg.webp')1x) ;
+  background: -webkit-image-set(url('../../assets/img/bg.webp'));
   background-color: #f8f8f8;
   height:100vh;
   background-size:cover;

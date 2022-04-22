@@ -36,6 +36,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   countryISO = CountryISO;
   tenantId: string;
   environment: string;
+  defaultAppName = environment.app;
   // istenantId = false;
   constructor(
     private router: Router,

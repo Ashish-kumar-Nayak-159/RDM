@@ -93,41 +93,41 @@
   *ngIf="isLoginRoute  && url.includes('login')">
   <ng-container *ngIf="defaultAppName === undefined || defaultAppName === null || defaultAppName === ''">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" 
+      <div class=""><a><img alt="" src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" 
             class="d-block img-fluid"></a>
       </div>
-      <div class="ml-auto"><a><img src="../../assets/img/Kemsys-Logo.png" style="width: 80%;"
+      <div class="ml-auto"><a><img alt="" src="../../assets/img/Kemsys-Logo.png" style="width: 80%;"
             class="d-none d-md-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
   <ng-container *ngIf="defaultAppName === 'Rogers'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/rogers.png" style="width: 40%;" class="d-block img-fluid"></a>
+      <div class=""><a><img alt="" src="../../assets/img/rogers.png" style="width: 40%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
   <ng-container *ngIf="defaultAppName === 'Indygo'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/indygo.png" style="width: 40%;" class="d-block img-fluid"></a>
+      <div class=""><a><img alt="" src="../../assets/img/indygo.png" style="width: 40%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
   <ng-container *ngIf="defaultAppName === 'MyEquipos'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/telawne-logo.png" style="width: 40%;" class="d-block img-fluid"></a>
+      <div class=""><a><img alt="" src="../../assets/img/telawne-logo.png" style="width: 40%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
   <ng-container *ngIf="defaultAppName === 'SopanCMS'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/sopan.png" style="width: 35%;" class="d-block img-fluid"></a>
+      <div class=""><a><img alt=""  src="../../assets/img/sopan.png" style="width: 35%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
   <ng-container *ngIf="defaultAppName === 'KCMS'">
     <div class="container" id="header">
-      <div class=""><a><img src="../../assets/img/kirloskar.png" style="width: 35%;" class="d-block img-fluid"></a>
+      <div class=""><a><img alt="" src="../../assets/img/kirloskar.png" style="width: 35%;" class="d-block img-fluid"></a>
       </div>
     </div>
   </ng-container>
@@ -140,7 +140,7 @@
   <div class="container">
     <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
       <a class="d-flex align-items-center">
-        <img
+        <img alt="" 
           src="{{defaultAppName !== 'Indygo' ? '../../assets/img/KemPaas-Logo-Blue.png' : '../../assets/img/indygo.png'}}"
           style="width: 60%;" class="d-block img-fluid">
       </a>
@@ -149,7 +149,7 @@
       <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
+          <img alt="" class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
           <span class="d-none d-md-block">
             <span class="text-gray-600">{{userData?.name}}</span>
           </span>

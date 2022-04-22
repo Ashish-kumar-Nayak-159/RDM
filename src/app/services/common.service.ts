@@ -19,8 +19,32 @@ export class CommonService {
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   resetPassword: EventEmitter<any> = new EventEmitter<any>();
   flag = false;
+  browsername:any ='';
   privateEncryptionString = environment.storgageSecretKey;
-  constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) { }
+  constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) {
+    this.browsername = this.getBrowserName()
+   }
+
+   public getBrowserName() {
+    const agent = window.navigator.userAgent.toLowerCase()
+       switch (true) {
+      case agent.indexOf('edge') > -1:
+        return 'edge';
+      case agent.indexOf('opr') > -1 && !!(<any>window).opr:
+        return 'opera';
+      case agent.indexOf('chrome') > -1 && !!(<any>window).chrome:
+        return 'chrome';
+      case agent.indexOf('trident') > -1:
+        return 'ie';
+      case agent.indexOf('firefox') > -1:
+        return 'firefox';
+      case agent.indexOf('safari') > -1:
+        return 'safari';
+      default:
+        return 'other';
+    }
+  }
+
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
@@ -41,8 +65,15 @@ export class CommonService {
         // 2011-06-29T16:52:48.000
         return new Date(utcDate + 'Z').toLocaleString('en-US', options);
       } else {
+        if(this.browsername === 'firefox'){
+          // 1/20/2021 10:47:59 AM
+          // Getting invalid date Zoho K-1-I57
+          //  I have added 'Z' at the end of the UTC date so it will display proper in mozilla firefox
+          return new Date(utcDate +'Z').toLocaleString('en-US', options);
+          }else { 
         // 1/20/2021 10:47:59 AM
         return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
+      }
       }
     }
     return null;

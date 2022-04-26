@@ -33,6 +33,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   mapFitBounds = false;
   zoom = undefined;
   isGetAssetsAPILoading = false;
+  decodedToken: any;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -56,6 +57,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAllAssets();
     await this.getAssets(this.contextApp.user.hierarchy);
     setTimeout(() => {
@@ -350,6 +352,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
 
   redirectToAsset(asset) {
     this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
+  }
+
+  redirectToLiveData(){
+    this.router.navigate(['applications',this.contextApp.app,'dashboard']);
   }
 
   ngOnDestroy() {

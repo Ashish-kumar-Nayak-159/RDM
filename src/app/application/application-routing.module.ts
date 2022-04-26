@@ -15,6 +15,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
   },  
   {
+    path: ':appName/gateway-monitoring',
+    component: ApplicationGatewayMonitoringComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
     path: 'gateway-monitoring',
     component: ApplicationGatewayMonitoringComponent,
     canActivate: [AuthGuardService],

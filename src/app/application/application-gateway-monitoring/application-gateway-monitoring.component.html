@@ -61,16 +61,14 @@
 </div><br />
 
 <div class="row">
-
-    <div class="col-sm-3 pl-3" *ngIf="appsList.length>1">
-        <select class="outline-none form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
+    <div class="col-sm-3 pl-3" *ngIf="appsList && appsList.length > 1" >
+        <select  class="outline-none form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
             <option [ngValue]="undefined">Select App</option>
             <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
         </select>
     </div>
-
-    <div class="col-sm-4" *ngIf="isSelectedAppData">
-        <div class="d-flex">
+    <div class="col-sm-4 pl-4" *ngIf="isSelectedAppData">
+        <div class="d-flex" >
             <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
                 (clearHierarchyEvent)="onClearHierarchy()" [closeOnSelection]="false">
             </app-hierarchy-dropdown>

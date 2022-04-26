@@ -31,7 +31,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp) {
+    if (this.contextApp && !this.userData?.is_super_admin) {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
@@ -83,7 +83,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           data = arr;
         }
         data = data.sort((a, b) => a.index - b.index);
-
+         console.log("data printed here",data);
+         
         this.processSideMenuData(data, this.contextApp);
       }
     }

@@ -387,7 +387,24 @@ export class CONSTANTS {
         },
       ],
       priority: 1,
-    },
+    }, 
+    {
+      page: 'GateWay Monitoring',
+      system_name: 'Gateway Monitoring',
+      url: 'applications/:appName/gateway-monitoring',
+      display_name: 'Gateway Monitoring',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['GTMO'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Gateway Monitoring',
+        },
+      ],
+      priority: 1,
+    },   
     {
       page: 'Live Alerts',
       system_name: 'Live Alerts',
@@ -516,19 +533,7 @@ export class CONSTANTS {
       showAccordion: [{ name: 'Title', value: 'Campaigns' }],
       priority: 1,
     },
-    // {
-    //   page: 'Maintenance',
-    //   system_name: 'Maintenance',
-    //   url: 'applications/:appName/maintenance',
-    //   display_name: 'Maintenance',
-    //   icon: 'fa fa-fw fa-object-group',
-    //   visible: true,
-    //   exactMatch: true,
-    //   privileges_required: ['ASMV'],
-    //   showAccordion: [{ name: 'Title', value: 'Maintenance' }],
-    //   priority: 1,
-    // },
-  
+    
   ];
 
   public static ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -949,6 +954,7 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {},
     },
+    
   ];
 
   public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [

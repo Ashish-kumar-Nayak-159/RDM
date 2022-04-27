@@ -19,8 +19,11 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-  }
+    console.log("CheckingProperTy", JSON.stringify(this.propertyList))
+    console.log("propertyList", JSON.stringify(this.widgetObj))
 
+
+  }
   addProperty() {
     this.widgetObj.properties.push({});
   }
@@ -33,6 +36,9 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     if (prop?.property) {
       // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
+      if(this.widgetObj?.widgetType === 'SmallNumber'){
+        prop.digitsAfterDecimals = '1';
+      }
       // prop.load_value_using = 'signalr';
     } else {
       prop.property = undefined;
@@ -72,6 +78,14 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     if (e === [] || e.length === 0) {
       this.widgetObj.y2AxisProps = [];
     }
+  }
+
+  onKeyUp(obj) {
+    console.log("Checking", JSON.stringify(obj))
+    if (obj?.digitsAfterDecimals > 1) {
+      this.toasterService.showError('Small Number Widget decimal value can not be greater than 1', 'Add Proper Value');
+    }
+   
   }
 
   onColorChangeComplete(event) {}

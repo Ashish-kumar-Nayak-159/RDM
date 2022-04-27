@@ -90,6 +90,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   latestRunningMinutes: any = 0;
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   widgetStringFromMenu: string;
+  checkwidgettype:boolean =false;
+  checkingsmallwidget:''
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -415,6 +417,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           async (response: any) => {
             if (response?.live_widgets?.length > 0) {
               response.live_widgets.forEach((widget) => {
+                this.checkingsmallwidget = widget.widgetType;
+                if(widget.widgetType === 'SmallNumber'){
+                  this.checkwidgettype = true;
+                }
                 widget.edge_derived_props = false;
                 widget.cloud_derived_props = false;
                 widget.derived_kpis = false;

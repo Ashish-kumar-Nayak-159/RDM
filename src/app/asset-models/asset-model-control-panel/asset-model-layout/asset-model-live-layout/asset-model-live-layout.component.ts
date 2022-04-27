@@ -38,6 +38,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }]
   selectedSlave:any = {slave_name:'Select Slave'}
   widgetStringFromMenu: any;
+  checkwidgettype:boolean =false;
+  checkingsmallwidget:''
+  
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -199,6 +202,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   getLiveWidgets() {
+    debugger
     const params = {
       app: this.contextApp.app,
       name: this.assetModel.name,
@@ -213,6 +217,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             this.liveWidgets = response.live_widgets;
             // let count = 1;
             this.liveWidgets.forEach((widget) => {
+              this.checkingsmallwidget = widget.widgetType;
+
+              if(widget.widgetType === 'SmallNumber'){
+                this.checkwidgettype = true;
+              }
               widget.freezed = this.assetModel.freezed;
               widget.edge_derived_props = false;
               widget.cloud_derived_props = false;
@@ -283,6 +292,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   onWidgetTypeChange() {
+    debugger
     this.widgetObj.properties = [{}];
     if (
       this.widgetObj.widgetType === 'NumberWithTrend' ||
@@ -303,6 +313,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       }
     });
+  
   }
 
   getTelemetryData() {

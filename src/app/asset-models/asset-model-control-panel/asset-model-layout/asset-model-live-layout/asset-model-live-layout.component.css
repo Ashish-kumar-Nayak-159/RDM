@@ -12,6 +12,7 @@
     }
 .smallnumber-widget-class-overflowhidden {
     /* height: 70vh; */
+    /* height: 70vh; */
     overflow-x: hidden !important;
     overflow-y: auto;
 }
@@ -25,8 +26,12 @@
     } */
     .table-responsive{
         display: block;
-    height: 70vh;
+    /* height: 70vh; */
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    height: calc(100vh - 180px);
     }
+.modal-live-widget-container{
+    height: auto;
+}

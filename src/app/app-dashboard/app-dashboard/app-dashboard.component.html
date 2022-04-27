@@ -234,6 +234,9 @@
       </div>
 
       <!-- <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+    <div  class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12 mt-n2'}}" 
+      *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets && originalFilter?.asset">
+      <ng-container *ngFor="let widget of liveWidgets; let i = index;">
        
         <div *ngIf="widget?.widgetType === 'SmallNumber'" class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}"
           [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  

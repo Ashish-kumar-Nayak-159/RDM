@@ -46,7 +46,7 @@
     <!-- for the other widget -->
     <div class="tableFixHead modal-live-widget-container">
       <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-      <div class="row col-md-12">
+      <div class="row col-md-12 mb-5">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
           <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
             || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',

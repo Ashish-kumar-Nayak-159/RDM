@@ -1343,6 +1343,30 @@ export class AssetService {
   uploadWhitelistedAsset(app, formData) {
     return this.http.post(this.url + String.Format(AppUrls.UPLOAD_WHITELISTED_ASSET, encodeURIComponent(app)), formData);
   }
+
+
+  uploadAssetModelFile(app,assetModel, filterObj,formData) {
+    debugger
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.post(
+      this.url +
+        String.Format(
+          AppUrls.UPLOAD_ASSET_MODEL_FILE,
+          encodeURIComponent(app),
+          encodeURIComponent(assetModel)          
+        ),
+      formData,
+      { params }
+    );
+
+}
+
+  
   deWhitelistedAsset(app, assetId) {
     return this.http.delete(this.url + String.Format(AppUrls.DE_WHITELIST_ASSET, encodeURIComponent(app),assetId));
   }

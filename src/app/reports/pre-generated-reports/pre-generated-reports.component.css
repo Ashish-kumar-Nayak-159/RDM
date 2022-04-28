@@ -8,3 +8,12 @@
 select.form-control {
   width: 11rem !important;
 }
+a.mr-1{
+  display: flex;
+  justify-content: center;
+  color: blue;
+  float: none;
+}
+.pull-right{
+  float: none;
+}

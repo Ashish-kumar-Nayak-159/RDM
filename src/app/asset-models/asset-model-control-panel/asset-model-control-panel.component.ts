@@ -6,6 +6,7 @@ import { AssetModelService } from './../../services/asset-model/asset-model.serv
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
 
 declare var $: any;
 @Component({
@@ -25,11 +26,18 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   isModelFreezeUnfreezeAPILoading = false;
   isPasswordVisible = false;
   decodedToken: any;
+  uploadfilemodal:boolean=false;
+  isCreatePackageAPILoading: boolean = false;
+  isCanUploadFile: boolean = false;
+  fileName: string = 'Choose File';
+  uploadedFile: any = [];
+  checkinguserrole:any;
   constructor(
     private route: ActivatedRoute,
     private assetModelService: AssetModelService,
     private commonService: CommonService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private assetService:AssetService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +45,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.checkinguserrole = this.contextApp.user.role;
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
@@ -87,6 +96,12 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       this.route.fragment.subscribe((fragment) => {
         if (fragment) {
           this.activeTab = fragment;
+          if(this.activeTab === 'measured_properties' || this.activeTab === 'alert_conditioning' ){
+            this.uploadfilemodal =true;
+          }else{
+            this.uploadfilemodal =false;
+          }
+
         } else {
           const menu =
             this.contextApp.menu_settings.model_control_panel_menu.length > 0
@@ -112,6 +127,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab) {
     this.activeTab = tab;
+   
     window.location.hash = tab;
   }
 
@@ -204,6 +220,8 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
           this.assetModel = response;
           this.assetModel.name = obj.name;
           this.assetModel.app = obj.app;
+          this.assetModel.protocol =response.tags.protocol;
+          this.assetModel.model_type =response.metadata.model_type;
         }
         if (!callFromMenu) {
           setTimeout(() => this.setToggleClassForMenu(), 50);
@@ -237,9 +255,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     );
   }
 
-  onCloseModal(id) {
-    $('#' + id).modal('hide');
-  }
+
 
   openUnfreezeModal() {
     this.password = undefined;
@@ -279,4 +295,73 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     $('body').removeClass('sidebar-toggled');
     $('.sidebar').removeClass('toggled');
   }
+
+  openImportFile(){
+    this.fileName = 'Choose File';
+    this.isCanUploadFile = false;
+    $('#addModelAsset').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
+  }
+
+  onFileSelected(event) {
+    this.isCanUploadFile = false;
+    let allowedZipMagicNumbers = ["504b34", "d0cf11e0"];
+    this.uploadedFile = [];
+    if (event?.target?.files) {
+      let fileList = event.target.files as FileList;
+      let file = fileList.item(0);
+      let filereader = new FileReader();
+      filereader.onloadend = () => {
+        let contentHeader = filereader.result as ArrayBufferLike;
+        let arr = (new Uint8Array(contentHeader)).subarray(0, 4);
+        let header = '';
+        for (let arrvalue of arr) {
+          header += arrvalue.toString(16);
+        }
+        if (allowedZipMagicNumbers.includes(header)) {
+          this.uploadedFile = file;
+          this.isCanUploadFile = true;
+          this.fileName = file.name;
+        }
+        else {
+          this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
+          this.fileName = 'Choose File';
+        }
+        return;
+      }
+      filereader.readAsArrayBuffer(file);
+    }
+
+  }
+
+  onUploadModelFile(){
+    
+    this.isCreatePackageAPILoading = true;
+    if (this.uploadedFile.length <= 0)
+      this.toasterService.showError("Please select file to upload", 'Whitelist Asset');
+    const formData = new FormData();
+    const obj = {
+      model_type: this.assetModel.model_type,
+    };
+    formData.append('file', this.uploadedFile);
+    const method = this.assetService.uploadAssetModelFile(this.contextApp.app, this.assetModel.protocol,obj,formData);
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Updated Successfully');
+          this.isCreatePackageAPILoading = false;
+         localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+          this.getAssetModelData(this.assetModel.name);
+          this.onCloseModal('addModelAsset');
+        },
+        (error) => {
+          this.toasterService.showError(error.message,"");
+          this.isCreatePackageAPILoading = false;
+        }
+      )
+    );
+  }
+
 }

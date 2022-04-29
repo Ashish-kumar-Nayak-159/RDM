@@ -1,0 +1,9 @@
+a.mr-1{
+    display: flex;
+    justify-content: center;
+    color: blue;
+    float: none;
+  }
+  .pull-right{
+    float: none;
+  }

@@ -27,3 +27,13 @@ select.form-control {
 .w-10 {
   width: 10%!important;
 }
+
+a.mr-1{
+  display: flex;
+  justify-content: center;
+  color: blue;
+  float: none;
+}
+.pull-right{
+  float: none;
+}

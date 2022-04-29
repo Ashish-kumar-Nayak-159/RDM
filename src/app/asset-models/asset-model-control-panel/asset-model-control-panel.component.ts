@@ -31,6 +31,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   isCanUploadFile: boolean = false;
   fileName: string = 'Choose File';
   uploadedFile: any = [];
+  checkinguserrole:any;
   constructor(
     private route: ActivatedRoute,
     private assetModelService: AssetModelService,
@@ -44,6 +45,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.checkinguserrole = this.contextApp.user.role;
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
@@ -94,7 +96,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       this.route.fragment.subscribe((fragment) => {
         if (fragment) {
           this.activeTab = fragment;
-          if(this.activeTab === 'measured_properties' || this.activeTab === 'alert_conditioning'){
+          if(this.activeTab === 'measured_properties' || this.activeTab === 'alert_conditioning' ){
             this.uploadfilemodal =true;
           }else{
             this.uploadfilemodal =false;

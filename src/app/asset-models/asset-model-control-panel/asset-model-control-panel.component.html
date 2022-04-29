@@ -58,7 +58,7 @@
                     [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><em
                       class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
                       *ngIf="!assetModel.freezed"></em></a>
-                      <button *ngIf="uploadfilemodal === true" type="submit"  (click)="openImportFile()" class="btn btn-sm searchBtn btn-primary" 
+                      <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit"  (click)="openImportFile()" class="btn btn-sm searchBtn btn-primary" 
                       placement="bottom" tooltip="Upload Template">Upload</button>
                 </ng-container>
               </div>

@@ -157,34 +157,182 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   searchApplications() {
-    if(this.isProvisioned === "false")
-    {
-        for (var i = 0; i < this.tableConfig.data.length; i++) { 
-          if (this.tableConfig.data[i].header_name == "Monitoring") {  
-            this.tableConfig.data.splice(i, 1);  
-            i--;  
-          }  
-        }
-    }
-    else
-    {
-      let dataobj = 
-      {
-        header_name: 'Monitoring',
-        key: undefined,
-        data_type: 'button',
-        btn_list: [
+    if (this.isProvisioned === "false") {
+      this.tableConfig = {
+        type: 'Applications',
+        is_table_data_loading: this.isApplicationListLoading,
+        table_class: 'app-list-tableFixHead',
+        no_data_message: '',
+        data: [
           {
-            icon: 'fas fa-desktop',
-            text: '',
-            id: 'Button',
-            valueclass: '',
-            // tooltip: 'Edit Privilege',
+            header_name: 'App Name',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'app',
           },
-          
+          {
+            header_name: 'Created Date',
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'local_created_date',
+          },
+          {
+            header_name: 'Created By',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'created_by',
+          },
+          {
+            header_name: 'Updated Date',
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'local_updated_date',
+          },
+          {
+            header_name: 'Updated By',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'updated_by',
+          },
+          {
+            header_name: 'Actions',
+            key: undefined,
+            data_type: 'button',
+            btn_list: [
+              {
+                icon: 'fa fa-fw fa-edit',
+                text: '',
+                id: 'EditPrivilege',
+                valueclass: '',
+                tooltip: 'Edit Privilege',
+              },
+              {
+                icon: 'fa fa-fw fa-eye',
+                text: '',
+                id: 'View',
+                valueclass: '',
+                tooltip: 'View',
+              },
+              {
+                icon: 'fa fa-fw fa-table',
+                text: '',
+                id: 'Partition',
+                valueclass: '',
+                tooltip: 'Database Partition',
+              }
+            ],
+          }
         ],
       };
-      this.tableConfig.data.push(dataobj);
+    }
+    else {
+      this.tableConfig = {
+        type: 'Applications',
+        is_table_data_loading: this.isApplicationListLoading,
+        table_class: 'app-list-tableFixHead',
+        no_data_message: '',
+        data: [
+          {
+            header_name: 'App Name',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'app',
+          },
+          {
+            header_name: 'Created Date',
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'local_created_date',
+          },
+          {
+            header_name: 'Created By',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'created_by',
+          },
+          {
+            header_name: 'Updated Date',
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'local_updated_date',
+          },
+          {
+            header_name: 'Updated By',
+            is_display_filter: true,
+            value_type: 'string',
+            is_sort_required: true,
+            fixed_value_list: [],
+            data_type: 'text',
+            data_key: 'updated_by',
+          },
+          {
+            header_name: 'Actions',
+            key: undefined,
+            data_type: 'button',
+            btn_list: [
+              {
+                icon: 'fa fa-fw fa-edit',
+                text: '',
+                id: 'EditPrivilege',
+                valueclass: '',
+                tooltip: 'Edit Privilege',
+              },
+              {
+                icon: 'fa fa-fw fa-eye',
+                text: '',
+                id: 'View',
+                valueclass: '',
+                tooltip: 'View',
+              },
+              {
+                icon: 'fa fa-fw fa-table',
+                text: '',
+                id: 'Partition',
+                valueclass: '',
+                tooltip: 'Database Partition',
+              }
+            ],
+          },
+          {
+            header_name: 'Monitoring',
+            key: undefined,
+            data_type: 'button',
+            btn_list: [
+              {
+                icon: 'fas fa-desktop',
+                text: '',
+                id: 'Button',
+                valueclass: '',
+                // tooltip: 'Edit Privilege',
+              },
+
+            ],
+          }
+        ],
+      };
     }
     this.isApplicationListLoading = true;
     this.tableConfig.is_table_data_loading = true;
@@ -214,8 +362,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     if (obj.for === 'View') {
       this.onOpenViewIconModal(obj.data);
     }
-    else if(obj.for === 'Button'){
-       this.openGatewayMonitoring(obj.data);  
+    else if (obj.for === 'Button') {
+      this.openGatewayMonitoring(obj.data);
     }
     else if (obj.for === 'Partition') {
       this.openPartitionIconModal(obj.data);
@@ -404,11 +552,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     $('#viewPartitionIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  openGatewayMonitoring(app){
+  openGatewayMonitoring(app) {
 
-      this.router.navigate(['gateway-monitoring'],{relativeTo: this.route, queryParams:{
+    this.router.navigate(['gateway-monitoring'], {
+      relativeTo: this.route, queryParams: {
         appName: app.app
-      }})
+      }
+    })
   }
 
   onCloseCreateAppModal(modalId) {
@@ -475,9 +625,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
     }
     this.isCreateAPILoading = true;
-      applicationDetail.metadata.db_info.default = !this.createApplicationForm.value?.metadata?.app_specific_db;
-      applicationDetail.metadata.schema_info.default = !this.createApplicationForm.value?.metadata?.app_specific_schema;
-      applicationDetail.metadata.telemetry_schema_info.default = !this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema;
+    applicationDetail.metadata.db_info.default = !this.createApplicationForm.value?.metadata?.app_specific_db;
+    applicationDetail.metadata.schema_info.default = !this.createApplicationForm.value?.metadata?.app_specific_schema;
+    applicationDetail.metadata.telemetry_schema_info.default = !this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema;
     applicationDetail.dashboard_config = {
       show_live_widgets: true,
     };

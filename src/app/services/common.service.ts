@@ -19,15 +19,15 @@ export class CommonService {
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   resetPassword: EventEmitter<any> = new EventEmitter<any>();
   flag = false;
-  browsername:any ='';
+  browsername: any = '';
   privateEncryptionString = environment.storgageSecretKey;
   constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) {
     this.browsername = this.getBrowserName()
-   }
+  }
 
-   public getBrowserName() {
+  public getBrowserName() {
     const agent = window.navigator.userAgent.toLowerCase()
-       switch (true) {
+    switch (true) {
       case agent.indexOf('edge') > -1:
         return 'edge';
       case agent.indexOf('opr') > -1 && !!(<any>window).opr:
@@ -58,22 +58,26 @@ export class CommonService {
         //fractionalSecondDigits: 3,
         hour12: true,
       } as const;
-      if (utcDate.includes('T') && utcDate.includes('Z')) {
+      if (utcDate.toString().match(/^[0-9]{10}$/)) {
+        return new Date(Number(utcDate) * 1000).toLocaleString('en-US', options);
+      } else if (utcDate.toString().match(/^[0-9]{13}$/)) {
+        return new Date(Number(utcDate)).toLocaleString('en-US', options);
+      } else if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
         return new Date(utcDate).toLocaleString('en-US', options);
       } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000
         return new Date(utcDate + 'Z').toLocaleString('en-US', options);
       } else {
-        if(this.browsername === 'firefox'){
+        if (this.browsername === 'firefox') {
           // 1/20/2021 10:47:59 AM
           // Getting invalid date Zoho K-1-I57
           //  I have added 'Z' at the end of the UTC date so it will display proper in mozilla firefox
-          return new Date(utcDate +'Z').toLocaleString('en-US', options);
-          }else { 
-        // 1/20/2021 10:47:59 AM
-        return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
-      }
+          return new Date(utcDate + 'Z').toLocaleString('en-US', options);
+        } else {
+          // 1/20/2021 10:47:59 AM
+          return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
+        }
       }
     }
     return null;
@@ -138,8 +142,8 @@ export class CommonService {
     return this.http.get(url);
   }
 
-  getRandomColor() {    
-    return '#' + (Math.floor(((crypto.getRandomValues(new Uint32Array(1))[0]) / (0xffffffff + 1)) * (0xffffff - 1) ).toString(16));    
+  getRandomColor() {
+    return '#' + (Math.floor(((crypto.getRandomValues(new Uint32Array(1))[0]) / (0xffffffff + 1)) * (0xffffff - 1)).toString(16));
   }
 
   loginUser(obj) {
@@ -305,15 +309,15 @@ export class CommonService {
     let value = key;
     app.menu_settings.model_control_panel_menu.forEach((item) => {
       if (item.page === page) {
-        value = item.hasOwnProperty('accordion_value') ? item?.accordion_value[key] : key ;
+        value = item.hasOwnProperty('accordion_value') ? item?.accordion_value[key] : key;
       }
     });
     return value;
   }
 
-  generateUUID() : any {
+  generateUUID(): any {
     let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
-    let guid = [u.substr(0,8), u.substr(8,4), '4000-8' + u.substr(13,3), u.substr(16,12)].join('-');
+    let guid = [u.substr(0, 8), u.substr(8, 4), '4000-8' + u.substr(13, 3), u.substr(16, 12)].join('-');
     return guid
   }
 
@@ -361,7 +365,7 @@ export class CommonService {
     var range = max - min + 1;
     var max_range = 256;
     if (byteArray[0] >= Math.floor(max_range / range) * range)
-        return this.randomIntFromInterval(min, max);
+      return this.randomIntFromInterval(min, max);
     return min + (byteArray[0] % range);
   }
 
@@ -418,11 +422,11 @@ export class CommonService {
         location.reload();
       });
     } else {
-        this.router.navigate(['']).then(() => {
-          location.reload();
-        });
+      this.router.navigate(['']).then(() => {
+        location.reload();
+      });
     }
-  } 
+  }
 
   getLowestValueFromList(arr) {
     return Math.min(...arr) || 60;
@@ -431,7 +435,7 @@ export class CommonService {
   forgotPassword(obj) {
     return this.http.post(this.url + AppUrls.FORGOT_PASSWORD, obj);
   }
-  refreshToken(obj:any){
+  refreshToken(obj: any) {
     return this.http.post(this.url + AppUrls.REFRESH_TOKEN, obj)
   }
 }

@@ -119,38 +119,38 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           header_name: 'Gateway Id',
           is_display_filter: true,
           value_type: 'string',
-          is_sort_required: true,
+          // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'asset_id',
-          is_sort: true
+          //is_sort: true
         },
         {
           header_name: 'Name',
           is_display_filter: true,
           value_type: 'string',
-          is_sort_required: true,
+          // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'name',
-          is_sort: true
+          //is_sort: true
         },
         {
           header_name: 'Status',
           value_type: 'string',
-          is_sort_required: true,
+          // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'connection_state',
           value_class: '',
           data_tooltip: 'offline_since',
           data_cellclass: 'cssclass',
-          is_sort: true
+          //is_sort: true
         },
         {
           header_name: 'Ingestion Status',
           value_type: 'string',
-          is_sort_required: true,
+          // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'ingestion_status',
@@ -160,11 +160,11 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         {
           header_name: 'CreatedOn',
           value_type: 'string',
-          is_sort_required: true,
+          // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'created_date',
-          is_sort: true,
+          //is_sort: true,
           sort_by_key: 'created_date_time'
         },
         // {

@@ -52,7 +52,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   tileData: any;
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-  constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
+  constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -71,36 +71,36 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       this.assets = this.hierarchyDropdown.getAssets();
       if (this.assets.length > 0) {
         const center = this.commonService.averageGeolocation(this.assets);
-        this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
-        this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
-        if(!center.latitude && !this.contextApp.metadata?.latitude){
+        this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+        this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+        if (!center.latitude && !this.contextApp.metadata?.latitude) {
           navigator.geolocation.getCurrentPosition(this.showPosition)
         }
-        if(!this.centerLatitude || !this.centerLongitude){
-          
+        if (!this.centerLatitude || !this.centerLongitude) {
+
           this.centerLatitude = 23.0225;
           this.centerLongitude = 72.5714;
         }
         this.mapFitBounds = false;
       }
-       else {
-        this.centerLatitude = this.contextApp.metadata?.latitude ;
-        this.centerLongitude = this.contextApp.metadata?.longitude ;
+      else {
+        this.centerLatitude = this.contextApp.metadata?.latitude;
+        this.centerLongitude = this.contextApp.metadata?.longitude;
         this.mapFitBounds = false;
       }
 
-      
+
       const center = this.commonService.averageGeolocation(this.assets);
-       if(!center.latitude && !center.longitude){
-       this.centerLatitude = this.contextApp.metadata?.latitude ;
-        this.centerLongitude = this.contextApp.metadata?.longitude ;
+      if (!center.latitude && !center.longitude) {
+        this.centerLatitude = this.contextApp.metadata?.latitude;
+        this.centerLongitude = this.contextApp.metadata?.longitude;
         this.mapFitBounds = false;
-       }
-      }, 200);
+      }
+    }, 200);
   }
 
-  showPosition = (position)=> {
-    this.centerLatitude =  position?.coords?.latitude || this.centerLatitude;  
+  showPosition = (position) => {
+    this.centerLatitude = position?.coords?.latitude || this.centerLatitude;
     this.centerLongitude = position.coords.longitude || this.centerLongitude;
   }
 
@@ -182,8 +182,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   asset.icon = {
                     url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
                       ? this.blobURL +
-                        this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                        this.blobToken
+                      this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                      this.blobToken
                       : './assets/img/iot-assets-green.svg',
                     scaledSize: {
                       width: 20,
@@ -227,8 +227,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   asset.icon = {
                     url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
                       ? this.blobURL +
-                        this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                        this.blobToken
+                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                      this.blobToken
                       : './assets/img/legacy-assets.svg',
                     scaledSize: {
                       width: 20,
@@ -239,19 +239,19 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               });
               this.originalAssets = JSON.parse(JSON.stringify(this.assets));
               const center = this.commonService.averageGeolocation(this.assets);
-              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude ;
-              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude ;
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
               this.mapFitBounds = false;
-              if(!center.latitude && !this.contextApp.metadata?.latitude){
+              if (!center.latitude && !this.contextApp.metadata?.latitude) {
                 navigator.geolocation.getCurrentPosition(this.showPosition)
               }
-              if(!this.centerLatitude || !this.centerLongitude){
+              if (!this.centerLatitude || !this.centerLongitude) {
                 this.centerLatitude = 23.0225;
                 this.centerLongitude = 72.5714;
               }
             } else {
-              this.centerLatitude = this.contextApp.metadata?.latitude ;
-              this.centerLongitude = this.contextApp.metadata?.longitude ;
+              this.centerLatitude = this.contextApp.metadata?.latitude;
+              this.centerLongitude = this.contextApp.metadata?.longitude;
               this.mapFitBounds = false;
             }
             resolve();
@@ -322,7 +322,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
-      
+
       // this.zoom = 8;
     } else {
       // this.mapFitBounds = true;
@@ -354,8 +354,12 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
   }
 
-  redirectToLiveData(){
-    this.router.navigate(['applications',this.contextApp.app,'dashboard']);
+  redirectToLiveData(asset) {
+    const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    pagefilterObj['hierarchy'] = asset.hierarchy;
+    pagefilterObj['assets'] = asset;
+    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    this.router.navigate(['applications', this.contextApp.app, 'dashboard']);
   }
 
   ngOnDestroy() {

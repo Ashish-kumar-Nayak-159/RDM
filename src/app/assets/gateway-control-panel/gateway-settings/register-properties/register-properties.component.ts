@@ -401,7 +401,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       // controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
       // configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
       edge_derived_properties: this.optionsValue.edge_derived_properties ? {} : undefined,
-      
+
     };
     if (this.optionsValue.measured_properties) {
       this.properties.measured_properties.forEach((prop) => {
@@ -410,7 +410,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
-    
+
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach((prop) => {
         obj.alerts[prop.code] = prop.metadata;
@@ -429,34 +429,32 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     //     obj.controllable_properties[prop.json_key] = prop.metadata;
     //   });
     // }
-   
-    if (this.optionsValue.chunk_data_send) {
-      this.sync_asset_data(obj);
+    //if (this.optionsValue.chunk_data_send) {
+    this.sync_asset_data();
 
-    }
-    else {
-      this.callC2dMethod(obj);
-    }
+    // }
+    // else {
+    //   this.callC2dMethod(obj);
+    // }
   }
-  sync_asset_data(obj) {
-
+  sync_asset_data() {
+    debugger
     this.isAPILoading = true;
     const syncObj = {
       asset_id: this.selectedAsset.asset_id,
-      iot_asset_id:  this.selectedAsset.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id,
-      should_sync_in_chunk:this.optionsValue.chunk_data_send,
-      should_sync_alert:this.optionsValue.alerts==undefined?"false":this.optionsValue.alerts,
-      should_sync_measured_property:this.optionsValue.measured_properties==undefined?"false":this.optionsValue.measured_properties,
-      should_sync_edge_derived_property:this.optionsValue.edge_derived_properties==undefined?"false":this.optionsValue.edge_derived_properties,
-      metadata:{ "acknowledge": "Full",  "expire_in_min": "2880" }
-
+      iot_asset_id: this.selectedAsset.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id,
+      should_sync_in_chunk: this.optionsValue.chunk_data_send == undefined ? false : this.optionsValue.chunk_data_send,
+      should_sync_alert: this.optionsValue.alerts == undefined ? false : this.optionsValue.alerts,
+      should_sync_measured_property: this.optionsValue.measured_properties == undefined ? false : this.optionsValue.measured_properties,
+      should_sync_edge_derived_property: this.optionsValue.edge_derived_properties == undefined ? false : this.optionsValue.edge_derived_properties,
+      metadata: { "acknowledge": "Full", "expire_in_min": "2880" }
     };
-    
+
     this.subscriptions.push(
       this.assetService
         .sync_asset_data(
           syncObj
-        
+
         )
         .subscribe(
           (response: any) => {

@@ -393,7 +393,7 @@ export class CONSTANTS {
       system_name: 'Gateway Monitoring',
       url: 'applications/:appName/gateway-monitoring',
       display_name: 'Gateway Monitoring',
-      icon: 'fa fa-fw fa-chart-bar',
+      icon: 'fa fa-fw fa-desktop fas',
       visible: true,
       exactMatch: true,
       privileges_required: ['GTMO'],

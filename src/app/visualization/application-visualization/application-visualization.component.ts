@@ -1179,7 +1179,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.from_date = epoch ? epoch - 300 : null;
     obj.to_date = epoch ? epoch + 300 : null;
     obj.metadata['user_id'] = this.userData.email;
-    obj.metadata['acknowledged_date'] = datefns.format(new Date(), "MM/dd/yyyy HH:mm:ss");
+    obj.metadata['acknowledged_date'] = new Date().toISOString();
     this.subscriptions.push(
       this.assetService.acknowledgeAssetAlert(obj).subscribe(
         (response) => {

@@ -24,3 +24,9 @@
 .working{
   color: yellow;
 }
+
+a.scroll-to-top.rounded{
+  width: 2rem !important;
+  height: 2rem !important;
+  bottom: 2rem !important;
+}

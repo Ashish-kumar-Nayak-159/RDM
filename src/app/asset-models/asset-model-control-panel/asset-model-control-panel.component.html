@@ -49,7 +49,6 @@
           <div class="d-flex">
             <div>
               <div class="main-heading">
-
                 {{assetModel?.name}}
                 <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <a href="javascript:void(0)" (click)="openUnfreezeModal()"
@@ -59,6 +58,8 @@
                     [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><em
                       class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
                       *ngIf="!assetModel.freezed"></em></a>
+                      <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit"  (click)="openImportFile()" class="btn btn-sm searchBtn btn-primary" 
+                      placement="bottom" tooltip="Upload Template">Upload</button>
                 </ng-container>
               </div>
             </div>
@@ -190,5 +191,47 @@
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></em>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="modal right fade" id="addModelAsset" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Import Measure Properties / Alerts</h5>
+              <button type="button" class="close" [disabled]="isCreatePackageAPILoading"
+                  (click)="onCloseModal('addModelAsset')" aria-label="Close">
+                  <span aria-hidden="true" tooltip="Close">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <div class="form-group">
+                      <label for="recipient-name" class="col-form-label required">Upload:</label>
+                      <div class="form-group input-group row m-0">
+                          <div class="file-input form-control form-control-sm p-0 col-8">
+                              <input type="file" accept=".xls,.xlsx" id="file" class="file"
+                                  onclick="this.value = null" (change)="onFileSelected($event)">
+                              <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label>
+                          </div>
+                          <div class="file-input form-control form-control-sm p-0 col-4"
+                              style="background-color:#ccc !important">
+                              <input type="file" accept=".xls,.xlsx" id="file" class="file">
+                              <label for="file" class="bg-secondary text-white">Browse</label>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+            
+          </div>
+          
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary add-row" (click)="onUploadModelFile()"
+                  [disabled]="isCreatePackageAPILoading || !isCanUploadFile">Save</button>
+              <button type="button" class="btn btn-secondary" (click)="onCloseModal('addModelAsset')" >Cancel</button>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></em>
+          </div>
+      </div>
   </div>
 </div>

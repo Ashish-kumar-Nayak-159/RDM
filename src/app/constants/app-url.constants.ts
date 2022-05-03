@@ -199,6 +199,8 @@ export class AppUrls {
 
   public static GET_USERS_APPLICATION = 'user_apps';
   public static UPLOAD_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets';
+  public static UPLOAD_ASSET_MODEL_FILE = 'apps/{0}/asset_models/template/{1}';
+
   public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
  public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';
 

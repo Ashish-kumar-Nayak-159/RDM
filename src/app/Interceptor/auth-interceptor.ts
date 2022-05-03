@@ -30,6 +30,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     refreshToken(): Observable<any> {
+        debugger
 
         if (this.refreshTokenInProgress) {
 
@@ -49,7 +50,6 @@ export class AuthInterceptor implements HttpInterceptor {
             };
             return this.commonService.refreshToken(obj).pipe(
                 tap((resp: any) => {
-                    debugger
                     if (resp) {
                         if (localStorage.getItem(CONSTANTS.USER_DETAILS) !== null) {
                             localStorage.removeItem(CONSTANTS.USER_DETAILS);
@@ -99,7 +99,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
         // Invalid token error
         else if (error.status === 401 && error?.error?.reason === 'cors_error') {
-            debugger
             this.toasterService.showError('Please login again', 'Session Expired');
             this.commonService.onLogOut();
         }
@@ -126,7 +125,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
-
         // Handle request
         request = this.addAuthHeader(request, next);
         let userToken;

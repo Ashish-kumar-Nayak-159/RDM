@@ -42,7 +42,7 @@ export class AddRuleComponent implements OnInit {
     { id: 'LESSOREQUAL', value: '<=' },
     { id: 'LESS', value: '<' },
     { id: 'GREATER', value: '>' },
-    { id: 'EQUAL', value: '=' },
+    { id: 'EQUAL', value: '==' },
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];

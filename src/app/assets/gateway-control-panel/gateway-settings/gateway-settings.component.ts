@@ -123,7 +123,7 @@ export class GatewaySettingsComponent implements OnInit {
     this.testConnectionMessage = undefined;
     this.isTestConnectionAPILoading = true;
     const obj = {
-      method: 'test_gateway_connection',
+      method: 'test_connection',
       app: this.contextApp.app,
       gateway_id: this.asset.asset_id,
       message: {},

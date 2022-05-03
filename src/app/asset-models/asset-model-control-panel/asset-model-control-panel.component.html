@@ -51,15 +51,15 @@
               <div class="main-heading">
                 {{assetModel?.name}}
                 <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                  <a href="javascript:void(0)" (click)="openUnfreezeModal()"
-                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="assetModel.freezed"><em
-                      class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></em></a>
-                  <a href="javascript:void(0)" (click)="freezeModel()"
-                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><em
-                      class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
+                  <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+                    *ngIf="assetModel.freezed"><em class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></em></a>
+                  <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+                    *ngIf="!assetModel.freezed"><em class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
                       *ngIf="!assetModel.freezed"></em></a>
-                      <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit"  (click)="openImportFile()" class="btn btn-sm searchBtn btn-primary" 
-                      placement="bottom" tooltip="Upload Template">Upload</button>
+                </ng-container>
+                <ng-container>
+                  <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit" (click)="openImportFile()"
+                    class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Upload Template">Upload</button>
                 </ng-container>
               </div>
             </div>

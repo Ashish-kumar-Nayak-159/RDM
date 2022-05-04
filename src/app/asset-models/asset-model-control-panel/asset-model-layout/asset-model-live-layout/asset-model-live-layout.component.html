@@ -21,8 +21,60 @@
   </div>
 </div>
 
-<div class="table-responsive">
-  <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
+  <div class="table-responsive">
+  
+    <!-- for the small widget -->
+    <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+        <div class="grid-card-container">
+          <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+            <div *ngIf="widget?.widgetType === 'SmallNumber'"
+              class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+                || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                'margin-left':'0', 'margin-top': '2%' }">
+              <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+              </app-small-number-widget>
+            </div>
+          </ng-container>
+        </div>
+  
+      </ng-container>
+    </div>
+  
+    <!-- for the other widget -->
+    <div class="tableFixHead modal-live-widget-container">
+      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+      <div class="row col-md-12">
+        <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+            'margin-left':'2%', 'margin-top': '2%' }">
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            </app-only-number-widget>
+            <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-gauge-chart>
+            <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
+            <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+              (removeWidget)="removeWidget($event)"
+              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+            </app-live-line-chart>
+          </div>
+        </ng-container>
+  
+  
+  
+    </div>
+  <!-- <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
     <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
        <div class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12'}}">
@@ -62,8 +114,9 @@
       </div>
     </ng-container>
 
-  </div>
+  </div> -->
 </div>
+</div>  
 
 
 

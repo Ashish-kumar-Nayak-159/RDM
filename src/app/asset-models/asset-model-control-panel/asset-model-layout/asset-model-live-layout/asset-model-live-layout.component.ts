@@ -202,7 +202,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   getLiveWidgets() {
-    debugger
     const params = {
       app: this.contextApp.app,
       name: this.assetModel.name,
@@ -292,7 +291,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   onWidgetTypeChange() {
-    debugger
     this.widgetObj.properties = [{}];
     if (
       this.widgetObj.widgetType === 'NumberWithTrend' ||

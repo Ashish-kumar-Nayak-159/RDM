@@ -14,8 +14,7 @@
           <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
             *ngIf="chartConfig.cloud_derived_props">CD</div>
   
-          <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-  
+          <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="!asset && !chartConfig.freezed && chartConfig.measured_props">M</div>
           <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
             href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
             tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
@@ -27,7 +26,7 @@
           <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) + (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage' ? 2 : 1)) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
             *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
   
-            <p class="text-xs live-widget-title mb-0" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
+            <!-- <p class="text-xs live-widget-title mb-0" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
                   ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')" [ngClass]= "{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'SmallNumber' && chartConfig.widgetType != 'StringWidget'))}">
   
               ({{(prop?.type === 'Edge Derived Properties' ? 'ED' : (prop?.type ===
@@ -36,20 +35,19 @@
               )))}}) {{prop.title}}
               {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
               prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
-            </p>
+            </p> -->
   
   
             <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
-              <app-line-chart-without-axis [asset]="asset"
+              <!-- <app-line-chart-without-axis [asset]="asset"
                 [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
                 [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
-              </app-line-chart-without-axis>
+              </app-line-chart-without-axis> -->
             </div>
-            <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
+            <!-- <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
               <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
                   }}" alt="" />
-            </div>
-          
+            </div> -->
             <div 
               [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}">
               <span class="text-darkblue display-5 font-weight-bold"
@@ -74,14 +72,14 @@
                   (apiTelemetryObj[prop.property?.json_key].value))
                   : 'NA'}} {{prop.unit}}
                 </ng-template>
-                <br>
+                <!-- <br>
                 <ng-container *ngIf ='!asset'>
                     <span style="font-size: 0.7rem;">Sample Chart</span>
-                </ng-container>
+                </ng-container> -->
               </span>
             </div>
             <!-- <div [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}" -->
-            <div
+            <!-- <div
 
             [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }"  >
               <span class="text-grey">
@@ -93,7 +91,7 @@
                   apiTelemetryObj[prop.property?.json_key]?.message_date}}
                 </ng-template>
               </span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

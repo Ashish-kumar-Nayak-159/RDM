@@ -29,9 +29,10 @@
 .grid-card-container {
   display: flex;
   flex-wrap: wrap;
-  /* gap: 5px; */
+  grid-gap: 5px;
+  gap: 5px;
   padding: 0 5px;
-  margin-bottom:20px;
+  margin-bottom: 20px;
   }
   .smallnumber-widget-class{
     max-width: calc(100%/12 - 5px);
@@ -40,7 +41,7 @@
     /* margin-top: 2px !important; */
 }
 .smallnumber-widget-class-overflowhidden {
-height: 70vh;
-overflow-x: hidden !important;
-overflow-y: auto;
+  /* height: 70vh; */
+  overflow-x: hidden !important;
+  overflow-y: auto;
 }

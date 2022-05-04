@@ -37,7 +37,6 @@ export class SmallNumberWidgetComponent implements OnInit {
     }
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
-        console.log("Checking", JSON.stringify(arr))
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );

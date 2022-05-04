@@ -11,7 +11,7 @@
         /* margin-top: 2px !important; */
     }
 .smallnumber-widget-class-overflowhidden {
-    height: 70vh;
+    /* height: 70vh; */
     overflow-x: hidden !important;
     overflow-y: auto;
 }
@@ -23,3 +23,10 @@
         gap: 5px;
         padding: 0 5px;
     } */
+    .table-responsive{
+        display: block;
+    height: 70vh;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    }

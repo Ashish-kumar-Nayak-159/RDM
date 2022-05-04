@@ -214,4 +214,7 @@ export class AppUrls {
  public static UPDATE_HIERARCHIES = 'hierarchy_new/{0}'
 
  public static REFRESH_TOKEN = 'refresh-token'
+ public static Get_DBSCHEMA = 'apps/{0}/dbschema'
+
+
 }

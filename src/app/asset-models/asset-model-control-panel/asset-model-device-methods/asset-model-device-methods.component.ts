@@ -48,7 +48,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.setUpAssetMethodsData();
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
   }
 

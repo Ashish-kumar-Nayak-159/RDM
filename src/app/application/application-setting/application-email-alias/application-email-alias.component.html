@@ -208,6 +208,61 @@
                 </div>
               </div>
             </accordion-group>
+            <accordion-group heading="" [panelClass]="'customClass1'">
+              <ng-container accordion-heading>
+                <a class="btn">
+                  Push Notification
+                </a>
+              </ng-container>
+              <div class="row col-md-12">
+                <div class="col-12  my-2 accordion-padding">
+                  <p *ngIf="userGroup?.recipients?.push_notification?.length === 0" class="mb-0"> No Push Notification Recipients added yet.
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
+                  </p>
+                  <p *ngIf="userGroup?.recipients?.push_notification?.length > 0;" class="mb-0"> Following Push Notification Recipients have
+                    been
+                    added so far. You can add more.
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                      placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></em>
+                  </p>
+                </div>
+                <div class="col-12  my-2 accordion-padding"
+                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                  <div class="form-inline">
+                    <ng-container>
+                      <div class="form-group">
+                        <input type="push_notification" class="form-control form-control-sm small" min="0" name="Email"
+                          placeholder="Email ID" [(ngModel)]="recipientemailpush[i]">
+                      </div>
+                      <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                          (click)="addPushRecipient(i)">
+                          <em class="fa fa-plus fa-sm"></em></button>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.push_notification?.length > 0">
+                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                    <ng-container *ngFor="let user of userGroup?.recipients?.push_notification; let index = index">
+                      <span class="tag">
+                        <span class="tag-text">{{user}}</span>
+                        <button class="tag-remove"
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                          (click)="removePushRecipient(index)"></button>
+                      </span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
           </accordion>
         </accordion-group>
       </ng-container>

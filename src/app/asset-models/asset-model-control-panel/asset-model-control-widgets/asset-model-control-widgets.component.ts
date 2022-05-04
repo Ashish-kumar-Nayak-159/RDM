@@ -43,7 +43,8 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.getAssetsModelProperties();
     this.getAssetsModelAssetMethod();

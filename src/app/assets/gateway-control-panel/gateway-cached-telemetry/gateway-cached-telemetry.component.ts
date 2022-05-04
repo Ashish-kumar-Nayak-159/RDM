@@ -45,7 +45,8 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.asset.type === CONSTANTS.IP_GATEWAY) {

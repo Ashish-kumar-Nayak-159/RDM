@@ -7,6 +7,7 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 @Component({
   selector: 'app-application-list',
@@ -33,7 +34,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   appPrivilegeObj: any = {};
   roleId: number = 0;
   timezones = CONSTANTS.TIME_ZONES;
-  constructor(private applicationService: ApplicationService, private toasterService: ToasterService, private router: Router, private route: ActivatedRoute) { }
+  loader:boolean =false;
+  constructor(private applicationService: ApplicationService, private commonService:CommonService, private toasterService: ToasterService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.tableConfig = {
@@ -232,7 +234,15 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
                 id: 'Partition',
                 valueclass: '',
                 tooltip: 'Database Partition',
+              },
+              {
+                icon: 'fab fa-mixcloud',
+                text: '',
+                id: 'Un Provision',
+                valueclass: '',
+                tooltip: 'Move to Provision',
               }
+            
             ],
           }
         ],
@@ -376,8 +386,25 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       this.getAppPriviledges(obj.data);
       this.getAllPriviledges(obj.data);
       this.isCreateAPILoading = false;
+    }else if (obj.for === 'Un Provision'){
+      this.selectedApp = obj.data.app;
+        this.calldbschema();
     }
   }
+
+  calldbschema() {
+      this.applicationService.getdbschema(this.selectedApp).subscribe((response: any) => {
+        this.toasterService.showSuccess(response.message, 'Schema Created');
+        this.searchApplications();
+
+
+    
+    },
+      (error) => this.loader = false)
+  }
+
+
+
   onValidateLength(obj) {
     return Object.keys(obj).length > 0;
   }
@@ -413,10 +440,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
     if (this.createApplicationForm.value?.metadata?.app_specific_db) {
       dbGroup.addControl('default', new FormControl(true));
-      dbGroup.addControl('host_name', new FormControl(null));
-      dbGroup.addControl('user_name', new FormControl(null));
-      dbGroup.addControl('database_name', new FormControl(null));
-      dbGroup.addControl('port', new FormControl(null));
+      dbGroup.addControl('host_name', new FormControl(null, [Validators.required]));
+      dbGroup.addControl('user_name', new FormControl(null, [Validators.required]));
+      dbGroup.addControl('database_name', new FormControl(null, [Validators.required]));
+      dbGroup.addControl('port', new FormControl(null, [Validators.required]));
     } else {
       dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('host_name');
@@ -429,7 +456,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     const dbGroup = this.createApplicationForm.get('metadata')?.get('schema_info') as FormGroup;
     if (this.createApplicationForm.value?.metadata?.app_specific_schema) {
       dbGroup.addControl('default', new FormControl(true));
-      dbGroup.addControl('schema_name', new FormControl(null));
+      dbGroup.addControl('schema_name', new FormControl(null,[Validators.required]));
     } else {
       dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('schema_name');
@@ -439,7 +466,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     const dbGroup = this.createApplicationForm.get('metadata')?.get('telemetry_schema_info') as FormGroup;
     if (this.createApplicationForm.value?.metadata?.app_telemetry_specific_schema) {
       dbGroup.addControl('default', new FormControl(true));
-      dbGroup.addControl('schema_name', new FormControl(null));
+      dbGroup.addControl('schema_name', new FormControl(null,[Validators.required]));
     } else {
       dbGroup.addControl('default', new FormControl(false));
       dbGroup.removeControl('schema_name');

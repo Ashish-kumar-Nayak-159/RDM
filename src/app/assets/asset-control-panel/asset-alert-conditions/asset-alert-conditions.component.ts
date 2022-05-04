@@ -9,6 +9,7 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { debug } from 'console';
 declare var $: any;
 @Component({
   selector: 'app-asset-alert-conditions',
@@ -61,7 +62,8 @@ export class AssetAlertConditionsComponent implements OnInit {
   selectedUserGroups : any = {
     'email':[],
     'sms':[],
-    'whatsapp':[]
+    'whatsapp':[],
+    'push_notification':[]
   };
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
@@ -315,41 +317,50 @@ export class AssetAlertConditionsComponent implements OnInit {
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
         this.alertObj.actions = {
-          email: { enabled: false, client_field_support_enabled: false, recipients: [] },
-          whatsapp: { enabled: false, client_field_support_enabled: false, recipients: [] },
-          sms: { enabled: false, client_field_support_enabled: false, recipients: [] },
+          email: { enabled: false,  recipients: [] },
+          whatsapp: { enabled: false,  recipients: [] },
+          sms: { enabled: false,  recipients: [] },
+          push_notification: { enabled: false, recipients: [] },
+
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.email = { enabled: false,  recipients: [] };
         }
         if (!this.alertObj.actions.email.recipients) {
           this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.email.enabled) {
-          this.alertObj.actions.email.client_field_support_enabled = false;
-          this.alertObj.actions.email.recipients = [];
+         this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.whatsapp = { enabled: false,  recipients: [] };
         }
         if (!this.alertObj.actions.whatsapp.recipients) {
           this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp.enabled) {
-          this.alertObj.actions.whatsapp.client_field_support_enabled = false;
           this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.sms) {
-          this.alertObj.actions.sms = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.sms = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.sms.recipients) {
           this.alertObj.actions.sms.recipients = [];
         }
         if (!this.alertObj.actions.sms.enabled) {
-          this.alertObj.actions.sms.client_field_support_enabled = false;
           this.alertObj.actions.sms.recipients = [];
         }
+        if (!this.alertObj.actions.push_notification) {
+          this.alertObj.actions.push_notification = { enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.push_notification.recipients) {
+          this.alertObj.actions.push_notification.recipients = [];
+        }
+        if (!this.alertObj.actions.push_notification.enabled) {
+          this.alertObj.actions.push_notification.recipients = [];
+        }
+        console.log("Checking", JSON.stringify(this.alertObj))
       }
     }
   }
@@ -411,6 +422,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onUpdateAlertConditions() {
+    debugger
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -546,7 +558,8 @@ export class AssetAlertConditionsComponent implements OnInit {
         this.selectedUserGroups = {
           'email':[],
           'sms':[],
-          'whatsapp':[]
+          'whatsapp':[],
+          'push_notification':[]
         }
       }
     }

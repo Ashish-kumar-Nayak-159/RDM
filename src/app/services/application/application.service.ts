@@ -331,4 +331,16 @@ export class ApplicationService {
     
   }
 
+  getdbschema(app?){
+    // let params = new HttpParams();
+    // Object.keys(filterObj).forEach((key) => {
+    //   if (filterObj[key]) {
+    //     params = params.set(key, filterObj[key]);
+    //   }
+    // });
+
+    return this.http.get(this.url + String.Format(AppUrls.Get_DBSCHEMA, encodeURIComponent(app)))
+    
+  }
+
 }

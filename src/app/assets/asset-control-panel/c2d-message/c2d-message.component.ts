@@ -45,7 +45,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.c2dMsgFilter.displayJobOptions = true;
     this.c2dMsgFilter.tableType = 'All';

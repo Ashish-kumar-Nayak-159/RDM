@@ -21,6 +21,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   isUpdateUserGroupsLoading = false;
   apiSubscriptions: Subscription[] = [];
   recipientemail: any = {};
+  recipientemailpush: any = {};
   recipientsms: any = {};
   recipientwhatsapp: any = {};
   decodedToken: any;
@@ -58,6 +59,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
               }
               if (!group.recipients.whatsapp) {
                 group.recipients.whatsapp = [];
+              }
+              if (!group.recipients.push_notification) {
+                group.recipients.push_notification = [];
               }
             });
           }
@@ -101,6 +105,8 @@ export class ApplicationEmailAliasComponent implements OnInit {
     }
   }
 
+
+
   removeEmailRecipient(index) {
     if (!this.isAddUserGroup) {
       this.appObj.recipients['email'].splice(index, 1);
@@ -108,6 +114,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
       this.groupObj.recipients['email'].splice(index, 1);
     }
   }
+
+
+
 
   addSMSRecipient(index) {
     if ($('#recipientsms_' + index).is(':invalid')) {
@@ -190,6 +199,48 @@ export class ApplicationEmailAliasComponent implements OnInit {
       this.groupObj.recipients['whatsapp'].splice(index, 1);
     }
   }
+
+
+  
+  addPushRecipient(index) {
+    if (!this.recipientemailpush[index]) {
+      this.toasterService.showError('Email is required', 'Add Email');
+    } else {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.recipientemailpush[index])) {
+        this.toasterService.showError('Email address is not valid', 'Add Email');
+        return;
+      }
+      if (!this.isAddUserGroup) {
+        if (this.userGroups[index].recipients['push_notification'].includes(this.recipientemailpush[index])) {
+          this.toasterService.showError('Same email address exist in this group', 'Add Email');
+          return;
+        }
+        this.userGroups[index].recipients['push_notification'].splice(
+          this.userGroups[index].recipients['push_notification'].length,
+          0,
+          this.recipientemailpush[index]
+        );
+      } else {
+        if (this.groupObj.recipients['push_notification'].includes(this.recipientemailpush[index])) {
+          this.toasterService.showError('Same email address exist in this group', 'Add Email');
+          return;
+        }
+        this.groupObj.recipients['push_notification'].splice(this.groupObj.recipients['push_notification'].length, 0, this.recipientemail[index]);
+      }
+      this.recipientemailpush = {};
+    }
+  }
+
+
+
+  removePushRecipient(index) {
+    if (!this.isAddUserGroup) {
+      this.appObj.recipients['push_notification'].splice(index, 1);
+    } else {
+      this.groupObj.recipients['push_notification'].splice(index, 1);
+    }
+  }
+
 
   openCreateUserGroupModal() {
     this.isAddUserGroup = true;

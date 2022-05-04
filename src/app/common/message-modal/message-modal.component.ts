@@ -19,7 +19,8 @@ export class MessageModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     if(!this.isAPILoading) this.isAPILoading = false;
   }

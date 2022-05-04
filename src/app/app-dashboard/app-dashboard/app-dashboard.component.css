@@ -44,4 +44,5 @@
   /* height: 70vh; */
   overflow-x: hidden !important;
   overflow-y: auto;
+  width: 100%;
 }

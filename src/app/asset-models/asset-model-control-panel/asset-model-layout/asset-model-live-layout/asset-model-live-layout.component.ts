@@ -291,7 +291,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   onWidgetTypeChange() {
-    debugger
     this.widgetObj.properties = [{}];
     if (
       this.widgetObj.widgetType === 'NumberWithTrend' ||

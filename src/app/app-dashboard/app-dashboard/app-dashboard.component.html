@@ -236,7 +236,51 @@
       <!-- <ng-container *ngFor="let widget of liveWidgets; let i = index;">
     <div  class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12 mt-n2'}}" 
       *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets && originalFilter?.asset">
-      <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+      <!-- for the small widget -->
+      <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+        <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+        <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+          <div class="grid-card-container">
+            <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+              <div *ngIf="widget?.widgetType === 'SmallNumber'"
+                class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+                || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                'margin-left':'0', 'margin-top': '2%' }">
+                <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+                [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj" [telemetryObj]="telemetryObj"   [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+                </app-small-number-widget>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+      <!-- for the other widget -->
+
+      <div class="row col-md-12">
+        <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+                  || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                  'margin-left':'2%', 'margin-top': '2%' }">
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+                  || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'" [chartConfig]="widget"
+              [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj" [telemetryObj]="telemetryObj">
+            </app-only-number-widget>
+            <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
+            <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset" *ngIf="widget.widgetType === 'GaugeChart'"
+              [telemetryObj]="telemetryObj" [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
+            <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
+              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+            </app-live-line-chart>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- <ng-container *ngFor="let widget of liveWidgets; let i = index;">
        
         <div *ngIf="widget?.widgetType === 'SmallNumber'" class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}"
           [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  

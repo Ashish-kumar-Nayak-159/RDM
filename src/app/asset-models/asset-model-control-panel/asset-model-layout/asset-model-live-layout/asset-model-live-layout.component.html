@@ -25,7 +25,7 @@
   
     <!-- for the small widget -->
     <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
-      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+      <!-- <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em> -->
       <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
         <div class="grid-card-container">
           <ng-container *ngFor="let widget of liveWidgets; let i = index;">

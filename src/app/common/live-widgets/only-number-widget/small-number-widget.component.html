@@ -62,7 +62,12 @@
                   (prop.property?.data_type === 'Number' ?
                   (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
                   (telemetryObj[prop.property?.json_key].value))
-                  : 'NA'}} {{prop.unit}}
+                  : 'NA'}}  
+                  <sub>
+                    {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
+                  prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
+                  </sub>
+                  
                 </ng-container>
                 <ng-template #APIPropValTemplate>
                   {{ (apiTelemetryObj[prop.property?.json_key] && (apiTelemetryObj[prop.property?.json_key]?.value !==

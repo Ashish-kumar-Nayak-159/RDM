@@ -576,7 +576,68 @@
 
                     </div>
                   </div>
+                  <hr>
+                  <div class="form-group accordion-padding mx-3">
+                    <input type="checkbox" class="form-check-input" id="push_notification" name="push_notification"
+                    [(ngModel)]="alertObj.actions.push_notification.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
+                  <label class="form-check-label" for="push_notification">Push Notification</label>
+                  <div class="row my-2"
+                  *ngIf="alertObj.actions.push_notification.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
+                  <div class="col-auto">
+                    <div class=""
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                      <div class="form-inline">
+                        <ng-container>
+                          <div class="form-group">
+                            <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                              class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                              placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                              name="group-dropdown" [(ngModel)]="selectedUserGroups['push_notification']" [closeOnSelect]="false"
+                              required>
+                              <ng-template ng-header-tmp>
+                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                  <li *ngIf="userGroups.length !== selectedUserGroups['push_notification'].length"> <a
+                                      href="javascript:void(0)"
+                                      (click)="selectedUserGroups['push_notification'] = userGroups">Select All</a></li>
+                                  <li *ngIf="userGroups.length === selectedUserGroups['push_notification'].length"> <a
+                                      href="javascript:void(0)" (click)="selectedUserGroups['push_notification'] = []">Deselect
+                                      All</a></li>
+                                </ul>
+                              </ng-template>
+                              <ng-template ng-option-tmp let-item="item">
+                                <span>
+                                  {{item.group_name}}
+                                </span>
+                              </ng-template>
+                              <ng-template ng-multi-label-tmp let-items="items">
+                                {{items.length}} groups selected
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                          <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                              tooltip="Add" (click)="addUserGroup('push_notification')">
+                              <em class="fa fa-plus fa-sm"></em></button>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
 
+                    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                      *ngIf="alertObj?.actions?.push_notification?.recipients?.length > 0">
+                      <ng-container *ngFor="let item of alertObj.actions.push_notification.recipients; let index = index">
+                        <span class="tag">
+                          <span class="tag-text">{{item}}</span>
+                          <button class="tag-remove" (click)="removeUserGroup(index, 'push_notification')"
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                  </div>  
+                
+                </div>
                 </div>
               </td>
             </tr>

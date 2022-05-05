@@ -55,7 +55,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   selectedUserGroups : any = {
     'email':[],
     'sms':[],
-    'whatsapp':[]
+    'whatsapp':[],
+    'push_notification':[]
+
   };
   recommendationObj: any;
   // docName: any;
@@ -312,29 +314,38 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     }
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
+
         this.alertObj.actions = {
-          email: { enabled: false, client_field_support_enabled: false, recipients: [] },
-          whatsapp: { enabled: false, client_field_support_enabled: false, recipients: [] },
-          sms: { enabled: false, client_field_support_enabled: false, recipients: [] },
+          email: { enabled: false,  recipients: [] },
+          whatsapp: { enabled: false,  recipients: [] },
+          sms: { enabled: false,  recipients: [] },
+          push_notification: { enabled: false, recipients: [] },
+
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.email = { enabled: false,  recipients: [] };
         }
         if (!this.alertObj.actions.email.recipients) {
           this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.whatsapp = { enabled: false,  recipients: [] };
         }
         if (!this.alertObj.actions.whatsapp.recipients) {
           this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.sms) {
-          this.alertObj.actions.sms = { enabled: false, client_field_support_enabled: false, recipients: [] };
+          this.alertObj.actions.sms = { enabled: false,  recipients: [] };
         }
         if (!this.alertObj.actions.sms.recipients) {
           this.alertObj.actions.sms.recipients = [];
+        }
+        if (!this.alertObj.actions.push_notification) {
+          this.alertObj.actions.push_notification = { enabled: false,recipients: [] };
+        }
+        if (!this.alertObj.actions.push_notification.recipients) {
+          this.alertObj.actions.push_notification.recipients = [];
         }
       }
     }
@@ -622,7 +633,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.selectedUserGroups = {
       'email':[],
       'sms':[],
-      'whatsapp':[]
+      'whatsapp':[],
+      'push_notification':[]
+
     }
   }
 
@@ -642,7 +655,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.selectedUserGroups = {
           'email':[],
           'sms':[],
-          'whatsapp':[]
+          'whatsapp':[],
+          'push_notification':[]
+
         }
       }
     }

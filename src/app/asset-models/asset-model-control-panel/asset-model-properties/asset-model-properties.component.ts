@@ -53,7 +53,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.mode = 'code';
+    this.editorOptions.modes = ['code','view'];
+    this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.getSlaveData();
   }

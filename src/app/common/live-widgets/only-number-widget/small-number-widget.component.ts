@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy,SimpleChanges } from '@angular/core';
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './small-number-widget.component.html',
   styleUrls: ['./small-number-widget.component.css']
 })
-export class SmallNumberWidgetComponent implements OnInit {
+export class SmallNumberWidgetComponent implements OnInit,OnChanges {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
@@ -29,7 +29,11 @@ export class SmallNumberWidgetComponent implements OnInit {
 
   constructor(private chartService:ChartService, private commonService:CommonService) { }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges) {
+    this.chartConfig = this.chartConfig
+  }
+
+  async ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {

@@ -201,7 +201,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }, 1000);
   }
 
-  getLiveWidgets() {
+  async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
       name: this.assetModel.name,
@@ -390,7 +390,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
   }
 
-  updateAssetModel(arr, message) {
+  async updateAssetModel(arr, message) {
     arr.forEach((widget) => {
       if (widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart') {
         widget.y1AxisProps.forEach((prop) => {
@@ -510,7 +510,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
+    setTimeout(() => {
+      this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
+
+    }, 1000);
   }
 
   onClickOfCheckbox() {

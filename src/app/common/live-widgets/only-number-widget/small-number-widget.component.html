@@ -63,7 +63,7 @@
                   (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
                   (telemetryObj[prop.property?.json_key].value))
                   : 'NA'}}  
-                  <sub>
+                  <sub class="text-xs live-widget-title mb-0">
                     {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
                   prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
                   </sub>

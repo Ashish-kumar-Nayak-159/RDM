@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './small-number-widget.component.html',
   styleUrls: ['./small-number-widget.component.css']
 })
-export class SmallNumberWidgetComponent implements OnInit,OnChanges {
+export class SmallNumberWidgetComponent implements OnInit {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
@@ -29,11 +29,10 @@ export class SmallNumberWidgetComponent implements OnInit,OnChanges {
 
   constructor(private chartService:ChartService, private commonService:CommonService) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.chartConfig = this.chartConfig
-  }
+
 
   async ngOnInit() {
+    console.log("telemetry211212", JSON.stringify(this.telemetryObj))
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {

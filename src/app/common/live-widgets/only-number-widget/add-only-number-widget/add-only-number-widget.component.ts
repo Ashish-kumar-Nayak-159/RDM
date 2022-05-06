@@ -19,8 +19,6 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log("CheckingProperTy", JSON.stringify(this.propertyList))
-    console.log("propertyList", JSON.stringify(this.widgetObj))
 
 
   }
@@ -80,13 +78,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     }
   }
 
-  onKeyUp(obj) {
-    console.log("Checking", JSON.stringify(obj))
-    if (obj?.digitsAfterDecimals > 1) {
-      this.toasterService.showError('Small Number Widget decimal value can not be greater than 1', 'Add Proper Value');
-    }
-   
-  }
+ 
 
   onColorChangeComplete(event) {}
 }

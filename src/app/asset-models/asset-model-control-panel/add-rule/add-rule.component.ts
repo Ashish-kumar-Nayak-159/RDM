@@ -160,6 +160,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   configureData() {
+    
     if (this.ruleData.rule_id) {
       this.ruleModel.rule_id = this.ruleData.rule_id;
     }
@@ -252,6 +253,7 @@ export class AddRuleComponent implements OnInit {
         }
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+
     });
   }
 
@@ -343,7 +345,8 @@ export class AddRuleComponent implements OnInit {
       property: null,
       operator: '',
       threshold: 0,
-      aggregation_type: null
+      aggregation_type: null,
+      type:''
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -390,6 +393,7 @@ export class AddRuleComponent implements OnInit {
         ' ' +
         this.ruleModel.operator;
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
+      element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
       this.ruleModel.properties.push({
         property: prop.value.json_key,
         type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',

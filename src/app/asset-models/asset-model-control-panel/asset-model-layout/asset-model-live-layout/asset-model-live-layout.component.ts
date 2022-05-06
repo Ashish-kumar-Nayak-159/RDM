@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { debug } from 'console';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -23,6 +24,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   contextApp: any;
   subscriptions: Subscription[] = [];
   propertyList: any[] = [];
+  actualPropertyList:any[]=[];
   liveWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
   signalRTelemetrySubscription: Subscription;
@@ -38,6 +40,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }]
   selectedSlave:any = {slave_name:'Select Slave'}
   widgetStringFromMenu: any;
+  checkwidgettype:boolean =false;
+  checkingsmallwidget:''
+  
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -53,7 +58,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties({});
-    this.getLiveWidgets();
+    await this.getLiveWidgets();
     this.getModelSlaveDetails();
   }
 
@@ -86,9 +91,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     });
   }
 
-  getAssetsModelProperties(selectedSlave) {
+  async getAssetsModelProperties(selectedSlave) {
     this.filteredPropList = []
     this.propertyList = []
+    this.actualPropertyList = []
     // this.properties = {};
     return new Promise<void>((resolve) => {
       const obj = {
@@ -102,6 +108,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             : [];
             response.properties?.measured_properties?.forEach((prop) => {
               prop.type = 'Measured Properties'
+              this.actualPropertyList.push(prop);
               if(!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id){
                 this.propertyList.push(prop)
               }
@@ -117,17 +124,20 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             prop.type = 'Edge Derived Properties';
             let matchCount = 0
             prop.metadata?.properties.forEach((actualProp)=>{
+              this.actualPropertyList.push(actualProp);
               if(!selectedSlave?.slave_id || actualProp?.property?.metadata?.slave_id == selectedSlave?.slave_id){
                 matchCount++
               }
             })
             if(matchCount > 0){
               this.propertyList.push(prop)
+
             }
 
           });
           response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
+            this.actualPropertyList.push(prop);
             if(!selectedSlave?.slave_id ||  prop?.metadata?.slave_id == selectedSlave?.slave_id){
               this.propertyList.push(prop)
             }
@@ -140,6 +150,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_key = kpi.kpi_json_key;
             obj.json_model = {};
             obj.json_model[obj.json_key] = {};
+            this.actualPropertyList.push(obj);
             if(!selectedSlave?.slave_id ||  kpi?.metadata?.slave_id == selectedSlave?.slave_id){
               this.propertyList.push(obj);
             }
@@ -198,7 +209,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }, 1000);
   }
 
-  getLiveWidgets() {
+  async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
       name: this.assetModel.name,
@@ -207,12 +218,17 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isGetWidgetsAPILoading = true;
     this.subscriptions.push(
       this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
-        async (response: any) => {
+         (response: any) => {
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;
             // let count = 1;
             this.liveWidgets.forEach((widget) => {
+              this.checkingsmallwidget = widget.widgetType;
+
+              if(widget.widgetType === 'SmallNumber'){
+                this.checkwidgettype = true;
+              }
               widget.freezed = this.assetModel.freezed;
               widget.edge_derived_props = false;
               widget.cloud_derived_props = false;
@@ -303,19 +319,22 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       }
     });
+  
   }
 
-  getTelemetryData() {
+  async getTelemetryData() {
     this.telemetryObj = {};
     this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
-    this.propertyList.forEach((prop) => {
+    this.actualPropertyList?.forEach((prop) => {
+      if(prop.json_key){
       this.telemetryObj[prop.json_key] = {
         value: this.commonService.randomIntFromInterval(
-          prop.json_model[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
-          prop.json_model[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
+          prop.json_model?.[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
+          prop.json_model?.[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
         ),
         date: this.telemetryObj.message_date,
       };
+    }
     });
   }
 
@@ -381,7 +400,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
   }
 
-  updateAssetModel(arr, message) {
+  async updateAssetModel(arr, message) {
     arr.forEach((widget) => {
       if (widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart') {
         widget.y1AxisProps.forEach((prop) => {
@@ -400,11 +419,13 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
-        (response: any) => {
+         async (response: any) => {
           this.toasterService.showSuccess(message, 'Live ' + this.widgetStringFromMenu);
-          this.getLiveWidgets();
-          this.onCloseAddWidgetModal();
-          this.onCloseConfigureDashboardModal();
+          await this.getAssetModelsderivedKPIs();
+          await this.getAssetsModelProperties({});
+          await this.getLiveWidgets();
+          await this.onCloseAddWidgetModal();
+          await this.onCloseConfigureDashboardModal();
           this.isCreateWidgetAPILoading = false;
         },
         (err) => {
@@ -501,6 +522,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
+    
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
   }
 

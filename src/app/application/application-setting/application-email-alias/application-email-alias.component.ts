@@ -14,8 +14,8 @@ declare var $: any;
 })
 export class ApplicationEmailAliasComponent implements OnInit {
   @Input() applicationData: any;
-  appObj: { group_name?: string; recipients?: any[]; email?: any[]; sms?: any[]; whatsapp?: any[] };
-  groupObj: { group_name?: string; recipients?: {}; email?: any[]; sms?: any[]; whatsapp?: any[] };
+  appObj: { group_name?: string; recipients?: any[]; email?: any[]; sms?: any[]; whatsapp?: any[];push_notification?: any[] };
+  groupObj: { group_name?: string; recipients?: {}; email?: any[]; sms?: any[]; whatsapp?: any[]; push_notification?: any[] };
   userGroups: any[] = [];
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
@@ -77,6 +77,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   addEmailRecipient(index) {
+    debugger
     if (!this.recipientemail[index]) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -203,6 +204,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   
   addPushRecipient(index) {
+    debugger
     if (!this.recipientemailpush[index]) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -225,7 +227,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
           this.toasterService.showError('Same email address exist in this group', 'Add Email');
           return;
         }
-        this.groupObj.recipients['push_notification'].splice(this.groupObj.recipients['push_notification'].length, 0, this.recipientemail[index]);
+        this.groupObj.recipients['push_notification'].splice(this.groupObj.recipients['push_notification'].length, 0, this.recipientemailpush[index]);
       }
       this.recipientemailpush = {};
     }
@@ -244,10 +246,11 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   openCreateUserGroupModal() {
     this.isAddUserGroup = true;
-    this.groupObj = { group_name: null, recipients: { email: [], sms: [], whatsapp: [] } };
+    this.groupObj = { group_name: null, recipients: { email: [], sms: [], whatsapp: [],push_notification :[] } };
     this.recipientemail = {};
     this.recipientsms = {};
     this.recipientwhatsapp = {};
+    this.recipientemailpush ={};
     $('#createUserGroupModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

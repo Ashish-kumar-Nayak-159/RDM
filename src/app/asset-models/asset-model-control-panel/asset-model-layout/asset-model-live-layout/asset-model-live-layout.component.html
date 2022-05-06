@@ -21,18 +21,86 @@
   </div>
 </div>
 
-<div class="table-responsive">
-  <div class="tableFixHead modal-live-widget-container">
+  <div class="table-responsive">
+  
+    <!-- for the small widget -->
+    <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+      <!-- <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em> -->
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+        <div class="grid-card-container">
+          <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+
+            <div *ngIf="widget?.widgetType === 'SmallNumber'"
+              class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+                || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                'margin-left':'0', 'margin-top': '2%' }">
+                
+
+                <!-- {{telemetryObj.temperature.value| json}}
+                {{telemetryObj.pressure1.value | json}} -->
+
+              <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+              </app-small-number-widget>
+            </div>
+          </ng-container>
+        </div>
+  
+      </ng-container>
+    </div>
+  
+    <!-- for the other widget -->
+    <div class="tableFixHead modal-live-widget-container">
+      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+      <div class="row col-md-12 mb-5">
+        <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+            'margin-left':'2%', 'margin-top': '2%' }">
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            </app-only-number-widget>
+            <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-gauge-chart>
+            <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
+            <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+              (removeWidget)="removeWidget($event)"
+              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+            </app-live-line-chart>
+          </div>
+        </ng-container>
+  
+  
+  
+    </div>
+  <!-- <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
     <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
-      <div class="row col-md-12">
+       <div class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12'}}">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-          <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+        
+          <div   *ngIf="widget?.widgetType === 'SmallNumber'" class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}"  [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+          || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+          'margin-left':'0', 'margin-top': '2%' }">
+          <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+          (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+        </app-small-number-widget>
+          </div>
+          
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
       || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
-      'margin-left':'2%', 'margin-top': '2%'}">
-            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+      'margin-left':'2%', 'margin-top': '2%' }">
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+                  || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'"
+              [chartConfig]="widget" (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+              [apiTelemetryObj]="telemetryObj">
             </app-only-number-widget>
             <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
               (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
@@ -51,12 +119,10 @@
         </ng-container>
       </div>
     </ng-container>
-    <!-- <p class="m-3" *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
-      No Live Widgets added. <button class="btn btn-sm btn-primary"  [disabled]="assetModel.freezed" (click)="onOpenAddWidgetModal()"
-      ><em class="fa fa-plus fa-sm text-white"></em></button>
-    </p> -->
-  </div>
+
+  </div> -->
 </div>
+</div>  
 
 
 
@@ -76,15 +142,16 @@
             <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Title:</label>
             <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="widgetObj.widgetTitle" placeholder="Enter {{widgetStringFromMenu}} Name">
-              <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
-                Please enter valid name.
-              </div>
+            <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+              Please enter valid name.
+            </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Type:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
               [(ngModel)]="widgetObj.widgetType" (change)="onWidgetTypeChange()">
               <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'SmallNumber'">Small Number {{widgetStringFromMenu}}</option>
               <option [ngValue]="'OnlyNumber'">Only Number {{widgetStringFromMenu}}</option>
               <option [ngValue]="'NumberWithTrend'">Number with Trend {{widgetStringFromMenu}}</option>
               <option [ngValue]="'NumberWithImage'">Number with Image {{widgetStringFromMenu}}</option>
@@ -105,13 +172,14 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Slave Name</label>
             <ng-select [items]="slaveList" class="custom-dropdown w-12 sm" [searchable]="true"
-            placeholder="Select Slave" clearSearchOnAdd="true"  [closeOnSelect]="true" [clearable]="false"
-            bindLabel="slave_name" dropdownPosition="bottom" name="slave-dropdown1" [(ngModel)]="selectedSlave" (change)="onSlaveSelection(selectedSlave)">
-            <ng-template ng-option-tmp let-item="item">
-              <span [tooltip]="item.name"> 
-                {{item.slave_name}}</span>
-            </ng-template>
-          </ng-select>
+              placeholder="Select Slave" clearSearchOnAdd="true" [closeOnSelect]="true" [clearable]="false"
+              bindLabel="slave_name" dropdownPosition="bottom" name="slave-dropdown1" [(ngModel)]="selectedSlave"
+              (change)="onSlaveSelection(selectedSlave)">
+              <ng-template ng-option-tmp let-item="item">
+                <span [tooltip]="item.name">
+                  {{item.slave_name}}</span>
+              </ng-template>
+            </ng-select>
           </div>
           <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithTrend' || widgetObj.widgetType === 'LineChart' || widgetObj.widgetType === 'AreaChart'
         ">
@@ -134,16 +202,19 @@
           </app-add-only-number-widget>
 
 
-        
-      <div class="modal-footer fixed-bottom bg-white">
-        <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading"
-          (click)="onSaveWidgetObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
-          (click)="onCloseAddWidgetModal()">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+
+
+
+
+          <div class="modal-footer fixed-bottom bg-white">
+            <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading"
+              (click)="onSaveWidgetObj()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+              (click)="onCloseAddWidgetModal()">Cancel</button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
     </div>
   </div>
 </div>
@@ -167,12 +238,12 @@
             <thead>
               <tr class="bg-secondary text-white">
                 <th scope="col">Index</th>
-                <th scope="col"style="width: 60%">{{widgetStringFromMenu}} Name</th>
+                <th scope="col" style="width: 60%">{{widgetStringFromMenu}} Name</th>
                 <th scope="col">
                   <input type="checkbox" name="visibleall" id="visibleall" (change)="onClickOfCheckbox()"
                     [(ngModel)]="isAllWidgestSelectedForDashboard" placement="bottom"
                     [tooltip]="isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'" />
-                    <label for="visibleall" class="ml-2 mb-0">Visibility</label>
+                  <label for="visibleall" class="ml-2 mb-0">Visibility</label>
                 </th>
               </tr>
             </thead>

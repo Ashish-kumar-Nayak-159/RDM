@@ -29,7 +29,10 @@
     </div>
     <div class="form-group" *ngIf="prop?.property?.data_type === 'Number'">
       <label for="message-text" class="col-form-label ">Digits after Decimal:</label>
-      <input type="number" min="0" class="form-control form-control-sm" id="digitsAfterDecimals"
+
+      <input *ngIf="widgetObj?.widgetType === 'SmallNumber'" type="number"   class="form-control form-control-sm" id="digitsAfterDecimals"
+        name="digitsAfterDecimals" value="1" disabled>
+        <input *ngIf="widgetObj?.widgetType !== 'SmallNumber'" type="number" min="0" class="form-control form-control-sm" id="digitsAfterDecimals"
         name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals" placeholder="Digits after Decimal">
     </div>
     <!-- <div class="row col-md-12">

@@ -19,8 +19,9 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-  }
 
+
+  }
   addProperty() {
     this.widgetObj.properties.push({});
   }
@@ -33,6 +34,9 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     if (prop?.property) {
       // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
+      if(this.widgetObj?.widgetType === 'SmallNumber'){
+        prop.digitsAfterDecimals = '1';
+      }
       // prop.load_value_using = 'signalr';
     } else {
       prop.property = undefined;
@@ -73,6 +77,8 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
       this.widgetObj.y2AxisProps = [];
     }
   }
+
+ 
 
   onColorChangeComplete(event) {}
 }

@@ -36,6 +36,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { CommonWidgetComponent } from './charts/common-widget/common-widget.component';
 import { ColumnchartLivedataComponentComponent } from './charts/columnchart-livedata-component/columnchart-livedata-component.component';
 import { FormValidatorDirective } from '../validator/form-validator.directive';
+import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/small-number-widget.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { FormValidatorDirective } from '../validator/form-validator.directive';
     CylinderWidgetComponent,
     CommonWidgetComponent,
     ColumnchartLivedataComponentComponent,
-    FormValidatorDirective
+    FormValidatorDirective,
+    SmallNumberWidgetComponent
   ],
   imports: [
     CommonModule,
@@ -96,6 +98,7 @@ import { FormValidatorDirective } from '../validator/form-validator.directive';
     LineChartWithoutAxisComponent,
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
+    SmallNumberWidgetComponent,
     LiveLineChartComponent,
     CommonDataTableComponent,
     DamagePlotChartComponent,

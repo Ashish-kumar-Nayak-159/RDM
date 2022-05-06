@@ -390,6 +390,41 @@
             </div>
           </div>
         </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Push Notification Recipients:</label>
+          <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+            <div class="form-inline">
+              <ng-container>
+                <div class="form-group col-11">
+                  <input type="push_notification" class="form-control form-control-sm small" min="0" name="Email"
+                  placeholder="Email ID" [(ngModel)]="recipientemailpush['add']">
+          
+                </div>
+                <div class="form-group col-1">
+                  <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                    (click)="addPushRecipient('add')">
+                    <em class="fa fa-plus fa-sm"></em></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="my-2" *ngIf="groupObj?.recipients?.push_notification?.length > 0">
+            <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+              <ng-container *ngFor="let user of groupObj?.recipients?.push_notification; let index = index">
+
+                
+                <span class="tag">
+                  <span class="tag-text">{{user}}</span>
+                  <button class="tag-remove"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                    (click)="removePushRecipient(index)"></button>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+
      
       <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary add-row" (click)="onCreateUserGroup()"

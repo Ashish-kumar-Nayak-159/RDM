@@ -1,9 +1,10 @@
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { Subscription } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
+import { ConnectionService } from 'ng-connection-service';
 
 @Component({
   selector: 'app-root',
@@ -20,13 +21,35 @@ export class AppComponent implements OnInit, OnDestroy {
   showLoader = true;
   signalRAlertSubscription: Subscription;
   apiSubscriptions: Subscription[] = [];
+  onlineEvent: Observable<Event>;
+  offlineEvent: Observable<Event>;
+  subscriptions: Subscription[] = [];
+
+  connectionStatusMessage: string;
+  connectionStatus: string;
+  title1 = 'internet-connection-check';
+  status = 'ONLINE'; //initializing as online by default
+  isConnected = true;
   constructor(
     private router: Router,
     private commonService: CommonService,
+    private connectionService: ConnectionService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+
+  
+  }
 
   ngOnInit(): void {
+    this.connectionService.monitor().subscribe(isConnected => {
+      this.isConnected = isConnected;
+      if(this.isConnected){
+        this.status = "ONLINE";
+      } else {
+        this.status = "OFFLINE"
+      }
+    });
+  
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
@@ -83,5 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+
   }
 }

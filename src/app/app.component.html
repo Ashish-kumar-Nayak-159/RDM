@@ -1,17 +1,25 @@
-<div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}">
+<div *ngIf="status === 'ONLINE'" id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}">
+  {{isHomeRoute | json}}
   <app-loader *ngIf="showLoader"></app-loader>
   <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute"></app-rdm-side-menu>
   <!-- Content Wrapper -->
   <div id="{{isHomeRoute ? '' : 'content-wrapper'}}" [ngClass]="{'d-flex flex-column': !isHomeRoute}">
+    
     <!-- Main Content -->
     <div id="{{isHomeRoute ? '' : 'content'}}">
       <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute" [url]="url" [contextApp]="applicationData">
       </app-header>
       <!-- Begin Page Content -->
-      <div id="routeWrapperDiv" [ngClass]="{'container-fluid': !isLoginRoute && !isHomeRoute}">
+      <div  id="routeWrapperDiv" [ngClass]="{'container-fluid': !isLoginRoute && !isHomeRoute}">
         <router-outlet></router-outlet>
       </div>
     </div>
     <app-footer *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute"></app-footer>
   </div>
 </div>
+<div *ngIf="status === 'OFFLINE'" class="logo">
+  <!-- <img src="assets/img/apple-touch-icon.png"> -->
+
+  <!-- <img alt="" src="../assets/img/apple-touch-icon.png" /> -->
+</div>
+

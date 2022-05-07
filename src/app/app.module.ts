@@ -31,7 +31,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     RDMHomeComponent,
     ResetPasswordComponent,
     LoaderComponent,
-    RdmGuestLoginComponent
+    RdmGuestLoginComponent,
   ],
   imports: [
     BrowserModule,

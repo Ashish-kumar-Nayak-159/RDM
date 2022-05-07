@@ -25,6 +25,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/web.config",
+              "src/assets/img",
               {
                 "input": "./node_modules/@google/markerclustererplus/images",
                 "glob": "*",

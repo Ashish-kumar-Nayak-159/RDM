@@ -4,7 +4,6 @@ import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from '@angular/co
 import { Router, NavigationEnd, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
-import { ConnectionService } from 'ng-connection-service';
 
 @Component({
   selector: 'app-root',
@@ -25,15 +24,10 @@ export class AppComponent implements OnInit, OnDestroy {
   offlineEvent: Observable<Event>;
   subscriptions: Subscription[] = [];
 
-  connectionStatusMessage: string;
-  connectionStatus: string;
-  title1 = 'internet-connection-check';
-  status = 'ONLINE'; //initializing as online by default
-  isConnected = true;
+
   constructor(
     private router: Router,
     private commonService: CommonService,
-    private connectionService: ConnectionService,
     @Inject(DOCUMENT) private document: Document
   ) {
 
@@ -41,14 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.connectionService.monitor().subscribe(isConnected => {
-      this.isConnected = isConnected;
-      if(this.isConnected){
-        this.status = "ONLINE";
-      } else {
-        this.status = "OFFLINE"
-      }
-    });
   
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);

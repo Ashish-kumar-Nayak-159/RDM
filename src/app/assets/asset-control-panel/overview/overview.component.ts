@@ -59,6 +59,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['code','view'];
     this.editorOptions.mode = 'view';
+    this.editorOptions.expandAll = true;
     this.editorOptions.statusBar = false;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);

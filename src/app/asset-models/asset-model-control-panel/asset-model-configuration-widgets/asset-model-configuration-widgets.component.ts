@@ -42,6 +42,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['code','view'];
+    this.editorOptions.expandAll = true;
     this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.getAssetsModelProperties();

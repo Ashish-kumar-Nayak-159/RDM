@@ -45,6 +45,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['code','view'];
     this.editorOptions.mode = 'view';
+    this.editorOptions.expandAll = true;
     this.editorOptions.statusBar = false;
     this.getAssetsModelProperties();
     this.getAssetsModelAssetMethod();

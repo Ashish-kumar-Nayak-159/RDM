@@ -21,6 +21,7 @@ export class MessageModalComponent implements OnInit {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['code','view'];
     this.editorOptions.mode = 'view';
+    this.editorOptions.expandAll = true;
     this.editorOptions.statusBar = false;
     if(!this.isAPILoading) this.isAPILoading = false;
   }

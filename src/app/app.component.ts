@@ -1,5 +1,5 @@
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { Subscription } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
@@ -20,13 +20,21 @@ export class AppComponent implements OnInit, OnDestroy {
   showLoader = true;
   signalRAlertSubscription: Subscription;
   apiSubscriptions: Subscription[] = [];
+  onlineEvent: Observable<Event>;
+  offlineEvent: Observable<Event>;
+  subscriptions: Subscription[] = [];
+
   constructor(
     private router: Router,
     private commonService: CommonService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+
+  
+  }
 
   ngOnInit(): void {
+  
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
@@ -83,5 +91,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
+
   }
 }

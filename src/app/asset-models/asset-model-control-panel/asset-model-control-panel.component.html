@@ -59,7 +59,7 @@
                 </ng-container>
                 <ng-container>
                   <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit" (click)="openImportFile()"
-                    class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Upload Template">Upload</button>
+                    class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Upload Template "[disabled]="!uploadfilemodalbutton">Upload</button>
                 </ng-container>
               </div>
             </div>
@@ -199,7 +199,7 @@
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Import Measure Properties / Alerts</h5>
+              <h5 class="modal-title" id="exampleModalLabel">{{uploadfileModaltext}}</h5>
               <button type="button" class="close" [disabled]="isCreatePackageAPILoading"
                   (click)="onCloseModal('addModelAsset')" aria-label="Close">
                   <span aria-hidden="true" tooltip="Close">&times;</span>

@@ -27,6 +27,8 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   isPasswordVisible = false;
   decodedToken: any;
   uploadfilemodal:boolean=false;
+  uploadfilemodalbutton:boolean = true;
+  uploadfileModaltext:any;
   isCreatePackageAPILoading: boolean = false;
   isCanUploadFile: boolean = false;
   fileName: string = 'Choose File';
@@ -96,11 +98,22 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       this.route.fragment.subscribe((fragment) => {
         if (fragment) {
           this.activeTab = fragment;
-          if(this.activeTab === 'measured_properties' || this.activeTab === 'alert_conditioning' ){
+          if(this.activeTab === 'measured_properties'){
             this.uploadfilemodal =true;
+            this.uploadfileModaltext = 'Import Measured Properties'
+
+          }else if(this.activeTab === 'alert_conditioning' ){
+            this.uploadfilemodal =true;
+            this.uploadfileModaltext = 'Import Alert Properties'
+
           }else{
             this.uploadfilemodal =false;
+
           }
+          // if(this.activeTab === 'measured_properties' || this.activeTab === 'alert_conditioning' ){
+          // }else{
+          //   this.uploadfilemodal =false;
+          // }
 
         } else {
           const menu =
@@ -244,6 +257,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       this.assetModelService.freezeAssetModel(this.contextApp.app, this.assetModel.name, obj).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Freeze Model');
+          this.uploadfilemodalbutton = false;
           this.isModelFreezeUnfreezeAPILoading = false;
           this.getAssetModelData(this.assetModel.name);
         },
@@ -278,6 +292,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Unfreeze Model');
           this.isModelFreezeUnfreezeAPILoading = false;
+          this.uploadfilemodalbutton = true;
           this.getAssetModelData(this.assetModel.name);
           this.onCloseModal('passwordCheckModal');
         },

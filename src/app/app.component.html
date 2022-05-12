@@ -1,5 +1,4 @@
 <div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}">
-  {{isHomeRoute | json}}
   <app-loader *ngIf="showLoader"></app-loader>
   <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute"></app-rdm-side-menu>
   <!-- Content Wrapper -->

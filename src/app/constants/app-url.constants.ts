@@ -206,12 +206,12 @@ export class AppUrls {
 
  public static GET_EXPORTED_HIERARCHY = 'export_hierarchy';
  public static UPLOAD_HIERARCHY = 'import_hierarchy';
- public static GET_HIERARCHIES = 'hierarchies_new'
- public static GET_HIERARCHY_BY_ID = 'hierarchies_new/{0}'
- public static HIERARCHIES = 'hierarchy_new'
+ public static GET_HIERARCHIES = 'hierarchy'
+ public static GET_HIERARCHY_BY_ID = 'hierarchy/{0}'
+ public static HIERARCHIES = 'hierarchy'
  public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/hierarchy';
- public static DELETE_HIERARCHIES = 'hierarchy_new/{0}'
- public static UPDATE_HIERARCHIES = 'hierarchy_new/{0}'
+ public static DELETE_HIERARCHIES = 'hierarchy/{0}'
+ public static UPDATE_HIERARCHIES = 'hierarchy/{0}'
 
  public static REFRESH_TOKEN = 'refresh-token'
  public static Get_DBSCHEMA = 'apps/{0}/dbschema'

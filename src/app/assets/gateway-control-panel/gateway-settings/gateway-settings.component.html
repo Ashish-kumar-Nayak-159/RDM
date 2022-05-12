@@ -26,16 +26,16 @@
           <span class="text-secondary">Manage Assets</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
-          (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
-          <em class="fa fa-fw fa-building"></em>
-          <span class="text-secondary">Sync Properties</span></a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Slaves'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Slaves')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Slaves</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
+          (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
+          <em class="fa fa-fw fa-building"></em>
+          <span class="text-secondary">Sync Properties</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Rules'}" href="javascript:void(0)"

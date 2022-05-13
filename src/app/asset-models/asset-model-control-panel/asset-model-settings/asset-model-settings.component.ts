@@ -60,11 +60,11 @@ export class AssetModelSettingsComponent implements OnInit {
                 g3_ingestion_frequency_in_ms: 1800,
               };
             }
-            if (!this.assetModel.metadata.data_ingestion_settings) {
-              this.assetModel.metadata.data_ingestion_settings = {
-                type: 'all_props_at_fixed_interval',
-              };
-            }
+            // if (!this.assetModel.metadata.data_ingestion_settings) {
+            //   this.assetModel.metadata.data_ingestion_settings = {
+            //     type: 'all_props_at_fixed_interval',
+            //   };
+            // }
             if (!this.assetModel.metadata.measurement_settings) {
               this.assetModel.metadata.measurement_settings = {
                 g1_measurement_frequency_in_ms: 60,
@@ -86,6 +86,7 @@ export class AssetModelSettingsComponent implements OnInit {
   }
 
   saveSettings() {
+    debugger
     if (
       this.assetModel.metadata.measurement_settings.g1_measurement_frequency_in_ms <= 0 ||
       this.assetModel.metadata.measurement_settings.g2_measurement_frequency_in_ms <= 0 ||

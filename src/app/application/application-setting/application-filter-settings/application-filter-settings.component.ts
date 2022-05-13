@@ -112,6 +112,7 @@ export class ApplicationFilterSettingsComponent implements OnInit {
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    this.ngOnInit();
     this.isConfigEditable = false;
   }
 }

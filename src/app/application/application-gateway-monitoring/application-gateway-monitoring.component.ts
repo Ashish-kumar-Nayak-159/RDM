@@ -1,5 +1,7 @@
+import { object } from '@amcharts/amcharts4/core';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { isObject } from '@azure/core-http/types/latest/src/util/utils';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -49,6 +51,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   CUSTOM_DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss a';
   hierarchy: any;
   configuredHierarchy: any = {};
+  userDataFromLocal: any;
   countData: countInterface = {
     iot_assets: 0,
     online: 0,
@@ -65,8 +68,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     // this.loader = true;
     const userData = localStorage.getItem(CONSTANTS.USER_DETAILS);
     const selectedAppData = localStorage.getItem(CONSTANTS.SELECTED_APP_DATA);
-    let userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
-    console.log("userdata from local", userDataFromLocal);
+    this.userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
 
     const obj = {
       environment: environment.environment,
@@ -77,8 +79,8 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       this.receivedAppName = res.appName
     })
 
-  
-    if (userDataFromLocal.is_super_admin) {
+
+    if (this.userDataFromLocal.is_super_admin) {
       this.applicationService.getApplications(obj).subscribe((response: any) => {
         if (response.data && response.data.length > 0) {
           let respData = response.data.map((item) => {
@@ -95,16 +97,15 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       },
         (error) => this.loader = false)
     }
-    else if(selectedAppData && !userDataFromLocal.is_super_admin){
+    else if (selectedAppData && !this.userDataFromLocal.is_super_admin) {
 
       let appDataFromLocal = JSON.parse(this.commonService.decryptString(selectedAppData))
       this.selectedApp = appDataFromLocal.app
       this.appsList.push(this.selectedApp)
-      console.log("this.selectedApp",this.selectedApp);
       this.appName();
     }
 
-  
+
     setInterval(() => {
       this.appName()
     }, 1800000)
@@ -201,21 +202,24 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   getHierarchy() {
-    this.isSelectedAppData = false;
-    localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
-    this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
-      response.app = this.selectedApp;
-      response.user = {};
-      response.user.hierarchy = { App: this.selectedApp };
-      this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
-      let appObj = {
-        app: this.selectedApp
-      }
-      this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
-        this.isSelectedAppData = true;
-      })
-    });
+    if (this.userDataFromLocal.is_super_admin) {
+      this.isSelectedAppData = false;
+      localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
+      this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
+        response.app = this.selectedApp;
+        response.user = {};
+        response.user.hierarchy = { App: this.selectedApp };
+        this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
+        let appObj = {
+          app: this.selectedApp
+        }
+        this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+          this.isSelectedAppData = true;
+        })
+      });
+    }
+    else this.isSelectedAppData = true;
   }
   appName() {
     this.applications = []
@@ -245,7 +249,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   assetStatic() {
     this.loader = true;
     this.applicationService.getAssetStatistics(this.selectedApp).subscribe((response: any) => {
-      console.log("gateway asset static api res...", response)
       this.countData = {
         iot_assets: response?.iot_assets ?? 0,
         online: response?.online ?? 0,
@@ -266,7 +269,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     this.loader = true;
     this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {
 
-      console.log("gateway asset monitoring api res..", response);
       response.forEach((item) => {
 
         item.created_date_time = item.created_date
@@ -329,7 +331,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
   onSaveHierachy(configuredHierarchy) {
-    console.log("checking", JSON.stringify(configuredHierarchy))
     this.originalFilter = {};
     this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
 
@@ -342,6 +343,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   onClearHierarchy() {
     this.hierarchy = { App: this.selectedApp };
+
 
   }
 
@@ -367,10 +369,15 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
   filteredHiearchyObj() {
+
     this.applications = [];
     this.currentOffset = 0;
     this.loadMoreVisibility = true;
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+    object.keys(configuredHierarchy).length === 0;
+    this.onClearHierarchy();
+
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp) {
       Object.keys(configuredHierarchy).forEach((key) => {
@@ -383,3 +390,5 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
 
 }
+
+

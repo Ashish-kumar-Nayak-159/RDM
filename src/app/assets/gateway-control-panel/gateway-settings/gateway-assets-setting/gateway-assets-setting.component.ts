@@ -60,11 +60,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
           g3_measurement_frequency_in_ms: 180,
         };
       }
-      if (!this.asset.metadata.data_ingestion_settings) {
-        this.asset.metadata.data_ingestion_settings = {
-          type: 'all_props_at_fixed_interval',
-        };
-      }
+      // if (!this.asset.metadata.data_ingestion_settings) {
+      //   this.asset.metadata.data_ingestion_settings = {
+      //     type: 'all_props_at_fixed_interval',
+      //   };
+      // }
       if (!this.asset.metadata.telemetry_mode_settings) {
         this.asset.metadata.telemetry_mode_settings = {
           turbo_mode_timeout_time: 120,
@@ -135,11 +135,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
                   g3_measurement_frequency_in_ms: 180,
                 };
               }
-              if (!asset.metadata.data_ingestion_settings) {
-                asset.metadata.data_ingestion_settings = {
-                  type: 'all_props_at_fixed_interval',
-                };
-              }
+              // if (!asset.metadata.data_ingestion_settings) {
+              //   asset.metadata.data_ingestion_settings = {
+              //     type: 'all_props_at_fixed_interval',
+              //   };
+              // }
               if (!asset.metadata.telemetry_mode_settings) {
                 asset.metadata.telemetry_mode_settings = {
                   turbo_mode_timeout_time: 120,
@@ -209,7 +209,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms * 1000,
 
       turbo_mode_timeout_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
-      ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
+      // ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
 
       g1_ingestion_frequency_in_ms:
         this.selectedAsset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms * 1000,

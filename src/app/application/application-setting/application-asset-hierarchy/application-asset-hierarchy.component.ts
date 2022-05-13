@@ -407,7 +407,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
             this.initialForm();
             this.addHierarchyForm.controls['name'].setValue(response.name);
             this.hierarchyForm.level = response.level;
-            this.hierarchyForm.parent_id = response.parent_Id;
+            this.hierarchyForm.parent_id = response.parent_id;
             this.hierarchyForm.id = response.id;
             this.levelToAddUpdate = response.level;
             if (response?.metaData) {

@@ -59,6 +59,22 @@ export class AddRuleComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getSlaveData();
+    this.DefaultRuleModelSetup();
+    $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.addNewCondition();
+    this.getAssetsModelProperties();
+    if (this.isEdit || this.isView) {
+      this.configureData();
+    } else {
+      this.getAlertConditions('Cloud');
+    }
+    if (this.isClone) {
+      this.getRules();
+    }
+    this.getApplicationUserGroups();    
+  }
+
+  private DefaultRuleModelSetup() {
     if (!this.ruleModel.actions) {
       this.ruleModel.actions = {
         alert_management: { enabled: false, alert_condition_code: null },
@@ -84,18 +100,6 @@ export class AddRuleComponent implements OnInit {
     if (!this.ruleModel.actions.asset_control) {
       this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
-    $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    this.addNewCondition();
-    this.getAssetsModelProperties();
-    if (this.isEdit || this.isView) {
-      this.configureData();
-    } else {
-      this.getAlertConditions('Cloud');
-    }
-    if (this.isClone) {
-      this.getRules();
-    }
-    this.getApplicationUserGroups();    
   }
 
   getSlaveData() {
@@ -126,7 +130,8 @@ export class AddRuleComponent implements OnInit {
     );
   }
 
-  getRules() {
+  async getRules() {
+    debugger
     this.isRulesLoading = true;
     this.rules = [];
     let method;
@@ -134,7 +139,7 @@ export class AddRuleComponent implements OnInit {
       const obj: any = {};
       obj.type =  this.ruleModel.rule_type ? 'Edge' : 'Cloud';
       obj.source = 'Asset';
-      method = this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj);
+      method = this.assetService.getRules(this.contextApp.addNewConditionapp, this.asset.asset_id, obj);
     } else {
       const asset_model = this.asset ? this.asset.tags.asset_model : this.name;
       const obj: any = {};
@@ -153,6 +158,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   onChangeOfRule() {
+    debugger
     const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
     this.ruleData = rule;
     delete this.ruleData.rule_id;
@@ -278,9 +284,12 @@ export class AddRuleComponent implements OnInit {
         this.assetService.getAlertConditions(this.contextApp.app, obj1).subscribe((response: any) => {
           response.data.forEach((item) => {
             item.type = 'Asset Alert Conditions';
+
             this.alertConditionList.push(item);
           });
           this.alertConditionList = JSON.parse(JSON.stringify(this.alertConditionList));
+          console.log("CheckingalertConditionList", JSON.stringify(this.alertConditionList ))
+
           this.onChangeOfAssetCondition();
         });
       }
@@ -310,8 +319,18 @@ export class AddRuleComponent implements OnInit {
   }
 
   onSwitchValueChange(event) {
-    this.getAlertConditions(event ? 'Edge' : 'Cloud');
+    // this.ruleModel.rule_id ='';
+
+    if(this.isClone)
+    {
+    this.ruleModel = new Rule();
+    this.DefaultRuleModelSetup();
+    this.addNewCondition();
+    }
     this.ruleModel.rule_type = event;
+    this.getAlertConditions(event ? 'Edge' : 'Cloud');
+    this.getRules();    
+    
     this.ruleModel.actions.alert_management.enabled = event;
   }
 

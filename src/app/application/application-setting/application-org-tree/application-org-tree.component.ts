@@ -39,6 +39,8 @@ export class ApplicationOrgTreeComponent implements OnInit {
 
   onAddNewNodeObj() {
     this.applicationData.hierarchy.levels.push(null);
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    this.originalAppData = JSON.parse(JSON.stringify(this.applicationData));
     this.isAppSetingsEditable = true;
   }
 
@@ -53,16 +55,17 @@ export class ApplicationOrgTreeComponent implements OnInit {
 
   onSaveNodes() {
     let flag;
-    const originalLevelsLowerCase = this.originalAppData?.hierarchy?.levels.map(item => item.toLowerCase());
+    const originalLevelsLowerCase = this.originalAppData?.hierarchy?.levels.map(item => item?.toLowerCase());
     this.applicationData.hierarchy.levels.forEach((item) => {
-      if (originalLevelsLowerCase.indexOf(item.toLowerCase()) !== -1) {
+      if (!item || item.trim().length === 0) {
+        flag = 'Blank Name is not allowed.';
+        return true;
+      }
+
+      if (originalLevelsLowerCase.indexOf(item?.toLowerCase()) !== -1) {
         flag = 'Node with given name already exists';
         return;
       } else { flag = '' }
-      if (!item || item.trim().length === 0) {
-        flag = 'Blank Name is not allowed.';
-        return;
-      }
       CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
         if (item.includes(char)) {
           flag = `Hierarchy name should not contain space, dot '#' and '$'`;
@@ -70,10 +73,12 @@ export class ApplicationOrgTreeComponent implements OnInit {
         }
       });
     });
+  
     if (flag) {
       this.toasterService.showError(flag, 'Save Asset Hierarchy');
       return;
     }
+    console.log("checking", JSON.stringify(this.applicationData.hierarchy.levels))
     this.isSaveNodeAPILoading = true;
     this.forceUpdate = false;
     this.updateAppData();
@@ -123,8 +128,8 @@ export class ApplicationOrgTreeComponent implements OnInit {
     } else {
       this.applicationData.hierarchy.levels.splice(index, 1);
       this.selectedItemForDelete = undefined;
-      const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
-      this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
+      // const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
+      // this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     }
   }
 
@@ -139,7 +144,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
 
   deleteNode() {
     const index = this.applicationData.hierarchy.levels.indexOf(this.selectedItemForDelete);
-    const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
+    // const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
     // this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     const levels = [];
     this.applicationData.hierarchy.levels.forEach((element) => {
@@ -150,7 +155,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
     // this.applicationData.hierarchy.levels = JSON.parse(JSON.stringify(levels));
     this.forceUpdate = true;
     this.updateAppData({
-      "tags": tags,
+    //  "tags": tags,
       "levels": levels
     });
   }

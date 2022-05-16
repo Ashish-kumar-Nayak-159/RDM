@@ -280,6 +280,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
       methodToCall.subscribe(
         (response: any) => {
           this.getHierarchyTags();
+          this.getHierarchyJsonDetail();
           this.toasterService.showSuccess(response.message, 'Hierarchy');
           this.getAllHierarchy(this.hierarchyForm.level, this.hierarchyForm.parent_id);
           this.onCloseHierarchyModal();
@@ -390,6 +391,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
           this.reinitializeHierarchyParams();
           $('#confirmMessageModal').modal('hide');
           this.getHierarchyTags();
+          this.getHierarchyJsonDetail();
         },
         (error) => {
           this.toasterService.showError(error.message, 'Hierarchy');

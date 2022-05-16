@@ -104,6 +104,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         },
 
         {
+          name: 'Units',
+          key: 'unit',
+          type: 'text',
+          headerClass: 'w-15',
+          valueclass: '',
+        },
+
+        {
           name: 'Data Type',
           key: 'data_type',
           type: 'text',
@@ -176,8 +184,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         valueclass: '',
       });
       if (this.type.includes('cloud_derived')) {
-        this.propertyTableConfig.data[4].btnData.splice(1);
-        this.propertyTableConfig.data[4].btnData.splice(2);
+        this.propertyTableConfig.data[5].btnData.splice(1);
+        this.propertyTableConfig.data[5].btnData.splice(2);
       }
     }
 
@@ -196,6 +204,21 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
+        if(this.type === 'measured_properties'){
+          response.properties?.measured_properties.forEach(element => {
+            element.unit = element?.json_model[element.json_key].units;
+          });
+        }else if(this.type === 'cloud_derived_properties'){
+          response.properties?.cloud_derived_properties.forEach(element => {
+            element.unit = element?.json_model[element.json_key].units;      
+          });
+
+        }else if(this.type === 'edge_derived_properties'){
+          response.properties?.edge_derived_properties.forEach(element => {
+            element.unit = element?.json_model[element.json_key].units;
+          });
+
+        }
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         if (this.type.includes('edge_derived')) {
           response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));

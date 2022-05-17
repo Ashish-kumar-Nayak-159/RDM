@@ -341,7 +341,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
           this.fileName = file.name;
         }
         else {
-          this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
+          this.toasterService.showError('Only .xlsx files are allowed', 'Select File');
           this.fileName = 'Choose File';
         }
         return;

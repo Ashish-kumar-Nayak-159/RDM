@@ -236,6 +236,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
             });
           }
           this.assetModels = JSON.parse(JSON.stringify(this.assetModels));
+          this.commonService.setItemInLocalStorage("model_item",JSON.stringify(this.assetModels[0].model_type));
           this.isassetModelsListLoading = false;
           this.tableConfig.is_table_data_loading = false;
         },

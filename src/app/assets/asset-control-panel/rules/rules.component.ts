@@ -176,7 +176,33 @@ export class RulesComponent implements OnInit {
         }
       );
   }
-
+  deployRuleed(rule, isRevert = false) {
+    this.ruleData = rule;
+    this.isDeleteRuleLoading = true;
+    const obj = {
+      deployed_by: this.userData.email + ' (' + this.userData.name + ')',
+      is_revert: isRevert,
+    };
+    this.assetService
+      .deployCloudAssetRule(this.contextApp.app, this.asset.asset_id, this.ruleData.rule_id, obj)
+      .subscribe(
+        (response: any) => {
+          this.onCloseDeleteModal();
+          this.getRules();
+          // this.toggleRows = {};
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(
+            isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
+            isRevert ? 'Enable Rule' : 'Disable Rule'
+          );
+        },
+        (err: HttpErrorResponse) => {
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showError(err.message, isRevert ? 'Enable Rule' : 'Disable Rule');
+          this.onCloseDeleteModal();
+        }
+      );
+  }
   deployEdgeRule(rule, isRevert = false) {
     this.ruleData = rule;
     this.isDeleteRuleLoading = true;

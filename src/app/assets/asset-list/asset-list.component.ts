@@ -94,6 +94,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.commonService.setItemInLocalStorage("model_item","test");
     this.assetsList = [];
     this.getTileName();
     this.protocolList = CONSTANTS.PROTOCOLS;

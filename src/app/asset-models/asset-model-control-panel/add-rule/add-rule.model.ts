@@ -40,7 +40,9 @@ export class Conditions {
     property: string;
     operator: string;
     threshold: any;
-    aggregation_type: string;    
+    aggregation_type: string;
+    bolCon?:boolean;
+    strText?:any;    
 }
 
 export class AlertCondition {

@@ -132,10 +132,8 @@ export class AddRuleComponent implements OnInit {
     this.getApplicationUserGroups();  
     if(this.ruleModel.type==='Cloud')
     {
-      this.ruleModel.rules_type = false;
-   
+      this.ruleModel.rules_type = false;   
     }
-    debugger
   }
   getRuleType()
   {
@@ -219,7 +217,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.rule_category = "Stream Analytics";
     if (this.ruleData.type === 'Edge') {
       this.ruleModel.conditions = JSON.parse(this.ruleData.metadata.conditions);
-    } else {
+       } else {
       this.ruleModel.conditions = this.ruleData.condition;
     }
     this.ruleModel.created_by = this.ruleData.created_by;
@@ -436,7 +434,9 @@ export class AddRuleComponent implements OnInit {
       operator: '',
       threshold: 0,
       aggregation_type: null,
-      type:''
+      type:'',
+      bolCon:true,
+      strText:null,
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -480,7 +480,9 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.rule_category = "Stream Analytics";
     this.ruleModel.conditions.forEach((element, index) => {
       let operator = this.findOperator(element.operator);
-      str +=
+      if(this.data_type==='Number')
+      {
+        str +=
         ' %' +
         (index + 1) +
         '% ' +
@@ -489,6 +491,32 @@ export class AddRuleComponent implements OnInit {
         element.threshold +
         ' ' +
         this.ruleModel.operator;
+      }
+      if(this.data_type ==='Boolean')
+      {
+        str +=
+        ' %' +
+        (index + 1) +
+        '% ' +
+        operator +
+        ' ' +
+        element.bolCon +
+        ' ' +
+        this.ruleModel.operator;
+      }
+      if(this.data_type ==='String')
+      {
+        str +=
+        ' %' +
+        (index + 1) +
+        '% ' +
+        operator +
+        ' ' +
+        element.strText +
+        ' ' +
+        this.ruleModel.operator;
+      }
+      
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
       element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
       this.ruleModel.properties.push({
@@ -576,6 +604,8 @@ export class AddRuleComponent implements OnInit {
       operator: "EQUAL",
       threshold: "m",
       aggregation_type:null,
+      strText:null,
+      bolCon:true,
   });
     
       this.ruleModel.properties.push({
@@ -647,7 +677,7 @@ export class AddRuleComponent implements OnInit {
     }
     if(this.data_type === 'Boolean')
     {
-      return this.operatorList1.find((optr) => optr.id === id).value;
+       return this.operatorList1.find((optr) => optr.id === id).value;
     }
     if(this.data_type === 'String')
     {

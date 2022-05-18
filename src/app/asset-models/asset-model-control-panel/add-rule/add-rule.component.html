@@ -270,6 +270,7 @@
               </option>
             </select>
             </div>
+            {{condition.bolCon}}
               <div class="col-auto">
                 <label for="examplePassword " *ngIf="getPropertyType(condition.property)!==null && getPropertyType(condition.property)!==undefined" class="mb-2 required">Value</label>
                 <input type="number" class="mb-2 form-control form-control-sm" *ngIf="getPropertyType(condition.property)==='Number'" required style="width:60px;" required
@@ -441,7 +442,6 @@
   </accordion>
   <div *ngIf="!isView">
     <em *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-<<<<<<< HEAD
     <button type="button" *ngIf="!isCloneEdit && !(ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
       [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
       ? 'Update' :
@@ -453,15 +453,5 @@
       <button type="button" *ngIf="isCloneEdit" class="btn btn-sm btn-primary add-row mr-2" (click)="cloneRules();"
       [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isCloneEdit
       ? 'Clone' : 'Clone'}}</button>
-=======
-    <button type="button" *ngIf="!(ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
-      [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
-      ? 'Update' :
-      'Create'}}</button>
-      <button type="button" *ngIf="(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule_timeThre();"
-      [disabled]="form1.invalid || form2.invalid || form4.invalid">{{isEdit
-      ? 'Update' :
-      'Create'}}</button>
->>>>>>> f64e5f8c ( Rules Change)
   </div>
 </div>

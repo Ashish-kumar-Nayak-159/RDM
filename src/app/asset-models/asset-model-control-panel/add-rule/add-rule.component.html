@@ -12,7 +12,7 @@
       <div class="col-auto">
         <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white"
           uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event);getRules()" checkedLabel="Edge Rule"
-          [disabled]="isView" uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
+          [disabled]="isView" uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rules_type">
         </ui-switch>
       </div>
     </div>
@@ -69,10 +69,29 @@
           <div class="form-group row" *ngIf="!isClone">
             <label for="examplePassword" class="col-3">Type</label>
             <div class="col-auto">
-              <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white"
+            <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
-                [disabled]="isView" uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
+                [disabled]="isView"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.rules_type">
               </ui-switch>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="!ruleModel.rules_type">
+            <label for="examplePassword" class="col-3">Rule Category</label>
+            <div class="col-auto">
+              <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test1"
+                uncheckedTextColor="white" (valueChange)="onSwitchValChange($event)" checkedLabel="KPIX Analytics"
+                [disabled]="isView"  uncheckedLabel="Stream Analytics" name="tpye" [(ngModel)]="ruleModel.category_type">
+              </ui-switch>
+            </div>
+        </div>
+          <div class="form-group row" *ngIf="!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway')">
+            <label for="examplePassword" class="col-3">Rule Type</label>
+            <div class="col-auto">
+              <select  (change)="getRuleType()" id="kpixruleType" placeholder="Select Rule" class="form-control form-control-sm w-auto">
+                <option value="THS" selected>THS (Telemetry Threshold)</option>
+                <option value="ICT">ICT (IOT Connectivity Threshold)</option>
+                <option value="ILT">ILT (Ingestion Loss Threshold)</option>
+                </select>
             </div>
           </div>
           <div class="form-group row">
@@ -101,7 +120,24 @@
               optional - Use it to cluster your data and trigger rules based on a time window
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-12" *ngIf="(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))">
+            <div class="row">
+              <div class="col-auto">
+                <div class="">
+                  <div class="">
+                    <label for="exampleEmail" class="required">Time Threshold</label>
+                  </div>
+                  <div class="">
+                    <input id="timethreshold" placeholder="Time"
+                    [(ngModel)]="ruleModel.escalation_time_in_sec"
+                     name="threshold" type="number" min="5" max="1440" value="5"
+                    class="form-control form-control-sm w-auto"/>
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>  
+          <div class="col-12"  *ngIf="!(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))">
             <div class="row">
               <div class="col-auto">
                 <div class="">
@@ -119,8 +155,7 @@
                   </div>
                 </div>
               </div>
-
-              <div class="col-auto" *ngIf="!ruleModel.rule_type">
+               <div class="col-auto" *ngIf="(!ruleModel.category_type && !ruleModel.rules_type)|| (ruleModel.rules_type && ruleModel.category_type)"> 
                 <div class="">
                   <div class="">
                     <label for="exampleEmail">Time Aggregation</label>
@@ -154,7 +189,7 @@
               <div class="col-auto">
                 <div class="">
                   <div class="">
-                    <label for="exampleEmail" [ngClass]="{'required': !ruleModel.rule_type}">Escalation Time</label>
+                    <label for="exampleEmail" [ngClass]="{'required': (!ruleModel.category_type && !ruleModel.rules_type)|| (ruleModel.rules_type && ruleModel.category_type)}">Escalation Time</label>
                   </div>
                   <div class="">
                     <!-- <input type="number" class="form-control form-control-sm"
@@ -175,16 +210,17 @@
           </div>
         </form>
       </div>
-      <div class="row">
+      <div class="row" >
         <div class="col-12">
           <hr>
         </div>
       </div>
-      <div class="row">
+      <div class="row"  >
         <div class="col-12">
-          <form #form3="ngForm">
-            <div class="form-group row" *ngFor="let condition of ruleModel.conditions; let i = index;">
-              <div class="col-3">
+          <form #form3="ngForm" >
+            <div *ngIf="!(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))">
+            <div class="form-group row"  *ngFor="let condition of ruleModel.conditions; let i = index;">
+              <div class="col-3" >
                 <label for="examplePassword" class="mb-2 required">Telemetry</label>
                 <!-- <select placeholder="Telemetry" name="telemetry_{{i}}"
                                                 class="form-control form-control-sm" [(ngModel)]="condition.property"
@@ -194,35 +230,62 @@
                                                     [ngValue]="prop.value.json_key">
                                                     {{prop.id}}</option>
                                             </select> -->
-                <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" required name="telemetry_{{i}}"
+                  <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" required name="telemetry_{{i}}"
                   [clearable]="false" [searchable]="true" bindLabel="id" *ngIf="!isView" [closeOnSelect]="true"
                   placeholder="Select Property" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
-                  bindValue="json_key" [(ngModel)]="condition.property" required>
+                  bindValue="json_key" [(ngModel)]="condition.property" required (change) = "fillOperator(condition.property)">
                   <ng-template ng-option-tmp let-item="item">
-                    <span [tooltip]="item.id">
-                      <em [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' ||
-                                                  item.value.type === 'Cloud Derived Properties'}"></em>
-                      {{item.id}}
-                    </span>
+                    <div *ngIf="(item.value.type==='Measured Properties' && this.ruleModel.rules_type) || 
+                   ((item.value.type==='Measured Properties' ||  item.value.type==='Edge Derived Properties') && !this.ruleModel.rules_type && this.ruleModel.category_type)
+                   ||  ((item.value.type === 'Cloud Derived Properties' || item.value.type==='Measured Properties' ||  item.value.type==='Edge Derived Properties') && !this.ruleModel.rules_type && !this.ruleModel.category_type)
+                    ">
+                      <span [tooltip]="item.id">
+                      <em [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties'  
+                                                  ||   item.value.type === 'Cloud Derived Properties'}"></em>
+                       {{item.id}}
+                      </span>
+                    </div>
                   </ng-template>
                 </ng-select>
                 <span class="form-control form-control-sm w-auto" *ngIf="isView">{{getPropertyName(condition.property)
                   || condition.property}}</span>
               </div>
+             
               <div class="col-auto">
-                <label for="exampleEmail" class="mb-2 required">Operator</label>
-                <select placeholder="Operator" name="operator_{{i}}" required [disabled]="isView"
+                <label for="exampleEmail" class="mb-2 required" *ngIf="getPropertyType(condition.property)!==null && getPropertyType(condition.property)!==undefined">Operator</label>
+                <select placeholder="Operator" *ngIf="getPropertyType(condition.property)==='Number'" name="operator_{{i}}" required [disabled]="isView"
                   class="form-control form-control-sm w-auto required" [(ngModel)]="condition.operator">
                   <option [ngValue]="''">Select Operator</option>
                   <option *ngFor="let optr of operatorList;" [ngValue]="optr.id">
                     {{optr.value}}
                   </option>
                 </select>
-              </div>
+                <select placeholder="Operator" *ngIf="getPropertyType(condition.property)==='Boolean'" name="operator_{{i}}" required [disabled]="isView"
+                class="form-control form-control-sm w-auto required" [(ngModel)]="condition.operator">
+                <option [ngValue]="''">Select Operator</option>
+                <option *ngFor="let optr of operatorList1;" [ngValue]="optr.id">
+                  {{optr.value}}
+                </option>
+              </select>
+              <select placeholder="Operator" *ngIf="getPropertyType(condition.property)==='String'" name="operator_{{i}}" required [disabled]="isView"
+              class="form-control form-control-sm w-auto required" [(ngModel)]="condition.operator">
+              <option [ngValue]="''">Select Operator</option>
+              <option *ngFor="let optr of operatorList2;" [ngValue]="optr.id">
+                {{optr.value}}
+              </option>
+            </select>
+            </div>
               <div class="col-auto">
-                <label for="examplePassword " class="mb-2 required">Value</label>
-                <input type="number" class="form-control form-control-sm" required style="width:60px;" required
+                <label for="examplePassword " *ngIf="getPropertyType(condition.property)!==null && getPropertyType(condition.property)!==undefined" class="mb-2 required">Value</label>
+                <input type="number" class="mb-2 form-control form-control-sm" *ngIf="getPropertyType(condition.property)==='Number'" required style="width:60px;" required
                   placeholder="value" name="threshold_{{i}}" [disabled]="isView" [(ngModel)]="condition.threshold">
+                  <select class="custom-dropdown w-12 form-control form-control-sm w-auto" style="width:74px !important" *ngIf="getPropertyType(condition.property)==='Boolean'" required style="width:60px;" required
+                  placeholder="select value" id="selectbol" [disabled]="isView"  [(ngModel)]="condition.bolCon">
+                  <option value="true">True</option> 
+                  <option value="false">False</option> 
+                </select>
+                <input type="text" class="form-control form-control-sm col-6"  *ngIf="getPropertyType(condition.property)==='String'" required style="width:60px;" required
+                placeholder="value" name="threshold_{{i}}" [disabled]="isView" [(ngModel)]="condition.strText">
               </div>
               <div class="col-auto" *ngIf="ruleModel.aggregation_enabled">
                 <label for="examplePassword" class="mb-2 w-auto required">Aggregation Type</label>
@@ -244,8 +307,10 @@
               </div>
             </div>
             <hr>
+          
+          </div>
           </form>
-          <button *ngIf="!isView" id="insert-more" (click)="addNewCondition();"
+          <button *ngIf="!isView && !(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" id="insert-more" (click)="addNewCondition();"
             class="btn btn-sm btn-primary cursor-pointer"><em class="fas fa fa-plus-circle mr-1 my-1"></em>
             Condition</button>
         </div>
@@ -310,9 +375,9 @@
                 </div>
               </div>
 
-              <hr *ngIf="!ruleModel.rule_type">
+              <hr *ngIf="!ruleModel.rules_type">
 
-              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rules_type">
                 <input type="checkbox" class="form-check-input" id="notification" name="notification"
                   [(ngModel)]="ruleModel.actions.notification.enabled" [disabled]="isView"
                   (change)="onChangeOfSendEmailCheckbox()">
@@ -362,9 +427,9 @@
                 </div>
               </div>
 
-              <hr *ngIf="!ruleModel.rule_type">
+              <hr *ngIf="!ruleModel.rules_type">
 
-              <div class="form-group mx-3" *ngIf="!ruleModel.rule_type">
+              <div class="form-group mx-3" *ngIf="!ruleModel.rules_type">
                 <input type="checkbox" class="form-check-input" id="asset_control" name="asset_control"
                   [(ngModel)]="ruleModel.actions.asset_control.enabled" (change)="onChangeOfDisableAssetCheckbox()"
                   [disabled]="isView">
@@ -379,8 +444,12 @@
   </accordion>
   <div *ngIf="!isView">
     <em *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-    <button type="button" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
+    <button type="button" *ngIf="!(ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
       [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
+      ? 'Update' :
+      'Create'}}</button>
+      <button type="button" *ngIf="(!ruleModel.rules_type && ruleModel.category_type && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule_timeThre();"
+      [disabled]="form1.invalid || form2.invalid || form4.invalid">{{isEdit
       ? 'Update' :
       'Create'}}</button>
   </div>

@@ -14,13 +14,15 @@ export class Rule {
     aggregation_window_in_sec: any;
     updated_by: string;
     created_by: string;
-    rule_type?: boolean;
+    rules_type?: boolean;
     rule_code?: any;
     metadata?: any;
     condition?: any;
     type?: string;
     actions?: any;
-
+    category_type?:boolean;
+    rule_category?:any;
+    rule_type?:any;
     constructor() {
         this.properties = [];
         this.conditions = [];
@@ -37,7 +39,9 @@ export class Conditions {
     property: string;
     operator: string;
     threshold: any;
-    aggregation_type: string;    
+    aggregation_type: string;
+    bolCon?:boolean;
+    strText?:any;    
 }
 
 export class AlertCondition {

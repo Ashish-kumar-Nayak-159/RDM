@@ -57,8 +57,8 @@
             <th scope="col">Name</th>
             <th scope="col">Code</th>
             <th scope="col">Updated On</th>
-            <th scope="col"*ngIf="selectedTab === 'Cloud'">Deployed On</th>
-            <th scope="col"*ngIf="selectedTab === 'Edge'">Synced On</th>
+            <th scope="col" *ngIf="selectedTab === 'Cloud'">Deployed On</th>
+            <th scope="col" *ngIf="selectedTab === 'Edge'">Synced On</th>
             <!-- <th scope="col">Description</th> -->
             <!-- <th scope="col">Type</th> -->
             <th scope="col">Actions</th>
@@ -69,7 +69,9 @@
             <ng-container *ngFor="let rule of rules; let i = index">
               <tr>
                 <td class="pl-3">
-                  <a href="javascript:void(0)" (click)="toggleRows[selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1">
+                  <a href="javascript:void(0)"
+                    (click)="toggleRows[selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')"
+                    class="mr-1">
                     <em [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
                   </a>
                 </td>
@@ -84,11 +86,14 @@
                 <!-- <td>{{rule.description}}</td> -->
                 <!-- <td>{{rule.type}}</td> -->
                 <td>
-                  <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')" class="mr-1" placement="bottom"
-                    tooltip="View">
-                    <em class="fa fa-fw fa-eye" ></em>
+                  <a href="javascript:void(0)"
+                    (click)="toggleRows[this.selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')"
+                    class="mr-1" placement="bottom" tooltip="View">
+                    <em class="fa fa-fw fa-eye"></em>
                   </a>
-                  <a href="javascript:void(0)" (click)="toggleRows[this.selectedTab + '_' + i] && isEdit ? onToggleRows(i, rule, false, true, 'toggle') : onToggleRows(i, rule, false, true, 'notoggle')" class="mr-1"
+                  <a href="javascript:void(0)"
+                    (click)="toggleRows[this.selectedTab + '_' + i] && isEdit ? onToggleRows(i, rule, false, true, 'toggle') : onToggleRows(i, rule, false, true, 'notoggle')"
+                    class="mr-1"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false"
                     [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
                     <em class="fa fa-fw fa-edit"></em>
@@ -98,7 +103,7 @@
                     placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
                     <em class="fa fa-fw fa-trash"></em>
                   </a>
-                  <ng-container *ngIf="rule.type === 'Cloud' ">
+                  <ng-container *ngIf="rule.type === 'Cloud' && rule.rule_category==='Stream Analytics'">
                     <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="
               decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
               rule.is_editable !== false &&
@@ -114,6 +119,22 @@
                       <em class="fa fa-fw fa-undo"></em>
                     </a>
                   </ng-container>
+                  <ng-container *ngIf="rule.type === 'Cloud' && rule.rule_category==='KPIX Analytics'">
+                    <a href="javascript:void(0)" (click)="deployRuleed(rule)" *ngIf="
+                    decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                    rule.is_editable !== false &&
+                    ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
+                            tooltip="Disable" [class.disabled]="assetModel.freezed">
+                            <em class="fas fa-fw fa-toggle-on"></em>
+                          </a>
+                          <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
+                    decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                    rule.is_editable !== false &&
+                      ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
+                            tooltip="Enable" [class.disabled]="assetModel.freezed">
+                            <em class="fas fa-fw fa-toggle-off"></em>
+                          </a>
+                   </ng-container>
                   <ng-container *ngIf="rule.type === 'Edge' ">
                     <a href="javascript:void(0)" (click)="deployEdgeRule(rule)" *ngIf="
                   decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&

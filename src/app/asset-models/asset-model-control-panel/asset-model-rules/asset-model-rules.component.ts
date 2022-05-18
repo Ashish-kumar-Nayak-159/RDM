@@ -30,7 +30,12 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   toggleRows = {};
   selectedrule: any;
   isView = false;
-  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  btnClickType:any;
+  confirmBodyMessage: any;
+  confirmHeaderMessage:any;
+  tabData: any;
+  type:any;
+  modalConfig: { cancelBtnText?:any;  saveBtnText?:any;stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetModelService: AssetModelService,
     private commonService: CommonService,
@@ -43,7 +48,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.onClickOfTab('Cloud');
   }
-
+ 
   addRule() {
     this.selectedTab = '';
     this.isEdit = false;
@@ -142,6 +147,33 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         }
       );
   }
+  deployRuleed(rule, isRevert = false) {
+    this.ruleData = rule;
+    this.isDeleteRuleLoading = true;
+    const obj = {
+      deployed_by: this.userData.email + ' (' + this.userData.name + ')',
+      is_revert: isRevert,
+    };
+    this.assetModelService
+      .deployCloudModelRule(this.contextApp.app, this.assetModel.name, this.ruleData.rule_id, obj)
+      .subscribe(
+        (response: any) => {
+          this.onCloseDeleteModal();
+          this.getRules();
+          this.toggleRows ={}
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(
+            isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
+            isRevert ? 'Enable Rule' : 'Disable Rule'
+          );
+        },
+        (err: HttpErrorResponse) => {
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showError(err.message, isRevert  ? 'Enable Rule' : 'Disable Rule');
+          this.onCloseDeleteModal();
+        }
+      );
+  }
 
   deployEdgeRule(rule, isRevert = false) {
     this.ruleData = rule;
@@ -205,7 +237,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       this.deleteRule();
     }
   }
-
+ 
   deleteRule() {
     this.ruleData = this.selectedrule;
     this.isDeleteRuleLoading = true;

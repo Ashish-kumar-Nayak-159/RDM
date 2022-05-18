@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
-
+import { CommonService } from 'src/app/services/common.service';
 @Component({
   selector: 'app-common-data-table',
   templateUrl: './common-data-table.component.html',
@@ -17,12 +17,11 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   tableFilterObj = {};
   sortDir = 1;
   isFilterSelected = false;
-  constructor(private applicationService: ApplicationService) { }
+  constructor(private applicationService: ApplicationService,
+    private commonService: CommonService,) { }
 
   ngOnInit(): void {
     this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
-    console.log("Checking", JSON.stringify(this.filteredTableData))
-
     if (this.tableData.length === 0) {
       this.noTableDataMessage = 'No data available.';
     }

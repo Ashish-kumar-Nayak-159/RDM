@@ -189,7 +189,7 @@
                               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false">
                               <em class="fa fa-fw fa-trash"></em>
                             </a>
-                            <ng-container *ngIf="rule.type === 'Cloud'">
+                            <ng-container *ngIf="rule.type === 'Cloud' && rule.rule_category==='Stream Analytics'">
                               <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="
                          decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
@@ -203,6 +203,22 @@
                           ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
                                 placement="bottom" tooltip="Revert">
                                 <em class="fa fa-fw fa-undo"></em>
+                              </a>
+                            </ng-container>
+                            <ng-container *ngIf="rule.type === 'Cloud' && rule.rule_category==='KPIX Analytics'">
+                              <a href="javascript:void(0)" (click)="deployRuleed(rule)" *ngIf="
+                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                         rule.is_editable !== false &&
+                          ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
+                                placement="bottom" tooltip="Disable">
+                                <em class="fas fa-fw fa-toggle-on"></em>
+                              </a>
+                              <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
+                        decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                        rule.is_editable !== false &&
+                          ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
+                                placement="bottom" tooltip="Enable">
+                                <em class="fas fa-fw fa-toggle-off"></em>
                               </a>
                             </ng-container>
                             <ng-container *ngIf="rule.type === 'Edge'">

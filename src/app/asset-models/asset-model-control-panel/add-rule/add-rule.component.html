@@ -275,17 +275,18 @@
               </option>
             </select>
             </div>
+            {{condition.bolCon}}
               <div class="col-auto">
                 <label for="examplePassword " *ngIf="getPropertyType(condition.property)!==null && getPropertyType(condition.property)!==undefined" class="mb-2 required">Value</label>
                 <input type="number" class="mb-2 form-control form-control-sm" *ngIf="getPropertyType(condition.property)==='Number'" required style="width:60px;" required
                   placeholder="value" name="threshold_{{i}}" [disabled]="isView" [(ngModel)]="condition.threshold">
                   <select class="custom-dropdown w-12 form-control form-control-sm w-auto" style="width:74px !important" *ngIf="getPropertyType(condition.property)==='Boolean'" required style="width:60px;" required
-                  placeholder="select value" [disabled]="isView" [(ngModel)]="condition.threshold">
+                  placeholder="select value" id="selectbol" [disabled]="isView"  [(ngModel)]="condition.bolCon">
                   <option value="true">True</option> 
                   <option value="false">False</option> 
                 </select>
                 <input type="text" class="form-control form-control-sm col-6"  *ngIf="getPropertyType(condition.property)==='String'" required style="width:60px;" required
-                placeholder="value" name="threshold_{{i}}" [disabled]="isView" [(ngModel)]="condition.threshold">
+                placeholder="value" name="threshold_{{i}}" [disabled]="isView" [(ngModel)]="condition.strText">
               </div>
               <div class="col-auto" *ngIf="ruleModel.aggregation_enabled">
                 <label for="examplePassword" class="mb-2 w-auto required">Aggregation Type</label>

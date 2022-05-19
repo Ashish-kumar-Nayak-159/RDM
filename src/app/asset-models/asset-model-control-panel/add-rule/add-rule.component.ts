@@ -282,7 +282,7 @@ export class AddRuleComponent implements OnInit {
       //   : [];
       if((this.ruleModel.category_type===undefined) || this.ruleModel.rules_type!==undefined && !this.ruleModel.rules_type)
       { 
-        if(this.ruleModel.rules_type)
+        if(this.ruleModel.rules_type )
         {
           response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
@@ -290,7 +290,7 @@ export class AddRuleComponent implements OnInit {
          });
         }  
       }
-      if((this.ruleModel.category_type===undefined && this.ruleModel.rules_type==undefined))
+      if((this.ruleModel.category_type===undefined && this.ruleModel.rules_type===undefined))
       {
         response.properties.edge_derived_properties.forEach((prop) => {
           prop.type = 'Edge Derived Properties';
@@ -301,14 +301,17 @@ export class AddRuleComponent implements OnInit {
       if(this.ruleModel.category_type!==undefined && !this.ruleModel.category_type && (
         this.ruleModel.rules_type==undefined || !this.ruleModel.rules_type))
       {
+        if((this.ruleModel.category_type!==undefined && this.ruleModel.rules_type!==undefined && !this.ruleModel.category_type))
+        {
         response.properties.edge_derived_properties.forEach((prop) => {
           prop.type = 'Edge Derived Properties';
           this.propertyList.push(prop);
-       });
+        });
         response.properties?.cloud_derived_properties?.forEach((prop) => {
            prop.type = 'Cloud Derived Properties';
            this.propertyList.push(prop);
         });
+       }
       }
       // response.properties.cloud_derived_properties.forEach((prop) => {
       //   prop.type = 'Cloud Derived Properties';

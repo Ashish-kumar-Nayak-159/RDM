@@ -19,6 +19,7 @@ export class RulesComponent implements OnInit {
   @Input() asset: Asset = new Asset();
   modelrules: any[] = [];
   assetRules: any[] = [];
+  modeltoAssetrules:any [] = [];
   rulesTableConfig: any;
   isRulesLoading = false;
   contextApp: any;
@@ -27,6 +28,7 @@ export class RulesComponent implements OnInit {
   isAddRule = false;
   isCloneRule = false;
   isEdit = false;
+  isCloneEdit = false;
   ruleData: any;
   isDeleteRuleLoading = false;
   userData: any;
@@ -49,6 +51,7 @@ export class RulesComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.onTabClick('Cloud');
     this.isAddRule = false;
+    this.isCloneEdit = false;
     this.isCloneRule = false;
   }
 
@@ -58,6 +61,7 @@ export class RulesComponent implements OnInit {
     this.isCloneRule = false;
     this.ruleData = {};
     this.isAddRule = true;
+    this.isCloneEdit = false;
   }
 
   onAccordionClick(type) {
@@ -71,8 +75,25 @@ export class RulesComponent implements OnInit {
     this.isAddRule = false;
     this.ruleData = {};
     this.isCloneRule = true;
+    this.isCloneEdit = false;
   }
-
+ 
+  overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, action) {
+    if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
+      if (action === 'toggle' || action === '') {
+        this.toggleRows = {};
+      }
+    } else {
+      this.toggleRows = {};
+      this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
+    }
+    this.modeltoAssetrules.push(rule);
+    this.isEdit = isEdit;
+    this.isView = isView;
+    this.isCloneEdit = isCloneEdit;
+    this.ruleData = rule;
+  }
+  
   onTabClick(type) {
     this.isAddRule = false;
     this.isCloneRule = false;
@@ -91,6 +112,7 @@ export class RulesComponent implements OnInit {
       this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
     }
     this.isEdit = isEdit;
+    this.isCloneEdit = false;
     this.isView = isView;
     this.ruleData = rule;
   }
@@ -147,6 +169,7 @@ export class RulesComponent implements OnInit {
     this.isView = false;
     this.isEdit = false;
     this.ruleData = undefined;
+    this.isCloneEdit = false;
   }
 
   deployRule(rule, isRevert = false) {
@@ -192,13 +215,13 @@ export class RulesComponent implements OnInit {
           // this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
-            isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
-            isRevert ? 'Enable Rule' : 'Disable Rule'
+            !isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
+            !isRevert ? 'Enable Rule' : 'Disable Rule'
           );
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showError(err.message, isRevert ? 'Enable Rule' : 'Disable Rule');
+          this.toasterService.showError(err.message, !isRevert ? 'Enable Rule' : 'Disable Rule');
           this.onCloseDeleteModal();
         }
       );

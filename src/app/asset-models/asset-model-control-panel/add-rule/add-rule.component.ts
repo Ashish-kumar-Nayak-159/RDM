@@ -21,6 +21,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
+  @Input() isCloneEdit: any;
   @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;
@@ -73,13 +74,14 @@ export class AddRuleComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
+    this.title = this.isCloneEdit ? 'Clone' : '';
     this.addRuleCondition = this.commonService.getItemFromLocalStorage("model_item").toString().substring(1,this.commonService.getItemFromLocalStorage("model_item").toString().length-1);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getSlaveData();
     this.DefaultRuleModelSetup();
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    this.addNewCondition();
+   // this.addNewCondition();
     this.getAssetsModelProperties();
     if (this.isEdit || this.isView) {
       this.configureData();
@@ -265,6 +267,7 @@ export class AddRuleComponent implements OnInit {
       app: this.contextApp.app,
       name: this.asset ? this.asset.tags.asset_model : this.name,
     };
+    this.propertyList = [];
     this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
       response.properties.measured_properties = response.properties.measured_properties
         ? response.properties.measured_properties
@@ -277,33 +280,53 @@ export class AddRuleComponent implements OnInit {
       // response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
       //   ? response.properties.cloud_derived_properties
       //   : [];
-      response.properties.edge_derived_properties.forEach((prop) => {
-        prop.type = 'Edge Derived Properties';
-        this.propertyList.push(prop);
-      });
+      if((this.ruleModel.category_type===undefined) || this.ruleModel.rules_type!==undefined && !this.ruleModel.rules_type)
+      { 
+        if(this.ruleModel.rules_type)
+        {
+          response.properties.edge_derived_properties.forEach((prop) => {
+            prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+         });
+        }  
+      }
+      if((this.ruleModel.category_type===undefined && this.ruleModel.rules_type==undefined))
+      {
+        response.properties.edge_derived_properties.forEach((prop) => {
+          prop.type = 'Edge Derived Properties';
+          this.propertyList.push(prop);
+       });
+      
+      }
+      if(this.ruleModel.category_type!==undefined && !this.ruleModel.category_type && (
+        this.ruleModel.rules_type==undefined || !this.ruleModel.rules_type))
+      {
+        response.properties.edge_derived_properties.forEach((prop) => {
+          prop.type = 'Edge Derived Properties';
+          this.propertyList.push(prop);
+       });
+        response.properties?.cloud_derived_properties?.forEach((prop) => {
+           prop.type = 'Cloud Derived Properties';
+           this.propertyList.push(prop);
+        });
+      }
       // response.properties.cloud_derived_properties.forEach((prop) => {
       //   prop.type = 'Cloud Derived Properties';
       //   this.propertyList.push(prop);
       // });
       this.dropdownPropList = [];
       this.propertyList.forEach((prop) => { 
-        
-        if ((prop.type === 'Measured Properties' && this.ruleModel.rules_type) ||
-         ((prop.type === 'Measured Properties' || prop.type === 'Edge Derived Properties') && !this.ruleModel.rules_type
-        &&  this.ruleModel.category_type)|| ((prop.type === 'Cloud Derived Properties' || prop.type === 'Measured Properties' || prop.type === 'Edge Derived Properties') && !this.ruleModel.rules_type
-        &&  !this.ruleModel.category_type)) 
-        {  if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') { 
+         if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') { 
           if(!this.ruleModel?.metadata?.sid ||  prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid){
-            this.dropdownPropList.push({
+                this.dropdownPropList.push({
                   id: prop.name,
                   type: prop.type,
                   json_key: prop.json_key,
                   value: prop,
-                });
+                  });
+                }
               }
-            }
-          }
-        });
+         });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
 
     });
@@ -387,7 +410,10 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.rule_type = event;
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
     this.getRules();    
-    
+    if(event)
+    {
+      this.ruleModel.category_type =  undefined ;
+    }
     this.dropdownPropList = [];
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
     this.getAssetsModelProperties();
@@ -413,12 +439,13 @@ export class AddRuleComponent implements OnInit {
   }
 
   closeRuleModal(status) {
+    this.isCloneEdit = false;
     this.onCloseRuleModel.emit({
       status: status,
     });
     $('#addRuleModal').modal('hide');
     this.isEdit = false;
-  }
+   }
 
   onChangeTimeAggregation(event) {
     this.ruleModel.aggregation_window_in_sec = null;
@@ -579,6 +606,108 @@ export class AddRuleComponent implements OnInit {
       );
     }
   }
+  cloneRules() {
+    this.ruleModel.rule_category = "Stream Analytics";
+    if(this.ruleModel.category_type)
+    {
+       this.ruleModel.rule_category = "KPIX Analytics"
+    }
+    if (
+      (!this.ruleModel.name ||
+        !this.ruleModel.description ||
+        !this.ruleModel.code ||
+        !this.ruleModel.operator ||
+        (!this.ruleModel.rules_type && !this.ruleModel.escalation_time_in_sec))
+      || (
+        this.ruleModel.name?.trim()?.length <= 0 ||
+        this.ruleModel.description?.trim()?.length <= 0 ||
+        this.ruleModel.code?.trim()?.length <= 0
+      )
+    ) {
+      this.toasterService.showError('Please fill all required details', 'Add Rule');
+      return;
+    } else if (
+      !this.ruleModel.actions.alert_management.enabled &&
+      !this.ruleModel.actions.notification.enabled &&
+      !this.ruleModel.actions.asset_control.disable
+    ) {
+      this.toasterService.showError('Please select any one of the actions', 'Add Rule');
+      return;
+    }
+    this.isUpdateApiCall = true;
+    let str = '';
+    this.ruleModel.properties = [];
+    this.ruleModel.conditions.forEach((element, index) => {
+      let operator = this.findOperator(element.operator);
+      if(this.data_type==='Number')
+      {
+        str +=
+        ' %' +
+        (index + 1) +
+        '% ' +
+        operator +
+        ' ' +
+        element.threshold +
+        ' ' +
+        this.ruleModel.operator;
+      }
+      if(this.data_type ==='Boolean')
+      {
+        str +=
+        ' %' +
+        (index + 1) +
+        '% ' +
+        operator +
+        ' ' +
+        element.bolCon +
+        ' ' +
+        this.ruleModel.operator;
+      }
+      if(this.data_type ==='String')
+      {
+        str +=
+        ' %' +
+        (index + 1) +
+        '% ' +
+        operator +
+        ' ' +
+        element.strText +
+        ' ' +
+        this.ruleModel.operator;
+      }
+      let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
+      element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
+      this.ruleModel.properties.push({
+        property: prop.value.json_key,
+        type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
+      });
+    });
+    
+    this.ruleModel.condition_str = str.slice(0, -2).trim();
+    this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    let method;
+    
+      method = !this.ruleModel.rules_type
+         ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
+         : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+      method.subscribe(
+        (response: any) => {
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
+          // $('#addRuleModal').modal('hide');
+          // this.isEdit = false;
+          this.toasterService.showSuccess(response.message, this.title + 'Rule');
+          this.closeRuleModal(true);
+          this.isUpdateApiCall = false;
+        },
+        (err: HttpErrorResponse) => {
+          this.isUpdateApiCall = false;
+          this.toasterService.showError(err.message, this.title + 'Rule');
+        }
+      );
+   }
   createNewRule_timeThre() {
     this.ruleModel.rule_category = "Stream Analytics";
     if(this.ruleModel.category_type)
@@ -603,7 +732,7 @@ export class AddRuleComponent implements OnInit {
       threshold: "m",
       aggregation_type:null,
       strText:null,
-      bolCon:true,
+      bolCon:null,
   });
     
       this.ruleModel.properties.push({

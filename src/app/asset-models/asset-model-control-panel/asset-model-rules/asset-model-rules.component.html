@@ -79,8 +79,9 @@
                 <td>{{rule.name}}</td>
                 <td>{{rule.code}}</td>
                 <td>{{rule.local_updated_date}}</td>
-                <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on ? rule.local_deployed_on :
-                  'Not yet delployed'}}</td>
+                <td *ngIf="rule.type === 'Cloud'">
+                  <div *ngIf="rule.rule_category!=='KPIX Analytics'">{{rule.local_deployed_on ? rule.local_deployed_on :
+                  'Not yet delployed'}}</div><div *ngIf="rule.rule_category==='KPIX Analytics'">-</div></td>
                 <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                   'Not yet synced'}}</td>
                 <!-- <td>{{rule.description}}</td> -->

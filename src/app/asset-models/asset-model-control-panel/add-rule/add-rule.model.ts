@@ -41,7 +41,7 @@ export class Conditions {
     operator: string;
     threshold: any;
     aggregation_type: string;
-    bolCon?:boolean;
+    bolCon?:any;
     strText?:any;    
 }
 

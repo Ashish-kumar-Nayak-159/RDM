@@ -34,7 +34,7 @@
         Enter below details to create a cloud or edge rule.
       </div>
       <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit" [ruleData]="ruleData"
-        (onCloseRuleModel)="onCloseRuleModel($event)">
+        (onCloseRuleModel)="onCloseRuleModel($event)" [isCloneEdit]="isCloneEdit">
       </app-add-rule>
     </div>
     <div *ngIf="isCloneRule">
@@ -42,12 +42,12 @@
         Select a existing rule to clone.
       </div>
       <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit" [isClone]="isCloneRule"
-        [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
+        [ruleData]="ruleData" [isCloneEdit]="isCloneEdit"  (onCloseRuleModel)="onCloseRuleModel($event)">
       </app-add-rule>
     </div>
 
     <div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
-      <accordion [closeOthers]="'true'" class="mb-2 p-3">
+      <accordion [closeOthers]="'true'" class="mb-2 p-3" style="overflow-y:auto;height:75vh">
         <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
           [isOpen]="selectedAccrodionType === 'Model'">
           <ng-container accordion-heading>
@@ -92,20 +92,25 @@
                           <td>{{rule.local_updated_date}}</td>
                           <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on ? rule.local_deployed_on :
                             'Not yet deployed'}}</td>
-                          <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
+                            <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                             'Not yet synced'}}</td>
                           <td>
                             <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true, false, '')" class="mr-1"
                               placement="bottom" tooltip="View">
                               <em class="fa fa-fw fa-eye"></em>
                             </a>
+                         
+                            <a href="javascript:void(0)" (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
+                              placement="bottom" tooltip="Override">
+                              <em class="fa fa-fw fa-clone"></em>
+                            </a>
                           </td>
                         </tr>
-                        <tr *ngIf="toggleRows[selectedTab + '_model_' + i]" style="background-color:#fdfeff;">
+                        <tr *ngIf="!isCloneEdit && toggleRows[selectedTab + '_model_' + i]" style="background-color:#fdfeff;">
                           <td colspan="8" class="accordion-border">
                             <div class="col-12 my-2 accordion-padding">
                               <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
-                                [isView]="isView" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
+                                [isView]="isView" [isCloneEdit]="isCloneEdit" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
                               </app-add-rule>
                             </div>
                           </td>
@@ -134,8 +139,16 @@
               Asset Level Rules
             </button>
           </ng-container>
+          <div *ngFor="let rule of modeltoAssetrules; let i = index">
+          <div class="col-12 my-2 accordion-padding" *ngIf="toggleRows[selectedTab + '_model_' + i]">
+            <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
+              [isView]="isView" [isCloneEdit]="isCloneEdit" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
+            </app-add-rule>
+          </div>
+        </div>
           <div class="table-responsive">
             <p class="tab-bar mb-0">Following rules are exclusively running on this asset.</p>
+           
             <div class="tableFixHead tableFixHead-asset-rules-list">
 
               <table class="table table-hover">
@@ -170,8 +183,10 @@
                           <td>{{rule.code}}</td>
                           <!-- <td>{{rule.source}}</td> -->
                           <td>{{rule.local_updated_date}}</td>
-                          <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on ? rule.local_deployed_on :
-                            'Not yet deployed'}}</td>
+                          <td *ngIf="rule.type === 'Cloud'">    <div *ngIf="rule.rule_category==='KPIX Analytics'">-</div>
+                            <div *ngIf="rule.rule_category!=='KPIX Analytics'">{{rule.local_deployed_on ? rule.local_deployed_on :
+                            'Not yet deployed'}}</div>
+                            </td>
                           <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on ? rule.local_synced_on :
                             'Not yet synced'}}</td>
                           <td>
@@ -210,15 +225,15 @@
                          decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
                           ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
-                                placement="bottom" tooltip="Disable">
-                                <em class="fas fa-fw fa-toggle-on"></em>
+                                placement="bottom" tooltip="Enable">
+                                <em class="fas fa-fw fa-toggle-off"></em>
                               </a>
-                              <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
+                              <a href="javascript:void(0)" (click)="deployRuleed(rule,true)" *ngIf="
                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                         rule.is_editable !== false &&
                           ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
-                                placement="bottom" tooltip="Enable">
-                                <em class="fas fa-fw fa-toggle-off"></em>
+                                placement="bottom" tooltip="Disable">
+                                <em class="fas fa-fw fa-toggle-on"></em>
                               </a>
                             </ng-container>
                             <ng-container *ngIf="rule.type === 'Edge'">
@@ -241,9 +256,9 @@
                         </tr>
                         <tr *ngIf="toggleRows[selectedTab + '_asset_' + i]" style="background-color:#fdfeff;">
                           <td colspan="8" class="accordion-border">
-                            <div class="col-12 my-2 accordion-padding">
-                              <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
-                                [isView]="isView" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
+                            <div  class="col-12 my-2 accordion-padding">
+                              <app-add-rule  [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
+                                [isView]="isView" [ruleData]="ruleData" [isCloneEdit]="isCloneEdit" (onCloseRuleModel)="onCloseRuleModel($event)">
                               </app-add-rule>
                             </div>
                           </td>

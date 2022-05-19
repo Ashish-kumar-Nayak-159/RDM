@@ -112,7 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.connectionStatusMessage = 'Back to online';
       this.connectionStatus = 'online';
       if(this.isHomeRoute === false){
-        if ($('#routeWrapperDiv').addClass('sb-notoggle')) {
+        if ($('#routeWrapperDiv').removeClass('sb-notoggle')) {
         }
       }else if(this.isLoginRoute === true){
         if ($('#routeWrapperDiv').addClass('sb-notoggle')) {

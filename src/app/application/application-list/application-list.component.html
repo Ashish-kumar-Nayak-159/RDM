@@ -186,6 +186,11 @@
                         formControlName="backup_required">
                       <label class="form-check-label" for="contains-db-back">Backup Required?</label>
                     </div>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-db-maintenance" name="contains-db-maintenance"
+                        formControlName="maintenance_required">
+                      <label class="form-check-label" for="contains-db-maintenance">Maintenance Required?</label>
+                    </div>
                     <ng-container
                       *ngIf="createApplicationForm.get('metadata').get('app_specific_schema').value || createApplicationForm.get('metadata').get('app_specific_db').value || createApplicationForm.get('metadata').get('app_telemetry_specific_schema').value">
                       <ng-container formGroupName="partition">

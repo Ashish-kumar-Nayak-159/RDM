@@ -205,16 +205,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
         if(this.type === 'measured_properties'){
-          response.properties?.measured_properties.forEach(element => {
+          response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;
           });
         }else if(this.type === 'cloud_derived_properties'){
-          response.properties?.cloud_derived_properties.forEach(element => {
+          response.properties?.cloud_derived_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;      
           });
 
         }else if(this.type === 'edge_derived_properties'){
-          response.properties?.edge_derived_properties.forEach(element => {
+          response.properties?.edge_derived_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;
           });
 
@@ -250,6 +250,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       operator: null,
       index: this.propertyObj.metadata.properties.length + 1,
     });
+  }
+  deletePropertyCondtion(propindex){
+    alert(this.propertyObj.metadata.properties.length)
+    this.propertyObj.metadata.properties.splice(0, 1);
+
   }
 
   openAddPropertiesModal() {
@@ -368,6 +373,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     // this.editor.set(this.propertyObj.json_model);
   }
 
+  onBlurMethod(event){
+    
+  }
+
   onSavePropertyObj() {
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
@@ -413,6 +422,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.metadata.condition = '';
       this.propertyObj.metadata.props = [];
       this.propertyObj.condition = '';
+      debugger
       this.propertyObj.metadata.properties.forEach((prop) => {
         if (prop.property) {
           const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);

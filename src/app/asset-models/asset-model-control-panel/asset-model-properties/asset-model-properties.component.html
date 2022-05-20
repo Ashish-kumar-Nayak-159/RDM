@@ -199,13 +199,28 @@
                         <option [ngValue]="'/'">Divide</option>
                       </select>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2" *ngIf="propIndex > 0">
+                      <a href="javascript:void(0)" (click)="deletePropertyCondtion(propIndex)">
+                        <em class="fa fa-fw fa-trash"></em>
+                      </a>
                     </div>
                   </div>
                 </ng-container>
               </div>
             </div>
           </ng-container>
+          <div  *ngIf="type == 'edge_derived_properties'">
+
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Formula Display:</label>
+              <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
+                [(ngModel)]="propertyObj.json_key" placeholder="Enter Key Name" (change)="onJSONKeyChange()"
+                [disabled]="propertyObj.edit">
+                <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                  Please enter valid key.
+                </div>
+            </div>
+          </div>
       
       <div class="modal-footer fixed-bottom bg-white">
         <button type="button" class="btn btn-primary "

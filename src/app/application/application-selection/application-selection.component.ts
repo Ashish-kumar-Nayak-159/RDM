@@ -81,6 +81,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;
     if (localStorageAppData && localStorageAppData.app !== app.app) {
+      this.toasterService.showclear();
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
       localStorage.removeItem(CONSTANTS.ASSETS_LIST);
       localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);

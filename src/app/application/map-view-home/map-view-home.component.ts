@@ -34,6 +34,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   zoom = undefined;
   isGetAssetsAPILoading = false;
   decodedToken: any;
+  tooltipmapicon:any;
+  displayicon:boolean = true;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -58,6 +60,14 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
+      if (item.page === 'Live Data' && item.visible === true) {
+        this.displayicon = true;
+        this.tooltipmapicon = item.display_name;
+      } else if (item.page === 'Live Data' && item.visible === false) {
+        this.displayicon = false;
+      }
+    });
     await this.getAllAssets();
     await this.getAssets(this.contextApp.user.hierarchy);
     setTimeout(() => {

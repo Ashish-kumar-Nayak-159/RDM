@@ -53,10 +53,9 @@
                         (click)="redirectToAsset(asset)" class="float-left" >
                         <em class="fa fa-fw fa-table" title="View Control Panel" style="font-size: 15px;padding-bottom: 10px;"></em>
                       </a>&nbsp;&nbsp;
-                      <a *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 )" href="javascript:void(0)" style="z-index: 1;margin-left: 10px;"
+                      <a *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) " href="javascript:void(0)" style="z-index: 1;margin-left: 10px;"
                         (click)="redirectToLiveData(asset)" class="float-left" >
-
-                        <em *ngIf="contextApp?.dashboard_config?.show_live_widgets" class="fa fa-chart-bar fa-fw" title="View Live Data" style="font-size: 15px;padding-bottom: 10px;"></em>
+                        <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true" class="fa fa-chart-bar fa-fw" title="{{tooltipmapicon}}" style="font-size: 15px;padding-bottom: 10px;"></em>
                         <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw" title="View Historic Data"  style="font-size: 15px;padding-bottom: 10px;"></em>
                       </a>
                 

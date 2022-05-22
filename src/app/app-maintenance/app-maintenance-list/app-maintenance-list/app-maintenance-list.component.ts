@@ -35,8 +35,6 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     this.getAssets(this.contextApp.user.hierarchy);
-
-
   }
 
  

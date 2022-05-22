@@ -533,6 +533,19 @@ export class CONSTANTS {
       showAccordion: [{ name: 'Title', value: 'Campaigns' }],
       priority: 1,
     },
+    {
+      page: 'Maintenance',
+      system_name: 'Maintenance',
+      url: 'applications/:appName/maintenance',
+      display_name: 'Maintenance',
+      icon: 'fa fa-fw fa-object-group',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV'],
+      showAccordion: [{ name: 'Title', value: 'Maintenance' }],
+      priority: 1,
+    },
+
     
   ];
 

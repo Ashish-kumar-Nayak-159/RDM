@@ -1,30 +1,39 @@
 <div class="blue-nav-bar">
     <!-- Diplay the Title and the + icon  -->
-<div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center">
 
-    <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
-    </div>
-    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openMaintenanceCreateModal()"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
-        tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
-            class="fas fa-plus fa-sm"></em></button>
-</div>
-    <!-- Display the Hierachy and Search Icon display -->
-<div class="ml-auto">
-    <div class="">
-        <form class="form-inline">
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
-            [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
-          </app-hierarchy-dropdown>
-            <!-- <div class="form-group">
+            <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
+            </div>
+            <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openMaintenanceCreateModal()"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
+                tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
+                    class="fas fa-plus fa-sm"></em></button>
+        </div>
+        <!-- Display the Hierachy and Search Icon display -->
+        <div class="ml-auto">
+            <div class="">
+                <form class="form-inline">
+                    <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true"
+                        [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets"
+                        (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
+                    </app-hierarchy-dropdown>
+                    <!-- <div class="form-group">
                 <button type="button" class="btn btn-sm searchBtn btn-primary"
                     (click)="onFilterSelection(this.filterObj, true, true)"><em
                         class="fas fa-search fa-sm"></em>
                 </button>
             </div> -->
-        </form>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div>
+       <div id="table-wrapper">
+        <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
+        (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+       </div>
     </div>
 </div>
-</div>  
-</div>
+

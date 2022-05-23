@@ -4,6 +4,7 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
 
 @Component({
   selector: 'app-app-maintenance-list',
@@ -20,12 +21,16 @@ export class AppMaintenanceListComponent implements OnInit {
   assets: any[] = [];
   userData: any;
   apiSubscriptions: Subscription[] = [];
+  tableConfig: any;
+  maintenances: any = [];
+  isApplicationListLoading = false;
 
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
     private commonService:CommonService,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private maintenanceService: MaintenanceService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -35,6 +40,106 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     this.getAssets(this.contextApp.user.hierarchy);
+    this.getMaintenance();
+    this.tableConfig = {
+      type: 'Applications',
+      is_table_data_loading: this.isApplicationListLoading,
+      table_class: 'table_class',
+      no_data_message: '',
+      data: [
+        {
+          header_name: 'Asset Id',
+          is_display_filter: true,
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'asset_id',
+          //is_sort: true
+        },
+        {
+          header_name: 'Name',
+          is_display_filter: true,
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'name',
+          //is_sort: true
+        },
+        {
+          header_name: 'Inspection Frequency',
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'inspection_frequency',
+          value_class: '',
+          data_tooltip: 'offline_since',
+          data_cellclass: 'cssclass',
+          //is_sort: true
+        },
+        {
+          header_name: 'Start Date',
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'start_date',
+          data_tooltip: 'last_ingestion_on',
+          data_cellclass: 'ingestionCss'
+        },
+        // {
+        //   header_name: 'CreatedOn',
+        //   value_type: 'string',
+        //   // is_sort_required: true,
+        //   fixed_value_list: [],
+        //   data_type: 'text',
+        //   data_key: 'created_date',
+        //   //is_sort: true,
+        //   sort_by_key: 'created_date_time'
+        // },
+        // {
+        //   header_name: 'Icons',
+        //   key: undefined,
+        //   data_type: 'button',
+        //   btn_list: [
+        //     {
+        //       icon: 'fa fa-fw fa-edit',
+        //       text: '',
+        //       id: 'EditPrivilege',
+        //       valueclass: '',
+        //       tooltip: 'Edit Privilege',
+        //     },
+        //     {
+        //       icon: 'fa fa-fw fa-eye',
+        //       text: '',
+        //       id: 'View',
+        //       valueclass: '',
+        //       tooltip: 'View',
+        //     },
+        //     {
+        //       icon: 'fa fa-fw fa-table',
+        //       text: '',
+        //       id: 'Partition',
+        //       valueclass: '',
+        //       tooltip: 'Database Partition',
+        //     }
+        //   ],
+        // },
+      ],
+    };
+  }
+
+  //getting list from maintenance APi
+
+  getMaintenance(){
+       this.maintenanceService.getMaintenance().subscribe((response:any)=>{
+           console.log("maintenance",response)
+         this.maintenances = response.data
+       },(err)=>{
+         console.log("err while calling maintenance api",err)
+       })
   }
 
  
@@ -95,6 +200,10 @@ onSaveHierachy() {
 
 onChangeOfAsset(){
   const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+
+}
+
+onTableFunctionCall(obj){
 
 }
 

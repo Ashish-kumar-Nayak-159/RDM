@@ -5,6 +5,7 @@ import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hi
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
+declare var $: any;
 
 @Component({
   selector: 'app-app-maintenance-list',
@@ -24,6 +25,16 @@ export class AppMaintenanceListComponent implements OnInit {
   tableConfig: any;
   maintenances: any = [];
   isApplicationListLoading = false;
+  confirmBodyMessage: string;
+  confirmHeaderMessage: string;
+  isAPILoading = false;
+  modalConfig: {
+    isDisplaySave: boolean;
+    isDisplayCancel: boolean;
+    saveBtnText: string;
+    cancelBtnText: string;
+    stringDisplay: boolean;
+  };
 
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
@@ -99,40 +110,54 @@ export class AppMaintenanceListComponent implements OnInit {
         //   //is_sort: true,
         //   sort_by_key: 'created_date_time'
         // },
-        // {
-        //   header_name: 'Icons',
-        //   key: undefined,
-        //   data_type: 'button',
-        //   btn_list: [
-        //     {
-        //       icon: 'fa fa-fw fa-edit',
-        //       text: '',
-        //       id: 'EditPrivilege',
-        //       valueclass: '',
-        //       tooltip: 'Edit Privilege',
-        //     },
-        //     {
-        //       icon: 'fa fa-fw fa-eye',
-        //       text: '',
-        //       id: 'View',
-        //       valueclass: '',
-        //       tooltip: 'View',
-        //     },
-        //     {
-        //       icon: 'fa fa-fw fa-table',
-        //       text: '',
-        //       id: 'Partition',
-        //       valueclass: '',
-        //       tooltip: 'Database Partition',
-        //     }
-        //   ],
-        // },
+        {
+          header_name: 'Actions',
+          key: undefined,
+          data_type: 'button',
+          btn_list: [
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'View',
+              valueclass: '',
+              tooltip: 'View',
+            },
+            {
+              icon: 'fa fa-fw fa-edit',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+            },
+            {
+              icon: 'fa fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete',
+            },
+            {
+              icon: 'fa fa-fw fa-table',
+              text: '',
+              id: 'Trigger',
+              valueclass: '',
+              tooltip: 'Trigger',
+            },
+            {
+              icon: 'fas fa-fw fa-toggle-off',
+              text: '',
+              id: 'Disable',
+              valueclass: '',
+              tooltip: 'Disable',
+            },
+           
+          ],
+        },
       ],
     };
   }
 
-  //getting list from maintenance APi
-
+  //getting data list from maintenance APi
   getMaintenance(){
        this.maintenanceService.getMaintenance().subscribe((response:any)=>{
            console.log("maintenance",response)
@@ -203,8 +228,80 @@ onChangeOfAsset(){
 
 }
 
-onTableFunctionCall(obj){
 
+// this function will call when someone click on icons [Ex. delete, edit, toggle]
+onTableFunctionCall(obj){
+  if (obj.for === 'View') {
+    console.log('view :',obj);
+  }
+  else if (obj.for === 'Delete') {
+    this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
+      console.log("del response", response)
+      this.getMaintenance();
+    })
+
+  }
+  else if (obj.for === 'Disable') {
+    this.openConfirmDialog("Disable")
+    this.maintenanceService.enableDisable(obj.maintenance_registry_id).subscribe((res)=>{
+      console.log("enable/disable",res);
+      
+   })
+  }
+  else if (obj.for === 'EditPrivilege') {
+  }else if (obj.for === 'Un Provision'){
+  }
 }
+
+// showing and hiding modal
+onModalEvents(eventType) {
+  if(eventType === 'save'){
+   console.log("saying yes")
+  
+   $("#confirmMessageModal").modal('hide');
+  }
+  else{
+    $('#confirmMessageModal').modal('hide');
+  }
+}
+
+openConfirmDialog(type) {
+  this.modalConfig = {
+    isDisplaySave: true,
+    isDisplayCancel: true,
+    saveBtnText: 'Yes',
+    cancelBtnText: 'No',
+    stringDisplay: true,
+  };
+  if (type === 'Enable') {
+    this.confirmBodyMessage = 'Are you sure you want to enable this asset?';
+    this.confirmHeaderMessage = 'Enable ' + 'Asset';
+  } else if (type === 'Disable') {
+    this.confirmBodyMessage =
+      'This ' +
+     'Asset' +
+      ' will be temporarily disabled. Are you sure you want to continue?';
+    this.confirmHeaderMessage = 'Disable ' +  'Asset';
+  } else if (type === 'Deprovision') {
+    this.confirmHeaderMessage = 'Deprovision ' + 'Asset';
+    // if (this.type !== CONSTANTS.NON_IP_ASSET) {
+    //   this.confirmBodyMessage =
+    //     'This ' +
+    //     (this.tabData?.table_key || 'Asset') +
+    //     ' will be permanently deleted. Instead, you can temporarily disable the ' +
+    //     (this.tabData?.table_key || 'Asset') +
+    //     '.' +
+    //     ' Are you sure you want to continue?';
+    // } else {
+    //   this.confirmBodyMessage =
+    //     'This ' +
+    //     (this.tabData?.table_key || 'Asset') +
+    //     ' will be permanently deleted.' +
+    //     ' Are you sure you want to continue?';
+    // }
+  }
+  $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+}
+
 
 }

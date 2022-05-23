@@ -30,10 +30,17 @@
     </div>
 
     <div>
-       <div id="table-wrapper">
+       <div >
         <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
        </div>
     </div>
+    <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+        <div class="modal-dialog" role="document">
+          <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+            (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+          </app-message-modal>
+        </div>
+      </div>
 </div>
 

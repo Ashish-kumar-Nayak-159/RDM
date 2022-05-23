@@ -102,7 +102,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   navigationInterceptor(event): void {
     var online = navigator.onLine;
-    console.log("Checking", online)
     if(online == false){
       this.connectionStatus = 'offline';
     }else{

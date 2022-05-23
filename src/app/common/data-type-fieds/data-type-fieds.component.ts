@@ -10,6 +10,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class DataTypeFieldsComponent implements OnInit {
   @Input() obj: any;
   @Input() type: any;
+  @Input() disabled = false;
   enumObj: any = {};
   constructor(private toasterService: ToasterService) { }
 

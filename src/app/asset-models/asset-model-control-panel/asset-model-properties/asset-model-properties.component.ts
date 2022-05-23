@@ -205,16 +205,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
         if(this.type === 'measured_properties'){
-          response.properties?.measured_properties.forEach(element => {
+          response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;
           });
         }else if(this.type === 'cloud_derived_properties'){
-          response.properties?.cloud_derived_properties.forEach(element => {
+          response.properties?.cloud_derived_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;      
           });
 
         }else if(this.type === 'edge_derived_properties'){
-          response.properties?.edge_derived_properties.forEach(element => {
+          response.properties?.edge_derived_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key].units;
           });
 

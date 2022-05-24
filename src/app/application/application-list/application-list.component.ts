@@ -559,7 +559,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         }),
         partition_detach: new FormControl(true),
         partition_delete: new FormControl(true),
-        backup_required: new FormControl(false)
+        backup_required: new FormControl(false),
+        maintenance_required:new FormControl(false)
       })
     });
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });

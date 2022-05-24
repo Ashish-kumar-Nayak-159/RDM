@@ -59,7 +59,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Display Name:</label>
             <input #display_name="ngModel" validateText type="text" class="form-control form-control-sm" id="display_name" name="display_name"
-              [(ngModel)]="propertyObj.name" placeholder="Enter Property Name">
+              [(ngModel)]="propertyObj.name" placeholder="Enter Property Name" [disabled]="isDisabled">
               <div *ngIf="display_name.errors?.whitespace && display_name.touched" class="alert-danger">
                 Please enter valid name.
               </div>
@@ -68,7 +68,7 @@
             <label for="message-text" class="col-form-label required">JSON Key:</label>
             <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="propertyObj.json_key" placeholder="Enter Key Name" (change)="onJSONKeyChange()"
-              [disabled]="propertyObj.edit">
+              [disabled]="propertyObj.edit || isDisabled">
               <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
                 Please enter valid key.
               </div>
@@ -76,12 +76,12 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Data Type:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
-              [(ngModel)]="propertyObj.data_type" (change)="onDataTypeChange()">
+              [(ngModel)]="propertyObj.data_type" (change)="onDataTypeChange()"  [disabled]="isDisabled">
               <option value="undefined">Select Data Type</option>
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
-          <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]" [type]="type"
+          <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]" [type]="type" [disabled]="isDisabled" 
             *ngIf="propertyObj.json_key && propertyObj.data_type && propertyObj?.json_model[propertyObj.json_key]">
           </app-data-type-fields>
           <div class="form-group" *ngIf="type.includes('measured')">
@@ -159,7 +159,7 @@
           <ng-container *ngIf="type == 'edge_derived_properties'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>
-              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"><em
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  [disabled]="isDisabled"><em
                   class="fas fa fa-plus"></em>
               </button>
               <div class="bg-light p-3">
@@ -167,12 +167,12 @@
                   *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
                   <div class="form-group row">
                     <div class="col-5">
-                      <ng-select [items]="dependentProperties" class="custom-dropdown sm" bindLabel="name"
+                      <ng-select [items]="dependentProperties"   class="custom-dropdown sm" bindLabel="name"
                         [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
                         groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
-                        [(ngModel)]="propObj.property">
+                        [(ngModel)]="propObj.property" [disabled]="isDisabled">
                         <ng-template ng-option-tmp let-item="item">
-                          <span [tooltip]="item.name"> <em
+                          <span [tooltip]="item.name"  > <em
                               [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
                             {{item.name}}</span>
                         </ng-template>
@@ -182,7 +182,7 @@
                       <label for="operator" class="h4 col-form-label ">OR</label>
                     </div>
                     <div class="col-5">
-                      <input type="number" class="form-control form-control-sm" id="constant{{propIndex}}"
+                      <input type="number" [disabled]="isDisabled" class="form-control form-control-sm" id="constant{{propIndex}}"
                         name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
                     </div>
                   </div>
@@ -191,7 +191,7 @@
                     </div>
                     <div class="col-6">
                       <select class="form-control form-control-sm" id="operator{{propIndex}}"
-                        name="operator{{propIndex}}" [(ngModel)]="propObj.operator">
+                        name="operator{{propIndex}}" [(ngModel)]="propObj.operator" [disabled]="isDisabled" >
                         <option [ngValue]="undefined">Select Operator</option>
                         <option [ngValue]="'+'">Add</option>
                         <option [ngValue]="'-'">Minus</option>
@@ -199,27 +199,52 @@
                         <option [ngValue]="'/'">Divide</option>
                       </select>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2" *ngIf="propIndex > 0">
+                      <a href="javascript:void(0)" (click)="deletePropertyCondtion(propIndex)">
+                        <em class="fa fa-fw fa-trash"></em>
+                      </a>
                     </div>
                   </div>
                 </ng-container>
               </div>
             </div>
           </ng-container>
+          <div  *ngIf="type == 'edge_derived_properties'">
+            <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == false"
+            (click)="selectedProperty ? updatePropertyDataValidate() :ValidateallInputField()">Validate</button>
+          <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == true"
+          (click)="clearInputField()">Clear</button>
+         
+          
+            <div class="form-group" *ngIf="isDisabled == true">
+              <label for="message-text" class="col-form-label required">Formula Display:</label>
+              <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
+                [(ngModel)]="formula" placeholder="Enter Key Name">
+            </div>
+          </div>
       
-      <div class="modal-footer fixed-bottom bg-white">
+      <div class="modal-footer fixed-bottom bg-white"   >
         <button type="button" class="btn btn-primary "
           *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
           [disabled]="!form.valid || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button type="button" class="btn btn-primary"
-          *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'"
-          [disabled]="!form.valid"
-          (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
+          <div *ngIf="displaybutton == false">
+            <button type="button" class="btn btn-primary"
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || isDisabled "
+              (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+          </div>
+          <div *ngIf="displaybutton == true">
+            <button type="button" class="btn btn-primary"
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!isDisabled"
+              (click)="selectedProperty ? UpdatePropertyAfterValidate() : onSavePropertyObj()">Save</button>
+          </div>
+        
+          <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
           (click)="onCloseAssetsPropertyModal()">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></em>
       </div>
+    
+    
     </form>
   </div>
     </div>

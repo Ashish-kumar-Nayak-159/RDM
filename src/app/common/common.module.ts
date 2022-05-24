@@ -37,6 +37,7 @@ import { CommonWidgetComponent } from './charts/common-widget/common-widget.comp
 import { ColumnchartLivedataComponentComponent } from './charts/columnchart-livedata-component/columnchart-livedata-component.component';
 import { FormValidatorDirective } from '../validator/form-validator.directive';
 import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/small-number-widget.component';
+import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/conditional-widget/conditional-widget.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/sm
     CommonWidgetComponent,
     ColumnchartLivedataComponentComponent,
     FormValidatorDirective,
-    SmallNumberWidgetComponent
+    SmallNumberWidgetComponent,
+    ConditionalWidgetComponent
   ],
   imports: [
     CommonModule,
@@ -99,6 +101,7 @@ import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/sm
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
     SmallNumberWidgetComponent,
+    ConditionalWidgetComponent,
     LiveLineChartComponent,
     CommonDataTableComponent,
     DamagePlotChartComponent,

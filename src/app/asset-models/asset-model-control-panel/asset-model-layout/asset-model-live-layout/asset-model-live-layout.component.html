@@ -33,8 +33,7 @@
             <div *ngIf="widget?.widgetType === 'SmallNumber'"
               class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
                 || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
-                'margin-left':'0', 'margin-top': '2%' }">
-                
+                'margin-left':'0', 'margin-top': '2%' }">       
 
                 <!-- {{telemetryObj.temperature.value| json}}
                 {{telemetryObj.pressure1.value | json}} -->
@@ -57,6 +56,10 @@
           <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
             || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
             'margin-left':'2%', 'margin-top': '2%' }">
+            <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj" >
+
+            </app-conditional-widget>
             <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
             || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
               (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
@@ -152,6 +155,7 @@
               [(ngModel)]="widgetObj.widgetType" (change)="onWidgetTypeChange()">
               <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
               <option [ngValue]="'SmallNumber'">Small Number {{widgetStringFromMenu}}</option>
+              <option [ngValue]="'ConditionalNumber'">Conditional {{widgetStringFromMenu}}</option>
               <option [ngValue]="'OnlyNumber'">Only Number {{widgetStringFromMenu}}</option>
               <option [ngValue]="'NumberWithTrend'">Number with Trend {{widgetStringFromMenu}}</option>
               <option [ngValue]="'NumberWithImage'">Number with Image {{widgetStringFromMenu}}</option>
@@ -197,11 +201,68 @@
             <input type="number" class="form-control form-control-sm" id="end_angle" name="end_angle"
               [(ngModel)]="widgetObj.endAngle" placeholder="Gauge End Angle">
           </div>
-          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj"
+          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
+          [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
+        </app-add-only-number-widget>
+          <!-- <div *ngIf="widgetObj.widgetType != 'ConditionalNumber'">
+          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
             [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
           </app-add-only-number-widget>
+          </div> -->
 
+          <!-- <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Conditions: </label>
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  ><em
+                  class="fas fa fa-plus"></em>
+              </button>
+              <div class="bg-light p-3">
+               
+               
+                <ng-container
+                  *ngFor="let propObj of filteredPropList; let propIndex = index; last as isLast">
+                  <div class="form-group row">
+                    <div class="col-5">
 
+                      <ng-select [items]="filteredPropList"   class="custom-dropdown sm" bindLabel="name"
+                        [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
+                        groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
+                        [(ngModel)]="propObj.property" >
+                        <ng-template ng-option-tmp let-item="item">
+                          <span [tooltip]="item.name"  > <em
+                              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                            {{item.name}}</span>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                    <div class="col-2 justify-center">
+                      <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                      name="operator{{propIndex}}" [(ngModel)]="propObj.operator"  >
+                      <option [ngValue]="undefined">Select Operator</option>
+                      <option [ngValue]="'+'">Add</option>
+                      <option [ngValue]="'-'">Minus</option>
+                      <option [ngValue]="'*'">Multiply</option>
+                      <option [ngValue]="'/'">Divide</option>
+                    </select>
+                    </div>
+                    <div class="col-5">
+                      <input type="number"class="form-control form-control-sm" id="constant{{propIndex}}"
+                        name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="!isLast">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-2" *ngIf="propIndex > 0">
+                      <a href="javascript:void(0)" (click)="deletePropertyCondtion(propIndex)">
+                        <em class="fa fa-fw fa-trash"></em>
+                      </a>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container> -->
 
 
 

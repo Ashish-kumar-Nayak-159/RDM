@@ -211,7 +211,7 @@
           </ng-container>
           <div  *ngIf="type == 'edge_derived_properties'">
             <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == false"
-          (click)="ValidateallInputField()">Validate</button>
+            (click)="selectedProperty ? updatePropertyDataValidate() :ValidateallInputField()">Validate</button>
           <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == true"
           (click)="clearInputField()">Clear</button>
          
@@ -223,19 +223,28 @@
             </div>
           </div>
       
-      <div class="modal-footer fixed-bottom bg-white">
+      <div class="modal-footer fixed-bottom bg-white"   >
         <button type="button" class="btn btn-primary "
           *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
           [disabled]="!form.valid || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button type="button" class="btn btn-primary"
-          *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'"
-          [disabled]="!form.valid"
-          (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
+          <div *ngIf="displaybutton == false">
+            <button type="button" class="btn btn-primary"
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || isDisabled "
+              (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+          </div>
+          <div *ngIf="displaybutton == true">
+            <button type="button" class="btn btn-primary"
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!isDisabled"
+              (click)="selectedProperty ? UpdatePropertyAfterValidate() : onSavePropertyObj()">Save</button>
+          </div>
+        
+          <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading"
           (click)="onCloseAssetsPropertyModal()">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></em>
       </div>
+    
+    
     </form>
   </div>
     </div>

@@ -44,6 +44,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   dependentProperties: any[] = [];
   formula:String;
   isDisabled  = false;
+  displaybutton = false;
 
   constructor(
     private assetModelService: AssetModelService,
@@ -255,13 +256,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     });
   }
   deletePropertyCondtion(propindex){
-    alert(this.propertyObj.metadata.properties.length)
     this.propertyObj.metadata.properties.splice(0, 1);
 
   }
 
   openAddPropertiesModal() {
-    debugger
+    this.isDisabled =false;
+    this.displaybutton = false;
     this.propertyObj = {
       json_model: {},
       threshold: {},
@@ -444,6 +445,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         } else if (prop.value !== null && prop.value !== undefined) {
           this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
           this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+          this.formula ='('+ this.propertyObj.metadata.condition +')'
+
         }
       });
     }
@@ -523,6 +526,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   onSavePropertyObj() {
+    if(this.isDisabled === false){
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
     }
@@ -672,6 +676,31 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       )
     );
+
+      }else{
+        this.propertyObj.metadata.condition = this.formula;
+        this.isCreatePropertyLoading = true;
+        const obj = JSON.parse(JSON.stringify(this.assetModel));
+        obj.properties = JSON.parse(JSON.stringify(this.properties));
+        obj.properties[this.type].push(this.propertyObj);
+        obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+        console.log("Checkingobj", JSON.stringify(obj.properties.edge_derived_properties.metadata))
+        this.subscriptions.push(
+          this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+            (response: any) => {
+              this.isCreatePropertyLoading = false;
+              this.onCloseAssetsPropertyModal();
+              this.toasterService.showSuccess(response.message, 'Add Property');
+              this.getAssetsModelProperties();
+            },
+            (error) => {
+              this.isCreatePropertyLoading = false;
+              this.toasterService.showError(error.message, 'Add Property');
+            }
+          )
+        );
+
+      }
   }
 
   validateSetThreshold() {
@@ -720,6 +749,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
     this.selectedProperty = undefined;
+    this.isDisabled = false;
   }
 
   updatePropertyData() {
@@ -816,6 +846,92 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       )
     );
   }
+  updatePropertyDataValidate(){
+    if (this.type === 'edge_derived_properties') {
+      let flag = false;
+      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+        const prop = this.propertyObj.metadata.properties[i];
+        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+          this.toasterService.showError(
+            'Please select property or add value in condition',
+            'Add Edge Derived Properity'
+          );
+          flag = true;
+          break;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        return;
+      }
+      this.propertyObj.metadata.condition = '';
+      this.propertyObj.metadata.props = [];
+      this.propertyObj.condition = '';
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        if (prop.property) {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+          if (index === -1) {
+            this.propertyObj.metadata.props.push(prop.property.json_key);
+            this.propertyObj.metadata.condition +=
+              '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') ;
+          } else {
+            this.propertyObj.metadata.condition +=
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          }
+          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+          this.formula ='('+ this.propertyObj.metadata.condition +')'
+
+        } else if (prop.value !== null && prop.value !== undefined) {
+          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+          this.formula ='('+ this.propertyObj.metadata.condition +')'
+
+        }
+      });
+    }
+    
+    this.isDisabled = true;
+
+    // this.updatePropertyData()
+  }
+
+  UpdatePropertyAfterValidate(){
+    this.propertyObj.metadata.condition = this.formula;
+    const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+    this.properties[this.type].splice(index, 1);
+    this.validateSetThreshold();
+    if (this.propertyObj?.edit) {
+      // this.propertyObj.derived_function = this.code;
+      this.properties[this.type].splice(index, 0, this.propertyObj);
+    } else {
+      // this.selectedProperty.derived_function = this.code;
+      this.properties[this.type].splice(index, 0, this.selectedProperty);
+    }
+    this.isCreatePropertyLoading = true;
+    
+    const obj = JSON.parse(JSON.stringify(this.assetModel));
+    obj.properties = JSON.parse(JSON.stringify(this.properties));
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseModal('configureDerivedPropModal');
+          this.onCloseAssetsPropertyModal();
+          this.toasterService.showSuccess(response.message, 'Edit Property');
+          this.getAssetsModelProperties();
+        },
+        (error) => {
+          this.isCreatePropertyLoading = false;
+          this.toasterService.showError(error.message, 'Edit Property');
+        }
+      )
+    );
+  }
 
   onTableFunctionCall(obj) {
     this.selectedProperty = obj.data;
@@ -836,6 +952,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Configure Property') {
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Edit') {
+      if(this.isDisabled == false){
+        this.displaybutton = true;
+      }
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       if(!this.propertyObj.threshold)
       {
@@ -911,6 +1030,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     $('#' + id).modal('hide');
     this.selectedProperty = undefined;
     this.options = undefined;
+    this.isDisabled = false
   }
 
   ngOnDestroy() {

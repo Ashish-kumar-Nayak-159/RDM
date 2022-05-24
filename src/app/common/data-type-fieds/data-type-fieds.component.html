@@ -107,17 +107,17 @@
       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
       <em class="fa fa-plus fa-sm"></em> </a> -->
       <label for="recipient-name" class="col-form-label"> &nbsp;</label>
-      <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
+      <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  [disabled]="disabled"
         (click)="addEnumValue()">
         <em class="fa fa-plus fa-sm"></em></button>
     </div>
   </div>
-  <div class="row col-lg-12">
-    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0">
-      <ng-container *ngFor="let item of obj.enum; let index = index">
-        <span class="tag">
+  <div class="row col-lg-12" >
+    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0" >
+      <ng-container *ngFor="let item of obj.enum; let index = index" >
+        <span class="tag" >
           <span class="tag-text">{{item.label}} : {{item.value}}</span>
-          <button class="tag-remove" (click)="removeEnumValue(index)"></button>
+          <button class="tag-remove" *ngIf="!disabled" (click)="removeEnumValue(index)" ></button>
         </span>
       </ng-container>
     </div>
@@ -125,7 +125,7 @@
   <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
-      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue">
+      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue" [disabled]="disabled">
         <option [ngValue]="null">Select Value</option>
         <option *ngFor="let item of obj.enum" [ngValue]="item.value">{{item.label}}</option>
       </select>

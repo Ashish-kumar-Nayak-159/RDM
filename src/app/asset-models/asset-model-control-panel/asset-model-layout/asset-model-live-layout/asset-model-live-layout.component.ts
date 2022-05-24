@@ -430,6 +430,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isDisabled = false;
   }
 
+
   async getTelemetryData() {
     this.telemetryObj = {};
     this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();

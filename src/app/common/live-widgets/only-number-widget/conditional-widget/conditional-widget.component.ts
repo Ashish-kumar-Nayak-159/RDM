@@ -66,7 +66,6 @@ export class ConditionalWidgetComponent implements OnInit {
     });
   }
 
-
   onModalEvents(eventType) {
     if (eventType === 'close') {
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');

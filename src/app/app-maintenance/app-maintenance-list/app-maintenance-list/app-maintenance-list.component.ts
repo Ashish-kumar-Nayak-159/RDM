@@ -5,6 +5,7 @@ import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hi
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 declare var $: any;
 
 @Component({
@@ -35,13 +36,18 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
+  maintenanceRegistryId:number;
+  isMaintenanceRequired:boolean;
+  payload:any;
+  dateTime:any;
 
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
     private commonService:CommonService,
     private assetService: AssetService,
-    private maintenanceService: MaintenanceService
+    private maintenanceService: MaintenanceService,
+    private toasterService: ToasterService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -235,18 +241,38 @@ onTableFunctionCall(obj){
     console.log('view :',obj);
   }
   else if (obj.for === 'Delete') {
-    this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
-      console.log("del response", response)
-      this.getMaintenance();
-    })
+    this.openConfirmDialog("Delete")
+    this.maintenanceRegistryId = obj?.data.maintenance_registry_id
+    // this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
+    //   console.log("del response", response)
+    //   this.getMaintenance();
+    // })
 
   }
   else if (obj.for === 'Disable') {
-    this.openConfirmDialog("Disable")
-    this.maintenanceService.enableDisable(obj.maintenance_registry_id).subscribe((res)=>{
-      console.log("enable/disable",res);
-      
-   })
+
+    console.log("disable",obj)
+    this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
+    this.isMaintenanceRequired = obj?.data?.is_maintenance_required
+    if(!(this.isMaintenanceRequired)){
+      $("#exampleModal").modal('show');
+    }
+    else{
+      this.payload = {
+        is_maintenance_required : ! this.isMaintenanceRequired,
+  
+      }
+      this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
+        console.log("disable",response)
+        this.getMaintenance();
+       this.toasterService.showSuccess('maintenance disabled successfully !','Maintenance Edit')
+     })
+    }
+    
+    // this.payload = {
+    //   is_maintenance_required : !obj.data.is_maintenance_required,
+    //   start_date : "2022-05-30 13:00"
+    // }
   }
   else if (obj.for === 'EditPrivilege') {
   }else if (obj.for === 'Un Provision'){
@@ -256,8 +282,14 @@ onTableFunctionCall(obj){
 // showing and hiding modal
 onModalEvents(eventType) {
   if(eventType === 'save'){
-   console.log("saying yes")
-  
+  //  this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
+  //     console.log("enable/disable",response)
+  //  })
+  this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response:any)=>{
+    console.log("del response", response)
+    this.getMaintenance();
+    this.toasterService.showSuccess('maintenance deleted successfully !','Maintenance Delete')
+  })
    $("#confirmMessageModal").modal('hide');
   }
   else{
@@ -274,16 +306,20 @@ openConfirmDialog(type) {
     stringDisplay: true,
   };
   if (type === 'Enable') {
-    this.confirmBodyMessage = 'Are you sure you want to enable this asset?';
-    this.confirmHeaderMessage = 'Enable ' + 'Asset';
-  } else if (type === 'Disable') {
+    this.confirmBodyMessage = 'Are you sure you want to enable this maintenance?';
+    this.confirmHeaderMessage = 'Enable ' + 'Maintenance';
+  }else if(type=== 'Delete'){
+    this.confirmBodyMessage = 'Are you sure you want to delete this maintenance?';
+    this.confirmHeaderMessage = 'Delete ' + 'Maintenance';
+  }
+  else if (type === 'Disable') {
     this.confirmBodyMessage =
       'This ' +
-     'Asset' +
+     'Maintenance' +
       ' will be temporarily disabled. Are you sure you want to continue?';
-    this.confirmHeaderMessage = 'Disable ' +  'Asset';
+    this.confirmHeaderMessage = 'Disable ' +  'Maintenance';
   } else if (type === 'Deprovision') {
-    this.confirmHeaderMessage = 'Deprovision ' + 'Asset';
+    this.confirmHeaderMessage = 'Deprovision ' + 'Maintenance';
     // if (this.type !== CONSTANTS.NON_IP_ASSET) {
     //   this.confirmBodyMessage =
     //     'This ' +
@@ -301,6 +337,24 @@ openConfirmDialog(type) {
     // }
   }
   $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+}
+
+onSave(){
+  console.log("date&Time",this.dateTime)
+  this.payload = {
+    is_maintenance_required : ! this.isMaintenanceRequired,
+    start_date : this.dateTime
+  }
+   this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
+      console.log("enable",response)
+      this.dateTime = ''
+      this.toasterService.showSuccess('maintenance enable successfully !','Maintenance Edit')
+      this.getMaintenance();
+   },(error:any)=>{
+       console.log("enable error",error)
+       this.toasterService.showError(`${error.message}`,'Maintenance edit')
+   })
+  $("#exampleModal").modal('hide');
 }
 
 

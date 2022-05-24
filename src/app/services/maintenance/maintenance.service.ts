@@ -20,12 +20,8 @@ export class MaintenanceService {
     return this.http.delete(this.url + AppUrls.GET_MAINTENANCE + id)
   }
 
-  enableDisable(id:any){
-    var payLoad = {
-      is_maintenance_required : true,
-      start_date : "2022-05-30 13:00"
-    }
-    return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payLoad)
+  disable(id:number,payload:any){
+    return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payload)
   }
 
 }

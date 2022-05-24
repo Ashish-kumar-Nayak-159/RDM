@@ -662,7 +662,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    console.log("Checkingobj", JSON.stringify(obj.properties.edge_derived_properties.metadata))
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -685,7 +684,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         obj.properties = JSON.parse(JSON.stringify(this.properties));
         obj.properties[this.type].push(this.propertyObj);
         obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-        console.log("Checkingobj", JSON.stringify(obj.properties.edge_derived_properties.metadata))
         this.subscriptions.push(
           this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
             (response: any) => {

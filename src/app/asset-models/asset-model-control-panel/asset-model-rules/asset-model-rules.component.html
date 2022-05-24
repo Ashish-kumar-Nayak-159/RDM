@@ -125,15 +125,15 @@
                     decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                     rule.is_editable !== false &&
                     ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
-                            tooltip="Disable" [class.disabled]="assetModel.freezed">
-                            <em class="fas fa-fw fa-toggle-on"></em>
+                            tooltip="Click to Enable" [class.disabled]="assetModel.freezed">
+                            <em class="fas fa-fw fa-toggle-off"></em>
                           </a>
                           <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
                     decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                     rule.is_editable !== false &&
                       ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
-                            tooltip="Enable" [class.disabled]="assetModel.freezed">
-                            <em class="fas fa-fw fa-toggle-off"></em>
+                            tooltip="Click to Disable" [class.disabled]="assetModel.freezed">
+                            <em class="fas fa-fw fa-toggle-on"></em>
                           </a>
                    </ng-container>
                   <ng-container *ngIf="rule.type === 'Edge' ">

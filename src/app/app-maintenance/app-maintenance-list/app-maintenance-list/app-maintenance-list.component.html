@@ -30,7 +30,7 @@
     </div>
 
     <div>
-       <div >
+       <div>
         <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
        </div>
@@ -53,10 +53,12 @@
               </button>
             </div>
             <div class="modal-body">
-              <input type="datetime-local" [(ngModel)]="dateTime" id="maintenance-date" name="maintenance-date" class="form-control">
+            <form [formGroup]="maintenanceForm">
+              <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
+            </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" (click)="onSave()">Save</button>
+              <button type="button" class="btn btn-primary" (click)="onSave()" [disabled]="!maintenanceForm.valid">Save</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
           </div>

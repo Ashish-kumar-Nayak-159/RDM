@@ -1,4 +1,4 @@
-import { Component, OnInit , ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit , ViewChild} from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -39,8 +40,10 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenanceRegistryId:number;
   isMaintenanceRequired:boolean;
   payload:any;
-  dateTime:any;
-
+  maintenanceForm = new FormGroup({
+    dateAndTime: new FormControl('',Validators.required)
+  })
+  disableBeforeDate:any = new Date().toISOString().slice(0,16)
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
@@ -57,7 +60,6 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     this.getAssets(this.contextApp.user.hierarchy);
-    this.getMaintenance();
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -150,23 +152,34 @@ export class AppMaintenanceListComponent implements OnInit {
               tooltip: 'Trigger',
             },
             {
-              icon: 'fas fa-fw fa-toggle-off',
+              icon: 'fa fa-fw fa-clone',
               text: '',
+              id: 'Clone',
+              valueclass: '',
+              tooltip: 'Clone', 
+            },
+            {
               id: 'Disable',
               valueclass: '',
               tooltip: 'Disable',
-            },
-           
+              type: 'switch',
+              data_key: 'is_maintenance_required'
+            }
           ],
         },
       ],
     };
+    this.getMaintenance();
   }
 
   //getting data list from maintenance APi
   getMaintenance(){
        this.maintenanceService.getMaintenance().subscribe((response:any)=>{
            console.log("maintenance",response)
+           response.data.forEach((item)=>{
+             item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date,"MMM dd, yyyy, HH:mm:ss aaaaa'm'")
+           })
+            
          this.maintenances = response.data
        },(err)=>{
          console.log("err while calling maintenance api",err)
@@ -340,14 +353,14 @@ openConfirmDialog(type) {
 }
 
 onSave(){
-  console.log("date&Time",this.dateTime)
+  console.log("date&Time",this.maintenanceForm.value.dateAndTime)
   this.payload = {
     is_maintenance_required : ! this.isMaintenanceRequired,
-    start_date : this.dateTime
+    start_date : this.maintenanceForm.value.dateAndTime
   }
    this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
       console.log("enable",response)
-      this.dateTime = ''
+      this.maintenanceForm.reset();
       this.toasterService.showSuccess('maintenance enable successfully !','Maintenance Edit')
       this.getMaintenance();
    },(error:any)=>{
@@ -355,6 +368,7 @@ onSave(){
        this.toasterService.showError(`${error.message}`,'Maintenance edit')
    })
   $("#exampleModal").modal('hide');
+  this.maintenanceForm.reset();
 }
 
 

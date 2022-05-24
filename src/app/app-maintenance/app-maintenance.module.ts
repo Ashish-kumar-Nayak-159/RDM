@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {AppMaintenanceListComponent}from './app-maintenance-list/app-maintenance-list/app-maintenance-list.component'
 import { AppMaintenanceRoutingModule } from './app-maintenance-routing.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonCustomModule } from '../common/common.module';
 
 
@@ -14,8 +14,8 @@ import { CommonCustomModule } from '../common/common.module';
     AppMaintenanceRoutingModule,
     TooltipModule,
     FormsModule,
-    CommonCustomModule
-    
+    CommonCustomModule,
+    ReactiveFormsModule
   ]
 })
 export class AppMaintenanceModule { }

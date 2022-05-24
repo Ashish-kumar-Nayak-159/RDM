@@ -329,17 +329,17 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   deleteUser() {
-    if (!this.password || this.password.trim().length === 0) {
-      this.toasterService.showError('Please enter password.', 'Delete User Access');
-      return;
-    }
-    this.isDeleteUserAPILoadig = true;
-    const obj = {
-      email: this.userData.email,
-      password: this.password,
-    };
+    // if (!this.password || this.password.trim().length === 0) {
+    //   this.toasterService.showError('Please enter password.', 'Delete User Access');
+    //   return;
+    // }
+    // this.isDeleteUserAPILoadig = true;
+    // const obj = {
+    //   email: this.userData.email,
+    //   password: this.password,
+    // };
     this.apiSubscriptions.push(
-      this.userService.deleteUser(this.applicationData.app, this.selectedUserForDelete.id, obj).subscribe(
+      this.userService.deleteUser(this.applicationData.app, this.selectedUserForDelete.id).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Delete User Access');
           this.isDeleteUserAPILoadig = false;

@@ -53,14 +53,14 @@
                 <em class="fas fa-fw fa-times-circle"></em>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2"
-                tooltip="Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
+                tooltip="Click to Enable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                   && asset.status.toLowerCase() === 'disabled'">
-                <em class="fas fa-fw fa-toggle-on"></em>
+                <em class="fas fa-fw fa-toggle-off"></em>
               </a>
               <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2"
-                tooltip="Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
+                tooltip="Click to Disable" *ngIf="asset.provision_status === 'Completed' && type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMED') > -1
                    && asset.status.toLowerCase() === 'enabled'">
-                <em class="fas fa-fw fa-toggle-off"></em>
+                <em class="fas fa-fw fa-toggle-on"></em>
               </a>
               <!-- <a href="javascript:void(0)" (click)="onSingleOperationClick('Package Management', asset)" class="ml-2"
                 tooltip="Package Management"

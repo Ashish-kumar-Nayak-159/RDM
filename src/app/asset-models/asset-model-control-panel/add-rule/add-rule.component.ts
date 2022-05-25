@@ -165,6 +165,16 @@ export class AddRuleComponent implements OnInit {
         this.userGroups.splice(0, 0, {
           group_name: 'Client Field Support',
         });
+        this.ruleModel.actions = {
+          ...this.ruleData?.actions,
+          notification: {
+            ...this.ruleData?.actions?.notification,
+            email: {
+              ...this.ruleData?.actions?.notification?.email,
+              groups: this.ruleData?.actions?.notification?.email?.groups?.filter(v => this.userGroups.map(ug => ug.group_name).includes(v))
+            }
+          }
+        }
       })
     );
   }

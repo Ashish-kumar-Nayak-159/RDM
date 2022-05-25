@@ -77,7 +77,6 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   addEmailRecipient(index) {
-    debugger
     if (!this.recipientemail[index]) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -204,7 +203,6 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   
   addPushRecipient(index) {
-    debugger
     if (!this.recipientemailpush[index]) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {

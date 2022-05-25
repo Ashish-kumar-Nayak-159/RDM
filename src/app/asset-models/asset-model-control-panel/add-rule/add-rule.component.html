@@ -79,7 +79,7 @@
             <label for="examplePassword" class="col-3">Rule Category</label>
             <div class="col-auto">
               <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test1"
-                uncheckedTextColor="white" (valueChange)="onSwitchValChange($event)" checkedLabel="KPIX Analytics"
+                uncheckedTextColor="white" (valueChange)="onRuleCategorySwitchChange($event)" checkedLabel="KPIX Analytics"
                 [disabled]="isView"  uncheckedLabel="Stream Analytics" name="tpye" [(ngModel)]="ruleModel.category_type">
               </ui-switch>
             </div>

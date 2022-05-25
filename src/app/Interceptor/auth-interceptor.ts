@@ -30,7 +30,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     refreshToken(): Observable<any> {
-        debugger
 
         if (this.refreshTokenInProgress) {
 
@@ -91,7 +90,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     handleResponseError(error, request?, next?) {
-        debugger
         // Business error
         if (error.status === 400) {
             // Show message

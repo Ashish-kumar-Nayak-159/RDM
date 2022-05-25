@@ -9,9 +9,10 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 export class TextEditorComponent  {
   name = 'Angular ';
   htmlContent :any;
-  @Output() htmlContentDetect = new EventEmitter<string>();
-  handleInputChange($event){
+  @Output() htmlContentDetect = new EventEmitter<any>();
+  handleInputChange(){
     // ... all of your logic
+    console.log(this.htmlContent);
     this.htmlContentDetect.emit(this.htmlContent); // this will pass the $event object to the parent component.
     }
   config: AngularEditorConfig = {

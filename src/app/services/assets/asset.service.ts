@@ -1271,10 +1271,11 @@ export class AssetService {
       ruleModel
     );
   }
-  createNewMaintenanceRule(maintenanceModel) {
+  createNewMaintenanceRule(app,modelName,maintenanceModel) {
     return this.http.post(
-      this.url + String.Format(AppUrls.POST_MAINTENANCE), encodeURIComponent(maintenanceModel)
-    );
+      this.url + String.Format(AppUrls.POST_MAINTENANCE,encodeURIComponent(app),encodeURIComponent(modelName)),
+      JSON.stringify(maintenanceModel))
+      ;
   }
   updateEdgeAssetRule(app, modelName, ruleModel) {
     return this.http.put(

@@ -1,12 +1,16 @@
-import { Component, OnInit , ViewChild} from '@angular/core';
+import { Component, OnInit ,Input, ViewChild} from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { Subscription } from 'rxjs';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { isThisMinute } from 'date-fns';
+import {Maintenanace} from "src/app/app-maintenance/maintenanace/maintenanace.model";
+import { truncateWithEllipsis } from '@amcharts/amcharts4/.internal/core/utils/Utils';
 declare var $: any;
 
 @Component({
@@ -18,6 +22,8 @@ declare var $: any;
 export class AppMaintenanceListComponent implements OnInit {
   tileData: any;
   contextApp: any;
+  @Input() isModel: any;
+  @Input() asset: any;
   decodedToken: any;
   isFilterSelected = false;
   originalFilter: any;
@@ -29,8 +35,8 @@ export class AppMaintenanceListComponent implements OnInit {
     asset_id:'',
     asset_type:''
   };
- 
-  maintenanceModel:any;
+  selectedAsset_id : any;
+  maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
@@ -46,15 +52,29 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
-  htmlContent:any;
+  htmlEmailContent:any;
   dateTime1:any;
   dateTime2:any;
   dateTime3:any;
-  notifyUser:any;
-  escalRequired:any;
-  askRequired:any;
+  escalRequired = false;
+  is_escalation_required = false;
   createMaitenanceCall = false;
-
+  createMaintenanceForm : FormGroup;
+  maintenance_escalation_registry : any [] = [];
+  maintenance_name : any;
+  descContent:any;
+  maintenance_Sdate:any;
+  is_notify_user = false;
+  inspection_frequency:any;
+  notifyBefore:any;
+  notify_user_emails:any;
+  notify_email_subject:any;
+  notify_email_body:any;
+  is_acknowledge_required:any;
+  escalation_emailids1:any;
+  escalation_emailids2:any;
+  escalation_emailids3:any;
+  maintenance_regirstry= {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
@@ -70,6 +90,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getMaitenanceModel();
     this.getTileName();
     this.getAssets(this.contextApp.user.hierarchy);
     this.getMaintenance();
@@ -177,6 +198,18 @@ export class AppMaintenanceListComponent implements OnInit {
       ],
     };
   }
+  getMaitenanceModel()
+  {
+    this.createMaintenanceForm = new FormGroup({
+      maintenance_name: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
+      selectedAsset_id: new FormControl(null, [Validators.required]),
+      is_notify_user: new FormControl(null),
+      is_acknowledge_required: new FormControl(null),
+      is_escalation_required: new FormControl(null),
+      maintenance_Sdate: new FormControl(null, [Validators.required]),
+      inspection_frequency: new FormControl(null,[Validators.required]),
+      })
+  }
   onChangeOfSendNotifyAlertCheckbox()
   {
 
@@ -235,15 +268,48 @@ export class AppMaintenanceListComponent implements OnInit {
   });
 }
 onCloseMaintenanceModelModal() {
-  $('#createMaintainenceModelModal').modal('hide');
- 
+  $('#createMaintainenceModelModal').modal('hide'); 
 }
 onSaveMaintenanceModelModal()
 {
   this.createMaitenanceCall = true;
-    this.maintenanceModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
-     this.maintenanceModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-      let method = this.assetService.createNewMaintenanceRule(this.maintenanceModel);
+  this.getMaitenanceModel();
+  alert(this.selectedAsset_id);
+  if(this.selectedAsset_id)
+  {
+      this.maintenanceModel.asset_id = this.selectedAsset_id;
+      this.maintenanceModel.is_maintenance_required = true;
+      this.maintenanceModel.name = this.maintenance_name;
+      this.maintenanceModel.htmlEmailContent = this.htmlEmailContent;
+      this.maintenanceModel.description = this.descContent;
+      this.maintenanceModel.start_date = this.maintenance_Sdate;
+      this.maintenanceModel.inspection_frequency = this.inspection_frequency;
+      this.maintenanceModel.is_notify_user = this.is_notify_user;
+      this.maintenanceModel.notify_before_hours = this.notifyBefore;
+      this.maintenanceModel.notify_user_emails = this.notify_user_emails;
+      this.maintenanceModel.notify_email_subject = this.notify_email_subject;
+      this.maintenanceModel.notify_email_body = this.notify_email_body;
+      this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
+      this.maintenanceModel.is_escalation_required = this.is_escalation_required;
+      this.maintenance_regirstry = {
+        "escalation_emailids1" : this.escalation_emailids1,
+        "dateTime":this.dateTime1,
+      };
+      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+      this.maintenance_regirstry = {
+        "escalation_emailids2" : this.escalation_emailids2,
+        "dateTime2":this.dateTime2,
+      };
+      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+      this.maintenance_regirstry = {
+        "escalation_emailids3" : this.escalation_emailids3,
+        "dateTime3":this.dateTime3,
+      };
+      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+      this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
+      this.maintenanceModel.email_body = this.htmlEmailContent;
+    }
+     let method = this.assetService.createNewMaintenanceRule(this.contextApp.app,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({

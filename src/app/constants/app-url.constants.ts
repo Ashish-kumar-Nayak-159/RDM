@@ -212,7 +212,7 @@ export class AppUrls {
  public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/levels';
  public static DELETE_HIERARCHIES = 'hierarchy/{0}'
  public static UPDATE_HIERARCHIES = 'hierarchy/{0}'
- public static POST_MAINTENANCE = 'api/maintenance';
+ public static POST_MAINTENANCE = 'maintenance';
  public static REFRESH_TOKEN = 'refresh-token'
  public static Get_DBSCHEMA = 'apps/{0}/dbschema'
 

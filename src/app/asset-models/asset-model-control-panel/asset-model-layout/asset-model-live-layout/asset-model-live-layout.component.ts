@@ -399,7 +399,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           if (index === -1) {
             this.propertyObj.metadata.props.push(prop.property.json_key);
             this.propertyObj.metadata.condition +=
-              '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + (prop.operator1 ? prop.operator1 + ' ' : ''));
+              '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : ''));
           } else {
 
             this.propertyObj.metadata.condition +=

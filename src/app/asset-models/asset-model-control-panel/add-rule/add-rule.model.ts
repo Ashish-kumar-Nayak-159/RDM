@@ -10,6 +10,7 @@ export class Rule {
     properties: Array<Properties>;
     conditions: Array<Conditions>;
     condition_str: string = '';
+    rule_category: string = '';
     aggregation_enabled: boolean;
     aggregation_window_in_sec: any;
     updated_by: string;

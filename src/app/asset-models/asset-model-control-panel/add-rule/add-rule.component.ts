@@ -177,6 +177,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.aggregation_window_in_sec = this.ruleData.aggregation_window_in_sec;
     this.ruleModel.alert_condition_id = this.ruleData.alert_condition_id;
     this.ruleModel.condition_str = this.ruleData.metadata.condition_str;
+    this.ruleModel.rule_category = "Stream Analytics";
     if (this.ruleData.type === 'Edge') {
       this.ruleModel.conditions = JSON.parse(this.ruleData.metadata.conditions);
     } else {
@@ -400,7 +401,8 @@ export class AddRuleComponent implements OnInit {
     this.isUpdateApiCall = true;
     let str = '';
     this.ruleModel.properties = [];
-
+    // Note : Remove adding new rule to fix rule_Category
+    this.ruleModel.rule_category = "Stream Analytics";
     this.ruleModel.conditions.forEach((element, index) => {
       str +=
         ' %' +

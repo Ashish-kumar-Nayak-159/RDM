@@ -41,8 +41,20 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   selectedSlave:any = {slave_name:'Select Slave'}
   widgetStringFromMenu: any;
   checkwidgettype:boolean =false;
-  checkingsmallwidget:''
-  
+  checkingsmallwidget:'';
+  operatorList = [
+    { id: 'GREATEROREQUAL', value: '>=' },
+    { id: 'LESSOREQUAL', value: '<=' },
+    { id: 'LESS', value: '<' },
+    { id: 'GREATER', value: '>' },
+    { id: 'EQUAL', value: '==' },
+  ];
+  data_type : any;
+  isDisabled  = false;
+  propertyObj: any;
+  formula:String;
+  properties: any = {};
+
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -209,6 +221,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }, 1000);
   }
 
+  getPropertyType(id) {
+    this.data_type = this.propertyList.find((prop) => prop.json_key === id)?.data_type;
+    return this.propertyList.find((prop) => prop.json_key === id)?.data_type;
+  }
+
   async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
@@ -321,14 +338,102 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       }
     });
+    if(this.widgetObj?.widgetType === "ConditionalNumber"){
+      this.propertyObj.metadata = {
+        properties: [
+          {
+            property: null,
+            value: null,
+            operator: null,
+            operator1: null,
+            index: 1,
+          },
+        ],
+      };
+
+    }
   
   }
 
   addPropertyToCondtion() {
-   
+    alert(this.propertyObj.metadata.properties.length + 1 )
+    this.propertyObj.metadata.properties.push({
+      property: null,
+      value: null,
+      operator: null,
+      operator1:null,
+      index: this.propertyObj.metadata.properties.length + 1,
+    });
+  }
+
+  ValidateallInputField(){  
+  
+    if (this.widgetObj.widgetType === 'ConditionalNumber') {
+      let flag = false;
+      this.propertyObj.id = this.commonService.generateUUID();
+
+      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+        const prop = this.propertyObj.metadata.properties[i];
+        console.log("testt121212", JSON.stringify(prop))
+        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+          this.toasterService.showError(
+            'Please select property or add value in condition',
+            'Add Edge Derived Properity'
+          );
+          flag = true;
+          break;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        return;
+      }
+      this.propertyObj.metadata.condition = '';
+      this.propertyObj.metadata.props = [];
+      this.propertyObj.condition = '';
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        if (prop.property) {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+          if (index === -1) {
+            this.propertyObj.metadata.props.push(prop.property.json_key);
+            console.log("Checkingprops1", JSON.stringify(this.propertyObj.metadata.props))
+            console.log("propchecking", JSON.stringify(prop))
+
+            this.propertyObj.metadata.condition +=
+              '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + (prop.operator1 ? prop.operator1 + ' ' :'') + (prop.value ? prop.value : ''));
+          } else {
+            alert('1')
+            console.log("Checkingprops2", JSON.stringify(this.propertyObj.metadata.props))
+
+            this.propertyObj.metadata.condition +=
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          }
+          // this.formula.push(this.propertyObj.metadata.condition)
+          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+          this.formula ='('+ this.propertyObj.metadata.condition + ')'
+          console.log("Checkingformula1", JSON.stringify(this.formula))
+
+
+        } else if (prop.value !== null && prop.value !== undefined) {
+          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+          this.formula ='('+ this.propertyObj.metadata.condition +')'
+          console.log("Checkingformula2", JSON.stringify(this.formula))
+
+        }
+      });
+    }
+
   }
   deletePropertyCondtion(propindex){
-
+    this.filteredPropList.splice(0, 1);
+  }
+  clearInputField(){
+    this.isDisabled = false;
   }
 
   async getTelemetryData() {
@@ -371,6 +476,24 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj = {
       properties: [{}],
     };
+    this.propertyObj = {
+      json_model: {},
+      threshold: {},
+    };
+    if (this.widgetObj.widgetType === 'ConditionalNumber') {
+      this.propertyObj.metadata = {
+        properties: [
+          {
+            property: null,
+            value: null,
+            operator: null,
+            operator1:null,
+            index: 1,
+          },
+        ],
+      };
+
+    }
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -510,6 +633,17 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         });
         this.widgetObj.y2AxisProps = JSON.parse(JSON.stringify(arr));
       }
+    }else if(this.widgetObj.widgetType == "ConditionalNumber"){
+      const arr = [];
+      this.widgetObj.properties.forEach((prop) => {
+        const obj = {
+          name: prop.name,
+          type:[prop.type],
+          json_key: [prop.json_key],
+        };
+        arr.push(obj);
+      });
+      console.log("Checking", JSON.parse(JSON.stringify(arr)))
     }
     
     else if (this.widgetObj.widgetType == "NumberWithImage") {
@@ -528,13 +662,13 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }));
       if (imgUploadError) this.toasterService.showError('Error in uploading file', 'Upload file');
     }
-    this.isCreateWidgetAPILoading = true;
+   // this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
     
-    this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
+   // this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
   }
 
   onClickOfCheckbox() {

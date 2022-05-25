@@ -201,26 +201,79 @@
             <input type="number" class="form-control form-control-sm" id="end_angle" name="end_angle"
               [(ngModel)]="widgetObj.endAngle" placeholder="Gauge End Angle">
           </div>
-          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
+          <!-- <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
           [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
-        </app-add-only-number-widget>
-          <!-- <div *ngIf="widgetObj.widgetType != 'ConditionalNumber'">
+        </app-add-only-number-widget> -->
+          <div *ngIf="widgetObj.widgetType != 'ConditionalNumber'">
           <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
             [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
           </app-add-only-number-widget>
-          </div> -->
+          </div>
 
-          <!-- <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+          <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>
               <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  ><em
                   class="fas fa fa-plus"></em>
               </button>
               <div class="bg-light p-3">
+                <ng-container
+                  *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
+                  <div class="form-group row">
+                    <div class="col-5">
+                      <ng-select [items]="filteredPropList"   class="custom-dropdown sm" bindLabel="name"
+                        [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
+                        groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
+                        [(ngModel)]="propObj.property" [disabled]="isDisabled">
+                        <ng-template ng-option-tmp let-item="item">
+                          <span [tooltip]="item.name"  > <em
+                              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                            {{item.name}}</span>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                    <div class="col-2 justify-center">
+                        <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                          name="operator{{propIndex}}" [(ngModel)]="propObj.operator" [disabled]="isDisabled" >
+                          <option [ngValue]="undefined">Select Operator</option>
+                          <option [ngValue]="'>='">>=</option>
+                          <option [ngValue]="'<='"><=</option>
+                          <option [ngValue]="'<'"><</option>
+                          <option [ngValue]="'>'">></option>
+                          <option [ngValue]="'=='">==</option>
+
+                        </select>
+                      <!-- <label for="operator" class="h4 col-form-label ">OR</label> -->
+                    </div>
+                    <div class="col-5">
+                      <input type="number" [disabled]="isDisabled" class="form-control form-control-sm" id="constant{{propIndex}}"
+                        name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="!isLast">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-6">
+                      <select class="form-control form-control-sm" id="operator1{{propIndex}}"
+                        name="operator1{{propIndex}}" [(ngModel)]="propObj.operator1" [disabled]="isDisabled" >
+                        <option [ngValue]="undefined">Select Operator</option>
+                        <option [ngValue]="'&&'">&&</option>
+                        <option [ngValue]="'||'">||</option>
+                      </select>
+                    </div>
+                    <div class="col-2" *ngIf="propIndex > 0">
+                      <a href="javascript:void(0)" (click)="deletePropertyCondtion(propIndex)">
+                        <em class="fa fa-fw fa-trash"></em>
+                      </a>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              <!-- <div class="bg-light p-3">
                
                
                 <ng-container
-                  *ngFor="let propObj of filteredPropList; let propIndex = index; last as isLast">
+                  *ngFor="let propObj of  propertyObj.metadata.properties; let propIndex = index; last as isLast">
                   <div class="form-group row">
                     <div class="col-5">
 
@@ -260,9 +313,20 @@
                     </div>
                   </div>
                 </ng-container>
-              </div>
+              </div> -->
             </div>
-          </ng-container> -->
+          </ng-container>
+          <div  *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+            <button type="button" class="btn btn-secondary"  *ngIf="isDisabled == false"
+            (click)="ValidateallInputField()">Validate</button>
+          <button type="button" class="btn btn-secondary" *ngIf="isDisabled == true"
+          (click)="clearInputField()">Clear</button>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Formula Display:</label>
+            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
+              [(ngModel)]="formula" placeholder="Enter Key Name">
+          </div>
+          </div>
 
 
 

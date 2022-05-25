@@ -1,16 +1,15 @@
-import { Component, OnInit ,Input, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit ,Input, Output,ViewChild} from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { Subscription } from 'rxjs';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { isThisMinute } from 'date-fns';
-import {Maintenanace} from "src/app/app-maintenance/maintenanace/maintenanace.model";
-import { truncateWithEllipsis } from '@amcharts/amcharts4/.internal/core/utils/Utils';
+import { Maintenanace} from "src/app/app-maintenance/Maintenanace";
+import { Router } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -22,8 +21,6 @@ declare var $: any;
 export class AppMaintenanceListComponent implements OnInit {
   tileData: any;
   contextApp: any;
-  @Input() isModel: any;
-  @Input() asset: any;
   decodedToken: any;
   isFilterSelected = false;
   originalFilter: any;
@@ -35,9 +32,40 @@ export class AppMaintenanceListComponent implements OnInit {
     asset_id:'',
     asset_type:''
   };
+ 
+  @Output() htmlContent: any;
+  @Input() asset: any;
+ 
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;
+  
+  htmlEmailContent:any;
+  dateTime1:any;
+  dateTime2:any;
+  dateTime3:any;
+  notifyUser:any;
+  escalRequired:any;
+  askRequired:any;
+  is_escalation_required = false;
+  createMaitenanceCall = false;
+
+  createMaintenanceForm : FormGroup;
+  maintenance_escalation_registry : any [] = [];
+  descContent:any;
+  maintenance_Sdate:any;
+  is_notify_user = false;
+  inspection_frequency:any;
+  notifyBefore:any;
+  notify_user_emails:any;
+  notify_email_subject:any;
+  notify_email_body:any;
+  is_acknowledge_required = false;
+  escalation_emailids1:any;
+  escalation_emailids2:any;
+  escalation_emailids3:any;
+  maintenance_regirstry= {};
+  
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
   maintenances: any = [];
@@ -52,48 +80,32 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
-  htmlEmailContent:any;
-  dateTime1:any;
-  dateTime2:any;
-  dateTime3:any;
-  escalRequired = false;
-  is_escalation_required = false;
-  createMaitenanceCall = false;
-  createMaintenanceForm : FormGroup;
-  maintenance_escalation_registry : any [] = [];
-  maintenance_name : any;
-  descContent:any;
-  maintenance_Sdate:any;
-  is_notify_user = false;
-  inspection_frequency:any;
-  notifyBefore:any;
-  notify_user_emails:any;
-  notify_email_subject:any;
-  notify_email_body:any;
-  is_acknowledge_required:any;
-  escalation_emailids1:any;
-  escalation_emailids2:any;
-  escalation_emailids3:any;
-  maintenance_regirstry= {};
+  maintenanceRegistryId:number;
+  isMaintenanceRequired:boolean;
+  payload:any;
+  maintenanceForm = new FormGroup({
+    dateAndTime: new FormControl('',Validators.required)
+  })
+  disableBeforeDate:any = new Date().toISOString().slice(0,16)
+ 
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
     private commonService:CommonService,
     private assetService: AssetService,
     private maintenanceService: MaintenanceService,
-    private toasterService: ToasterService) { }
- 
-  
- 
+    private toasterService: ToasterService,
+    private router:Router
+  ) { }
+
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getMaitenanceModel();
     this.getTileName();
+    this.getMaitenanceModel();
     this.getAssets(this.contextApp.user.hierarchy);
-    this.getMaintenance();
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -186,38 +198,45 @@ export class AppMaintenanceListComponent implements OnInit {
               tooltip: 'Trigger',
             },
             {
-              icon: 'fas fa-fw fa-toggle-off',
+              icon: 'fa fa-fw fa-clone',
               text: '',
+              id: 'Clone',
+              valueclass: '',
+              tooltip: 'Clone', 
+            },
+            {
               id: 'Disable',
               valueclass: '',
               tooltip: 'Disable',
-            },
-           
+              type: 'switch',
+              data_key: 'is_maintenance_required'
+            }
           ],
         },
       ],
     };
-  }
-  getMaitenanceModel()
-  {
-    this.createMaintenanceForm = new FormGroup({
-      maintenance_name: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
-      selectedAsset_id: new FormControl(null, [Validators.required]),
-      is_notify_user: new FormControl(null),
-      is_acknowledge_required: new FormControl(null),
-      is_escalation_required: new FormControl(null),
-      maintenance_Sdate: new FormControl(null, [Validators.required]),
-      inspection_frequency: new FormControl(null,[Validators.required]),
-      })
+    this.getMaintenance();
   }
   onChangeOfSendNotifyAlertCheckbox()
   {
-
+    this.is_notify_user = !this.is_notify_user ;
+  }
+  onChangeOfSendAckAlertCheckbox()
+  {
+    this.is_acknowledge_required = !this.is_acknowledge_required;
+  }
+  onChangeOfSendEscalAlertCheckbox()
+  {
+    this.is_escalation_required = !this.is_escalation_required;
   }
   //getting data list from maintenance APi
   getMaintenance(){
        this.maintenanceService.getMaintenance().subscribe((response:any)=>{
            console.log("maintenance",response)
+           response.data.forEach((item)=>{
+             item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date,"MMM dd, yyyy, HH:mm:ss aaaaa'm'")
+           })
+            
          this.maintenances = response.data
        },(err)=>{
          console.log("err while calling maintenance api",err)
@@ -268,48 +287,67 @@ export class AppMaintenanceListComponent implements OnInit {
   });
 }
 onCloseMaintenanceModelModal() {
-  $('#createMaintainenceModelModal').modal('hide'); 
+  $('#createMaintainenceModelModal').modal('hide');
+ 
+}
+getMaitenanceModel()
+{
+  this.createMaintenanceForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
+    asset_id: new FormControl('', [Validators.required]),
+    start_date: new FormControl('', [Validators.required]),
+    inspection_frequency: new FormControl('',[Validators.required]),
+    })
+}
+descriptionChange(valuefromtextEditor:any) {
+  this.htmlContent = valuefromtextEditor;
+  console.log("within..... main...",valuefromtextEditor);
+}
+emailBodyDetect(valuefromtextEditor:any) {
+  this.descContent = valuefromtextEditor;
+  console.log("within..... main...",valuefromtextEditor);
 }
 onSaveMaintenanceModelModal()
 {
   this.createMaitenanceCall = true;
-  this.getMaitenanceModel();
-  alert(this.selectedAsset_id);
-  if(this.selectedAsset_id)
-  {
-      this.maintenanceModel.asset_id = this.selectedAsset_id;
-      this.maintenanceModel.is_maintenance_required = true;
-      this.maintenanceModel.name = this.maintenance_name;
-      this.maintenanceModel.htmlEmailContent = this.htmlEmailContent;
-      this.maintenanceModel.description = this.descContent;
-      this.maintenanceModel.start_date = this.maintenance_Sdate;
-      this.maintenanceModel.inspection_frequency = this.inspection_frequency;
-      this.maintenanceModel.is_notify_user = this.is_notify_user;
-      this.maintenanceModel.notify_before_hours = this.notifyBefore;
-      this.maintenanceModel.notify_user_emails = this.notify_user_emails;
-      this.maintenanceModel.notify_email_subject = this.notify_email_subject;
-      this.maintenanceModel.notify_email_body = this.notify_email_body;
-      this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
-      this.maintenanceModel.is_escalation_required = this.is_escalation_required;
-      this.maintenance_regirstry = {
-        "escalation_emailids1" : this.escalation_emailids1,
-        "dateTime":this.dateTime1,
-      };
-      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-      this.maintenance_regirstry = {
-        "escalation_emailids2" : this.escalation_emailids2,
-        "dateTime2":this.dateTime2,
-      };
-      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-      this.maintenance_regirstry = {
-        "escalation_emailids3" : this.escalation_emailids3,
-        "dateTime3":this.dateTime3,
-      };
-      this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-      this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
-      this.maintenanceModel.email_body = this.htmlEmailContent;
-    }
-     let method = this.assetService.createNewMaintenanceRule(this.contextApp.app,"CreateMaintenance",this.maintenanceModel);
+  this.maintenance_escalation_registry = [];
+  if((this.createMaintenanceForm.get("name").value===undefined || this.createMaintenanceForm.get("name").value==='')
+   || (this.createMaintenanceForm.get("asset_id").value===undefined || this.createMaintenanceForm.get("name").value==='')
+   || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
+   || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
+   ) {this.createMaitenanceCall = false;
+    this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
+    return;
+  }
+  this.maintenanceModel = this.createMaintenanceForm.value;
+  this.maintenanceModel.is_maintenance_required = true;
+  this.maintenanceModel.is_notify_user = this.is_notify_user;
+  this.maintenanceModel.is_escalation_required = this.is_escalation_required;
+  this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
+  this.maintenanceModel.description = this.descContent;
+  this.maintenanceModel.notify_before_hours = this.notifyBefore;
+  this.maintenanceModel.notify_user_emails = this.notify_user_emails;
+  this.maintenanceModel.notify_email_subject = this.notify_email_subject;
+  this.maintenanceModel.notify_email_body = this.notify_email_body;
+  this.maintenance_regirstry = {
+    "escalation_emailids1" : this.escalation_emailids1,
+    "dateTime":this.dateTime1,
+  };
+  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+  this.maintenance_regirstry = {
+    "escalation_emailids2" : this.escalation_emailids2,
+    "dateTime2":this.dateTime2,
+  };
+  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+  this.maintenance_regirstry = {
+    "escalation_emailids3" : this.escalation_emailids3,
+    "dateTime3":this.dateTime3,
+  };
+  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+  this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
+  this.maintenanceModel.email_body = this.htmlContent;
+  debugger;
+  let method = this.assetService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
@@ -318,6 +356,7 @@ onSaveMaintenanceModelModal()
           this.toasterService.showSuccess(response.message,   'Maitenance Create');
           $('#createMaintainenceModelModal').modal('hide');
           this.createMaitenanceCall = false;
+          this.redirectTo(this.router.url);
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
@@ -326,6 +365,11 @@ onSaveMaintenanceModelModal()
       );
   
 }
+redirectTo(uri:string){
+  this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+  this.router.navigate([uri]));
+}
+
 
 
  /////// To open the Modal for the Maintenance Schedule
@@ -360,18 +404,38 @@ onTableFunctionCall(obj){
     console.log('view :',obj);
   }
   else if (obj.for === 'Delete') {
-    this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
-      console.log("del response", response)
-      this.getMaintenance();
-    })
+    this.openConfirmDialog("Delete")
+    this.maintenanceRegistryId = obj?.data.maintenance_registry_id
+    // this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
+    //   console.log("del response", response)
+    //   this.getMaintenance();
+    // })
 
   }
   else if (obj.for === 'Disable') {
-    this.openConfirmDialog("Disable")
-    this.maintenanceService.enableDisable(obj.maintenance_registry_id).subscribe((res)=>{
-      console.log("enable/disable",res);
-      
-   })
+
+    console.log("disable",obj)
+    this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
+    this.isMaintenanceRequired = obj?.data?.is_maintenance_required
+    if(!(this.isMaintenanceRequired)){
+      $("#exampleModal").modal('show');
+    }
+    else{
+      this.payload = {
+        is_maintenance_required : ! this.isMaintenanceRequired,
+  
+      }
+      this.maintenanceService.enableDisable(this.maintenanceRegistryId).subscribe((response)=>{
+        console.log("disable",response)
+        this.getMaintenance();
+       this.toasterService.showSuccess('maintenance disabled successfully !','Maintenance Edit')
+     })
+    }
+    
+    // this.payload = {
+    //   is_maintenance_required : !obj.data.is_maintenance_required,
+    //   start_date : "2022-05-30 13:00"
+    // }
   }
   else if (obj.for === 'EditPrivilege') {
   }else if (obj.for === 'Un Provision'){
@@ -381,8 +445,14 @@ onTableFunctionCall(obj){
 // showing and hiding modal
 onModalEvents(eventType) {
   if(eventType === 'save'){
-   console.log("saying yes")
-  
+  //  this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
+  //     console.log("enable/disable",response)
+  //  })
+  this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response:any)=>{
+    console.log("del response", response)
+    this.getMaintenance();
+    this.toasterService.showSuccess('maintenance deleted successfully !','Maintenance Delete')
+  })
    $("#confirmMessageModal").modal('hide');
   }
   else{
@@ -399,16 +469,20 @@ openConfirmDialog(type) {
     stringDisplay: true,
   };
   if (type === 'Enable') {
-    this.confirmBodyMessage = 'Are you sure you want to enable this asset?';
-    this.confirmHeaderMessage = 'Enable ' + 'Asset';
-  } else if (type === 'Disable') {
+    this.confirmBodyMessage = 'Are you sure you want to enable this maintenance?';
+    this.confirmHeaderMessage = 'Enable ' + 'Maintenance';
+  }else if(type=== 'Delete'){
+    this.confirmBodyMessage = 'Are you sure you want to delete this maintenance?';
+    this.confirmHeaderMessage = 'Delete ' + 'Maintenance';
+  }
+  else if (type === 'Disable') {
     this.confirmBodyMessage =
       'This ' +
-     'Asset' +
+     'Maintenance' +
       ' will be temporarily disabled. Are you sure you want to continue?';
-    this.confirmHeaderMessage = 'Disable ' +  'Asset';
+    this.confirmHeaderMessage = 'Disable ' +  'Maintenance';
   } else if (type === 'Deprovision') {
-    this.confirmHeaderMessage = 'Deprovision ' + 'Asset';
+    this.confirmHeaderMessage = 'Deprovision ' + 'Maintenance';
     // if (this.type !== CONSTANTS.NON_IP_ASSET) {
     //   this.confirmBodyMessage =
     //     'This ' +
@@ -426,6 +500,25 @@ openConfirmDialog(type) {
     // }
   }
   $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+}
+
+onSave(){
+  console.log("date&Time",this.maintenanceForm.value.dateAndTime)
+  this.payload = {
+    is_maintenance_required : ! this.isMaintenanceRequired,
+    start_date : this.maintenanceForm.value.dateAndTime
+  }
+   this.maintenanceService.enableDisable(this.maintenanceRegistryId).subscribe((response)=>{
+      console.log("enable",response)
+      this.maintenanceForm.reset();
+      this.toasterService.showSuccess('maintenance enable successfully !','Maintenance Edit')
+      this.getMaintenance();
+   },(error:any)=>{
+       console.log("enable error",error)
+       this.toasterService.showError(`${error.message}`,'Maintenance edit')
+   })
+  $("#exampleModal").modal('hide');
+  this.maintenanceForm.reset();
 }
 
 

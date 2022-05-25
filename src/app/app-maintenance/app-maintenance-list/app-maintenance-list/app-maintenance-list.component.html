@@ -30,7 +30,7 @@
     </div>
 
     <div>
-       <div >
+       <div>
         <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
        </div>
@@ -42,25 +42,47 @@
           </app-message-modal>
         </div>
       </div>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <form [formGroup]="maintenanceForm">
+              <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="onSave()" [disabled]="!maintenanceForm.valid">Save</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
 
 <div class="modal right fade" id="createMaintainenceModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Maintenance Schedule</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Maintenance</h5>
         <button type="button" class="close"  (click)="onCloseMaintenanceModelModal()" aria-label="Close" >
           <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
       <div class="modal-body" >
-        <form  [formGroup]="createMaintenanceForm">
+        <div [formGroup]="createMaintenanceForm">
           <div class="form-group" >
             <label for="message-text" class="col-form-label required">Name</label>
-            <input type="text" class="form-control form-control-sm" id="maintenance_name" formControlName="maintenance_name">
-            <div *ngIf="createMaintenanceForm.get('maintenance_name').errors && createMaintenanceForm.get('maintenance_name').touched"
+            <input type="text" class="form-control form-control-sm" id="maintenance_name"  formControlName="name">
+            <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
               class="alert-danger">
-              <div *ngIf="createMaintenanceForm.get('maintenance_name').errors.required">
+              <div *ngIf="createMaintenanceForm.get('name').errors.required">
                 Maintenanace Name is required.
               </div>
               </div>
@@ -68,113 +90,104 @@
           <div class="form-group" >
             <label for="message-text" class="col-form-label required">Asset</label>
             
-            <ng-select [items]="assetDropdown" class="custom-dropdown w-12 sm" required 
-            [clearable]="false" [searchable]="true" bindLabel="asset_id" [closeOnSelect]="true"
+            <ng-select [items]="assetDropdown" class="custom-dropdown w-12 sm"  
+            [clearable]="false" [searchable]="true" bindLabel="asset_name" [closeOnSelect]="true"
             placeholder="Select Asset" groupBy="asset_type" dropdownPosition="bottom" name="asset-dropdown"
-            bindValue="asset_id"  [(ngModel)]="selectedAsset_id" formControlName="selectedAsset_id">
+            bindValue="asset_id" required  formControlName="asset_id" >
             <ng-template ng-option-tmp let-item="item">
                 <span [tooltip]="item.asset_name">
                  {{item.asset_name}}
                 </span>
              </ng-template>
           </ng-select>
-          <div *ngIf="createMaintenanceForm.get('selectedAsset_id').errors && createMaintenanceForm.get('maintenance_name').touched"
+          <div *ngIf="createMaintenanceForm.get('asset_id').errors && createMaintenanceForm.get('asset_id').touched"
           class="alert-danger">
-          <div *ngIf="createMaintenanceForm.get('selectedAsset_id').errors.required">
+          <div *ngIf="createMaintenanceForm.get('asset_id').errors.required">
             Asset is required.
           </div>
           </div>
-        
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">Email Body</label>
-            <app-text-editor formControlName="htmlEmailContent"></app-text-editor>
-          </div>
+            <app-text-editor id="htmlEmail"  [htmlContent]="htmlContent" (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> </div>
             <div class="form-group" >
             <label for="message-text" class="col-form-label ">Description</label>
-            <app-text-editor formControlName="descContent"></app-text-editor>
-          </div>
+            <app-text-editor id="description" [(ngModel)]="descContent"  (htmlContentDetect)="descriptionChange($event)"></app-text-editor>
+            </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label required">Maintenance Start Date</label>
-            <input [owlDateTime]="dt1" formControlName="maintenance_Sdate" class="form-control form-control-sm" [owlDateTimeTrigger]="dt1" placeholder="Date Time">
-            <owl-date-time #dt1></owl-date-time>
-            <div *ngIf="createMaintenanceForm.get('maintenance_Sdate').errors && createMaintenanceForm.get('maintenance_Sdate').touched"
+            <input type="datetime-local" [min]="disableBeforeDate" class="form-control form-control-sm" formControlName="start_date" placeholder="Date Time">
+            <div *ngIf="createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"
             class="alert-danger">
-            <div *ngIf="createMaintenanceForm.get('maintenance_Sdate').errors.required">
+            <div *ngIf="createMaintenanceForm.get('start_date').errors.required">
               Maintenance Start Date is required.
             </div>
             </div>
-         </div>
+          </div>
           <div class="form-group" >
             <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
             <select class="form-control form-control-sm" id="template" formControlName="inspection_frequency" name="model_type" >
-                <option value="0">Daily</option>
-                <option value="1">Weekly</option>
-                <option value="2">BiWeekly</option>
-                <option value="3">Monthly</option>
-                <option value="4">Quarterly</option>
-             </select>
-             <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
-             class="alert-danger">
-             <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors.required">
-              Inspection Frequency is required.
-             </div>
-             </div>
+              <option value="0">Daily</option>
+              <option value="1">Weekly</option>
+              <option value="2">BiWeekly</option>
+              <option value="3">Monthly</option>
+              <option value="4">Quarterly</option>
+           </select>
+           <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
+           class="alert-danger">
+           <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors.required">
+            Inspection Frequency is required.
+           </div>
+           </div>
           </div>
           <div class="form-group" >
             <label class="col-form-label " for="alert_management">Notify to User</label>
             <input type="checkbox" class="form-check-input checkboxloc" id="nuser_management" name="nuser_management"
-            formControlName="is_notify_user" 
-                  (change)="onChangeOfSendNotifyAlertCheckbox()">
+            [(ngModel)]="is_notify_user"   (change)="onChangeOfSendNotifyAlertCheckbox()"
+            > 
+         </div>
+        <div *ngIf="is_notify_user">
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label required">Notify Before</label>
+            <input type="datetime-local" [min]="disableBeforeDate" required class="form-control form-control-sm" id="nbefore_name" [(ngModel)]="notifyBefore">
           </div>
-          <div *ngIf="is_notify_user">
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify Before</label>
-              <input type="email" required class="form-control form-control-sm" id="nbefore_name" [(ngModel)]="notifyBefore">
-            </div>
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify User Email Id</label>
-              <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="notify_user_emails">
-            </div>
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify Email Subject</label>
-              <input type="text" class="form-control form-control-sm" id="maintenance_name" [(ngModel)]="notify_email_subject">
-            </div>
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify Email Body</label>
-              <app-text-editor [(ngModel)]="notify_email_body"></app-text-editor>
-            </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label required">Notify Email Subject</label>
+            <input type="text" required class="form-control form-control-sm" id="app_name" [(ngModel)]="notify_email_subject">
           </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label required">Notify User Email Id</label>
+            <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="notify_user_emails">
+          </div>
+        </div>
           <div class="form-group" >
             <label class="col-form-label " for="alert_management">Acknowledge Required</label>
             <input type="checkbox" class="form-check-input checkboxloc" id="auser_management" name="auser_management"
-            formControlName="is_acknowledge_required"
-                (change)="onChangeOfSendNotifyAlertCheckbox()">
+            [(ngModel)]="is_acknowledge_required"
+                (change)="onChangeOfSendAckAlertCheckbox()">
           </div>
           <div class="form-group" >
             <label class="col-form-label " for="alert_management">Escalation Required</label>
             <input type="checkbox" class="form-check-input checkboxloc" id="euser_management" name="euser_management"
-            formControlName="is_escalation_required"
-                (change)="onChangeOfSendNotifyAlertCheckbox()">
+            [(ngModel)]="is_escalation_required"
+                (change)="onChangeOfSendEscalAlertCheckbox()">
           </div>
-          <div *ngIf="is_escalation_required">
+          <div *ngIf="escalRequired">
           <div class="form-group" >
-            <label for="message-text" class="col-form-label required">User/Email Id(Escalation 1)</label>
+            <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
             <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="escalation_emailids1">
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label required " [(ngModel)]="dateTime1">Escalation 1 Date & Time</label>
-            <input [owlDateTime]="dt1" class="form-control form-control-sm" [owlDateTimeTrigger]="dt1" placeholder="Date Time">
-            <owl-date-time #dt1></owl-date-time>
+            <label for="recipient-name" class="col-form-label ">Escalation 1 Date & Time</label>
+            <input type="datetime-local" [min]="disableBeforeDate"  [(ngModel)]="dateTime1" class="form-control form-control-sm"  placeholder="Date Time">         
             </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label">User/Email Id(Escalation 2)</label>
             <input type="email" class="form-control form-control-sm"  id="app_name" [(ngModel)]="escalation_emailids2">
-          </div>
+           </div>
           <div class="form-group" >
             <label for="recipient-name" class="col-form-label ">Escalation 2 Date & Time </label>
-            <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="dateTime2" class="form-control form-control-sm" placeholder="Date Time">
-            <owl-date-time #dt1></owl-date-time>
+            <input type="datetime-local" [min]="disableBeforeDate" [(ngModel)]="dateTime2" class="form-control form-control-sm" placeholder="Date Time">
               </div>
              <div class="form-group" >
                 <label for="message-text" class="col-form-label">User/Email Id(Escalation 3)</label>
@@ -182,8 +195,7 @@
               </div>
               <div class="form-group" >
                 <label for="recipient-name" class="col-form-label ">Escalation 3 Date & Time </label>
-                <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="dateTime3" class="form-control form-control-sm" placeholder="Date Time">
-                <owl-date-time #dt1></owl-date-time>
+                <input type="datetime-local" [min]="disableBeforeDate" [(ngModel)]="dateTime3" class="form-control form-control-sm" placeholder="Date Time">
               </div>
             </div>
                 <div class="modal-footer fixed-bottom bg-white" >
@@ -193,11 +205,10 @@
                 (click)="onCloseMaintenanceModelModal()">
                 Cancel
               </button>
-              <!-- <em class="fa fa-spinner fa-spin fa-fw fa-2x" ></em>
-            -->
+              <em *ngIf="createMaitenanceCall" class="fa fa-spinner fa-spin fa-fw fa-2x" ></em>
             </div>
   
-          </form>
+          </div>
         </div>
       </div>
     </div>

@@ -475,7 +475,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       json_model: {},
       threshold: {},
     };
-
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

@@ -26,7 +26,7 @@
         <div class="row text-center " *ngIf="telemetryObj">
           <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) + (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage' ? 2 : 1)) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
             *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
-  
+            {{evaluatePropCondition(telemetryObj, prop)}}
             <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
                   ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')" [ngClass]= "{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'OnlyNumber' && chartConfig.widgetType != 'StringWidget'))}">
   

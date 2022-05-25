@@ -27,7 +27,7 @@ export class ConditionalWidgetComponent implements OnInit {
   decodedToken: any;
   widgetStringFromMenu: any;
 
-  constructor(private chartService:ChartService, private commonService:CommonService) { }
+  constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -62,13 +62,26 @@ export class ConditionalWidgetComponent implements OnInit {
     });
   }
 
-  
+
   onModalEvents(eventType) {
     if (eventType === 'close') {
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     } else if (eventType === 'save') {
       this.removeChart(this.chartConfig.chartId);
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
+    }
+  }
+
+  evaluatePropCondition(telemetryObj, prop){
+    let condition = prop.formula;
+    try {
+      prop.json_Data.forEach((jd, i) => {
+        condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.json_key}`);
+      });
+      return eval(condition);
+    } catch (err) {
+      console.log(err);
+      return '';
     }
   }
 

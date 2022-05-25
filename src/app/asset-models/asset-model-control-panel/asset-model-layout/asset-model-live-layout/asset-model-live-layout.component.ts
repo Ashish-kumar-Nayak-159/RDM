@@ -219,7 +219,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.subscriptions.push(
       this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
          (response: any) => {
-           debugger
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;

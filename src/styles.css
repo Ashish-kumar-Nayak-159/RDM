@@ -1,5 +1,5 @@
 @import '~@ng-select/ng-select/themes/default.theme.css';
-
+@import "~ng-pick-datetime/assets/style/picker.min.css";
 /* ng-select class changes */
 .text-grey {
   color: #909090;

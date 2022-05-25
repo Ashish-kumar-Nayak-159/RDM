@@ -5,6 +5,8 @@ import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hi
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { MaintenanceService } from 'src/app/services/maintenance/maintenance.service';
+import { ToasterService } from 'src/app/services/toaster.service';
+import { HttpErrorResponse } from '@angular/common/http';
 declare var $: any;
 
 @Component({
@@ -12,6 +14,7 @@ declare var $: any;
   templateUrl: './app-maintenance-list.component.html',
   styleUrls: ['./app-maintenance-list.component.css']
 })
+
 export class AppMaintenanceListComponent implements OnInit {
   tileData: any;
   contextApp: any;
@@ -20,6 +23,14 @@ export class AppMaintenanceListComponent implements OnInit {
   originalFilter: any;
   filterObj: any = {};
   assets: any[] = [];
+  assetDropdown: any[] = [];
+  assetsdata: any = {
+    asset_name: '',
+    asset_id:'',
+    asset_type:''
+  };
+ 
+  maintenanceModel:any;
   userData: any;
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
@@ -35,15 +46,25 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
+  htmlContent:any;
+  dateTime1:any;
+  dateTime2:any;
+  dateTime3:any;
+  notifyUser:any;
+  escalRequired:any;
+  askRequired:any;
+  createMaitenanceCall = false;
 
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
     private commonService:CommonService,
     private assetService: AssetService,
-    private maintenanceService: MaintenanceService
-  ) { }
-
+    private maintenanceService: MaintenanceService,
+    private toasterService: ToasterService) { }
+ 
+  
+ 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
@@ -156,7 +177,10 @@ export class AppMaintenanceListComponent implements OnInit {
       ],
     };
   }
+  onChangeOfSendNotifyAlertCheckbox()
+  {
 
+  }
   //getting data list from maintenance APi
   getMaintenance(){
        this.maintenanceService.getMaintenance().subscribe((response:any)=>{
@@ -190,6 +214,16 @@ export class AppMaintenanceListComponent implements OnInit {
         if (response?.data) {
           this.assets = response.data;
           console.log('checkingassets', JSON.stringify(this.assets))
+          debugger
+          for(var i=0;i<this.assets.length;i++)
+          {
+            this.assetsdata ={
+              asset_name :this.assets[i].display_name,
+              asset_id : this.assets[i].asset_id,
+              asset_type:this.assets[i].type
+            };
+             this.assetDropdown.push(this.assetsdata);
+          }
           if (this.assets?.length === 1) {
             this.filterObj.asset = this.assets[0];
             this.onChangeOfAsset();
@@ -200,13 +234,38 @@ export class AppMaintenanceListComponent implements OnInit {
     );
   });
 }
-
+onCloseMaintenanceModelModal() {
+  $('#createMaintainenceModelModal').modal('hide');
+ 
+}
+onSaveMaintenanceModelModal()
+{
+  this.createMaitenanceCall = true;
+    this.maintenanceModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
+     this.maintenanceModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+      let method = this.assetService.createNewMaintenanceRule(this.maintenanceModel);
+      method.subscribe(
+        (response: any) => {
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
+          this.toasterService.showSuccess(response.message,   'Maitenance Create');
+          $('#createMaintainenceModelModal').modal('hide');
+          this.createMaitenanceCall = false;
+        },
+        (err: HttpErrorResponse) => {
+          this.createMaitenanceCall = false;
+          this.toasterService.showError(err.message," Maitenance Create");
+        }
+      );
+  
+}
 
 
  /////// To open the Modal for the Maintenance Schedule
- openMaintenanceCreateModal(){
-
- }
+ async openCreateMaintenanceModelModal(obj = undefined) {
+  $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+   }
 
  /////  To Clear the Hierarchy from dropdown menu 
  onClearHierarchy() {

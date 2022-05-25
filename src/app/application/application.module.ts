@@ -46,7 +46,7 @@ import { MatSortModule } from '@angular/material/sort';
     ApplicationDashboardConfigurationComponent,
     ApplicationEmailAliasComponent,
     ApplicationFilterSettingsComponent,
-    ApplicationGatewayMonitoringComponent
+    ApplicationGatewayMonitoringComponent,
   ],
   imports: [
     CommonModule,

@@ -5,17 +5,22 @@ import { AppMaintenanceRoutingModule } from './app-maintenance-routing.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule } from '@angular/forms';
 import { CommonCustomModule } from '../common/common.module';
-
-
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { TextEditorComponent } from './text-editor/text-editor.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 @NgModule({
-  declarations: [AppMaintenanceListComponent],
+  declarations: [AppMaintenanceListComponent, TextEditorComponent],
   imports: [
     CommonModule,
     AppMaintenanceRoutingModule,
     TooltipModule,
     FormsModule,
-    CommonCustomModule
-    
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    CommonCustomModule,
+    AngularEditorModule,
+    NgSelectModule
   ]
 })
 export class AppMaintenanceModule { }

@@ -86,7 +86,6 @@ export class AssetModelSettingsComponent implements OnInit {
   }
 
   saveSettings() {
-    debugger
     if (
       this.assetModel.metadata.measurement_settings.g1_measurement_frequency_in_ms <= 0 ||
       this.assetModel.metadata.measurement_settings.g2_measurement_frequency_in_ms <= 0 ||

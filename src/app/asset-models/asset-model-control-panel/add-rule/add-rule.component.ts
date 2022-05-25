@@ -170,7 +170,6 @@ export class AddRuleComponent implements OnInit {
   }
 
   async getRules() {
-    debugger
     this.isRulesLoading = true;
     this.rules = [];
     let method;
@@ -197,7 +196,6 @@ export class AddRuleComponent implements OnInit {
   }
 
   onChangeOfRule() {
-    debugger
     const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
     this.ruleData = rule;
     delete this.ruleData.rule_id;
@@ -423,11 +421,9 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.rules_type = event;
     this.ruleModel.actions.alert_management.enabled = event;
   }
-  onSwitchValChange(event) {
+  onRuleCategorySwitchChange(event) {
     this.dropdownPropList = [];
-    this.getAlertConditions(event ? 'KPIX' : 'Stream');
     this.ruleModel.rule_type= "THS";
-    this.getAssetsModelProperties();
     this.ruleModel.category_type = event;
     this.ruleModel.actions.alert_management.enabled = event;
   }

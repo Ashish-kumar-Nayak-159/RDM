@@ -1,68 +1,86 @@
 <div class="blue-nav-bar">
-    <!-- Diplay the Title and the + icon  -->
+  <!-- Diplay the Title and the + icon  -->
+  <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
-        <div class="d-flex align-items-center">
 
-            <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
-            </div>
-            <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openMaintenanceCreateModal()"
-                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
-                tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
-                    class="fas fa-plus fa-sm"></em></button>
-        </div>
-        <!-- Display the Hierachy and Search Icon display -->
-        <div class="ml-auto">
-            <div class="">
-                <form class="form-inline">
-                    <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true"
-                        [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets"
-                        (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
-                    </app-hierarchy-dropdown>
-                    <!-- <div class="form-group">
+      <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
+      </div>
+      <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openMaintenanceCreateModal()"
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
+        tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
+          class="fas fa-plus fa-sm"></em></button>
+    </div>
+    <!-- Display the Hierachy and Search Icon display -->
+    <div class="ml-auto">
+      <div class="">
+        <form class="form-inline">
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
+            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
+            (clearHierarchyEvent)="onClearHierarchy()">
+          </app-hierarchy-dropdown>
+          <!-- <div class="form-group">
                 <button type="button" class="btn btn-sm searchBtn btn-primary"
                     (click)="onFilterSelection(this.filterObj, true, true)"><em
                         class="fas fa-search fa-sm"></em>
                 </button>
             </div> -->
-                </form>
-            </div>
-        </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <div>
-       <div>
-        <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
+  <div class="overlap-wrapper">
+    <div class="over-lap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" (click)="backToMain()"
+        class="bi bi-arrow-left pl-2" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+      </svg><br />
+      <div class="custom-table">
+        <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
-       </div>
+      </div>
     </div>
-    <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-        <div class="modal-dialog" role="document">
-          <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
-            (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
-          </app-message-modal>
-        </div>
-      </div>
+    <div class="" id="table-wrapper">
+      <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
+        (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+    </div>
+    <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && maintenances.length > 0">
+        <a href="javascript:void(0)" class="mr-1"
+          (click)="currentOffset = currentOffset + currentLimit;searchAssets();" placement="bottom"
+          tooltip="Load More Records...">Load More...</a>
+      </span> -->
+  </div>
+  <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+        (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+      </app-message-modal>
+    </div>
+  </div>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-            <form [formGroup]="maintenanceForm">
-              <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
-            </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" (click)="onSave()" [disabled]="!maintenanceForm.valid">Save</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="maintenanceForm">
+            <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
+              name="maintenance-date" class="form-control">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="onSave()"
+            [disabled]="!maintenanceForm.valid">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </div>
+    </div>
+  </div>
 </div>
-

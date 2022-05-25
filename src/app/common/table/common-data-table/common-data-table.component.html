@@ -140,16 +140,16 @@
                 <ng-container *ngFor="let btn of item.btn_list">
                   <ng-container *ngIf="!btn?.type">
                     <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
-                      (click)="onClickOfButton(dataItem, btn.id)">
+                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="!btn?.show_hide_data_key || !dataItem[btn?.show_hide_data_key]">
                       <em class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
                       <!-- {{dataItem.is_maintenance_required}}  -->
                       {{btn.text}}
                     </a>
                   </ng-container>
                   <ng-container *ngIf="btn?.type && btn?.type=='switch'">
-                    <a href="javascript:void(0)" (click)="onClickOfButton(dataItem, btn.id)" class="ml-2" tooltip="{{dataItem[btn?.data_key] ? 'Disable': 'Enable'}}">
-                      <em *ngIf="dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-off"></em>
-                      <em *ngIf="!dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-on"></em>
+                    <a href="javascript:void(0)" (click)="onClickOfButton(dataItem, btn.id)" class="ml-2" tooltip="{{dataItem[btn?.data_key] ? 'Enable': 'Disable'}}">
+                      <em *ngIf="dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-on"></em>
+                      <em *ngIf="!dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-off"></em>
                     </a>
                   </ng-container>
                 </ng-container>

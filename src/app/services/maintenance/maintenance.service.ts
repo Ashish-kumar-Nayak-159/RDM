@@ -24,4 +24,8 @@ export class MaintenanceService {
     return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payload)
   }
 
+  Trigger(id:number){
+    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id)
+  }
+
 }

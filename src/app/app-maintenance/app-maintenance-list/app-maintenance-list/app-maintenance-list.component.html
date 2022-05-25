@@ -172,7 +172,7 @@
             [(ngModel)]="is_escalation_required"
                 (change)="onChangeOfSendEscalAlertCheckbox()">
           </div>
-          <div *ngIf="escalRequired">
+          <div *ngIf="is_escalation_required">
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
             <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="escalation_emailids1">

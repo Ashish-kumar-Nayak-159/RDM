@@ -1,0 +1,40 @@
+<div class="modal right fade" id="addWhieListAsset" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Acknowledge Maintenance</h5>
+                <button type="button" class="close" (click)="onClose()"
+                     aria-label="Close">    
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                       <label for="desc">Description</label>
+                       <textarea name="description" class="form-control shadow-none" id="desc" cols="30" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label required">Upload:</label>
+                        <div class="form-group input-group row m-0">
+                            <div class="file-input form-control form-control-sm p-0 col-8">
+                                <input type="file" accept="image/*,application/pdf,.xls,.xlsx" id="file">
+                                <!-- <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label> -->
+                            </div>
+                            <div class="file-input form-control form-control-sm p-0 col-4"
+                                >
+                                <!-- <input type="file" accept="image/*,application/pdf,.xls,.xlsx" > -->
+                                <label for="file" class="bg-secondary text-white">Browse</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary add-row" 
+                   >Save</button>
+                <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

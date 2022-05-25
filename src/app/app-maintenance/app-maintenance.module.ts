@@ -5,10 +5,11 @@ import { AppMaintenanceRoutingModule } from './app-maintenance-routing.module';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonCustomModule } from '../common/common.module';
+import { AppMaintenanceModalComponent } from './app-maintenance-modal/app-maintenance-modal.component';
 
 
 @NgModule({
-  declarations: [AppMaintenanceListComponent],
+  declarations: [AppMaintenanceListComponent, AppMaintenanceModalComponent],
   imports: [
     CommonModule,
     AppMaintenanceRoutingModule,

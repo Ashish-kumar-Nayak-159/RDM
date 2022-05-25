@@ -257,7 +257,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   // this function will call when someone click on icons [Ex. delete, edit, toggle]
   onTableFunctionCall(obj) {
-
+ 
     if (obj.for === 'View') {
       console.log('view :', obj);
     }
@@ -274,6 +274,9 @@ export class AppMaintenanceListComponent implements OnInit {
       this.setMaintenanceConfig();
       this.historyOfPerticularMaintenance(obj);
 
+    }
+    else if(obj.for === 'Acknowledge'){
+       $('#addWhieListAsset').modal('show')
     }
     else if (obj.for === 'Disable') {
       console.log("disable", obj)
@@ -480,6 +483,10 @@ export class AppMaintenanceListComponent implements OnInit {
   //redirect you to maintenance list screen
   backToMain() {
     $(".over-lap").css('display', 'none')
+  }
+
+  closeModal(value:string){
+    value=='close' ? $("#addWhieListAsset").modal('hide') : '';
   }
 
 }

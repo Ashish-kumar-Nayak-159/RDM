@@ -140,7 +140,7 @@
                 <ng-container *ngFor="let btn of item.btn_list">
                   <ng-container *ngIf="!btn?.type">
                     <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
-                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="!btn?.show_hide_data_key || !dataItem[btn?.show_hide_data_key]">
+                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="!btn?.show_hide_data_key || dataItem[btn?.show_hide_data_key]">
                       <em class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
                       <!-- {{dataItem.is_maintenance_required}}  -->
                       {{btn.text}}

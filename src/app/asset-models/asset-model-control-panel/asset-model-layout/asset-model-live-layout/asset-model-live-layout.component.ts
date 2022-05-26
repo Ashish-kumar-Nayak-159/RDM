@@ -338,6 +338,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     });
     if (this.widgetObj?.widgetType === "ConditionalNumber") {
+      this.formula ='';
       this.propertyObj.metadata = {
         properties: [
           {
@@ -621,8 +622,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         json_Data: []
       }]
       this.propertyObj.metadata.properties.forEach((prop) => {
-        var type = (prop?.property.type === 'Edge Derived Properties' ? 'ED':(prop?.property.type === 'Measured Properties' ? 'M':(prop?.property.type === 'Cloud Derived Properties' ? 'CD' : '')))
+        var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed':(prop?.property.type === 'Measured Properties' ? 'm':(prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
         const obj = {
+          name: prop.property.name,
           type:type,
           json_key: prop.property.json_key
         };

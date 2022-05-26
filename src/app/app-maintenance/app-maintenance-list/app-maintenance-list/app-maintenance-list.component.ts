@@ -32,7 +32,7 @@ export class AppMaintenanceListComponent implements OnInit {
     asset_id:'',
     asset_type:''
   };
- 
+  isView = false;
   htmlContent:any;
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
@@ -49,6 +49,7 @@ export class AppMaintenanceListComponent implements OnInit {
   createMaitenanceCall = false;
 
   createMaintenanceForm : FormGroup;
+  maintenanceFormEdit : FormGroup;
   maintenance_escalation_registry : any [] = [];
   descContent:any;
   maintenance_Sdate:any;
@@ -85,7 +86,7 @@ export class AppMaintenanceListComponent implements OnInit {
     dateAndTime: new FormControl('',Validators.required)
   })
   disableBeforeDate:any = new Date().toISOString().slice(0,16)
- 
+  isEdit = false;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
@@ -288,6 +289,15 @@ onCloseMaintenanceModelModal() {
   $('#createMaintainenceModelModal').modal('hide');
  
 }
+getmaintenanceFormEdit()
+{
+  this.maintenanceFormEdit = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
+    asset_id: new FormControl('', [Validators.required]),
+    start_date: new FormControl('', [Validators.required]),
+    inspection_frequency: new FormControl('',[Validators.required]),
+    })
+}
 getMaitenanceModel()
 {
   this.createMaintenanceForm = new FormGroup({
@@ -399,6 +409,7 @@ onChangeOfAsset(){
 // this function will call when someone click on icons [Ex. delete, edit, toggle]
 onTableFunctionCall(obj){
   if (obj.for === 'View') {
+    this.isView = !this.isView;
     console.log('view :',obj);
   }
   else if (obj.for === 'Delete') {
@@ -436,10 +447,13 @@ onTableFunctionCall(obj){
     // }
   }
   else if (obj.for === 'EditPrivilege') {
+    this.isEdit = !this.isEdit;
+    $('#editMaintainenceModelModal').modal('show');
   }else if (obj.for === 'Un Provision'){
   }
 }
-
+onEditSave()
+{}
 // showing and hiding modal
 onModalEvents(eventType) {
   if(eventType === 'save'){

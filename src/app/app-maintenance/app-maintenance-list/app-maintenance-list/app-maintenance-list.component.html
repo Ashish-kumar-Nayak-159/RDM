@@ -34,6 +34,11 @@
         <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
        </div>
+       <div *ngIf="isView">
+        <div>
+          aaaaaaaaaaaaaaaaaaaaa
+        </div>
+      </div>
     </div>
     <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
         <div class="modal-dialog" role="document">
@@ -43,22 +48,22 @@
         </div>
       </div>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="editMaintainenceModelModal" *ngIf="isEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
+              <h5 class="modal-title" id="editMaintainenceModelModal">Edit Maintenance</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
             <form [formGroup]="maintenanceForm">
-              <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
+              <input type="datetime-local" [min]="disableBeforeDate" formControlName="editdateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
             </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" (click)="onSave()" [disabled]="!maintenanceForm.valid">Save</button>
+              <button type="button" class="btn btn-primary" (click)="onEditSave()" [disabled]="!maintenanceFormEdit.valid">Save</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
           </div>

@@ -166,12 +166,12 @@ export class AddRuleComponent implements OnInit {
           group_name: 'Client Field Support',
         });
         this.ruleModel.actions = {
-          ...this.ruleData?.actions,
+          ...this.ruleModel?.actions,
           notification: {
-            ...this.ruleData?.actions?.notification,
+            ...this.ruleModel?.actions?.notification,
             email: {
-              ...this.ruleData?.actions?.notification?.email,
-              groups: this.ruleData?.actions?.notification?.email?.groups?.filter(v => this.userGroups.map(ug => ug.group_name).includes(v))
+              ...this.ruleModel?.actions?.notification?.email,
+              groups: this.ruleModel?.actions?.notification?.email?.groups?.filter(v => this.userGroups.map(ug => ug.group_name).includes(v))
             }
           }
         }

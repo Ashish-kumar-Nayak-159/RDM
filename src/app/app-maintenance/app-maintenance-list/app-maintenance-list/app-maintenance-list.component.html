@@ -85,4 +85,4 @@
   </div>
 </div>
 
-<app-app-maintenance-modal (modalEmit)="closeModal($event)"></app-app-maintenance-modal>
+<app-app-maintenance-modal *ngIf="showAckModal" (modalEmit)="closeModal($event)" [assetId]="asset_id" [maintenanceRegistryId]="maintenanceRegistryId" [maintenanceNotificationId]="maintenanceNotificationId"></app-app-maintenance-modal>

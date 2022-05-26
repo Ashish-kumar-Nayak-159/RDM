@@ -39,7 +39,10 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
+  asset_id:string= ''
+  showAckModal:boolean = false;
   maintenanceRegistryId: number;
+  maintenanceNotificationId:number;
   isMaintenanceRequired: boolean;
   payload: any;
   maintenanceForm = new FormGroup({
@@ -276,7 +279,10 @@ export class AppMaintenanceListComponent implements OnInit {
 
     }
     else if(obj.for === 'Acknowledge'){
-       $('#addWhieListAsset').modal('show')
+      this.showAckModal = true
+      this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
+       console.log("acknowledgeID",obj.data.maintenance_notification_id)
+      $('#addWhieListAsset').modal('show')
     }
     else if (obj.for === 'Disable') {
       console.log("disable", obj)
@@ -438,12 +444,18 @@ export class AppMaintenanceListComponent implements OnInit {
   historyOfPerticularMaintenance(obj){
     this.maintenanceService.Trigger(obj?.data?.maintenance_registry_id).subscribe((res:any) => {
       console.log("ApI Trigger response", res)
+      res.data.forEach((item)=>{
+            item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date,"MMM dd, yyyy, HH:mm:ss aaaaa'm'")
+      })
       this.maintenanceData = res.data;
-      
     }, (error) => {
       console.log("error while triggering", error)
       this.toasterService.showError(`${error.message}`, 'Error')
     })
+    console.log("historyofperticularMaintenance",obj)
+    this.asset_id = obj?.data?.asset_id
+    this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
+  
   }
 
   //disable maintenance
@@ -485,8 +497,10 @@ export class AppMaintenanceListComponent implements OnInit {
     $(".over-lap").css('display', 'none')
   }
 
-  closeModal(value:string){
-    value=='close' ? $("#addWhieListAsset").modal('hide') : '';
+  closeModal(value:boolean){
+    this.showAckModal = value;
+      $("#addWhieListAsset").modal('hide');
+  
   }
 
 }

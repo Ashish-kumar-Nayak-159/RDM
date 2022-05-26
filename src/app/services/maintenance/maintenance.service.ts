@@ -28,4 +28,8 @@ export class MaintenanceService {
     return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id)
   }
 
+  createAckMaintenance(payload:any){
+    return this.http.post(this.url + AppUrls.GET_ACK_MAINTENANCE, payload)
+  }
+
 }

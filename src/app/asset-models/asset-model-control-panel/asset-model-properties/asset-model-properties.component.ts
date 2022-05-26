@@ -397,10 +397,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
-    console.log("propertieschecking", JSON.stringify(this.properties))
-    console.log("propertyObjchecking", JSON.stringify(this.propertyObj))
-
-
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.propertyObj.json_key);
 
     if (index > -1) {

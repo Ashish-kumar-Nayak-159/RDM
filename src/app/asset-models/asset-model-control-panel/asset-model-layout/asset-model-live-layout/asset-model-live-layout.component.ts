@@ -377,7 +377,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         if (!prop.property && (prop.value === null || prop.value === undefined)) {
           this.toasterService.showError(
             'Please select property or add value in condition',
-            'Add Edge Derived Properity'
+            'Add Property'
           );
           flag = true;
           break;

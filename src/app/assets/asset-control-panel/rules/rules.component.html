@@ -100,7 +100,7 @@
                               <em class="fa fa-fw fa-eye"></em>
                             </a>
                          
-                            <a href="javascript:void(0)" (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
+                            <a href="javascript:void(0)" *ngIf="!rule.rules_type && rule.category_type" (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
                               placement="bottom" tooltip="Override">
                               <em class="fa fa-fw fa-clone"></em>
                             </a>

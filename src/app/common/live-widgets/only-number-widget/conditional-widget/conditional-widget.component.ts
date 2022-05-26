@@ -30,8 +30,12 @@ export class ConditionalWidgetComponent implements OnInit {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
+    console.log("Checkingasset", JSON.stringify(this.asset))
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    console.log("Checkingchartconfig", JSON.stringify(this.chartConfig))
+    console.log("Telemetryobject", JSON.stringify(this.telemetryData))
+
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
@@ -72,16 +76,36 @@ export class ConditionalWidgetComponent implements OnInit {
     }
   }
 
-  evaluatePropCondition(telemetryObj, prop){
+  evaluatePropConditionwithoutasset(telemetryObj,prop){
     let condition = prop.formula;
     try {
       prop.json_Data.forEach((jd, i) => {
         condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.json_key}`);
       });
-      return eval(condition);
+      var actualVal = eval(condition);
+      if(actualVal)
+       { return 'Yes';}
+        return 'No'
     } catch (err) {
       console.log(err);
-      return '';
+      return 'NA';
+    }
+
+  }
+
+  evaluatePropCondition(telemetryObj){
+    debugger
+    let condition = this.chartConfig?.formula;
+    try {
+      this.chartConfig?.properties?.forEach((jd, i) => {
+        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
+      });
+      var actualVal = eval(condition);
+      if(actualVal)
+       { return 'Yes';}
+        return 'No'
+    } catch (err) {
+      return 'NA';
     }
   }
 

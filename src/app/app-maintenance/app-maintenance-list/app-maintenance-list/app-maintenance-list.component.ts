@@ -10,6 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace} from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { threadId } from 'worker_threads';
+
 declare var $: any;
 
 @Component({
@@ -32,12 +34,14 @@ export class AppMaintenanceListComponent implements OnInit {
     asset_id:'',
     asset_type:''
   };
+  validEmail = true;
   isView = false;
   htmlContent:any;
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;
-  
+  maintenance_registry_id : any;
+
   htmlEmailContent:any;
   dateTime1:any;
   dateTime2:any;
@@ -47,7 +51,7 @@ export class AppMaintenanceListComponent implements OnInit {
   askRequired:any;
   is_escalation_required = false;
   createMaitenanceCall = false;
-
+  notifyMaintenanceForm : FormGroup;
   createMaintenanceForm : FormGroup;
   maintenanceFormEdit : FormGroup;
   maintenance_escalation_registry : any [] = [];
@@ -87,6 +91,7 @@ export class AppMaintenanceListComponent implements OnInit {
   })
   disableBeforeDate:any = new Date().toISOString().slice(0,16)
   isEdit = false;
+  itemArray:any [] = [];
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
@@ -215,18 +220,46 @@ export class AppMaintenanceListComponent implements OnInit {
       ],
     };
     this.getMaintenance();
+    this.itemArray.push({
+      "name":"Daily",
+      id:0
+    },
+    {
+      "name":"Weekly",
+      id:1
+    },
+    {
+      "name":"BiWeekly",
+      id:2
+    },
+    {
+      "name":"Monthly",
+      id:3
+    },
+    {
+      "name":"Quarterly",
+      id:4
+    })
   }
-  onChangeOfSendNotifyAlertCheckbox()
+  validateEmails(event)
   {
-    this.is_notify_user = !this.is_notify_user ;
-  }
-  onChangeOfSendAckAlertCheckbox()
-  {
-    this.is_acknowledge_required = !this.is_acknowledge_required;
-  }
-  onChangeOfSendEscalAlertCheckbox()
-  {
-    this.is_escalation_required = !this.is_escalation_required;
+   
+    this.notify_user_emails = this.notifyMaintenanceForm.get('notify_user_emails').value;
+    if(this.notify_user_emails!==undefined)
+    {
+      var emails =  this.notify_user_emails.replace(/\s/g,'').split(",");
+      var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+ 
+      for (var i = 0; i < emails.length; i++) {
+           if( emails[i] == "" || ! regex.test(emails[i])){
+              this.validEmail = false;
+           }
+           else
+           {
+            this.validEmail = true;
+           }
+      }
+    }
   }
   //getting data list from maintenance APi
   getMaintenance(){
@@ -286,6 +319,7 @@ export class AppMaintenanceListComponent implements OnInit {
   });
 }
 onCloseMaintenanceModelModal() {
+  this.createMaintenanceForm.reset();
   $('#createMaintainenceModelModal').modal('hide');
  
 }
@@ -306,6 +340,12 @@ getMaitenanceModel()
     start_date: new FormControl('', [Validators.required]),
     inspection_frequency: new FormControl('',[Validators.required]),
     })
+
+  this.notifyMaintenanceForm = new FormGroup({
+      notifyBefore: new FormControl('', [Validators.required]),
+      notify_user_emails: new FormControl('', [Validators.required]),
+      notify_email_subject: new FormControl('', [Validators.required]),
+      })
 }
 descriptionChange(valuefromtextEditor:any) {
   this.htmlContent = valuefromtextEditor;
@@ -333,10 +373,11 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.is_escalation_required = this.is_escalation_required;
   this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
   this.maintenanceModel.description = this.descContent;
-  this.maintenanceModel.notify_before_hours = this.notifyBefore;
-  this.maintenanceModel.notify_user_emails = this.notify_user_emails;
-  this.maintenanceModel.notify_email_subject = this.notify_email_subject;
-  this.maintenanceModel.notify_email_body = this.notify_email_body;
+  this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
+  this.maintenanceModel.notify_user_emails =  this.notifyMaintenanceForm.get('notify_user_emails').value;
+  this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
+
+  this.maintenanceModel.notify_email_body = this.htmlContent;
   this.maintenance_regirstry = {
     "escalation_emailids1" : this.escalation_emailids1,
     "dateTime":this.dateTime1,
@@ -355,7 +396,7 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
   this.maintenanceModel.email_body = this.htmlContent;
   debugger;
-  let method = this.assetService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+  let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
@@ -404,13 +445,33 @@ onChangeOfAsset(){
   const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
 
 }
+getInspec_Freq(inspection_frequency)
+{
+  let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
+ return itemObj?.name;
+}
+onCloseViewMaintenanceModelModal()
+{
+  $("#viewMaintainenceModelModal").modal('hide');
+}
+getMaintenance_data(id)
+{
+  let method = this.maintenanceService.getMaintenancedata(id);
+  method.subscribe(
+    (response: any) => {
+        this.maintenanceModel = response.data;
+    },
+  );
 
+}
 
 // this function will call when someone click on icons [Ex. delete, edit, toggle]
 onTableFunctionCall(obj){
   if (obj.for === 'View') {
     this.isView = !this.isView;
-    console.log('view :',obj);
+    this.maintenance_registry_id = obj?.data.maintenance_registry_id;
+    $("#viewMaintainenceModelModal").modal('show');
+    this.getMaintenance_data(this.maintenance_registry_id);
   }
   else if (obj.for === 'Delete') {
     this.openConfirmDialog("Delete")

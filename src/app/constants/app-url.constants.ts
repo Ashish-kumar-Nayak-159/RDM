@@ -217,5 +217,5 @@ export class AppUrls {
  public static Get_DBSCHEMA = 'apps/{0}/dbschema'
 
  public static GET_MAINTENANCE = 'maintenance/'
-
+ public static GET_MAINTENANCEDATA = 'maintenance/{0}'
 }

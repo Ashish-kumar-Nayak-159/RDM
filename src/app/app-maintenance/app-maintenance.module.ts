@@ -8,7 +8,6 @@ import { CommonCustomModule } from '../common/common.module';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 @NgModule({
   declarations: [AppMaintenanceListComponent, TextEditorComponent],
   imports: [
@@ -16,8 +15,6 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     AppMaintenanceRoutingModule,
     TooltipModule,
     FormsModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     CommonCustomModule,
     AngularEditorModule,
     NgSelectModule,

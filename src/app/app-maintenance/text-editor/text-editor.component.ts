@@ -10,9 +10,9 @@ export class TextEditorComponent  {
   name = 'Angular ';
   htmlContent :any;
   @Output() htmlContentDetect = new EventEmitter<any>();
-  handleInputChange(){
+  handleInputChange(value){
     // ... all of your logic
-    console.log(this.htmlContent);
+    console.log(this.htmlContent+"--"+value);
     this.htmlContentDetect.emit(this.htmlContent); // this will pass the $event object to the parent component.
     }
   config: AngularEditorConfig = {

@@ -33,9 +33,7 @@ export class AppMaintenanceListComponent implements OnInit {
     asset_type:''
   };
  
-  @Output() htmlContent: any;
-  @Input() asset: any;
- 
+  htmlContent:any;
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;

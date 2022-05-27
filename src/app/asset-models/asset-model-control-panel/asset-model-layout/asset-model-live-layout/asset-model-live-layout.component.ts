@@ -24,7 +24,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   contextApp: any;
   subscriptions: Subscription[] = [];
   propertyList: any[] = [];
-  actualPropertyList:any[]=[];
+  actualPropertyList: any[] = [];
   liveWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
   signalRTelemetrySubscription: Subscription;
@@ -35,14 +35,26 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   decodedToken: any;
   derivedKPIs: any[] = [];
   filteredPropList: any[] = [];
-  slaveList : any[] = [{
-    slave_name:'Select Slave'
+  slaveList: any[] = [{
+    slave_name: 'Select Slave'
   }]
-  selectedSlave:any = {slave_name:'Select Slave'}
+  selectedSlave: any = { slave_name: 'Select Slave' }
   widgetStringFromMenu: any;
-  checkwidgettype:boolean =false;
-  checkingsmallwidget:''
-  
+  checkwidgettype: boolean = false;
+  checkingsmallwidget: '';
+  operatorList = [
+    { id: 'GREATEROREQUAL', value: '>=' },
+    { id: 'LESSOREQUAL', value: '<=' },
+    { id: 'LESS', value: '<' },
+    { id: 'GREATER', value: '>' },
+    { id: 'EQUAL', value: '==' },
+  ];
+  data_type: any;
+  isDisabled = false;
+  propertyObj: any;
+  formula: String;
+  properties: any = {};
+
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -62,16 +74,16 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.getModelSlaveDetails();
   }
 
-  getModelSlaveDetails(){
-    this.assetModelService.getModelSlaveDetails(this.contextApp.app,this.assetModel.name,{}).subscribe((res:any)=>{
+  getModelSlaveDetails() {
+    this.assetModelService.getModelSlaveDetails(this.contextApp.app, this.assetModel.name, {}).subscribe((res: any) => {
       this.slaveList = res?.data ?? [{
-        slave_name:'Select Slave'
+        slave_name: 'Select Slave'
       }]
-      this.slaveList.unshift({'slave_name':'Select Slave'})
+      this.slaveList.unshift({ 'slave_name': 'Select Slave' })
     })
   }
 
-  async onSlaveSelection(selectedSlave){    
+  async onSlaveSelection(selectedSlave) {
     await this.getAssetsModelProperties(selectedSlave);
   }
 
@@ -106,14 +118,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.measured_properties = response.properties.measured_properties
             ? response.properties.measured_properties
             : [];
-            response.properties?.measured_properties?.forEach((prop) => {
-              prop.type = 'Measured Properties'
-              this.actualPropertyList.push(prop);
-              if(!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id){
-                this.propertyList.push(prop)
-              }
-            });
-            // this.propertyList = response.properties.measured_properties ??  [];
+          response.properties?.measured_properties?.forEach((prop) => {
+            prop.type = 'Measured Properties'
+            this.actualPropertyList.push(prop);
+            if (!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id) {
+              this.propertyList.push(prop)
+            }
+          });
+          // this.propertyList = response.properties.measured_properties ??  [];
           response.properties.edge_derived_properties = response.properties.edge_derived_properties
             ? response.properties.edge_derived_properties
             : [];
@@ -123,13 +135,13 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             let matchCount = 0
-            prop.metadata?.properties.forEach((actualProp)=>{
-              
-              if(!selectedSlave?.slave_id || actualProp?.property?.metadata?.slave_id == selectedSlave?.slave_id){
+            prop.metadata?.properties.forEach((actualProp) => {
+
+              if (!selectedSlave?.slave_id || actualProp?.property?.metadata?.slave_id == selectedSlave?.slave_id) {
                 matchCount++
               }
             })
-            if(matchCount > 0){
+            if (matchCount > 0) {
               this.propertyList.push(prop)
 
             }
@@ -137,7 +149,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           });
           response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
-            if(!selectedSlave?.slave_id ||  prop?.metadata?.slave_id == selectedSlave?.slave_id){
+            if (!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id) {
               this.propertyList.push(prop)
             }
 
@@ -150,7 +162,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_key = kpi.kpi_json_key;
             obj.json_model = {};
             obj.json_model[obj.json_key] = {};
-            if(!selectedSlave?.slave_id ||  kpi?.metadata?.slave_id == selectedSlave?.slave_id){
+            if (!selectedSlave?.slave_id || kpi?.metadata?.slave_id == selectedSlave?.slave_id) {
               this.propertyList.push(obj);
             }
 
@@ -209,6 +221,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }, 1000);
   }
 
+  getPropertyType(id) {
+    this.data_type = this.propertyList.find((prop) => prop.json_key === id)?.data_type;
+    return this.propertyList.find((prop) => prop.json_key === id)?.data_type;
+  }
+
   async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
@@ -218,7 +235,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isGetWidgetsAPILoading = true;
     this.subscriptions.push(
       this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
-         (response: any) => {
+        (response: any) => {
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;
@@ -226,7 +243,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             this.liveWidgets.forEach((widget) => {
               this.checkingsmallwidget = widget.widgetType;
 
-              if(widget.widgetType === 'SmallNumber'){
+              if (widget.widgetType === 'SmallNumber') {
                 this.checkwidgettype = true;
               }
               widget.freezed = this.assetModel.freezed;
@@ -238,7 +255,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                 widget?.properties.forEach((prop) => {
                   if (prop.property) {
                     prop.json_key = prop.property.json_key;
-                    console.log("checkingprop", JSON.stringify(prop))
                   }
                   prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                   prop.type = prop.property?.type;
@@ -321,22 +337,112 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       }
     });
-  
+    if (this.widgetObj?.widgetType === "ConditionalNumber") {
+      this.formula ='';
+      this.propertyObj.metadata = {
+        properties: [
+          {
+            property: null,
+            value: null,
+            operator: null,
+            operator1: null,
+            index: 1,
+          },
+        ],
+      };
+
+    }
+
+  }
+
+  addPropertyToCondtion() {
+    this.propertyObj.metadata.properties.push({
+      property: null,
+      value: null,
+      operator: null,
+      operator1: null,
+      index: this.propertyObj.metadata.properties.length + 1,
+
+    });
+  }
+
+  ValidateallInputField() {
+
+    if (this.widgetObj.widgetType === 'ConditionalNumber') {
+      let flag = false;
+      this.propertyObj.id = this.commonService.generateUUID();
+
+      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+        const prop = this.propertyObj.metadata.properties[i];
+        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+          this.toasterService.showError(
+            'Please select property or add value in condition',
+            'Add Property'
+          );
+          flag = true;
+          break;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        return;
+      }
+      this.propertyObj.metadata.condition = '';
+      this.propertyObj.metadata.props = [];
+      this.propertyObj.condition = '';
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        if (prop.property) {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+          if (index === -1) {
+            this.propertyObj.metadata.props.push(prop.property.json_key);
+            this.propertyObj.metadata.condition +=
+              '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : ''));
+          } else {
+
+            this.propertyObj.metadata.condition +=
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          }
+          // this.formula.push(this.propertyObj.metadata.condition)
+          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+          this.formula = '(' + this.propertyObj.metadata.condition + ')'
+          console.log("Checkingformula1", JSON.stringify(this.formula))
+
+
+        } else if (prop.value !== null && prop.value !== undefined) {
+          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+          this.formula = '(' + this.propertyObj.metadata.condition + ')'
+          console.log("Checkingformula2", JSON.stringify(this.formula))
+
+        }
+      });
+    }
+
+  }
+  deletePropertyCondtion(propindex: number) {
+    this.propertyObj.metadata.properties.splice(propindex, 1);
+  }
+  clearInputField() {
+    this.isDisabled = false;
   }
 
   async getTelemetryData() {
     this.telemetryObj = {};
     this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
     this.actualPropertyList?.forEach((prop) => {
-      if(prop.json_key){
-      this.telemetryObj[prop.json_key] = {
-        value: this.commonService.randomIntFromInterval(
-          prop.json_model?.[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
-          prop.json_model?.[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
-        ),
-        date: this.telemetryObj.message_date,
-      };
-    }
+      if (prop.json_key) {
+        this.telemetryObj[prop.json_key] = {
+          value: this.commonService.randomIntFromInterval(
+            prop.json_model?.[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
+            prop.json_model?.[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
+          ),
+          date: this.telemetryObj.message_date,
+        };
+      }
     });
   }
 
@@ -364,6 +470,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.widgetObj = {
       properties: [{}],
     };
+    this.propertyObj = {
+      json_model: {},
+      threshold: {},
+    };
+
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -421,7 +532,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
-         async (response: any) => {
+        async (response: any) => {
           this.toasterService.showSuccess(message, 'Live ' + this.widgetStringFromMenu);
           await this.getAssetModelsderivedKPIs();
           await this.getAssetsModelProperties({});
@@ -439,6 +550,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   async onSaveWidgetObj() {
+    debugger
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -447,19 +559,19 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
-    
+
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {
         found = false;
-        
+
       } else if (prop.property && this.widgetObj.widgetType != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
         delete prop.property;
       }
     });
-    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage") {
+    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage" &&  this.widgetObj.widgetType !== 'ConditionalNumber') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
@@ -478,7 +590,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         return;
       } else {
         const arr = [];
-        
+
         this.widgetObj.y1AxisProps.forEach((prop) => {
           const obj = {
             name: prop.name,
@@ -503,8 +615,25 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         });
         this.widgetObj.y2AxisProps = JSON.parse(JSON.stringify(arr));
       }
+    } else if (this.widgetObj.widgetType == "ConditionalNumber") {
+      // const arr = [];
+      let arr = [{
+        formula: this.formula,
+        json_Data: []
+      }]
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed':(prop?.property.type === 'Measured Properties' ? 'm':(prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
+        const obj = {
+          name: prop.property.name,
+          type:type,
+          json_key: prop.property.json_key
+        };
+        arr[0]['json_Data'].push(obj);
+      });
+      this.widgetObj.properties = JSON.parse(JSON.stringify(arr));;
+      console.log("ConditonalPayload", JSON.stringify(arr))
     }
-    
+
     else if (this.widgetObj.widgetType == "NumberWithImage") {
       let imgUploadError = false;
       await Promise.all(this.widgetObj.properties.map(async (element, index) => {
@@ -521,12 +650,12 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }));
       if (imgUploadError) this.toasterService.showError('Error in uploading file', 'Upload file');
     }
-    this.isCreateWidgetAPILoading = true;
+    // this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    
+
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
   }
 

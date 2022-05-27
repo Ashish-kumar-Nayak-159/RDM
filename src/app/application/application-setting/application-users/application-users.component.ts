@@ -36,6 +36,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   userRoles: any = [];
   addUserForm: FormGroup;
   rolesList: any = [];
+  actualhierarchyArr = [];
+  contextApp : any;
   userLevel;
   constructor(
     private applicationService: ApplicationService,
@@ -46,6 +48,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getApplicationUserRoles();
@@ -53,6 +56,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       this.hierarchyArr[index] = [];
     });
+    this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
   }
 
   getApplicationUserRoles() {
@@ -177,7 +181,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   }
 
   onChangeOfHierarchy(i) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
+   Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
@@ -187,16 +191,16 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         this.hierarchyArr[key] = [];
       }
     });
-    
-    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == i && r.key == this.configureHierarchy[i]);
+    if (selectedHierarchy) {
+      this.hierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
+    }
+    const hierarchyObj: any = { App: this.contextApp.app };
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
 
     let count = 0;
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -207,7 +211,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.applicationData.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+        this.hierarchyArr[1] = this.actualhierarchyArr.filter(f => f.level == 1);
       }
     }
   }
@@ -225,7 +229,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       }
     });
     if (this.hierarchyList.length > 1) {
-      this.hierarchyArr['1'] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+      this.hierarchyArr['1'] = this.actualhierarchyArr.filter(r => r.level == 1);
     }
     if (hierarchy.slice(-2) === '/ ') {
       hierarchy = hierarchy.substring(0, hierarchy.length - 2);

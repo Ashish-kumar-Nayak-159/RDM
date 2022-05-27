@@ -123,7 +123,7 @@
               [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
               [ngModelOptions]="{standalone: true}">
               <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
-              <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
+              <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[hIndex]">{{tag.name}}</option>
             </select>
             <input type="text" *ngIf="hIndex === 0" defaultValue="{{applicationData.app}}" disabled
               class="form-control form-control-sm">

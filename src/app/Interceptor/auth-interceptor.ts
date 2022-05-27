@@ -30,7 +30,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     refreshToken(): Observable<any> {
-
         if (this.refreshTokenInProgress) {
 
             return new Observable(observer => {

@@ -22,9 +22,6 @@ declare var $: any;
 
 export class AppMaintenanceListComponent implements OnInit {
   userGroupArray :any [] = [];
-  userGroup1:any;
-  userGroup2:any;
-  userGroup3:any;
   tileData: any;
   contextApp: any;
   decodedToken: any;
@@ -121,6 +118,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.getMaitenanceModel();
     this.getUserGroup();
     this.getAssets(this.contextApp.user.hierarchy);
+   
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -255,8 +253,22 @@ export class AppMaintenanceListComponent implements OnInit {
       "name":"Yearly",
       id:5
     })
+  this.addNewEsacalation(0);
   }
- 
+  addNewEsacalation(index) {
+    this.maintenance_regirstry ={
+    user_emails: '',
+    duration_hours: "",
+    user_groups:"",
+    email_subject:"",
+    email_body:"",
+    }
+    
+    this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+  }
+  deleteEscalation(index) {
+    this.maintenance_escalation_registry.splice(index, 1);
+  }
   getUserGroup()
   {
     let method = this.maintenanceService.getUserGroup(this.contextApp.app);
@@ -388,17 +400,7 @@ getMaitenanceModel()
       notify_user_emails: new FormControl('', [Validators.required]),
       notify_email_subject: new FormControl('', [Validators.required]),
       })
-      this.escalMaintenanceForm = new FormGroup({
-        escalation_emailids1: new FormControl('', [Validators.required]),
-        dateTime1: new FormControl('', [Validators.required]),
-        emailSub1:new FormControl('',[Validators.required]),
-        escalation_emailids2: new FormControl(''),
-        dateTime2: new FormControl(''),
-        emailSub2:new FormControl(''),
-        escalation_emailids3: new FormControl(''),
-        dateTime3: new FormControl(''),
-        emailSub3:new FormControl(''),
-    })
+   
       
 }
 descriptionChange(valuefromtextEditor:any) {
@@ -409,21 +411,24 @@ emailBodyDetect(valuefromtextEditor:any) {
   this.descContent = valuefromtextEditor;
   console.log("within..... main...",valuefromtextEditor);
 }
-emailBody1Detect(valuefromtextEditor:any)
+emailBody1Detect(valuefromtextEditor:any,i)
 {
+ if(i==0)
+ {
   this.emailbody1 = valuefromtextEditor;
-  console.log("within..... main...",valuefromtextEditor);
-}
-emailBody2Detect(valuefromtextEditor:any)
-{
+  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody1); 
+ }
+ if(i==1)
+ {
   this.emailbody2 = valuefromtextEditor;
-  console.log("within..... main...",valuefromtextEditor);
+  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody2); 
 }
-
-emailBody3Detect(valuefromtextEditor:any)
-{
+ if(i==2)
+ {
   this.emailbody3 = valuefromtextEditor;
-  console.log("within..... main...",valuefromtextEditor);
+  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody3); 
+}
+ 
 }
 
 onSaveMaintenanceModelModal()
@@ -452,32 +457,8 @@ onSaveMaintenanceModelModal()
   }
  
   this.maintenanceModel.notify_email_body = this.htmlContent;
-  this.maintenance_regirstry = {
-    "user_emails" : this.escalMaintenanceForm.get('escalation_emailids1').value.split(","),
-    "duration_hours":this.escalMaintenanceForm.get('dateTime1').value,
-    "user_groups":this.userGroup1,
-    "email_body":this.emailbody1,
-    "email_subject":this.escalMaintenanceForm.get('emailSub1').value
-  };
-  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-  this.maintenance_regirstry = {
-    "user_emails" :this.escalMaintenanceForm.get('escalation_emailids2').value.split(","),
-    "duration_hours":this.escalMaintenanceForm.get('dateTime2').value,
-    "email_body":this.emailbody2,
-    "user_groups":this.userGroup2,
-    "email_subject":this.escalMaintenanceForm.get('emailSub2').value
-  };
-  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-  this.maintenance_regirstry = {
-    "user_emails" : this.escalMaintenanceForm.get('escalation_emailids3').value.split(","),
-    "duration_hours":this.escalMaintenanceForm.get('dateTime3').value,
-    "email_body3":this.emailbody3,
-    "user_groups":this.userGroup3,
-    "email_subject":this.escalMaintenanceForm.get('emailSub3').value
-
-  };
-  this.maintenance_escalation_registry.push(this.maintenance_regirstry);
-  this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
+  this.maintenanceModel.maintenance_escalation_registry = JSON.parse(JSON.stringify(this.maintenance_escalation_registry));
+debugger;
   this.maintenanceModel.email_body = this.htmlContent;
    let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(

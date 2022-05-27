@@ -181,7 +181,7 @@
                 [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
                 [disabled]="contextApp.user.hierarchy[hierarchyItem]">
                 <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
-                <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
+                <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[hIndex]">{{tag.name}}</option>
               </select>
               <span *ngIf="hIndex === 0">{{contextApp.app}}</span>
             </td>

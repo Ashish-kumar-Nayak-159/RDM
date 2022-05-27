@@ -363,11 +363,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               this.applicationData?.metadata?.filter_settings?.search_duration_control_panel || 'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+          this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
             localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
             if(response)
             {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
               resolve();
             }
           },

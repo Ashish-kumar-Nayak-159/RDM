@@ -4,3 +4,7 @@
 .customplaceholder::placeholder{
   color: dimgrey;
 }
+
+.textalign{
+  text-align: center;
+}

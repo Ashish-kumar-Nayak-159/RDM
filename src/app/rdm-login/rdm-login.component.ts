@@ -67,7 +67,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       password: new FormControl(null, [Validators.required]),
     });
     this.registerForm = new FormGroup({
-      app: new FormControl(this.tenantId, [Validators.required]),
+      app: new FormControl(this.tenantId ? this.tenantId :'', [Validators.required]),
       name: new FormControl(null, [Validators.required]),
       phone: new FormControl(null),
       email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),

@@ -38,18 +38,18 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
-    //this.assetList = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
-    const obj = {
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-    };
-    this.subscriptions.push(
-      this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-        if (response?.data) {
-          this.assetList = response.data;
-        }
-      })
-    );
+    this.assetList = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+    // const obj = {
+    //   hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+    //   type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+    // };
+    // this.subscriptions.push(
+    //   this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+    //     if (response?.data) {
+    //       this.assetList = response.data;
+    //     }
+    //   })
+    // );
     this.getTileName();
   }
 
@@ -186,6 +186,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       .subscribe(
         (response: any) => {
           this.campaignViewObj = response;
+          console.log("CheckingcampaignViewObj", JSON.stringify(this.campaignViewObj))
           this.isGetCampaignAPILoading = false;         
         },
         (err) => {
@@ -217,6 +218,8 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   }
   getAssetNames(obj)
   {
+    console.log("Checkingassetlist", JSON.stringify(this.assetList))
+    debugger
     var result = this.assetList.filter(function (asset){
       return obj.find(item => asset.asset_id === item.asset_id);
     });

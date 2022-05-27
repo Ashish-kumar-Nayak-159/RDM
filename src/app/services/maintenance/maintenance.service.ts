@@ -20,6 +20,11 @@ export class MaintenanceService {
       this.url + String.Format(AppUrls.GET_MAINTENANCEDATA, encodeURIComponent(id))
     );
   }
+  getUserGroup(app){
+    return this.http.get(
+      this.url + String.Format(AppUrls.GET_APP_USERGROUPS, encodeURIComponent(app))
+    );
+  }
   deleteMaintenance(id:any){
     return this.http.delete(this.url + AppUrls.GET_MAINTENANCE + id)
   }

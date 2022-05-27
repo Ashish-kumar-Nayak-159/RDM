@@ -2,7 +2,6 @@
     <!-- Diplay the Title and the + icon  -->
     <div class="d-flex align-items-center">
         <div class="d-flex align-items-center">
-
             <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
             </div>
             <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateMaintenanceModelModal()"
@@ -42,35 +41,13 @@
           </app-message-modal>
         </div>
       </div>
-
-      <div class="modal fade" id="editMaintainenceModelModal" *ngIf="isEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editMaintainenceModelModal">Edit Maintenance</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-            <form [formGroup]="maintenanceForm">
-              <input type="datetime-local" [min]="disableBeforeDate" formControlName="editdateAndTime" id="maintenance-date" name="maintenance-date" class="form-control">
-            </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" (click)="onEditSave()" [disabled]="!maintenanceFormEdit.valid">Save</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
 </div>
-
+  
 <div class="modal right fade" id="createMaintainenceModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Maintenance</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{title}} Maintenance</h5>
         <button type="button" class="close"  (click)="onCloseMaintenanceModelModal()" aria-label="Close" >
           <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
@@ -107,12 +84,9 @@
           </div>
           </div>
           </div>
-          <div class="form-group" >
-            <label for="message-text" class="col-form-label ">Email Body</label>
-            <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> </div>
-            <div class="form-group" >
+                <div class="form-group" >
             <label for="message-text" class="col-form-label ">Description</label>
-            <app-text-editor id="description" [(ngModel)]="descContent"  (htmlContentDetect)="descriptionChange($event)"></app-text-editor>
+            <textarea id="description" class="form-control form-control-sm" [(ngModel)]="descContent" rows="5" cols="80"></textarea>
             </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label required">Maintenance Start Date</label>
@@ -126,8 +100,8 @@
           </div>
           <div class="form-group" >
             <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
-            <select class="form-control form-control-sm" id="template" formControlName="inspection_frequency" name="model_type" >
-            <option *ngFor="let item of itemArray" [ngValue]="item.id">{{item.name}}</option>
+            <select class="form-control form-control-sm" id="template" [(ngModel)]="inspection_frequency" formControlName="inspection_frequency" name="model_type" >
+            <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
            </select>
            <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
            class="alert-danger">
@@ -137,68 +111,228 @@
            </div>
           </div>
           <div class="form-group" >
-            <label class="col-form-label " for="alert_management">Notify to User</label>
-            <input type="checkbox" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"  (click)="is_notify_user=!is_notify_user ">
-                   </div>
-           <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify Before</label>
-              <input type="datetime-local" [min]="disableBeforeDate"  class="form-control form-control-sm" id="nbefore_name" formControlName="notifyBefore">
-            </div>
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify Email Subject</label>
-              <input type="text"  class="form-control form-control-sm" id="sub_name" formControlName="notify_email_subject">
-           </div>
-            <div class="form-group" >
-              <label for="message-text" class="col-form-label required">Notify User Email Id</label>
-              <input type="email"  class="form-control form-control-sm" id="app_name" formControlName="notify_user_emails" (keydown)="validateEmails(this)">
-            <div *ngIf="!validEmail"
-              class="alert-danger">
-              Valid Email/Emails required.
-            </div>
-          </div>
-        </div>
-          <div class="form-group" >
             <label class="col-form-label " for="alert_management">Acknowledge Required</label>
             <input type="checkbox" class="form-check-input checkboxloc" id="ack" name="ack"
             [(ngModel)]="is_acknowledge_required"
                 (click)="is_acknowledge_required=!is_acknowledge_required">
           </div>
           <div class="form-group" >
+            <label class="col-form-label " for="alert_management">Notify to User</label>
+            <input type="checkbox" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"  (click)="is_notify_user=!is_notify_user ">
+                   </div>
+           <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
+            <div class="d-flex align-items-center w-100">
+              <div class="form-group mr-4">
+                <label for="message-text" class="col-form-label required">Notify Before</label>
+                <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="notifyBefore">
+                <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="notifyBefore">
+                <div *ngIf="notifyMaintenanceForm.get('notifyBefore').errors && notifyMaintenanceForm.get('notifyBefore').touched"
+                class="alert-danger">
+                <div *ngIf="notifyMaintenanceForm.get('notifyBefore').errors.required">
+                 Please provide valid notify before.
+                </div>
+                </div>
+               </div>
+              <div class="form-group d-flex flex-column">
+                <select style="margin-top: 32px;" class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name" >
+                   <option value="Hours">Hours</option>
+                   <option *ngIf="inspection_frequency!==0"  value="Days">Days</option>
+                </select>
+                </div>
+             </div>
+            <div class="form-group" >
+              <label for="message-text" class="col-form-label required">Notify Email Subject</label>
+              <input type="text"  class="form-control form-control-sm" id="sub_name" formControlName="notify_email_subject">
+              <div *ngIf="notifyMaintenanceForm.get('notify_email_subject').errors && notifyMaintenanceForm.get('notify_email_subject').touched"
+              class="alert-danger">
+              <div *ngIf="notifyMaintenanceForm.get('notify_email_subject').errors.required">
+               Please provide email subject.
+              </div>
+              </div>
+            </div>
+            <div class="form-group" >
+              <label for="message-text" class="col-form-label required">Notify User Email Id</label>
+              <input type="email"  class="form-control form-control-sm" id="app_name" formControlName="notify_user_emails" (keydown)="validateEmails(this)">
+            <div *ngIf="!validEmail"
+              class="alert-danger">
+             Provide valid email/emails.
+            </div>
+          </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label ">Email Body</label>
+            <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> 
+          </div>
+        </div>
+         <div class="form-group" >
+            <h6><label for="message-text" class="col-form-label">Escalation1</label>
+            </h6>
             <label class="col-form-label " for="alert_management">Escalation Required</label>
             <input type="checkbox" class="form-check-input checkboxloc" id="is_escal"
             [(ngModel)]="is_escalation_required"
                 (click)="is_escalation_required=!is_escalation_required">
           </div>
-          <div *ngIf="is_escalation_required">
+          <div *ngIf="is_escalation_required" [formGroup]="escalMaintenanceForm">
           <div class="form-group" >
-            <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
-            <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="escalation_emailids1">
+            <label for="message-text" class="col-form-label required">Provide Email Addresses to send mails(Escalation1)</label>
+            <input type="email" required class="form-control form-control-sm" id="app_name" formControlName="escalation_emailids1" (keydown)="validateEmails_eas(this)">
+            <div *ngIf="!validEmail"
+            class="alert-danger">
+           Provide valid email/emails.
           </div>
+         </div>
+         <div class="form-group" >
+          <label for="message-text" class="col-form-label">Select Users Group to send Email</label>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label ">Escalation 1 Date & Time</label>
-            <input type="datetime-local" [min]="disableBeforeDate"  [(ngModel)]="dateTime1" class="form-control form-control-sm"  placeholder="Date Time">         
+              <ng-select [items]="userGroupArray" clearSearchOnAdd="true" [multiple]="true"
+                class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
+                dropdownPosition="bottom" name="group-dropdown"
+                [(ngModel)]="userGroup1" [closeOnSelect]="false" required>
+                <ng-template ng-option-tmp let-item="item">
+                  <span>
+                    {{item.group_name}}
+                  </span>
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
+                  {{items.length}} groups selected
+                </ng-template>
+               </ng-select>
             </div>
-          <div class="form-group" >
-            <label for="message-text" class="col-form-label">User/Email Id(Escalation 2)</label>
-            <input type="email" class="form-control form-control-sm"  id="app_name" [(ngModel)]="escalation_emailids2">
+         </div>
+        <div class="form-group" >
+          <label for="message-text" class="col-form-labe ">Email Subject</label>
+          <input type="email" class="form-control form-control-sm"  id="app_name" formControlName="emailSub1">
+         </div>
+         <div class="form-group" >
+          <label for="message-text" class="col-form-label ">Email Body</label>
+          <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBody1Detect($event)"></app-text-editor>
+         </div>
+         <div class="form-group">
+              <div class="d-flex align-items-center w-100">
+                <div class="form-group mr-4">
+                  <label for="recipient-name" class="col-form-label ">Escalation Duration</label>
+                  <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="dateTime1">
+                  <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="dateTime1">
+                  <div *ngIf="escalMaintenanceForm.get('dateTime1').errors && escalMaintenanceForm.get('dateTime1').touched"
+                  class="alert-danger">
+                  <div *ngIf="escalMaintenanceForm.get('dateTime1').errors.required">
+                   Please provide valid duration.
+                  </div>
+                  </div>
+                 </div>
+                <div class="form-group d-flex flex-column">
+                  <label for="nbefore_name" class="col-form-label">Select Time</label>
+                  <select  style="margin-top: 32px;" class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name" >
+                     <option value="Hours">Hours</option>
+                     <option *ngIf="inspection_frequency!==0"  value="Days">Days</option>
+                  </select>
+                  </div>
+               </div>
+               </div>
+            <div class="form-group" >
+            <label for="message-text" class="col-form-labe ">Provide Email Addresses to send mails(Escalation2)</label>
+            <input type="email" class="form-control form-control-sm"  id="app_name" formControlName="escalation_emailids2">
            </div>
-          <div class="form-group" >
-            <label for="recipient-name" class="col-form-label ">Escalation 2 Date & Time </label>
-            <input type="datetime-local" [min]="disableBeforeDate" [(ngModel)]="dateTime2" class="form-control form-control-sm" placeholder="Date Time">
+           <div class="form-group" >
+            <h6><label for="message-text" class="col-form-label">Escalation2</label>
+            </h6>   
+            <label for="message-text" class="col-form-label">Select Users Group to send Email</label>
+            <div class="form-group">
+                <ng-select [items]="userGroupArray" clearSearchOnAdd="true" [multiple]="true"
+                  class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                  placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
+                  dropdownPosition="bottom" name="group-dropdown"
+                  [(ngModel)]="userGroup2" [closeOnSelect]="false" required>
+                  <ng-template ng-option-tmp let-item="item">
+                    <span>
+                      {{item.group_name}}
+                    </span>
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
+                    {{items.length}} groups selected
+                  </ng-template>
+                 </ng-select>
               </div>
+          </div>
+           <div class="form-group" >
+            <label for="message-text" class="col-form-labe ">Email Subject</label>
+            <input type="email" class="form-control form-control-sm"  id="app_name" formControlName="emailSub2">
+           </div>
+           <div class="form-group" >
+            <label for="message-text" class="col-form-label ">Email Body</label>
+            <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBody2Detect($event)"></app-text-editor> </div>
+           <div class="form-group">
+              <div class="d-flex align-items-center w-100">
+                <div class="form-group mr-4">
+                  <label for="recipient-name" class="col-form-label ">Escalation Duration</label>
+                  <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="dateTime2">
+                  <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="dateTime2">
+                
+                 </div>
+                <div class="form-group d-flex flex-column">
+                  <select style="margin-top: 32px;"  class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name" >
+                     <option value="Hours">Hours</option>
+                     <option *ngIf="inspection_frequency!==0"  value="Days">Days</option>
+                  </select>
+                  </div>
+               </div>
+               </div>
              <div class="form-group" >
-                <label for="message-text" class="col-form-label">User/Email Id(Escalation 3)</label>
-                <input type="email" class="form-control form-control-sm" id="app_name" [(ngModel)]="escalation_emailids3">
+              <h6><label for="message-text" class="col-form-label">Escalation3</label>
+              </h6>   
+              
+                <label for="message-text" class="col-form-label">Provide Email Addresses to send mails</label>
+                <input type="email" class="form-control form-control-sm" id="app_name" formControlName="escalation_emailids3">
               </div>
               <div class="form-group" >
-                <label for="recipient-name" class="col-form-label ">Escalation 3 Date & Time </label>
-                <input type="datetime-local" [min]="disableBeforeDate" [(ngModel)]="dateTime3" class="form-control form-control-sm" placeholder="Date Time">
+                <label for="message-text" class="col-form-label ">Select Users Group to send Email(Escalation3)</label>
+                <div class="form-group">
+                    <ng-select [items]="userGroupArray" clearSearchOnAdd="true" [multiple]="true"
+                      class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                      placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
+                      dropdownPosition="bottom" name="group-dropdown"
+                      [(ngModel)]="userGroup1" [closeOnSelect]="false" required>
+                      <ng-template ng-option-tmp let-item="item">
+                        <span>
+                          {{item.group_name}}
+                        </span>
+                      </ng-template>
+                      <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
+                        {{items.length}} groups selected
+                      </ng-template>
+                     </ng-select>
+                  </div>
               </div>
+              <div class="form-group" >
+                <label for="message-text" class="col-form-labe ">Email Subject</label>
+                <input type="email" class="form-control form-control-sm"  id="app_name" formControlName="emailSub3">
+               </div>
+               <div class="form-group" >
+                <label for="message-text" class="col-form-label ">Email Body</label>
+                <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBody3Detect($event)"></app-text-editor> </div>
+              
+              <div class="form-group">
+                  <div class="d-flex align-items-center w-100">
+                    <div class="form-group mr-4">
+                      <label for="message-text" class="col-form-label">Escalation Duration</label>
+                      <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="dateTime3">
+                      <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="dateTime3">
+                   
+                     </div>
+                    <div class="form-group d-flex flex-column">
+                      <select style="margin-top: 32px;"  class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name" >
+                         <option value="Hours">Hours</option>
+                         <option *ngIf="inspection_frequency!==0"  value="Days">Days</option>
+                      </select>
+                      </div>
+                   </div>
+                   </div>
             </div>
                 <div class="modal-footer fixed-bottom bg-white" >
-              <button type="button" class="btn btn-primary add-row" 
+              <button type="button" *ngIf="!isEdit" class="btn btn-primary add-row" 
                 (click)="onSaveMaintenanceModelModal()">Save</button>
+                <button type="button" *ngIf="isEdit" class="btn btn-primary add-row" 
+                (click)="onSaveMaintenanceModelModal()">Update</button>
               <button type="button" class="btn btn-secondary" 
                 (click)="onCloseMaintenanceModelModal()">
                 Cancel
@@ -222,45 +356,45 @@
       </div>
       <div class="modal-body" >
           <div class="form-group" >
-            <label for="message-text" class="col-form-label">Name:</label>
+            <label for="message-text" class="col-form-label">Name</label>
             {{maintenanceModel.name}}
             </div>
           <div class="form-group" >
-            <label for="message-text" class="col-form-label">Asset:</label>
+            <label for="message-text" class="col-form-label">Asset</label>
             {{maintenanceModel.asset_id}}
           </div>
-          <div class="form-group" >
-            <label for="message-text" class="col-form-label">Email Body:</label>
+          <!-- <div class="form-group" >
+            <label for="message-text" class="col-form-label">Email Body</label>
            {{maintenanceModel.email_body}}
-           </div>
+           </div> -->
            <div class="form-group" >
-            <label for="message-text" class="col-form-label">Description:</label>
+            <label for="message-text" class="col-form-label">Description</label>
            {{maintenanceModel.description}}
            </div>
           <div class="form-group" >
-            <label for="message-text" class="col-form-label">Maintenance Start Date:</label>
+            <label for="message-text" class="col-form-label">Maintenance Start From</label>
            {{maintenanceModel.start_date}}
           </div>
           <div class="form-group" >
-            <label for="recipient-name" class="col-form-label">Inspection Frequency:</label>
+            <label for="recipient-name" class="col-form-label">Inspection Frequency</label>
               {{getInspec_Freq(maintenanceModel.inspection_frequency)}}
           </div>
           <div class="form-group" >
-            <label class="col-form-label " for="alert_management">Notify to User:</label>
+            <label class="col-form-label " for="alert_management">Do you want to update user about upcoming maintenance?</label>
             {{maintenanceModel.is_notify_user}}
          </div>
         <div *ngIf="is_notify_user">
           <div class="form-group" >
-            <label for="message-text" class="col-form-label">Notify Before:</label>
+            <label for="message-text" class="col-form-label">Notify Before</label>
             {{maintenanceModel.notify_before_hours}}
           </div>
           <div class="form-group" >
-            <label for="message-text" class="col-form-label">Notify Email Subject:</label>
+            <label for="message-text" class="col-form-label">Notify Email Subject</label>
             {{maintenanceModel.notify_email_subject}}
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label required">Notify User Email Id</label>
-            {{maintenanceModel.notify_user_emails}}
+            {{maintenanceModel.notify_user_emails.toString()}}
           </div>
         </div>
           <div class="form-group" >
@@ -274,26 +408,26 @@
           <div *ngIf="is_escalation_required">
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
-            {{maintenanceModel.maintenance_escalation_registry[0]?.escalation_emailids1}}
+            {{maintenanceModel.maintenance_escalation_registry[0]?.user_emails.toString()}}
                     </div>
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label ">Escalation 1 Date & Time</label>
-                {{maintenanceModel.maintenance_escalation_registry[0]?.dateTime1}}    </div>
+                {{maintenanceModel.maintenance_escalation_registry[0]?.duration_hours}}    </div>
               <div class="form-group" >
               <label for="message-text" class="col-form-label">User/Email Id(Escalation 2)</label>
-                {{maintenanceModel.maintenance_escalation_registry[1]?.escalation_emailids2}} 
+                {{maintenanceModel.maintenance_escalation_registry[1]?.user_emails.toString()}} 
               </div>
               <div class="form-group" >
                <label for="recipient-name" class="col-form-label ">Escalation 2 Date & Time </label>
-              {{maintenanceModel.maintenance_escalation_registry[1]?.dateTime2}} 
+              {{maintenanceModel.maintenance_escalation_registry[1]?.duration_hours}} 
                 </div>
               <div class="form-group" >
                 <label for="message-text" class="col-form-label">User/Email Id(Escalation 3)</label>
-                {{maintenanceModel.maintenance_escalation_registry[2]?.escalation_emailids3}}
+                {{maintenanceModel.maintenance_escalation_registry[2]?.user_emails.toString()}}
                   </div>
               <div class="form-group" >
                 <label for="recipient-name" class="col-form-label ">Escalation 3 Date & Time </label>
-                {{maintenanceModel.maintenance_escalation_registry[2]?.dateTime3}}   </div>
+                {{maintenanceModel.maintenance_escalation_registry[2]?.duration_hours}}   </div>
             </div>
           </div>
       </div>

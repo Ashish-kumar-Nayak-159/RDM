@@ -18,8 +18,8 @@ export class TextEditorComponent  {
   config: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
-    height: '8rem',
-    minHeight: '5rem',
+    height: 'auto',
+    minHeight: '10rem!important',
     placeholder: 'Enter text here...',
     translate: 'no',
     defaultParagraphSeparator: 'p',

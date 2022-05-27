@@ -10,7 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace} from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
-import { threadId } from 'worker_threads';
+
 
 declare var $: any;
 
@@ -21,6 +21,10 @@ declare var $: any;
 })
 
 export class AppMaintenanceListComponent implements OnInit {
+  userGroupArray :any [] = [];
+  userGroup1:any;
+  userGroup2:any;
+  userGroup3:any;
   tileData: any;
   contextApp: any;
   decodedToken: any;
@@ -37,6 +41,10 @@ export class AppMaintenanceListComponent implements OnInit {
   validEmail = true;
   isView = false;
   htmlContent:any;
+  emailbody1:any;
+  emailbody2:any;
+  emailbody3:any;
+
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;
@@ -53,21 +61,22 @@ export class AppMaintenanceListComponent implements OnInit {
   createMaitenanceCall = false;
   notifyMaintenanceForm : FormGroup;
   createMaintenanceForm : FormGroup;
+  escalMaintenanceForm : FormGroup;
   maintenanceFormEdit : FormGroup;
-  maintenance_escalation_registry : any [] = [];
+  maintenance_escalation_registry? : any [] = [];
   descContent:any;
   maintenance_Sdate:any;
   is_notify_user = false;
   inspection_frequency:any;
   notifyBefore:any;
-  notify_user_emails:any;
+  notify_user_emails?:any;
   notify_email_subject:any;
   notify_email_body:any;
   is_acknowledge_required = false;
-  escalation_emailids1:any;
-  escalation_emailids2:any;
-  escalation_emailids3:any;
-  maintenance_regirstry= {};
+  escalation_emailids1?:any;
+  escalation_emailids2?:any;
+  escalation_emailids3?:any;
+  maintenance_regirstry?= {};
   
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
@@ -83,6 +92,7 @@ export class AppMaintenanceListComponent implements OnInit {
     cancelBtnText: string;
     stringDisplay: boolean;
   };
+  title:any;
   maintenanceRegistryId:number;
   isMaintenanceRequired:boolean;
   payload:any;
@@ -109,6 +119,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     this.getMaitenanceModel();
+    this.getUserGroup();
     this.getAssets(this.contextApp.user.hierarchy);
     this.tableConfig = {
       type: 'Applications',
@@ -239,7 +250,47 @@ export class AppMaintenanceListComponent implements OnInit {
     {
       "name":"Quarterly",
       id:4
+    },
+    {
+      "name":"Yearly",
+      id:5
     })
+  }
+ 
+  getUserGroup()
+  {
+    let method = this.maintenanceService.getUserGroup(this.contextApp.app);
+    method.subscribe(
+      (response: any) => {
+        for(var i=0;i<response.data.length;i++)
+        {
+          this.userGroupArray.push({
+            group_name: response.data[i]?.group_name,
+            id:response.data[i]?.id
+        } );
+      }
+      },
+    );
+  }
+  validateEmails_eas(event)
+  {
+   
+    this.notify_user_emails = this.escalMaintenanceForm.get('escalation_emailids1').value;
+    if(this.notify_user_emails!==undefined)
+    {
+      var emails =  this.notify_user_emails.replace(/\s/g,'').split(",");
+      var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+ 
+      for (var i = 0; i < emails.length; i++) {
+           if( emails[i] == "" || ! regex.test(emails[i])){
+              this.validEmail = false;
+           }
+           else
+           {
+            this.validEmail = true;
+           }
+      }
+    }
   }
   validateEmails(event)
   {
@@ -323,15 +374,6 @@ onCloseMaintenanceModelModal() {
   $('#createMaintainenceModelModal').modal('hide');
  
 }
-getmaintenanceFormEdit()
-{
-  this.maintenanceFormEdit = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
-    asset_id: new FormControl('', [Validators.required]),
-    start_date: new FormControl('', [Validators.required]),
-    inspection_frequency: new FormControl('',[Validators.required]),
-    })
-}
 getMaitenanceModel()
 {
   this.createMaintenanceForm = new FormGroup({
@@ -346,6 +388,18 @@ getMaitenanceModel()
       notify_user_emails: new FormControl('', [Validators.required]),
       notify_email_subject: new FormControl('', [Validators.required]),
       })
+      this.escalMaintenanceForm = new FormGroup({
+        escalation_emailids1: new FormControl('', [Validators.required]),
+        dateTime1: new FormControl('', [Validators.required]),
+        emailSub1:new FormControl('',[Validators.required]),
+        escalation_emailids2: new FormControl(''),
+        dateTime2: new FormControl(''),
+        emailSub2:new FormControl(''),
+        escalation_emailids3: new FormControl(''),
+        dateTime3: new FormControl(''),
+        emailSub3:new FormControl(''),
+    })
+      
 }
 descriptionChange(valuefromtextEditor:any) {
   this.htmlContent = valuefromtextEditor;
@@ -355,6 +409,23 @@ emailBodyDetect(valuefromtextEditor:any) {
   this.descContent = valuefromtextEditor;
   console.log("within..... main...",valuefromtextEditor);
 }
+emailBody1Detect(valuefromtextEditor:any)
+{
+  this.emailbody1 = valuefromtextEditor;
+  console.log("within..... main...",valuefromtextEditor);
+}
+emailBody2Detect(valuefromtextEditor:any)
+{
+  this.emailbody2 = valuefromtextEditor;
+  console.log("within..... main...",valuefromtextEditor);
+}
+
+emailBody3Detect(valuefromtextEditor:any)
+{
+  this.emailbody3 = valuefromtextEditor;
+  console.log("within..... main...",valuefromtextEditor);
+}
+
 onSaveMaintenanceModelModal()
 {
   this.createMaitenanceCall = true;
@@ -373,30 +444,42 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.is_escalation_required = this.is_escalation_required;
   this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
   this.maintenanceModel.description = this.descContent;
-  this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
-  this.maintenanceModel.notify_user_emails =  this.notifyMaintenanceForm.get('notify_user_emails').value;
-  this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
-
+  if(this.is_notify_user)
+  {
+    this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
+    this.maintenanceModel.notify_user_emails =  this.notifyMaintenanceForm.get('notify_user_emails').value.split(',');
+    this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
+  }
+ 
   this.maintenanceModel.notify_email_body = this.htmlContent;
   this.maintenance_regirstry = {
-    "escalation_emailids1" : this.escalation_emailids1,
-    "dateTime":this.dateTime1,
+    "user_emails" : this.escalMaintenanceForm.get('escalation_emailids1').value.split(","),
+    "duration_hours":this.escalMaintenanceForm.get('dateTime1').value,
+    "user_groups":this.userGroup1,
+    "email_body":this.emailbody1,
+    "email_subject":this.escalMaintenanceForm.get('emailSub1').value
   };
   this.maintenance_escalation_registry.push(this.maintenance_regirstry);
   this.maintenance_regirstry = {
-    "escalation_emailids2" : this.escalation_emailids2,
-    "dateTime2":this.dateTime2,
+    "user_emails" :this.escalMaintenanceForm.get('escalation_emailids2').value.split(","),
+    "duration_hours":this.escalMaintenanceForm.get('dateTime2').value,
+    "email_body":this.emailbody2,
+    "user_groups":this.userGroup2,
+    "email_subject":this.escalMaintenanceForm.get('emailSub2').value
   };
   this.maintenance_escalation_registry.push(this.maintenance_regirstry);
   this.maintenance_regirstry = {
-    "escalation_emailids3" : this.escalation_emailids3,
-    "dateTime3":this.dateTime3,
+    "user_emails" : this.escalMaintenanceForm.get('escalation_emailids3').value.split(","),
+    "duration_hours":this.escalMaintenanceForm.get('dateTime3').value,
+    "email_body3":this.emailbody3,
+    "user_groups":this.userGroup3,
+    "email_subject":this.escalMaintenanceForm.get('emailSub3').value
+
   };
   this.maintenance_escalation_registry.push(this.maintenance_regirstry);
   this.maintenanceModel.maintenance_escalation_registry = this.maintenance_escalation_registry;
   this.maintenanceModel.email_body = this.htmlContent;
-  debugger;
-  let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+   let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
@@ -420,9 +503,9 @@ redirectTo(uri:string){
 }
 
 
-
  /////// To open the Modal for the Maintenance Schedule
  async openCreateMaintenanceModelModal(obj = undefined) {
+   this.title = "Add";
   $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
    }
 
@@ -507,9 +590,11 @@ onTableFunctionCall(obj){
     //   start_date : "2022-05-30 13:00"
     // }
   }
-  else if (obj.for === 'EditPrivilege') {
+  else if (obj.for === 'Edit') {
     this.isEdit = !this.isEdit;
-    $('#editMaintainenceModelModal').modal('show');
+    this.title = "Edit";
+    this.getMaintenance_data(this.maintenance_registry_id);
+    $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }else if (obj.for === 'Un Provision'){
   }
 }

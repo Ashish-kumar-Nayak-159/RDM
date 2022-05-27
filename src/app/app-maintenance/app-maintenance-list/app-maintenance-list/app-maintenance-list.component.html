@@ -189,12 +189,6 @@
                     </select>
                     </div>
                  </div>
-                 <div *ngIf="escalMaintenanceForm.get('dateTime1').errors && escalMaintenanceForm.get('dateTime1').touched"
-                 class="alert-danger">
-                 <div *ngIf="escalMaintenanceForm.get('dateTime1').errors.required">
-                  Please provide valid duration.
-                 </div>
-                 </div>
                  </div>
                <div class="form-group" >
                 <label for="message-text" class="col-form-label required">Provide Email Addresses to send mails</label>
@@ -229,7 +223,7 @@
               </div>
               <div class="form-group" >
                 <label for="message-text" class="col-form-label ">Email Body</label>
-                <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBody1Detect($event,i)"></app-text-editor>
+                <app-text-editor id="{{i}}"    (htmlContentDetect)="emailBody1Detect($event,i)"></app-text-editor>
             </div>
             <div class="col-auto">
                     <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"

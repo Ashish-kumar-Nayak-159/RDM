@@ -41,6 +41,7 @@ export class AppMaintenanceListComponent implements OnInit {
   };
   asset_id:string= ''
   showAckModal:boolean = false;
+  showViewAckModal:boolean = false;
   maintenanceRegistryId: number;
   maintenanceNotificationId:number;
   isMaintenanceRequired: boolean;
@@ -52,6 +53,7 @@ export class AppMaintenanceListComponent implements OnInit {
   currentLimit = 20;
   insideScrollFunFlag: false;
   disableBeforeDate: any = new Date().toISOString().slice(0, 16)
+  viewAckMaintenanceDetails:any = [];
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
 
   constructor(
@@ -270,6 +272,12 @@ export class AppMaintenanceListComponent implements OnInit {
       this.maintenanceRegistryId = obj?.data.maintenance_registry_id
 
     }
+    else if(obj.for === 'viewAcknowledge'){
+      console.log("viewAcknowledge",obj)
+      this.showViewAckModal = true
+      $("#viewAcknowledge").modal('show')
+      this.getAckMaintenance(obj?.data?.maintenance_notification_id);
+    }
     else if (obj.for === 'Trigger') {
 
       this.maintenanceData = []
@@ -281,6 +289,7 @@ export class AppMaintenanceListComponent implements OnInit {
     else if(obj.for === 'Acknowledge'){
       this.showAckModal = true
       this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
+      console.log("on ACkbtn click",obj)
        console.log("acknowledgeID",obj.data.maintenance_notification_id)
       $('#addWhieListAsset').modal('show')
     }
@@ -427,6 +436,14 @@ export class AppMaintenanceListComponent implements OnInit {
           data_type: 'button',
           btn_list: [
             {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'viewAcknowledge',
+              valueclass: '',
+              tooltip: 'viewAcknowledge',
+              show_hide_data_key: 'is_acknowledged'
+            },
+            {
               icon: 'fa fa-fw fa-clone',
               text: '',
               id: 'Acknowledge',
@@ -487,6 +504,17 @@ export class AppMaintenanceListComponent implements OnInit {
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance deleted successfully !', 'Maintenance Delete')
     })  
+  }
+
+  //getting details of acknowledge maintenance
+  getAckMaintenance(notificationId:number){
+      this.maintenanceService.getMaintenanceAckDetails(notificationId).subscribe((res:any)=>{
+         console.log("ackMaintenanceDetails",res)
+          res.data.forEach((data)=>{
+             data.acknowledgement_date = this.commonService.convertUTCDateToLocalDate(data.acknowledgement_date,"MMM dd, yyyy, HH:mm:ss aaaaa'm'")
+          })
+         this.viewAckMaintenanceDetails = res.data
+      })
   }
 
   searchAssets(updateFilterObj = true) {

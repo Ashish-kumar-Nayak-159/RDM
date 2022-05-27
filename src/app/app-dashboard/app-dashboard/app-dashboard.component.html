@@ -212,10 +212,10 @@
 
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-          <div  class="{{checkconditionaltype === true ? 'conditional-widget-class' : ''}}" *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType !== 'ConditionalNumber'
-                  || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+          <div  *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType === 'ConditionalNumber'
+                  || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? widget?.widgetType === 'ConditionalNumber' ? '23%' : (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                   'margin-left':'2%', 'margin-top': '2%' }">
-            <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+                  <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
             [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
           </app-conditional-widget>
             

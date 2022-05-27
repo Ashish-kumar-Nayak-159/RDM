@@ -94,7 +94,6 @@ export class ConditionalWidgetComponent implements OnInit {
   }
 
   evaluatePropCondition(telemetryObj){
-    debugger
     let condition = this.chartConfig?.formula;
     try {
       this.chartConfig?.properties?.forEach((jd, i) => {

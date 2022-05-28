@@ -101,7 +101,7 @@
           <div class="form-group" >
             <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
             <select class="form-control form-control-sm"  id="template" [(ngModel)]="inspection_frequency" formControlName="inspection_frequency" name="model_type" >
-              <option [ngValue]="undefined">Select Inspection Frequency</option>
+              <option [ngValue]="undefined" selected>Select Inspection Frequency</option>
               <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
            </select>
            <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
@@ -110,6 +110,7 @@
             Inspection Frequency is required.
            </div>
            </div>
+          </div>
           </div>
           <div class="form-group" >
             <label class="col-form-label " for="alert_management">Acknowledge Required</label>
@@ -124,7 +125,7 @@
            <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
             <div class="d-flex align-items-center w-100">
               <div class="form-group mr-4">
-                <label for="message-text" class="col-form-label required">Notify Before</label>
+                <label for="message-text" class="col-form-label required">Do you want to update user about upcoming maintenance?</label>
                 <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="notifyBefore">
                 <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="notifyBefore">
                 <div *ngIf="notifyMaintenanceForm.get('notifyBefore').errors && notifyMaintenanceForm.get('notifyBefore').touched"
@@ -161,7 +162,7 @@
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">Email Body</label>
-            <app-text-editor id="htmlEmail"   (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> 
+            <app-text-editor id="htmlEmail1"   (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> 
           </div>
         </div>
          <div class="form-group" >
@@ -170,17 +171,18 @@
             [(ngModel)]="is_escalation_required"
                 (click)="is_escalation_required=!is_escalation_required">
           </div>
-          <div *ngIf="is_escalation_required" [formGroup]="escalMaintenanceForm">
-            <button  id="insert-more" (click)="addNewEsacalation(1);"
+          <div *ngIf="is_escalation_required">
+            <button  id="insert-more" (click)="addNewEsacalation();"
             class="btn btn-sm btn-primary cursor-pointer"><em class="fas fa fa-plus-circle mr-1 my-1"></em>
             Escalation</button>
-             <ng-container *ngFor="let item of maintenance_escalation_registry; let i = index">
-                <div class="form-group">
+             <ng-container  *ngFor="let obj of maintenanceModel.maintenance_escalation_registry; let i = index">
+              <div *ngIf="i==0 || i==1 || i==2">  
+              <div class="form-group">
                 <div class="d-flex align-items-center w-100">
                   <div class="form-group mr-4">
                     <label for="recipient-name" class="col-form-label ">Escalation Duration</label>
-                    <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" formControlName="duration_hours">
-                    <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  formControlName="duration_hours">
+                    <input *ngIf="inspection_frequency===0" type="number" min="2"  max="23" class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;" id="nbefore_name" [(ngModel)]="obj.duration_hours">
+                    <input *ngIf="inspection_frequency!==0" type="number"  style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm" id="nbefore_name"  [(ngModel)]="obj.duration_hours">
                    </div>
                   <div class="form-group d-flex flex-column">
                     <select  style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;" class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name" >
@@ -192,7 +194,7 @@
                  </div>
                <div class="form-group" >
                 <label for="message-text" class="col-form-label required">Provide Email Addresses to send mails</label>
-                 <input type="email" required class="form-control form-control-sm" id="app_name" formControlName="user_emails" (keydown)="validateEmails_eas(this)">
+                 <input type="email" required class="form-control form-control-sm" id="app_name" [(ngModel)]="obj.user_emails" (keydown)="validateEmails_eas(i)">
                  <div *ngIf="!validEmail"
                  class="alert-danger">
                   Provide valid email/emails.
@@ -205,7 +207,7 @@
                   class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
                   placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
                   dropdownPosition="bottom" name="group-dropdown"
-                   [closeOnSelect]="false" formControlName="user_groups" required>
+                   [closeOnSelect]="false" [(ngModel)]="obj.user_groups" required>
                   <ng-template ng-option-tmp let-item="item">
                     <span>
                       {{item.group_name}}
@@ -219,7 +221,7 @@
            </div>
               <div class="form-group" >
                 <label for="message-text" class="col-form-labe ">Email Subject</label>
-                <input type="email" class="form-control form-control-sm"  id="app_name" formControlName="email_subject">
+                <input type="email" class="form-control form-control-sm"  id="app_name" [(ngModel)]="obj.email_subject">
               </div>
               <div class="form-group" >
                 <label for="message-text" class="col-form-label ">Email Body</label>
@@ -229,6 +231,7 @@
                     <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"
                       (click)="deleteEscalation(i);" *ngIf="i!=0"><em class="fas fa fa-trash"></em>
                     </button>
+                  </div>
                   </div>
           </ng-container>
           </div>
@@ -245,8 +248,7 @@
             </div>
   
           </div>
-        </div>
-      </div>
+       </div>
     </div>
   </div>
   <div class="modal right fade" id="viewMaintainenceModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

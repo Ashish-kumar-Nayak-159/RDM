@@ -10,6 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace} from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { Escalation } from '../../maintenanace/maintenanace.model';
+import { element } from 'protractor';
 
 
 declare var $: any;
@@ -48,9 +50,6 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenance_registry_id : any;
 
   htmlEmailContent:any;
-  dateTime1:any;
-  dateTime2:any;
-  dateTime3:any;
   notifyUser:any;
   escalRequired:any;
   askRequired:any;
@@ -60,7 +59,6 @@ export class AppMaintenanceListComponent implements OnInit {
   createMaintenanceForm : FormGroup;
   escalMaintenanceForm : FormGroup;
   maintenanceFormEdit : FormGroup;
-  maintenance_escalation_registry? : any [] = [];
   descContent:any;
   maintenance_Sdate:any;
   is_notify_user = false;
@@ -70,10 +68,6 @@ export class AppMaintenanceListComponent implements OnInit {
   notify_email_subject:any;
   notify_email_body:any;
   is_acknowledge_required = false;
-  escalation_emailids1?:any;
-  escalation_emailids2?:any;
-  escalation_emailids3?:any;
-  maintenance_regirstry?= {};
   
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
@@ -114,6 +108,31 @@ export class AppMaintenanceListComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.maintenanceModel = {
+      asset_id:'',
+      is_maintenance_required: true,
+      name :'',
+      htmlEmailContent:'',
+      description:'',
+      start_date :'',
+      inspection_frequency :0,
+      is_notify_user:false,
+      notify_before_hours:2,
+      notify_user_emails : null,
+      notify_email_subject :'',
+      notify_email_body:'',
+      is_acknowledge_required :false,
+      is_escalation_required :false,
+      maintenance_escalation_registry :[{
+        user_emails: '',
+        duration_hours: "",
+        user_groups:"",
+        email_subject:"",
+        email_body:"",
+      }],
+      email_body : ''
+    
+    };
     this.getTileName();
     this.getMaitenanceModel();
     this.getUserGroup();
@@ -253,21 +272,19 @@ export class AppMaintenanceListComponent implements OnInit {
       "name":"Yearly",
       id:5
     })
-  this.addNewEsacalation(0);
   }
-  addNewEsacalation(index) {
-    this.maintenance_regirstry ={
+  addNewEsacalation() {
+    let maintenance_regirstry ={
     user_emails: '',
     duration_hours: "",
     user_groups:"",
     email_subject:"",
     email_body:"",
-    }
-    
-    this.maintenance_escalation_registry.push(this.maintenance_regirstry);
+    }    
+    this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
   }
   deleteEscalation(index) {
-    this.maintenance_escalation_registry.splice(index, 1);
+    this.maintenanceModel.maintenance_escalation_registry.splice(index, 1);
   }
   getUserGroup()
   {
@@ -284,10 +301,10 @@ export class AppMaintenanceListComponent implements OnInit {
       },
     );
   }
-  validateEmails_eas(event)
+  validateEmails_eas(j)
   {
-   
-    this.notify_user_emails = this.escalMaintenanceForm.get('escalation_emailids1').value;
+    this.notify_user_emails = this.maintenanceModel.maintenance_escalation_registry[j]?.user_emails;
+    console.log("=====================================>>"+j+"::"+JSON.stringify(this.maintenanceModel.maintenance_escalation_registry));
     if(this.notify_user_emails!==undefined)
     {
       var emails =  this.notify_user_emails.replace(/\s/g,'').split(",");
@@ -404,37 +421,22 @@ getMaitenanceModel()
       
 }
 descriptionChange(valuefromtextEditor:any) {
-  this.htmlContent = valuefromtextEditor;
+  this.descContent = valuefromtextEditor;
   console.log("within..... main...",valuefromtextEditor);
 }
 emailBodyDetect(valuefromtextEditor:any) {
-  this.descContent = valuefromtextEditor;
+  this.htmlContent = valuefromtextEditor;
   console.log("within..... main...",valuefromtextEditor);
 }
 emailBody1Detect(valuefromtextEditor:any,i)
 {
- if(i==0)
- {
   this.emailbody1 = valuefromtextEditor;
-  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody1); 
- }
- if(i==1)
- {
-  this.emailbody2 = valuefromtextEditor;
-  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody2); 
-}
- if(i==2)
- {
-  this.emailbody3 = valuefromtextEditor;
-  this.escalMaintenanceForm.get('email_body').setValue(this.emailbody3); 
-}
- 
+  this.maintenanceModel.maintenance_escalation_registry[i].email_body= this.emailbody1; 
 }
 
 onSaveMaintenanceModelModal()
 {
   this.createMaitenanceCall = true;
-  this.maintenance_escalation_registry = [];
   if((this.createMaintenanceForm.get("name").value===undefined || this.createMaintenanceForm.get("name").value==='')
    || (this.createMaintenanceForm.get("asset_id").value===undefined || this.createMaintenanceForm.get("name").value==='')
    || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
@@ -443,6 +445,18 @@ onSaveMaintenanceModelModal()
     this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
     return;
   }
+  let maintenance_escalation_registry :any [] = [];
+  this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>
+  {
+    maintenance_escalation_registry.push({
+      "user_emails":element.user_emails.split(","),
+      "user_groups":element.user_groups,
+      "email_body":element.email_body,
+      "email_subject":element.email_subject,
+      "duration_hours":element.duration_hours
+    })
+    ;
+  })
   this.maintenanceModel = this.createMaintenanceForm.value;
   this.maintenanceModel.is_maintenance_required = true;
   this.maintenanceModel.is_notify_user = this.is_notify_user;
@@ -455,11 +469,8 @@ onSaveMaintenanceModelModal()
     this.maintenanceModel.notify_user_emails =  this.notifyMaintenanceForm.get('notify_user_emails').value.split(',');
     this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
   }
- 
+  this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
   this.maintenanceModel.notify_email_body = this.htmlContent;
-  this.maintenanceModel.maintenance_escalation_registry = JSON.parse(JSON.stringify(this.maintenance_escalation_registry));
-debugger;
-  this.maintenanceModel.email_body = this.htmlContent;
    let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
       method.subscribe(
         (response: any) => {

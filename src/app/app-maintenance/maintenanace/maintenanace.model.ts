@@ -15,6 +15,14 @@ export class Maintenanace {
   notify_email_body? :any;
   is_acknowledge_required :any;
   is_escalation_required :any;
-  maintenance_escalation_registry? : any [] = [];
+  maintenance_escalation_registry? : Array <Escalation>;
   email_body ?: any;
  }
+ export class Escalation {
+    user_emails: string;
+    duration_hours: any;
+    user_groups:any;
+    email_subject:string;
+    email_body:any;
+}
+

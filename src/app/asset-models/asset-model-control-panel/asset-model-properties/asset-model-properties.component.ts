@@ -398,7 +398,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       return;
     }
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.propertyObj.json_key);
-
     if (index > -1) {
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
@@ -407,7 +406,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       let flag = false;
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
         const prop = this.propertyObj.metadata.properties[i];
-        console.log("Checkingwidget1212", JSON.stringify(prop))
         if (!prop.property && (prop.value === null || prop.value === undefined)) {
           this.toasterService.showError(
             'Please select property or add value in condition',
@@ -428,7 +426,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.metadata.condition = '';
       this.propertyObj.metadata.props = [];
       this.propertyObj.condition = '';
-      debugger
       this.propertyObj.metadata.properties.forEach((prop) => {
         if (prop.property) {
           const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);

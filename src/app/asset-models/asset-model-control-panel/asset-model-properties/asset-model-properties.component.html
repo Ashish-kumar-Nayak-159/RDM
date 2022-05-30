@@ -230,7 +230,7 @@
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           <div *ngIf="displaybutton == false">
             <button type="button" class="btn btn-primary"
-              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || !isDisabled "
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || isDisabled "
               (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           </div>
           <div *ngIf="displaybutton == true">

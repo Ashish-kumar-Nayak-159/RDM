@@ -89,7 +89,7 @@
             <textarea id="description" class="form-control form-control-sm" [(ngModel)]="descContent" rows="5" cols="80"></textarea>
             </div>
           <div class="form-group" >
-            <label for="message-text" class="col-form-label required">Maintenance Start Date</label>
+            <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <input type="datetime-local" [min]="disableBeforeDate" class="form-control form-control-sm" formControlName="start_date" placeholder="Date Time">
             <div *ngIf="createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"
             class="alert-danger">
@@ -269,10 +269,6 @@
             <label for="message-text" class="col-form-label">Asset</label>
             {{maintenanceModel.asset_id}}
           </div>
-          <!-- <div class="form-group" >
-            <label for="message-text" class="col-form-label">Email Body</label>
-           {{maintenanceModel.email_body}}
-           </div> -->
            <div class="form-group" >
             <label for="message-text" class="col-form-label">Description</label>
            {{maintenanceModel.description}}
@@ -289,7 +285,7 @@
             <label class="col-form-label " for="alert_management">Do you want to update user about upcoming maintenance?</label>
             {{maintenanceModel.is_notify_user}}
          </div>
-        <div *ngIf="is_notify_user">
+        <div *ngIf="maintenanceModel.is_notify_user">
           <div class="form-group" >
             <label for="message-text" class="col-form-label">Notify Before</label>
             {{maintenanceModel.notify_before_hours}}
@@ -299,10 +295,14 @@
             {{maintenanceModel.notify_email_subject}}
           </div>
           <div class="form-group" >
-            <label for="message-text" class="col-form-label required">Notify User Email Id</label>
+            <label for="message-text" class="col-form-label">Notify User Email Id</label>
             {{maintenanceModel.notify_user_emails.toString()}}
           </div>
-        </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label">Email Body</label>
+           {{maintenanceModel.notify_email_body}}
+           </div>
+          </div>
           <div class="form-group" >
             <label class="col-form-label " for="alert_management">Acknowledge Required</label>
             {{maintenanceModel.is_acknowledge_required}}
@@ -311,7 +311,7 @@
             <label class="col-form-label " for="alert_management">Escalation Required</label>
             {{maintenanceModel.is_escalation_required}}
                 </div>
-          <div *ngIf="is_escalation_required">
+          <div *ngIf="maintenanceModel.is_escalation_required">
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
             {{maintenanceModel.maintenance_escalation_registry[0]?.user_emails.toString()}}

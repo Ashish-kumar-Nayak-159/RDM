@@ -34,6 +34,12 @@ export class MaintenanceService {
       JSON.stringify(maintenanceModel))
       ;
   }
+  updateNewMaintenanceRule(id,maintenanceModel) {
+    return this.http.put(
+      this.url + String.Format(AppUrls.POST_MAINTENANCE,encodeURIComponent(id)),
+      JSON.stringify(maintenanceModel))
+      ;
+  }
   enableDisable(id:any){
     var payLoad = {
       is_maintenance_required : true,

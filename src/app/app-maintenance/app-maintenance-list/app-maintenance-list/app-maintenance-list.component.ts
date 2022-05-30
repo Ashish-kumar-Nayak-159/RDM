@@ -10,8 +10,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace} from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
-import { Escalation } from '../../maintenanace/maintenanace.model';
-import { element } from 'protractor';
 
 
 declare var $: any;
@@ -304,7 +302,6 @@ export class AppMaintenanceListComponent implements OnInit {
   validateEmails_eas(j)
   {
     this.notify_user_emails = this.maintenanceModel.maintenance_escalation_registry[j]?.user_emails;
-    console.log("=====================================>>"+j+"::"+JSON.stringify(this.maintenanceModel.maintenance_escalation_registry));
     if(this.notify_user_emails!==undefined)
     {
       var emails =  this.notify_user_emails.replace(/\s/g,'').split(",");
@@ -422,11 +419,9 @@ getMaitenanceModel()
 }
 descriptionChange(valuefromtextEditor:any) {
   this.descContent = valuefromtextEditor;
-  console.log("within..... main...",valuefromtextEditor);
 }
 emailBodyDetect(valuefromtextEditor:any) {
   this.htmlContent = valuefromtextEditor;
-  console.log("within..... main...",valuefromtextEditor);
 }
 emailBody1Detect(valuefromtextEditor:any,i)
 {
@@ -471,23 +466,44 @@ onSaveMaintenanceModelModal()
   }
   this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
   this.maintenanceModel.notify_email_body = this.htmlContent;
-   let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
-      method.subscribe(
-        (response: any) => {
-          // this.onCloseRuleModel.emit({
-          //   status: true,
-          // });
-          this.toasterService.showSuccess(response.message,   'Maitenance Create');
-          $('#createMaintainenceModelModal').modal('hide');
-          this.createMaitenanceCall = false;
-          this.redirectTo(this.router.url);
-        },
-        (err: HttpErrorResponse) => {
-          this.createMaitenanceCall = false;
-          this.toasterService.showError(err.message," Maitenance Create");
-        }
-      );
-  
+  if(this.isEdit)
+  {
+    let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id,this.maintenanceModel);
+    method.subscribe(
+      (response: any) => {
+        // this.onCloseRuleModel.emit({
+        //   status: true,
+        // });
+        this.toasterService.showSuccess(response.message,   'Maitenance Update');
+        $('#createMaintainenceModelModal').modal('hide');
+        this.createMaitenanceCall = false;
+        this.redirectTo(this.router.url);
+      },
+      (err: HttpErrorResponse) => {
+        this.createMaitenanceCall = false;
+        this.toasterService.showError(err.message," Maitenance Update");
+      }
+    );
+  }
+  else
+  {
+    let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+    method.subscribe(
+      (response: any) => {
+        // this.onCloseRuleModel.emit({
+        //   status: true,
+        // });
+        this.toasterService.showSuccess(response.message,   'Maitenance Create');
+        $('#createMaintainenceModelModal').modal('hide');
+        this.createMaitenanceCall = false;
+        this.redirectTo(this.router.url);
+      },
+      (err: HttpErrorResponse) => {
+        this.createMaitenanceCall = false;
+        this.toasterService.showError(err.message," Maitenance Create");
+      }
+    );
+  }
 }
 redirectTo(uri:string){
   this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
@@ -539,7 +555,49 @@ getMaintenance_data(id)
   );
 
 }
+setEditFields()
+{
+  this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
+  this.is_notify_user = this.maintenanceModel.is_notify_user;
+  this.is_escalation_required = this.maintenanceModel.is_escalation_required;
+  this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
+  this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
+  this.descContent = this.maintenanceModel.name;
+  this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.name);
+  this.inspection_frequency = this.maintenanceModel.inspection_frequency;
+  if(this.is_notify_user)
+  {
+    this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
+    this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
+    let emails = this.maintenanceModel?.notify_user_emails[0];
+    for(var i=1;i<this.maintenanceModel?.notify_user_emails?.length;i++)
+    {
+      emails = emails +"," + this.maintenanceModel?.notify_user_emails[i];
+    }
+    this.notifyMaintenanceForm.get('notify_user_emails').setValue(emails);
+  }
+  if(this.is_escalation_required)
+  {
 
+    let maintenance_escalation_registry = [];
+    this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>{
+      let emails = element.user_emails[0];
+      for(var i=1;i<element.user_emails.length;i++)
+      {
+        emails = emails +"," + element.user_emails[i];
+      }
+      
+      maintenance_escalation_registry.push({
+        "user_emails":emails,
+        "user_groups":element.user_groups,
+        "email_body":element.email_body,
+        "email_subject":element.email_subject,
+        "duration_hours":element.duration_hours
+      })
+    });
+    this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
+  }
+}
 // this function will call when someone click on icons [Ex. delete, edit, toggle]
 onTableFunctionCall(obj){
   if (obj.for === 'View') {
@@ -585,7 +643,9 @@ onTableFunctionCall(obj){
   else if (obj.for === 'Edit') {
     this.isEdit = !this.isEdit;
     this.title = "Edit";
+    this.maintenance_registry_id = obj?.data.maintenance_registry_id;
     this.getMaintenance_data(this.maintenance_registry_id);
+    this.setEditFields();
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }else if (obj.for === 'Un Provision'){
   }

@@ -48,4 +48,20 @@ export class MaintenanceService {
     return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payLoad)
   }
 
+  disable(id:number,payload:any){
+    return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payload)
+  }
+
+  Trigger(id:number){
+    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id)
+  }
+
+  createAckMaintenance(payload:any){
+    return this.http.post(this.url + AppUrls.GET_ACK_MAINTENANCE, payload)
+  }
+
+  getMaintenanceAckDetails(id:number){
+    return this.http.get(this.url + AppUrls.GET_VIEW_ACK_MAINTENANCE + id)
+  }
+
 }

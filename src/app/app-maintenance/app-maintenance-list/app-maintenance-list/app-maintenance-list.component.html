@@ -162,7 +162,7 @@
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label ">Email Body</label>
-            <app-text-editor id="htmlEmail1"   (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> 
+            <app-text-editor id="htmlEmail1"  [inputItem]="currentItem" (htmlContentDetect)="emailBodyDetect($event)"></app-text-editor> 
           </div>
         </div>
          <div class="form-group" >
@@ -225,7 +225,7 @@
               </div>
               <div class="form-group" >
                 <label for="message-text" class="col-form-label ">Email Body</label>
-                <app-text-editor id="{{i}}"    (htmlContentDetect)="emailBody1Detect($event,i)"></app-text-editor>
+                <app-text-editor id="{{i}}" [inputItem]="currentItem" (htmlContentDetect)="emailBody1Detect($event,i)"></app-text-editor>
             </div>
             <div class="col-auto">
                     <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"
@@ -288,11 +288,15 @@
         <div *ngIf="maintenanceModel.is_notify_user">
           <div class="form-group" >
             <label for="message-text" class="col-form-label">Notify Before</label>
-            {{maintenanceModel.notify_before_hours}}
+            {{maintenanceModel.notify_before_hours}} 
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label">Notify Email Subject</label>
             {{maintenanceModel.notify_email_subject}}
+          </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label">Notify Email Group</label>
+            {{maintenanceModel.notify_user_groups}}
           </div>
           <div class="form-group" >
             <label for="message-text" class="col-form-label">Notify User Email Id</label>
@@ -312,29 +316,72 @@
             {{maintenanceModel.is_escalation_required}}
                 </div>
           <div *ngIf="maintenanceModel.is_escalation_required">
-          <div class="form-group" >
-            <label for="message-text" class="col-form-label ">User/Email Id(Escalation 1)</label>
+           <h6>Escalation 1</h6>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label ">Date & Time</label>
+              {{maintenanceModel.maintenance_escalation_registry[0]?.duration_hours}}    </div>
+             <div class="form-group" >
+            <label for="message-text" class="col-form-label ">User/Email Id(Escalation1)</label>
             {{maintenanceModel.maintenance_escalation_registry[0]?.user_emails.toString()}}
                     </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label ">Escalation 1 Date & Time</label>
-                {{maintenanceModel.maintenance_escalation_registry[0]?.duration_hours}}    </div>
-              <div class="form-group" >
-              <label for="message-text" class="col-form-label">User/Email Id(Escalation 2)</label>
-                {{maintenanceModel.maintenance_escalation_registry[1]?.user_emails.toString()}} 
+                <div class="form-group" >
+          <label for="message-text" class="col-form-label">User Group</label>
+            {{maintenanceModel.maintenance_escalation_registry[0]?.user_groups.toString()}} 
+          </div>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label">Email Subject</label>
+              {{maintenanceModel.maintenance_escalation_registry[0]?.email_subject.toString()}} 
+            </div>
+            <div class="form-group" >
+              <label for="message-text" class="col-form-label">Email Body</label>
+                {{maintenanceModel.maintenance_escalation_registry[0]?.email_body.toString()}} 
               </div>
-              <div class="form-group" >
-               <label for="recipient-name" class="col-form-label ">Escalation 2 Date & Time </label>
-              {{maintenanceModel.maintenance_escalation_registry[1]?.duration_hours}} 
+              <div *ngIf="maintenanceModel.maintenance_escalation_registry[1]">
+                <h6>Escalation 2</h6>
+                 <div class="form-group" >
+                  <label for="recipient-name" class="col-form-label ">Date & Time </label>
+                     {{maintenanceModel.maintenance_escalation_registry[1]?.duration_hours}} 
+                  <div class="form-group" >
+                <label for="message-text" class="col-form-label">User/Email Id</label>
+                  {{maintenanceModel.maintenance_escalation_registry[1]?.user_emails.toString()}} 
                 </div>
               <div class="form-group" >
-                <label for="message-text" class="col-form-label">User/Email Id(Escalation 3)</label>
-                {{maintenanceModel.maintenance_escalation_registry[2]?.user_emails.toString()}}
+                <label for="message-text" class="col-form-label">User Group</label>
+                  {{maintenanceModel.maintenance_escalation_registry[1]?.user_groups.toString()}} 
+                </div>
+                <div class="form-group" >
+                  <label for="message-text" class="col-form-label">Email Subject</label>
+                    {{maintenanceModel.maintenance_escalation_registry[1]?.email_subject.toString()}} 
                   </div>
-              <div class="form-group" >
-                <label for="recipient-name" class="col-form-label ">Escalation 3 Date & Time </label>
-                {{maintenanceModel.maintenance_escalation_registry[2]?.duration_hours}}   </div>
-            </div>
+                  <div class="form-group" >
+                    <label for="message-text" class="col-form-label">Email Body</label>
+                      {{maintenanceModel.maintenance_escalation_registry[1]?.email_body.toString()}} 
+                    </div>
+                </div>
+                <div *ngIf="maintenanceModel.maintenance_escalation_registry[2]">
+                  <h6>Escalation 3</h6>
+                <div class="form-group" >
+                <div class="form-group" >
+                  <label for="recipient-name" class="col-form-label ">Date & Time </label>
+                    {{maintenanceModel.maintenance_escalation_registry[2]?.duration_hours}}   </div>
+                  <label for="message-text" class="col-form-label">User/Email Id</label>
+                    {{maintenanceModel.maintenance_escalation_registry[2]?.user_emails.toString()}}
+                  </div>
+                  </div>
+                <div class="form-group" >
+                  <label for="message-text" class="col-form-label">User Group</label>
+                    {{maintenanceModel.maintenance_escalation_registry[2]?.user_groups.toString()}} 
+                  </div>
+                  <div class="form-group" >
+                    <label for="message-text" class="col-form-label">Email Subject</label>
+                      {{maintenanceModel.maintenance_escalation_registry[2]?.email_subject.toString()}} 
+                    </div>
+                    <div class="form-group" >
+                      <label for="message-text" class="col-form-label">Email Body</label>
+                        {{maintenanceModel.maintenance_escalation_registry[2]?.email_body.toString()}} 
+                      </div>
+                      </div>
+              </div>
           </div>
       </div>
     </div>

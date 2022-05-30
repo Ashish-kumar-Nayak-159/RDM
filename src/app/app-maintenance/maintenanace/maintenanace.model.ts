@@ -13,6 +13,7 @@ export class Maintenanace {
   notify_user_emails ?: any[]= [];
   notify_email_subject? :any;
   notify_email_body? :any;
+  notify_user_groups?:any;
   is_acknowledge_required :any;
   is_escalation_required :any;
   maintenance_escalation_registry? : Array <Escalation>;

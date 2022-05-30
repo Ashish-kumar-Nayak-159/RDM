@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit,Output } from '@angular/core';
+import { Component, EventEmitter, OnInit,Output,Input } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
   selector: 'app-text-editor',
@@ -9,10 +9,18 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 export class TextEditorComponent  {
   name = 'Angular ';
   htmlContent :any;
+  @Input() inputItem ;
   @Output() htmlContentDetect = new EventEmitter<any>();
+  constructor()
+  {
+   setTimeout(() => {
+    this.htmlContent = this.inputItem;
+    this.htmlContentDetect.emit(this.htmlContent); 
+   }, 1500);
+  }
+ 
   handleInputChange(value){
     // ... all of your logic
-    console.log(this.htmlContent+"--"+value);
     this.htmlContentDetect.emit(this.htmlContent); // this will pass the $event object to the parent component.
     }
   config: AngularEditorConfig = {

@@ -39,9 +39,7 @@ export class AppMaintenanceListComponent implements OnInit {
   isView = false;
   htmlContent:any;
   emailbody1:any;
-  emailbody2:any;
-  emailbody3:any;
-
+  currentItem:any;
   selectedAsset_id : any;
   maintenanceModel:Maintenanace = new Maintenanace();
   userData: any;
@@ -119,6 +117,7 @@ export class AppMaintenanceListComponent implements OnInit {
       notify_user_emails : null,
       notify_email_subject :'',
       notify_email_body:'',
+      notify_user_groups:'',
       is_acknowledge_required :false,
       is_escalation_required :false,
       maintenance_escalation_registry :[{
@@ -417,9 +416,7 @@ getMaitenanceModel()
    
       
 }
-descriptionChange(valuefromtextEditor:any) {
-  this.descContent = valuefromtextEditor;
-}
+
 emailBodyDetect(valuefromtextEditor:any) {
   this.htmlContent = valuefromtextEditor;
 }
@@ -468,7 +465,7 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.notify_email_body = this.htmlContent;
   if(this.isEdit)
   {
-    debugger;
+  
     let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id,this.maintenanceModel);
     method.subscribe(
       (response: any) => {
@@ -559,12 +556,13 @@ getMaintenance_data(id)
 }
 setEditFields()
 {
+  this.isEdit = true;
   this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
   this.is_notify_user = this.maintenanceModel.is_notify_user;
   this.is_escalation_required = this.maintenanceModel.is_escalation_required;
   this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
   this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
-  this.descContent = this.maintenanceModel.name;
+  this.descContent = this.maintenanceModel.description;
   this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.name);
   this.inspection_frequency = this.maintenanceModel.inspection_frequency;
   if(this.is_notify_user)
@@ -572,6 +570,7 @@ setEditFields()
     this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
     this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     let emails = this.maintenanceModel?.notify_user_emails[0];
+    this.currentItem = this.maintenanceModel.notify_email_body;
     for(var i=1;i<this.maintenanceModel?.notify_user_emails?.length;i++)
     {
       emails = emails +"," + this.maintenanceModel?.notify_user_emails[i];
@@ -596,6 +595,7 @@ setEditFields()
         "email_subject":element.email_subject,
         "duration_hours":element.duration_hours
       })
+      this.currentItem = element.email_body;
     });
     this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
   }
@@ -644,11 +644,14 @@ onTableFunctionCall(obj){
     // }
   }
   else if (obj.for === 'Edit') {
+    this.onCloseMaintenanceModelModal();
     this.isEdit = true;
     this.title = "Edit";
     this.maintenance_registry_id = obj?.data.maintenance_registry_id;
     this.getMaintenance_data(this.maintenance_registry_id);
-    this.setEditFields();
+    setTimeout(() => {
+      this.setEditFields();
+     }, 1000);
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }else if (obj.for === 'Un Provision'){
   }

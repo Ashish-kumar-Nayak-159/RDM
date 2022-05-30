@@ -6,7 +6,6 @@ import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.compon
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { Component } from '@angular/core';
 import { ApplicationGatewayMonitoringComponent } from './application/application-gateway-monitoring/application-gateway-monitoring.component';
-
 const routes: Routes = [
   {
     path: 'applications',

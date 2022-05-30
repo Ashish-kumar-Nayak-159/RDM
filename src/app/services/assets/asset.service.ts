@@ -1271,7 +1271,7 @@ export class AssetService {
       ruleModel
     );
   }
-
+  
   updateEdgeAssetRule(app, modelName, ruleModel) {
     return this.http.put(
       this.url + String.Format(AppUrls.UPDATE_EDGE_ASSET_RULE, encodeURIComponent(app), encodeURIComponent(modelName)),

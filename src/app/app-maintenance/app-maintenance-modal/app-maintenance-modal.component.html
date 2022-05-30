@@ -22,8 +22,8 @@
                         </a>
                     </div>
                     <div formArrayName="files" >
-                        <div *ngFor="let fileGroup of formData.get('files').controls; let i = index;">
-                            <div [formGroupName]="i">
+                        <div *ngFor="let fileGroup of formData.get('files').controls; let arrayIndex = index;">
+                            <div [formGroupName]="arrayIndex">
                                 <div class="form-group">
                                     <label for="type">Type:</label>
                                     <select class="form-control form-control-sm" id="type" name="type"
@@ -35,15 +35,16 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                   
                                     <label for="recipient-name" class="col-form-label required">Upload:</label>
                                     <div class="form-group input-group row m-0">
                                         <div class="file-input form-control form-control-sm p-0 col-8">
                                             <input type="file"
                                                 accept="{{filetype=='PDF'? '.pdf' : (filetype=='Image') ? '.jpeg,.png,.svg,.jpg' : (filetype=='Video') ? '.mp4' : '*'}}"
-                                                id="file" class="file" formControlName="uploadedFile"
-                                                onclick="this.value = null" (change)="onFileSelected($event,i)">
-                                            <label for="file" class="overflow-text"
-                                                title="{{this.uploadedFile[i]?.fileName}}">{{this.uploadedFile[i]?.fileName
+                                                id="file_{{arrayIndex}}" class="file" formControlName="uploadedFile"
+                                                onclick="this.value = null" (change)="onFileSelected($event,arrayIndex)"/>
+                                            <label for="file_{{arrayIndex}}" class="overflow-text"
+                                                title="{{this.uploadedFile[arrayIndex]?.fileName}}">{{this.uploadedFile[arrayIndex]?.fileName
                                                 ?? "Choose File"}}</label>
                                         </div>
                                         <!-- <div class="file-input form-control form-control-sm p-0 col-4"

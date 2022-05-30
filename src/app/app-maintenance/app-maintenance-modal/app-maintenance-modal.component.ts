@@ -61,20 +61,22 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
 
   async uploadFile() {
     this.isFileUploading = true;
-
+    let uploadedFiles = [];
     await Promise.all(this.uploadedFile.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.assetId + '/maintenance/' + this.maintenanceRegistryId
       );
+      debugger
       if (data) {
         console.log("data upload file", data)
         var eachOne = {
           document_name: data.name,
           document_file_url: data.url,
-          document_type:''
+          document_type: file.filetype
         }
-        this.uploadedFileDetails.push(data)
+        console.log("eachone",eachOne)
+        // uploadedFiles.push(eachOne)
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -87,7 +89,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
 
   async onSave() {
     console.log("formData",this.formData.value)
-    // await this.uploadFile()
+    await this.uploadFile()
     console.log("uploaded file",this.uploadedFileDetails)
     this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
@@ -112,7 +114,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.modalEmit.emit(false)
   }
 
-  onFileSelected(event,i) {
+  onFileSelected(event,i:number) {
     debugger
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446"];    
@@ -134,7 +136,9 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           //   'index': 0
           // })
           // this.uploadedFile = file;
-          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name  })
+          let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
+          debugger
+          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
           // console.log("uploaded file",this.uploadedFile)
           this.isCanUploadFile = true;
           //this.fileName = file.name;

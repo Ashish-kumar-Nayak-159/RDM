@@ -468,6 +468,7 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.notify_email_body = this.htmlContent;
   if(this.isEdit)
   {
+    debugger;
     let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id,this.maintenanceModel);
     method.subscribe(
       (response: any) => {
@@ -476,6 +477,7 @@ onSaveMaintenanceModelModal()
         // });
         this.toasterService.showSuccess(response.message,   'Maitenance Update');
         $('#createMaintainenceModelModal').modal('hide');
+        this.isEdit = false;
         this.createMaitenanceCall = false;
         this.redirectTo(this.router.url);
       },
@@ -597,6 +599,7 @@ setEditFields()
     });
     this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
   }
+
 }
 // this function will call when someone click on icons [Ex. delete, edit, toggle]
 onTableFunctionCall(obj){
@@ -641,7 +644,7 @@ onTableFunctionCall(obj){
     // }
   }
   else if (obj.for === 'Edit') {
-    this.isEdit = !this.isEdit;
+    this.isEdit = true;
     this.title = "Edit";
     this.maintenance_registry_id = obj?.data.maintenance_registry_id;
     this.getMaintenance_data(this.maintenance_registry_id);

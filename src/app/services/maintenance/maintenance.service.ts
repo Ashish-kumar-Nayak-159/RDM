@@ -36,7 +36,7 @@ export class MaintenanceService {
   }
   updateNewMaintenanceRule(id,maintenanceModel) {
     return this.http.put(
-      this.url + String.Format(AppUrls.POST_MAINTENANCE,encodeURIComponent(id)),
+      this.url + String.Format(AppUrls.PUT_MAINTENANCE,encodeURIComponent(id)),
       JSON.stringify(maintenanceModel))
       ;
   }

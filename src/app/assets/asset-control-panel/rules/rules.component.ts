@@ -79,6 +79,7 @@ export class RulesComponent implements OnInit {
   }
  
   overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, action) {
+    this.onAccordionClick('Asset');
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
       if (action === 'toggle' || action === '') {
         this.toggleRows = {};
@@ -87,6 +88,12 @@ export class RulesComponent implements OnInit {
       this.toggleRows = {};
       this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
     }
+    delete rule["created_by"];
+    delete rule["created_date"];
+    delete rule["deployed_by"];
+    delete rule["deployed_on"];
+    delete rule["updated_by"];
+    delete rule["updated_date"];
     this.modeltoAssetrules.push(rule);
     this.isEdit = isEdit;
     this.isView = isView;
@@ -215,13 +222,13 @@ export class RulesComponent implements OnInit {
           // this.toggleRows = {};
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
-            !isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
-            !isRevert ? 'Enable Rule' : 'Disable Rule'
+            isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
+            isRevert ? 'Disable Rule' : 'Enable Rule'
           );
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showError(err.message, !isRevert ? 'Enable Rule' : 'Disable Rule');
+          this.toasterService.showError(err.message, isRevert ? 'Disable Rule' : 'Enable Rule');
           this.onCloseDeleteModal();
         }
       );

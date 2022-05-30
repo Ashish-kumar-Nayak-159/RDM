@@ -8,8 +8,11 @@ import { CommonCustomModule } from '../common/common.module';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { AppMaintenanceModalComponent } from './app-maintenance-modal/app-maintenance-modal.component';
+import { AppViewAcknowledgeModalComponent } from './app-view-acknowledge-modal/app-view-acknowledge-modal.component';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 @NgModule({
-  declarations: [AppMaintenanceListComponent, TextEditorComponent],
+  declarations: [AppMaintenanceListComponent, TextEditorComponent,AppMaintenanceModalComponent,AppViewAcknowledgeModalComponent],
   imports: [
     CommonModule,
     AppMaintenanceRoutingModule,
@@ -18,7 +21,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CommonCustomModule,
     AngularEditorModule,
     NgSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AccordionModule  
   ]
 })
 export class AppMaintenanceModule { }

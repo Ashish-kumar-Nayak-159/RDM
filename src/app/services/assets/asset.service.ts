@@ -1346,7 +1346,6 @@ export class AssetService {
 
 
   uploadAssetModelFile(app,assetModel, filterObj,formData) {
-    debugger
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {

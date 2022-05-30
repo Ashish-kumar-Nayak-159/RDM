@@ -163,13 +163,13 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
           this.toggleRows ={}
           this.isDeleteRuleLoading = false;
           this.toasterService.showSuccess(
-            isRevert ? 'Rule Enable successfully' : 'Rule Disable successfully',
-            isRevert ? 'Enable Rule' : 'Disable Rule'
+            isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
+            isRevert ? 'Disable Rule' : 'Enable Rule'
           );
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
-          this.toasterService.showError(err.message, isRevert  ? 'Enable Rule' : 'Disable Rule');
+          this.toasterService.showError(err.message, isRevert  ? 'Disable Rule' : 'Enable Rule');
           this.onCloseDeleteModal();
         }
       );

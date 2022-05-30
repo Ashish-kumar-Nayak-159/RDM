@@ -141,11 +141,11 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
             );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+          this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
             localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
             if(response)
             {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
             }
           });
           const obj = {

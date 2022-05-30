@@ -102,7 +102,6 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
     this.sortArr(filterBy,classList);
   }
   sortArr(key: any,classList?) {
-    debugger
     let dateParse = Date.parse(this.filteredTableData[0][key]);
     let isDate = isNaN(dateParse);
     this.filteredTableData.sort((a, b) => {

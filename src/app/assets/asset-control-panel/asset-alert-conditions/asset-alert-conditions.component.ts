@@ -422,7 +422,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onUpdateAlertConditions() {
-    debugger
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {

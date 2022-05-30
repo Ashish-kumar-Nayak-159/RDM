@@ -1,0 +1,127 @@
+<div class="mt-1">
+    <div class="card" id="{{chartConfig.chartId}}">
+      <div class="card-header d-flex px-2">
+        <div style="min-width: 0; flex:1">
+          <h6 class="my-0 live-widget-title" placement="bottom" [tooltip]="chartConfig.widgetTitle"
+            [ngClass]="{'w-11': !asset  && !chartConfig.freezed}">
+            {{chartConfig.widgetTitle}}
+          </h6>
+        </div>
+        <div *ngIf ="!asset"class="ml-auto">
+          <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+          <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+            ED</div>
+          <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+            *ngIf="chartConfig.cloud_derived_props">CD</div>
+  
+          <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+  
+          <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
+            href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
+            tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
+  
+        </div>
+      </div>
+      <div class="card-body1 card-height">
+        <div class="row text-center " *ngIf="telemetryObj">
+          <div *ngIf="!asset">
+          <div class="col-md-12"
+            *ngFor="let prop of chartConfig.properties; let i = index" >
+            {{evaluatePropConditionwithoutasset(telemetryObj,prop)}}
+      
+            <!-- <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
+                  ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')" [ngClass]= "{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'OnlyNumber' && chartConfig.widgetType != 'StringWidget'))}">
+  
+              ({{(prop?.type === 'Edge Derived Properties' ? 'ED' : (prop?.type ===
+              'Cloud Derived Properties' ? 'CD' : (
+              prop?.type === 'Derived KPIs' ? 'DK' : 'M'
+              )))}}) {{prop.title}}
+              {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
+              prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
+            </p> -->
+  
+  
+            <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
+              <app-line-chart-without-axis [asset]="asset"
+                [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
+                [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
+              </app-line-chart-without-axis>
+            </div>
+            <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
+              <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
+                  }}" alt="" />
+            </div>
+            <div *ngIf="(chartConfig.widgetType === 'ConditionalNumber' || chartConfig.widgetType === 'StringWidget') && !asset" style="height:7rem;">
+              <div class="ConditionalNumber"></div>
+            </div>
+            
+            
+            <!-- <div *ngIf="asset"
+              [ngClass]="{'mt-4': chartConfig.widgetType === 'ConditionalNumber' || chartConfig.widgetType === 'StringWidget'}">
+              <span class="text-darkblue display-5 font-weight-bold"
+                [ngStyle]="{'font-size': chartConfig.widgetType === 'ConditionalNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
+                <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
+  
+                  {{ (telemetryObj[prop.property?.json_key] && (telemetryObj[prop.property?.json_key]?.value !==
+                  undefined
+                  && telemetryObj[prop.property?.json_key]?.value !== null)) ?
+                  (prop.property?.data_type === 'Number' ?
+                  (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
+                  (telemetryObj[prop.property?.json_key].value))
+                  : 'NA'}} {{prop.unit}}
+                </ng-container>
+                <ng-template #APIPropValTemplate>
+                  {{ (apiTelemetryObj[prop.property?.json_key] && (apiTelemetryObj[prop.property?.json_key]?.value !==
+                  undefined && apiTelemetryObj[prop.property?.json_key]?.value !== null)) ?
+                  (prop.property?.data_type === 'Number' ?
+                  (apiTelemetryObj[prop.property?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
+                  (apiTelemetryObj[prop.property?.json_key].value))
+                  : 'NA'}} {{prop.unit}}
+                </ng-template>
+  
+              </span>
+            </div> -->
+            <div [ngClass]="{'mt-4': chartConfig.widgetType === 'ConditionalNumber' || chartConfig.widgetType === 'StringWidget'}"
+            [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }"  >
+              <span class="text-grey">
+                <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
+                  {{telemetryObj[prop.json_Data[0]?.json_key]?.date || telemetryObj[prop.json_Data[0]?.json_key]?.message_date}}
+                </ng-container>
+                <ng-template #APIPropDateTemplate>
+                  {{apiTelemetryObj[prop.json_Data?.json_key]?.date ||
+                  apiTelemetryObj[prop.json_Data?.json_key]?.message_date}}
+                </ng-template>
+              </span>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- New Code -->
+        
+        <div *ngIf="asset"  class="d-flex flex-column justify-content-center align-items-center card-height2">
+          <span class="status mb-4">
+            {{evaluatePropCondition(telemetryObj)}}
+          </span>
+          <span class="text-grey">
+            {{telemetryObj[chartConfig?.properties[0]?.json_key]?.date }}
+            <!-- <ng-template #APIPropDateTemplate>
+              {{apiTelemetryObj[prop.property?.json_key]?.date ||
+                apiTelemetryObj[prop.property?.json_key]?.message_date}}
+              </ng-template> -->
+            </span>
+          </div>
+        <!-- New Code -->
+
+        
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="confirmRemoveWidgetModal{{chartConfig.chartId}}" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+        (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+    </div>
+  </div>

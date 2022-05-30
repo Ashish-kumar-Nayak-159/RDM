@@ -91,7 +91,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   widgetStringFromMenu: string;
   checkwidgettype:boolean =false;
-  checkingsmallwidget:''
+  checkconditionaltype:boolean=false;
+  checkingsmallwidget:'';
+  checkconditionalwidget:''
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -418,14 +420,44 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             if (response?.live_widgets?.length > 0) {
               response.live_widgets.forEach((widget) => {
                 this.checkingsmallwidget = widget.widgetType;
+                this.checkconditionalwidget =widget.widgetType;
                 if(widget.widgetType === 'SmallNumber'){
                   this.checkwidgettype = true;
+                }
+                if(widget.widgetType === 'ConditionalNumber'){
+                  this.checkconditionaltype = true;
                 }
                 widget.edge_derived_props = false;
                 widget.cloud_derived_props = false;
                 widget.derived_kpis = false;
                 widget.measured_props = false;
-                if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+                if (widget.widgetType === 'ConditionalNumber') {
+                  let propertiesData = [];
+                  widget['formula']= widget?.properties[0]?.formula;
+                  widget?.properties[0]?.json_Data.forEach((prop) => {
+                    let newProp = {};
+                    let filteredProp = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                    newProp["property"] = filteredProp;
+                    newProp["type"] = filteredProp?.type;
+                    newProp["json_key"] = prop?.json_key;
+                    newProp["title"] = filteredProp?.name;
+                    if(filteredProp){
+                      this.addPropertyInList(filteredProp);
+                    }
+                    propertiesData.push(newProp);
+                    if (prop?.type === 'Derived KPIs') {
+                      widget.derived_kpis = true;
+                    } else if (prop?.type === 'Edge Derived Properties') {
+                      widget.edge_derived_props = true;
+                    } else if (prop?.type === 'Cloud Derived Properties') {
+                      widget.cloud_derived_props = true;
+                    } else {
+                      widget.measured_props = true;
+                    }
+                  });
+                  widget.properties = propertiesData;
+                }
+                else if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
 
                   widget?.properties.forEach((prop) => {
                     if (prop.property) {

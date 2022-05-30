@@ -16,7 +16,7 @@
                   : constantData.DEFAULT_APP_ICON  + blobToken)
               }}" alt="" />
             </div>
-            <p>{{app.app}} <em class="fa fa-spinner fa-spin fa-fw fa-2x"
+            <p style="text-align:center ;">{{app.app}} <em class="fa fa-spinner fa-spin fa-fw fa-2x"
               *ngIf="isAppDataLoading && isAppDataLoading[index]"></em></p>
             <p class="mx-3 mt-3 text-center text-xs truncate" style="font-size:0.9rem">
               {{app.metadata.description ? app.metadata.description: 'This application is designed to track assets & its data.'}}</p>   

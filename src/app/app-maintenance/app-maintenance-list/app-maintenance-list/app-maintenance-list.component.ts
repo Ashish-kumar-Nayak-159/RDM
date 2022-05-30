@@ -438,16 +438,20 @@ onSaveMaintenanceModelModal()
     return;
   }
   let maintenance_escalation_registry :any [] = [];
-  this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>
+  this.maintenanceModel.maintenance_escalation_registry?.forEach((element)=>
+  {
+  if(element.user_emails!==undefined && element.user_emails!='')
   {
     maintenance_escalation_registry.push({
-      "user_emails":element.user_emails.split(","),
-      "user_groups":element.user_groups,
-      "email_body":element.email_body,
-      "email_subject":element.email_subject,
-      "duration_hours":element.duration_hours
-    })
-    ;
+      "user_emails":element?.user_emails?.split(","),
+        "user_groups":element?.user_groups,
+        "email_body":element?.email_body,
+        "email_subject":element?.email_subject,
+        "duration_hours":element?.duration_hours
+      })
+      
+  }
+    
   })
   this.maintenanceModel = this.createMaintenanceForm.value;
   this.maintenanceModel.is_maintenance_required = true;

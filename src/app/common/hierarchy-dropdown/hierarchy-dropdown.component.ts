@@ -1,7 +1,7 @@
-import { ToasterService } from 'src/app/services/toaster.service';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
-import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 declare var $: any;
 @Component({
@@ -18,20 +18,22 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   hierarchyArr: any = {};
   @Input() assets: any[] = [];
   originalAssets: any[] = [];
-  actualAssets:any[]= [];
+  actualAssets: any[] = [];
   @Input() showAsset = false;
   hierarchyString: string;
   contextAppUserHierarchyLength = 0;
   displayHierarchyString: string;
+  hierarchyNewArr = [];
+  actualhierarchyNewArr = [];
   @Output() saveHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() clearHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private commonService: CommonService, private toasterService: ToasterService) { }
+  constructor(private commonService: CommonService, private applicationService: ApplicationService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.originalAssets = this.actualAssets;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
@@ -40,47 +42,161 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.displayHierarchyString = this.contextApp.app;
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
     this.actualAssets = this.originalAssets;
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
-    }
+    await this.getUserHierarchy();
   }
 
-  onHierarchyDropdownClick() {    
+  onHierarchyDropdownClick() {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-        e.stopPropagation();
+      e.stopPropagation();
     });
     if (
       this.showAsset ||
       (this.contextApp?.hierarchy?.levels?.length > 1 &&
         this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length)
-    ) {      
+    ) {
       $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn') && !e.clickEvent.target.className?.includes('fa-search')) {                          
-            e.preventDefault();
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn') && !e.clickEvent.target.className?.includes('fa-search')) {
+          e.preventDefault();
         }
       });
     }
   }
 
-  onChangeOfHierarchy(i) {
+
+  onSaveHierachy() {
+    if (this.showAsset) {
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      if (!this.closeOnSelection) {
+        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
+          this.saveHierarchyEvent.emit();
+        }
+      }
+      else {
+        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
+          $("#liveDataSelectAssret").removeClass("show");
+          this.saveHierarchyEvent.emit();
+        }
+      }
+    } else {
+      this.hierarchyString = this.contextApp.app;
+      this.displayHierarchyString = this.contextApp.app;
+      Object.keys(this.configureHierarchy).forEach((key, index) => {
+        if (this.configureHierarchy[key]) {
+          this.hierarchyString += ' > ' + this.getDisplayHierarchyString(index, this.configureHierarchy[key]);
+          this.displayHierarchyString = this.getDisplayHierarchyString(index, this.configureHierarchy[key]);
+        }
+      });
+      this.saveHierarchyEvent.emit(this.configureHierarchy);
+    }
+  }
+  getDisplayHierarchyString(index, hierarchyKey) {
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == (index + 1) && r.key == hierarchyKey);
+    if (selectedHierarchy) {
+      return selectedHierarchy.name;
+    }
+  }
+
+  getConfiguredHierarchy() {
+    return this.configureHierarchy;
+  }
+
+  getAssets() {
+    return this.assets;
+  }
+
+  onClearHierarchy() {
+    this.hierarchyArr = {};
+    this.configureHierarchy = {};
+    this.filterObj.asset = undefined;
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
+    }
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfNewHierarchy(index);
+        }
+      } else {
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+      }
+    });
+    if (this.showAsset) {
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.clearHierarchyEvent.emit();
+    } else {
+      this.hierarchyString = this.contextApp.app;
+      this.displayHierarchyString = this.contextApp.app;
+      Object.keys(this.configureHierarchy).forEach((key, index) => {
+        if (this.configureHierarchy[key]) {
+          this.hierarchyString += ' > ' + this.getDisplayHierarchyString(index, this.configureHierarchy[key]);
+          this.displayHierarchyString = this.getDisplayHierarchyString(index, this.configureHierarchy[key])
+        }
+      });
+      this.clearHierarchyEvent.emit(this.configureHierarchy);
+    }
+  }
+
+  updateHierarchyDetail(hierarchyObj) {
+    if (this.contextApp) {
+      if (hierarchyObj.hierarchy) {
+        if (this.actualhierarchyNewArr.length > 0) {
+          this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+              this.configureHierarchy[index] = hierarchyObj.hierarchy[level];
+              if (hierarchyObj.hierarchy[level]) {
+                this.onChangeOfNewHierarchy(index);
+              }
+            }
+          });
+        }
+      }
+      if (hierarchyObj.assets && this.showAsset) {
+        this.filterObj.asset = hierarchyObj.assets;
+        this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      }
+      if (!this.showAsset) {
+        this.hierarchyString = this.contextApp.app;
+        this.displayHierarchyString = this.contextApp.app;
+        Object.keys(this.configureHierarchy).forEach((key, index) => {
+          if (this.configureHierarchy[key]) {
+            this.hierarchyString += ' > ' + this.getDisplayHierarchyString(index, this.configureHierarchy[key]);
+            this.displayHierarchyString = this.getDisplayHierarchyString(index, this.configureHierarchy[key])
+          }
+        });
+      }
+    }
+  }
+  async getUserHierarchy() {
+    if (this.contextApp) {
+      this.actualhierarchyNewArr = [];
+      this.hierarchyNewArr[0] = [{ key: 'App', name: 'App', level: 0 }];
+      this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+      let allHierarchyData = [];
+      this.actualhierarchyNewArr.map((item) => {
+        allHierarchyData.push({ key: item.key, name: item.name, level: item.level, id: item.id });
+      });
+      this.contextApp.hierarchy.levels.forEach((_, index) => {
+        if (index !== 0) {
+          this.hierarchyNewArr[index] = allHierarchyData.filter(f => f.level == index);
+        }
+      });
+    }
+  }
+  onChangeOfNewHierarchy(i) {
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach((key) => {
+    Object.keys(this.hierarchyNewArr).forEach((key) => {
       if (key > i) {
-        this.hierarchyArr[key] = [];
+        this.hierarchyNewArr[key] = [];
       }
     });
-    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == i && r.key == this.configureHierarchy[i]);
+    if (selectedHierarchy) {
+      this.hierarchyNewArr[i + 1] = this.actualhierarchyNewArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }
     const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -88,6 +204,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
+
     if (Object.keys(hierarchyObj).length === 1) {
       this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
@@ -123,116 +240,14 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
     if (count === 0) {
-      this.hierarchyArr = [];
+      this.hierarchyNewArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+        this.hierarchyNewArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
       }
     }
-    this.onSaveHierachy();    
-    if(!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length))
-    {
+    this.onSaveHierachy();
+    if (!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length)) {
       $("#liveDataSelectAssret").removeClass("show");
-    }
-  }
-
-  onSaveHierachy() {    
-    if (this.showAsset) {
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      if(!this.closeOnSelection)
-      {        
-        if(Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset'))
-        {
-          this.saveHierarchyEvent.emit();
-        }
-      }
-      else
-      {
-        if(Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset'))
-        {
-          $("#liveDataSelectAssret").removeClass("show");
-          this.saveHierarchyEvent.emit();
-        }
-      }
-    } else {
-      this.hierarchyString = this.contextApp.app;
-      this.displayHierarchyString = this.contextApp.app;
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          this.hierarchyString += ' > ' + this.configureHierarchy[key];
-          this.displayHierarchyString = this.configureHierarchy[key];
-        }
-      });
-      this.saveHierarchyEvent.emit(this.configureHierarchy);
-    }
-  }
-
-  getConfiguredHierarchy() {
-    return this.configureHierarchy;
-  }
-
-  getAssets() {
-    return this.assets;
-  }
-
-  onClearHierarchy() {
-    this.hierarchyArr = {};
-    this.configureHierarchy = {};
-    this.filterObj.asset = undefined;
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
-    }
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index);
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
-    if (this.showAsset) {
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      this.clearHierarchyEvent.emit();
-    } else {
-      this.hierarchyString = this.contextApp.app;
-      this.displayHierarchyString = this.contextApp.app;
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          this.hierarchyString += ' > ' + this.configureHierarchy[key];
-          this.displayHierarchyString = this.configureHierarchy[key];
-        }
-      });
-      this.clearHierarchyEvent.emit(this.configureHierarchy);
-    }
-  }
-
-  updateHierarchyDetail(hierarchyObj) {
-    if (hierarchyObj.hierarchy) {
-      if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
-        this.contextApp.hierarchy.levels.forEach((level, index) => {
-          if (index !== 0) {
-            this.configureHierarchy[index] = hierarchyObj.hierarchy[level];
-            if (hierarchyObj.hierarchy[level]) {
-              this.onChangeOfHierarchy(index);
-            }
-          }
-        });
-      }
-    }
-    if (hierarchyObj.assets && this.showAsset) {
-      this.filterObj.asset = hierarchyObj.assets;
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    }
-    if (!this.showAsset) {
-      this.hierarchyString = this.contextApp.app;
-      this.displayHierarchyString = this.contextApp.app;
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        if (this.configureHierarchy[key]) {
-          this.hierarchyString += ' > ' + this.configureHierarchy[key];
-          this.displayHierarchyString = this.configureHierarchy[key];
-        }
-      });
     }
   }
 }

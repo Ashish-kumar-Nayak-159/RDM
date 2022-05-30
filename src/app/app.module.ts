@@ -49,6 +49,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
       libraries: ['places'],
     }),
     NgxIntlTelInputModule,
+    
   ],
   providers: [HttpInterceptorProviders],
   bootstrap: [AppComponent],

@@ -80,13 +80,22 @@
               <td>Created On</td>
               <td>{{asset?.tags?.local_created_date}}</td>
             </tr>
-
             <tr>
+              <td class="required">Asset Manager</td>
+              <td>
+                <ng-container *ngIf="!isReservedTagsEditable">{{asset?.tags?.asset_manager}}</ng-container>
+                <ng-container *ngIf="isReservedTagsEditable">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="asset?.tags.asset_manager" name="asset_manager">
+                </ng-container>
+              </td>
+            </tr>
+            <!-- <tr>
               <td>Asset Manager</td>
               <td>
                 <span *ngFor="let user of asset?.tags?.asset_users_arr">{{user}}<br /></span>
               </td>
-            </tr>
+            </tr> -->
             <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' && contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'asset_id'">
               <td>Partition Key</td>
               <td>{{asset?.tags?.partition_key}}</td>

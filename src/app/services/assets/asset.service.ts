@@ -1271,7 +1271,7 @@ export class AssetService {
       ruleModel
     );
   }
-
+  
   updateEdgeAssetRule(app, modelName, ruleModel) {
     return this.http.put(
       this.url + String.Format(AppUrls.UPDATE_EDGE_ASSET_RULE, encodeURIComponent(app), encodeURIComponent(modelName)),
@@ -1346,7 +1346,6 @@ export class AssetService {
 
 
   uploadAssetModelFile(app,assetModel, filterObj,formData) {
-    debugger
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {

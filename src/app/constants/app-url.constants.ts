@@ -212,15 +212,14 @@ export class AppUrls {
  public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/levels';
  public static DELETE_HIERARCHIES = 'hierarchy/{0}'
  public static UPDATE_HIERARCHIES = 'hierarchy/{0}'
-
+ public static POST_MAINTENANCE = 'maintenance';
  public static REFRESH_TOKEN = 'refresh-token'
  public static Get_DBSCHEMA = 'apps/{0}/dbschema'
 
  public static GET_MAINTENANCE = 'maintenance/'
-
+ public static GET_MAINTENANCEDATA = 'maintenance/{0}';
+ public static PUT_MAINTENANCE = 'maintenance/{0}'
  public static GET_MAINTENANCE_NOTIFICATION = 'maintenancenotification/'
-
  public static GET_ACK_MAINTENANCE = 'acknowledgemaintenance'
-
  public static GET_VIEW_ACK_MAINTENANCE = 'acknowledgemaintenance/'
 }

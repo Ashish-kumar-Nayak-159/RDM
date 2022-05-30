@@ -161,7 +161,7 @@
                     name="{{level}}_{{index}}" [(ngModel)]="configureHierarchy[index]"
                     [disabled]="contextApp.user.hierarchy[level]" (change)="onChangeOfHierarchy(index, 'RS')">
                     <option [ngValue]="undefined"> Select {{level}}</option>
-                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">{{tag}}</option>
+                    <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
                   </select>
                   <input type="text" *ngIf="index === 0" class="form-control form-control-sm" name="{{level}}_{{index}}"
                     defaultValue="{{ contextApp.app }}" disabled />

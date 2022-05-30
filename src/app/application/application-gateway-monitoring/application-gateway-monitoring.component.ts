@@ -1,25 +1,19 @@
 import { object } from '@amcharts/amcharts4/core';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { isObject } from '@azure/core-http/types/latest/src/util/utils';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
 import { countInterface } from './count-interface';
-
 declare var $: any;
-
-
 @Component({
   selector: 'app-application-gateway-monitoring',
   templateUrl: './application-gateway-monitoring.component.html',
   styleUrls: ['./application-gateway-monitoring.component.css']
 })
-
 export class ApplicationGatewayMonitoringComponent implements OnInit {
-
   isSelectedAppData = false;
   receivedAppName: string;
   isFilterSelected = false;
@@ -61,25 +55,20 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   }
   loader = false;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-
-  constructor(private commonService: CommonService, private applicationService: ApplicationService, private route: ActivatedRoute) { }
-
+  constructor(private commonService: CommonService, private applicationService: ApplicationService,
+    private route: ActivatedRoute, private changeDetector: ChangeDetectorRef) { }
   ngOnInit(): void {
     // this.loader = true;
     const userData = localStorage.getItem(CONSTANTS.USER_DETAILS);
     const selectedAppData = localStorage.getItem(CONSTANTS.SELECTED_APP_DATA);
     this.userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
-
     const obj = {
       environment: environment.environment,
       provisioned: this.isProvisioned
     };
-
     this.route.queryParams.subscribe((res) => {
       this.receivedAppName = res.appName
     })
-
-
     if (this.userDataFromLocal.is_super_admin) {
       this.applicationService.getApplications(obj).subscribe((response: any) => {
         if (response.data && response.data.length > 0) {
@@ -98,18 +87,14 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         (error) => this.loader = false)
     }
     else if (selectedAppData && !this.userDataFromLocal.is_super_admin) {
-
       let appDataFromLocal = JSON.parse(this.commonService.decryptString(selectedAppData))
       this.selectedApp = appDataFromLocal.app
       this.appsList.push(this.selectedApp)
       this.appName();
     }
-
-
     setInterval(() => {
       this.appName()
     }, 1800000)
-
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -169,32 +154,32 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           sort_by_key: 'created_date_time'
         },
         // {
-        //   header_name: 'Icons',
-        //   key: undefined,
-        //   data_type: 'button',
-        //   btn_list: [
-        //     {
-        //       icon: 'fa fa-fw fa-edit',
-        //       text: '',
-        //       id: 'EditPrivilege',
-        //       valueclass: '',
-        //       tooltip: 'Edit Privilege',
-        //     },
-        //     {
-        //       icon: 'fa fa-fw fa-eye',
-        //       text: '',
-        //       id: 'View',
-        //       valueclass: '',
-        //       tooltip: 'View',
-        //     },
-        //     {
-        //       icon: 'fa fa-fw fa-table',
-        //       text: '',
-        //       id: 'Partition',
-        //       valueclass: '',
-        //       tooltip: 'Database Partition',
-        //     }
-        //   ],
+        //   header_name: 'Icons',
+        //   key: undefined,
+        //   data_type: 'button',
+        //   btn_list: [
+        //     {
+        //       icon: 'fa fa-fw fa-edit',
+        //       text: '',
+        //       id: 'EditPrivilege',
+        //       valueclass: '',
+        //       tooltip: 'Edit Privilege',
+        //     },
+        //     {
+        //       icon: 'fa fa-fw fa-eye',
+        //       text: '',
+        //       id: 'View',
+        //       valueclass: '',
+        //       tooltip: 'View',
+        //     },
+        //     {
+        //       icon: 'fa fa-fw fa-table',
+        //       text: '',
+        //       id: 'Partition',
+        //       valueclass: '',
+        //       tooltip: 'Database Partition',
+        //     }
+        //   ],
         // },
       ],
     };
@@ -214,21 +199,26 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           app: this.selectedApp
         }
         this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
-          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
           this.isSelectedAppData = true;
+          this.changeDetector.detectChanges();
         })
       });
     }
-    else this.isSelectedAppData = true;
+    else {
+      this.isSelectedAppData = true;
+      this.changeDetector.detectChanges();
+    }
   }
   appName() {
     this.applications = []
-    this.loadMoreVisibility = true
+    this.loadMoreVisibility = true;
     this.currentOffset = 0;
     this.currentLimit = 10;
     if (this.selectedApp) {
       this.getHierarchy();
       this.hierarchy = { App: this.selectedApp };
+      this.loadFromCache();
       this.assetStatic();
       this.assetMonitor()
     }
@@ -245,7 +235,14 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
 
-
+  async loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    if (item) {
+      this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
+      if (item?.hierarchy)
+        this.hierarchy = item?.hierarchy;
+    }
+  }
   assetStatic() {
     this.loader = true;
     this.applicationService.getAssetStatistics(this.selectedApp).subscribe((response: any) => {
@@ -268,22 +265,17 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
     this.loader = true;
     this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {
-
       response.forEach((item) => {
-
         item.created_date_time = item.created_date
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
-
         if (item.last_ingestion_on)
           item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
-
         if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
         }
         else {
           item.ingestionCss = "online"
         }
-
         if (item.connection_state == "Disconnected") {
           item.connection_state = "Offline"
           item.cssclass = "offline";
@@ -309,42 +301,34 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     },
       (error) => this.loader = false)
   }
-
-
-
   onTableFunctionCall(obj) {
     // if (obj.for === 'View') {
-    //   this.onOpenViewIconModal(obj.data);
+    //   this.onOpenViewIconModal(obj.data);
     // }
     // else if (obj.for === 'Partition') {
-    //   this.openPartitionIconModal(obj.data);
+    //   this.openPartitionIconModal(obj.data);
     // }
     // else if (obj.for === 'EditPrivilege') {
-    //   this.roleId = 0;
-    //   this.privilegeObj = {};
-    //   this.privilegeGroups = {};
-    //   this.appPrivilegeObj = {};
-    //   this.getAppPriviledges(obj.data);
-    //   this.getAllPriviledges(obj.data);
-    //   this.isCreateAPILoading = false;
+    //   this.roleId = 0;
+    //   this.privilegeObj = {};
+    //   this.privilegeGroups = {};
+    //   this.appPrivilegeObj = {};
+    //   this.getAppPriviledges(obj.data);
+    //   this.getAllPriviledges(obj.data);
+    //   this.isCreateAPILoading = false;
     // }
   }
 
   onSaveHierachy(configuredHierarchy) {
     this.originalFilter = {};
     this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
-
     if (this.filterObj.asset) {
       this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
       this.onChangeOfAsset();
     }
   }
-
-
   onClearHierarchy() {
     this.hierarchy = { App: this.selectedApp };
-
-
   }
 
   onChangeOfAsset() {
@@ -355,7 +339,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
-      // this.onChangeOfAsset(this.filterObj.asset);
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
         this.historicalDateFilter.from_date,
@@ -369,15 +352,12 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
   filteredHiearchyObj() {
-
     this.applications = [];
     this.currentOffset = 0;
     this.loadMoreVisibility = true;
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     object.keys(configuredHierarchy).length === 0;
     this.onClearHierarchy();
-
-
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp) {
       Object.keys(configuredHierarchy).forEach((key) => {
@@ -388,7 +368,4 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
     this.assetMonitor();
   }
-
 }
-
-

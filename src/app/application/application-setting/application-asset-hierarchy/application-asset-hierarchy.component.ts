@@ -43,6 +43,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   hierarchyName = '';
   isEditMode = false;
   selectedLevelHierarchy = {};
+  hierarchyArray = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private toasterService: ToasterService,
@@ -58,30 +59,9 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     this.applicationData.hierarchy.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];
     });
-    await this.getHierarchyJsonDetail();
     await this.getAllHierarchy(1);
   }
-  private SetHierarchyDetails() {
-    if (this.applicationData?.hierarchy?.levels.length > 1) {
-      this.selectedHierarchyData['1'] = this.hierarchyTags;
-      this.hierarchyArr['1'] = Object.keys(this.hierarchyTags);
-    }
-    this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
-  }
   get f() { return this.addHierarchyForm.controls; }
-  async getHierarchyJsonDetail() {
-    this.apiSubscriptions.push(
-      this.applicationService.getExportedHierarchy().subscribe(
-        async (response: any) => {
-          this.hierarchyTags = response;
-          await this.SetHierarchyDetails();
-        },
-        (error) => {
-          this.toasterService.showError(error.message, 'Hierarchy');
-        }
-      )
-    );
-  }
   setDefaultCustomTags() {
     this.assetCustomTags = [
       {
@@ -279,12 +259,11 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     this.apiSubscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
-          this.getHierarchyTags();
-          this.getHierarchyJsonDetail();
           this.toasterService.showSuccess(response.message, 'Hierarchy');
           this.getAllHierarchy(this.hierarchyForm.level, this.hierarchyForm.parent_id);
           this.onCloseHierarchyModal();
           this.assetCustomTags = [];
+          this.SetHierarchyTags();
         },
         (error) => {
           this.loader = false;
@@ -390,8 +369,6 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
           this.getAllHierarchy(this.levelToAddUpdate, this.parentId);
           this.reinitializeHierarchyParams();
           $('#confirmMessageModal').modal('hide');
-          this.getHierarchyTags();
-          this.getHierarchyJsonDetail();
         },
         (error) => {
           this.toasterService.showError(error.message, 'Hierarchy');
@@ -442,12 +419,19 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
       )
     );
   }
-  getHierarchyTags() {
-    this.applicationService.getExportedHierarchy().subscribe((response: any) => {
-      localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-      if (response) {
-        this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
-      }
+  SetHierarchyTags() {
+    localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+    return new Promise<void>(async (resolve) => {
+      this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe(async (response: any) => {
+        if (response && response.data && response.data.length > 0) {
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+        }
+        resolve();
+      },
+        (error) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, []);
+          resolve();
+        })
     });
-  }
+  }  
 }

@@ -98,6 +98,10 @@
                             <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'model', true, false, '')" class="mr-1"
                               placement="bottom" tooltip="View">
                               <em class="fa fa-fw fa-eye"></em>
+                          </a>
+                            <a href="javascript:void(0)" *ngIf="rule.type === 'Cloud' && rule.rule_category==='KPIX Analytics' && rule.rule_type=== 'THS' && rule.is_editable " (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
+                              placement="bottom" tooltip="Override">
+                              <em class="fa fa-fw fa-clone"></em>
                             </a>
                          
                             <a href="javascript:void(0)" (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
@@ -225,14 +229,14 @@
                          decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
                           ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
-                                placement="bottom" tooltip="Enable">
+                                placement="bottom" tooltip="Click to Enable">
                                 <em class="fas fa-fw fa-toggle-off"></em>
                               </a>
-                              <a href="javascript:void(0)" (click)="deployRuleed(rule,true)" *ngIf="
+                              <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                         rule.is_editable !== false &&
                           ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
-                                placement="bottom" tooltip="Disable">
+                                placement="bottom" tooltip="Click to Disable">
                                 <em class="fas fa-fw fa-toggle-on"></em>
                               </a>
                             </ng-container>

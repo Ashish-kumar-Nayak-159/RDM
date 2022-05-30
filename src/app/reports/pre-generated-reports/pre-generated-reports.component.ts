@@ -56,6 +56,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isAddReport = false;
   contextAppUserHierarchyLength = 0;
   decodedToken: any;
+  actualhierarchyArr;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -73,6 +74,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
     }
+    this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
     this.getAssetsModels();
     this.subscriptions.push(
@@ -106,7 +108,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   ngAfterViewInit() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+      this.hierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
     }
     if (item) {
       this.loadFromCache(item);
@@ -125,7 +127,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
     if (item.hierarchy) {
-      if (Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS)).length > 0) {
+      if (this.actualhierarchyArr.length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = item.hierarchy[level];
@@ -429,16 +431,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == i && r.key == this.configureHierarchy[i]);
+    if (selectedHierarchy) {
+      this.hierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }
-    // let hierarchy = {...this.configureHierarchy};
     const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
@@ -505,7 +501,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (count === 0) {
       this.hierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+        this.hierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
       }
     }
   }

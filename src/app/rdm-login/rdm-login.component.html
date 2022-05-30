@@ -52,16 +52,19 @@
               <label class="custom-control-label" for="customCheck">{{uiMessages.REMEMBER_ME}}</label>
             </div>
 
-            <button type="submit" style="background-color:#1a5a9e" class="btn btn-primary text-white "
-              [disabled]="(!loginForm?.valid) || isLoginAPILoading">
-              {{uiMessages.LOGIN_LABEL}}
-              <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
-            </button>
+            <div class="d-flex justify-content-between align-items-center w-100 h-100">
+              <button type="submit" class="btn btn-primary text-white login-btn"
+                [disabled]="(!loginForm?.valid) || isLoginAPILoading" style="order: 2;">
+                {{uiMessages.LOGIN_LABEL}}
+                <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>
+              </button>
+              <div style="order: 1;">
+                <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
+                <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></em>
+              </div>
+            </div>
+
           </form>
-          <div>
-            <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
-            <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></em>
-          </div>
         </div>
         <div class="login-show">
           <h2 class="mt-n2 mb-3">GUEST LOGIN</h2>
@@ -94,13 +97,18 @@
             </ngx-intl-tel-input>
 
             <select class="form-control form-control-sm" id="app" name="app" formControlName="app" [attr.disabled]="(this.tenantId && this.tenantId !== '' && this.tenantId !== null) ? 'disabled' : null" >
-              <option value="null">Select Application</option>
+              <option value="">Select Application</option>
               <option value="Pump_Monitoring">Pump Monitoring</option>
               <option value="CMS_Dev">Compressor Monitoring</option>
               <option value="TransformerMonitoring">Transformer Monitoring</option>
               <option value="MachineMonitoring">Remote Machine Monitoring</option>
               <option value="CoolingTower">Cooling Tower Monitoring</option>
             </select>
+            <div *ngIf="registerForm.get('app').errors && registerForm.get('app').touched" class="alert-danger">
+              <div *ngIf="registerForm.get('app').errors.required">
+                Application is required.
+              </div>
+            </div>
 
             <input type="text" class="form-control form-control-user" id="companyName" placeholder="Organization*"
               formControlName="org" name="org">
@@ -113,8 +121,8 @@
             <input type="text" class="form-control form-control-user" id="designation" placeholder="Designation"
               formControlName="designation" name="designation">
 
-            <button type="submit" style="background-color:#1a5a9e"
-              class="btn btn-primary btn-user btn-block text-white " [disabled]=" (!registerForm.valid &&
+            <button type="submit"
+              class="btn btn-primary btn-user btn-block text-white login-btn ml-auto" [disabled]=" (!registerForm.valid &&
               (registerForm.touched || !registerForm.touched)) || isLoginAPILoading">
               Login
               <em class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></em>

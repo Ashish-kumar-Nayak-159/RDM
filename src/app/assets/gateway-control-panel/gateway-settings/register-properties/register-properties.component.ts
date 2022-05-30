@@ -446,7 +446,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     // }
   }
   sync_asset_data() {
-    debugger
     this.isAPILoading = true;
     const syncObj = {
       asset_id: this.selectedAsset.asset_id,

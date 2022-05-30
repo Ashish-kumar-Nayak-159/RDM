@@ -46,3 +46,9 @@
   overflow-y: auto;
   width: 100%;
 }
+
+.conditional-widget-class{
+ width: 23% !important;
+ margin-top: 2%;
+ margin-left: 2%;
+}

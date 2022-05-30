@@ -55,7 +55,7 @@ export class AppMaintenanceListComponent implements OnInit {
   createMaintenanceForm : FormGroup;
   escalMaintenanceForm : FormGroup;
   maintenanceFormEdit : FormGroup;
-  descContent:any;
+  description:any;
   maintenance_Sdate:any;
   is_notify_user = false;
   inspection_frequency:any;
@@ -406,6 +406,7 @@ getMaitenanceModel()
     asset_id: new FormControl('', [Validators.required]),
     start_date: new FormControl('', [Validators.required]),
     inspection_frequency: new FormControl('',[Validators.required]),
+    description:new FormControl('')
     })
 
   this.notifyMaintenanceForm = new FormGroup({
@@ -458,7 +459,6 @@ onSaveMaintenanceModelModal()
   this.maintenanceModel.is_notify_user = this.is_notify_user;
   this.maintenanceModel.is_escalation_required = this.is_escalation_required;
   this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
-  this.maintenanceModel.description = this.descContent;
   if(this.is_notify_user)
   {
     this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
@@ -467,6 +467,7 @@ onSaveMaintenanceModelModal()
   }
   this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
   this.maintenanceModel.notify_email_body = this.htmlContent;
+  this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
   if(this.isEdit)
   {
   
@@ -566,8 +567,9 @@ setEditFields()
   this.is_escalation_required = this.maintenanceModel.is_escalation_required;
   this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
   this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
-  this.descContent = this.maintenanceModel.description;
-  this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.name);
+  this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
+  this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
+ 
   this.inspection_frequency = this.maintenanceModel.inspection_frequency;
   if(this.is_notify_user)
   {
@@ -581,6 +583,7 @@ setEditFields()
     }
     this.notifyMaintenanceForm.get('notify_user_emails').setValue(emails);
   }
+
   if(this.is_escalation_required)
   {
 

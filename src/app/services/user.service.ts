@@ -25,12 +25,11 @@ export class UserService {
     );
   }
 
-  deleteUser(app, userId, obj) {
+  deleteUser(app, userId) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
     return this.http.request(
       'delete',
-      this.url + String.Format(AppUrls.DELETE_USER_ACCESS, encodeURIComponent(app), encodeURIComponent(userId)),
-      { body: obj }
+      this.url + String.Format(AppUrls.DELETE_USER_ACCESS, encodeURIComponent(app), encodeURIComponent(userId))
     );
   }
 }

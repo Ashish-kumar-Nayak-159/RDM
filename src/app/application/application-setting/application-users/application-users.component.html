@@ -123,7 +123,7 @@
               [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
               [ngModelOptions]="{standalone: true}">
               <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
-              <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
+              <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[hIndex]">{{tag.name}}</option>
             </select>
             <input type="text" *ngIf="hIndex === 0" defaultValue="{{applicationData.app}}" disabled
               class="form-control form-control-sm">
@@ -157,9 +157,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Please Enter your password to remove this user access.</p>
-        <p class="alert-warning">Note: User Access termination may take up-to 24 hrs.</p>
-        <form>
+        <p>Are you sure you want to remove this user?</p>
+        <!-- <p class="alert-warning">Note: User Access termination may take up-to 24 hrs.</p> -->
+        <!-- <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>
             <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email"
@@ -172,7 +172,7 @@
             <em class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
               [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></em>
           </div>
-        </form>
+        </form> -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="deleteUser()" [disabled]="isDeleteUserAPILoadig">

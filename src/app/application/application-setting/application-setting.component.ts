@@ -100,11 +100,11 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           }
           this.contextApp = JSON.parse(JSON.stringify(this.applicationData));
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.contextApp);
-          this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+          this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
             localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
             if(response)
             {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
             }
           });
           this.commonService.refreshSideMenuData.emit(this.applicationData);

@@ -10,7 +10,7 @@
       </tr>
   </thead>
     <tbody>
-      <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
+      <ng-container *ngIf="tableData?.length > 0 && !isTableDataLoading && isTableFilterSelected">
         <tr *ngFor="let data of tableData; let i = index;"
         [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
         (tableConfig.type === 'alert'
@@ -58,12 +58,12 @@
         </ng-container>
         </tr>
       </ng-container>
-    <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
+    <ng-container *ngIf="tableData?.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
         <td [attr.colspan]="tableConfig.data.length + 1">No {{tableConfig.type}} data found <span *ngIf="tableConfig.hasOwnProperty('dateRange')">for {{tableConfig.dateRange}}. <p *ngIf="tableConfig.dateRange !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></span></td>
      </tr>
     </ng-container>
-    <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">
+    <ng-container *ngIf="tableData?.length === 0 && !isTableDataLoading && !isTableFilterSelected">
       <tr>
         <td [attr.colspan]="tableConfig?.data.length + 1">Select filter and press search button to load the {{tableConfig.type}} data.</td>
       </tr>

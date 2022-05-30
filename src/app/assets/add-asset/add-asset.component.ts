@@ -39,6 +39,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isWhiteLablePriviledge = false;
   whiteListedAssets: any[] = [];
   selectedWhitelistAsset: any;
+  actualhierarchyArr = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -54,11 +55,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
+    
+    this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     this.actualGateways = this.gateways;
     await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.addAssetHierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+      this.addAssetHierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
@@ -173,14 +176,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.addAssetHierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
-    Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
-      if (this.addAssetConfigureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.addAssetConfigureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.addAssetHierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == i && r.key == this.addAssetConfigureHierarchy[i]);
+    if (selectedHierarchy) {
+      this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }
 
     const hierarchyObj: any = { App: this.contextApp.app };
@@ -226,7 +224,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (count === 0) {
       this.addAssetHierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
-        this.addAssetHierarchyArr[1] = Object.keys(this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS));
+        this.addAssetHierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
       }
     }
     // await this.getAssets(hierarchyObj);

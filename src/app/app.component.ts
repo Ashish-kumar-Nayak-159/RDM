@@ -102,7 +102,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   navigationInterceptor(event): void {
     var online = navigator.onLine;
-    console.log("Checking", online)
     if(online == false){
       this.connectionStatus = 'offline';
     }else{
@@ -111,23 +110,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.onlineEvent.subscribe(e => {
       this.connectionStatusMessage = 'Back to online';
       this.connectionStatus = 'online';
-      if(this.isHomeRoute === false){
+      console.log("isHomeRoute", this.isHomeRoute)
+      console.log("isLoginRoute", this.isLoginRoute)
+
+      if(this.isHomeRoute === true && this.isLoginRoute === false){
         if ($('#routeWrapperDiv').removeClass('sb-notoggle')) {
         }
-      }else if(this.isLoginRoute === true){
+      }else if(this.isHomeRoute === false && this.isLoginRoute === true){
+        if ($('#routeWrapperDiv').removeClass('sb-notoggle')) {
+        }
+      }else if(this.isHomeRoute === false && this.isLoginRoute === false){
         if ($('#routeWrapperDiv').addClass('sb-notoggle')) {
-        }
-      }else{
-        if ($('#routeWrapperDiv').removeClass('sb-notoggle')) {
-        }
+        
       }
-      // if(this.isLoginRoute || this.isHomeRoute){
-      //   if ($('#routeWrapperDiv').addClass('sb-notoggle')) {
-      //   }
-      // }else{
-      //   if ($('#routeWrapperDiv').removeClass('s-notoggle')) {
-      //   }
-      // }
+    }
     }));
 
     this.subscriptions.push(this.offlineEvent.subscribe(e => {

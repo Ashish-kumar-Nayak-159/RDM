@@ -205,10 +205,10 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           };
 
           this.apiSubscriptions.push(
-            this.applicationService.getExportedHierarchy().subscribe((response: any) => {
+            this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
               localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
               if (response) {
-                this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response);
+                this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
                 this.apiSubscriptions.push(
                   this.assetService.getAndSetAllAssets(assetTypesObj, this.applicationData.app).subscribe((response: any) => {
                     resolve();

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -20,17 +20,17 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   uploadedFile: any = [];
   fileName: string = 'Choose File';
   isFileUploading = false;
-  filetype:string;
+  filetype: string;
   formData;
-  payload:any;
-  contextApp:any = {}
-  uploadedFileDetails:any;
+  payload: any;
+  contextApp: any = {}
+  uploadedFileDetails: any = [];
   constructor(private toasterService: ToasterService, private commonService: CommonService, private maintenanceService: MaintenanceService) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.formReset()
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    
+
   }
 
 
@@ -39,20 +39,24 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     // console.log("maintenanceRegisterID",this.maintenanceRegistryId)
   }
 
-  formReset()
-  {
+  formReset() {
     this.formData = new FormGroup({
-      description: new FormControl('',Validators.required),
-      filetype: new FormControl(undefined,Validators.required),
-      uploadedFile: new FormControl('',Validators.required)
+      description: new FormControl('', Validators.required),
+      files: new FormArray([
+        new FormGroup({
+          filetype: new FormControl(undefined, Validators.required),
+          uploadedFile: new FormControl('', Validators.required)
+        })
+      ])
     })
   }
 
-  onClose(){
+  onClose() {
     this.fileName = ''
     this.fileName = 'Choose File'
     this.formReset();
     this.modalEmit.emit(false)
+    this.uploadedFile = [];
   }
 
   async uploadFile() {
@@ -61,24 +65,31 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     await Promise.all(this.uploadedFile.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
-        this.contextApp.app + '/assets/'+ this.assetId + '/maintenance/' + this.maintenanceRegistryId
+        this.contextApp.app + '/assets/' + this.assetId + '/maintenance/' + this.maintenanceRegistryId
       );
-      if(data){
-        // console.log("data upload file", data)
-        this.uploadedFileDetails = data;
+      if (data) {
+        console.log("data upload file", data)
+        var eachOne = {
+          document_name: data.name,
+          document_file_url: data.url,
+          document_type:''
+        }
+        this.uploadedFileDetails.push(data)
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
       }
-     
+
     }))
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 
- async onSave(){
-    await this.uploadFile()
-     this.payload = {
+  async onSave() {
+    console.log("formData",this.formData.value)
+    // await this.uploadFile()
+    console.log("uploaded file",this.uploadedFileDetails)
+    this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
       "acknowledgement_message": this.formData.value.description,
@@ -90,19 +101,21 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         }
       ]
     }
-    console.log("payload",this.payload)
-    this.maintenanceService.createAckMaintenance(this.payload).subscribe((response)=>{
-        console.log("ack-API-RESPONSE",response)
+    console.log("payload", this.payload)
+    this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
+      console.log("ack-API-RESPONSE", response)
+      this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
     })
-     this.formData.reset();
-     this.fileName = ''
-     this.fileName = 'Choose File'
+    this.formData.reset();
+    this.fileName = ''
+    this.fileName = 'Choose File'
+    this.modalEmit.emit(false)
   }
-  
-  onFileSelected(event) {
+
+  onFileSelected(event,i) {
+    debugger
     this.isCanUploadFile = false;
-    let allowedZipMagicNumbers = ["504b34", "d0cf11e0","89504e47", "25504446"];
-    this.uploadedFile = [];
+    let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446"];    
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;
       let file = fileList.item(0);
@@ -121,20 +134,29 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           //   'index': 0
           // })
           // this.uploadedFile = file;
-          this.uploadedFile.push({'file':fileList?.item(0)})
+          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name  })
           // console.log("uploaded file",this.uploadedFile)
           this.isCanUploadFile = true;
-          this.fileName = file.name;
+          //this.fileName = file.name;
         }
         else {
           debugger
           this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
-          this.fileName = 'Choose File';
+          //this.fileName = 'Choose File';
         }
         return;
       }
       filereader.readAsArrayBuffer(file);
     }
+  }
+
+  addDocument() {
+    const control = this.formData.get('files');
+    let newFormObj = new FormGroup({
+      filetype: new FormControl(undefined, Validators.required),
+      uploadedFile: new FormControl('', Validators.required)
+    });
+    control.push(newFormObj);
   }
 
 }

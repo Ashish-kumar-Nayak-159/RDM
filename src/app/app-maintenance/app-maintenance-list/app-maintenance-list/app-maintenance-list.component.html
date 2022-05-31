@@ -18,6 +18,8 @@
             [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
+          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
+            (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
           <!-- <div class="form-group">
                 <button type="button" class="btn btn-sm searchBtn btn-primary"
                     (click)="onFilterSelection(this.filterObj, true, true)"><em

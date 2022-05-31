@@ -112,9 +112,9 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   onFileSelected(event) {
-    // debugger
+    debugger
     this.isCanUploadFile = false;
-    let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446"];    
+    let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;
       let file = fileList.item(0);
@@ -143,7 +143,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         }
         else {
           debugger
-          this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
+          this.toasterService.showError('Only Image, Video & PDF files are allowed', 'Select File');
           this.fileName = 'Choose File';
         }
         return;

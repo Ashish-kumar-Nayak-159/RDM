@@ -32,21 +32,15 @@
   <div class="overlap-wrapper">
     <div class="over-lap">
       <br/>
-      <div class="row">
-        <div class="col-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
+      <div class="d-flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
             class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
             <path fill-rule="evenodd"
               d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-          </svg>
-        </div>
-        <div class="col-9">
-          <mark class="p-2 rounded" >{{registryName | titlecase}}</mark>
-          <!-- style="background-color: #dbe9f5;" -->
-        </div>
-        <div class="col">
-        </div>
+        </svg>
+        <p class="p-2 rounded mb-0 ml-3" >{{registryName | titlecase}}</p>
       </div>
+      
 
       <div class="custom-table">
         <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"

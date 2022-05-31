@@ -428,7 +428,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.metadata.condition = '';
       this.propertyObj.metadata.props = [];
       this.propertyObj.condition = '';
-      debugger
       this.propertyObj.metadata.properties.forEach((prop) => {
         if (prop.property) {
           const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);

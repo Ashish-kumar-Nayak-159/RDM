@@ -264,7 +264,7 @@ export class AppMaintenanceListComponent implements OnInit {
         id: 1
       },
       {
-        "name": "BiWeekly",
+        "name": "Biweekly",
         id: 2
       },
       {

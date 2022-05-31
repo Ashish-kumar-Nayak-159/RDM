@@ -258,15 +258,15 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-label required">Provide Email Addresses to send mails</label>
+                <label for="message-text" class="col-form-label required">Email Address/es</label>
                 <input type="email" required class="form-control form-control-sm" id="app_name"
-                  [(ngModel)]="obj.user_emails" (keydown)="validateEmails_eas(i)">
+                  placeholder="Email Address/es"  [(ngModel)]="obj.user_emails" (keydown)="validateEmails_eas(i)"> 
                 <div *ngIf="!validEmail" class="alert-danger">
                   Provide valid email/emails.
                 </div>
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-label">Select Users Group to send Email</label>
+                <label for="message-text" class="col-form-label">Select Users Group</label>
                 <div class="form-group">
                   <ng-select [items]="userGroupArray" clearSearchOnAdd="true" [multiple]="true"
                     class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"

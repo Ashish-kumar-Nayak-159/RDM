@@ -430,6 +430,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isDisabled = false;
   }
 
+ 
 
   async getTelemetryData() {
     this.telemetryObj = {};

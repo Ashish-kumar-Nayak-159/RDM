@@ -13,7 +13,7 @@ export class MaintenanceService {
   constructor(private http: HttpClient) { }
 
   getMaintenance(){
-    return this.http.get(this.url + AppUrls.GET_MAINTENANCE)
+    return this.http.get(this.url + AppUrls.GET_MAIN)
   }
   getMaintenancedata(id){
     return this.http.get(

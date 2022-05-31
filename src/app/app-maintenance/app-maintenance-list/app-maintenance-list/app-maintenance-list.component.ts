@@ -11,8 +11,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
 
-
 declare var $: any;
+
 
 @Component({
   selector: 'app-app-maintenance-list',
@@ -100,6 +100,8 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenanceNotificationId: number;
   currentOffset = 0;
   currentLimit = 20;
+  registryName:string;
+  loader:boolean = false;
 
   constructor(
     private commonService: CommonService,
@@ -107,7 +109,11 @@ export class AppMaintenanceListComponent implements OnInit {
     private maintenanceService: MaintenanceService,
     private toasterService: ToasterService,
     private router: Router
-  ) { }
+  ) { 
+    
+  }
+
+  
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -255,7 +261,6 @@ export class AppMaintenanceListComponent implements OnInit {
         },
       ],
     };
-    this.getMaintenance();
     this.itemArray.push({
       "name": "Daily",
       id: 0
@@ -280,6 +285,8 @@ export class AppMaintenanceListComponent implements OnInit {
         "name": "Yearly",
         id: 5
       })
+    this.getMaintenance();
+   
   }
   addNewEsacalation() {
     let maintenance_regirstry = {
@@ -340,16 +347,22 @@ export class AppMaintenanceListComponent implements OnInit {
       }
     }
   }
+
   //getting data list from maintenance APi
   getMaintenance() {
+    this.tableConfig.is_table_data_loading = true
     this.maintenanceService.getMaintenance().subscribe((response: any) => {
       console.log("maintenance", response)
       response.data.forEach((item) => {
+        item.inspection_frequency = this.itemArray.find((data)=>{
+          return  data.id == item.inspection_frequency
+        }).name        
         item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
-
+      this.tableConfig.is_table_data_loading = false;
       this.maintenances = response.data
     }, (err) => {
+      this.tableConfig.is_table_data_loading = false;
       console.log("err while calling maintenance api", err)
     })
   }
@@ -376,7 +389,6 @@ export class AppMaintenanceListComponent implements OnInit {
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-            console.log('checkingassets', JSON.stringify(this.assets))
             debugger
             for (var i = 0; i < this.assets.length; i++) {
               this.assetsdata = {
@@ -850,12 +862,10 @@ getMaintenance_data(id)
     else if (obj.for === 'Acknowledge') {
       this.showAckModal = true
       this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
-      console.log("on ACkbtn click", obj)
       console.log("acknowledgeID", obj.data.maintenance_notification_id)
-      $('#addWhieListAsset').modal('show')
+      $('#maintenanceModal').modal('show')
     }
     else if (obj.for === 'Disable') {
-      console.log("disable", obj)
       this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
       this.isMaintenanceRequired = obj?.data?.is_maintenance_required
       if (!(this.isMaintenanceRequired)) {
@@ -936,7 +946,6 @@ getMaintenance_data(id)
 
   //showing this custom model when someone try to enable maintenance
   onSave() {
-    console.log("date&Time", this.maintenanceForm.value.dateAndTime)
     this.payload = {
       is_maintenance_required: !this.isMaintenanceRequired,
       start_date: this.maintenanceForm.value.dateAndTime
@@ -1028,17 +1037,20 @@ getMaintenance_data(id)
 
   // getting data for perticular maintenance when someone click on trigger btn
   historyOfPerticularMaintenance(obj) {
+    this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(obj?.data?.maintenance_registry_id).subscribe((res: any) => {
       console.log("ApI Trigger response", res)
       res.data.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
+      this.maintenanceConfig.is_table_data_loading = false;
       this.maintenanceData = res.data;
     }, (error) => {
-      console.log("error while triggering", error)
+      this.maintenanceConfig.is_table_data_loading = false;
       this.toasterService.showError(`${error.message}`, 'Error')
     })
     console.log("historyofperticularMaintenance", obj)
+    this.registryName = obj?.data?.name
     this.asset_id = obj?.data?.asset_id
     this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
 
@@ -1047,7 +1059,6 @@ getMaintenance_data(id)
   //disable maintenance
   disableMaintenance(maintenanceRegisterId: any, payload: any) {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
-      console.log("disable", response)
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance disabled successfully !', 'Maintenance Edit')
     })
@@ -1056,7 +1067,6 @@ getMaintenance_data(id)
   //enable maintenance
   enableMaintenance(maintenanceRegisterId: any, payload: any) {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
-      console.log("enable", response)
       this.maintenanceForm.reset();
       this.toasterService.showSuccess('maintenance enable successfully !', 'Maintenance Edit')
       this.getMaintenance();
@@ -1069,7 +1079,6 @@ getMaintenance_data(id)
   //delete maintenance
   deleteMaintenance() {
     this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response: any) => {
-      console.log("del response", response)
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance deleted successfully !', 'Maintenance Delete')
     })
@@ -1078,7 +1087,6 @@ getMaintenance_data(id)
   //getting details of acknowledge maintenance
   getAckMaintenance(notificationId: number) {
     this.maintenanceService.getMaintenanceAckDetails(notificationId).subscribe((res: any) => {
-      console.log("ackMaintenanceDetails", res)
       res.data.forEach((data) => {
         data.acknowledgement_date = this.commonService.convertUTCDateToLocalDate(data.acknowledgement_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
@@ -1096,7 +1104,7 @@ getMaintenance_data(id)
 
   closeModal(value: boolean) {
     this.showAckModal = value;
-    $("#addWhieListAsset").modal('hide');
+    $("#maintenanceModal").modal('hide');
 
   }
 

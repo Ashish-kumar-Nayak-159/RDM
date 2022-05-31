@@ -31,14 +31,27 @@
 
   <div class="overlap-wrapper">
     <div class="over-lap">
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" (click)="backToMain()"
-        class="bi bi-arrow-left pl-2" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-      </svg><br />
+      <br/>
+      <div class="row">
+        <div class="col-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
+            class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+          </svg>
+        </div>
+        <div class="col-9">
+          <mark class="p-2 rounded" >{{registryName | titlecase}}</mark>
+          <!-- style="background-color: #dbe9f5;" -->
+        </div>
+        <div class="col">
+        </div>
+      </div>
+
       <div class="custom-table">
         <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"
-          (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+          (btnClickEvent)="onTableFunctionCall($event)">
+        </app-common-data-table>
       </div>
     </div>
     <div class="" id="table-wrapper">
@@ -77,18 +90,29 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="onSave()"
-            [disabled]="!maintenanceForm.valid">Acknowledge</button>
+            [disabled]="!maintenanceForm.valid">Save</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-<app-app-maintenance-modal *ngIf="showAckModal" (modalEmit)="closeModal($event)" [assetId]="asset_id"
-  [maintenanceRegistryId]="maintenanceRegistryId" [maintenanceNotificationId]="maintenanceNotificationId">
-</app-app-maintenance-modal>
-<app-app-view-acknowledge-modal *ngIf="showViewAckModal" [viewAckMaintenanceDetails]="viewAckMaintenanceDetails">
-</app-app-view-acknowledge-modal>
+
+<div class="modal right fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-app-maintenance-modal *ngIf="showAckModal" (modalEmit)="closeModal($event)" [assetId]="asset_id"
+      [maintenanceRegistryId]="maintenanceRegistryId" [maintenanceNotificationId]="maintenanceNotificationId">
+    </app-app-maintenance-modal>
+  </div>
+</div>
+
+<div class="modal right fade" id="viewAcknowledge" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-app-view-acknowledge-modal *ngIf="showViewAckModal" [viewAckMaintenanceDetails]="viewAckMaintenanceDetails">
+    </app-app-view-acknowledge-modal>
+  </div>
+</div>
+
 
 <div class="modal right fade" id="createMaintainenceModelModal" tabindex="-1" role="dialog"
   aria-labelledby="ModalLabel2">
@@ -133,9 +157,10 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Description</label>
-            <textarea id="description" class="form-control form-control-sm" [(ngModel)]="description" formControlName="description" rows="5" cols="80"></textarea>
-            </div>
-          <div class="form-group" >
+            <textarea id="description" class="form-control form-control-sm" [(ngModel)]="description"
+              formControlName="description" rows="5" cols="80"></textarea>
+          </div>
+          <div class="form-group">
             <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <input type="datetime-local" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time">
@@ -260,7 +285,7 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Email Address/es</label>
                 <input type="email" required class="form-control form-control-sm" id="app_name"
-                  placeholder="Email Address/es"  [(ngModel)]="obj.user_emails" (keydown)="validateEmails_eas(i)"> 
+                  placeholder="Email Address/es" [(ngModel)]="obj.user_emails" (keydown)="validateEmails_eas(i)">
                 <div *ngIf="!validEmail" class="alert-danger">
                   Provide valid email/emails.
                 </div>

@@ -538,7 +538,7 @@ export class CONSTANTS {
       system_name: 'Maintenance',
       url: 'applications/:appName/maintenance',
       display_name: 'Maintenance',
-      icon: 'fa fa-fw fa-object-group',
+      icon: 'fa fa-fw fa-solid fa-wrench',
       visible: true,
       exactMatch: true,
       privileges_required: ['ASMV'],

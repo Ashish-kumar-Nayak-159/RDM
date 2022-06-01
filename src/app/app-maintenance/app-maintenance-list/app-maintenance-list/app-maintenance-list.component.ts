@@ -33,7 +33,7 @@ export class AppMaintenanceListComponent implements OnInit {
   assetDropdown: any[] = [];
   assetsdata: any = {
     asset_name: '',
-    asset_id: '',
+    asset_ids: '',
     asset_type: ''
   };
   validEmail = true;
@@ -116,7 +116,19 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
 
+/////  While Click on the Save Hierarchy 
+onSaveHierachy() {
+  this.originalFilter = {};
+  if (this.filterObj.asset) {
+    this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+    this.onChangeOfAsset();
+  }
+}
 
+onChangeOfAsset(){
+  const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+
+}
 
   async ngOnInit(): Promise<void> {
 
@@ -379,7 +391,7 @@ getgateway(hierarchy)
        
         this.assetDropdown.push( {
           asset_name: response?.data[i].display_name,
-          asset_id: response?.data[i].asset_id,
+          asset_ids: response?.data[i].asset_id,
           asset_type: response?.data[i].type
         });
         }
@@ -401,7 +413,7 @@ getgateway(hierarchy)
       for (var i = 0; i < response?.data.length; i++) {
         this.assetsdata = {
           asset_name: response?.data[i].display_name,
-          asset_id: response?.data[i].asset_id,
+          asset_ids: response?.data[i].asset_id,
           asset_type: response?.data[i].type
              };
                this.assetDropdown.push(this.assetsdata);
@@ -424,7 +436,7 @@ getgateway(hierarchy)
             for (var i = 0; i < this.assets.length; i++) {
               this.assetsdata = {
                 asset_name: this.assets[i].display_name,
-                asset_id: this.assets[i].asset_id,
+                asset_ids: this.assets[i].asset_id,
                 asset_type: this.assets[i].type
               };
               this.assetDropdown.push(this.assetsdata);
@@ -453,7 +465,7 @@ onCloseMaintenanceModelModal() {
   getMaitenanceModel() {
     this.createMaintenanceForm = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
-      asset_id: new FormControl('', [Validators.required]),
+      asset_ids: new FormControl('', [Validators.required]),
       start_date: new FormControl('', [Validators.required]),
       inspection_frequency: new FormControl('', [Validators.required]),
       description: new FormControl('')
@@ -520,6 +532,7 @@ onCloseMaintenanceModelModal() {
       
     })
     this.maintenanceModel = this.createMaintenanceForm.value;
+    this.maintenanceModel.asset_id = this.createMaintenanceForm.get("asset_ids").value;
     this.maintenanceModel.is_maintenance_required = true;
     this.maintenanceModel.is_notify_user = this.is_notify_user;
     this.maintenanceModel.is_escalation_required = this.is_escalation_required;
@@ -585,7 +598,7 @@ isAsset = false;
    if(this.createMaintenanceForm !== undefined)
    { 
      this.createMaintenanceForm.reset();
-     this.createMaintenanceForm.get('asset_id').enable()
+     this.createMaintenanceForm.get('asset_ids').enable()
      this.createMaintenanceForm.get('start_date').enable();
    }
    if(this.notifyMaintenanceForm !== undefined)
@@ -721,7 +734,7 @@ getMaintenance_data(id)
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
     this.is_escalation_required = this.maintenanceModel.is_escalation_required;
-    this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
+    this.createMaintenanceForm.get('asset_ids').setValue(this.maintenanceModel.asset_id);
     this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
@@ -759,13 +772,13 @@ getMaintenance_data(id)
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
     this.is_escalation_required = this.maintenanceModel.is_escalation_required;
-    this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
+    this.createMaintenanceForm.get('asset_ids').setValue(this.maintenanceModel.asset_id);
     this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
     if(this.isView)
     {
-      this.createMaintenanceForm.get('asset_id').disable();
+      this.createMaintenanceForm.get('asset_ids').disable();
       this.createMaintenanceForm.get('start_date').disable();
       this.isEdit = false;
     }
@@ -1033,7 +1046,7 @@ getMaintenance_data(id)
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
-      this.createMaintenanceForm.get('asset_id').enable()
+      this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);

@@ -137,7 +137,7 @@
             <label for="message-text" class="col-form-label required">Asset</label>
             <ng-select [items]="assetDropdown" [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm" [searchable]="true"
               bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
-              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_id" required formControlName="asset_id">
+              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids" required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
                 <span [tooltip]="item.asset_name">
                       {{item.asset_name}}
@@ -146,14 +146,14 @@
             </ng-select>
             <ng-select [items]="assetDropdown" *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
               bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
-              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_id"  required formControlName="asset_id">
+              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids"  required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
                   {{item.asset_name}}
               </ng-template>
             </ng-select>
-            <div *ngIf="!isView && createMaintenanceForm.get('asset_id').errors && createMaintenanceForm.get('asset_id').touched"
+            <div *ngIf="!isView && createMaintenanceForm.get('asset_ids').errors && createMaintenanceForm.get('asset_ids').touched"
               class="alert-danger">
-              <div *ngIf="createMaintenanceForm.get('asset_id').errors.required">
+              <div *ngIf="createMaintenanceForm.get('asset_ids').errors.required">
                 Asset is required.
               </div>
             </div>

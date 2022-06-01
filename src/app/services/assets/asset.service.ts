@@ -7,7 +7,6 @@ import { AppUrls } from 'src/app/constants/app-url.constants';
 import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
 import { catchError, map, filter } from 'rxjs/operators';
-import { GatewayAssetsSettingComponent } from 'src/app/assets/gateway-control-panel/gateway-settings/gateway-assets-setting/gateway-assets-setting.component';
 
 @Injectable({
   providedIn: 'root',
@@ -147,7 +146,7 @@ export class AssetService {
   }
 
  
-  getGateWAy(filterObj)
+  getGateWAy(filterObj,param)
   {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
@@ -155,7 +154,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    params = params.set("type", "IoT Gateway");
+    params = params.set("type", param);
     return this.http.get(this.url + AppUrls.GET_ASSET_GATEWAY_LIST, { params });
   }
 

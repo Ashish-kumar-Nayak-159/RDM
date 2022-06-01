@@ -448,20 +448,35 @@ getMaitenanceModel()
      || (this.createMaintenanceForm.get("asset_id").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
-     ) {this.createMaitenanceCall = false;
-      this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
-      return;
+     ) {
+     
+        this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
+        this.createMaitenanceCall = false;
+        return;
     }
+    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0)
+    {
+      for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
+      {
+         if(this.maintenanceModel.maintenance_escalation_registry[n]?.user_email===undefined || 
+          this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0)
+          {
+          this.createMaitenanceCall = false;
+          this.toasterService.showError('Please Enter mandatory information for escalation '+n," Maitenance Create");
+          return;
+        }
+        
+      }
+    }
+
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
-    if(element.user_email!==undefined && 
-      element?.duration_hours!==undefined && element?.duration_hours!=='' 
-      && element?.email_subject!==undefined && element?.email_subject!=='' 
-      && element?.email_body!==undefined && element?.email_body!=='' 
-      && element?.user_groups!==undefined && element?.user_groups!=='' 
-      && element.user_email[index]!=='')
-    {
+    
       maintenance_escalation_registry.push({
         "user_emails":element?.user_email,
           "user_groups":element?.user_groups,
@@ -469,8 +484,6 @@ getMaitenanceModel()
           "email_subject":element?.email_subject,
           "duration_hours":element?.duration_hours
         })
-      
-    }
       
     })
     this.maintenanceModel = this.createMaintenanceForm.value;
@@ -707,7 +720,7 @@ getMaintenance_data(id)
     {
       this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
       this.notifyEmails = this.maintenanceModel?.notify_user_emails;
-      this.currentItem = this.maintenanceModel.notify_email_body;
+      this.currentItem = this.maintenanceModel?.notify_email_body;
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }

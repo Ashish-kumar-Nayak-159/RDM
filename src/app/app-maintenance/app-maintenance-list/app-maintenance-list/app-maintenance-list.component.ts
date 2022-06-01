@@ -107,6 +107,7 @@ export class AppMaintenanceListComponent implements OnInit {
   singleLoadMoreVisibility:boolean = true;
   showHierarchy:boolean = true;
   triggerData:any;
+  escalationDetails:any;
 
   constructor(
     private commonService: CommonService,
@@ -845,6 +846,15 @@ export class AppMaintenanceListComponent implements OnInit {
       $("#viewAcknowledge").modal('show')
       this.getAckMaintenance(obj?.data?.maintenance_notification_id);
     }
+    else if(obj.for === 'Escalation'){
+      console.log("escalation",obj)
+      obj?.data?.maintenance_escalations.forEach((data)=>{
+        data.trigger_date = this.commonService.convertUTCDateToLocalDate(data.trigger_date,"MMM dd, yyyy, HH:mm:ss aaaaa'm'")
+      })
+      this.escalationDetails = obj?.data?.maintenance_escalations
+        $("#escalation").modal('show')
+      
+    }
     else if (obj.for === 'Trigger') {
       this.showHierarchy = false;
       this.maintenanceData = []
@@ -1025,6 +1035,14 @@ export class AppMaintenanceListComponent implements OnInit {
               valueclass: '',
               tooltip: 'Acknowledge',
               show_hide_data_key: 'acknowledged_required'
+            },
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'Escalation',
+              valueclass: '',
+              tooltip: 'Escalation',
+      
             },
           ],
         },

@@ -13,10 +13,10 @@ export class TextEditorComponent  {
   @Output() htmlContentDetect = new EventEmitter<any>();
   constructor()
   {
-   setTimeout(() => {
-    this.htmlContent = this.inputItem;
-    this.htmlContentDetect.emit(this.htmlContent); 
-   }, 1500);
+    setTimeout(() => {
+      this.htmlContent = this.inputItem;
+      this.htmlContentDetect.emit(this.htmlContent); 
+    }, 1100);
   }
  
   handleInputChange(value){

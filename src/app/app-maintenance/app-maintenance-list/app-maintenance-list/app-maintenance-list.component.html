@@ -181,16 +181,16 @@
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Acknowledge Required</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" id="ack" name="ack"
-            [(ngModel)]="is_acknowledge_required" (click)="is_acknowledge_required=!is_acknowledge_required">
+            [(ngModel)]="is_acknowledge_required" >
             <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="ack" name="ack"
-            [(ngModel)]="is_acknowledge_required" (click)="is_acknowledge_required=!is_acknowledge_required">
+            [(ngModel)]="is_acknowledge_required" >
         </div>
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Notify to User</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
-            (click)="is_notify_user=!is_notify_user ">
+            >
           <input type="checkbox" *ngIf="!isView"  class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
-            (click)="is_notify_user=!is_notify_user ">
+            >
         </div>
         <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
           <div class="d-flex align-items-center w-100">

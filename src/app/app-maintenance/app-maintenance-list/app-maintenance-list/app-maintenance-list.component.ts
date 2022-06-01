@@ -139,7 +139,7 @@ export class AppMaintenanceListComponent implements OnInit {
         user_emails: '',
         user_email:[],
         duration_hours: "",
-        user_groups: "",
+        user_groups: [],
         email_subject: "",
         email_body: "",
       }],
@@ -293,7 +293,7 @@ export class AppMaintenanceListComponent implements OnInit {
       user_emails: '',
       user_email:[],
       duration_hours: "",
-      user_groups: "",
+      user_groups: [],
       email_subject: "",
       email_body: "",
     }

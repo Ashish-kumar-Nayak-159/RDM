@@ -22,11 +22,7 @@ declare var $: any;
 
 export class AppMaintenanceListComponent implements OnInit {
   userGroupArray: any[] = [];
-  appObj: { group_name?: string; recipients?: any[]; email?: any[]; sms?: any[]; whatsapp?: any[];push_notification?: any[] };
-  groupObj: { group_name?: string; recipients?: {}; email?: any[]; sms?: any[]; whatsapp?: any[]; push_notification?: any[] };
-  isAddUserGroup = false;
   userGroups: any[] = [];
-  recipientemail: any = {};
   tileData: any;
   contextApp: any;
   decodedToken: any;
@@ -63,7 +59,7 @@ export class AppMaintenanceListComponent implements OnInit {
   description:any;
   maintenance_Sdate:any;
   is_notify_user = false;
-  inspection_frequency: any;
+  inspection_frequency:any;
   notifyBefore: any;
   notify_user_emails?: any;
   notify_email_subject: any;
@@ -434,6 +430,7 @@ getMaitenanceModel()
       notifyBefore: new FormControl('', [Validators.required]),
       notify_user_emails: new FormControl('', [Validators.required]),
       notify_email_subject: new FormControl('', [Validators.required]),
+      notify_user_groups: new FormControl('')   
     })
 
 
@@ -443,6 +440,7 @@ getMaitenanceModel()
     this.htmlContent = valuefromtextEditor;
   }
     
+  
   onSaveMaintenanceModelModal()
   {
     this.createMaitenanceCall = true;
@@ -455,9 +453,14 @@ getMaitenanceModel()
       return;
     }
     let maintenance_escalation_registry :any [] = [];
-    this.maintenanceModel.maintenance_escalation_registry?.forEach((element)=>
+    this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
-    if(element.user_email!==undefined && element.user_email[0]!='')
+    if(element.user_email!==undefined && 
+      element?.duration_hours!==undefined && element?.duration_hours!=='' 
+      && element?.email_subject!==undefined && element?.email_subject!=='' 
+      && element?.email_body!==undefined && element?.email_body!=='' 
+      && element?.user_groups!==undefined && element?.user_groups!=='' 
+      && element.user_email[index]!=='')
     {
       maintenance_escalation_registry.push({
         "user_emails":element?.user_email,
@@ -466,7 +469,7 @@ getMaitenanceModel()
           "email_subject":element?.email_subject,
           "duration_hours":element?.duration_hours
         })
-        
+      
     }
       
     })
@@ -479,6 +482,7 @@ getMaitenanceModel()
     {
       this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
       this.maintenanceModel.notify_user_emails =  this.notifyEmails;
+      this.maintenanceModel.notify_user_groups = this.notifyMaintenanceForm.get('notify_user_groups').value;
       this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
     }
     this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
@@ -541,6 +545,7 @@ isAsset = false;
    this.isAsset = true;
    this.notifyEmails = [];
    this.emails = [];
+   this.isEdit = false;
    if(this.createMaintenanceForm !== undefined)
    { 
      this.createMaintenanceForm.reset();
@@ -688,6 +693,7 @@ getMaintenance_data(id)
   
   setEditFields()
   {
+    this.isView = false;
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
     this.is_escalation_required = this.maintenanceModel.is_escalation_required;
@@ -702,6 +708,7 @@ getMaintenance_data(id)
       this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
       this.notifyEmails = this.maintenanceModel?.notify_user_emails;
       this.currentItem = this.maintenanceModel.notify_email_body;
+      this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
   
@@ -724,7 +731,7 @@ getMaintenance_data(id)
     }
   
   }
-  
+  notify_user_groups = '';
   setViewFields()
   {
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
@@ -747,6 +754,8 @@ getMaintenance_data(id)
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
       this.currentItem = this.maintenanceModel.notify_email_body;
       this.notifyEmails = this.maintenanceModel?.notify_user_emails;
+      this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
+      this.notify_user_groups =  this.maintenanceModel?.notify_user_groups;
     }
   
     if(this.is_escalation_required)

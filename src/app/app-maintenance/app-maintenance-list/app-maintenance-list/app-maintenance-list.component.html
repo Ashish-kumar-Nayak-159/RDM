@@ -161,16 +161,16 @@
             <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
             <select class="form-control form-control-sm" [attr.disabled]="isView && !isEdit" id="template" [(ngModel)]="inspection_frequency"
               formControlName="inspection_frequency" *ngIf="isView" name="model_type">
-              <option [ngValue]="undefined" selected>Select Inspection Frequency</option>
               <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
             </select>
-            <select class="form-control form-control-sm" *ngIf="!isView" id="template" [(ngModel)]="inspection_frequency"
+
+            <select  class="form-control form-control-sm" *ngIf="!isView" id="template" [(ngModel)]="inspection_frequency"
             formControlName="inspection_frequency" name="model_type">
-            <option [ngValue]="undefined" selected>Select Inspection Frequency</option>
-            <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
-          </select>
+              <option [ngValue]="null" selected disabled>Select Inspection Frequency</option>
+              <option  *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
+            </select>
             <div
-              *ngIf="!isView && createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
+              *ngIf="createMaintenanceForm.get('inspection_frequency').value===null && createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
               class="alert-danger">
               <div *ngIf="createMaintenanceForm.get('inspection_frequency').errors.required">
                 Inspection Frequency is required.
@@ -288,7 +288,34 @@
               </div>
             </div>
             </div>
-          
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Select Users Group</label>
+              <div class="form-group">
+                <ng-select [items]="userGroupArray" [ngClass]="[isView ? 'disabled':'']"  [disabled]="isView"
+                *ngIf="isView"  clearSearchOnAdd="true" [multiple]="true"
+                  class="custom-dropdown w-12 sm" 
+                   name="group-dropdown" [(ngModel)]="notify_user_groups" formControlName="notify_user_groups" required>
+                  <ng-template ng-option-tmp let-item="item">
+                    <span>
+                      {{notify_user_groups}}
+                    </span>
+                  </ng-template>
+                 </ng-select>
+                <ng-select [items]="userGroupArray" *ngIf="!isView"  clearSearchOnAdd="true" [multiple]="true"
+                class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
+                 bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
+                name="group-dropdown" [closeOnSelect]="false" formControlName="notify_user_groups" required>
+                <ng-template ng-option-tmp let-item="item">
+                  <span>
+                    {{item.group_name}}
+                  </span>
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
+                  {{items.length}} groups selected
+                </ng-template>
+              </ng-select>
+            </div>
+            </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Email Body</label>
             <app-text-editor id="htmlEmail1"  [ngClass]="[ isView ? 'disabled':'']" [inputItem]="currentItem" (htmlContentDetect)="emailBodyDetect($event)">
@@ -362,7 +389,7 @@
                     </ng-container>
                   </div>
                 </div>
-                <div class="my-2"  *ngIf="emails?.length > 0 && !isEdit">
+                <div class="my-2"  *ngIf="emails?.length > 0">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                     <ng-container *ngFor="let user of emails; let index = index">
                       <span class="tag">

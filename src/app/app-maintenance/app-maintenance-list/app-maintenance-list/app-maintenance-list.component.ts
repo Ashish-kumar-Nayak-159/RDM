@@ -168,7 +168,6 @@ onChangeOfAsset(){
     this.getUserGroup();
     
     this.getAssets(this.contextApp.user.hierarchy);
-    this.getGateWayandAssets(this.contextApp.user.hierarchy);
     this.getgateway(this.contextApp.user.hierarchy);
     this.tableConfig = {
       type: 'Applications',
@@ -383,10 +382,10 @@ getgateway(hierarchy)
  
   const obj = {
     hierarchy: JSON.stringify(hierarchy),
-    type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ','
+    type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY + ","
   };
   let params = "IoT GateWay";
-  this.assetService.getGateWAy(obj,params).subscribe((response: any) => {
+  this.assetService.getAndSetAllAssets(obj,params).subscribe((response: any) => {
     if (response?.data) {
       for (var i = 0; i < response?.data.length; i++) {
        
@@ -401,27 +400,7 @@ getgateway(hierarchy)
   
 }
 
-  getGateWayandAssets(hierarchy)
-  {
-
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-      };
-// Get all Assets for display
-     this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe((response: any) => {
-    if (response?.data) {
-      for (var i = 0; i < response?.data.length; i++) {
-        this.assetsdata = {
-          asset_name: response?.data[i].display_name,
-          asset_ids: response?.data[i].asset_id,
-          asset_type: response?.data[i].type
-             };
-               this.assetDropdown.push(this.assetsdata);
-            }
-         }
-        });
-}
+  
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
       const obj = {

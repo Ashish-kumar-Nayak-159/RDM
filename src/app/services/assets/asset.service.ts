@@ -146,17 +146,6 @@ export class AssetService {
   }
 
  
-  getGateWAy(filterObj,param)
-  {
-    let params = new HttpParams();
-    Object.keys(filterObj).forEach((key) => {
-      if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
-      }
-    });
-    params = params.set("type", param);
-    return this.http.get(this.url + AppUrls.GET_ASSET_GATEWAY_LIST, { params });
-  }
 
   getAssetList(filterObj) {
     let params = new HttpParams();

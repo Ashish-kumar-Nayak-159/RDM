@@ -50,15 +50,15 @@
         </app-common-data-table>
       </div>
     </div>
-    <div class="" id="table-wrapper">
+    <div class="" id="table-wrapper d-flex flex-column">
       <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+        <span class="d-flex justify-content-center w-100"  *ngIf="!insideScrollFunFlag && maintenances.length > 0 && loadMoreVisibility">
+          <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
+            tooltip="Load More Records...">Load More...</a>
+        </span>
     </div>
-    <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && maintenances.length > 0">
-        <a href="javascript:void(0)" class="mr-1"
-          (click)="currentOffset = currentOffset + currentLimit;searchAssets();" placement="bottom"
-          tooltip="Load More Records...">Load More...</a>
-      </span> -->
   </div>
   <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">

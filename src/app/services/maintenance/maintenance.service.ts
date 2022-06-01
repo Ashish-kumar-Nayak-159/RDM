@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { AppUrls } from 'src/app/constants/app-url.constants';
@@ -12,8 +12,15 @@ export class MaintenanceService {
 
   constructor(private http: HttpClient) { }
 
-  getMaintenance(){
-    return this.http.get(this.url + AppUrls.GET_MAIN)
+  getMaintenance(filterObj?){
+    // return this.http.get(this.url + AppUrls.GET_MAIN)
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_MAIN,{params})
   }
   getMaintenancedata(id){
     return this.http.get(

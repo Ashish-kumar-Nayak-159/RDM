@@ -99,10 +99,11 @@ export class AppMaintenanceListComponent implements OnInit {
   showViewAckModal: boolean = false;
   maintenanceNotificationId: number;
   currentOffset = 0;
-  currentLimit = 10;
+  currentLimit = 20;
   registryName: string;
   loader: boolean = false;
   hierarchy: any;
+  loadMoreVisibility:boolean = true;
 
   constructor(
     private commonService: CommonService,
@@ -121,7 +122,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+
     this.maintenanceModel = {
       asset_id: '',
       is_maintenance_required: true,
@@ -352,8 +353,15 @@ export class AppMaintenanceListComponent implements OnInit {
 
   //getting data list from maintenance APi
   getMaintenance() {
+   
+    const custObj = {
+      offset: this.currentOffset,
+      count: this.currentLimit,
+      hierarchy: JSON.stringify(this.hierarchy)
+    }
+
     this.tableConfig.is_table_data_loading = true
-    this.maintenanceService.getMaintenance().subscribe((response: any) => {
+    this.maintenanceService.getMaintenance(custObj).subscribe((response: any) => {
       console.log("maintenance", response)
       response.data.forEach((item) => {
         item.inspection_frequency = this.itemArray.find((data) => {
@@ -362,7 +370,10 @@ export class AppMaintenanceListComponent implements OnInit {
         item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
       this.tableConfig.is_table_data_loading = false;
-      this.maintenances = response.data
+      if(response.data.length < this.currentLimit){
+         this.loadMoreVisibility = false;
+      }
+      this.maintenances = [...this.maintenances, ...response.data] 
     }, (err) => {
       this.tableConfig.is_table_data_loading = false;
       console.log("err while calling maintenance api", err)
@@ -532,11 +543,6 @@ export class AppMaintenanceListComponent implements OnInit {
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  /////  To Clear the Hierarchy from dropdown menu 
-  onClearHierarchy() {
-    this.isFilterSelected = false;
-    this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
-  }
 
   /////  While Click on the Save Hierarchy 
   onSaveHierachy() {
@@ -1084,19 +1090,29 @@ export class AppMaintenanceListComponent implements OnInit {
   //calling hierarchy
   filteredHiearchyObj() {
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+    Object.keys(configuredHierarchy).length === 0;
+    this.onClearHierarchy();
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    console.log("contextApp",this.contextApp)
     console.log("configureHierarchy", configuredHierarchy)
     if (this.contextApp) {
       Object.keys(configuredHierarchy).forEach((key) => {
+         debugger
         if (configuredHierarchy[key]) {
           this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
         }
       });
     }
-
     console.log("hierrr", this.hierarchy)
+    this.getMaintenance();
+  
 
   }
+
+  onClearHierarchy() {
+    this.hierarchy = { App: this.contextApp?.app };
+  }
+
 
   searchAssets(updateFilterObj = true) {
   }

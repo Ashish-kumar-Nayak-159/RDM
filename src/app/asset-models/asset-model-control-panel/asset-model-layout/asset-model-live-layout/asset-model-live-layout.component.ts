@@ -132,10 +132,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
             ? response.properties.cloud_derived_properties
             : [];
-          response.properties.edge_derived_properties.forEach((prop) => {
+          response.properties.edge_derived_properties?.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             let matchCount = 0
-            prop.metadata?.properties.forEach((actualProp) => {
+            prop.metadata?.properties?.forEach((actualProp) => {
 
               if (!selectedSlave?.slave_id || actualProp?.property?.metadata?.slave_id == selectedSlave?.slave_id) {
                 matchCount++
@@ -147,7 +147,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             }
             this.actualPropertyList.push(prop);
           });
-          response.properties.cloud_derived_properties.forEach((prop) => {
+          response.properties?.cloud_derived_properties?.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             if (!selectedSlave?.slave_id || prop?.metadata?.slave_id == selectedSlave?.slave_id) {
               this.propertyList.push(prop)
@@ -155,7 +155,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
             this.actualPropertyList.push(prop);
           });
-          this.derivedKPIs.forEach((kpi) => {
+          this.derivedKPIs?.forEach((kpi) => {
             const obj: any = {};
             obj.type = 'Derived KPIs';
             obj.name = kpi.name;
@@ -433,19 +433,23 @@ export class AssetModelLiveLayoutComponent implements OnInit {
  
 
   async getTelemetryData() {
-    this.telemetryObj = {};
-    this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
-    this.actualPropertyList?.forEach((prop) => {
-      if (prop.json_key) {
-        this.telemetryObj[prop.json_key] = {
-          value: this.commonService.randomIntFromInterval(
-            prop.json_model?.[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
-            prop.json_model?.[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
-          ),
-          date: this.telemetryObj.message_date,
-        };
-      }
-    });
+    try {
+      this.telemetryObj = {};
+      this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
+      this.actualPropertyList?.forEach((prop) => {
+        if (prop.json_key) {
+          this.telemetryObj[prop.json_key] = {
+            value: this.commonService.randomIntFromInterval(
+              prop.json_model?.[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
+              prop.json_model?.[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
+            ),
+            date: this.telemetryObj.message_date,
+          };
+        }
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   onSaveConfigureDashboardWidgets() {

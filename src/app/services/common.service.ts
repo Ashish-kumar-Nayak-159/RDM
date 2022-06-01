@@ -359,14 +359,9 @@ export class CommonService {
   }
 
   randomIntFromInterval(min, max): number {
-    var byteArray = new Uint8Array(1);
-    window.crypto.getRandomValues(byteArray);
-
-    var range = max - min + 1;
-    var max_range = 256;
-    if (byteArray[0] >= Math.floor(max_range / range) * range)
-      return this.randomIntFromInterval(min, max);
-    return min + (byteArray[0] % range);
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   averageGeolocation(coords) {

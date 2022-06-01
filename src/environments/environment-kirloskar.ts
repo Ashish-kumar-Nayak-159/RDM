@@ -9,7 +9,7 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: 'KCMS',
   environment: 'PROD',
-  version: '12.0',
+  version: '13.0.1',
   packageManagementContainer: 'packages',
   storgageSecretKey: 'kIrL0$k@Rcm$',
   redirectToLogin: false,

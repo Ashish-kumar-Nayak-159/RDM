@@ -59,6 +59,7 @@ export class AppUrls {
   public static DELETE_APP_USERROLES = 'apps/{0}/roles/{1}';
   public static GET_DBPARTITION = 'partition_config';
   public static CREATE_LAYOUT = 'layout';
+  public static GET_ASSET_GATEWAY_LIST = "/apps/{0}/assets";
   public static GET_LAYOUT = 'layouts';
   public static GET_ASSETS_MODELS = 'apps/{0}/asset_models';
   public static GET_ASSETS_MODEL_DETAILS = 'apps/{0}/asset_models/{1}';

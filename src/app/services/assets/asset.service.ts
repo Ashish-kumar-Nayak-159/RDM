@@ -7,6 +7,7 @@ import { AppUrls } from 'src/app/constants/app-url.constants';
 import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
 import { catchError, map, filter } from 'rxjs/operators';
+import { GatewayAssetsSettingComponent } from 'src/app/assets/gateway-control-panel/gateway-settings/gateway-assets-setting/gateway-assets-setting.component';
 
 @Injectable({
   providedIn: 'root',
@@ -143,6 +144,19 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
+  }
+
+ 
+  getGateWAy(filterObj)
+  {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    params = params.set("type", "IoT Gateway");
+    return this.http.get(this.url + AppUrls.GET_ASSET_GATEWAY_LIST, { params });
   }
 
   getAssetList(filterObj) {

@@ -19,6 +19,7 @@ export class Maintenanace {
    }
    export class Escalation {
       user_emails: string;
+      user_email: any[] = [];
       duration_hours: any;
       user_groups:any;
       email_subject:string;

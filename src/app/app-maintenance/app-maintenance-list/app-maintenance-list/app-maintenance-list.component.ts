@@ -22,6 +22,11 @@ declare var $: any;
 
 export class AppMaintenanceListComponent implements OnInit {
   userGroupArray: any[] = [];
+  appObj: { group_name?: string; recipients?: any[]; email?: any[]; sms?: any[]; whatsapp?: any[];push_notification?: any[] };
+  groupObj: { group_name?: string; recipients?: {}; email?: any[]; sms?: any[]; whatsapp?: any[]; push_notification?: any[] };
+  isAddUserGroup = false;
+  userGroups: any[] = [];
+  recipientemail: any = {};
   tileData: any;
   contextApp: any;
   decodedToken: any;
@@ -132,6 +137,7 @@ export class AppMaintenanceListComponent implements OnInit {
       is_escalation_required: false,
       maintenance_escalation_registry: [{
         user_emails: '',
+        user_email:[],
         duration_hours: "",
         user_groups: "",
         email_subject: "",
@@ -143,8 +149,10 @@ export class AppMaintenanceListComponent implements OnInit {
     this.getTileName();
     this.getMaitenanceModel();
     this.getUserGroup();
+    
     this.getAssets(this.contextApp.user.hierarchy);
-
+    this.getGateWayandAssets(this.contextApp.user.hierarchy);
+    this.getgateway(this.contextApp.user.hierarchy);
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
@@ -283,6 +291,7 @@ export class AppMaintenanceListComponent implements OnInit {
   addNewEsacalation() {
     let maintenance_regirstry = {
       user_emails: '',
+      user_email:[],
       duration_hours: "",
       user_groups: "",
       email_subject: "",
@@ -306,39 +315,7 @@ export class AppMaintenanceListComponent implements OnInit {
       },
     );
   }
-  validateEmails_eas(j) {
-    this.notify_user_emails = this.maintenanceModel.maintenance_escalation_registry[j]?.user_emails;
-    if (this.notify_user_emails !== undefined) {
-      var emails = this.notify_user_emails.replace(/\s/g, '').split(",");
-      var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-      for (var i = 0; i < emails.length; i++) {
-        if (emails[i] == "" || !regex.test(emails[i])) {
-          this.validEmail = false;
-        }
-        else {
-          this.validEmail = true;
-        }
-      }
-    }
-  }
-  validateEmails(event) {
-
-    this.notify_user_emails = this.notifyMaintenanceForm.get('notify_user_emails').value;
-    if (this.notify_user_emails !== undefined) {
-      var emails = this.notify_user_emails.replace(/\s/g, '').split(",");
-      var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-      for (var i = 0; i < emails.length; i++) {
-        if (emails[i] == "" || !regex.test(emails[i])) {
-          this.validEmail = false;
-        }
-        else {
-          this.validEmail = true;
-        }
-      }
-    }
-  }
+  
   //getting data list from maintenance APi
   getMaintenance() {
     this.maintenanceService.getMaintenance().subscribe((response: any) => {
@@ -364,7 +341,51 @@ export class AppMaintenanceListComponent implements OnInit {
     });
     this.tileData = selectedItem;
   }
+  
+  
+getgateway(hierarchy)
+{
+ 
+  const obj = {
+    hierarchy: JSON.stringify(hierarchy),
+    type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ','
+  };
+  this.assetService.getGateWAy(obj).subscribe((response: any) => {
+    if (response?.data) {
+      for (var i = 0; i < response?.data.length; i++) {
+       
+        this.assetDropdown.push( {
+          asset_name: response?.data[i].display_name,
+          asset_id: response?.data[i].asset_id,
+          asset_type: response?.data[i].type
+        });
+        }
+      }
+  });
+  
+}
 
+  getGateWayandAssets(hierarchy)
+  {
+
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+      };
+// Get all Assets for display
+     this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe((response: any) => {
+    if (response?.data) {
+      for (var i = 0; i < response?.data.length; i++) {
+        this.assetsdata = {
+          asset_name: response?.data[i].display_name,
+          asset_id: response?.data[i].asset_id,
+          asset_type: response?.data[i].type
+             };
+               this.assetDropdown.push(this.assetsdata);
+            }
+         }
+        });
+}
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
       const obj = {
@@ -376,15 +397,6 @@ export class AppMaintenanceListComponent implements OnInit {
           if (response?.data) {
             this.assets = response.data;
             console.log('checkingassets', JSON.stringify(this.assets))
-            debugger
-            for (var i = 0; i < this.assets.length; i++) {
-              this.assetsdata = {
-                asset_name: this.assets[i].display_name,
-                asset_id: this.assets[i].asset_id,
-                asset_type: this.assets[i].type
-              };
-              this.assetDropdown.push(this.assetsdata);
-            }
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
@@ -396,10 +408,15 @@ export class AppMaintenanceListComponent implements OnInit {
           }
         }))
         resolve1();
+      
       })
+
 }
 onCloseMaintenanceModelModal() {
   this.createMaintenanceForm.reset();
+  this.maintenanceForm.reset();
+  this.notifyMaintenanceForm.reset();
+  this.maintenanceModel.maintenance_escalation_registry = [];
   $('#createMaintainenceModelModal').modal('hide');
  
 }
@@ -440,10 +457,10 @@ getMaitenanceModel()
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element)=>
     {
-    if(element.user_emails!==undefined && element.user_emails!='')
+    if(element.user_email!==undefined && element.user_email[0]!='')
     {
       maintenance_escalation_registry.push({
-        "user_emails":element?.user_emails?.split(","),
+        "user_emails":element?.user_email,
           "user_groups":element?.user_groups,
           "email_body":element?.email_body,
           "email_subject":element?.email_subject,
@@ -461,7 +478,7 @@ getMaitenanceModel()
     if(this.is_notify_user)
     {
       this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
-      this.maintenanceModel.notify_user_emails =  this.notifyMaintenanceForm.get('notify_user_emails').value.split(',');
+      this.maintenanceModel.notify_user_emails =  this.notifyEmails;
       this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
     }
     this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
@@ -516,12 +533,88 @@ redirectTo(uri:string){
   this.router.navigate([uri]));
 }
 
-
+isAsset = false;
  /////// To open the Modal for the Maintenance Schedule
  async openCreateMaintenanceModelModal(obj = undefined) {
    this.title = "Add";
-  $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+   this.isView = false;
+   this.isAsset = true;
+   this.notifyEmails = [];
+   this.emails = [];
+   if(this.createMaintenanceForm !== undefined)
+   { 
+     this.createMaintenanceForm.reset();
+     this.createMaintenanceForm.get('asset_id').enable()
+     this.createMaintenanceForm.get('start_date').enable();
    }
+   if(this.notifyMaintenanceForm !== undefined)
+   { 
+     this.notifyMaintenanceForm.reset();
+   }
+   if(this.escalMaintenanceForm !== undefined)
+   { 
+     this.escalMaintenanceForm.reset();
+   }
+   this.is_notify_user = false;
+   this.is_acknowledge_required = false;
+   this.is_escalation_required = false;
+  
+  $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  
+   }
+   emails = [];
+   addEmailRecipient(index) {
+    
+    if (!this.emails) {
+      this.toasterService.showError('Email is required', 'Add Email');
+    } else {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[index].user_emails)) {
+        this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+        this.toasterService.showError('Email address is not valid', 'Add Email');
+        return;
+      }
+      if (this.emails.includes(this.maintenanceModel.maintenance_escalation_registry[index].user_emails)) {
+        this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+        this.toasterService.showError('Email address is already added', 'Add Email');
+        return;
+      }
+      this.emails.push(this.maintenanceModel.maintenance_escalation_registry[index].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[index].user_email.push(this.maintenanceModel.maintenance_escalation_registry[index].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+    }
+  }
+
+
+  removeEmailRecipient(index) {
+    this.emails.splice(index);
+    this.maintenanceModel.maintenance_escalation_registry[index].user_email.splice(index);
+  }
+  notifyEmails = [];
+  addEmailNotifyRecipient() {
+    if (!this.notifyEmails) {
+      this.toasterService.showError('Email is required', 'Add Email');
+    } else {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
+        this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
+        this.toasterService.showError('Email address is not valid', 'Add Email');
+        return;
+      }
+      if (this.notifyEmails.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
+        this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
+        this.toasterService.showError('Email address is already added', 'Add Email');
+        return;
+      }
+      this.notifyEmails.push(this.notifyMaintenanceForm.get('notify_user_emails').value);
+      this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
+  
+    }
+  }
+
+
+  removeEmailNotifyRecipient(index) {
+    this.notifyEmails.splice(index);
+  } 
+
 
  /////  To Clear the Hierarchy from dropdown menu 
  onClearHierarchy() {
@@ -549,7 +642,8 @@ getInspec_Freq(inspection_frequency)
 }
 onCloseViewMaintenanceModelModal()
 {
-  $("#viewMaintainenceModelModal").modal('hide');
+  this.createMaintenanceForm.reset();
+  $('#createMaintainenceModelModal').modal('hide'); 
 }
 getMaintenance_data(id)
 {
@@ -594,7 +688,6 @@ getMaintenance_data(id)
   
   setEditFields()
   {
-    this.isEdit = true;
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
     this.is_escalation_required = this.maintenanceModel.is_escalation_required;
@@ -607,14 +700,9 @@ getMaintenance_data(id)
     if(this.is_notify_user)
     {
       this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
-      this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
-      let emails = this.maintenanceModel?.notify_user_emails[0];
+      this.notifyEmails = this.maintenanceModel?.notify_user_emails;
       this.currentItem = this.maintenanceModel.notify_email_body;
-      for(var i=1;i<this.maintenanceModel?.notify_user_emails?.length;i++)
-      {
-        emails = emails +"," + this.maintenanceModel?.notify_user_emails[i];
-      }
-      this.notifyMaintenanceForm.get('notify_user_emails').setValue(emails);
+      this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
   
     if(this.is_escalation_required)
@@ -622,20 +710,59 @@ getMaintenance_data(id)
   
       let maintenance_escalation_registry = [];
       this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>{
-        let emails = element.user_emails[0];
-        for(var i=1;i<element.user_emails.length;i++)
-        {
-          emails = emails +"," + element.user_emails[i];
-        }
-        
+      
         maintenance_escalation_registry.push({
-          "user_emails":emails,
+          "user_email":element.user_emails,
           "user_groups":element.user_groups,
           "email_body":element.email_body,
           "email_subject":element.email_subject,
           "duration_hours":element.duration_hours
         })
-        this.currentItem = element.email_body;
+      
+      });
+      this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
+    }
+  
+  }
+  
+  setViewFields()
+  {
+    this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
+    this.is_notify_user = this.maintenanceModel.is_notify_user;
+    this.is_escalation_required = this.maintenanceModel.is_escalation_required;
+    this.createMaintenanceForm.get('asset_id').setValue(this.maintenanceModel.asset_id);
+    this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
+    this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
+    this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
+    if(this.isView)
+    {
+      this.createMaintenanceForm.get('asset_id').disable();
+      this.createMaintenanceForm.get('start_date').disable();
+      this.isEdit = false;
+    }
+    this.inspection_frequency = this.maintenanceModel.inspection_frequency;
+    if(this.is_notify_user)
+    {
+      this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
+      this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
+      this.currentItem = this.maintenanceModel.notify_email_body;
+      this.notifyEmails = this.maintenanceModel?.notify_user_emails;
+    }
+  
+    if(this.is_escalation_required)
+    {
+  
+      let maintenance_escalation_registry = [];
+      this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>{
+        
+        maintenance_escalation_registry.push({
+          "user_email":element.user_emails,
+          "user_groups":element.user_groups,
+          "email_body":element.email_body,
+          "email_subject":element.email_subject,
+          "duration_hours":element.duration_hours
+        })
+      
       });
       this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
     }
@@ -821,10 +948,15 @@ getMaintenance_data(id)
   onTableFunctionCall(obj) {
 
     if (obj.for === 'View') {
-      this.isView = !this.isView;
+      this.isView = true;
+      this.isAsset = false;
+      this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-      $("#viewMaintainenceModelModal").modal('show');
       this.getMaintenance_data(this.maintenance_registry_id);
+      setTimeout(() => {
+        this.setViewFields();
+      }, 1000);
+      $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Delete') {
 
@@ -868,9 +1000,12 @@ getMaintenance_data(id)
       }
     }
     else if (obj.for === 'Edit') {
-      this.onCloseMaintenanceModelModal();
       this.isEdit = true;
+      this.isView = false;
+      this.isAsset = true;
       this.title = "Edit";
+      this.createMaintenanceForm.get('asset_id').enable()
+      this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {

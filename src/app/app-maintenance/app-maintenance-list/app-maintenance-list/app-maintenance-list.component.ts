@@ -490,7 +490,7 @@ onCloseMaintenanceModelModal() {
   {
     this.createMaitenanceCall = true;
     if((this.createMaintenanceForm.get("name").value===undefined || this.createMaintenanceForm.get("name").value==='')
-     || (this.createMaintenanceForm.get("asset_id").value===undefined || this.createMaintenanceForm.get("name").value==='')
+     || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
      ) {

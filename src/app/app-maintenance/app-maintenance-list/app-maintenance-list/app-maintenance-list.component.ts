@@ -11,8 +11,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
 
-
 declare var $: any;
+
 
 @Component({
   selector: 'app-app-maintenance-list',
@@ -52,12 +52,12 @@ export class AppMaintenanceListComponent implements OnInit {
   askRequired: any;
   is_escalation_required = false;
   createMaitenanceCall = false;
-  notifyMaintenanceForm : FormGroup;
-  createMaintenanceForm : FormGroup;
-  escalMaintenanceForm : FormGroup;
-  maintenanceFormEdit : FormGroup;
-  description:any;
-  maintenance_Sdate:any;
+  notifyMaintenanceForm: FormGroup;
+  createMaintenanceForm: FormGroup;
+  escalMaintenanceForm: FormGroup;
+  maintenanceFormEdit: FormGroup;
+  description: any;
+  maintenance_Sdate: any;
   is_notify_user = false;
   inspection_frequency:any;
   notifyBefore: any;
@@ -68,7 +68,9 @@ export class AppMaintenanceListComponent implements OnInit {
 
   apiSubscriptions: Subscription[] = [];
   tableConfig: any;
+  maintenanceConfig: any;
   maintenances: any = [];
+  maintenanceData: any = [];
   isApplicationListLoading = false;
   confirmBodyMessage: string;
   confirmHeaderMessage: string;
@@ -93,14 +95,16 @@ export class AppMaintenanceListComponent implements OnInit {
   viewAckMaintenanceDetails: any = [];
   itemArray: any[] = [];
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-  maintenanceConfig: any;
-  maintenanceData: any = [];
   asset_id: string = ''
   showAckModal: boolean = false;
   showViewAckModal: boolean = false;
   maintenanceNotificationId: number;
   currentOffset = 0;
   currentLimit = 20;
+  registryName: string;
+  loader: boolean = false;
+  hierarchy: any;
+  loadMoreVisibility:boolean = true;
 
   constructor(
     private commonService: CommonService,
@@ -108,13 +112,18 @@ export class AppMaintenanceListComponent implements OnInit {
     private maintenanceService: MaintenanceService,
     private toasterService: ToasterService,
     private router: Router
-  ) { }
+  ) {
+
+  }
+
+
 
   async ngOnInit(): Promise<void> {
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+
     this.maintenanceModel = {
       asset_id: '',
       is_maintenance_required: true,
@@ -154,6 +163,8 @@ export class AppMaintenanceListComponent implements OnInit {
       is_table_data_loading: this.isApplicationListLoading,
       table_class: 'tableFixHead-assets-list',
       no_data_message: '',
+      is_load_more_required: true,
+      item_count: this.currentLimit,
       data: [
         {
           header_name: 'Asset Id',
@@ -258,7 +269,6 @@ export class AppMaintenanceListComponent implements OnInit {
         },
       ],
     };
-    this.getMaintenance();
     this.itemArray.push({
       "name": "Daily",
       id: 0
@@ -283,6 +293,8 @@ export class AppMaintenanceListComponent implements OnInit {
         "name": "Yearly",
         id: 5
       })
+    this.getMaintenance();
+
   }
   addNewEsacalation() {
     let maintenance_regirstry = {
@@ -314,14 +326,29 @@ export class AppMaintenanceListComponent implements OnInit {
   
   //getting data list from maintenance APi
   getMaintenance() {
-    this.maintenanceService.getMaintenance().subscribe((response: any) => {
+   
+    const custObj = {
+      offset: this.currentOffset,
+      count: this.currentLimit,
+      hierarchy: JSON.stringify(this.hierarchy)
+    }
+
+    this.tableConfig.is_table_data_loading = true
+    this.maintenanceService.getMaintenance(custObj).subscribe((response: any) => {
       console.log("maintenance", response)
       response.data.forEach((item) => {
+        item.inspection_frequency = this.itemArray.find((data) => {
+          return data.id == item.inspection_frequency
+        }).name
         item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
-
-      this.maintenances = response.data
+      this.tableConfig.is_table_data_loading = false;
+      if(response.data.length < this.currentLimit){
+         this.loadMoreVisibility = false;
+      }
+      this.maintenances = [...this.maintenances, ...response.data] 
     }, (err) => {
+      this.tableConfig.is_table_data_loading = false;
       console.log("err while calling maintenance api", err)
     })
   }
@@ -393,15 +420,21 @@ getgateway(hierarchy)
           if (response?.data) {
             this.assets = response.data;
             console.log('checkingassets', JSON.stringify(this.assets))
+            debugger
+            for (var i = 0; i < this.assets.length; i++) {
+              this.assetsdata = {
+                asset_name: this.assets[i].display_name,
+                asset_id: this.assets[i].asset_id,
+                asset_type: this.assets[i].type
+              };
+              this.assetDropdown.push(this.assetsdata);
+            }
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
             }
           }
-          if (this.assets?.length === 1) {
-            this.filterObj.asset = this.assets[0];
-            this.onChangeOfAsset();
-          }
+        
         }))
         resolve1();
       
@@ -416,14 +449,14 @@ onCloseMaintenanceModelModal() {
   $('#createMaintainenceModelModal').modal('hide');
  
 }
-getMaitenanceModel()
-{
-  this.createMaintenanceForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
-    asset_id: new FormControl('', [Validators.required]),
-    start_date: new FormControl('', [Validators.required]),
-    inspection_frequency: new FormControl('',[Validators.required]),
-    description:new FormControl('')
+
+  getMaitenanceModel() {
+    this.createMaintenanceForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.pattern(CONSTANTS.ONLY_NOS_AND_CHARS)]),
+      asset_id: new FormControl('', [Validators.required]),
+      start_date: new FormControl('', [Validators.required]),
+      inspection_frequency: new FormControl('', [Validators.required]),
+      description: new FormControl('')
     })
 
     this.notifyMaintenanceForm = new FormGroup({
@@ -491,8 +524,7 @@ getMaitenanceModel()
     this.maintenanceModel.is_notify_user = this.is_notify_user;
     this.maintenanceModel.is_escalation_required = this.is_escalation_required;
     this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
-    if(this.is_notify_user)
-    {
+    if (this.is_notify_user) {
       this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
       this.maintenanceModel.notify_user_emails =  this.notifyEmails;
       this.maintenanceModel.notify_user_groups = this.notifyMaintenanceForm.get('notify_user_groups').value;
@@ -501,16 +533,15 @@ getMaitenanceModel()
     this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
     this.maintenanceModel.notify_email_body = this.htmlContent;
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
-    if(this.isEdit)
-    {
-    
-      let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id,this.maintenanceModel);
+    if (this.isEdit) {
+
+      let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id, this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });
-          this.toasterService.showSuccess(response.message,   'Maitenance Update');
+          this.toasterService.showSuccess(response.message, 'Maitenance Update');
           $('#createMaintainenceModelModal').modal('hide');
           this.isEdit = false;
           this.createMaitenanceCall = false;
@@ -518,37 +549,29 @@ getMaitenanceModel()
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
-          this.toasterService.showError(err.message," Maitenance Update");
+          this.toasterService.showError(err.message, " Maitenance Update");
         }
       );
     }
-    else
-    {
-      let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+    else {
+      let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp, "CreateMaintenance", this.maintenanceModel);
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });
-          this.toasterService.showSuccess(response.message,   'Maitenance Create');
+          this.toasterService.showSuccess(response.message, 'Maitenance Create');
           $('#createMaintainenceModelModal').modal('hide');
           this.createMaitenanceCall = false;
           this.redirectTo(this.router.url);
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
-          this.toasterService.showError(err.message," Maitenance Create");
+          this.toasterService.showError(err.message, " Maitenance Create");
         }
       );
     }
   }
-  
-  
-  
-redirectTo(uri:string){
-  this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-  this.router.navigate([uri]));
-}
 
 isAsset = false;
  /////// To open the Modal for the Maintenance Schedule
@@ -634,25 +657,14 @@ isAsset = false;
   } 
 
 
- /////  To Clear the Hierarchy from dropdown menu 
- onClearHierarchy() {
-  this.isFilterSelected = false;
-  this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
-}
-
-/////  While Click on the Save Hierarchy 
-onSaveHierachy() {
-  this.originalFilter = {};
-  if (this.filterObj.asset) {
-    this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-    this.onChangeOfAsset();
+  redirectTo(uri: string) {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
+      this.router.navigate([uri]));
   }
-}
 
-onChangeOfAsset(){
-  const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
 
-}
+
+
 getInspec_Freq(inspection_frequency)
 {
   let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
@@ -669,14 +681,14 @@ getMaintenance_data(id)
   method.subscribe(
     (response: any) => {
         this.maintenanceModel = response.data;
-    },
-  );
+      },
+    );
 
-}
+  }
 
-  
 
-  
+
+
 
   /////  To Clear the Hierarchy from dropdown menu 
   //  onClearHierarchy() {
@@ -697,11 +709,10 @@ getMaintenance_data(id)
   //   const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
 
   // }
- 
-  emailBody1Detect(valuefromtextEditor:any,i)
-  {
+
+  emailBody1Detect(valuefromtextEditor: any, i) {
     this.emailbody1 = valuefromtextEditor;
-    this.maintenanceModel.maintenance_escalation_registry[i].email_body= this.emailbody1; 
+    this.maintenanceModel.maintenance_escalation_registry[i].email_body = this.emailbody1;
   }
   
   setEditFields()
@@ -714,20 +725,18 @@ getMaintenance_data(id)
     this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
-   
+
     this.inspection_frequency = this.maintenanceModel.inspection_frequency;
-    if(this.is_notify_user)
-    {
+    if (this.is_notify_user) {
       this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
       this.notifyEmails = this.maintenanceModel?.notify_user_emails;
       this.currentItem = this.maintenanceModel?.notify_email_body;
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
-  
-    if(this.is_escalation_required)
-    {
-  
+
+    if (this.is_escalation_required) {
+
       let maintenance_escalation_registry = [];
       this.maintenanceModel.maintenance_escalation_registry.forEach((element)=>{
       
@@ -788,9 +797,9 @@ getMaintenance_data(id)
       });
       this.maintenanceModel.maintenance_escalation_registry = maintenance_escalation_registry;
     }
-  
+
   }
-  
+
   // this function will call when someone click on icons [Ex. delete, edit, toggle]
   // onTableFunctionCall(obj){
   //   if (obj.for === 'View') {
@@ -959,10 +968,10 @@ getMaintenance_data(id)
   }
 
   /////  To Clear the Hierarchy from dropdown menu 
- 
+
 
   /////  While Click on the Save Hierarchy 
- 
+
 
 
 
@@ -1003,12 +1012,10 @@ getMaintenance_data(id)
     else if (obj.for === 'Acknowledge') {
       this.showAckModal = true
       this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
-      console.log("on ACkbtn click", obj)
       console.log("acknowledgeID", obj.data.maintenance_notification_id)
-      $('#addWhieListAsset').modal('show')
+      $('#maintenanceModal').modal('show')
     }
     else if (obj.for === 'Disable') {
-      console.log("disable", obj)
       this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
       this.isMaintenanceRequired = obj?.data?.is_maintenance_required
       if (!(this.isMaintenanceRequired)) {
@@ -1092,7 +1099,6 @@ getMaintenance_data(id)
 
   //showing this custom model when someone try to enable maintenance
   onSave() {
-    console.log("date&Time", this.maintenanceForm.value.dateAndTime)
     this.payload = {
       is_maintenance_required: !this.isMaintenanceRequired,
       start_date: this.maintenanceForm.value.dateAndTime
@@ -1184,17 +1190,20 @@ getMaintenance_data(id)
 
   // getting data for perticular maintenance when someone click on trigger btn
   historyOfPerticularMaintenance(obj) {
+    this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(obj?.data?.maintenance_registry_id).subscribe((res: any) => {
       console.log("ApI Trigger response", res)
       res.data.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
+      this.maintenanceConfig.is_table_data_loading = false;
       this.maintenanceData = res.data;
     }, (error) => {
-      console.log("error while triggering", error)
+      this.maintenanceConfig.is_table_data_loading = false;
       this.toasterService.showError(`${error.message}`, 'Error')
     })
     console.log("historyofperticularMaintenance", obj)
+    this.registryName = obj?.data?.name
     this.asset_id = obj?.data?.asset_id
     this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
 
@@ -1203,7 +1212,6 @@ getMaintenance_data(id)
   //disable maintenance
   disableMaintenance(maintenanceRegisterId: any, payload: any) {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
-      console.log("disable", response)
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance disabled successfully !', 'Maintenance Edit')
     })
@@ -1212,7 +1220,6 @@ getMaintenance_data(id)
   //enable maintenance
   enableMaintenance(maintenanceRegisterId: any, payload: any) {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
-      console.log("enable", response)
       this.maintenanceForm.reset();
       this.toasterService.showSuccess('maintenance enable successfully !', 'Maintenance Edit')
       this.getMaintenance();
@@ -1225,7 +1232,6 @@ getMaintenance_data(id)
   //delete maintenance
   deleteMaintenance() {
     this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response: any) => {
-      console.log("del response", response)
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance deleted successfully !', 'Maintenance Delete')
     })
@@ -1234,13 +1240,39 @@ getMaintenance_data(id)
   //getting details of acknowledge maintenance
   getAckMaintenance(notificationId: number) {
     this.maintenanceService.getMaintenanceAckDetails(notificationId).subscribe((res: any) => {
-      console.log("ackMaintenanceDetails", res)
       res.data.forEach((data) => {
         data.acknowledgement_date = this.commonService.convertUTCDateToLocalDate(data.acknowledgement_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
       this.viewAckMaintenanceDetails = res.data
     })
   }
+
+  //calling hierarchy
+  filteredHiearchyObj() {
+    const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+    Object.keys(configuredHierarchy).length === 0;
+    this.onClearHierarchy();
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    console.log("contextApp",this.contextApp)
+    console.log("configureHierarchy", configuredHierarchy)
+    if (this.contextApp) {
+      Object.keys(configuredHierarchy).forEach((key) => {
+         debugger
+        if (configuredHierarchy[key]) {
+          this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
+        }
+      });
+    }
+    console.log("hierrr", this.hierarchy)
+    this.getMaintenance();
+  
+
+  }
+
+  onClearHierarchy() {
+    this.hierarchy = { App: this.contextApp?.app };
+  }
+
 
   searchAssets(updateFilterObj = true) {
   }
@@ -1252,7 +1284,7 @@ getMaintenance_data(id)
 
   closeModal(value: boolean) {
     this.showAckModal = value;
-    $("#addWhieListAsset").modal('hide');
+    $("#maintenanceModal").modal('hide');
 
   }
 

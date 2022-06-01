@@ -8,7 +8,9 @@
           <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
             <th scope="col"><span>{{item.header_name}}</span>
               <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
-             &nbsp;<i *ngIf="item?.is_sort" (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)" class="my-icon fa fa-chevron-up"></i>
+              &nbsp;<i *ngIf="item?.is_sort"
+                (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)"
+                class="my-icon fa fa-chevron-up"></i>
             </th>
           </ng-container>
           <ng-template #filterTemplate>
@@ -84,7 +86,9 @@
                 </ng-container>
 
               </span>
-              &nbsp;<i *ngIf="item?.is_sort" (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)" class="my-icon fa fa-chevron-up"></i>
+              &nbsp;<i *ngIf="item?.is_sort"
+                (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)"
+                class="my-icon fa fa-chevron-up"></i>
               <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
             </th>
           </ng-template>
@@ -119,10 +123,13 @@
               </ng-container>
               <ng-container *ngIf="item.data_type === 'text' && (!item.btn_list || item.btn_list.length === 0) ">
                 <ng-container *ngIf="item?.data_tooltip">
-                  <span [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''" [tooltip]="resolve(dataItem, item.data_tooltip)">{{resolve(dataItem, item.data_key)}}</span>
+                  <span [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''"
+                    [tooltip]="resolve(dataItem, item.data_tooltip)">{{resolve(dataItem, item.data_key)}}</span>
                 </ng-container>
                 <ng-container *ngIf="!item?.data_tooltip">
-                  <span [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''">{{resolve(dataItem, item.data_key)}}</span>
+                  <span
+                    [ngClass]="item.data_cellclass ? resolve(dataItem, item.data_cellclass) : ''">{{resolve(dataItem,
+                    item.data_key)}}</span>
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="item.data_type === 'list'">
@@ -131,12 +138,20 @@
               </ng-container>
               <ng-container *ngIf="item.data_type  === 'button'">
                 <ng-container *ngFor="let btn of item.btn_list">
-                  <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
-                    (click)="onClickOfButton(dataItem, btn.id)">
-                   <em  class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
-                   <!-- {{dataItem.is_maintenance_required}}  -->
-                    {{btn.text}}
-                  </a>
+                  <ng-container *ngIf="!btn?.type">
+                    <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
+                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="!btn?.show_hide_data_key || dataItem[btn?.show_hide_data_key]">
+                      <em class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
+                      <!-- {{dataItem.is_maintenance_required}}  -->
+                      {{btn.text}}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="btn?.type && btn?.type=='switch'">
+                    <a href="javascript:void(0)" (click)="onClickOfButton(dataItem, btn.id)" class="ml-2" tooltip="{{dataItem[btn?.data_key] ? 'Enable': 'Disable'}}">
+                      <em *ngIf="dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-on"></em>
+                      <em *ngIf="!dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-off"></em>
+                    </a>
+                  </ng-container>
                 </ng-container>
               </ng-container>
             </td>
@@ -154,7 +169,8 @@
         <tr>
           <td
             [attr.colspan]="tableConfig.border_left_key ? (tableConfig?.data?.length + 2) : (tableConfig?.data?.length + 1)">
-            <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+          </td>
         </tr>
       </ng-container>
     </tbody>

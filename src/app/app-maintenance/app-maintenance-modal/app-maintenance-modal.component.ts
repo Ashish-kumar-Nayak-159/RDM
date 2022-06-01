@@ -41,14 +41,11 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
 
   formReset() {
     this.formData = new FormGroup({
-      description: new FormControl('', Validators.required),
-      files: new FormArray([
-        new FormGroup({
-          filetype: new FormControl(undefined, Validators.required),
-          uploadedFile: new FormControl('', Validators.required)
-        })
-      ])
+      description: new FormControl('',Validators.required),
+      filetype: new FormControl(undefined,Validators.required),
+      uploadedFile: new FormControl('',Validators.required)
     })
+
   }
 
   onClose() {
@@ -61,20 +58,22 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
 
   async uploadFile() {
     this.isFileUploading = true;
-
+    // let uploadedFiles = [];
     await Promise.all(this.uploadedFile.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.assetId + '/maintenance/' + this.maintenanceRegistryId
       );
+
       if (data) {
         console.log("data upload file", data)
-        var eachOne = {
-          document_name: data.name,
-          document_file_url: data.url,
-          document_type:''
-        }
-        this.uploadedFileDetails.push(data)
+        // var eachOne = {
+        //   document_name: data.name,
+        //   document_file_url: data.url,
+        //   document_type: file.filetype
+        // }
+        // console.log("eachone",eachOne)
+        this.uploadedFileDetails = data;
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -86,10 +85,9 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   async onSave() {
-    debugger
-    console.log("formData",this.formData.value)
+    // console.log("formData",this.formData.value)
     await this.uploadFile()
-    console.log("uploaded file",this.uploadedFileDetails)
+    // console.log("uploaded file",this.uploadedFileDetails)
     this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
@@ -113,9 +111,10 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.modalEmit.emit(false)
   }
 
-  onFileSelected(event,i) {
+  onFileSelected(event) {
+    debugger
     this.isCanUploadFile = false;
-    let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446"];    
+    let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;
       let file = fileList.item(0);
@@ -134,15 +133,18 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           //   'index': 0
           // })
           // this.uploadedFile = file;
-          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name  })
+          // let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
+          // debugger
+          // this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
           // console.log("uploaded file",this.uploadedFile)
+          this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
-          //this.fileName = file.name;
+          this.fileName = file.name;
         }
         else {
           debugger
-          this.toasterService.showError('Only .xls or .xlsx files are allowed', 'Select File');
-          //this.fileName = 'Choose File';
+          this.toasterService.showError('Only Image, Video & PDF files are allowed', 'Select File');
+          this.fileName = 'Choose File';
         }
         return;
       }
@@ -150,13 +152,13 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     }
   }
 
-  addDocument() {
-    const control = this.formData.get('files');
-    let newFormObj = new FormGroup({
-      filetype: new FormControl(undefined, Validators.required),
-      uploadedFile: new FormControl('', Validators.required)
-    });
-    control.push(newFormObj);
-  }
+  // addDocument() {
+  //   const control = this.formData.get('files');
+  //   let newFormObj = new FormGroup({
+  //     filetype: new FormControl(undefined, Validators.required),
+  //     uploadedFile: new FormControl('', Validators.required)
+  //   });
+  //   control.push(newFormObj);
+  // }
 
 }

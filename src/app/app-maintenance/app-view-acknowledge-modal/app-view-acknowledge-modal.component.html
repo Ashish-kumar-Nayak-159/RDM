@@ -1,14 +1,12 @@
-<div class="modal right fade" id="viewAcknowledge" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">View Acknowledge</h5>
-                <button type="button" class="close" (click)="onClose()" aria-label="Close">
-                    <span aria-hidden="true" tooltip="Close">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- <iframe *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='PDF'" [src]="blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken" style="width: 100%;height: 80vh"></iframe>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Acknowledge</h5>
+        <button type="button" class="close" (click)="onClose()" aria-label="Close">
+            <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <!-- <iframe *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='PDF'" [src]="blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken" style="width: 100%;height: 80vh"></iframe>
                     <img *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='Image'" class="card-img-top" src="{{blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken}}" alt="Card image cap">
                      <video *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='Video'" controls>
                         <source [src]="blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken" type="video/mp4">
@@ -19,75 +17,70 @@
                         <p class="card-text">Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}}</p>
                         <p class="card-text">Message: {{data?.acknowledgement_message}}</p>
                     </div> -->
-                <accordion class="mb-2" [closeOthers]="'true'">
-                    <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
-                        <accordion-group heading="" [panelClass]="'customClass'">
-                            <ng-container accordion-heading (click)="resetSelectedObj()">
-                                <a class="btn" (click)="resetSelectedObj()">
-                                    viewAcknowledge {{i +1}}
-                                </a>
-                            </ng-container>
-                            <div>
-                                <p>Acknowledgement Date : {{data?.acknowledgement_date}}</p>
-                                <p>Acknowledged By : {{data?.acknowledged_by}}</p>
-                                <p>Message: {{data?.acknowledgement_message}}</p>
-                                <!-- <p>Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}} </p> -->
-                                <div class="table-responsive">
-                                    <div class="tableFixHead">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scope="col">Doc Name</th>
-                                                    <th scope="col">Type</th>
-                                                    <th scope="col">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr
-                                                    *ngFor="let item of data?.maintenance_notification_acknowledge_files; let i = index">
-                                                    <td>{{i + 1}}</td>
-                                                    <td>
-                                                        {{item.document_name}}</td>
-                                                    <td>
-                                                        {{item.document_type}}</td>
-                                                    <td>
-                                                        <a href="javascript:void(0)" class="mr-2"
-                                                            (click)="viewDocument(item)">
-                                                            <em class="fa fa-eye"></em></a>
-                                                        <!-- <a href="javascript:void(0)" (click)="downloadDocument(item)">
+        <accordion class="mb-2" [closeOthers]="'true'">
+            <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
+                <accordion-group heading="" [panelClass]="'customClass'">
+                    <ng-container accordion-heading (click)="resetSelectedObj()">
+                        <a class="btn" (click)="resetSelectedObj()">
+                            Acknowledge {{i +1}}
+                        </a>
+                    </ng-container>
+                    <div>
+                        <p>Acknowledgement Date : {{data?.acknowledgement_date}}</p>
+                        <p>Acknowledged By : {{data?.acknowledged_by}}</p>
+                        <p>Message: {{data?.acknowledgement_message}}</p>
+                        <!-- <p>Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}} </p> -->
+                        <div class="table-responsive">
+                            <div class="">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr *ngIf="data?.maintenance_notification_acknowledge_files.length > 0">
+                                            <th scope="col">No</th>
+                                            <th scope="col">Doc Name</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let item of data?.maintenance_notification_acknowledge_files; let i = index">
+                                            <td>{{i + 1}}</td>
+                                            <td>
+                                                {{item.document_name}}</td>
+                                            <td>
+                                                {{item.document_type}}</td>
+                                            <td>
+                                                <a href="javascript:void(0)" class="mr-2" (click)="viewDocument(item)">
+                                                    <em class="fa fa-eye"></em></a>
+                                                <!-- <a href="javascript:void(0)" (click)="downloadDocument(item)">
                                                 <em class="fa fa-download"></em></a> -->
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table><br/>
-                                        <div class="show-files">
-                                            <img *ngIf="selectedDocument?.document_type ==='Image'" class="w-100"
-                                                [src]="blobStorageURL + selectedDocument?.document_file_url + sasToken">
-                                            <iframe *ngIf="selectedDocument?.document_type ==='PDF'"
-                                                [src]="selectedDocument.sanitizedURL"
-                                                style="width: 100%;height: 80vh"></iframe>
-                                            <video *ngIf="selectedDocument?.document_type === 'Video'" width="420"
-                                                height="350" controls>
-                                                <source
-                                                    [src]="blobStorageURL + selectedDocument?.document_file_url + sasToken"
-                                                    type="video/mp4">
-                                            </video>
-                                        </div>
-
-                                    </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table><br />
+                                <div class="show-files">
+                                    <img *ngIf="selectedDocument?.document_type ==='Image'" class="w-100"
+                                        [src]="blobStorageURL + selectedDocument?.document_file_url + sasToken">
+                                    <iframe *ngIf="selectedDocument?.document_type ==='PDF'"
+                                        [src]="selectedDocument.sanitizedURL" style="width: 100%;height: 80vh"></iframe>
+                                    <video *ngIf="selectedDocument?.document_type === 'Video'" width="420" height="350"
+                                        controls>
+                                        <source [src]="blobStorageURL + selectedDocument?.document_file_url + sasToken"
+                                            type="video/mp4">
+                                    </video>
                                 </div>
 
                             </div>
-                        </accordion-group>
-                    </ng-container>
+                        </div>
 
-                </accordion>
+                    </div>
+                </accordion-group>
+            </ng-container>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
-            </div>
-        </div>
+        </accordion>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
     </div>
 </div>

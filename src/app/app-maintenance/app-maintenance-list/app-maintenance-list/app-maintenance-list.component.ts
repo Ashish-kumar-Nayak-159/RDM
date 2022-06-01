@@ -95,15 +95,18 @@ export class AppMaintenanceListComponent implements OnInit {
   itemArray: any[] = [];
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   asset_id: string = ''
-  showAckModal: boolean = false;
-  showViewAckModal: boolean = false;
   maintenanceNotificationId: number;
   currentOffset = 0;
   currentLimit = 20;
+  singleOffset = 0;
+  singleLimit = 20;
   registryName: string;
   loader: boolean = false;
   hierarchy: any;
   loadMoreVisibility:boolean = true;
+  singleLoadMoreVisibility:boolean = true;
+  showHierarchy:boolean = true;
+  triggerData:any;
 
   constructor(
     private commonService: CommonService,
@@ -122,7 +125,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
+    this.hierarchy = { App: this.contextApp.app}
     this.maintenanceModel = {
       asset_id: '',
       is_maintenance_required: true,
@@ -402,7 +405,6 @@ export class AppMaintenanceListComponent implements OnInit {
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-            debugger
             for (var i = 0; i < this.assets.length; i++) {
               this.assetsdata = {
                 asset_name: this.assets[i].display_name,
@@ -840,20 +842,22 @@ export class AppMaintenanceListComponent implements OnInit {
     }
     else if (obj.for === 'viewAcknowledge') {
       console.log("viewAcknowledge", obj)
-      this.showViewAckModal = true
       $("#viewAcknowledge").modal('show')
       this.getAckMaintenance(obj?.data?.maintenance_notification_id);
     }
     else if (obj.for === 'Trigger') {
-
+      this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
       this.setMaintenanceConfig();
-      this.historyOfPerticularMaintenance(obj);
+      this.triggerData = obj
+      this.registryName = this.triggerData?.data?.name
+      this.asset_id = this.triggerData?.data?.asset_id
+      this.maintenanceRegistryId = this.triggerData?.data?.maintenance_registry_id
+      this.historyOfPerticularMaintenance();
 
     }
     else if (obj.for === 'Acknowledge') {
-      this.showAckModal = true
       this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
       console.log("acknowledgeID", obj.data.maintenance_notification_id)
       $('#maintenanceModal').modal('show')
@@ -1029,29 +1033,38 @@ export class AppMaintenanceListComponent implements OnInit {
   }
 
   // getting data for perticular maintenance when someone click on trigger btn
-  historyOfPerticularMaintenance(obj) {
+  historyOfPerticularMaintenance() {
+    const custObj = {
+      offset: this.singleOffset,
+      count: this.singleLimit,
+    }
     this.maintenanceConfig.is_table_data_loading = true
-    this.maintenanceService.Trigger(obj?.data?.maintenance_registry_id).subscribe((res: any) => {
+    console.log("on trigger data",this.triggerData)
+    this.maintenanceService.Trigger( this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
       console.log("ApI Trigger response", res)
       res.data.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
       this.maintenanceConfig.is_table_data_loading = false;
-      this.maintenanceData = res.data;
+      if(res.data.length < this.singleLimit){
+        this.singleLoadMoreVisibility = false;
+     }
+      this.maintenanceData = [...this.maintenanceData, ...res.data];
     }, (error) => {
       this.maintenanceConfig.is_table_data_loading = false;
       this.toasterService.showError(`${error.message}`, 'Error')
     })
-    console.log("historyofperticularMaintenance", obj)
-    this.registryName = obj?.data?.name
-    this.asset_id = obj?.data?.asset_id
-    this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
+    // console.log("historyofperticularMaintenance", obj)
+   
 
   }
 
   //disable maintenance
   disableMaintenance(maintenanceRegisterId: any, payload: any) {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
+      this.maintenances = []
+      this.currentOffset = 0;
+      this.singleOffset = 0;
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance disabled successfully !', 'Maintenance Edit')
     })
@@ -1062,6 +1075,9 @@ export class AppMaintenanceListComponent implements OnInit {
     this.maintenanceService.disable(maintenanceRegisterId, payload).subscribe((response) => {
       this.maintenanceForm.reset();
       this.toasterService.showSuccess('maintenance enable successfully !', 'Maintenance Edit')
+      this.maintenances = []
+      this.currentOffset = 0;
+      this.singleOffset = 0;
       this.getMaintenance();
     }, (error: any) => {
       console.log("enable error", error)
@@ -1072,6 +1088,9 @@ export class AppMaintenanceListComponent implements OnInit {
   //delete maintenance
   deleteMaintenance() {
     this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response: any) => {
+      this.maintenances = []
+      this.currentOffset = 0;
+      this.singleOffset = 0;
       this.getMaintenance();
       this.toasterService.showSuccess('maintenance deleted successfully !', 'Maintenance Delete')
     })
@@ -1089,6 +1108,8 @@ export class AppMaintenanceListComponent implements OnInit {
 
   //calling hierarchy
   filteredHiearchyObj() {
+    this.maintenances = []
+    this.currentOffset = 0;
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     Object.keys(configuredHierarchy).length === 0;
     this.onClearHierarchy();
@@ -1119,11 +1140,11 @@ export class AppMaintenanceListComponent implements OnInit {
 
   //redirect you to maintenance list screen
   backToMain() {
+    this.showHierarchy = true;
     $(".over-lap").css('display', 'none')
   }
 
   closeModal(value: boolean) {
-    this.showAckModal = value;
     $("#maintenanceModal").modal('hide');
 
   }

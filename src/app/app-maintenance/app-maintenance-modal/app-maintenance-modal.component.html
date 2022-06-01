@@ -22,8 +22,8 @@
             <div class="form-group">
                 <label for="type">Type:</label>
                 <select class="form-control form-control-sm" id="type" name="type" formControlName="filetype"
-                    [(ngModel)]="filetype">
-                    <option [ngValue]="undefined">Select Document Type</option>
+                    >
+                    <option value="">Select Document Type</option>
                     <option [ngValue]="'PDF'">PDF</option>
                     <option [ngValue]="'Image'">Image</option>
                     <option [ngValue]="'Video'">Video</option>

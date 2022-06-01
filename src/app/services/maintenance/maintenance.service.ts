@@ -12,8 +12,9 @@ export class MaintenanceService {
 
   constructor(private http: HttpClient) { }
 
-  getMaintenance(filterObj?){
+  getMaintenance(filterObj){
     // return this.http.get(this.url + AppUrls.GET_MAIN)
+    debugger
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
@@ -59,8 +60,14 @@ export class MaintenanceService {
     return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payload)
   }
 
-  Trigger(id:number){
-    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id)
+  Trigger(id:number,filterObj?){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id, {params})
   }
 
   createAckMaintenance(payload:any){

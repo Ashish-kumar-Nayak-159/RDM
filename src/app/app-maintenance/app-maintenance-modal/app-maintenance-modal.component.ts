@@ -42,17 +42,16 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   formReset() {
     this.formData = new FormGroup({
       description: new FormControl('',Validators.required),
-      filetype: new FormControl(undefined,Validators.required),
+      filetype: new FormControl("",Validators.required),
       uploadedFile: new FormControl('',Validators.required)
     })
 
   }
 
   onClose() {
-    this.fileName = ''
     this.fileName = 'Choose File'
     this.formReset();
-    this.modalEmit.emit(false)
+    this.modalEmit.emit()
     this.uploadedFile = [];
   }
 

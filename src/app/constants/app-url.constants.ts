@@ -216,6 +216,7 @@ export class AppUrls {
  public static REFRESH_TOKEN = 'refresh-token'
  public static Get_DBSCHEMA = 'apps/{0}/dbschema'
 
+ public static GET_MAIN = 'maintenance'
  public static GET_MAINTENANCE = 'maintenance/'
  public static GET_MAINTENANCEDATA = 'maintenance/{0}';
  public static PUT_MAINTENANCE = 'maintenance/{0}'

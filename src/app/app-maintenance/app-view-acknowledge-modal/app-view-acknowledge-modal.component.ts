@@ -19,15 +19,16 @@ export class AppViewAcknowledgeModalComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer,private commonService: CommonService) { }
 
   ngOnInit(): void {
+    console.log("viewAckMaintenanceDetails",this.viewAckMaintenanceDetails)
   }
   viewDocument(obj) {
     this.selectedDocument = obj;
+    console.log("selected document",this.selectedDocument)
     this.selectedDocument.sanitizedURL = this.sanitizeURL(this.selectedDocument.document_file_url);
   }
   resetSelectedObj()
   {
     this.selectedDocument = null
-    console.log('reset selectedobj');
   }
 
   sanitizeURL(url) {

@@ -568,31 +568,31 @@ isAsset = false;
   
    }
    emails = [];
-   addEmailRecipient(index) {
+   addEmailRecipient(i) {
     
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[index].user_emails)) {
-        this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+        this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.emails.includes(this.maintenanceModel.maintenance_escalation_registry[index].user_emails)) {
-        this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+      if (this.maintenanceModel.maintenance_escalation_registry[i].user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+        this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
-      this.emails.push(this.maintenanceModel.maintenance_escalation_registry[index].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[index].user_email.push(this.maintenanceModel.maintenance_escalation_registry[index].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[index].user_emails = '';
+      this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[i].user_email.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
     }
   }
 
 
-  removeEmailRecipient(index) {
-    this.emails.splice(index);
-    this.maintenanceModel.maintenance_escalation_registry[index].user_email.splice(index);
+  removeEmailRecipient(i,index) {
+    this.emails.splice(index,1);
+    this.maintenanceModel.maintenance_escalation_registry[i].user_email.splice(index,1);
   }
   notifyEmails = [];
   addEmailNotifyRecipient() {
@@ -617,7 +617,7 @@ isAsset = false;
 
 
   removeEmailNotifyRecipient(index) {
-    this.notifyEmails.splice(index);
+    this.notifyEmails.splice(index,1);
   } 
 
 

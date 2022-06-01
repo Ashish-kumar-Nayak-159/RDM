@@ -389,7 +389,7 @@
                     </ng-container>
                   </div>
                 </div>
-                <div class="my-2"  *ngIf="emails?.length > 0">
+                <!-- <div class="my-2"  *ngIf="emails?.length > 0 && (!isEdit && !isView)">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                     <ng-container *ngFor="let user of emails; let index = index">
                       <span class="tag">
@@ -399,14 +399,14 @@
                       </span>
                     </ng-container>
                   </div>
-                </div>
-                <div class="my-2"  *ngIf="(obj.user_email?.length > 0) && (isEdit || isView)">
+                </div> -->
+                <div class="my-2"  *ngIf="(obj.user_email?.length > 0)">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                     <ng-container  *ngFor="let user of obj.user_email; let index = index">
                       <span class="tag">
                         <span class="tag-text">{{user}}</span>
                         <button class="tag-remove" *ngIf="!isView"
-                          (click)="removeEmailRecipient(index)"></button>
+                          (click)="removeEmailRecipient(i,index)"></button>
                       </span>
                     </ng-container>
                   </div>

@@ -380,7 +380,6 @@ export class AddRuleComponent implements OnInit {
             this.alertConditionList.push(item);
           });
           this.alertConditionList = JSON.parse(JSON.stringify(this.alertConditionList));
-          console.log("CheckingalertConditionList", JSON.stringify(this.alertConditionList ))
 
           this.onChangeOfAssetCondition();
         });

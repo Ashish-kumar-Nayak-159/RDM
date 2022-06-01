@@ -78,7 +78,6 @@ export class ApplicationOrgTreeComponent implements OnInit {
       this.toasterService.showError(flag, 'Save Asset Hierarchy');
       return;
     }
-    console.log("checking", JSON.stringify(this.applicationData.hierarchy.levels))
     this.isSaveNodeAPILoading = true;
     this.forceUpdate = false;
     this.updateAppData();

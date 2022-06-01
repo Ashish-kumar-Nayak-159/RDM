@@ -118,7 +118,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           this.changePasswordAPILoading = false;
           this.resetPasswordForm.reset();
           this.resetPasswordForm.patchValue({ email: this.loginData?.email || null });
-          console.log(this.resetPasswordForm);
           this.toasterService.showError(error.message, 'Change Password');
         }
       );

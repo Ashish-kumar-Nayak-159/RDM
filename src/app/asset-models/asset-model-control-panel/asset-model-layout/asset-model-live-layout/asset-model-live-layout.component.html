@@ -213,7 +213,7 @@
           <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>
-              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  ><em
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  [disabled]="isDisabled"  ><em
                   class="fas fa fa-plus"></em>
               </button>
               <div class="bg-light p-3">
@@ -322,22 +322,30 @@
           <button type="button" class="btn btn-secondary" *ngIf="isDisabled == true"
           (click)="clearInputField()">Clear</button>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Formula Display:</label>
+            <label for="message-text" class="col-form-label required">Formula :</label>
             <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
               [(ngModel)]="formula" placeholder="Enter Key Name">
           </div>
           </div>
 
 
+          <div   *ngIf="widgetObj.widgetType === 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
+            <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading || !isDisabled"
+              (click)="onSaveWidgetObj()">Save</button>
+            <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+              (click)="onCloseAddWidgetModal()">Cancel</button>
+            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+          </div>
 
-
-          <div class="modal-footer fixed-bottom bg-white">
+          <div   *ngIf="widgetObj.widgetType !== 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
             <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading"
               (click)="onSaveWidgetObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
               (click)="onCloseAddWidgetModal()">Cancel</button>
             <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
           </div>
+
+
         </form>
       </div>
     </div>

@@ -30,12 +30,8 @@ export class ConditionalWidgetComponent implements OnInit {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
-    console.log("Checkingasset", JSON.stringify(this.asset))
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-    console.log("Checkingchartconfig", JSON.stringify(this.chartConfig))
-    console.log("Telemetryobject", JSON.stringify(this.telemetryData))
-
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
@@ -66,6 +62,7 @@ export class ConditionalWidgetComponent implements OnInit {
     });
   }
 
+
   onModalEvents(eventType) {
     if (eventType === 'close') {
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
@@ -77,16 +74,20 @@ export class ConditionalWidgetComponent implements OnInit {
 
   evaluatePropConditionwithoutasset(telemetryObj,prop){
     let condition = prop.formula;
+    
     try {
       prop.json_Data.forEach((jd, i) => {
         condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.json_key}`);
       });
       var actualVal = eval(condition);
-      if(actualVal)
-       { return 'Yes';}
-        return 'No'
+      if(prop?.text && prop?.text.length > 0)
+      {
+        if(actualVal)
+          {return  prop?.text[0];}
+          return  prop?.text[1];
+      }
+      return actualVal;
     } catch (err) {
-      console.log(err);
       return 'NA';
     }
 
@@ -99,9 +100,18 @@ export class ConditionalWidgetComponent implements OnInit {
         condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
       });
       var actualVal = eval(condition);
-      if(actualVal)
-       { return 'Yes';}
-        return 'No'
+      if(this.chartConfig?.text && this.chartConfig?.text.length > 0)
+      {
+        if(actualVal)
+          {return  this.chartConfig?.text[0];}
+          return  this.chartConfig?.text[1];
+      }
+      return actualVal
+      // return actualVal;
+      // var actualVal = eval(condition);
+      // if(actualVal)
+      //  { return 'ON';}
+      //   return 'OFF'
     } catch (err) {
       return 'NA';
     }

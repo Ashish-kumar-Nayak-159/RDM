@@ -256,13 +256,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     });
   }
   deletePropertyCondtion(propindex){
-    this.propertyObj.metadata.properties.splice(0, 1);
+    this.propertyObj.metadata.properties.splice(-1, 1);
 
   }
 
   openAddPropertiesModal() {
     this.isDisabled =false;
     this.displaybutton = false;
+    this.formula ='';
     this.propertyObj = {
       json_model: {},
       threshold: {},
@@ -407,7 +408,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       let flag = false;
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
         const prop = this.propertyObj.metadata.properties[i];
-        console.log("Checkingwidget1212", JSON.stringify(prop))
         if (!prop.property && (prop.value === null || prop.value === undefined)) {
           this.toasterService.showError(
             'Please select property or add value in condition',
@@ -442,12 +442,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           }
           // this.formula.push(this.propertyObj.metadata.condition)
           this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
-          this.formula ='('+ this.propertyObj.metadata.condition +')'
+          this.formula ='('+ ' ' + this.propertyObj.metadata.condition +')'
 
         } else if (prop.value !== null && prop.value !== undefined) {
           this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
           this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
-          this.formula ='('+ this.propertyObj.metadata.condition +')'
+          this.formula ='('+ ' ' + this.propertyObj.metadata.condition +')'
 
         }
       });
@@ -552,7 +552,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       let flag = false;
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
         const prop = this.propertyObj.metadata.properties[i];
-        console.log("CheckingProperty", JSON.stringify(prop))
           if (!prop.property && (prop.value === null || prop.value === undefined)) {
           this.toasterService.showError(
             'Please select property or add value in condition',
@@ -678,6 +677,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     );
 
       }else{
+        let condition = this.formula;
+        this.propertyObj.metadata.properties?.forEach((prop) => {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop?.property?.json_key);
+          condition = condition.replace(`%${index + 1}%`, prop?.property?.json_key);
+          this.propertyObj.condition = condition;
+        });
         this.propertyObj.metadata.condition = this.formula;
         this.isCreatePropertyLoading = true;
         const obj = JSON.parse(JSON.stringify(this.assetModel));
@@ -767,46 +772,53 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       return;
     }
     if (this.type === 'edge_derived_properties') {
-      let flag = false;
-      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
-        const prop = this.propertyObj.metadata.properties[i];
-        if (!prop.property && (prop.value === null || prop.value === undefined)) {
-          this.toasterService.showError(
-            'Please select property or add value in condition',
-            'Add Edge Derived Properity'
-          );
-          flag = true;
-          break;
-        }
-        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
-          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
-          flag = true;
-          break;
-        }
-      }
-      if (flag) {
-        return;
-      }
-      this.propertyObj.metadata.condition = '';
-      this.propertyObj.metadata.props = [];
-      this.propertyObj.condition = '';
-      this.propertyObj.metadata.properties.forEach((prop) => {
-        if (prop.property) {
-          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
-          if (index === -1) {
-            this.propertyObj.metadata.props.push(prop.property.json_key);
-            this.propertyObj.metadata.condition +=
-              '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') ;
-          } else {
-            this.propertyObj.metadata.condition +=
-              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
-          }
-          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
-        } else if (prop.value !== null && prop.value !== undefined) {
-          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
-          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
-        }
+      let condition = this.formula;
+      this.propertyObj.metadata.properties?.forEach((prop) => {
+        const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop?.property?.json_key);
+        condition = condition.replace(`%${index + 1}%`, prop?.property?.json_key);
+        this.propertyObj.condition = condition;
       });
+      this.propertyObj.metadata.condition = this.formula;
+      // let flag = false;
+      // for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+      //   const prop = this.propertyObj.metadata.properties[i];
+      //   if (!prop.property && (prop.value === null || prop.value === undefined)) {
+      //     this.toasterService.showError(
+      //       'Please select property or add value in condition',
+      //       'Add Edge Derived Properity'
+      //     );
+      //     flag = true;
+      //     break;
+      //   }
+      //   if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+      //     this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+      //     flag = true;
+      //     break;
+      //   }
+      // }
+      // if (flag) {
+      //   return;
+      // }
+      // this.propertyObj.metadata.condition = '';
+      // this.propertyObj.metadata.props = [];
+      // this.propertyObj.condition = '';
+      // this.propertyObj.metadata.properties.forEach((prop) => {
+      //   if (prop.property) {
+      //     const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+      //     if (index === -1) {
+      //       this.propertyObj.metadata.props.push(prop.property.json_key);
+      //       this.propertyObj.metadata.condition +=
+      //         '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') ;
+      //     } else {
+      //       this.propertyObj.metadata.condition +=
+      //         '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+      //     }
+      //     this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+      //   } else if (prop.value !== null && prop.value !== undefined) {
+      //     this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+      //     this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+      //   }
+      // });
     }
     else if (this.type === 'measured_properties' && (!this.propertyObj.hasOwnProperty('group') || this.propertyObj.group === 'undefined')) {
       this.toasterService.showError(
@@ -882,12 +894,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
           }
           this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
-          this.formula ='('+ this.propertyObj.metadata.condition +')'
+          this.formula ='('+ ' ' + this.propertyObj.metadata.condition +')'
 
         } else if (prop.value !== null && prop.value !== undefined) {
           this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
           this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
-          this.formula ='('+ this.propertyObj.metadata.condition +')'
+          this.formula ='('+ ' ' + this.propertyObj.metadata.condition +')'
 
         }
       });
@@ -951,9 +963,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Configure Property') {
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Edit') {
-      if(this.isDisabled == false){
-        this.displaybutton = true;
-      }
+      this.formula = obj?.data?.metadata?.condition;
+      this.isDisabled = false;
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       if(!this.propertyObj.threshold)
       {

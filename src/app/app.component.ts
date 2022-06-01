@@ -110,9 +110,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.onlineEvent.subscribe(e => {
       this.connectionStatusMessage = 'Back to online';
       this.connectionStatus = 'online';
-      console.log("isHomeRoute", this.isHomeRoute)
-      console.log("isLoginRoute", this.isLoginRoute)
-
       if(this.isHomeRoute === true && this.isLoginRoute === false){
         if ($('#routeWrapperDiv').removeClass('sb-notoggle')) {
         }

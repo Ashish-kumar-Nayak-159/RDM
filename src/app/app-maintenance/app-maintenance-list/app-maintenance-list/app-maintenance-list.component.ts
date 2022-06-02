@@ -514,8 +514,10 @@ onCloseMaintenanceModelModal() {
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
-     || (this.createMaintenanceForm.get("name").errors.required || this.createMaintenanceForm.get("asset_ids").errors.required) 
-     || (this.createMaintenanceForm.get("start_date").errors.required || this.createMaintenanceForm.get("inspection_frequency").errors.required)
+     || (this.createMaintenanceForm.get("name").errors!==null && this.createMaintenanceForm.get("name").errors.required!==undefined && this.createMaintenanceForm.get("name").errors.required) 
+     || (this.createMaintenanceForm.get("asset_ids").errors!==null && this.createMaintenanceForm.get("asset_ids").errors.required!==undefined && this.createMaintenanceForm.get("inspection_frequency").errors.required)
+     || (this.createMaintenanceForm.get("inspection_frequency").errors!==null && this.createMaintenanceForm.get("inspection_frequency").errors.required!==undefined && this.createMaintenanceForm.get("asset_ids").errors.required) 
+     || (this.createMaintenanceForm.get("start_date").errors!==null && this.createMaintenanceForm.get("start_date").errors.required!==undefined && this.createMaintenanceForm.get("start_date").errors.required)
      ) {
      
         this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
@@ -668,6 +670,8 @@ isAsset = false;
    { 
      this.createMaintenanceForm.reset();
      this.createMaintenanceForm.get('asset_ids').enable()
+     var today = new Date().toISOString().slice(0, 16)
+     this.createMaintenanceForm.get('start_date').setValue(today);
      this.createMaintenanceForm.get('start_date').enable();
    }
    if(this.notifyMaintenanceForm !== undefined)
@@ -1058,13 +1062,14 @@ getMaintenance_data(id)
     if (obj.for === 'View') {
       this.isView = true;
       this.isAsset = false;
-      this.createMaitenanceCall = false;
+      this.createMaitenanceCall = true;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setViewFields();
-      }, 100);
+        this.createMaitenanceCall = false;
+      }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Delete') {
@@ -1109,14 +1114,15 @@ getMaintenance_data(id)
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
-      this.createMaitenanceCall = false;
+      this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setEditFields();
-      }, 100);
+        this.createMaitenanceCall = false;
+      }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

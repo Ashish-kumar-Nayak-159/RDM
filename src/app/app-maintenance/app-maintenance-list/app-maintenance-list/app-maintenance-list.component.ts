@@ -514,13 +514,15 @@ onCloseMaintenanceModelModal() {
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
+     || (this.createMaintenanceForm.get("name").errors.required || this.createMaintenanceForm.get("asset_ids").errors.required) 
+     || (this.createMaintenanceForm.get("start_date").errors.required || this.createMaintenanceForm.get("inspection_frequency").errors.required)
      ) {
      
         this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
         this.createMaitenanceCall = false;
         return;
     }
-    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0)
+    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0  && this.is_escalation_required)
     {
       for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
       {

@@ -346,7 +346,6 @@ onChangeOfAsset(){
 
     this.tableConfig.is_table_data_loading = true
     this.maintenanceService.getMaintenance(custObj).subscribe((response: any) => {
-      console.log("maintenance", response)
       response.data.forEach((item) => {
         item.inspection_frequency = this.itemArray.find((data) => {
           return data.id == item.inspection_frequency
@@ -360,7 +359,6 @@ onChangeOfAsset(){
       this.maintenances = [...this.maintenances, ...response.data] 
     }, (err) => {
       this.tableConfig.is_table_data_loading = false;
-      console.log("err while calling maintenance api", err)
     })
   }
 
@@ -431,8 +429,6 @@ getgateway(hierarchy)
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-            console.log('checkingassets', JSON.stringify(this.assets))
-            debugger
             for (var i = 0; i < this.assets.length; i++) {
               this.assetsdata = {
                 asset_name: this.assets[i].display_name,
@@ -848,14 +844,12 @@ getMaintenance_data(id)
   //     this.openConfirmDialog("Delete")
   //     this.maintenanceRegistryId = obj?.data.maintenance_registry_id
   //     // this.maintenanceService.deleteMaintenance(obj?.data.maintenance_registry_id).subscribe((response)=>{
-  //     //   console.log("del response", response)
   //     //   this.getMaintenance();
   //     // })
 
   //   }
   //   else if (obj.for === 'Disable') {
 
-  //     console.log("disable",obj)
   //     this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
   //     this.isMaintenanceRequired = obj?.data?.is_maintenance_required
   //     if(!(this.isMaintenanceRequired)){
@@ -867,7 +861,6 @@ getMaintenance_data(id)
 
   //       }
   //       this.maintenanceService.enableDisable(this.maintenanceRegistryId).subscribe((response)=>{
-  //         console.log("disable",response)
   //         this.getMaintenance();
   //        this.toasterService.showSuccess('maintenance disabled successfully !','Maintenance Edit')
   //      })
@@ -896,10 +889,8 @@ getMaintenance_data(id)
   // onModalEvents(eventType) {
   //   if(eventType === 'save'){
   //   //  this.maintenanceService.disable(this.maintenanceRegistryId,this.payload).subscribe((response)=>{
-  //   //     console.log("enable/disable",response)
   //   //  })
   //   this.maintenanceService.deleteMaintenance(this.maintenanceRegistryId).subscribe((response:any)=>{
-  //     console.log("del response", response)
   //     this.getMaintenance();
   //     this.toasterService.showSuccess('maintenance deleted successfully !','Maintenance Delete')
   //   })
@@ -953,18 +944,15 @@ getMaintenance_data(id)
   // }
 
   // onSave(){
-  //   console.log("date&Time",this.maintenanceForm.value.dateAndTime)
   //   this.payload = {
   //     is_maintenance_required : ! this.isMaintenanceRequired,
   //     start_date : this.maintenanceForm.value.dateAndTime
   //   }
   //    this.maintenanceService.enableDisable(this.maintenanceRegistryId).subscribe((response)=>{
-  //       console.log("enable",response)
   //       this.maintenanceForm.reset();
   //       this.toasterService.showSuccess('maintenance enable successfully !','Maintenance Edit')
   //       this.getMaintenance();
   //    },(error:any)=>{
-  //        console.log("enable error",error)
   //        this.toasterService.showError(`${error.message}`,'Maintenance edit')
   //    })
   //   $("#exampleModal").modal('hide');
@@ -1032,7 +1020,6 @@ getMaintenance_data(id)
 
     }
     else if (obj.for === 'viewAcknowledge') {
-      console.log("viewAcknowledge", obj)
       this.showViewAckModal = true
       $("#viewAcknowledge").modal('show')
       this.getAckMaintenance(obj?.data?.maintenance_notification_id);
@@ -1048,7 +1035,6 @@ getMaintenance_data(id)
     else if (obj.for === 'Acknowledge') {
       this.showAckModal = true
       this.maintenanceNotificationId = obj?.data?.maintenance_notification_id
-      console.log("acknowledgeID", obj.data.maintenance_notification_id)
       $('#maintenanceModal').modal('show')
     }
     else if (obj.for === 'Disable') {
@@ -1228,7 +1214,6 @@ getMaintenance_data(id)
   historyOfPerticularMaintenance(obj) {
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(obj?.data?.maintenance_registry_id).subscribe((res: any) => {
-      console.log("ApI Trigger response", res)
       res.data.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss aaaaa'm'")
       })
@@ -1238,7 +1223,6 @@ getMaintenance_data(id)
       this.maintenanceConfig.is_table_data_loading = false;
       this.toasterService.showError(`${error.message}`, 'Error')
     })
-    console.log("historyofperticularMaintenance", obj)
     this.registryName = obj?.data?.name
     this.asset_id = obj?.data?.asset_id
     this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
@@ -1260,7 +1244,6 @@ getMaintenance_data(id)
       this.toasterService.showSuccess('maintenance enable successfully !', 'Maintenance Edit')
       this.getMaintenance();
     }, (error: any) => {
-      console.log("enable error", error)
       this.toasterService.showError(`${error.message}`, 'Maintenance edit')
     })
   }
@@ -1289,17 +1272,13 @@ getMaintenance_data(id)
     Object.keys(configuredHierarchy).length === 0;
     this.onClearHierarchy();
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log("contextApp",this.contextApp)
-    console.log("configureHierarchy", configuredHierarchy)
     if (this.contextApp) {
       Object.keys(configuredHierarchy).forEach((key) => {
-         debugger
         if (configuredHierarchy[key]) {
           this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
         }
       });
     }
-    console.log("hierrr", this.hierarchy)
     this.getMaintenance();
   
 

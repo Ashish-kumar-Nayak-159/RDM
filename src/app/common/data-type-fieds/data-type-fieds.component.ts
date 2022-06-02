@@ -15,7 +15,6 @@ export class DataTypeFieldsComponent implements OnInit {
   constructor(private toasterService: ToasterService) { }
 
   ngOnInit(): void { 
-    console.log('obj',this.obj);
   }
 
   addEnumValue() {

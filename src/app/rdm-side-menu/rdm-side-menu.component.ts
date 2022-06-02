@@ -83,7 +83,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           data = arr;
         }
         data = data.sort((a, b) => a.index - b.index);
-         console.log("data printed here",data);
          
         this.processSideMenuData(data, this.contextApp);
       }

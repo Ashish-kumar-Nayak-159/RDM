@@ -360,7 +360,6 @@ export class AssetAlertConditionsComponent implements OnInit {
         if (!this.alertObj.actions.push_notification.enabled) {
           this.alertObj.actions.push_notification.recipients = [];
         }
-        console.log("Checking", JSON.stringify(this.alertObj))
       }
     }
   }

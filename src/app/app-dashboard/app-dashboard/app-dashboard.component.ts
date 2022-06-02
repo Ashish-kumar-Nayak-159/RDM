@@ -434,6 +434,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (widget.widgetType === 'ConditionalNumber') {
                   let propertiesData = [];
                   widget['formula']= widget?.properties[0]?.formula;
+                  widget['text'] = widget?.properties[0]?.text;
                   widget?.properties[0]?.json_Data.forEach((prop) => {
                     let newProp = {};
                     let filteredProp = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);

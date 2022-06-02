@@ -32,7 +32,6 @@ export class SmallNumberWidgetComponent implements OnInit {
 
 
   async ngOnInit() {
-    console.log("telemetry211212", JSON.stringify(this.telemetryObj))
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {

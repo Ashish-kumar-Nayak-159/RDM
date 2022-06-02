@@ -145,6 +145,8 @@ export class AssetService {
     return this.http.get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
+ 
+
   getAssetList(filterObj) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

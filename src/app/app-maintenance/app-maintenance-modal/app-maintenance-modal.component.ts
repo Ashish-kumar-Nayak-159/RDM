@@ -35,8 +35,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log("assetId",this.assetId)
-    // console.log("maintenanceRegisterID",this.maintenanceRegistryId)
+   
   }
 
   formReset() {
@@ -65,13 +64,11 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
       );
 
       if (data) {
-        console.log("data upload file", data)
         // var eachOne = {
         //   document_name: data.name,
         //   document_file_url: data.url,
         //   document_type: file.filetype
         // }
-        // console.log("eachone",eachOne)
         this.uploadedFileDetails = data;
       }
       else {
@@ -84,9 +81,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   async onSave() {
-    // console.log("formData",this.formData.value)
     await this.uploadFile()
-    // console.log("uploaded file",this.uploadedFileDetails)
     this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
@@ -99,9 +94,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         }
       ]
     }
-    console.log("payload", this.payload)
     this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
-      console.log("ack-API-RESPONSE", response)
       this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
     })
     this.formData.reset();
@@ -111,7 +104,6 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   onFileSelected(event) {
-    debugger
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
@@ -126,22 +118,18 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           header += arrvalue.toString(16);
         }
         if (allowedZipMagicNumbers.includes(header)) {
-          debugger
           // this.uploadedFile.splice(0, 1, {
           //   'file': fileList?.item(0),
           //   'index': 0
           // })
           // this.uploadedFile = file;
           // let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
-          // debugger
           // this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
-          // console.log("uploaded file",this.uploadedFile)
           this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
           this.fileName = file.name;
         }
         else {
-          debugger
           this.toasterService.showError('Only Image, Video & PDF files are allowed', 'Select File');
           this.fileName = 'Choose File';
         }

@@ -1120,7 +1120,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onDocumentFileSelected(files: FileList, index) {
-    console.log("index", index)
     if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
@@ -1129,7 +1128,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       'file': files?.item(0),
       'index': index
     })
-    console.log("uploadfiles", this.uploadedFiles)
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
   }
 
@@ -1144,7 +1142,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (data) {
         this.acknowledgedAlert.metadata.files[file.index].data = data;
 
-        // console.log("Checking", JSON.stringify(this.acknowledgedAlert.metadata.files[file.index].data))
         // this.acknowledgedAlert.metadata.files[file.index].data = data;
       } else {
         this.toasterService.showError('Error in uploading file', 'Upload file');

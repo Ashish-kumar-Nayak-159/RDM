@@ -186,7 +186,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       .subscribe(
         (response: any) => {
           this.campaignViewObj = response;
-          console.log("CheckingcampaignViewObj", JSON.stringify(this.campaignViewObj))
           this.isGetCampaignAPILoading = false;         
         },
         (err) => {
@@ -217,8 +216,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   }
   getAssetNames(obj)
   {
-    console.log("Checkingassetlist", JSON.stringify(this.assetList))
-    debugger
     var result = this.assetList.filter(function (asset){
       return obj.find(item => asset.asset_id === item.asset_id);
     });

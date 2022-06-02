@@ -374,22 +374,19 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
         const prop = this.propertyObj.metadata.properties[i];
-        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+        if(prop.property === null || prop.value === null || prop.operator === null ){
           this.toasterService.showError(
-            'Please select property or add value in condition',
+            'Please select property or add value in condition', 
             'Add Property'
           );
           flag = true;
-          break;
+          return;
         }
-        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
-          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+        if (this.propertyObj.metadata.properties[i + 1] && prop.operator1 === null) {
+          this.toasterService.showError('Please select operator in condition', 'Add Properity');
           flag = true;
-          break;
+          return;
         }
-      }
-      if (flag) {
-        return;
       }
       this.propertyObj.metadata.condition = '';
       this.propertyObj.metadata.props = [];
@@ -404,27 +401,27 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           } else {
 
             this.propertyObj.metadata.condition +=
-              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : '');
           }
           // this.formula.push(this.propertyObj.metadata.condition)
           this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
           this.formula = '(' + this.propertyObj.metadata.condition + ')'
-          console.log("Checkingformula1", JSON.stringify(this.formula))
 
 
         } else if (prop.value !== null && prop.value !== undefined) {
           this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
           this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
           this.formula = '(' + this.propertyObj.metadata.condition + ')'
-          console.log("Checkingformula2", JSON.stringify(this.formula))
 
         }
       });
     }
+    this.isDisabled = true;
 
   }
   deletePropertyCondtion(propindex: number) {
-    this.propertyObj.metadata.properties.splice(propindex, 1);
+   this.propertyObj.metadata.properties.splice(0, 1);
+    this.formula ='';
   }
   clearInputField() {
     this.isDisabled = false;
@@ -555,8 +552,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   async onSaveWidgetObj() {
-    debugger
-    if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
+   if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
@@ -624,7 +620,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       // const arr = [];
       let arr = [{
         formula: this.formula,
-        json_Data: []
+        json_Data: [],
+        text:['ON','OFF']
+
       }]
       this.propertyObj.metadata.properties.forEach((prop) => {
         var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed':(prop?.property.type === 'Measured Properties' ? 'm':(prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
@@ -636,7 +634,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         arr[0]['json_Data'].push(obj);
       });
       this.widgetObj.properties = JSON.parse(JSON.stringify(arr));;
-      console.log("ConditonalPayload", JSON.stringify(arr))
     }
 
     else if (this.widgetObj.widgetType == "NumberWithImage") {

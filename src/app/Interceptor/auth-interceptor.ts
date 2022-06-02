@@ -140,7 +140,6 @@ export class AuthInterceptor implements HttpInterceptor {
                 !request.url.includes('assets/i18n') &&
                 !request.url.includes(environment.blobURL))) {
 
-            console.log('refresh token called');
 
             return this.refreshToken().pipe(
                 switchMap(() => {

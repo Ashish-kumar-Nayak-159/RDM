@@ -110,7 +110,6 @@ export class DamagePlotChartComponent implements OnInit {
           }
         });
       });
-      console.log('data', JSON.stringify(data));
       // this.telemetryData = JSON.parse(JSON.stringify(arr));
       if (data.length > 4000) {
         this.loader = false;
@@ -225,7 +224,6 @@ export class DamagePlotChartComponent implements OnInit {
     });
     valueYAxis.title.text = this.chartTitle + (unit ? ' (' + unit + ')' : '');
     // const arr = this.y1AxisProps;
-    console.log('tel data', this.telemetryData);
     this.telemetryData.forEach((data, index) => {
       const color = this.commonService.getRandomColor();
       let count = 0;
@@ -281,7 +279,6 @@ export class DamagePlotChartComponent implements OnInit {
         }
       });
     });
-    console.log(' this.seriesArr', this.seriesArr);
     valueYAxis.tooltip.disabled = true;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     valueYAxis.renderer.minWidth = 35;

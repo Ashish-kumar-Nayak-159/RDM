@@ -213,12 +213,12 @@
             <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == false"
             (click)="selectedProperty ? updatePropertyDataValidate() :ValidateallInputField()">Validate</button>
           <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == true"
-          (click)="clearInputField()">Clear</button>
+          (click)="clearInputField()">Modify</button>
          
           
-            <div class="form-group" *ngIf="isDisabled == true">
-              <label for="message-text" class="col-form-label required">Formula Display:</label>
-              <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Formula:</label>
+              <input #name="ngModel"   [disabled]="!isDisabled" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
                 [(ngModel)]="formula" placeholder="Enter Key Name">
             </div>
           </div>

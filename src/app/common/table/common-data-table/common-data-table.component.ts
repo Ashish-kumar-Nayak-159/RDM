@@ -86,7 +86,6 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   }
 
   onSortClick(event, filterBy) {
-    console.log(event.currentTarget.classList)
     let target = event.currentTarget,
       classList = target.classList;
 
@@ -119,9 +118,7 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
       }
       else {
         a = a[key].toLowerCase();
-        console.log(a)
         b = b[key].toLowerCase();
-        console.log(b)
         return a.localeCompare(b) * this.sortDir;
       }
     });

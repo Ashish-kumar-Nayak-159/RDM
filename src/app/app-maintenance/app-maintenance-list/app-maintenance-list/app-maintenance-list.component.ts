@@ -155,10 +155,11 @@ onChangeOfAsset(){
       maintenance_escalation_registry: [{
         user_emails: '',
         user_email:[],
-        duration_hours: "",
+        duration_hours: 2,
         user_groups: [],
         email_subject: "",
         email_body: "",
+        duration_select:'Hours'
       }],
       email_body: ''
 
@@ -311,10 +312,11 @@ onChangeOfAsset(){
     let maintenance_regirstry = {
       user_emails: '',
       user_email:[],
-      duration_hours: "",
+      duration_hours: 2,
       user_groups: [],
       email_subject: "",
       email_body: "",
+      duration_select:"Hours"
     }
     this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
   }
@@ -394,7 +396,29 @@ onChangeOfAsset(){
     }
 
   }
-  
+  esccheckHours(i)
+  {
+    
+    if(this.maintenanceModel.maintenance_escalation_registry[i].duration_select==='Days')
+    {
+      if(this.maintenanceModel.maintenance_escalation_registry[i].duration_hours!==null && (
+        this.maintenanceModel.maintenance_escalation_registry[i].duration_hours > 6 || this.maintenanceModel.maintenance_escalation_registry[i].duration_hours<2))
+      {
+        this.toasterService.showError('Escalation for days should not be more than 6 days or less than 2', 'Duration Hours');
+        return;
+      }
+    }
+    else
+    {
+      if(this.maintenanceModel.maintenance_escalation_registry[i].duration_hours!==null && 
+        (this.maintenanceModel.maintenance_escalation_registry[i].duration_hours > 23 || this.maintenanceModel.maintenance_escalation_registry[i].duration_hours <2))
+      {
+        this.toasterService.showError('Escalation for hours should not be more than 23 or less than 2', 'Duration Hours');
+        return;
+      }
+    }
+
+  }
 getgateway(hierarchy)
 {
  
@@ -508,10 +532,32 @@ onCloseMaintenanceModelModal() {
           || this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0)
           {
           this.createMaitenanceCall = false;
-          this.toasterService.showError('Please Enter mandatory information for escalation '+n," Maitenance Create");
+          this.toasterService.showError('Please Enter mandatory information for escalation '+(n+1)," Maitenance Create");
           return;
         }
-        
+      }
+    
+      for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
+      {
+       if(this.maintenanceModel.maintenance_escalation_registry[n].duration_select=='Days' && 
+        (this.maintenanceModel.maintenance_escalation_registry[n].duration_hours!==null && (this.maintenanceModel.maintenance_escalation_registry[n].duration_hours > 6 || this.maintenanceModel.maintenance_escalation_registry[n].duration_hours<2)))
+        {
+            this.toasterService.showError('Escalation for days should not be more than 6 days or less than 2', 'Escalation');
+            this.createMaitenanceCall = false;
+            return;
+        }
+      }
+      for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
+      {
+      if(this.maintenanceModel.maintenance_escalation_registry[n].duration_select=='Hours' &&
+        this.maintenanceModel.maintenance_escalation_registry[n].duration_hours!==null &&
+        (this.maintenanceModel.maintenance_escalation_registry[n].duration_hours > 23 ||
+          this.maintenanceModel.maintenance_escalation_registry[n].duration_hours <2))
+          {
+            this.toasterService.showError('Escalation for hours should not be more than 23 or less than 2', 'Escalation');
+            this.createMaitenanceCall = false;
+            return;
+          }
       }
     }
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
@@ -532,7 +578,10 @@ onCloseMaintenanceModelModal() {
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
-    
+      if(this.maintenanceModel.maintenance_escalation_registry[index].duration_select=='Days')
+      {
+        element.duration_hours = element?.duration_hours * 24;
+      }
       maintenance_escalation_registry.push({
         "user_emails":element?.user_email,
           "user_groups":element?.user_groups,
@@ -778,7 +827,8 @@ getMaintenance_data(id)
           "user_groups":element.user_groups,
           "email_body":element.email_body,
           "email_subject":element.email_subject,
-          "duration_hours":element.duration_hours
+          "duration_hours":element.duration_hours,
+          "duration_select":'Hours'
         })
       
       });

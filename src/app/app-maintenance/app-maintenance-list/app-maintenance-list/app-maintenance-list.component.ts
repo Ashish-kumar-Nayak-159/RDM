@@ -514,8 +514,10 @@ onCloseMaintenanceModelModal() {
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
-     || (this.createMaintenanceForm.get("name").errors.required || this.createMaintenanceForm.get("asset_ids").errors.required) 
-     || (this.createMaintenanceForm.get("start_date").errors.required || this.createMaintenanceForm.get("inspection_frequency").errors.required)
+     || (this.createMaintenanceForm.get("name").errors!==null && this.createMaintenanceForm.get("name").errors.required!==undefined && this.createMaintenanceForm.get("name").errors.required) 
+     || (this.createMaintenanceForm.get("asset_ids").errors!==null && this.createMaintenanceForm.get("asset_ids").errors.required!==undefined && this.createMaintenanceForm.get("inspection_frequency").errors.required)
+     || (this.createMaintenanceForm.get("inspection_frequency").errors!==null && this.createMaintenanceForm.get("inspection_frequency").errors.required!==undefined && this.createMaintenanceForm.get("asset_ids").errors.required) 
+     || (this.createMaintenanceForm.get("start_date").errors!==null && this.createMaintenanceForm.get("start_date").errors.required!==undefined && this.createMaintenanceForm.get("start_date").errors.required)
      ) {
      
         this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");

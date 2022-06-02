@@ -380,7 +380,7 @@ onChangeOfAsset(){
     {
       if(this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2)
       {
-        this.toasterService.showError('Notify Before for days should be more than 6 days or less than 2', 'Notify Before');
+        this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
         return;
       }
     }
@@ -516,7 +516,7 @@ onCloseMaintenanceModelModal() {
     }
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
-        this.toasterService.showError('Notify Before for days should be more than 6 days or less than 2', 'Notify Before');
+        this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
         this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;

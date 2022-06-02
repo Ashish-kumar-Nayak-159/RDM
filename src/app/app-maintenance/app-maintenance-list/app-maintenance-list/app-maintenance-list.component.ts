@@ -514,13 +514,15 @@ onCloseMaintenanceModelModal() {
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
      || (this.createMaintenanceForm.get("inspection_frequency").value===undefined || this.createMaintenanceForm.get("inspection_frequency").value==='')
+     || (this.createMaintenanceForm.get("name").errors.required || this.createMaintenanceForm.get("asset_ids").errors.required) 
+     || (this.createMaintenanceForm.get("start_date").errors.required || this.createMaintenanceForm.get("inspection_frequency").errors.required)
      ) {
      
         this.toasterService.showError('Please Enter mandatory information'," Maitenance Create");
         this.createMaitenanceCall = false;
         return;
     }
-    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0)
+    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0  && this.is_escalation_required)
     {
       for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
       {
@@ -1056,12 +1058,13 @@ getMaintenance_data(id)
     if (obj.for === 'View') {
       this.isView = true;
       this.isAsset = false;
+      this.createMaitenanceCall = false;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setViewFields();
-      }, 1000);
+      }, 100);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Delete') {
@@ -1106,13 +1109,14 @@ getMaintenance_data(id)
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
+      this.createMaitenanceCall = false;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setEditFields();
-      }, 1000);
+      }, 100);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

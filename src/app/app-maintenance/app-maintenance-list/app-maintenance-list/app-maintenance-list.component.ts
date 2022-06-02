@@ -402,8 +402,8 @@ getgateway(hierarchy)
     hierarchy: JSON.stringify(hierarchy),
     type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY + ","
   };
-  let params = "IoT GateWay";
-  this.assetService.getAndSetAllAssets(obj,params).subscribe((response: any) => {
+ 
+  this.assetService.getAndSetAllAssets(obj,this.contextApp.app).subscribe((response: any) => {
     if (response?.data) {
       for (var i = 0; i < response?.data.length; i++) {
        

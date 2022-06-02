@@ -16,7 +16,7 @@ export class TextEditorComponent  {
     setTimeout(() => {
       this.htmlContent = this.inputItem;
       this.htmlContentDetect.emit(this.htmlContent); 
-    }, 1100);
+    }, 510);
   }
  
   handleInputChange(value){

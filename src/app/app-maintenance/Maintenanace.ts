@@ -24,6 +24,7 @@ export class Maintenanace {
       user_groups:any;
       email_subject:string;
       email_body:any;
+      duration_select?:any;
   }
   
   

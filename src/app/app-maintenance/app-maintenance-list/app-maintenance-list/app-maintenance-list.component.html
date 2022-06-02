@@ -141,7 +141,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Name</label>
             <input type="text" disabled  *ngIf="isView && !isEdit" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <input type="text"   *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
+            <input type="text" placeholder="Name"  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
             <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
               class="alert-danger">
               <div *ngIf="createMaintenanceForm.get('name').errors.required">
@@ -240,19 +240,18 @@
                       <input *ngIf="isView" [attr.disabled]="isView && !isEdit" type="number" min="2"
                         class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
                         id="nbefore_name" formControlName="notifyBefore">
-                        <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2" max="23"
+                        <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2"  max="23" (keyup)="checkHours()" (change)="checkHours()"
                         class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
                         id="nbefore_name" formControlName="notifyBefore">
                       <input *ngIf="inspection_frequency!==0 && !isView" type="number"
-                        style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm mr-4"
+                        style="width: 65px !important;height: 30px!important;"  min="2"  (keyup)="checkHours()"  (change)="checkHours()" class="form-control form-control-sm mr-4"
                         id="nbefore_name" formControlName="notifyBefore">
                         
-                        <select  *ngIf="isView" style="width: 85px;" [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
+                        <select  *ngIf="isView" style="width: 85px;"   [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
                         id="nbefore_name">
                         <option value="Hours">Hours</option>
-                        <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                       </select>
-                      <select  *ngIf="!isView" style="width: 85px;" class="custom-dropdown w-12 sm form-control form-control-sm"
+                      <select  *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()" class="custom-dropdown w-12 sm form-control form-control-sm"
                       id="nbefore_name">
                       <option value="Hours">Hours</option>
                       <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
@@ -388,19 +387,18 @@
                       id="nbefore_name" [(ngModel)]="obj.duration_hours">
                       <input  *ngIf="!isView && inspection_frequency===0" type="number" min="2" max="23"
                       class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;"
-                      id="nbefore_name" [(ngModel)]="obj.duration_hours">
+                      id="nbefore_name" [(ngModel)]="obj.duration_hours" (keyup)="esccheckHours(i)" (change)="esccheckHours(i)">
                     <input *ngIf="inspection_frequency!==0 && !isView" type="number"
                       style="width: 65px !important;height: 30px!important;" min="2"
-                      class="form-control form-control-sm" id="nbefore_name" [(ngModel)]="obj.duration_hours">
+                      class="form-control form-control-sm" id="nbefore_name" (keyup)="esccheckHours(i)" (change)="esccheckHours(i)" [(ngModel)]="obj.duration_hours">
                   </div>
                   <div class="form-group d-flex flex-column">
                     <select [attr.disabled]="isView && !isEdit" *ngIf="isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
                       class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
                       <option value="Hours">Hours</option>
-                      <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                     </select>
                     <select *ngIf="!isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
-                      class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
+                      class="custom-dropdown w-12  sm form-control form-control-sm"  [(ngModel)]="obj.duration_select" id="nbefore_name" (change)="esccheckHours(i)">
                       <option value="Hours">Hours</option>
                       <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                     </select>

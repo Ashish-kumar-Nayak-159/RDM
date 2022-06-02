@@ -763,6 +763,7 @@ getMaintenance_data(id)
       this.notifyMaintenanceForm.get('notifyBefore').setValue(this.maintenanceModel?.notify_before_hours);
       this.notifyEmails = this.maintenanceModel?.notify_user_emails;
       this.currentItem = this.maintenanceModel?.notify_email_body;
+      this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }

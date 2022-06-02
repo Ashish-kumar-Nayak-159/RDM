@@ -375,7 +375,27 @@ onChangeOfAsset(){
     });
     this.tileData = selectedItem;
   }
-  
+ 
+  checkHours()
+  {
+    if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days')
+    {
+      if(this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2)
+      {
+        this.toasterService.showError('Notify Before for days should be more than 6 days or less than 2', 'Notify Before');
+        return;
+      }
+    }
+    else
+    {
+      if(this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value <2)
+      {
+        this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
+        return;
+      }
+    }
+
+  }
   
 getgateway(hierarchy)
 {
@@ -452,10 +472,11 @@ onCloseMaintenanceModelModal() {
     })
 
     this.notifyMaintenanceForm = new FormGroup({
-      notifyBefore: new FormControl('', [Validators.required]),
+      notifyBefore: new FormControl(2, [Validators.required]),
       notify_user_emails: new FormControl('', [Validators.required]),
       notify_email_subject: new FormControl('', [Validators.required]),
-      notify_user_groups: new FormControl('')   
+      notify_user_groups: new FormControl('') ,
+      hoursOrdays:new FormControl('')
     })
 
 
@@ -497,7 +518,21 @@ onCloseMaintenanceModelModal() {
         
       }
     }
-
+    else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
+    {
+        this.toasterService.showError('Notify Before for days should be more than 6 days or less than 2', 'Notify Before');
+        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
+        this.createMaitenanceCall = false;
+        return;
+    }
+    else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value <2))
+      {
+        this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
+        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
+        this.createMaitenanceCall = false;
+        return;
+      }
+    
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
@@ -518,7 +553,14 @@ onCloseMaintenanceModelModal() {
     this.maintenanceModel.is_escalation_required = this.is_escalation_required;
     this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
     if (this.is_notify_user) {
-      this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
+      if( this.notifyMaintenanceForm.get('hoursOrdays').value==='Days')
+      {
+        this.maintenanceModel.notify_before_hours = parseInt(this.notifyMaintenanceForm.get('notifyBefore').value)*24;
+      }
+      else
+      {
+        this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
+      }
       this.maintenanceModel.notify_user_emails =  this.notifyEmails;
       this.maintenanceModel.notify_user_groups = this.notifyMaintenanceForm.get('notify_user_groups').value;
       this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
@@ -584,6 +626,7 @@ isAsset = false;
    if(this.notifyMaintenanceForm !== undefined)
    { 
      this.notifyMaintenanceForm.reset();
+     this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
    }
    if(this.escalMaintenanceForm !== undefined)
    { 

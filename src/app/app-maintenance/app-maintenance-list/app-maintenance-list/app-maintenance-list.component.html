@@ -224,19 +224,18 @@
                       <input *ngIf="isView" [attr.disabled]="isView && !isEdit" type="number" min="2"
                         class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
                         id="nbefore_name" formControlName="notifyBefore">
-                        <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2" max="23"
+                        <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2"  max="23" (keyup)="checkHours()"
                         class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
                         id="nbefore_name" formControlName="notifyBefore">
                       <input *ngIf="inspection_frequency!==0 && !isView" type="number"
-                        style="width: 65px !important;height: 30px!important;"  min="2" class="form-control form-control-sm mr-4"
+                        style="width: 65px !important;height: 30px!important;"  min="2"  (keyup)="checkHours()"  class="form-control form-control-sm mr-4"
                         id="nbefore_name" formControlName="notifyBefore">
                         
-                        <select  *ngIf="isView" style="width: 85px;" [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
+                        <select  *ngIf="isView" style="width: 85px;"   [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
                         id="nbefore_name">
                         <option value="Hours">Hours</option>
-                        <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                       </select>
-                      <select  *ngIf="!isView" style="width: 85px;" class="custom-dropdown w-12 sm form-control form-control-sm"
+                      <select  *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()" class="custom-dropdown w-12 sm form-control form-control-sm"
                       id="nbefore_name">
                       <option value="Hours">Hours</option>
                       <option *ngIf="inspection_frequency!==0" value="Days">Days</option>

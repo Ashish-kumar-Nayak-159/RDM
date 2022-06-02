@@ -670,6 +670,8 @@ isAsset = false;
    { 
      this.createMaintenanceForm.reset();
      this.createMaintenanceForm.get('asset_ids').enable()
+     var today = new Date().toISOString().slice(0, 16)
+     this.createMaintenanceForm.get('start_date').setValue(today);
      this.createMaintenanceForm.get('start_date').enable();
    }
    if(this.notifyMaintenanceForm !== undefined)

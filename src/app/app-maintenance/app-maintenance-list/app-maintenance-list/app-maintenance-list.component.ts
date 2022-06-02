@@ -1060,13 +1060,14 @@ getMaintenance_data(id)
     if (obj.for === 'View') {
       this.isView = true;
       this.isAsset = false;
-      this.createMaitenanceCall = false;
+      this.createMaitenanceCall = true;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setViewFields();
-      }, 100);
+        this.createMaitenanceCall = false;
+      }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Delete') {
@@ -1111,14 +1112,15 @@ getMaintenance_data(id)
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
-      this.createMaitenanceCall = false;
+      this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
       this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setEditFields();
-      }, 100);
+        this.createMaitenanceCall = false;
+      }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

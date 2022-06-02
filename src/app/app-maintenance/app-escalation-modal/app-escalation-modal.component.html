@@ -1,0 +1,32 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="vie">Escalations</h5>
+        <button type="button" class="close" (click)="onClose()" aria-label="Close">
+            <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+      
+        <accordion class="mb-2" [closeOthers]="'true'">
+            <ng-container *ngFor="let escalation of escalationDetails; let i = index">
+                <accordion-group heading="" [panelClass]="'customClass'">
+                    <ng-container accordion-heading (click)="resetSelectedObj()">
+                        <a class="btn" (click)="resetSelectedObj()">
+                            Escalation {{i+1}}
+                        </a>
+                    </ng-container>
+                    <div>
+                       <p>Email Subject: {{escalation.email_subject}}</p>
+                       <p>Email Body: {{escalation.email_body}}</p>
+                       <p>Status: {{escalation.status}}</p>
+                       <p>Trigger Date: {{escalation.trigger_date}}</p> 
+                    </div>
+                   </accordion-group>
+            </ng-container>
+        </accordion>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
+    </div>
+</div>

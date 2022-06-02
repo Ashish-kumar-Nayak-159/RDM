@@ -132,7 +132,6 @@ export class AppMaintenanceListComponent implements OnInit {
 
   onChangeOfAsset() {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    console.log("print asset", asset)
     this.selectedAsset_id = asset.asset_id
   }
 
@@ -366,7 +365,6 @@ export class AppMaintenanceListComponent implements OnInit {
         this.loadMoreVisibility = false;
       }
       this.maintenances = [...this.maintenances, ...response.data]
-      console.log("this.maintenances", this.maintenances)
     }, (err) => {
       this.tableConfig.is_table_data_loading = false;
     })
@@ -912,12 +910,10 @@ isAsset = false;
 
     }
     else if (obj.for === 'viewAcknowledge') {
-      console.log("viewAcknowledge", obj)
       $("#viewAcknowledge").modal('show')
       this.getAckMaintenance(obj?.data?.maintenance_notification_id);
     }
     else if (obj.for === 'Escalation') {
-      console.log("escalation", obj)
       obj?.data?.maintenance_escalations.forEach((data) => {
         data.trigger_date = this.commonService.convertUTCDateToLocalDate(data.trigger_date, "MMM dd, yyyy, HH:mm:ss")
       })
@@ -1132,9 +1128,7 @@ isAsset = false;
       count: this.singleLimit,
     }
     this.maintenanceConfig.is_table_data_loading = true
-    console.log("on trigger data", this.triggerData)
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
-      console.log("ApI Trigger response", res)
       res?.data?.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required
@@ -1148,7 +1142,6 @@ isAsset = false;
       this.maintenanceConfig.is_table_data_loading = false;
       this.toasterService.showError(`${error.message}`, 'Error')
     })
-    // console.log("historyofperticularMaintenance", obj)
 
 
   }

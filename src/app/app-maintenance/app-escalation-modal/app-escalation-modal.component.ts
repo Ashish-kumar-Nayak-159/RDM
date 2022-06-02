@@ -20,7 +20,6 @@ export class AppEscalationModalComponent implements OnInit {
   }
 
   onClose(){
-    console.log("request to close modal")
     $("#escalation").modal('hide')
   }
 

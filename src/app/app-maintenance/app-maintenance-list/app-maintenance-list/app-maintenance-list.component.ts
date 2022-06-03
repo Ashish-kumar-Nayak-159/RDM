@@ -246,6 +246,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'View',
               valueclass: '',
               tooltip: 'View',
+              priviledge:'MNTCV'
             },
             {
               icon: 'fa fa-fw fa-edit',
@@ -253,6 +254,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Edit',
               valueclass: '',
               tooltip: 'Edit',
+              priviledge: 'MNTCU'
             },
             {
               icon: 'fa fa-fw fa-trash',
@@ -260,6 +262,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Delete',
               valueclass: '',
               tooltip: 'Delete',
+              priviledge:'MNTCD'
             },
             {
               icon: 'fa fa-fw fa-table',
@@ -267,6 +270,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Trigger',
               valueclass: '',
               tooltip: 'Trigger',
+              priviledge:'MNTCV'
             },
             {
               icon: 'fa fa-fw fa-clone',
@@ -274,13 +278,15 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Clone',
               valueclass: '',
               tooltip: 'Clone',
+              priviledge:'MNTCA'
             },
             {
               id: 'Disable',
               valueclass: '',
               tooltip: 'Disable',
               type: 'switch',
-              data_key: 'is_maintenance_required'
+              data_key: 'is_maintenance_required',
+              priviledge:'MNTCU'
             }
           ],
         },
@@ -365,6 +371,7 @@ export class AppMaintenanceListComponent implements OnInit {
         this.loadMoreVisibility = false;
       }
       this.maintenances = [...this.maintenances, ...response.data]
+      console.log("this.maintenance",this.maintenances)
     }, (err) => {
       this.tableConfig.is_table_data_loading = false;
     })
@@ -922,6 +929,7 @@ isAsset = false;
 
     }
     else if (obj.for === 'Trigger') {
+      console.log("trigger",obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -1097,7 +1105,8 @@ isAsset = false;
               id: 'viewAcknowledge',
               valueclass: '',
               tooltip: 'viewAcknowledge',
-              show_hide_data_key: 'is_acknowledged'
+              show_hide_data_key: 'is_acknowledged',
+              priviledge:'MNTAC'
             },
             {
               icon: 'fa fa-fw fa-clone',
@@ -1105,7 +1114,8 @@ isAsset = false;
               id: 'Acknowledge',
               valueclass: '',
               tooltip: 'Acknowledge',
-              show_hide_data_key: 'acknowledged_required'
+              show_hide_data_key: 'acknowledged_required',
+              priviledge:'MNTAC'
             },
             {
               icon: 'fa fa-fast-forward',
@@ -1113,7 +1123,8 @@ isAsset = false;
               id: 'Escalation',
               valueclass: '',
               tooltip: 'Escalation',
-              show_hide_data_key: 'is_escalation_required'
+              show_hide_data_key: 'is_escalation_required',
+              priviledge:'MNTCV'
             },
           ],
         },
@@ -1129,6 +1140,7 @@ isAsset = false;
     }
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
+      console.log("Api response of perticular",res)
       res?.data?.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm:ss"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required

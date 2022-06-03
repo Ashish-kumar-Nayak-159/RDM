@@ -12,8 +12,9 @@ export class MaintenanceService {
 
   constructor(private http: HttpClient) { }
 
-  getMaintenance(filterObj?){
+  getMaintenance(filterObj){
     // return this.http.get(this.url + AppUrls.GET_MAIN)
+    debugger
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
@@ -47,20 +48,19 @@ export class MaintenanceService {
       JSON.stringify(maintenanceModel))
       ;
   }
-  enableDisable(id:any){
-    var payLoad = {
-      is_maintenance_required : true,
-      start_date : "2022-05-30 13:00"
-    }
-    return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payLoad)
-  }
 
-  disable(id:number,payload:any){
+  disableEnable(id:number,payload:any){
     return this.http.patch(this.url + AppUrls.GET_MAINTENANCE + id, payload)
   }
 
-  Trigger(id:number){
-    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id)
+  Trigger(id:number,filterObj?){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_MAINTENANCE_NOTIFICATION + id, {params})
   }
 
   createAckMaintenance(payload:any){

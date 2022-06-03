@@ -11,8 +11,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { AppMaintenanceModalComponent } from './app-maintenance-modal/app-maintenance-modal.component';
 import { AppViewAcknowledgeModalComponent } from './app-view-acknowledge-modal/app-view-acknowledge-modal.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AppEscalationModalComponent } from './app-escalation-modal/app-escalation-modal.component';
 @NgModule({
-  declarations: [AppMaintenanceListComponent, TextEditorComponent,AppMaintenanceModalComponent,AppViewAcknowledgeModalComponent],
+  declarations: [AppMaintenanceListComponent, TextEditorComponent,AppMaintenanceModalComponent,AppViewAcknowledgeModalComponent, AppEscalationModalComponent],
   imports: [
     CommonModule,
     AppMaintenanceRoutingModule,

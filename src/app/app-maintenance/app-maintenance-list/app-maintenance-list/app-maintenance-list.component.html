@@ -6,7 +6,7 @@
       <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
       </div>
       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateMaintenanceModelModal()"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1 && showHierarchy" placement="bottom"
         tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
           class="fas fa-plus fa-sm"></em></button>
     </div>
@@ -14,12 +14,14 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
+          <ng-container *ngIf="showHierarchy">
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
             [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-            (clearHierarchyEvent)="onClearHierarchy()">
-          </app-hierarchy-dropdown>
-          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
-            (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
+              (clearHierarchyEvent)="onClearHierarchy()">
+            </app-hierarchy-dropdown>
+            <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
+                (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
+          </ng-container>
           <!-- <div class="form-group">
                 <button type="button" class="btn btn-sm searchBtn btn-primary"
                     (click)="onFilterSelection(this.filterObj, true, true)"><em
@@ -33,31 +35,38 @@
 
   <div class="overlap-wrapper">
     <div class="over-lap">
-      <br/>
+      <br />
       <div class="d-flex">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
-            class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+          class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
         </svg>
-        <p class="p-2 rounded mb-0 ml-3" >{{registryName | titlecase}}</p>
+        <p class="p-2 rounded mb-0 ml-3">{{registryName | titlecase}}</p>
       </div>
-      
+
 
       <div class="custom-table">
         <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"
           (btnClickEvent)="onTableFunctionCall($event)">
         </app-common-data-table>
+        <span class="d-flex justify-content-center w-100"
+          *ngIf="!insideScrollFunFlag && maintenances.length > 0 && singleLoadMoreVisibility">
+          <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;historyOfPerticularMaintenance();" placement="bottom"
+            tooltip="Load More Records...">Load More...</a>
+        </span>
       </div>
     </div>
     <div class="" id="table-wrapper d-flex flex-column">
       <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
-        <span class="d-flex justify-content-center w-100"  *ngIf="!insideScrollFunFlag && maintenances.length > 0 && loadMoreVisibility">
-          <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
-            (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
-            tooltip="Load More Records...">Load More...</a>
-        </span>
+      <span class="d-flex justify-content-center w-100"
+        *ngIf="!insideScrollFunFlag && maintenances.length > 0 && loadMoreVisibility">
+        <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+          (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
+          tooltip="Load More Records...">Load More...</a>
+      </span>
     </div>
   </div>
   <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
@@ -96,7 +105,7 @@
 
 <div class="modal right fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-app-maintenance-modal *ngIf="showAckModal" (modalEmit)="closeModal($event)" [assetId]="asset_id"
+    <app-app-maintenance-modal (modalEmit)="closeModal($event)" [assetId]="asset_id"
       [maintenanceRegistryId]="maintenanceRegistryId" [maintenanceNotificationId]="maintenanceNotificationId">
     </app-app-maintenance-modal>
   </div>
@@ -104,8 +113,15 @@
 
 <div class="modal right fade" id="viewAcknowledge" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-app-view-acknowledge-modal *ngIf="showViewAckModal" [viewAckMaintenanceDetails]="viewAckMaintenanceDetails">
+    <app-app-view-acknowledge-modal [viewAckMaintenanceDetails]="viewAckMaintenanceDetails">
     </app-app-view-acknowledge-modal>
+  </div>
+</div>
+
+<div class="modal right fade" id="escalation" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-app-escalation-modal [escalationDetails]="escalationDetails">
+    </app-app-escalation-modal>
   </div>
 </div>
 

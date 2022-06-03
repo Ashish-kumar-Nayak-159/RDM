@@ -10,6 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { DateAxis } from '@amcharts/amcharts4/charts';
 
 declare var $: any;
 
@@ -579,18 +580,21 @@ onCloseMaintenanceModelModal() {
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
         this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
     }
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value <2))
       {
         this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
       }
-    
+    else if((new Date(this.createMaintenanceForm.get("start_date").value).getTime())<(new Date().getTime()))
+    {
+      this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
+      this.createMaitenanceCall = false;
+      return;
+    }
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
@@ -1151,6 +1155,7 @@ getMaintenance_data(id)
             //   status: true,
             // });
             this.toasterService.showSuccess(response.message,   'Maitenance Clone');
+            this.redirectTo(this.router.url);
           },
           (err: HttpErrorResponse) => {
             this.createMaitenanceCall = false;

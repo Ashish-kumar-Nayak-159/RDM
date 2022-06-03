@@ -760,7 +760,7 @@ isAsset = false;
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.notifyEmails.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
+      if (this.notifyEmails?.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
         this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;

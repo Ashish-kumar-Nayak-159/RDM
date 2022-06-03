@@ -600,6 +600,18 @@ getgateway(hierarchy)
       this.createMaitenanceCall = false;
       return;
     }
+    else if (this.is_notify_user) {
+     if(this.notifyEmails?.length===0 ||
+     (this.notifyMaintenanceForm.get('notify_user_groups').errors!=null && this.notifyMaintenanceForm.get('notify_user_groups').errors.required!=undefined && this.notifyMaintenanceForm.get('notify_user_groups').errors.required)
+     || (this.htmlContent==null || this.htmlContent==undefined)
+     || (this.notifyMaintenanceForm.get('notify_email_subject').errors!=null && this.notifyMaintenanceForm.get('notify_email_subject').errors.required!=undefined && this.notifyMaintenanceForm.get('notify_email_subject').errors.required)
+     ) 
+      {
+       this.createMaitenanceCall = false;
+       this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
+       return;
+      }  
+    }
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {

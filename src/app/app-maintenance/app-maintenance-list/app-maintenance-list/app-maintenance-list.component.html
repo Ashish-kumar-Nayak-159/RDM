@@ -6,7 +6,7 @@
       <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
       </div>
       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateMaintenanceModelModal()"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1 && showHierarchy" placement="bottom"
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('MNTCA') > -1 && showHierarchy" placement="bottom"
         tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
           class="fas fa-plus fa-sm"></em></button>
     </div>
@@ -249,7 +249,7 @@
                         
                         <select  *ngIf="isView" style="width: 85px;"   [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
                         id="nbefore_name">
-                        <option value="Hours">Hours</option>
+                        <option value="Hours" selected>Hours</option>
                       </select>
                       <select  *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()" class="custom-dropdown w-12 sm form-control form-control-sm"
                       id="nbefore_name">
@@ -395,7 +395,7 @@
                   <div class="form-group d-flex flex-column">
                     <select [attr.disabled]="isView && !isEdit" *ngIf="isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
                       class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
-                      <option value="Hours">Hours</option>
+                      <option value="Hours" selected>Hours</option>
                     </select>
                     <select *ngIf="!isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
                       class="custom-dropdown w-12  sm form-control form-control-sm"  [(ngModel)]="obj.duration_select" id="nbefore_name" (change)="esccheckHours(i)">

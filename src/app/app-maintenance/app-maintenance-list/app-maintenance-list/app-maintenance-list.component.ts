@@ -246,6 +246,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Edit',
               valueclass: '',
               tooltip: 'Edit',
+         //     show_hide_data_key  :(decodedToken?.privileges && decodedToken.privileges.indexOf('MNTCU ') > -1) 
             },
             {
               icon: 'fa fa-fw fa-trash',
@@ -527,7 +528,7 @@ getgateway(hierarchy)
 
 
   onSaveMaintenanceModelModal() {
-    this.createMaitenanceCall = true;
+      this.createMaitenanceCall = true;
     if((this.createMaintenanceForm.get("name").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
@@ -551,7 +552,7 @@ getgateway(hierarchy)
           || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject==='' 
           || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body==='' 
           || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups==='' 
-          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0)
+          || (this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0 && this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups.length===0))
           {
           this.createMaitenanceCall = false;
           this.toasterService.showError('Please Enter mandatory information for escalation '+(n+1)," Maitenance Create");
@@ -582,6 +583,12 @@ getgateway(hierarchy)
           }
       }
     }
+   else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined))
+      {
+        this.createMaitenanceCall = false;
+        this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
+        return;
+      }   
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
         this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
@@ -600,6 +607,7 @@ getgateway(hierarchy)
       this.createMaitenanceCall = false;
       return;
     }
+   
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
@@ -631,6 +639,7 @@ getgateway(hierarchy)
       {
         this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
       }
+
       this.maintenanceModel.notify_user_emails =  this.notifyEmails;
       this.maintenanceModel.notify_user_groups = this.notifyMaintenanceForm.get('notify_user_groups').value;
       this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
@@ -654,6 +663,7 @@ getgateway(hierarchy)
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
+          this.setEditFields();
           this.toasterService.showError(err.message, " Maitenance Update");
         }
       );
@@ -717,18 +727,18 @@ isAsset = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.maintenanceModel.maintenance_escalation_registry[i].user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
       this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i].user_email.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
       this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
     }
   }
@@ -748,7 +758,7 @@ isAsset = false;
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.notifyEmails.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
+      if (this.notifyEmails?.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
         this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
@@ -841,7 +851,8 @@ getMaintenance_data(id)
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
-
+    this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
+  
     if (this.is_escalation_required) {
 
       let maintenance_escalation_registry = [];

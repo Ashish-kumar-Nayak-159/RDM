@@ -738,7 +738,7 @@ isAsset = false;
         return;
       }
       this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i].user_email.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
       this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
     }
   }

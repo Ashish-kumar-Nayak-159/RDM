@@ -6,7 +6,7 @@
       <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
       </div>
       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateMaintenanceModelModal()"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1 && showHierarchy" placement="bottom"
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('MNTCA') > -1 && showHierarchy" placement="bottom"
         tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
           class="fas fa-plus fa-sm"></em></button>
     </div>

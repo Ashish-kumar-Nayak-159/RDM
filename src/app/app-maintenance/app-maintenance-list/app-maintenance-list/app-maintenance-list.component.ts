@@ -663,6 +663,7 @@ getgateway(hierarchy)
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
+          this.setEditFields();
           this.toasterService.showError(err.message, " Maitenance Update");
         }
       );
@@ -731,7 +732,7 @@ isAsset = false;
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;

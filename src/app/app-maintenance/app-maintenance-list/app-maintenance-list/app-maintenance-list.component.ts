@@ -10,6 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { DateAxis } from '@amcharts/amcharts4/charts';
 
 declare var $: any;
 
@@ -157,15 +158,7 @@ export class AppMaintenanceListComponent implements OnInit {
       notify_user_groups: '',
       is_acknowledge_required: false,
       is_escalation_required: false,
-      maintenance_escalation_registry: [{
-        user_emails: '',
-        user_email:[],
-        duration_hours: 2,
-        user_groups: [],
-        email_subject: "",
-        email_body: "",
-        duration_select:'Hours'
-      }],
+      maintenance_escalation_registry: [],
       email_body: ''
 
     };
@@ -319,18 +312,38 @@ export class AppMaintenanceListComponent implements OnInit {
     this.getMaintenance();
 
   }
-  addNewEsacalation() {
-    let maintenance_regirstry = {
-      user_emails: '',
-      user_email:[],
-      duration_hours: 2,
-      user_groups: [],
-      email_subject: "",
-      email_body: "",
-      duration_select:"Hours"
+  addNewEsacalation(i) {
+    if(i===0)
+    {
+      this.is_escalation_required = !this.is_escalation_required;
+      this.maintenanceModel.maintenance_escalation_registry = [];
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
     }
-    this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   else{
+    if(this.maintenanceModel.maintenance_escalation_registry?.length<3)
+    {
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   } 
   }
+}
   deleteEscalation(index) {
     this.maintenanceModel.maintenance_escalation_registry.splice(index, 1);
   }
@@ -521,7 +534,7 @@ getgateway(hierarchy)
 
 
   onSaveMaintenanceModelModal() {
-    this.createMaitenanceCall = true;
+      this.createMaitenanceCall = true;
     if((this.createMaintenanceForm.get("name").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("asset_ids").value===undefined || this.createMaintenanceForm.get("name").value==='')
      || (this.createMaintenanceForm.get("start_date").value===undefined || this.createMaintenanceForm.get("start_date").value==='') 
@@ -545,7 +558,7 @@ getgateway(hierarchy)
           || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject==='' 
           || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body==='' 
           || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups==='' 
-          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0)
+          || (this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0 && this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups.length===0))
           {
           this.createMaitenanceCall = false;
           this.toasterService.showError('Please Enter mandatory information for escalation '+(n+1)," Maitenance Create");
@@ -576,21 +589,31 @@ getgateway(hierarchy)
           }
       }
     }
+   else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined))
+      {
+        this.createMaitenanceCall = false;
+        this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
+        return;
+      }   
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
         this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
     }
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value <2))
       {
         this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
       }
-    
+    else if((new Date(this.createMaintenanceForm.get("start_date").value).getTime())<(new Date().getTime()))
+    {
+      this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
+      this.createMaitenanceCall = false;
+      return;
+    }
+   
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
@@ -622,6 +645,7 @@ getgateway(hierarchy)
       {
         this.maintenanceModel.notify_before_hours = this.notifyMaintenanceForm.get('notifyBefore').value;
       }
+
       this.maintenanceModel.notify_user_emails =  this.notifyEmails;
       this.maintenanceModel.notify_user_groups = this.notifyMaintenanceForm.get('notify_user_groups').value;
       this.maintenanceModel.notify_email_subject = this.notifyMaintenanceForm.get('notify_email_subject').value;
@@ -645,6 +669,7 @@ getgateway(hierarchy)
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
+          this.setEditFields();
           this.toasterService.showError(err.message, " Maitenance Update");
         }
       );
@@ -693,12 +718,12 @@ isAsset = false;
    }
    if(this.escalMaintenanceForm !== undefined)
    { 
-     this.escalMaintenanceForm.reset();
-   }
+    this.escalMaintenanceForm.reset();
+    }
    this.is_notify_user = false;
    this.is_acknowledge_required = false;
-   this.is_escalation_required = false;
-  
+   this.is_escalation_required = true;
+   this.addNewEsacalation(0);
   $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   
    }
@@ -708,18 +733,18 @@ isAsset = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.maintenanceModel.maintenance_escalation_registry[i].user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
       this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i].user_email.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
+      this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
       this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
     }
   }
@@ -739,7 +764,7 @@ isAsset = false;
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.notifyEmails.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
+      if (this.notifyEmails?.includes(this.notifyMaintenanceForm.get('notify_user_emails').value)) {
         this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
@@ -764,19 +789,24 @@ isAsset = false;
 
 
 
-  getInspec_Freq(inspection_frequency) {
-    let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
-    return itemObj?.name;
-  }
-  onCloseViewMaintenanceModelModal() {
-    this.createMaintenanceForm.reset();
-    $('#createMaintainenceModelModal').modal('hide');
-  }
-  getMaintenance_data(id) {
-    let method = this.maintenanceService.getMaintenancedata(id);
-    method.subscribe(
-      (response: any) => {
-        this.maintenanceModel = response.data;
+getInspec_Freq(inspection_frequency)
+{
+  let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
+ return itemObj?.name;
+}
+onCloseViewMaintenanceModelModal()
+{
+  this.createMaintenanceForm.reset();
+  $('#createMaintainenceModelModal').modal('hide'); 
+}
+getMaintenance_data(id)
+{
+  let method = this.maintenanceService.getMaintenancedata(id);
+  method.subscribe(
+    (response: any) => {
+      debugger;
+        this.maintenanceModel = (response.data);
+ 
       },
     );
 
@@ -806,8 +836,9 @@ isAsset = false;
     this.emailbody1 = valuefromtextEditor;
     this.maintenanceModel.maintenance_escalation_registry[i].email_body = this.emailbody1;
   }
-
-  setEditFields() {
+ 
+  setEditFields()
+  {
     this.isView = false;
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
@@ -826,7 +857,8 @@ isAsset = false;
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
-
+    this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
+  
     if (this.is_escalation_required) {
 
       let maintenance_escalation_registry = [];
@@ -964,6 +996,7 @@ isAsset = false;
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
+      this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
@@ -975,6 +1008,32 @@ isAsset = false;
       }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
+    else if (obj.for === 'Clone') {
+
+      this.maintenanceRegistryId = obj?.data?.maintenance_registry_id;
+      this.getMaintenance_data(this.maintenance_registry_id);
+      setTimeout(() => {
+       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+        method.subscribe(
+          (response: any) => {
+            // this.onCloseRuleModel.emit({
+            //   status: true,
+            // });
+            this.toasterService.showSuccess(response.message,   'Maitenance Clone');
+            this.redirectTo(this.router.url);
+          },
+          (err: HttpErrorResponse) => {
+            this.createMaitenanceCall = false;
+            this.toasterService.showError(err.message," Maitenance Clone");
+          }
+        );
+        
+     }, 500); 
+       // this.payload = {
+       //   is_maintenance_required : !obj.data.is_maintenance_required,
+       //   start_date : "2022-05-30 13:00"
+       // }
+     }
   }
 
   // showing and hiding modal

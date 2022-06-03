@@ -10,6 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { DateAxis } from '@amcharts/amcharts4/charts';
 
 declare var $: any;
 
@@ -157,15 +158,7 @@ export class AppMaintenanceListComponent implements OnInit {
       notify_user_groups: '',
       is_acknowledge_required: false,
       is_escalation_required: false,
-      maintenance_escalation_registry: [{
-        user_emails: '',
-        user_email:[],
-        duration_hours: 2,
-        user_groups: [],
-        email_subject: "",
-        email_body: "",
-        duration_select:'Hours'
-      }],
+      maintenance_escalation_registry: [],
       email_body: ''
 
     };
@@ -313,18 +306,38 @@ export class AppMaintenanceListComponent implements OnInit {
     this.getMaintenance();
 
   }
-  addNewEsacalation() {
-    let maintenance_regirstry = {
-      user_emails: '',
-      user_email:[],
-      duration_hours: 2,
-      user_groups: [],
-      email_subject: "",
-      email_body: "",
-      duration_select:"Hours"
+  addNewEsacalation(i) {
+    if(i===0)
+    {
+      this.is_escalation_required = !this.is_escalation_required;
+      this.maintenanceModel.maintenance_escalation_registry = [];
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
     }
-    this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   else{
+    if(this.maintenanceModel.maintenance_escalation_registry?.length<3)
+    {
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   } 
   }
+}
   deleteEscalation(index) {
     this.maintenanceModel.maintenance_escalation_registry.splice(index, 1);
   }
@@ -572,18 +585,21 @@ getgateway(hierarchy)
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
         this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
     }
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value <2))
       {
         this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
-        this.notifyMaintenanceForm.get('notifyBefore').setValue(2);
         this.createMaitenanceCall = false;
         return;
       }
-    
+    else if((new Date(this.createMaintenanceForm.get("start_date").value).getTime())<(new Date().getTime()))
+    {
+      this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
+      this.createMaitenanceCall = false;
+      return;
+    }
     let maintenance_escalation_registry :any [] = [];
     this.maintenanceModel.maintenance_escalation_registry?.forEach((element,index)=>
     {
@@ -686,12 +702,12 @@ isAsset = false;
    }
    if(this.escalMaintenanceForm !== undefined)
    { 
-     this.escalMaintenanceForm.reset();
-   }
+    this.escalMaintenanceForm.reset();
+    }
    this.is_notify_user = false;
    this.is_acknowledge_required = false;
-   this.is_escalation_required = false;
-  
+   this.is_escalation_required = true;
+   this.addNewEsacalation(0);
   $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   
    }
@@ -757,19 +773,24 @@ isAsset = false;
 
 
 
-  getInspec_Freq(inspection_frequency) {
-    let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
-    return itemObj?.name;
-  }
-  onCloseViewMaintenanceModelModal() {
-    this.createMaintenanceForm.reset();
-    $('#createMaintainenceModelModal').modal('hide');
-  }
-  getMaintenance_data(id) {
-    let method = this.maintenanceService.getMaintenancedata(id);
-    method.subscribe(
-      (response: any) => {
-        this.maintenanceModel = response.data;
+getInspec_Freq(inspection_frequency)
+{
+  let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
+ return itemObj?.name;
+}
+onCloseViewMaintenanceModelModal()
+{
+  this.createMaintenanceForm.reset();
+  $('#createMaintainenceModelModal').modal('hide'); 
+}
+getMaintenance_data(id)
+{
+  let method = this.maintenanceService.getMaintenancedata(id);
+  method.subscribe(
+    (response: any) => {
+      debugger;
+        this.maintenanceModel = (response.data);
+ 
       },
     );
 
@@ -799,8 +820,9 @@ isAsset = false;
     this.emailbody1 = valuefromtextEditor;
     this.maintenanceModel.maintenance_escalation_registry[i].email_body = this.emailbody1;
   }
-
-  setEditFields() {
+ 
+  setEditFields()
+  {
     this.isView = false;
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
@@ -956,6 +978,7 @@ isAsset = false;
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
+      this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
@@ -967,6 +990,32 @@ isAsset = false;
       }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
+    else if (obj.for === 'Clone') {
+
+      this.maintenanceRegistryId = obj?.data?.maintenance_registry_id;
+      this.getMaintenance_data(this.maintenance_registry_id);
+      setTimeout(() => {
+       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+        method.subscribe(
+          (response: any) => {
+            // this.onCloseRuleModel.emit({
+            //   status: true,
+            // });
+            this.toasterService.showSuccess(response.message,   'Maitenance Clone');
+            this.redirectTo(this.router.url);
+          },
+          (err: HttpErrorResponse) => {
+            this.createMaitenanceCall = false;
+            this.toasterService.showError(err.message," Maitenance Clone");
+          }
+        );
+        
+     }, 500); 
+       // this.payload = {
+       //   is_maintenance_required : !obj.data.is_maintenance_required,
+       //   start_date : "2022-05-30 13:00"
+       // }
+     }
   }
 
   // showing and hiding modal

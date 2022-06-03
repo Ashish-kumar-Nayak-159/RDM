@@ -853,7 +853,8 @@ getMaintenance_data(id)
       this.notifyMaintenanceForm.get('notify_user_groups').setValue(this.maintenanceModel?.notify_user_groups);
       this.notifyMaintenanceForm.get('notify_email_subject').setValue(this.maintenanceModel?.notify_email_subject);
     }
-
+    this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
+  
     if (this.is_escalation_required) {
 
       let maintenance_escalation_registry = [];

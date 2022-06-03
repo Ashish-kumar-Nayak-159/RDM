@@ -729,12 +729,12 @@ isAsset = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is not valid', 'Add Email');
         return;
       }
-      if (this.maintenanceModel.maintenance_escalation_registry[i].user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
+      if (this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.includes(this.maintenanceModel.maintenance_escalation_registry[i].user_emails)) {
         this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;

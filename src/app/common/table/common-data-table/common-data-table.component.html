@@ -138,16 +138,16 @@
               </ng-container>
               <ng-container *ngIf="item.data_type  === 'button'">
                 <ng-container *ngFor="let btn of item.btn_list">
-                  <ng-container *ngIf="!btn?.type">
+                  <ng-container *ngIf="!btn?.type && (!btn?.priviledge || decodedToken?.privileges && decodedToken.privileges.indexOf(btn?.priviledge) > -1) ">
                     <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}"
-                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="!btn?.show_hide_data_key || dataItem[btn?.show_hide_data_key]">
+                      (click)="onClickOfButton(dataItem, btn.id)" *ngIf="(!btn?.show_hide_data_key || dataItem[btn?.show_hide_data_key])">
                       <em class="{{btn.icon}}" placement="left" [tooltip]="btn.tooltip"></em>
                       <!-- {{dataItem.is_maintenance_required}}  -->
                       {{btn.text}}
                     </a>
                   </ng-container>
-                  <ng-container *ngIf="btn?.type && btn?.type=='switch'">
-                    <a href="javascript:void(0)" (click)="onClickOfButton(dataItem, btn.id)" class="ml-2" tooltip="{{dataItem[btn?.data_key] ? 'Enable': 'Disable'}}">
+                  <ng-container *ngIf="btn?.type && btn?.type=='switch' && (!btn?.priviledge || decodedToken?.privileges && decodedToken.privileges.indexOf(btn?.priviledge) > -1) ">
+                    <a href="javascript:void(0)" (click)="onClickOfButton(dataItem, btn.id)" class="ml-2" tooltip="{{dataItem[btn?.data_key] ? 'Click to Disable': 'Click to Enable'}}">
                       <em *ngIf="dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-on"></em>
                       <em *ngIf="!dataItem[btn?.data_key]" class="fas fa-fw fa-toggle-off"></em>
                     </a>

@@ -152,15 +152,7 @@ onChangeOfAsset(){
       notify_user_groups: '',
       is_acknowledge_required: false,
       is_escalation_required: false,
-      maintenance_escalation_registry: [{
-        user_emails: '',
-        user_email:[],
-        duration_hours: 2,
-        user_groups: [],
-        email_subject: "",
-        email_body: "",
-        duration_select:'Hours'
-      }],
+      maintenance_escalation_registry: [],
       email_body: ''
 
     };
@@ -308,18 +300,38 @@ onChangeOfAsset(){
     this.getMaintenance();
 
   }
-  addNewEsacalation() {
-    let maintenance_regirstry = {
-      user_emails: '',
-      user_email:[],
-      duration_hours: 2,
-      user_groups: [],
-      email_subject: "",
-      email_body: "",
-      duration_select:"Hours"
+  addNewEsacalation(i) {
+    if(i===0)
+    {
+      this.is_escalation_required = !this.is_escalation_required;
+      this.maintenanceModel.maintenance_escalation_registry = [];
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
     }
-    this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   else{
+    if(this.maintenanceModel.maintenance_escalation_registry?.length<3)
+    {
+      let maintenance_regirstry = {
+        user_emails: '',
+        user_email:[],
+        duration_hours: 2,
+        user_groups: [],
+        email_subject: "",
+        email_body: "",
+        duration_select:"Hours"
+      }
+      this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+   } 
   }
+}
   deleteEscalation(index) {
     this.maintenanceModel.maintenance_escalation_registry.splice(index, 1);
   }
@@ -681,12 +693,12 @@ isAsset = false;
    }
    if(this.escalMaintenanceForm !== undefined)
    { 
-     this.escalMaintenanceForm.reset();
-   }
+    this.escalMaintenanceForm.reset();
+    }
    this.is_notify_user = false;
    this.is_acknowledge_required = false;
-   this.is_escalation_required = false;
-  
+   this.is_escalation_required = true;
+   this.addNewEsacalation(0);
   $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   
    }
@@ -767,7 +779,8 @@ getMaintenance_data(id)
   let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
-        this.maintenanceModel = response.data;
+      debugger;
+        this.maintenanceModel = (response.data);
       },
     );
 
@@ -801,7 +814,7 @@ getMaintenance_data(id)
     this.emailbody1 = valuefromtextEditor;
     this.maintenanceModel.maintenance_escalation_registry[i].email_body = this.emailbody1;
   }
-  
+ 
   setEditFields()
   {
     this.isView = false;
@@ -1114,6 +1127,7 @@ getMaintenance_data(id)
       this.isView = false;
       this.isAsset = true;
       this.title = "Edit";
+      this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
@@ -1125,6 +1139,31 @@ getMaintenance_data(id)
       }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
+    else if (obj.for === 'Clone') {
+
+      this.maintenanceRegistryId = obj?.data?.maintenance_registry_id;
+      this.getMaintenance_data(this.maintenance_registry_id);
+      setTimeout(() => {
+       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+        method.subscribe(
+          (response: any) => {
+            // this.onCloseRuleModel.emit({
+            //   status: true,
+            // });
+            this.toasterService.showSuccess(response.message,   'Maitenance Clone');
+          },
+          (err: HttpErrorResponse) => {
+            this.createMaitenanceCall = false;
+            this.toasterService.showError(err.message," Maitenance Clone");
+          }
+        );
+        
+     }, 500); 
+       // this.payload = {
+       //   is_maintenance_required : !obj.data.is_maintenance_required,
+       //   start_date : "2022-05-30 13:00"
+       // }
+     }
   }
 
   // showing and hiding modal

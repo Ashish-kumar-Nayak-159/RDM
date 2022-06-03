@@ -206,7 +206,8 @@
             [(ngModel)]="is_acknowledge_required" >
         </div>
         <div class="form-group">
-          <label class="col-form-label " for="alert_management">Notify to User</label>
+          <label for="message-text" class="col-form-label">Do you want to update user about upcoming
+            maintenance?</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
             >
           <input type="checkbox" *ngIf="!isView"  class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
@@ -216,8 +217,7 @@
           <div class="d-flex align-items-center w-100">
            
                 <div class="form-group mr-4">
-                  <label for="message-text" class="col-form-label required">Do you want to update user about upcoming
-                    maintenance?</label>
+   
 
                     <div class="d-flex align-items-center">
 
@@ -344,12 +344,12 @@
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Escalation Required</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" id="is_escal" [(ngModel)]="is_escalation_required"
-            (click)="is_escalation_required=!is_escalation_required">
-            <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="is_escal" [(ngModel)]="is_escalation_required"
+            (click)="addNewEsacalation(0);">
+            <input type="checkbox" *ngIf="!isView" (click)="addNewEsacalation(0);" class="form-check-input checkboxloc" id="is_escal" [(ngModel)]="is_escalation_required"
             >
         </div>
         <div *ngIf="is_escalation_required">
-          <button id="insert-more"  *ngIf="!isView" (click)="addNewEsacalation();" class="btn btn-sm btn-primary cursor-pointer"><em
+          <button id="insert-more"  *ngIf="!isView" (click)="addNewEsacalation(1);" class="btn btn-sm btn-primary cursor-pointer"><em
               class="fas fa fa-plus-circle mr-1 my-1"></em>
             Escalation</button>
           <ng-container *ngFor="let obj of maintenanceModel.maintenance_escalation_registry; let i = index">

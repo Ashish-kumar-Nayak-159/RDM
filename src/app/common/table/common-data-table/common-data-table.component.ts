@@ -59,7 +59,8 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   onClickOfButton(data, id) {
     this.btnClickEvent.emit({
       data,
-      for: id
+      for: id,
+      id : data.maintenance_notification_id
     });
   }
 

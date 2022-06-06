@@ -1021,9 +1021,7 @@ getMaintenance_data(id)
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Clone') {
-
-      this.maintenanceRegistryId = obj?.data?.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+      this.getMaintenance_data(obj.data.maintenance_registry_id);
       setTimeout(() => {
        let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
         method.subscribe(

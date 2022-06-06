@@ -264,7 +264,7 @@ export class AppMaintenanceListComponent implements OnInit {
               id: 'Trigger',
               valueclass: '',
               tooltip: 'Trigger',
-              // priviledge:'MNTCV'
+              priviledge:'MNTCV'
             },
             {
               icon: 'fa fa-fw fa-clone',
@@ -1142,7 +1142,7 @@ export class AppMaintenanceListComponent implements OnInit {
               valueclass: '',
               tooltip: 'viewAcknowledge',
               show_hide_data_key: 'is_acknowledged',
-              // priviledge:'MNTAC'
+              priviledge:'MNTAC'
             },
             {
               icon: 'fa fa-fw fa-clone',

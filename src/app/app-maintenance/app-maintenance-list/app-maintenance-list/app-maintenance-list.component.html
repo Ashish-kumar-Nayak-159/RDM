@@ -51,7 +51,7 @@
           (btnClickEvent)="onTableFunctionCall($event)">
         </app-common-data-table>
         <span class="d-flex justify-content-center w-100"
-          *ngIf="!insideScrollFunFlag && maintenances.length > 0 && singleLoadMoreVisibility">
+          *ngIf="!insideScrollFunFlag && maintenances?.length > 0 && singleLoadMoreVisibility">
           <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
             (click)="currentOffset = currentOffset + currentLimit;historyOfPerticularMaintenance();" placement="bottom"
             tooltip="Load More Records...">Load More...</a>
@@ -62,7 +62,7 @@
       <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
       <span class="d-flex justify-content-center w-100"
-        *ngIf="!insideScrollFunFlag && maintenances.length > 0 && loadMoreVisibility">
+        *ngIf="maintenances?.length > 0 && loadMoreVisibility && !insideScrollFunFlag">
         <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
           (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
           tooltip="Load More Records...">Load More...</a>

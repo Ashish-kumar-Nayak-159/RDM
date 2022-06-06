@@ -541,7 +541,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-solid fa-wrench',
       visible: true,
       exactMatch: true,
-      privileges_required: ['MNTCV'],
+      privileges_required: ['ASMV'],
       showAccordion: [{ name: 'Title', value: 'Maintenance' }],
       priority: 1,
     },

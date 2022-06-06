@@ -177,7 +177,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         allHierarchyData.push({ key: item.key, name: item.name, level: item.level, id: item.id });
       });
       this.contextApp.hierarchy.levels.forEach((_, index) => {
-        if (index !== 0) {
+        if (index !== 0 && index === 1) {
           this.hierarchyNewArr[index] = allHierarchyData.filter(f => f.level == index);
         }
       });

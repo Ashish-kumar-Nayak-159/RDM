@@ -17,11 +17,13 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   tableFilterObj = {};
   sortDir = 1;
   isFilterSelected = false;
+  decodedToken:any;
   constructor(private applicationService: ApplicationService,
     private commonService: CommonService,) { }
 
   ngOnInit(): void {
     this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
+    this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     if (this.tableData.length === 0) {
       this.noTableDataMessage = 'No data available.';
     }

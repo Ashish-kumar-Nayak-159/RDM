@@ -6,17 +6,6 @@
         </button>
     </div>
     <div class="modal-body">
-        <!-- <iframe *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='PDF'" [src]="blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken" style="width: 100%;height: 80vh"></iframe>
-                    <img *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='Image'" class="card-img-top" src="{{blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken}}" alt="Card image cap">
-                     <video *ngIf="data?.maintenance_notification_acknowledge_files[0]?.document_type=='Video'" controls>
-                        <source [src]="blobStorageURL + data?.maintenance_notification_acknowledge_files[0]?.document_file_url + sasToken" type="video/mp4">
-                     </video>
-                    <div class="card-body">
-                        <p class="card-title">Acknowledgement Date : {{data?.acknowledgement_date}}</p>
-                        <p class="card-title">Acknowledged By : {{data?.acknowledged_by}}</p>
-                        <p class="card-text">Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}}</p>
-                        <p class="card-text">Message: {{data?.acknowledgement_message}}</p>
-                    </div> -->
         <accordion class="mb-2" [closeOthers]="'true'">
             <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
                 <accordion-group heading="" [panelClass]="'customClass'">
@@ -58,6 +47,7 @@
                                         </tr>
                                     </tbody>
                                 </table><br />
+                                <br/><p *ngIf="selectedDocument?.document_name" class="text-center">File: {{selectedDocument?.document_name}}</p>
                                 <div class="show-files">
                                     <img *ngIf="selectedDocument?.document_type ==='Image'" class="w-100"
                                         [src]="blobStorageURL + selectedDocument?.document_file_url + sasToken">
@@ -69,7 +59,6 @@
                                             type="video/mp4">
                                     </video>
                                 </div>
-
                             </div>
                         </div>
 

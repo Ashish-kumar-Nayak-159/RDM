@@ -20,11 +20,12 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   uploadedFile: any = [];
   fileName: string = 'Choose File';
   isFileUploading = false;
-  filetype: string;
   formData;
   payload: any;
   contextApp: any = {}
   uploadedFileDetails: any = [];
+  storefileType:string;
+
   constructor(private toasterService: ToasterService, private commonService: CommonService, private maintenanceService: MaintenanceService) { }
 
   ngOnInit(): void {
@@ -41,8 +42,13 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   formReset() {
     this.formData = new FormGroup({
       description: new FormControl('',Validators.required),
-      filetype: new FormControl("",Validators.required),
-      uploadedFile: new FormControl('',Validators.required)
+      files: new FormArray([
+        new FormGroup({
+          filetype: new FormControl("",Validators.required),
+          uploadedFile: new FormControl("",Validators.required)
+        })
+      ])
+    
     })
 
   }
@@ -64,12 +70,15 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
       );
 
       if (data) {
-        // var eachOne = {
-        //   document_name: data.name,
-        //   document_file_url: data.url,
-        //   document_type: file.filetype
-        // }
-        this.uploadedFileDetails = data;
+        var eachOne = {
+          document_name: data.name,
+          document_file_url: data.url,
+          document_type: file.filetype
+        }
+        console.log("eachone",eachOne)
+        this.uploadedFileDetails.push(eachOne)
+        console.log("uploadedFile",this.uploadedFileDetails)
+       
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -86,13 +95,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
       "acknowledgement_message": this.formData.value.description,
-      "maintenance_notification_acknowledge_files": [
-        {
-          "document_type": this.formData.value.filetype,
-          "document_name": this.uploadedFileDetails.name,
-          "document_file_url": this.uploadedFileDetails.url
-        }
-      ]
+      "maintenance_notification_acknowledge_files": this.uploadedFileDetails
     }
     this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
       this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
@@ -103,7 +106,8 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.modalEmit.emit(false)
   }
 
-  onFileSelected(event) {
+  onFileSelected(event,i:number) {
+    debugger
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
@@ -123,15 +127,16 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           //   'index': 0
           // })
           // this.uploadedFile = file;
-          // let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
-          // this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
-          this.uploadedFile.push({'file':fileList?.item(0)})
+          let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
+           this.storefileType = (this.formData.get('files') as FormArray).controls[i].get('filetype').value; 
+          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
+          // this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
-          this.fileName = file.name;
+          // this.fileName = file.name;
         }
         else {
           this.toasterService.showError('Only Image, Video & PDF files are allowed', 'Select File');
-          this.fileName = 'Choose File';
+          // this.fileName = 'Choose File';
         }
         return;
       }
@@ -139,13 +144,22 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     }
   }
 
-  // addDocument() {
-  //   const control = this.formData.get('files');
-  //   let newFormObj = new FormGroup({
-  //     filetype: new FormControl(undefined, Validators.required),
-  //     uploadedFile: new FormControl('', Validators.required)
-  //   });
-  //   control.push(newFormObj);
-  // }
+  addDocument() {
+    const control = this.formData.get('files');
+    console.log("control",control)
+    control.controls.forEach((formGroup)=>{
+        if(! formGroup.get('filetype').value || ! formGroup.get('uploadedFile').value){
+          this.toasterService.showError('Please select file',' Add Acknowledge')
+        }
+        else{
+          let newFormObj = new FormGroup({
+            filetype: new FormControl("", Validators.required),
+            uploadedFile: new FormControl('', Validators.required)
+          });
+          control.push(newFormObj);
+        }
+    })
+  
+  }
 
 }

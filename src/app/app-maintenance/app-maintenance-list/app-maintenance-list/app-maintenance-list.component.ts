@@ -555,7 +555,7 @@ getgateway(hierarchy)
         this.createMaitenanceCall = false;
         return;
     }
-    else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined || this.htmlContent.trim()=='') ||
+    else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined || this.htmlContent.trim()=='') &&
     (this.notifyEmails.length===0 && this.notifyMaintenanceForm.get("notify_user_groups").value===null))
       {
          this.createMaitenanceCall = false;

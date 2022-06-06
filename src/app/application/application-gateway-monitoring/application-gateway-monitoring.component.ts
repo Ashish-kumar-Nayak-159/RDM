@@ -265,7 +265,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
     this.loader = true;
     this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {
-      response.forEach((item) => {
+      response?.data?.forEach((item) => {
         item.created_date_time = item.created_date
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
         if (item.last_ingestion_on)
@@ -296,7 +296,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         this.loadMoreVisibility = false
       }
 
-      this.applications = [...this.applications, ...response]
+      this.applications = [...this.applications, ...response.data]
       this.loader = false;
     },
       (error) => this.loader = false)

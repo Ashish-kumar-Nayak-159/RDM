@@ -124,11 +124,11 @@ export class AppMaintenanceListComponent implements OnInit {
   }
 
   /////  While Click on the Save Hierarchy 
-  onSaveHierachy() {
+  async onSaveHierachy() {
     this.originalFilter = {};
     if (this.filterObj.asset) {
       this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-      this.onChangeOfAsset();
+      await this.onChangeOfAsset();
     }
   }
 
@@ -1072,7 +1072,7 @@ export class AppMaintenanceListComponent implements OnInit {
       this.validDate = true
       setTimeout(()=>{
          this.validDate = false
-      },4000)
+      },3000)
       // this.toasterService.showError("Error","Start date must be greater than or equal to today.")
       
     }

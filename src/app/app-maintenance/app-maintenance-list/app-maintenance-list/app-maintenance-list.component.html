@@ -89,8 +89,10 @@
         </div>
         <div class="modal-body">
           <form [formGroup]="maintenanceForm">
+            <label for="maintenance-date">Enable Maintenance From: </label>
             <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
               name="maintenance-date" class="form-control">
+             <span class="text-danger" *ngIf="validDate">Note :  Start date must be greater than or equal to today.</span>
           </form>
         </div>
         <div class="modal-footer">

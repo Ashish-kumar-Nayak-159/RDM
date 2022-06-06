@@ -111,6 +111,7 @@ export class AppMaintenanceListComponent implements OnInit {
   triggerData: any;
   escalationDetails: any;
   defaultDate: any;
+  validDate:boolean;
 
   constructor(
     private commonService: CommonService,
@@ -1060,10 +1061,21 @@ export class AppMaintenanceListComponent implements OnInit {
       is_maintenance_required: !this.isMaintenanceRequired,
       start_date: this.maintenanceForm.value.dateAndTime
     }
-    this.enableDisableMaintenance(this.maintenanceRegistryId, this.payload);
-
-    $("#exampleModal").modal('hide');
-    this.maintenanceForm.reset();
+    debugger
+    let currentDate = new Date().toISOString().slice(0, 16);
+    if( this.maintenanceForm.value.dateAndTime  >= currentDate) {
+      this.enableDisableMaintenance(this.maintenanceRegistryId, this.payload);
+      $("#exampleModal").modal('hide');
+      this.maintenanceForm.reset();
+    }
+    else{
+      this.validDate = true
+      setTimeout(()=>{
+         this.validDate = false
+      },4000)
+      // this.toasterService.showError("Error","Start date must be greater than or equal to today.")
+      
+    }
   }
 
   // set tableconfiguration for second screen
@@ -1188,35 +1200,55 @@ export class AppMaintenanceListComponent implements OnInit {
       this.currentOffset = 0;
       this.singleOffset = 0;
       this.maintenanceForm.reset();
+      let mainData = this.maintenances
+      if (!payload?.start_date) {
+        mainData = mainData.map((data: any) => {
+          if (data?.maintenance_registry_id === maintenanceRegisterId) {
+            data.is_maintenance_required = !data?.is_maintenance_required
+          }
+          return data;
+  
+        })
+        this.maintenances = mainData
+      }else{
+        mainData = mainData.map((data:any)=>{
+          if (data?.maintenance_registry_id === maintenanceRegisterId) {
+            data.is_maintenance_required = !data?.is_maintenance_required
+            data.start_date = this.commonService.convertUTCDateToLocalDate(payload?.start_date , "MMM dd, yyyy, HH:mm")
+          }
+          return data;
+        })
+       
+        this.maintenances = mainData
+      }
       this.toasterService.showSuccess('maintenance updated successfully !', 'Maintenance Edit')
     }, (error: any) => {
       this.toasterService.showError(`${error.message}`, 'Maintenance edit')
     })
 
-    let mainData = this.maintenances
-    console.log("before maintenances", mainData)
-    if (!payload?.start_date) {
-      mainData = mainData.map((data: any) => {
-        if (data?.maintenance_registry_id === maintenanceRegisterId) {
-          data.is_maintenance_required = !data?.is_maintenance_required
-        }
-        return data;
+    // let mainData = this.maintenances
+    // if (!payload?.start_date) {
+    //   mainData = mainData.map((data: any) => {
+    //     if (data?.maintenance_registry_id === maintenanceRegisterId) {
+    //       data.is_maintenance_required = !data?.is_maintenance_required
+    //     }
+    //     return data;
 
-      })
-      this.maintenances = mainData
-    }else{
-      mainData = mainData.map((data:any)=>{
-        if (data?.maintenance_registry_id === maintenanceRegisterId) {
-          data.is_maintenance_required = !data?.is_maintenance_required
-          data.start_date = this.commonService.convertUTCDateToLocalDate(payload?.start_date , "MMM dd, yyyy, HH:mm")
-        }
-        return data;
-      })
+    //   })
+    //   this.maintenances = mainData
+    // }else{
+    //   mainData = mainData.map((data:any)=>{
+    //     if (data?.maintenance_registry_id === maintenanceRegisterId) {
+    //       data.is_maintenance_required = !data?.is_maintenance_required
+    //       data.start_date = this.commonService.convertUTCDateToLocalDate(payload?.start_date , "MMM dd, yyyy, HH:mm")
+    //     }
+    //     return data;
+    //   })
      
-      this.maintenances = mainData
-    }
+    //   this.maintenances = mainData
+    // }
    
-    console.log("after maintenances", mainData)
+    // console.log("after maintenances", mainData)
   }
 
   //delete maintenance

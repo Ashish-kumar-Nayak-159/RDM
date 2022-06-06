@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
 import { DateAxis } from '@amcharts/amcharts4/charts';
+import { threadId } from 'worker_threads';
 
 declare var $: any;
 
@@ -313,6 +314,11 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   addNewEsacalation(i) {
+    if(this.maintenanceModel.maintenance_escalation_registry?.length===3)
+    {
+      this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
+      return;
+    }
     if(i===0)
     {
       this.is_escalation_required = !this.is_escalation_required;
@@ -519,9 +525,9 @@ getgateway(hierarchy)
 
     this.notifyMaintenanceForm = new FormGroup({
       notifyBefore: new FormControl(2, [Validators.required]),
-      notify_user_emails: new FormControl('', [Validators.required]),
+      notify_user_emails: new FormControl(''),
       notify_email_subject: new FormControl('', [Validators.required]),
-      notify_user_groups: new FormControl('') ,
+      notify_user_groups: new FormControl(null) ,
       hoursOrdays:new FormControl('')
     })
 
@@ -549,6 +555,13 @@ getgateway(hierarchy)
         this.createMaitenanceCall = false;
         return;
     }
+    else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined || this.htmlContent.trim()=='') ||
+    (this.notifyEmails.length===0 && this.notifyMaintenanceForm.get("notify_user_groups").value===null))
+      {
+         this.createMaitenanceCall = false;
+         this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
+         return;
+       }   
     else if(this.maintenanceModel.maintenance_escalation_registry?.length>0  && this.is_escalation_required)
     {
       for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
@@ -589,12 +602,7 @@ getgateway(hierarchy)
           }
       }
     }
-   else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined))
-      {
-        this.createMaitenanceCall = false;
-        this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
-        return;
-      }   
+  
     else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
     {
         this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');

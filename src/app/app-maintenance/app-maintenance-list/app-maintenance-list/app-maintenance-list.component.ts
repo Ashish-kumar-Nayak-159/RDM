@@ -805,21 +805,16 @@ onCloseViewMaintenanceModelModal()
 }
 getMaintenance_data(id)
 {
-  let method = this.maintenanceService.getMaintenancedata(id);
+  return new Promise<void>((resolve1) => {
+    let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
-      debugger;
         this.maintenanceModel = (response.data);
- 
-      },
-     
-    (err: HttpErrorResponse) => {
-      this.createMaitenanceCall = false;
-    
-    }
-  );
-
-  }
+    });
+    resolve1();
+     })     
+}
+  
 
   /////  To Clear the Hierarchy from dropdown menu 
   //  onClearHierarchy() {

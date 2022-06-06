@@ -737,9 +737,13 @@ isAsset = false;
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
-      this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+      if(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails!==undefined)
+      {
+        this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+        this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+        this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+  
+      }
     }
   }
 
@@ -921,7 +925,7 @@ getMaintenance_data(id)
   }
 
   // this function will call when someone click on icons [Ex. delete, edit, toggle]
-  onTableFunctionCall(obj) {
+  async onTableFunctionCall(obj) {
 
     if (obj.for === 'View') {
       this.isView = true;
@@ -929,7 +933,7 @@ getMaintenance_data(id)
       this.createMaitenanceCall = true;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+       await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setViewFields();
         this.createMaitenanceCall = false;
@@ -994,7 +998,7 @@ getMaintenance_data(id)
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+       await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setEditFields();
         this.createMaitenanceCall = false;

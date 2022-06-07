@@ -110,7 +110,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
           this.toggleRows = {};
         },
         (error) => {
-          this.toasterService.showError("Please select the level for the role", 'Save User Roles');
+          this.toasterService.showError(error?.message ?? "Something went wrong", 'Save User Roles');
           this.saveRoleAPILoading = false;
         }
       )

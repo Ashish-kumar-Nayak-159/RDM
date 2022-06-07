@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
 import { DateAxis } from '@amcharts/amcharts4/charts';
+import { threadId } from 'worker_threads';
 
 declare var $: any;
 
@@ -314,7 +315,13 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   addNewEsacalation(i) {
-    if (i === 0) {
+    if(this.maintenanceModel.maintenance_escalation_registry?.length===3)
+    {
+      this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
+      return;
+    }
+    if(i===0)
+    {
       this.is_escalation_required = !this.is_escalation_required;
       this.maintenanceModel.maintenance_escalation_registry = [];
       let maintenance_regirstry = {
@@ -507,10 +514,10 @@ export class AppMaintenanceListComponent implements OnInit {
 
     this.notifyMaintenanceForm = new FormGroup({
       notifyBefore: new FormControl(2, [Validators.required]),
-      notify_user_emails: new FormControl('', [Validators.required]),
+      notify_user_emails: new FormControl(''),
       notify_email_subject: new FormControl('', [Validators.required]),
-      notify_user_groups: new FormControl(''),
-      hoursOrdays: new FormControl('')
+      notify_user_groups: new FormControl(null) ,
+      hoursOrdays:new FormControl('')
     })
 
 
@@ -537,14 +544,24 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaitenanceCall = false;
       return;
     }
-    else if (this.maintenanceModel.maintenance_escalation_registry?.length > 0 && this.is_escalation_required) {
-      for (var n = 0; n < this.maintenanceModel.maintenance_escalation_registry?.length; n++) {
-        if (this.maintenanceModel.maintenance_escalation_registry[n]?.user_email === undefined ||
-          this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours === undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours === ''
-          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject === undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject === ''
-          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body === undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body === ''
-          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups === undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups === ''
-          || (this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length === 0 && this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups.length === 0)) {
+    else if(this.is_notify_user && (this.htmlContent==null || this.htmlContent==undefined || this.htmlContent.trim()=='') &&
+    (this.notifyEmails.length===0 && this.notifyMaintenanceForm.get("notify_user_groups").value===null))
+      {
+         this.createMaitenanceCall = false;
+         this.toasterService.showError('Please Enter mandatory information for Notify user'," Maitenance Create");
+         return;
+       }   
+    else if(this.maintenanceModel.maintenance_escalation_registry?.length>0  && this.is_escalation_required)
+    {
+      for(var n=0;n<this.maintenanceModel.maintenance_escalation_registry?.length;n++)
+      {
+         if(this.maintenanceModel.maintenance_escalation_registry[n]?.user_email===undefined || 
+          this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.duration_hours==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_subject==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.email_body==='' 
+          || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups===undefined || this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups==='' 
+          || (this.maintenanceModel.maintenance_escalation_registry[n]?.user_email.length===0 && this.maintenanceModel.maintenance_escalation_registry[n]?.user_groups.length===0))
+          {
           this.createMaitenanceCall = false;
           this.toasterService.showError('Please Enter mandatory information for escalation ' + (n + 1), " Maitenance Create");
           return;
@@ -570,10 +587,12 @@ export class AppMaintenanceListComponent implements OnInit {
         }
       }
     }
-    else if (this.is_notify_user && (this.htmlContent == null || this.htmlContent == undefined)) {
-      this.createMaitenanceCall = false;
-      this.toasterService.showError('Please Enter mandatory information for Notify user', " Maitenance Create");
-      return;
+  
+    else if(this.notifyMaintenanceForm.get('hoursOrdays').value=='Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value<2))
+    {
+        this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
+        this.createMaitenanceCall = false;
+        return;
     }
     else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
       this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
@@ -713,9 +732,13 @@ export class AppMaintenanceListComponent implements OnInit {
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
-      this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i].user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
-      this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+      if(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails!==undefined)
+      {
+        this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+        this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+        this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+  
+      }
     }
   }
 
@@ -759,25 +782,28 @@ export class AppMaintenanceListComponent implements OnInit {
 
 
 
-  getInspec_Freq(inspection_frequency) {
-    let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
-    return itemObj?.name;
-  }
-  onCloseViewMaintenanceModelModal() {
-    this.createMaintenanceForm.reset();
-    $('#createMaintainenceModelModal').modal('hide');
-  }
-  getMaintenance_data(id) {
+getInspec_Freq(inspection_frequency)
+{
+  let itemObj = this.itemArray.find(item => item.id === inspection_frequency);
+ return itemObj?.name;
+}
+onCloseViewMaintenanceModelModal()
+{
+  this.createMaintenanceForm.reset();
+  $('#createMaintainenceModelModal').modal('hide'); 
+}
+getMaintenance_data(id)
+{
+  return new Promise<void>((resolve1) => {
     let method = this.maintenanceService.getMaintenancedata(id);
-    method.subscribe(
-      (response: any) => {
-        debugger;
+  method.subscribe(
+    (response: any) => {
         this.maintenanceModel = (response.data);
-
-      },
-    );
-
-  }
+    });
+    resolve1();
+     })     
+}
+  
 
   /////  To Clear the Hierarchy from dropdown menu 
   //  onClearHierarchy() {
@@ -892,7 +918,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   // this function will call when someone click on icons [Ex. delete, edit, toggle]
-  onTableFunctionCall(obj: any) {
+  async onTableFunctionCall(obj) {
 
     if (obj.for === 'View') {
       this.isView = true;
@@ -900,7 +926,7 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaitenanceCall = true;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+       await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setViewFields();
         this.createMaitenanceCall = false;
@@ -967,7 +993,7 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+       await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
         this.setEditFields();
         this.createMaitenanceCall = false;
@@ -975,9 +1001,7 @@ export class AppMaintenanceListComponent implements OnInit {
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Clone') {
-
-      this.maintenanceRegistryId = obj?.data?.maintenance_registry_id;
-      this.getMaintenance_data(this.maintenance_registry_id);
+      this.getMaintenance_data(obj.data.maintenance_registry_id);
       setTimeout(() => {
         let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp, "CreateMaintenance", this.maintenanceModel);
         method.subscribe(

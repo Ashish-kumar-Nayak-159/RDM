@@ -31,7 +31,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3" *ngIf="originalAssetModel?.metadata">
-      <!-- <accordion-group heading="" [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Data Ingestion Setting
@@ -49,7 +49,7 @@
             [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
           <label for="visible_2" class="form-label ml-2">&nbsp;Ingest All Properties</label> &nbsp;
         </div>
-      </accordion-group> -->
+      </accordion-group>
       <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">

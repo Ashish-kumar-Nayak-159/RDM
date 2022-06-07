@@ -344,9 +344,9 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       g2_measurement_frequency_in_ms: 120,
       g3_measurement_frequency_in_ms: 180,
     };
-    // this.assetModel.metadata.data_ingestion_settings = {
-    //   type: 'all_props_at_fixed_interval',
-    // };
+    this.assetModel.metadata.data_ingestion_settings = {
+      type: 'all_props_at_fixed_interval',
+    };
     this.assetModel.tags.reserved_tags = [];
     this.assetModel.tags.reserved_tags.push({
       name: 'Protocol',

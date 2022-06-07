@@ -60,10 +60,10 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.uploadedFile = [];
   }
 
-  async uploadFile() {
+  async uploadFile():Promise<any> {
     this.isFileUploading = true;
     // let uploadedFiles = [];
-    await Promise.all(this.uploadedFile.map(async (file) => {
+    return await Promise.all(this.uploadedFile.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.assetId + '/maintenance/' + this.maintenanceRegistryId
@@ -84,13 +84,15 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         this.toasterService.showError('Error in uploading file', 'Upload file');
       }
 
-    }))
+    })).then(()=>{
+      this.uploadedFile = []
+    })
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 
   async onSave() {
-    await this.uploadFile()
+     await this.uploadFile() 
     this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
@@ -99,6 +101,9 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     }
     this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
       this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
+      this.uploadedFileDetails = [];
+    },(err)=>{
+      this.uploadedFileDetails = []
     })
 
     this.fileName = 'Choose File'

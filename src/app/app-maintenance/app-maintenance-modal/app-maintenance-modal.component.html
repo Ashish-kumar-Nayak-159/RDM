@@ -23,7 +23,9 @@
             <div formArrayName="files">
                 <div *ngFor="let fileGroup of formData.get('files').controls; let arrayIndex = index;">
                     <div [formGroupName]="arrayIndex">
+                    
                         <div class="form-group">
+                            <i class="fa fa-trash float-right" aria-hidden="true" *ngIf="arrayIndex > 0" (click)="deleteFormGroup(arrayIndex)"></i>
                             <label for="type" class="col-form-label required">Type:</label>
                             <select class="form-control form-control-sm" id="type" name="type"
                                 formControlName="filetype">

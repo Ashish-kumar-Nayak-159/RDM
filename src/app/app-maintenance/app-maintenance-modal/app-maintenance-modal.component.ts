@@ -100,10 +100,11 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
       this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
     })
-    this.formData.reset();
-    this.fileName = ''
+
     this.fileName = 'Choose File'
-    this.modalEmit.emit(false)
+    this.formReset();
+    this.modalEmit.emit()
+    this.uploadedFile = []
   }
 
   onFileSelected(event,i:number) {
@@ -121,15 +122,18 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         for (let arrvalue of arr) {
           header += arrvalue.toString(16);
         }
-        if (allowedZipMagicNumbers.includes(header)) {
-          // this.uploadedFile.splice(0, 1, {
-          //   'file': fileList?.item(0),
-          //   'index': 0
-          // })
-          // this.uploadedFile = file;
+        if (allowedZipMagicNumbers.includes(header)) {  //[0,1,2]
+          
+          // this.uploadedFile[i].fileName = fileList?.item(0).name;
           let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
            this.storefileType = (this.formData.get('files') as FormArray).controls[i].get('filetype').value; 
-          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
+           this.uploadedFile.splice(i, 1,{
+             'index': i,
+             'file': fileList?.item(0),
+             'fileName': file.name,
+             'filetype': control.value
+           })
+          // this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
           // this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
           // this.fileName = file.name;
@@ -145,21 +149,37 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   addDocument() {
+    let msg = '';
     const control = this.formData.get('files');
     console.log("control",control)
     control.controls.forEach((formGroup)=>{
         if(! formGroup.get('filetype').value || ! formGroup.get('uploadedFile').value){
-          this.toasterService.showError('Please select file',' Add Acknowledge')
-        }
-        else{
-          let newFormObj = new FormGroup({
-            filetype: new FormControl("", Validators.required),
-            uploadedFile: new FormControl('', Validators.required)
-          });
-          control.push(newFormObj);
+          msg = 'Please select file.';
         }
     })
+
+    if(msg){
+      this.toasterService.showError('Please select file',' Add Acknowledge')
+      return;
+    }
+
+    let newFormObj = new FormGroup({
+      filetype: new FormControl("", Validators.required),
+      uploadedFile: new FormControl('', Validators.required)
+    });
+    control.push(newFormObj);
   
+  }
+
+  deleteFormGroup(index:number){
+    debugger
+    let controls = this.formData.get('files');
+    this.formData.get('files').controls.splice(index,1)
+    this.uploadedFile.splice(index,1)
+    this.uploadedFile.forEach((file,index)=>{
+         file.index = index
+    })
+    console.log("uploadedFile",this.uploadedFile)
   }
 
 }

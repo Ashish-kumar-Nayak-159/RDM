@@ -21,7 +21,6 @@ export class AppViewAcknowledgeModalComponent implements OnInit {
   ngOnInit(): void {
   }
   viewDocument(obj) {
-    console.log("viewDocument",obj)
     this.selectedDocument = obj;
     this.selectedDocument.sanitizedURL = this.sanitizeURL(this.selectedDocument.document_file_url);
   }

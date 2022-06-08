@@ -390,7 +390,6 @@ export class AppMaintenanceListComponent implements OnInit {
         this.loadMoreVisibility = false;
       }
       this.maintenances = [...this.maintenances, ...response.data]
-      console.log("this.maintenance", this.maintenances)
     }, (err) => {
       this.tableConfig.is_table_data_loading = false;
     })
@@ -952,7 +951,6 @@ getMaintenance_data(id)
 
     }
     else if (obj.for === 'Trigger') {
-      console.log("trigger", obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -969,7 +967,6 @@ getMaintenance_data(id)
       $('#maintenanceModal').modal('show')
     }
     else if (obj.for === 'Disable') {
-      console.log("enable/disable", obj)
       this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
       this.isMaintenanceRequired = obj?.data?.is_maintenance_required
       if (!(this.isMaintenanceRequired)) {
@@ -1085,7 +1082,6 @@ getMaintenance_data(id)
       is_maintenance_required: !this.isMaintenanceRequired,
       start_date: this.maintenanceForm.value.dateAndTime
     }
-    debugger
     let currentDate = new Date().toISOString().slice(0, 16);
     if( this.maintenanceForm.value.dateAndTime  >= currentDate) {
       this.enableDisableMaintenance(this.maintenanceRegistryId, this.payload);
@@ -1200,7 +1196,6 @@ getMaintenance_data(id)
     }
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
-      console.log("Api response of perticular", res)
       res?.data?.forEach((item) => {
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required

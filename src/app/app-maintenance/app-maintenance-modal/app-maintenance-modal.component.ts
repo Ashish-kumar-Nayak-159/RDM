@@ -74,11 +74,8 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           document_name: data.name,
           document_file_url: data.url,
           document_type: file.filetype
-        }
-        console.log("eachone",eachOne)
+        }    
         this.uploadedFileDetails.push(eachOne)
-        console.log("uploadedFile",this.uploadedFileDetails)
-       
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -113,7 +110,6 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   onFileSelected(event,i:number) {
-    debugger
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
@@ -156,7 +152,6 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   addDocument() {
     let msg = '';
     const control = this.formData.get('files');
-    console.log("control",control)
     control.controls.forEach((formGroup)=>{
         if(! formGroup.get('filetype').value || ! formGroup.get('uploadedFile').value){
           msg = 'Please select file.';
@@ -177,14 +172,11 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   deleteFormGroup(index:number){
-    debugger
-    let controls = this.formData.get('files');
-    this.formData.get('files').controls.splice(index,1)
+    this.formData.get('files').removeAt(index)
     this.uploadedFile.splice(index,1)
     this.uploadedFile.forEach((file,index)=>{
          file.index = index
     })
-    console.log("uploadedFile",this.uploadedFile)
   }
 
 }

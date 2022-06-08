@@ -136,7 +136,10 @@ export class AppMaintenanceListComponent implements OnInit {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
     this.selectedAsset_id = asset.asset_id
   }
-
+  setHours()
+  {
+    this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
+  }
   async ngOnInit(): Promise<void> {
 
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -781,9 +784,11 @@ isAsset = false;
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
-      this.notifyEmails.push(this.notifyMaintenanceForm.get('notify_user_emails').value);
-      this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
-
+      if(this.notifyMaintenanceForm.get('notify_user_emails').value!==undefined && this.notifyMaintenanceForm.get('notify_user_emails').value!==null)
+      {
+        this.notifyEmails.push(this.notifyMaintenanceForm.get('notify_user_emails').value);
+        this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
+      }
     }
   }
 
@@ -1023,21 +1028,24 @@ getMaintenance_data(id)
     else if (obj.for === 'Clone') {
       this.getMaintenance_data(obj.data.maintenance_registry_id);
       setTimeout(() => {
-       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
-        method.subscribe(
-          (response: any) => {
-            // this.onCloseRuleModel.emit({
-            //   status: true,
-            // });
-            this.toasterService.showSuccess(response.message,   'Maitenance Clone');
-            this.redirectTo(this.router.url);
-          },
-          (err: HttpErrorResponse) => {
-            this.createMaitenanceCall = false;
-            this.toasterService.showError(err.message," Maitenance Clone");
-          }
-        );
-        
+        return new Promise<void>((resolve1) => {
+          let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp,"CreateMaintenance",this.maintenanceModel);
+          method.subscribe(
+            (response: any) => {
+              // this.onCloseRuleModel.emit({
+              //   status: true,
+              // });
+              this.toasterService.showSuccess("Maintenance Cloned Successfully",   'Maitenance Clone');
+              this.redirectTo(this.router.url);
+            },
+            (err: HttpErrorResponse) => {
+              this.createMaitenanceCall = false;
+              this.toasterService.showError(err.message," Maitenance Clone");
+            }
+          );
+          resolve1();
+           })     
+      
      }, 500); 
        // this.payload = {
        //   is_maintenance_required : !obj.data.is_maintenance_required,

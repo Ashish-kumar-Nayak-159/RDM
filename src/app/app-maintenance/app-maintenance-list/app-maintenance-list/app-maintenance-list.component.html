@@ -128,6 +128,7 @@
 
 <div class="modal right fade" id="createMaintainenceModelModal" tabindex="-1" role="dialog"
   aria-labelledby="ModalLabel2">
+  
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,7 +142,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Name</label>
             <input type="text" disabled  *ngIf="isView && !isEdit" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <input type="text" placeholder="Name"  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
+            <input type="text" placeholder="Name" required  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
             <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
               class="alert-danger">
               <div *ngIf="createMaintenanceForm.get('name').errors.required">
@@ -151,7 +152,7 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Asset</label>
-            <ng-select [items]="assetDropdown" [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm" [searchable]="true"
+            <ng-select [items]="assetDropdown"  [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm" [searchable]="true"
               bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
               dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids" required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
@@ -160,7 +161,7 @@
                 </span>
               </ng-template>
             </ng-select>
-            <ng-select [items]="assetDropdown" *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
+            <ng-select [items]="assetDropdown" required *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
               bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
               dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids"  required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
@@ -183,7 +184,7 @@
             <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <input type="datetime-local" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time">
-            <input type="datetime-local" *ngIf="!isView"  [min]="disableBeforeDate" class="form-control form-control-sm"
+            <input type="datetime-local" required *ngIf="!isView"  [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time">
             <div
               *ngIf="!isView && createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"
@@ -194,14 +195,14 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
+            <label for="recipient-name"  class="col-form-label required">Inspection Frequency</label>
             <select class="form-control form-control-sm" [attr.disabled]="isView && !isEdit" id="template" [(ngModel)]="inspection_frequency"
               formControlName="inspection_frequency" *ngIf="isView" name="model_type">
               <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
             </select>
 
-            <select  class="form-control form-control-sm" *ngIf="!isView" id="template" [(ngModel)]="inspection_frequency"
-            formControlName="inspection_frequency" name="model_type">
+            <select  class="form-control form-control-sm" required *ngIf="!isView" id="template" [(ngModel)]="inspection_frequency"
+            formControlName="inspection_frequency" name="model_type" (change)="setHours()">
               <option [ngValue]="null" selected disabled>Select Inspection Frequency</option>
               <option  *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
             </select>
@@ -214,6 +215,7 @@
             </div>
           </div>
         </div>
+       
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Acknowledge Required</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" id="ack" name="ack"
@@ -253,7 +255,7 @@
                       </select>
                       <select  *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()" class="custom-dropdown w-12 sm form-control form-control-sm"
                       id="nbefore_name">
-                      <option value="Hours">Hours</option>
+                      <option value="Hours" selected>Hours</option>
                       <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                     </select>
                     </div>
@@ -493,9 +495,9 @@
         </div>
         <div class="modal-footer fixed-bottom bg-white">
           <button type="button" *ngIf="!isEdit && !isView" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()">Save</button>
+            (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
           <button type="button" *ngIf="isEdit && !isView" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()">Update</button>
+            (click)="onSaveMaintenanceModelModal()"  [disabled]="createMaintenanceForm.invalid">Update</button>
           <button type="button" *ngIf="!isView" class="btn btn-secondary" (click)="onCloseMaintenanceModelModal()">
             Cancel
           </button>
@@ -505,4 +507,5 @@
       </div>
     </div>
   </div>
+
 </div>

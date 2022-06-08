@@ -60,10 +60,10 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     this.uploadedFile = [];
   }
 
-  async uploadFile() {
+  async uploadFile():Promise<any> {
     this.isFileUploading = true;
     // let uploadedFiles = [];
-    await Promise.all(this.uploadedFile.map(async (file) => {
+    return await Promise.all(this.uploadedFile.map(async (file) => {
       const data = await this.commonService.uploadImageToBlob(
         file.file,
         this.contextApp.app + '/assets/' + this.assetId + '/maintenance/' + this.maintenanceRegistryId
@@ -74,23 +74,22 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           document_name: data.name,
           document_file_url: data.url,
           document_type: file.filetype
-        }
-        console.log("eachone",eachOne)
+        }    
         this.uploadedFileDetails.push(eachOne)
-        console.log("uploadedFile",this.uploadedFileDetails)
-       
       }
       else {
         this.toasterService.showError('Error in uploading file', 'Upload file');
       }
 
-    }))
+    })).then(()=>{
+      this.uploadedFile = []
+    })
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 
   async onSave() {
-    await this.uploadFile()
+     await this.uploadFile() 
     this.payload = {
       "maintenance_notification_id": this.maintenanceNotificationId,
       "maintenance_registry_id": this.maintenanceRegistryId,
@@ -99,15 +98,18 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
     }
     this.maintenanceService.createAckMaintenance(this.payload).subscribe((response) => {
       this.toasterService.showSuccess('Maintenance notification acknowledgement created successfully', 'Maintenance')
+      this.uploadedFileDetails = [];
+    },(err)=>{
+      this.uploadedFileDetails = []
     })
-    this.formData.reset();
-    this.fileName = ''
+
     this.fileName = 'Choose File'
-    this.modalEmit.emit(false)
+    this.formReset();
+    this.modalEmit.emit()
+    this.uploadedFile = []
   }
 
   onFileSelected(event,i:number) {
-    debugger
     this.isCanUploadFile = false;
     let allowedZipMagicNumbers = ["504b34", "d0cf11e0", "89504e47", "25504446","00020"];    
     if (event?.target?.files) {
@@ -121,15 +123,18 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         for (let arrvalue of arr) {
           header += arrvalue.toString(16);
         }
-        if (allowedZipMagicNumbers.includes(header)) {
-          // this.uploadedFile.splice(0, 1, {
-          //   'file': fileList?.item(0),
-          //   'index': 0
-          // })
-          // this.uploadedFile = file;
+        if (allowedZipMagicNumbers.includes(header)) {  //[0,1,2]
+          
+          // this.uploadedFile[i].fileName = fileList?.item(0).name;
           let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
            this.storefileType = (this.formData.get('files') as FormArray).controls[i].get('filetype').value; 
-          this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
+           this.uploadedFile.splice(i, 1,{
+             'index': i,
+             'file': fileList?.item(0),
+             'fileName': file.name,
+             'filetype': control.value
+           })
+          // this.uploadedFile.push({ 'index' : i, 'file': fileList?.item(0),'fileName' :file.name , 'filetype': control.value})
           // this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
           // this.fileName = file.name;
@@ -145,21 +150,33 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
   }
 
   addDocument() {
+    let msg = '';
     const control = this.formData.get('files');
-    console.log("control",control)
     control.controls.forEach((formGroup)=>{
         if(! formGroup.get('filetype').value || ! formGroup.get('uploadedFile').value){
-          this.toasterService.showError('Please select file',' Add Acknowledge')
-        }
-        else{
-          let newFormObj = new FormGroup({
-            filetype: new FormControl("", Validators.required),
-            uploadedFile: new FormControl('', Validators.required)
-          });
-          control.push(newFormObj);
+          msg = 'Please select file.';
         }
     })
+
+    if(msg){
+      this.toasterService.showError('Please select file',' Add Acknowledge')
+      return;
+    }
+
+    let newFormObj = new FormGroup({
+      filetype: new FormControl("", Validators.required),
+      uploadedFile: new FormControl('', Validators.required)
+    });
+    control.push(newFormObj);
   
+  }
+
+  deleteFormGroup(index:number){
+    this.formData.get('files').removeAt(index)
+    this.uploadedFile.splice(index,1)
+    this.uploadedFile.forEach((file,index)=>{
+         file.index = index
+    })
   }
 
 }

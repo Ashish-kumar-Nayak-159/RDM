@@ -435,9 +435,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
       g3_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_ingestion_frequency_in_ms || 1800,
       turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120,
     };
-    // this.assetDetail.metadata.data_ingestion_settings = {
-    //   type: modelObj?.data_ingestion_settings?.type || 'all_props_at_fixed_interval',
-    // };
+    this.assetDetail.metadata.data_ingestion_settings = {
+      type: modelObj?.data_ingestion_settings?.type || 'all_props_at_fixed_interval',
+    };
     this.assetDetail.metadata.measurement_settings = {
       g1_measurement_frequency_in_ms: modelObj?.measurement_settings?.g1_measurement_frequency_in_ms || 60,
       g2_measurement_frequency_in_ms: modelObj?.measurement_settings?.g2_measurement_frequency_in_ms || 120,

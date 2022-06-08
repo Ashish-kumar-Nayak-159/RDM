@@ -496,7 +496,7 @@
           </ng-container>
         </div>
         <div class="modal-footer fixed-bottom bg-white">
-          <button type="button" *ngIf="!isEdit && !isView" class="btn btn-primary add-row"
+          <button type="button" *ngIf="(!isEdit && !isView) || isClone" class="btn btn-primary add-row"
             (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
           <button type="button" *ngIf="isEdit && !isView" class="btn btn-primary add-row"
             (click)="onSaveMaintenanceModelModal()"  [disabled]="createMaintenanceForm.invalid">Update</button>

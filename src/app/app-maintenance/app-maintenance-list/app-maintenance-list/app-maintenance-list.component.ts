@@ -947,6 +947,7 @@ getMaintenance_data(id)
 
     if (obj.for === 'View') {
       this.isView = true;
+      this.isClone = false;
       this.isAsset = false;
       this.createMaitenanceCall = true;
       this.title = "View";
@@ -1010,6 +1011,7 @@ getMaintenance_data(id)
       this.isEdit = true;
       this.isView = false;
       this.isAsset = true;
+      this.isClone = false;
       this.title = "Edit";
       this.addNewEsacalation(1);
       this.createMaitenanceCall = true;

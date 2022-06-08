@@ -364,6 +364,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       index: this.propertyObj.metadata.properties.length + 1,
 
     });
+    this.formula ='';
+
   }
 
   ValidateallInputField() {

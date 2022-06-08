@@ -499,7 +499,7 @@
           <button type="button" *ngIf="(!isEdit && !isView && !isClone)" class="btn btn-primary add-row"
             (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
           <button type="button" *ngIf="isEdit && !isView && !isClone" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()"  [disabled]="createMaintenanceForm.invalid">Update</button>
+            (click)="onSaveMaintenanceModelModal()" >Update</button>
             <button type="button" *ngIf="isClone" class="btn btn-primary add-row"
             (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
           <button type="button" *ngIf="!isView" class="btn btn-secondary" (click)="onCloseMaintenanceModelModal()">

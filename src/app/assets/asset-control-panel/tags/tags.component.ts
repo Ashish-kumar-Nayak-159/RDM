@@ -80,7 +80,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -203,7 +203,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         },
       ];
     }
-    if(this.asset.tags && !this.asset.tags.variables){
+    if (this.asset.tags && !this.asset.tags.variables) {
       this.assetVariables = [
         {
           id: 1,
@@ -213,8 +213,8 @@ export class TagsComponent implements OnInit, OnDestroy {
         },
       ];
     }
-    if(this.asset.tags) {
-      if(this.asset?.tags?.custom_tags){
+    if (this.asset.tags) {
+      if (this.asset?.tags?.custom_tags) {
         Object.keys(this.asset?.tags?.custom_tags).forEach((key, index) => {
           this.assetCustomTags.push({
             id: index,
@@ -224,14 +224,14 @@ export class TagsComponent implements OnInit, OnDestroy {
         });
         this.assetCustomTags.push(
           {
-            id: Object.keys(this.asset?.tags?.custom_tags ?? {}).length ,
+            id: Object.keys(this.asset?.tags?.custom_tags ?? {}).length,
             name: null,
             value: null,
             editable: true,
           },
         );
       }
-      if(this.asset?.tags?.variables){
+      if (this.asset?.tags?.variables) {
         Object.keys(this.asset?.tags?.variables).forEach((key, index) => {
           this.assetVariables.push({
             id: index,
@@ -241,27 +241,27 @@ export class TagsComponent implements OnInit, OnDestroy {
         });
         this.assetVariables.push(
           {
-            id: Object.keys(this.asset?.tags?.variables ?? {}).length ,
+            id: Object.keys(this.asset?.tags?.variables ?? {}).length,
             name: null,
             value: null,
             editable: true,
           },
         );
       }
-        Object.keys(this.assetModel?.tags?.reserved_tags ?? this.asset?.tags?.model_tags).forEach((key, index) => {
-          this.assetModelTags.push({
-            id: index,
-            name: this.assetModel?.tags?.reserved_tags[index]['name'],
-            value: this.assetModel?.tags?.reserved_tags[index]['defaultValue']
-          });
+      Object.keys(this.assetModel?.tags?.reserved_tags ?? this.asset?.tags?.model_tags).forEach((key, index) => {
+        this.assetModelTags.push({
+          id: index,
+          name: this.assetModel?.tags?.reserved_tags[index]['name'],
+          value: this.assetModel?.tags?.reserved_tags[index]['defaultValue']
         });
+      });
     }
     if (this.asset.tags) {
       if (this.asset.tags.created_date) {
         this.asset.tags.local_created_date = this.commonService.convertUTCDateToLocal(this.asset.tags.created_date);
       }
     }
-    
+
     this.originalAsset = null;
     this.originalAsset = JSON.parse(JSON.stringify(this.asset));
   }
@@ -282,7 +282,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onVariableTagInputChange(){
+  onVariableTagInputChange() {
     let count = 0;
     this.assetVariables.forEach((tag, index) => {
       if (tag.name && tag.value && !this.assetVariables[index + 1]) {
@@ -330,21 +330,25 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.asset.tags.hierarchy = JSON.stringify(this.asset.tags.hierarchy_json);
   }
 
-  checkKeyDuplicacy(tagObj, tagIndex,type) {
+  checkKeyDuplicacy(tagObj, tagIndex, type) {
     CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
-      if (tagObj?.name.includes(char)) {
+    
+      if (tagObj?.name?.includes(char)) {
         this.toasterService.showError('Tag key should not include `.`, ` `, `$`, `#`', 'Set Tags');
-        setTimeout(() => {
-          this.toasterService.showclear();
-        }, 2000);
+        // setTimeout(() => {
+        //   this.toasterService.showclear();
+        //   console.log("tag", tagObj)
+        // }, 4000);
+        tagObj.name = ''
+        tagObj.value = ''
         return;
       }
     });
     let index;
-    if(type=='custom_tags'){
+    if (type == 'custom_tags') {
       index = this.assetCustomTags.findIndex((tag) => tag.name === tagObj?.name);
     }
-    if(type == 'variable'){
+    if (type == 'variable') {
       index = this.assetVariables.findIndex((tag) => tag.name === tagObj?.name);
     }
     if (index !== -1 && index !== tagIndex) {
@@ -389,7 +393,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     });
     this.asset.tags['variables'] = JSON.stringify(tagObj);
     tagObj = {}
-    
+
     this.assetModelTags.forEach((tag) => {
       if (tag.name && tag.value) {
         tagObj[tag.name] = tag.value;
@@ -500,8 +504,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     });
   }
 
-  showPosition = (position)=> {
-    this.centerLatitude =  position?.coords?.latitude || this.centerLatitude;  
+  showPosition = (position) => {
+    this.centerLatitude = position?.coords?.latitude || this.centerLatitude;
     this.centerLongitude = position.coords.longitude || this.centerLongitude;
   }
 

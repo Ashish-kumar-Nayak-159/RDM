@@ -240,7 +240,7 @@
                 <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"><input type="text"
                     class="form-control form-control-sm bg-light border-0 small" placeholder="Value" aria-label="Search"
                     aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
-                    (input)="onCustomTagInputChange()"></td>
+                    (input)="onCustomTagInputChange()" [disabled]="!tag.name"></td>
                 <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
               </ng-template>
             </tr>

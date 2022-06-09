@@ -74,6 +74,7 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
 import { WorkProgressComponent } from './asset-control-panel/work-progress/work-progress.component';
 import { WhiteListAssetComponent } from './white-list-asset/white-list-asset.component';
 import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset-list/white-list-asset-list.component';
+import { AssetUptimeComponent } from './asset-uptime/asset-uptime.component';
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset
     WorkProgressComponent,
     WhiteListAssetComponent,
     WhiteListAssetListComponent,
+    AssetUptimeComponent,
   ],
   imports: [
     CommonModule,

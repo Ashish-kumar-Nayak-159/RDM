@@ -628,6 +628,18 @@ export class CONSTANTS {
       accordion_value: {},
     },
     {
+      page: 'uptime',
+      system_name: 'Uptime',
+      url: '#asset_uptime',
+      display_name: 'Uptime',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false,
+      privileges_required: ['RCC'],
+      showAccordion: [],
+      accordion_value: {},
+    },
+    {
       page: 'd2c',
       system_name: 'Monitor (D2C)',
       url: null,

@@ -226,15 +226,15 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
           this.getTileName();
           if (this.componentState === CONSTANTS.IP_ASSET) {
             if (this.contextApp?.menu_settings?.asset_control_panel_menu.length > 0) {
-              this.menuItems = this.contextApp.menu_settings.asset_control_panel_menu;
+              //this.menuItems = this.contextApp.menu_settings.asset_control_panel_menu;
             } else {
-              this.menuItems = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
+              //this.menuItems = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           } else if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             if (this.contextApp?.menu_settings?.legacy_asset_control_panel_menu.length > 0) {
-              this.menuItems = this.contextApp.menu_settings.legacy_asset_control_panel_menu;
+              //this.menuItems = this.contextApp.menu_settings.legacy_asset_control_panel_menu;
             } else {
-              this.menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
+              //this.menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           }
           let titleObj;

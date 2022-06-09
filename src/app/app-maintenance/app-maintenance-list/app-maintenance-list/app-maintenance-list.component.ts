@@ -113,7 +113,7 @@ export class AppMaintenanceListComponent implements OnInit {
   escalationDetails: any;
   defaultDate: any;
   validDate:boolean;
-
+  isClone = false;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -137,7 +137,10 @@ export class AppMaintenanceListComponent implements OnInit {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
     this.selectedAsset_id = asset.asset_id
   }
-
+  setHours()
+  {
+    this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
+  }
   async ngOnInit(): Promise<void> {
 
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -672,13 +675,25 @@ export class AppMaintenanceListComponent implements OnInit {
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });
-          this.toasterService.showSuccess(response.message, 'Maitenance Create');
+          if(this.isClone)
+          {
+            this.toasterService.showSuccess("Maintenance Cloned Successfully", 'Maitenance '+this.title);
+            this.isClone = false;
+          }
+          else
+          {
+            this.toasterService.showSuccess(response.message, 'Maitenance Create');
+          }
           $('#createMaintainenceModelModal').modal('hide');
           this.createMaitenanceCall = false;
           this.redirectTo(this.router.url);
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
+          if(this.isClone)
+          {
+            this.setEditFields();
+          }
           this.toasterService.showError(err.message, " Maitenance Create");
         }
       );
@@ -761,9 +776,11 @@ export class AppMaintenanceListComponent implements OnInit {
         this.toasterService.showError('Email address is already added', 'Add Email');
         return;
       }
-      this.notifyEmails.push(this.notifyMaintenanceForm.get('notify_user_emails').value);
-      this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
-
+      if(this.notifyMaintenanceForm.get('notify_user_emails').value!==undefined && this.notifyMaintenanceForm.get('notify_user_emails').value!==null)
+      {
+        this.notifyEmails.push(this.notifyMaintenanceForm.get('notify_user_emails').value);
+        this.notifyMaintenanceForm.get('notify_user_emails').setValue('')
+      }
     }
   }
 
@@ -834,8 +851,17 @@ getMaintenance_data(id)
     this.is_acknowledge_required = this.maintenanceModel.is_acknowledge_required;
     this.is_notify_user = this.maintenanceModel.is_notify_user;
     this.is_escalation_required = this.maintenanceModel.is_escalation_required;
-    this.createMaintenanceForm.get('asset_ids').setValue(this.maintenanceModel.asset_id);
-    this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
+    if(this.isClone)
+    {
+   
+      this.createMaintenanceForm.get('name').setValue('');
+    }
+    else
+    {
+      this.createMaintenanceForm.get('asset_ids').setValue(this.maintenanceModel.asset_id);
+      this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
+    }
+   
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
 
@@ -921,6 +947,7 @@ getMaintenance_data(id)
 
     if (obj.for === 'View') {
       this.isView = true;
+      this.isClone = false;
       this.isAsset = false;
       this.createMaitenanceCall = true;
       this.title = "View";
@@ -984,6 +1011,7 @@ getMaintenance_data(id)
       this.isEdit = true;
       this.isView = false;
       this.isAsset = true;
+      this.isClone = false;
       this.title = "Edit";
       this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
@@ -998,29 +1026,27 @@ getMaintenance_data(id)
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
     else if (obj.for === 'Clone') {
-      this.getMaintenance_data(obj.data.maintenance_registry_id);
-      setTimeout(() => {
-        let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp, "CreateMaintenance", this.maintenanceModel);
-        method.subscribe(
-          (response: any) => {
-            // this.onCloseRuleModel.emit({
-            //   status: true,
-            // });
-            this.toasterService.showSuccess(response.message, 'Maitenance Clone');
-            this.redirectTo(this.router.url);
-          },
-          (err: HttpErrorResponse) => {
-            this.createMaitenanceCall = false;
-            this.toasterService.showError(err.message, " Maitenance Clone");
-          }
-        );
-
-      }, 500);
-      // this.payload = {
-      //   is_maintenance_required : !obj.data.is_maintenance_required,
-      //   start_date : "2022-05-30 13:00"
-      // }
-    }
+      this.addNewEsacalation(1);
+      this.title = "Clone";
+      this.isView = false;
+      this.isClone = true;
+      this.isAsset = true;
+      this.createMaintenanceForm.get('asset_ids').enable()
+      this.createMaintenanceForm.get('start_date').enable();
+      this.createMaintenanceForm.reset();
+      await this.getMaintenance_data(obj.data.maintenance_registry_id);
+       setTimeout(() => {
+        this.setEditFields();
+        this.createMaitenanceCall = false;
+       }, 500);
+    
+      $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+     
+       // this.payload = {
+       //   is_maintenance_required : !obj.data.is_maintenance_required,
+       //   start_date : "2022-05-30 13:00"
+       // }
+     }
   }
 
   // showing and hiding modal

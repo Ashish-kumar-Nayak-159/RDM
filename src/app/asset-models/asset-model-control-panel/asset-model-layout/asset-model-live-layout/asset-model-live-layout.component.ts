@@ -364,6 +364,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       index: this.propertyObj.metadata.properties.length + 1,
 
     });
+    this.formula ='';
+
   }
 
   ValidateallInputField() {
@@ -398,7 +400,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             this.propertyObj.metadata.props.push(prop.property.json_key);
             this.propertyObj.metadata.condition +=
               '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : ''));
-          } else {
+            } else {
+
 
             this.propertyObj.metadata.condition +=
               '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : '');
@@ -419,8 +422,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isDisabled = true;
 
   }
-  deletePropertyCondtion(propindex: number) {
-   this.propertyObj.metadata.properties.splice(0, 1);
+  deletePropertyCondtion(propindex: number,propObj) {
+    const index = this.propertyObj.metadata.properties.indexOf(propindex);
+   this.propertyObj.metadata.properties.splice(index, 1);
+    propObj.operator1 = ' ';
     this.formula ='';
   }
   clearInputField() {

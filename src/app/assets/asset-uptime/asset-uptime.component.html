@@ -19,7 +19,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="off"
-                    (change)="checked($event,'off')">
+                    (change)="checked($event,'off')" [checked]="!on">
                 <label class="form-check-label" for="off">No</label>
             </div>
 
@@ -53,7 +53,10 @@
                                             src="assets/img/plus.svg" alt=""></button>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-3" *ngIf="i > 0">
+                                <div class="col-sm-12 col-md-3 d-flex" *ngIf="i > 0">
+                                    <div>
+                                        <button type="button" class="btn btn-success" style="margin-top: 27px;" (click)="enableField(i)"><em class="fa fa-edit" width="16" height="16"></em></button>
+                                    </div>&nbsp;&nbsp;
                                     <div>
                                         <button type="button" class="btn btn-danger" style="margin-top: 27px;" (click)="deleteFormGroup(i)"><img
                                             src="assets/img/trash3.svg" alt=""></button>

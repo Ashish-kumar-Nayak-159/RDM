@@ -15,27 +15,54 @@ export class AssetUptimeComponent implements OnInit {
   @Input() componentState;
   showHide: boolean;
   on: boolean = true;
+  disableInputField: boolean = false;
+  asset_uptime_registry_id: any = []
   timeForm = new FormGroup({
-    times: new FormArray([
-      new FormGroup({
-        from_time: new FormControl(''),
-        to_time: new FormControl('')
-      })
-    ])
+    times: new FormArray([])
   })
 
   constructor(private commonService: CommonService, private toasterService: ToasterService) {
     console.log("default on value", this.on)
   }
 
+  // calling API while initialization of component
   ngOnInit(): void {
     console.log("asset", this.asset.asset_id)
-    this.commonService.getAssetUpTime(this.asset.asset_id).subscribe((response) => {
+    const control = this.timeForm.get('times') as FormArray
+    this.commonService.getAssetUpTime(this.asset.asset_id).subscribe((response: any) => {
       console.log("asset-uptime-response", response)
+      this.disableInputField = true
+      this.on = response?.data?.is_alltime_working
+      if (!this.on) {
+        this.showHide = true
+      }
+      if (!response?.data?.is_alltime_working) {
+        response?.data?.asset_uptime_registry.forEach((item) => {
+          const newFormGroup = new FormGroup({
+            from_time: new FormControl(item?.from_time),
+            to_time: new FormControl(item?.to_time)
+          })
+          control.push(newFormGroup)
+          this.asset_uptime_registry_id.push(item?.asset_uptime_registry_id)
+        })
+
+         control.controls.forEach((formGroup)=>{
+            formGroup.get('from_time').disable();
+            formGroup.get('to_time').disable();
+         })
+      }
+      else {
+        const newFormGroup = new FormGroup({
+          from_time: new FormControl(''),
+          to_time: new FormControl('')
+        })
+        control.push(newFormGroup)
+      }
+      
     })
   }
 
-
+  // changing boolean values & control UI for Answer:No
   checked(event: any, value: string) {
     if (value === "on") {
       console.log("on", event.target.checked)
@@ -54,35 +81,47 @@ export class AssetUptimeComponent implements OnInit {
     }
   }
 
+  // call when someone click on save button
   saveUpTime() {
+    console.log("this.on", this.on)
     if (this.on) {
       var obj = {
         is_alltime_working: true
       }
       this.commonService.upTime(this.asset.asset_id, obj).subscribe((response) => {
         console.log("asset live for 24 hour", response)
+        this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset uptime')
+      }, (err) => {
+        this.toasterService.showError('something went wrong !', 'Error')
       })
     }
     else {
-     
-      this.timeForm.value.times.forEach((item)=>{
-           item.asset_uptime_registry_id = 0
+
+      // this.asset_uptime_registry_id.forEach((id)=>{
+
+      // })
+      this.timeForm.value.times.forEach((item, index) => {
+        item.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
       })
-    
+
       var payload = {
         is_alltime_working: false,
         asset_uptime_registry: this.timeForm.value.times
       }
 
-      console.log("payload for",payload)
+      console.log("payload for", payload)
 
-     this.commonService.upTime(this.asset.asset_id,payload).subscribe((response)=>{
-          console.log("while asset is not live for 24 hours",response)
-     })
+      this.commonService.upTime(this.asset.asset_id, payload).subscribe((response) => {
+        console.log("while asset is not live for 24 hours", response)
+        this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset uptime')
+      }, (err) => {
+        this.toasterService.showError('something went wrong !', 'Error')
+      })
 
     }
   }
 
+  // add new input time field when click on (+) icon
   addTime() {
     let msg = ''
     const control: any = this?.timeForm?.get('times') as FormArray
@@ -93,7 +132,7 @@ export class AssetUptimeComponent implements OnInit {
       }
     })
     if (msg) {
-      this.toasterService.showError(`${msg}`, 'Uptime')
+      this.toasterService.showError(`${msg}`, 'Asset Uptime')
       return;
     }
 
@@ -104,11 +143,13 @@ export class AssetUptimeComponent implements OnInit {
     control.push(newFormGroup)
   }
 
+  // call when someone click on trash or delete icon
   deleteFormGroup(index: number) {
     const control: any = this?.timeForm?.get('times') as FormArray
     control.removeAt(index)
   }
 
+  // when someone select start time
   startFormChange(event: any) {
     debugger
     console.log("startfromevent", event.target.value)
@@ -125,6 +166,7 @@ export class AssetUptimeComponent implements OnInit {
     }
   }
 
+  // when someone select to time
   EndToChange(event: any) {
     console.log("endTo", event.target.value)
     let endTo = event.target.value
@@ -138,6 +180,11 @@ export class AssetUptimeComponent implements OnInit {
 
       })
     }
+  }
+
+  enableField(index:number){
+    const control =  this.timeForm.get('times') as FormArray
+    control.controls[index].enable();
   }
 
 }

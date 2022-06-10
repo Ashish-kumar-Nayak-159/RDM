@@ -437,4 +437,8 @@ export class CommonService {
   upTime(asset_id:any,obj:any){
     return this.http.patch(this.url + AppUrls.ASSET_UPTIME + asset_id , obj)
   }
+
+  getAssetUpTime(asset_id:any){
+    return this.http.get(this.url + AppUrls.ASSET_UPTIME + asset_id)
+  }
 }

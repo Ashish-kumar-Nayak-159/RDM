@@ -20,6 +20,8 @@ export class AssetUptimeComponent implements OnInit {
   timeForm = new FormGroup({
     times: new FormArray([])
   })
+ payloadUptimeArray:any = []
+
 
   constructor(private commonService: CommonService, private toasterService: ToasterService) {
     console.log("default on value", this.on)
@@ -46,10 +48,10 @@ export class AssetUptimeComponent implements OnInit {
           this.asset_uptime_registry_id.push(item?.asset_uptime_registry_id)
         })
 
-         control.controls.forEach((formGroup)=>{
-            formGroup.get('from_time').disable();
-            formGroup.get('to_time').disable();
-         })
+        //  control.controls.forEach((formGroup)=>{
+        //     formGroup.get('from_time').disable();
+        //     formGroup.get('to_time').disable();
+        //  })
       }
       else {
         const newFormGroup = new FormGroup({
@@ -97,16 +99,21 @@ export class AssetUptimeComponent implements OnInit {
     }
     else {
 
-      // this.asset_uptime_registry_id.forEach((id)=>{
-
-      // })
-      this.timeForm.value.times.forEach((item, index) => {
-        item.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
+      console.log("this.timeform.value.times",this.timeForm.value.times)
+    
+      this.payloadUptimeArray = []
+      let array =  this.timeForm.get('times') as FormArray;
+      array.controls.forEach((formGroup,index)=>{
+          formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
+          console.log(formGroup.value)
+          this.payloadUptimeArray.push(formGroup.value)
       })
+
+    
 
       var payload = {
         is_alltime_working: false,
-        asset_uptime_registry: this.timeForm.value.times
+        asset_uptime_registry: this.payloadUptimeArray
       }
 
       console.log("payload for", payload)
@@ -127,7 +134,7 @@ export class AssetUptimeComponent implements OnInit {
     const control: any = this?.timeForm?.get('times') as FormArray
     console.log("control", control)
     control.controls.forEach((formGroup) => {
-      if (!formGroup.get('from_time').value || !formGroup.get('to_time').value) {
+      if ( !formGroup.get('from_time').value || ( !formGroup.get('to_time').value)) {
         msg = 'Please Select Time'
       }
     })
@@ -141,12 +148,14 @@ export class AssetUptimeComponent implements OnInit {
       to_time: new FormControl('')
     })
     control.push(newFormGroup)
+    console.log("new times array after pushing",this.timeForm.get('times'))
   }
 
   // call when someone click on trash or delete icon
   deleteFormGroup(index: number) {
     const control: any = this?.timeForm?.get('times') as FormArray
     control.removeAt(index)
+    this.asset_uptime_registry_id.splice(index,1)
   }
 
   // when someone select start time
@@ -158,33 +167,56 @@ export class AssetUptimeComponent implements OnInit {
       const control = this.timeForm.get('times') as FormArray
       control?.controls?.forEach((formGroup) => {
         if (startFrom > (formGroup?.get('from_time')?.value) && startFrom < (formGroup?.get('to_time')?.value)) {
-          this.toasterService.showError('Please Select Another Time', 'Time Selection Error')
+          this.toasterService.showError('Please select time which should not fall in above time range.', 'Time Selection')
           event.target.value = ''
         }
-
+      
       })
     }
   }
 
   // when someone select to time
-  EndToChange(event: any) {
+  EndToChange(event: any,index?:number) {
     console.log("endTo", event.target.value)
     let endTo = event.target.value
     if (endTo) {
       const control = this.timeForm.get('times') as FormArray
-      control?.controls?.forEach((formGroup) => {
-        if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
-          this.toasterService.showError('Please Select Another Time', 'Time Selection Error')
+      if(endTo <= control?.controls[index]?.get('from_time')?.value){
+        this.toasterService.showError('To time must be greater than from time','Time Selection')
           event.target.value = ''
-        }
+          return
+      }
 
-      })
+      try{
+        control?.controls?.forEach((formGroup) => {
+          debugger
+        if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
+         this.toasterService.showError('Please select time which should not fall in above time range.', 'Time Selection')
+         event.target.value = ''
+         throw 'break';
+       }
+        if( control.controls[index].get('from_time').value  < (formGroup?.get('from_time')?.value) &&  control.controls[index].get('to_time').value  > (formGroup?.get('to_time')?.value) ){
+         this.toasterService.showError('Please select time which should not overlap above time range', 'Time Selection')
+         // event.target.value = ''
+         control.controls[index].get('to_time').setValue('')
+         throw 'break';
+       }
+   
+     })
+      }
+      catch{
+
+      }
+     
+
+      
     }
   }
 
-  enableField(index:number){
-    const control =  this.timeForm.get('times') as FormArray
-    control.controls[index].enable();
-  }
+  // enableField(index:number){
+  //   const control =  this.timeForm.get('times') as FormArray
+  //   control.controls[index].enable();
+   
+  // }
 
 }

@@ -635,7 +635,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,
-      privileges_required: ['RCC'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED','WASMV'],
       showAccordion: [],
       accordion_value: {},
     },

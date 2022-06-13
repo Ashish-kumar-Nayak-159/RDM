@@ -11,7 +11,7 @@
     <div class="card-body">
         <div class="d-flex align-items-center">
 
-            <p class="mb-0 mr-3">{{'Is all time working ?' | titlecase}}</p>
+            <p class="mb-0 mr-3">{{ asset.asset_id +' all time' + ' working ?' | titlecase}}</p>
             <div class="form-check form-check-inline mr-3">
                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="on"
                     (change)="checked($event,'on')" [checked]="on">

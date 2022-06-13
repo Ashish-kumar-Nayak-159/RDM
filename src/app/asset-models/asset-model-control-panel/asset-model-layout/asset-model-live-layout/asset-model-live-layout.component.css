@@ -35,3 +35,21 @@
 .modal-live-widget-container{
     height: auto;
 }
+
+.conditions-container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+}
+
+.unlockclass{
+    background-color: orangered;
+    opacity: 0.6;
+    color: white;
+   
+}
+.lockclass,
+.unlockclass{
+    width: 75px;
+    height: 38px;
+}

@@ -165,10 +165,6 @@ export class AuthInterceptor implements HttpInterceptor {
     getAuthorizationHeader(request: any) {
         let headers = request.headers ? request.headers : new HttpHeaders();
         let accessToken = this.commonService.getToken();
-        if (request.url.includes('api/user_apps')) {
-            const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-            accessToken = userData.token;
-        }
         if (accessToken && !request.url.includes(environment.blobURL)) {
             headers = headers.set('Authorization', 'Bearer ' + accessToken);
         }

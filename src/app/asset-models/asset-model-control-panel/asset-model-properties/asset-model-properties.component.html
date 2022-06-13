@@ -210,10 +210,10 @@
             </div>
           </ng-container>
           <div  *ngIf="type == 'edge_derived_properties'">
-            <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == false"
-            (click)="selectedProperty ? updatePropertyDataValidate() :ValidateallInputField()">Validate</button>
-          <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == true"
-          (click)="clearInputField()">Modify</button>
+            <button type="button" class="btn btn-success lockclass" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == false"
+            (click)="selectedProperty ? updatePropertyDataValidate() :ValidateallInputField()">Lock</button>
+          <button type="button" class="btn unlockclass" [disabled]="isCreatePropertyLoading" *ngIf="isDisabled == true"
+          (click)="clearInputField()">Unlock</button>
          
           
             <div class="form-group">

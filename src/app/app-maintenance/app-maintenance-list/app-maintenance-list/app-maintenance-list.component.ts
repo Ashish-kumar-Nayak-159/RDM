@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, Input, Output, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
@@ -10,6 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Maintenanace } from "src/app/app-maintenance/Maintenanace";
 import { Router } from '@angular/router';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DateAxis } from '@amcharts/amcharts4/charts';
 import { threadId } from 'worker_threads';
 
@@ -452,6 +452,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
     this.assetService.getAndSetAllAssets(obj, this.contextApp.app).subscribe((response: any) => {
       if (response?.data) {
+        this.assetDropdown =[]
         for (var i = 0; i < response?.data.length; i++) {
 
           this.assetDropdown.push({
@@ -476,6 +477,7 @@ export class AppMaintenanceListComponent implements OnInit {
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
+            this.assetDropdown = []
             for (var i = 0; i < this.assets.length; i++) {
               this.assetsdata = {
                 asset_name: this.assets[i].display_name,
@@ -997,6 +999,7 @@ getMaintenance_data(id)
       this.maintenanceRegistryId = obj?.data?.maintenance_registry_id
       this.isMaintenanceRequired = obj?.data?.is_maintenance_required
       if (!(this.isMaintenanceRequired)) {
+        this.validDate = false
         $("#exampleModal").modal('show');
         this.maintenanceForm.get('dateAndTime').setValue(new Date(obj?.data?.start_date).toISOString().slice(0, 16))
       }
@@ -1110,17 +1113,24 @@ getMaintenance_data(id)
     }
     let currentDate = new Date().toISOString().slice(0, 16);
     if( this.maintenanceForm.value.dateAndTime  >= currentDate) {
+      this.validDate = false;
       this.enableDisableMaintenance(this.maintenanceRegistryId, this.payload);
       $("#exampleModal").modal('hide');
       this.maintenanceForm.reset();
     }
     else{
       this.validDate = true
-      setTimeout(()=>{
-         this.validDate = false
-      },3000)
-      // this.toasterService.showError("Error","Start date must be greater than or equal to today.")
-      
+    }
+  }
+
+ // validating date for enable maintenance
+  checkDateAndTime(){
+    let currentDate = new Date().toISOString().slice(0, 16);
+    if(this.maintenanceForm.value.dateAndTime >= currentDate){
+      this.validDate = false
+    }
+    else{
+      this.validDate = true
     }
   }
 
@@ -1356,6 +1366,18 @@ getMaintenance_data(id)
     $("#maintenanceModal").modal('hide');
 
   }
-
+ 
+  //checking that input value contains special characters or not
+  containSpecialChar(event:any){
+    const NOT_ALLOWED_SPECIAL_CHARS_NAME = ['.', '$', '#','`','@','%','^','&','*','~','(',')','?','-','/','|','}','{',']','[','+','=','_']
+      NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char)=>{
+        if((event.target.value).includes(char)){
+           this.toasterService.showError("Name should not include '.', '_', '$', '#' etc","Add Maintenance")
+           event.target.value = ''
+           this.createMaintenanceForm.get('name').setValue(event.target.value)
+           return;
+        }
+      })
+}
 
 }

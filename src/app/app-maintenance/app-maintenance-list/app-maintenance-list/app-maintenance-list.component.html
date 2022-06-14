@@ -51,7 +51,7 @@
           (btnClickEvent)="onTableFunctionCall($event)">
         </app-common-data-table>
         <span class="d-flex justify-content-center w-100"
-          *ngIf="!insideScrollFunFlag && maintenances?.length > 0 && singleLoadMoreVisibility">
+          *ngIf="maintenanceData?.length > 0 && singleLoadMoreVisibility && !insideScrollFunFlag">
           <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
             (click)="currentOffset = currentOffset + currentLimit;historyOfPerticularMaintenance();" placement="bottom"
             tooltip="Load More Records...">Load More...</a>
@@ -91,8 +91,8 @@
           <form [formGroup]="maintenanceForm">
             <label for="maintenance-date">Enable Maintenance From: </label>
             <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
-              name="maintenance-date" class="form-control">
-             <span class="text-danger" *ngIf="validDate">Note :  Start date must be greater than or equal to today.</span>
+              name="maintenance-date" class="form-control" (change)="checkDateAndTime()">
+             <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
           </form>
         </div>
         <div class="modal-footer">
@@ -144,7 +144,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Name</label>
             <input type="text" disabled  *ngIf="isView && !isEdit" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <input type="text" placeholder="Name" required  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
+            <input type="text" placeholder="Name" (input)="containSpecialChar($event)" required  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
             <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
               class="alert-danger">
               <div *ngIf="createMaintenanceForm.get('name').errors.required">

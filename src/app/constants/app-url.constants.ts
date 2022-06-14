@@ -223,4 +223,6 @@ export class AppUrls {
  public static GET_MAINTENANCE_NOTIFICATION = 'maintenancenotification/'
  public static GET_ACK_MAINTENANCE = 'acknowledgemaintenance'
  public static GET_VIEW_ACK_MAINTENANCE = 'acknowledgemaintenance/'
+
+ public static ASSET_UPTIME = 'assetuptime/'
 }

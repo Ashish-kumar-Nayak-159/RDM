@@ -223,14 +223,14 @@
                               <a href="javascript:void(0)" (click)="deployRuleed(rule)" *ngIf="
                          decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
-                          ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
+                          ( !rule.epoch_deployed_on)"
                                 placement="bottom" tooltip="Click to Enable">
                                 <em class="fas fa-fw fa-toggle-off"></em>
                               </a>
                               <a href="javascript:void(0)" (click)="deployRuleed(rule, true)" *ngIf="
                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                         rule.is_editable !== false &&
-                          ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
+                          ( rule.epoch_deployed_on )"
                                 placement="bottom" tooltip="Click to Disable">
                                 <em class="fas fa-fw fa-toggle-on"></em>
                               </a>

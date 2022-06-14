@@ -292,7 +292,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         }
         return item
       })
-      if (response.length < this.currentLimit) {
+      if (response?.data?.length < this.currentLimit) {
         this.loadMoreVisibility = false
       }
 

@@ -14,13 +14,13 @@ export class Rule {
     aggregation_window_in_sec: any;
     updated_by: string;
     created_by: string;
-    rules_type?: boolean;
+    isEdgeRule?: boolean;
     rule_code?: any;
     metadata?: any;
     condition?: any;
     type?: string;
     actions?: any;
-    category_type?:boolean;
+    isKpixCategory?:boolean;
     rule_category?:any;
     rule_type?:any;
     constructor() {

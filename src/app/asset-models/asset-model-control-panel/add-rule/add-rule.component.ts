@@ -29,7 +29,7 @@ export class AddRuleComponent implements OnInit {
   ruleModel: Rule = new Rule();
   contextApp: any;
   userData: any;
-  addRuleCondition:any;
+  addRuleCondition: any;
   propertyList: any[] = [];
   dropdownPropList: any[] = [];
   alertConditionList: any[] = [];
@@ -38,7 +38,7 @@ export class AddRuleComponent implements OnInit {
   slaveData: any[] = [];
   selectedAlertCondition: AlertCondition = new AlertCondition();
   rules: any[] = [];
-  data_type : any;
+  data_type: any;
   selectedRule: Rule = new Rule();
   title = 'Create';
   operatorList = [
@@ -70,18 +70,18 @@ export class AddRuleComponent implements OnInit {
     private assetModelService: AssetModelService,
     private assetService: AssetService,
     private applicationService: ApplicationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
     this.title = this.isCloneEdit ? 'Clone' : '';
-    this.addRuleCondition = this.commonService.getItemFromLocalStorage("model_item").toString().substring(1,this.commonService.getItemFromLocalStorage("model_item").toString().length-1);
+    this.addRuleCondition = this.commonService.getItemFromLocalStorage("model_item").toString().substring(1, this.commonService.getItemFromLocalStorage("model_item").toString().length - 1);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getSlaveData();
     this.DefaultRuleModelSetup();
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
-   // this.addNewCondition();
+    // this.addNewCondition();
     this.getAssetsModelProperties();
     if (this.isEdit || this.isView) {
       this.configureData();
@@ -91,7 +91,7 @@ export class AddRuleComponent implements OnInit {
     if (this.isClone) {
       this.getRules();
     }
-    this.getApplicationUserGroups();    
+    this.getApplicationUserGroups();
   }
 
   private DefaultRuleModelSetup() {
@@ -131,14 +131,10 @@ export class AddRuleComponent implements OnInit {
     if (this.isClone) {
       this.getRules();
     }
-    this.getApplicationUserGroups();  
-    if(this.ruleModel.type==='Cloud')
-    {
-      this.ruleModel.rules_type = false;   
-    }
+    this.getApplicationUserGroups();
+    this.ruleModel.isEdgeRule = this.ruleModel.type === 'Edge';
   }
-  getRuleType()
-  {
+  getRuleType() {
     this.ruleModel.rule_type = $('#kpixruleType option:selected').val();
   }
   getSlaveData() {
@@ -185,13 +181,13 @@ export class AddRuleComponent implements OnInit {
     let method;
     if (this.asset) {
       const obj: any = {};
-      obj.type =  this.ruleModel.rules_type ? 'Edge' : 'Cloud';
+      obj.type = this.ruleModel.isEdgeRule ? 'Edge' : 'Cloud';
       obj.source = 'Asset';
       method = this.assetService.getRules(this.contextApp.addNewConditionapp, this.asset.asset_id, obj);
     } else {
       const asset_model = this.asset ? this.asset.tags.asset_model : this.name;
       const obj: any = {};
-      obj.type =  this.ruleModel.rules_type ? 'Edge' : 'Cloud';
+      obj.type = this.ruleModel.isEdgeRule ? 'Edge' : 'Cloud';
       method = this.assetModelService.getRules(this.contextApp.app, asset_model, obj);
     }
 
@@ -213,7 +209,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   configureData() {
-    
+
     if (this.ruleData.rule_id) {
       this.ruleModel.rule_id = this.ruleData.rule_id;
     }
@@ -224,22 +220,21 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.aggregation_window_in_sec = this.ruleData.aggregation_window_in_sec;
     this.ruleModel.alert_condition_id = this.ruleData.alert_condition_id;
     this.ruleModel.condition_str = this.ruleData.metadata.condition_str;
-    // this.ruleModel.rule_category = "Stream Analytics";
     if (this.ruleData.type === 'Edge') {
       this.ruleModel.conditions = JSON.parse(this.ruleData.metadata.conditions);
-       } else {
+    } else {
       this.ruleModel.conditions = this.ruleData.condition;
     }
     this.ruleModel.created_by = this.ruleData.created_by;
     if (this.ruleData?.metadata?.sid)
-    this.ruleModel.metadata.sid = this.ruleData.metadata.sid;
+      this.ruleModel.metadata.sid = this.ruleData.metadata.sid;
     this.ruleModel.escalation_time_in_sec = this.ruleData.escalation_time_in_sec;
     this.ruleModel.properties = this.ruleData.properties;
     this.ruleModel.aggregation_enabled = this.ruleData.aggregation_enabled;
     this.ruleModel.updated_by = this.ruleData.updated_by;
-    this.ruleModel.rules_type = this.ruleData.type === 'Edge' ? true : false;
+    this.ruleModel.isEdgeRule = this.ruleData.type === 'Edge';
     this.ruleModel.type = this.ruleData.type;
-    this.ruleModel.category_type = this.ruleData.rule_category === 'Stream Analytics' ? false : true;
+    this.ruleModel.isKpixCategory = this.ruleData.rule_category === 'KPIX Analytics';
     this.getAlertConditions(this.ruleData.type);
     if (!this.ruleData.actions || Object.keys(this.ruleData.actions).length === 0) {
       this.ruleModel.actions = {
@@ -268,7 +263,7 @@ export class AddRuleComponent implements OnInit {
     if (!this.ruleModel.actions.asset_control) {
       this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
-   
+
   }
 
   getAssetsModelProperties() {
@@ -286,70 +281,44 @@ export class AddRuleComponent implements OnInit {
       response.properties.edge_derived_properties = response.properties.edge_derived_properties
         ? response.properties.edge_derived_properties
         : [];
-      // response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-      //   ? response.properties.cloud_derived_properties
-      //   : [];
-      if((this.ruleModel.category_type===undefined) || this.ruleModel.rules_type!==undefined && !this.ruleModel.rules_type)
-      { 
-        if(this.ruleModel.rules_type )
-        {
-          response.properties.edge_derived_properties.forEach((prop) => {
-            prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop);
-         });
-        }  
-      }
-      if((this.ruleModel.category_type===undefined && this.ruleModel.rules_type===undefined))
-      {
-        response.properties.edge_derived_properties.forEach((prop) => {
-          prop.type = 'Edge Derived Properties';
-          this.propertyList.push(prop);
-       });
-      
-      }
-      if(this.ruleModel.category_type!==undefined && !this.ruleModel.category_type && (
-        this.ruleModel.rules_type==undefined || !this.ruleModel.rules_type))
-      {
-        if((this.ruleModel.category_type!==undefined && this.ruleModel.rules_type!==undefined && !this.ruleModel.category_type))
-        {
-        response.properties.edge_derived_properties.forEach((prop) => {
+
+      if (this.ruleModel.isEdgeRule === false) {
+        response?.properties?.edge_derived_properties?.forEach((prop) => {
           prop.type = 'Edge Derived Properties';
           this.propertyList.push(prop);
         });
+      }
+
+      if (this.ruleModel.isEdgeRule === false && this.ruleModel.isKpixCategory) {
         response.properties?.cloud_derived_properties?.forEach((prop) => {
-           prop.type = 'Cloud Derived Properties';
-           this.propertyList.push(prop);
+          prop.type = 'Cloud Derived Properties';
+          this.propertyList.push(prop);
         });
-       }
       }
-      // response.properties.cloud_derived_properties.forEach((prop) => {
-      //   prop.type = 'Cloud Derived Properties';
-      //   this.propertyList.push(prop);
-      // });
       this.dropdownPropList = [];
-      this.propertyList.forEach((prop) => { 
-         if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') { 
-          if(!this.ruleModel?.metadata?.sid ||  prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid){
-                this.dropdownPropList.push({
-                  id: prop.name,
-                  type: prop.type,
-                  json_key: prop.json_key,
-                  value: prop,
-                  });
-                }
-              }
-         });
+      this.propertyList.forEach((prop) => {
+        if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') {
+          if (!this.ruleModel?.metadata?.sid || prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid) {
+            this.dropdownPropList.push({
+              id: prop.name,
+              type: prop.type,
+              json_key: prop.json_key,
+              value: prop,
+            });
+          }
+        }
+      });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
 
     });
   }
 
+
   getPropertyName(id) {
     return this.propertyList.find((prop) => prop.json_key === id)?.name;
   }
-  
-  fillOperator(id)
-  {
+
+  fillOperator(id) {
     this.getPropertyType(id);
 
   }
@@ -390,8 +359,7 @@ export class AddRuleComponent implements OnInit {
   onChangeOfSendAlertCheckbox() {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
   }
-  onSlaveSelection()
-  {
+  onSlaveSelection() {
     this.getAssetsModelProperties();
   }
 
@@ -412,30 +380,31 @@ export class AddRuleComponent implements OnInit {
   onSwitchValueChange(event) {
     // this.ruleModel.rule_id ='';
 
-    if(this.isClone)
-    {
-    this.ruleModel = new Rule();
-    this.DefaultRuleModelSetup();
-    this.addNewCondition();
+    if (this.isClone) {
+      this.ruleModel = new Rule();
+      this.DefaultRuleModelSetup();
+      this.addNewCondition();
     }
-    this.ruleModel.rule_type = event;
+    this.ruleModel.rule_type = "THS";
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
-    this.getRules();    
-    if(event)
-    {
-      this.ruleModel.category_type =  undefined ;
+    this.getRules();
+    if (event) {
+      this.ruleModel.isKpixCategory = undefined;
     }
     this.dropdownPropList = [];
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
+    this.ruleModel.isEdgeRule = event;
     this.getAssetsModelProperties();
-    this.ruleModel.rules_type = event;
     this.ruleModel.actions.alert_management.enabled = event;
   }
   onRuleCategorySwitchChange(event) {
     this.dropdownPropList = [];
-    this.ruleModel.rule_type= "THS";
-    this.ruleModel.category_type = event;
+    this.getAlertConditions(event ? 'KPIX' : 'Stream');
+    this.ruleModel.rule_type = "THS";
+    this.ruleModel.isKpixCategory = event;
+    this.getAssetsModelProperties();
     this.ruleModel.actions.alert_management.enabled = event;
+
   }
   onChangeOfAssetCondition() {
     let alertCondition = this.alertConditionList.find(
@@ -454,7 +423,7 @@ export class AddRuleComponent implements OnInit {
     });
     $('#addRuleModal').modal('hide');
     this.isEdit = false;
-   }
+  }
 
   onChangeTimeAggregation(event) {
     this.ruleModel.aggregation_window_in_sec = null;
@@ -469,9 +438,9 @@ export class AddRuleComponent implements OnInit {
       operator: '',
       threshold: 0,
       aggregation_type: null,
-      type:'',
-      bolCon:true,
-      strText:null,
+      type: '',
+      bolCon: true,
+      strText: null,
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -481,17 +450,13 @@ export class AddRuleComponent implements OnInit {
   }
 
   createNewRule() {
-    this.ruleModel.rule_category = "Stream Analytics";
-    if(this.ruleModel.category_type)
-    {
-       this.ruleModel.rule_category = "KPIX Analytics"
-    }
+    this.ruleModel.rule_category = this.ruleModel.isKpixCategory ? "KPIX Analytics" : "Stream Analytics";
     if (
       (!this.ruleModel.name ||
         !this.ruleModel.description ||
         !this.ruleModel.code ||
         !this.ruleModel.operator ||
-        (!this.ruleModel.rules_type && !this.ruleModel.escalation_time_in_sec))
+        (!this.ruleModel.isEdgeRule && !this.ruleModel.escalation_time_in_sec))
       || (
         this.ruleModel.name?.trim()?.length <= 0 ||
         this.ruleModel.description?.trim()?.length <= 0 ||
@@ -515,49 +480,46 @@ export class AddRuleComponent implements OnInit {
     // this.ruleModel.rule_category = "Stream Analytics";
     this.ruleModel.conditions?.forEach((element, index) => {
       let operator = this.findOperator(element.operator);
-      if(this.data_type==='Number')
-      {
+      if (this.data_type === 'Number') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.threshold +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.threshold +
+          ' ' +
+          this.ruleModel.operator;
       }
-      if(this.data_type ==='Boolean')
-      {
+      if (this.data_type === 'Boolean') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.bolCon +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.bolCon +
+          ' ' +
+          this.ruleModel.operator;
       }
-      if(this.data_type ==='String')
-      {
+      if (this.data_type === 'String') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.strText +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.strText +
+          ' ' +
+          this.ruleModel.operator;
       }
-      
+
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
-      element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
-      this.ruleModel.properties.push({
-        property: prop.value.json_key,
-        type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
-      });
+      element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
+        this.ruleModel.properties.push({
+          property: prop.value.json_key,
+          type: prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
+        });
     });
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
@@ -565,11 +527,11 @@ export class AddRuleComponent implements OnInit {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
       if (!this.asset) {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetService.updateCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
@@ -592,11 +554,11 @@ export class AddRuleComponent implements OnInit {
     } else {
       let method;
       if (!this.asset) {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetModelService.createNewEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
@@ -617,17 +579,13 @@ export class AddRuleComponent implements OnInit {
     }
   }
   cloneRules() {
-    this.ruleModel.rule_category = "Stream Analytics";
-    if(this.ruleModel.category_type)
-    {
-       this.ruleModel.rule_category = "KPIX Analytics"
-    }
+    this.ruleModel.rule_category = this.ruleModel.isKpixCategory ? "KPIX Analytics" : "Stream Analytics";
     if (
       (!this.ruleModel.name ||
         !this.ruleModel.description ||
         !this.ruleModel.code ||
         !this.ruleModel.operator ||
-        (!this.ruleModel.rules_type && !this.ruleModel.escalation_time_in_sec))
+        (!this.ruleModel.isEdgeRule && !this.ruleModel.escalation_time_in_sec))
       || (
         this.ruleModel.name?.trim()?.length <= 0 ||
         this.ruleModel.description?.trim()?.length <= 0 ||
@@ -649,82 +607,75 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.properties = [];
     this.ruleModel.conditions.forEach((element, index) => {
       let operator = this.findOperator(element.operator);
-      if(this.data_type==='Number')
-      {
+      if (this.data_type === 'Number') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.threshold +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.threshold +
+          ' ' +
+          this.ruleModel.operator;
       }
-      if(this.data_type ==='Boolean')
-      {
+      if (this.data_type === 'Boolean') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.bolCon +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.bolCon +
+          ' ' +
+          this.ruleModel.operator;
       }
-      if(this.data_type ==='String')
-      {
+      if (this.data_type === 'String') {
         str +=
-        ' %' +
-        (index + 1) +
-        '% ' +
-        operator +
-        ' ' +
-        element.strText +
-        ' ' +
-        this.ruleModel.operator;
+          ' %' +
+          (index + 1) +
+          '% ' +
+          operator +
+          ' ' +
+          element.strText +
+          ' ' +
+          this.ruleModel.operator;
       }
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
       element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
-      this.ruleModel.properties.push({
-        property: prop.value.json_key,
-        type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
-      });
+        this.ruleModel.properties.push({
+          property: prop.value.json_key,
+          type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
+        });
     });
-    
+
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     let method;
-    
-      method = !this.ruleModel.rules_type
-         ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
-         : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
-      method.subscribe(
-        (response: any) => {
-          // this.onCloseRuleModel.emit({
-          //   status: true,
-          // });
-          // $('#addRuleModal').modal('hide');
-          // this.isEdit = false;
-          this.toasterService.showSuccess(response.message, this.title + 'Rule');
-          this.closeRuleModal(true);
-          this.isUpdateApiCall = false;
-        },
-        (err: HttpErrorResponse) => {
-          this.isUpdateApiCall = false;
-          this.toasterService.showError(err.message, this.title + 'Rule');
-        }
-      );
-   }
+
+    method = !this.ruleModel.isEdgeRule
+      ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
+      : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+    method.subscribe(
+      (response: any) => {
+        // this.onCloseRuleModel.emit({
+        //   status: true,
+        // });
+        // $('#addRuleModal').modal('hide');
+        // this.isEdit = false;
+        this.toasterService.showSuccess(response.message, this.title + 'Rule');
+        this.closeRuleModal(true);
+        this.isUpdateApiCall = false;
+      },
+      (err: HttpErrorResponse) => {
+        this.isUpdateApiCall = false;
+        this.toasterService.showError(err.message, this.title + 'Rule');
+      }
+    );
+  }
   createNewRule_timeThre() {
-    this.ruleModel.rule_category = "Stream Analytics";
-    if(this.ruleModel.category_type)
-    {
-       this.ruleModel.rule_category = "KPIX Analytics"
-    }
-  if (
+    this.ruleModel.rule_category = this.ruleModel.isKpixCategory ? "KPIX Analytics" : "Stream Analytics";
+    if (
       !this.ruleModel.actions.alert_management.enabled &&
       !this.ruleModel.actions.notification.enabled &&
       !this.ruleModel.actions.asset_control.disable
@@ -736,31 +687,31 @@ export class AddRuleComponent implements OnInit {
     let str = '';
     this.ruleModel.properties = [];
     this.ruleModel.conditions = [];
-    this.ruleModel.conditions.push( {
+    this.ruleModel.conditions.push({
       property: "PT_102",
       operator: "EQUAL",
       threshold: "m",
-      aggregation_type:null,
-      strText:null,
-      bolCon:null,
-  });
-    
-      this.ruleModel.properties.push({
-        property: "PT_102",
-        type: 'm',
-      });
-    this.ruleModel.operator ="&&";  
+      aggregation_type: null,
+      strText: null,
+      bolCon: null,
+    });
+
+    this.ruleModel.properties.push({
+      property: "PT_102",
+      type: 'm',
+    });
+    this.ruleModel.operator = "&&";
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
       if (!this.asset) {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetService.updateCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
@@ -783,11 +734,11 @@ export class AddRuleComponent implements OnInit {
     } else {
       let method;
       if (!this.asset) {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetModelService.createNewEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rules_type
+        method = !this.ruleModel.isEdgeRule
           ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
           : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
@@ -808,16 +759,13 @@ export class AddRuleComponent implements OnInit {
     }
   }
   findOperator(id) {
-    if(this.data_type === 'Number')
-    {
+    if (this.data_type === 'Number') {
       return this.operatorList.find((optr) => optr.id === id).value;
     }
-    if(this.data_type === 'Boolean')
-    {
-       return this.operatorList1.find((optr) => optr.id === id).value;
+    if (this.data_type === 'Boolean') {
+      return this.operatorList1.find((optr) => optr.id === id).value;
     }
-    if(this.data_type === 'String')
-    {
+    if (this.data_type === 'String') {
       return this.operatorList2.find((optr) => optr.id === id).value;
     }
   }

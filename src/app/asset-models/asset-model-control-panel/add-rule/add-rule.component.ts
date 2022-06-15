@@ -399,7 +399,6 @@ export class AddRuleComponent implements OnInit {
   }
   onRuleCategorySwitchChange(event) {
     this.dropdownPropList = [];
-    this.getAlertConditions(event ? 'KPIX' : 'Stream');
     this.ruleModel.rule_type = "THS";
     this.ruleModel.isKpixCategory = event;
     this.getAssetsModelProperties();

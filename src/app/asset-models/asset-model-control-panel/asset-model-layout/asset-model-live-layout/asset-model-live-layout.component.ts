@@ -338,6 +338,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     });
     if (this.widgetObj?.widgetType === "ConditionalNumber") {
+      this.isDisabled = false;
       this.formula ='';
       this.propertyObj.metadata = {
         properties: [

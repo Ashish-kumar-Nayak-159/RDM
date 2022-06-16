@@ -3,6 +3,8 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
+declare var $: any;
+
 @Component({
   selector: 'app-asset-uptime',
   templateUrl: './asset-uptime.component.html',
@@ -20,9 +22,18 @@ export class AssetUptimeComponent implements OnInit {
   timeForm = new FormGroup({
     times: new FormArray([])
   })
- payloadUptimeArray:any = []
-
-
+  payloadUptimeArray: any = []
+  confirmBodyMessage: string;
+  confirmHeaderMessage: string;
+  modalConfig: {
+    isDisplaySave: boolean;
+    isDisplayCancel: boolean;
+    saveBtnText: string;
+    cancelBtnText: string;
+    stringDisplay: boolean;
+  };
+  isAPILoading = false;
+  deleteIndex: number;
   constructor(private commonService: CommonService, private toasterService: ToasterService) {
   }
 
@@ -57,7 +68,7 @@ export class AssetUptimeComponent implements OnInit {
         })
         control.push(newFormGroup)
       }
-      
+
     })
   }
 
@@ -91,15 +102,15 @@ export class AssetUptimeComponent implements OnInit {
       })
     }
     else {
- 
+
       this.payloadUptimeArray = []
-      let array =  this.timeForm.get('times') as FormArray;
-      array.controls.forEach((formGroup,index)=>{
-          formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
-          this.payloadUptimeArray.push(formGroup.value)
+      let array = this.timeForm.get('times') as FormArray;
+      array.controls.forEach((formGroup, index) => {
+        formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
+        this.payloadUptimeArray.push(formGroup.value)
       })
 
-    
+
 
       var payload = {
         is_alltime_working: false,
@@ -121,7 +132,7 @@ export class AssetUptimeComponent implements OnInit {
     let msg = ''
     const control: any = this?.timeForm?.get('times') as FormArray
     control.controls.forEach((formGroup) => {
-      if ( !formGroup.get('from_time').value || ( !formGroup.get('to_time').value)) {
+      if (!formGroup.get('from_time').value || (!formGroup.get('to_time').value)) {
         msg = 'Please Select Time'
       }
     })
@@ -139,9 +150,23 @@ export class AssetUptimeComponent implements OnInit {
 
   // call when someone click on trash or delete icon
   deleteFormGroup(index: number) {
-    const control: any = this?.timeForm?.get('times') as FormArray
-    control.removeAt(index)
-    this.asset_uptime_registry_id.splice(index,1)
+    this.deleteIndex = index
+    this.openConfirmDialog()
+  }
+
+  openConfirmDialog() {
+    this.modalConfig = {
+      isDisplaySave: true,
+      isDisplayCancel: true,
+      saveBtnText: 'Yes',
+      cancelBtnText: 'No',
+      stringDisplay: true,
+    };
+
+    this.confirmBodyMessage = 'Are you sure you want to delete this uptime?';
+    this.confirmHeaderMessage = 'Delete ' + 'Uptime';
+
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   // when someone select start time
@@ -154,51 +179,58 @@ export class AssetUptimeComponent implements OnInit {
           this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
           event.target.value = ''
         }
-      
+
       })
     }
   }
 
   // when someone select to time
-  EndToChange(event: any,index?:number) {
+  EndToChange(event: any, index?: number) {
     let endTo = event.target.value
     if (endTo) {
       const control = this.timeForm.get('times') as FormArray
-      if(endTo <= control?.controls[index]?.get('from_time')?.value){
-        this.toasterService.showError('To time must be greater than from time','Asset Uptime')
-          event.target.value = ''
-          return
+      if (endTo <= control?.controls[index]?.get('from_time')?.value) {
+        this.toasterService.showError('To time must be greater than from time', 'Asset Uptime')
+        event.target.value = ''
+        return
       }
 
-      try{
+      try {
         control?.controls?.forEach((formGroup) => {
-        if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
-         this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
-         event.target.value = ''
-         throw 'break';
-       }
-        if( control.controls[index].get('from_time').value  < (formGroup?.get('from_time')?.value) &&  control.controls[index].get('to_time').value  > (formGroup?.get('to_time')?.value) ){
-         this.toasterService.showError('Please select time which should not overlap above time range', 'Asset Uptime')
-         // event.target.value = ''
-         control.controls[index].get('to_time').setValue('')
-         throw 'break';
-       }
-   
-     })
+          if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
+            this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
+            event.target.value = ''
+            throw 'break';
+          }
+          if (control.controls[index].get('from_time').value < (formGroup?.get('from_time')?.value) && control.controls[index].get('to_time').value > (formGroup?.get('to_time')?.value)) {
+            this.toasterService.showError('Please select time which should not overlap above time range', 'Asset Uptime')
+            // event.target.value = ''
+            control.controls[index].get('to_time').setValue('')
+            throw 'break';
+          }
+
+        })
       }
-      catch{
+      catch {
 
       }
-     
 
-      
+
+
     }
   }
 
-  // enableField(index:number){
-  //   const control =  this.timeForm.get('times') as FormArray
-  //   control.controls[index].enable();
-   
-  // }
+  onModalEvents(eventType) {
+    console.log("eventtype", eventType)
+    if (eventType === 'save') {
+      const control: any = this?.timeForm?.get('times') as FormArray
+      control.removeAt(this.deleteIndex)
+      this.asset_uptime_registry_id.splice(this.deleteIndex, 1)
+      $("#confirmMessageModal").modal('hide');
+    }
+    else {
+      $("#confirmMessageModal").modal('hide');
+    }
+  }
 
 }

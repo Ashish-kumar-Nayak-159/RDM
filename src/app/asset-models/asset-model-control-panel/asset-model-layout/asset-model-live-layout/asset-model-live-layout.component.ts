@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DoCheck, Input, OnInit } from '@angular/core';
 import { debug } from 'console';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
@@ -54,6 +54,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   propertyObj: any;
   formula: String;
   properties: any = {};
+  trueConditionalNumber:string = 'ON';
+  falseConditionalNumber:string = 'OFF';
 
   constructor(
     private commonService: CommonService,
@@ -627,7 +629,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       let arr = [{
         formula: this.formula,
         json_Data: [],
-        text:['ON','OFF']
+        text:[this.trueConditionalNumber,this.falseConditionalNumber]
 
       }]
       this.propertyObj.metadata.properties.forEach((prop) => {
@@ -665,6 +667,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     arr.push(this.widgetObj);
 
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
+    console.log("before clear this.selectedSlave",this.selectedSlave)
+    this.trueConditionalNumber = 'ON'
+    this.falseConditionalNumber = 'OFF'
+    this.selectedSlave =  { slave_name: 'Select Slave' }
   }
 
   onClickOfCheckbox() {

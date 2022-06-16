@@ -314,8 +314,20 @@
                   </div>
                 </ng-container>
               </div> -->
+              <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center ">
+                  <label for="true">True:</label>&nbsp;
+                  <input type="text" id="true" autocomplete="off" #trueConditional="ngModel" minlength="5"class="form-control form-control-sm shadow-none" name="fortrue" [(ngModel)]="trueConditionalNumber" [disabled]="isDisabled">
+                </div>
+                <div class="col-6 d-flex align-items-center">
+                  <label for="false">False:</label>&nbsp;
+                  <input type="text" id="false" autocomplete="off" #falseConditional="ngModel" minlength="5" class="form-control form-control-sm shadow-none" name="forfalse" [(ngModel)]="falseConditionalNumber" [disabled]="isDisabled">
+                </div>
+              </div>
+              <span *ngIf="trueConditional?.errors?.minlength && trueConditionalNumber!='ON'" class="text-danger float-left"> Value must be at least 5 characters long.</span>
+              <span *ngIf="falseConditional?.errors?.minlength && falseConditionalNumber!='OFF'" class="text-danger float-right"> Value must be at least 5 characters long.</span>
             </div>
-          </ng-container>
+          </ng-container><br/>
           <div  *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
             <button type="button" class="btn btn-success lockclass"  *ngIf="isDisabled == false"
             (click)="ValidateallInputField()">Lock</button>

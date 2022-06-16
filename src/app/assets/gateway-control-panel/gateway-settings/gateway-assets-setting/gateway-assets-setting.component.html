@@ -60,8 +60,9 @@
                 </tr>
               </thead>
               <tbody>
+
                 <!-- <tr>
-              <td style="width: 50%;">Measurement Frequency (In Sec): </td>
+              <td style="width: 50%;">Measurement Frequency (In msec): </td>
               <td>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="asset.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
@@ -69,7 +70,7 @@
               </td>
             </tr> -->
                 <tr>
-                  <td style="width: 50%;">G1 Measurement Frequency (In Sec): </td>
+                  <td style="width: 50%;">G1 Measurement Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.measurement_settings.g1_measurement_frequency_in_ms"
@@ -77,7 +78,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G2 Measurement Frequency (In Sec): </td>
+                  <td style="width: 50%;">G2 Measurement Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.measurement_settings.g2_measurement_frequency_in_ms"
@@ -85,7 +86,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G3 Measurement Frequency (In Sec): </td>
+                  <td style="width: 50%;">G3 Measurement Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.measurement_settings.g3_measurement_frequency_in_ms"
@@ -110,7 +111,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G1 Normal mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms"
@@ -118,7 +119,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G1 Turbo mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms"
@@ -126,7 +127,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G2 Normal mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms"
@@ -134,7 +135,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G2 Turbo mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G2 Turbo mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms"
@@ -142,7 +143,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G3 Normal mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms"
@@ -150,7 +151,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
+                  <td style="width: 50%;">G3 Turbo mode Frequency (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms"
@@ -158,7 +159,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Turbo mode Timeout (In Sec): </td>
+                  <td>Turbo mode Timeout (In msec): </td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                       [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_timeout_time"

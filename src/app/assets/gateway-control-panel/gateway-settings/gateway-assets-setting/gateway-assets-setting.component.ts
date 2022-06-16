@@ -195,28 +195,28 @@ export class GatewayAssetsSettingComponent implements OnInit {
       app_name: this.selectedAsset?.metadata?.package_app,
       asset_id: this.selectedAsset.asset_id,
       g1_measurement_frequency_in_ms:
-        this.selectedAsset.metadata.measurement_settings.g1_measurement_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.measurement_settings.g1_measurement_frequency_in_ms,
       g2_measurement_frequency_in_ms:
-        this.selectedAsset.metadata.measurement_settings.g2_measurement_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.measurement_settings.g2_measurement_frequency_in_ms ,
       g3_measurement_frequency_in_ms:
-        this.selectedAsset.metadata.measurement_settings.g3_measurement_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.measurement_settings.g3_measurement_frequency_in_ms,
 
       g1_turbo_mode_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms,
       g2_turbo_mode_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms,
       g3_turbo_mode_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms,
 
-      turbo_mode_timeout_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
+      turbo_mode_timeout_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time,
        ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
 
       g1_ingestion_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms,
       g2_ingestion_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms,
       g3_ingestion_frequency_in_ms:
-        this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms * 1000,
+        this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms,
     };
     await this.callC2dMethod(obj, 'Change Asset Settings');
   }

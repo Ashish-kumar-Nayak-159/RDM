@@ -26,7 +26,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     public route: ActivatedRoute
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -83,7 +83,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           data = arr;
         }
         data = data.sort((a, b) => a.index - b.index);
-         
+
         this.processSideMenuData(data, this.contextApp);
       }
     }
@@ -123,17 +123,24 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   processSideMenuData(data, list) {
-
     const arr = JSON.parse(JSON.stringify(data));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     const decodedToken = this.commonService.decodeJWTToken(token);
+    const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     arr.forEach((element1) => {
-      if (element1.visible) {
+      if (element1?.visible) {
         let trueCount = 0;
         let falseCount = 0;
         element1?.privileges_required?.forEach((privilege) => {
           if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
-            trueCount++;
+            if (element1?.page === 'Maintenance') {
+              if (appData?.metadata?.maintenance_module)
+                trueCount++;
+              else
+                falseCount++;
+            } else {
+              trueCount++;
+            }
           } else {
             falseCount++;
           }

@@ -34,13 +34,35 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     if (this.contextApp && !this.userData?.is_super_admin) {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
+        debugger
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
           this.toasterService.showCriticalAlert(
+            msg.message,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-critical',
+            'toast-bottom-right',
+            60000
+          );
+        }
+        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'error') {
+          this.toasterService.showErrorAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
             'toast-bottom-right',
             60000
           );
+        }
+        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
+          this.toasterService.showWarningAlert(
+            msg.message,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-bottom-right',
+            60000
+          );
+        }
+        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'informational') {
+         
+          this.toasterService.showInformationalAlert(msg.message, msg.asset_display_name ? msg.asset_display_name : msg.asset_id, 'toast-bottom-right',60000)
         }
       });
     }
@@ -100,6 +122,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+              'toast-critical',
               'toast-bottom-right',
               60000
             );

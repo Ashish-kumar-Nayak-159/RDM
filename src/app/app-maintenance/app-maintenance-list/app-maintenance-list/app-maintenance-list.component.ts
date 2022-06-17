@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DateAxis } from '@amcharts/amcharts4/charts';
 import { threadId } from 'worker_threads';
-
+import * as moment from 'moment';
+ 
 declare var $: any;
 
 
@@ -47,6 +48,11 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenanceModel: Maintenanace = new Maintenanace();
   userData: any;
   maintenance_registry_id: any;
+  bsValue = new Date();
+  maxDate = new Date();
+  myDateValue: Date;
+  minDate = new Date();
+
 
   htmlEmailContent: any;
   notifyUser: any;
@@ -182,16 +188,6 @@ export class AppMaintenanceListComponent implements OnInit {
       item_count: this.currentLimit,
       data: [
         {
-          header_name: 'Asset Id',
-          is_display_filter: true,
-          value_type: 'string',
-          // is_sort_required: true,
-          fixed_value_list: [],
-          data_type: 'text',
-          data_key: 'asset_id',
-          //is_sort: true
-        },
-        {
           header_name: 'Name',
           is_display_filter: true,
           value_type: 'string',
@@ -199,6 +195,16 @@ export class AppMaintenanceListComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'name',
+          //is_sort: true
+        },
+        {
+          header_name: 'Asset Id',
+          is_display_filter: true,
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'asset_id',
           //is_sort: true
         },
         {
@@ -386,7 +392,7 @@ export class AppMaintenanceListComponent implements OnInit {
         item.inspection_frequency = this.itemArray.find((data) => {
           return data.id == item.inspection_frequency
         }).name
-        item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, HH:mm")
+        item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, H:mm a")
       })
       this.tableConfig.is_table_data_loading = false;
       if (response.data.length < this.currentLimit) {
@@ -609,6 +615,7 @@ export class AppMaintenanceListComponent implements OnInit {
       return;
     }
     else if ((new Date(this.createMaintenanceForm.get("start_date").value).getTime()) < (new Date().getTime())) {
+      console.log(new Date(this.createMaintenanceForm.get("start_date").value).getTime())
       this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
       this.createMaitenanceCall = false;
       return;
@@ -628,6 +635,9 @@ export class AppMaintenanceListComponent implements OnInit {
       })
 
     })
+    let convDate = new Date(this.createMaintenanceForm.get('start_date').value).toISOString().slice(0,16)
+    this.createMaintenanceForm.get('start_date').setValue(convDate)
+    console.log("after createMaintenanceForm", JSON.stringify(this.createMaintenanceForm.value))
     this.maintenanceModel = this.createMaintenanceForm.value;
     this.maintenanceModel.asset_id = this.createMaintenanceForm.get("asset_ids").value;
     this.maintenanceModel.is_maintenance_required = true;
@@ -672,6 +682,7 @@ export class AppMaintenanceListComponent implements OnInit {
     }
     else {
       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp, "CreateMaintenance", this.maintenanceModel);
+      console.log("checking", JSON.stringify(this.maintenanceModel))
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
@@ -705,6 +716,8 @@ export class AppMaintenanceListComponent implements OnInit {
   isAsset = false;
   /////// To open the Modal for the Maintenance Schedule
   async openCreateMaintenanceModelModal(obj = undefined) {
+    var today = new Date();
+    this.minDate.setDate(today.getDate() + 1);
     this.title = "Add";
     this.isView = false;
     this.isAsset = true;
@@ -714,8 +727,7 @@ export class AppMaintenanceListComponent implements OnInit {
     if (this.createMaintenanceForm !== undefined) {
       this.createMaintenanceForm.reset();
       this.createMaintenanceForm.get('asset_ids').enable()
-      var today = new Date().toISOString().slice(0, 16)
-      this.createMaintenanceForm.get('start_date').setValue(today);
+      this.createMaintenanceForm.get('start_date').setValue(this.minDate);
       this.createMaintenanceForm.get('start_date').enable();
     }
     if (this.notifyMaintenanceForm !== undefined) {
@@ -810,13 +822,22 @@ onCloseViewMaintenanceModelModal()
   this.createMaintenanceForm.reset();
   $('#createMaintainenceModelModal').modal('hide'); 
 }
-getMaintenance_data(id)
+async getMaintenance_data(id)
 {
+  debugger
   return new Promise<void>((resolve1) => {
     let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
-        this.maintenanceModel = (response.data);
+          response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
+        this.maintenanceModel = response.data;
+        this.setEditFields();
+        this.createMaitenanceCall = false;
+        $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+
+        // setTimeout(() => {
+          
+        // }, 500);
     });
     resolve1();
      })     
@@ -863,7 +884,6 @@ getMaintenance_data(id)
       this.createMaintenanceForm.get('asset_ids').setValue(this.maintenanceModel.asset_id);
       this.createMaintenanceForm.get('name').setValue(this.maintenanceModel.name);
     }
-   
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     this.createMaintenanceForm.get('start_date').setValue(this.maintenanceModel.start_date);
 
@@ -956,7 +976,7 @@ getMaintenance_data(id)
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
        await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
-        this.setViewFields();
+        //this.setViewFields();
         this.createMaitenanceCall = false;
       }, 500);
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -1016,6 +1036,7 @@ getMaintenance_data(id)
       this.isAsset = true;
       this.isClone = false;
       this.title = "Edit";
+     
       this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
       this.createMaintenanceForm.get('asset_ids').enable()
@@ -1023,10 +1044,8 @@ getMaintenance_data(id)
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
        await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
-        this.setEditFields();
-        this.createMaitenanceCall = false;
-      }, 500);
-      $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+
+      }, 200);
     }
     else if (obj.for === 'Clone') {
       this.addNewEsacalation(1);
@@ -1038,10 +1057,10 @@ getMaintenance_data(id)
       this.createMaintenanceForm.get('start_date').enable();
       this.createMaintenanceForm.reset();
       await this.getMaintenance_data(obj.data.maintenance_registry_id);
-       setTimeout(() => {
-        this.setEditFields();
-        this.createMaitenanceCall = false;
-       }, 500);
+      //  setTimeout(() => {
+      //   this.setEditFields();
+      //   this.createMaitenanceCall = false;
+      //  }, 500);
     
       $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
      

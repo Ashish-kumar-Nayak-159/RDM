@@ -92,6 +92,7 @@
             <label for="maintenance-date">Enable Maintenance From: </label>
             <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
               name="maintenance-date" class="form-control" (change)="checkDateAndTime()">
+              
              <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
           </form>
         </div>
@@ -182,12 +183,20 @@
             <textarea id="description" [ngClass]="[isView ? 'disabled':'']"  class="form-control form-control-sm" [(ngModel)]="description"
               formControlName="description" rows="5" cols="80" placeholder="Enter text here"></textarea>
           </div>
+          <div></div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <input type="datetime-local" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time">
-            <input type="datetime-local" required *ngIf="!isView"  [min]="disableBeforeDate" class="form-control form-control-sm"
-              formControlName="start_date" placeholder="Date Time">
+              <input type="text" *ngIf="!isView"
+              [min]="disableBeforeDate"
+              class="form-control form-control-sm"
+              bsDatepicker
+              [(bsValue)]="bsValue"
+              formControlName="start_date"
+              placement="top"         
+              [bsConfig]="{'customTodayClass': 'today',withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+              
             <div
               *ngIf="!isView && createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"
               class="alert-danger">
@@ -224,6 +233,8 @@
             [(ngModel)]="is_acknowledge_required" >
             <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="ack" name="ack"
             [(ngModel)]="is_acknowledge_required" >
+            {{is_acknowledge_required | json}}
+
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Do you want to update user about upcoming
@@ -232,6 +243,9 @@
             >
           <input type="checkbox" *ngIf="!isView"  class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
             >
+            <div>
+              {{is_notify_user | json}}
+            </div>
         </div>
         <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
           <div class="d-flex align-items-center w-100">

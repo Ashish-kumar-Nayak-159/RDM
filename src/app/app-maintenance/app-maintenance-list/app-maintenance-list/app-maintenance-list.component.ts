@@ -539,6 +539,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
 
   onSaveMaintenanceModelModal() {
+    debugger
     this.createMaitenanceCall = true;
     if ((this.createMaintenanceForm.get("name").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("asset_ids").value === undefined || this.createMaintenanceForm.get("name").value === '')
@@ -739,8 +740,12 @@ export class AppMaintenanceListComponent implements OnInit {
     }
     this.is_notify_user = false;
     this.is_acknowledge_required = false;
-    this.is_escalation_required = true;
+    this.is_escalation_required = false;
     this.addNewEsacalation(0);
+    if(this.isEdit){
+      this.createMaintenanceForm.get('asset_ids').disable()
+      this.createMaintenanceForm.get('start_date').disable();
+    }
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
   }
@@ -1036,16 +1041,17 @@ async getMaintenance_data(id)
       this.isAsset = true;
       this.isClone = false;
       this.title = "Edit";
-     
       this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
-      this.createMaintenanceForm.get('asset_ids').enable()
-      this.createMaintenanceForm.get('start_date').enable();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
        await this.getMaintenance_data(this.maintenance_registry_id);
       setTimeout(() => {
 
       }, 200);
+      // if(this.isEdit){
+      //   this.createMaintenanceForm.get('asset_ids').disable()
+      //   this.createMaintenanceForm.get('start_date').disable();
+      // }
     }
     else if (obj.for === 'Clone') {
       this.addNewEsacalation(1);

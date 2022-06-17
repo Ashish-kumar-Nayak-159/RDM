@@ -242,9 +242,6 @@
             >
           <input type="checkbox" *ngIf="!isView"  class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
             >
-            <div>
-              {{is_notify_user | json}}
-            </div>
         </div>
         <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
           <div class="d-flex align-items-center w-100">

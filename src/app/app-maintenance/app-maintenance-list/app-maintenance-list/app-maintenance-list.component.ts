@@ -47,7 +47,6 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenanceModel: Maintenanace = new Maintenanace();
   userData: any;
   maintenance_registry_id: any;
-  bsValue = new Date();
   maxDate = new Date();
   myDateValue: Date;
   minDate = new Date();
@@ -96,7 +95,7 @@ export class AppMaintenanceListComponent implements OnInit {
   maintenanceForm = new FormGroup({
     dateAndTime: new FormControl('', Validators.required)
   })
-  disableBeforeDate: any = new Date().toISOString().slice(0, 16)
+  disableBeforeDate: any = new Date()
   isEdit = false;
   insideScrollFunFlag: false;
   viewAckMaintenanceDetails: any = [];
@@ -147,7 +146,6 @@ export class AppMaintenanceListComponent implements OnInit {
     this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
   }
   async ngOnInit(): Promise<void> {
-
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -322,12 +320,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.getMaintenance();
 
   }
-  addNewEsacalation(i) {
-    if(this.maintenanceModel.maintenance_escalation_registry?.length===3)
-    {
-      this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
-      return;
-    }
+  addNewEsacalation(i) { 
     if(i===0)
     {
       this.is_escalation_required = !this.is_escalation_required;
@@ -356,6 +349,11 @@ export class AppMaintenanceListComponent implements OnInit {
         }
         this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
       }
+    }
+    if(this.maintenanceModel.maintenance_escalation_registry?.length >= 3)
+    {
+      this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
+      return;
     }
   }
   deleteEscalation(index) {
@@ -538,7 +536,6 @@ export class AppMaintenanceListComponent implements OnInit {
 
 
   onSaveMaintenanceModelModal() {
-    debugger
     this.createMaitenanceCall = true;
     if ((this.createMaintenanceForm.get("name").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("asset_ids").value === undefined || this.createMaintenanceForm.get("name").value === '')
@@ -604,19 +601,18 @@ export class AppMaintenanceListComponent implements OnInit {
         this.createMaitenanceCall = false;
         return;
     }
-    else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Days' && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
+    else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Days' && this.is_notify_user == true && (this.notifyMaintenanceForm.get('notifyBefore').value > 6 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
       this.toasterService.showError('Notify Before for days should not be more than 6 days or less than 2', 'Notify Before');
       this.createMaitenanceCall = false;
       return;
     }
-    else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
-      alert('1')
+    else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Hours' && this.is_notify_user == true &&(this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
       this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
       this.createMaitenanceCall = false;
       return;
     }
     else if ((new Date(this.createMaintenanceForm.get("start_date").value).getTime()) < (new Date().getTime())) {
-      console.log(new Date(this.createMaintenanceForm.get("start_date").value).getTime())
+
       this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
       this.createMaitenanceCall = false;
       return;
@@ -640,7 +636,6 @@ export class AppMaintenanceListComponent implements OnInit {
     let convDate = new Date(this.createMaintenanceForm.get('start_date').value).toISOString().slice(0,16)
     this.createMaintenanceForm.get('start_date').setValue(convDate)
   }
-    console.log("after createMaintenanceForm", JSON.stringify(this.createMaintenanceForm.value))
     this.maintenanceModel = this.createMaintenanceForm.value;
     this.maintenanceModel.asset_id = this.createMaintenanceForm.get("asset_ids").value;
     this.maintenanceModel.is_maintenance_required = true;
@@ -685,7 +680,6 @@ export class AppMaintenanceListComponent implements OnInit {
     }
     else {
       let method = this.maintenanceService.createNewMaintenanceRule(this.contextApp, "CreateMaintenance", this.maintenanceModel);
-      console.log("checking", JSON.stringify(this.maintenanceModel))
       method.subscribe(
         (response: any) => {
           // this.onCloseRuleModel.emit({
@@ -742,7 +736,7 @@ export class AppMaintenanceListComponent implements OnInit {
     }
     this.is_notify_user = false;
     this.is_acknowledge_required = false;
-    this.is_escalation_required = false;
+    this.is_escalation_required = true;
     this.addNewEsacalation(0);
     if(this.isEdit){
       this.createMaintenanceForm.get('asset_ids').disable()
@@ -835,8 +829,6 @@ async getMaintenance_data(id,title)
     let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
-      debugger
-
           response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
         this.maintenanceModel = response.data;
         if(title === 'View'){
@@ -851,6 +843,8 @@ async getMaintenance_data(id,title)
           this.createMaitenanceCall = false;
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
         }else{
+          this.setEditFields();
+          this.createMaitenanceCall = false;
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
         }
     });
@@ -1142,7 +1136,6 @@ async getMaintenance_data(id,title)
 
   //showing this custom model when someone try to enable maintenance
   onSave() {
-    debugger
     let convDate = new Date(this.maintenanceForm.value.dateAndTime).toISOString().slice(0,16)
     this.payload = {
       is_maintenance_required: !this.isMaintenanceRequired,
@@ -1306,7 +1299,7 @@ async getMaintenance_data(id,title)
         mainData = mainData.map((data:any)=>{
           if (data?.maintenance_registry_id === maintenanceRegisterId) {
             data.is_maintenance_required = !data?.is_maintenance_required
-            data.start_date = this.commonService.convertUTCDateToLocalDate(payload?.start_date , "MMM dd, yyyy, HH:mm")
+            data.start_date = this.commonService.convertUTCDateToLocalDate(payload?.start_date , "MMM dd, yyyy, hh:mm a")
           }
           return data;
         })

@@ -6,13 +6,13 @@
         </button>
     </div>
     <div class="modal-body">
-        <accordion class="mb-2" [closeOthers]="'true'">
+        <accordion class="mb-2" [closeOthers]="'1'">
             <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
-                <accordion-group heading="" [panelClass]="'customClass'">
+                <accordion-group heading="" [panelClass]="'customClass'" (isOpenChange)="resetSelectedObj()">
                     <ng-container accordion-heading (click)="resetSelectedObj()">
                         <a class="btn" (click)="resetSelectedObj()">
                             Acknowledge {{i +1}}
-                        </a>
+                        </a>                      
                     </ng-container>
                     <div>
                         <p><b>Acknowledgement Date</b> : {{data?.acknowledgement_date}}</p>

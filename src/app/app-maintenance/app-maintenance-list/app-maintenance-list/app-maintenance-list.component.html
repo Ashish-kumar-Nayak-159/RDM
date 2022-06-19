@@ -92,10 +92,10 @@
             <label for="maintenance-date">Enable Maintenance From: </label>
             <!-- <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
               name="maintenance-date" class="form-control" (change)="checkDateAndTime()"> -->
-              <input type="text"  [min]="disableBeforeDate" class="form-control" bsDatepicker
-              [(bsValue)]="bsValue"  formControlName="dateAndTime" id="maintenance-date"
+              <input type="text"  [minDate]="disableBeforeDate" class="form-control" bsDatepicker
+              formControlName="dateAndTime" id="maintenance-date"
               name="maintenance-date"         
-              [bsConfig]="{'customTodayClass': 'today',withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+              [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
               
              <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
           </form>
@@ -118,7 +118,7 @@
   </div>
 </div>
 
-<div class="modal right fade" id="view Acknowledge" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal right fade" id="viewAcknowledge" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-app-view-acknowledge-modal [viewAckMaintenanceDetails]="viewAckMaintenanceDetails">
     </app-app-view-acknowledge-modal>
@@ -192,13 +192,13 @@
             <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <!-- <input type="datetime-local" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time"> -->
-              <input type="text" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
-              [(bsValue)]="bsValue"  formControlName="start_date" placement="top"         
-              [bsConfig]="{'customTodayClass': 'today',withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+              <input type="text" *ngIf="isView" [attr.disabled]="isView"[minDate]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
+              formControlName="start_date" placement="top"         
+              [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
 
-              <input type="text" *ngIf="!isView" [min]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
-              [(bsValue)]="bsValue"  formControlName="start_date" placement="top"         
-              [bsConfig]="{'customTodayClass': 'today',withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+              <input type="text" *ngIf="!isView" [minDate]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
+              formControlName="start_date" placement="top"         
+              [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
               
             <div
               *ngIf="!isView && createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"

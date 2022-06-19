@@ -38,6 +38,7 @@ import { ColumnchartLivedataComponentComponent } from './charts/columnchart-live
 import { FormValidatorDirective } from '../validator/form-validator.directive';
 import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/small-number-widget.component';
 import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/conditional-widget/conditional-widget.component';
+import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 
 @NgModule({
@@ -85,7 +86,9 @@ import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/co
     NgSelectModule,
     ReactiveFormsModule,
     Daterangepicker,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    BsDatepickerModule.forRoot()
+
   ],
   exports: [
     // FilterComponent,
@@ -112,8 +115,10 @@ import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/co
     HierarchyDropdownComponent,
     RectangleWidgetComponent,
     CylinderWidgetComponent,
-    FormValidatorDirective
+    FormValidatorDirective,
+    BsDatepickerModule,
+
   ],
-  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
+  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },BsDatepickerConfig],
 })
 export class CommonCustomModule {}

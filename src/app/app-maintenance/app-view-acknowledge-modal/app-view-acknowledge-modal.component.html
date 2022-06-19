@@ -6,18 +6,18 @@
         </button>
     </div>
     <div class="modal-body">
-        <accordion class="mb-2" [closeOthers]="'true'">
+        <accordion class="mb-2" [closeOthers]="'1'">
             <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
-                <accordion-group heading="" [panelClass]="'customClass'">
+                <accordion-group heading="" [panelClass]="'customClass'" (isOpenChange)="resetSelectedObj()">
                     <ng-container accordion-heading (click)="resetSelectedObj()">
                         <a class="btn" (click)="resetSelectedObj()">
                             Acknowledge {{i +1}}
-                        </a>
+                        </a>                      
                     </ng-container>
                     <div>
-                        <p>Acknowledgement Date : {{data?.acknowledgement_date}}</p>
-                        <p>Acknowledged By : {{data?.acknowledged_by}}</p>
-                        <p>Message: {{data?.acknowledgement_message}}</p>
+                        <p><b>Acknowledgement Date</b> : {{data?.acknowledgement_date}}</p>
+                        <p> <b>Acknowledged By</b> : {{data?.acknowledged_by}}</p>
+                        <p><b>Message</b>: {{data?.acknowledgement_message}}</p>
                         <!-- <p>Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}} </p> -->
                         <div class="table-responsive">
                             <div class="">

@@ -6,8 +6,8 @@
         </button>
     </div>
     <div class="modal-body">
-      
-        <accordion class="mb-2" [closeOthers]="'true'">
+    <div *ngIf="escalationDetails?.length === 0 || !escalationDetails"><b>No Escalations has been triggered.</b></div>
+        <accordion class="mb-2" [closeOthers]="'true'" >
             <ng-container *ngFor="let escalation of escalationDetails; let i = index">
                 <accordion-group heading="" [panelClass]="'customClass'">
                     <ng-container accordion-heading (click)="resetSelectedObj()">
@@ -15,17 +15,19 @@
                             Escalation {{i+1}}
                         </a>
                     </ng-container>
-                    <div>
-                       <p>Email Subject: {{escalation.email_subject}}</p>
-                       <p>Email Body: {{escalation.email_body}}</p>
-                       <p>Status: {{escalation.status}}</p>
-                       <p>Trigger Date: {{escalation.trigger_date}}</p> 
+                    <div >
+                       <p>Email Subject: <span [innerHTML]="escalation.email_subject"></span></p>
+                       <p>Email Body: <span [innerHTML]="escalation.email_body"></span></p>
+                       <p>Status: <span [innerHTML]="escalation.status"></span></p>
+                       <p>Trigger Date: <span [innerHTML]="escalation.trigger_date"></span></p> 
                     </div>
                    </accordion-group>
             </ng-container>
         </accordion>
-
+       
+        
     </div>
+  
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
     </div>

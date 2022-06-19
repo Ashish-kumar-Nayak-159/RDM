@@ -48,7 +48,14 @@
                                         title="{{this.uploadedFile[arrayIndex]?.fileName}}">{{this.uploadedFile[arrayIndex]?.fileName
                                         ?? "Choose File"}}</label>
                                 </div>
-
+                                <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                                    <input type="file" [disabled]="formData.get('files').controls[arrayIndex].get('filetype').value=== undefined" id="file_{{arrayIndex}}" class="file" accept="{{(formData.get('files').controls[arrayIndex].get('filetype').value === 'PDF' ? '.pdf' : (
+                                formData.get('files').controls[arrayIndex].get('filetype').value === 'Image' ? '.jpeg,.png,.svg' : (
+                                 formData.get('files').controls[arrayIndex].get('filetype').value === 'Video' ? '.mp4,' : '*'
+                                )
+                              ))}}">
+                                    <label for="file_{{arrayIndex}}" class="bg-secondary text-white">Browse</label>
+                                  </div>
                             </div>
                         </div>
                     </div>

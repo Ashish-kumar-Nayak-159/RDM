@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DateAxis } from '@amcharts/amcharts4/charts';
 import { threadId } from 'worker_threads';
-import * as moment from 'moment';
  
 declare var $: any;
 
@@ -392,7 +391,7 @@ export class AppMaintenanceListComponent implements OnInit {
         item.inspection_frequency = this.itemArray.find((data) => {
           return data.id == item.inspection_frequency
         }).name
-        item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, H:mm a")
+        item.start_date = this.commonService.convertUTCDateToLocalDate(item.start_date, "MMM dd, yyyy, hh:mm a")
       })
       this.tableConfig.is_table_data_loading = false;
       if (response.data.length < this.currentLimit) {
@@ -611,6 +610,7 @@ export class AppMaintenanceListComponent implements OnInit {
       return;
     }
     else if (this.notifyMaintenanceForm.get('hoursOrdays').value == 'Hours' && (this.notifyMaintenanceForm.get('notifyBefore').value > 23 || this.notifyMaintenanceForm.get('notifyBefore').value < 2)) {
+      alert('1')
       this.toasterService.showError('Notify Before for hours should not be more than 23 or less than 2', 'Notify Before');
       this.createMaitenanceCall = false;
       return;
@@ -636,8 +636,10 @@ export class AppMaintenanceListComponent implements OnInit {
       })
 
     })
+    if(!this.isEdit){
     let convDate = new Date(this.createMaintenanceForm.get('start_date').value).toISOString().slice(0,16)
     this.createMaintenanceForm.get('start_date').setValue(convDate)
+  }
     console.log("after createMaintenanceForm", JSON.stringify(this.createMaintenanceForm.value))
     this.maintenanceModel = this.createMaintenanceForm.value;
     this.maintenanceModel.asset_id = this.createMaintenanceForm.get("asset_ids").value;
@@ -827,22 +829,30 @@ onCloseViewMaintenanceModelModal()
   this.createMaintenanceForm.reset();
   $('#createMaintainenceModelModal').modal('hide'); 
 }
-async getMaintenance_data(id)
+async getMaintenance_data(id,title)
 {
-  debugger
   return new Promise<void>((resolve1) => {
     let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
+      debugger
+
           response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
         this.maintenanceModel = response.data;
-        this.setEditFields();
-        this.createMaitenanceCall = false;
-        $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
-
-        // setTimeout(() => {
-          
-        // }, 500);
+        if(title === 'View'){
+          setTimeout(() => {
+            this.setViewFields();
+            this.createMaitenanceCall = false;
+          }, 200);
+          $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        
+        }else if(title === 'Edit'){
+          this.setEditFields();
+          this.createMaitenanceCall = false;
+          $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        }else{
+          $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        }
     });
     resolve1();
      })     
@@ -979,12 +989,8 @@ async getMaintenance_data(id)
       this.createMaitenanceCall = true;
       this.title = "View";
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-       await this.getMaintenance_data(this.maintenance_registry_id);
-      setTimeout(() => {
-        //this.setViewFields();
-        this.createMaitenanceCall = false;
-      }, 500);
-      $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+       await this.getMaintenance_data(this.maintenance_registry_id,this.title);
+    
     }
     else if (obj.for === 'Delete') {
 
@@ -1026,7 +1032,9 @@ async getMaintenance_data(id)
       if (!(this.isMaintenanceRequired)) {
         this.validDate = false
         $("#exampleModal").modal('show');
-        this.maintenanceForm.get('dateAndTime').setValue(new Date(obj?.data?.start_date).toISOString().slice(0, 16))
+        this.maintenanceForm.get('dateAndTime').setValue(new Date(obj?.data?.start_date))
+
+       // this.maintenanceForm.get('dateAndTime').setValue(new Date(obj?.data?.start_date).toISOString().slice(0, 16))
       }
       else {
         this.payload = {
@@ -1043,11 +1051,13 @@ async getMaintenance_data(id)
       this.title = "Edit";
       this.addNewEsacalation(1);
       this.createMaitenanceCall = true;
+      this.createMaintenanceForm.get('asset_ids').disable()
+      this.createMaintenanceForm.get('start_date').enable ();
       this.maintenance_registry_id = obj?.data.maintenance_registry_id;
-       await this.getMaintenance_data(this.maintenance_registry_id);
-      setTimeout(() => {
+       await this.getMaintenance_data(this.maintenance_registry_id,this.title);
+      // setTimeout(() => {
 
-      }, 200);
+      // }, 200);
       // if(this.isEdit){
       //   this.createMaintenanceForm.get('asset_ids').disable()
       //   this.createMaintenanceForm.get('start_date').disable();
@@ -1062,13 +1072,13 @@ async getMaintenance_data(id)
       this.createMaintenanceForm.get('asset_ids').enable()
       this.createMaintenanceForm.get('start_date').enable();
       this.createMaintenanceForm.reset();
-      await this.getMaintenance_data(obj.data.maintenance_registry_id);
+      await this.getMaintenance_data(obj.data.maintenance_registry_id,this.title);
       //  setTimeout(() => {
       //   this.setEditFields();
       //   this.createMaitenanceCall = false;
       //  }, 500);
     
-      $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+ //     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
      
        // this.payload = {
        //   is_maintenance_required : !obj.data.is_maintenance_required,
@@ -1132,12 +1142,14 @@ async getMaintenance_data(id)
 
   //showing this custom model when someone try to enable maintenance
   onSave() {
+    debugger
+    let convDate = new Date(this.maintenanceForm.value.dateAndTime).toISOString().slice(0,16)
     this.payload = {
       is_maintenance_required: !this.isMaintenanceRequired,
-      start_date: this.maintenanceForm.value.dateAndTime
+      start_date: convDate
     }
     let currentDate = new Date().toISOString().slice(0, 16);
-    if( this.maintenanceForm.value.dateAndTime  >= currentDate) {
+    if( convDate  >= currentDate) {
       this.validDate = false;
       this.enableDisableMaintenance(this.maintenanceRegistryId, this.payload);
       $("#exampleModal").modal('hide');
@@ -1148,7 +1160,7 @@ async getMaintenance_data(id)
     }
   }
 
- // validating date for enable maintenance
+ // validating date for enable maintenanceo
   checkDateAndTime(){
     let currentDate = new Date().toISOString().slice(0, 16);
     if(this.maintenanceForm.value.dateAndTime >= currentDate){
@@ -1221,7 +1233,7 @@ async getMaintenance_data(id)
               text: '',
               id: 'viewAcknowledge',
               valueclass: '',
-              tooltip: 'viewAcknowledge',
+              tooltip: 'View Acknowledge',
               show_hide_data_key: 'is_acknowledged',
               priviledge:'MNTAC'
             },

@@ -1,4 +1,5 @@
 @import '~@ng-select/ng-select/themes/default.theme.css';
+@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
 /* ng-select class changes */
 .text-grey {
   color: #909090;
@@ -35,6 +36,16 @@
 
 .modelRuleAccordion .panel-body.card-block.card-body {
   padding: 1.5rem;
+}
+.theme-green .bs-datepicker-head {
+  background-color: #a7aac0;
+}
+.theme-green .bs-datepicker-body table td span.selected, .theme-green .bs-datepicker-body table td.selected span,
+.theme-green .bs-datepicker-body table td span[class*=select-]:after, .theme-green .bs-datepicker-body table td[class*=select-] span:after {
+  background-color: #a7aac0;
+}
+.theme-green .bs-datepicker-body table td.week span {
+  color: #a7aac0;
 }
 
 .ng-select.custom .ng-select-container {

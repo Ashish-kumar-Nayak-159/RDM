@@ -12,6 +12,8 @@ import { AppMaintenanceModalComponent } from './app-maintenance-modal/app-mainte
 import { AppViewAcknowledgeModalComponent } from './app-view-acknowledge-modal/app-view-acknowledge-modal.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AppEscalationModalComponent } from './app-escalation-modal/app-escalation-modal.component';
+import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+
 @NgModule({
   declarations: [AppMaintenanceListComponent, TextEditorComponent,AppMaintenanceModalComponent,AppViewAcknowledgeModalComponent, AppEscalationModalComponent],
   imports: [
@@ -23,7 +25,12 @@ import { AppEscalationModalComponent } from './app-escalation-modal/app-escalati
     AngularEditorModule,
     NgSelectModule,
     ReactiveFormsModule,
-    AccordionModule  
-  ]
+    AccordionModule,
+    CommonCustomModule,
+    BsDatepickerModule.forRoot(),
+ 
+  ],
+  providers: [BsDatepickerConfig],
+
 })
 export class AppMaintenanceModule { }

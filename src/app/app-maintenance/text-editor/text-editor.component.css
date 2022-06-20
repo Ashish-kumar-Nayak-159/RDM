@@ -1,0 +1,11 @@
+
+
+:host /deep/ angular-editor#myEditor .angular-editor-button[title="Insert Image"]{
+    display: none !important;
+ }
+
+ :host /deep/ angular-editor#myEditor .angular-editor-button[title="Insert Video"]{
+    display: none !important;
+ }
+
+

@@ -15,6 +15,7 @@ export class AppViewAcknowledgeModalComponent implements OnInit {
   sasToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
   selectedDocument:any;
+  isP1Open: boolean = false;
 
   constructor(private sanitizer: DomSanitizer,private commonService: CommonService) { }
 

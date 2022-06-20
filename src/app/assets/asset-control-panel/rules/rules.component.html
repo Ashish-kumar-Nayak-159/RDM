@@ -49,7 +49,7 @@
     <div *ngIf="!isAddRule && !isCloneRule" style="height: 100%;overflow: hidden;">
       <accordion [closeOthers]="'true'" class="mb-2 p-3" style="overflow-y:auto;height:75vh">
         <accordion-group heading="" [panelClass]="'customClass assetRuleAccordion'"
-          [isOpen]="selectedAccrodionType === 'Model'">
+          [isOpen]="selectedAccrodionType === 'Model'" (isOpenChange)="accordionByCondition($event,'Model')">
           <ng-container accordion-heading>
             <button class="btn" type="button" (click)="onAccordionClick('Model')">
               Asset Model Level Rules
@@ -101,7 +101,7 @@
                           </a>
                             <a href="javascript:void(0)" *ngIf="rule.type === 'Cloud' && rule.rule_category==='KPIX Analytics' && rule.rule_type=== 'THS' && rule.is_editable " (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
                               placement="bottom" tooltip="Override">
-                              <em class="fa fa-fw fa-clone"></em>
+                              <em class="fa fa-fw fa-clone"(click)="overRideRule(i, rule, 'model', false, true,true,'')"></em>
                             </a>
                           </td>
                         </tr>

@@ -17,7 +17,12 @@
                     </ng-container>
                     <div >
                        <p>Email Subject: <span [innerHTML]="escalation.email_subject"></span></p>
-                       <p>Email Body: <span [innerHTML]="escalation.email_body"></span></p>
+                       <p>Email Body: 
+                        
+                        <app-text-editor id="htmlEmail1"  [ngClass]="[ escalation?.email_body ? 'disabled':'disabled']" [inputItem]="escalation.email_body" >
+                        </app-text-editor>
+                        <!-- <span [innerHTML]="escalation.email_body"></span> -->
+                    </p>
                        <p>Status: <span [innerHTML]="escalation.status"></span></p>
                        <p>Trigger Date: <span [innerHTML]="escalation.trigger_date"></span></p> 
                     </div>

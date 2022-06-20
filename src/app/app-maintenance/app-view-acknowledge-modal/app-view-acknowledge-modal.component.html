@@ -10,13 +10,17 @@
             <ng-container *ngFor="let data of viewAckMaintenanceDetails; let i = index">
                 <accordion-group heading="" [panelClass]="'customClass'" (isOpenChange)="resetSelectedObj()">
                     <ng-container accordion-heading (click)="resetSelectedObj()">
-                        <a class="btn" (click)="resetSelectedObj()">
+                        <a class="btn pt-0 pb-0" (click)="resetSelectedObj()">
                             Acknowledge {{i +1}}
-                        </a>                      
+                        </a>        
+                        <div class="d-flex flex-column align-items-start">
+                            <span class="btn pt-0 pb-0" style="padding-left: 22px; font-size: 12px;" ><b>{{data?.acknowledgement_date}}</b></span>
+                            <span class="btn pt-0 pb-0" style="padding-left: 22px; font-size: 12px;" >Acknowledged By : <b>{{data?.acknowledged_by}}</b></span>             
+                        </div>
                     </ng-container>
                     <div>
-                        <p><b>Acknowledgement Date</b> : {{data?.acknowledgement_date}}</p>
-                        <p> <b>Acknowledged By</b> : {{data?.acknowledged_by}}</p>
+                        <!-- <p><b>Acknowledgement Date</b> : {{data?.acknowledgement_date}}</p>
+                        <p> <b>Acknowledged By</b> : {{data?.acknowledged_by}}</p> -->
                         <p><b>Message</b>: {{data?.acknowledgement_message}}</p>
                         <!-- <p>Document Name: {{data?.maintenance_notification_acknowledge_files[0]?.document_name}} </p> -->
                         <div class="table-responsive">

@@ -1263,7 +1263,7 @@ async getMaintenance_data(id,title)
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
       res?.data?.forEach((item) => {
-        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm"),
+        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, hh:mm a"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required
       })
       this.maintenanceConfig.is_table_data_loading = false;

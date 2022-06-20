@@ -1262,9 +1262,17 @@ async getMaintenance_data(id,title)
     }
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
+      var today= new Date();
+    
       res?.data?.forEach((item) => {
-        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, HH:mm"),
+        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, hh:mm a"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required
+          if( new Date(item.trigger_date) < today){
+            item.acknowledged_required = true;
+          }else{
+            item.acknowledged_required = false;
+          }
+         
       })
       this.maintenanceConfig.is_table_data_loading = false;
       if (res.data.length < this.singleLimit) {

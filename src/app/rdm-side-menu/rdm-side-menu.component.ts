@@ -48,6 +48,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           this.toasterService.showErrorAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-livealert-error',
             'toast-bottom-right',
             60000
           );

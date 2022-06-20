@@ -22,8 +22,8 @@ export class ToasterService {
     this.toastr.warning(message, header);
   }
 
-  showErrorAlert(message, header, positionClass, timeOut) {
-    this.toastr.error(message, header, { positionClass, timeOut });
+  showErrorAlert(message, header,toastClass, positionClass, timeOut) {
+    this.toastr.error(message, header, {toastClass, positionClass, timeOut });
   }
 
   showCriticalAlert(message, header, toastClass, positionClass, timeOut) {

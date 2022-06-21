@@ -125,7 +125,7 @@ export class AppMaintenanceListComponent implements OnInit {
     private toasterService: ToasterService,
     private router: Router
   ) {
-
+    this.disableBeforeDate.setDate(this.disableBeforeDate.getDate() + 1)
   }
 
   /////  While Click on the Save Hierarchy 

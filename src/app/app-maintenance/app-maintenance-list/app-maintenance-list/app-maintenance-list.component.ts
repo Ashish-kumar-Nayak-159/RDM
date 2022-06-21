@@ -348,13 +348,16 @@ export class AppMaintenanceListComponent implements OnInit {
           duration_select: "Hours"
         }
         this.maintenanceModel.maintenance_escalation_registry.push(maintenance_regirstry);
+      }else {
+        this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance ' + this.title);
+        return;
       }
     }
-    if(this.maintenanceModel.maintenance_escalation_registry?.length >= 3)
-    {
-      this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
-      return;
-    }
+    // if(this.maintenanceModel.maintenance_escalation_registry?.length >= 3)
+    // {
+    //   this.toasterService.showError('You can not add more than 3 escalation', 'Maitenance '+this.title);
+    //   return;
+    // }
   }
   deleteEscalation(index) {
     this.maintenanceModel.maintenance_escalation_registry.splice(index, 1);

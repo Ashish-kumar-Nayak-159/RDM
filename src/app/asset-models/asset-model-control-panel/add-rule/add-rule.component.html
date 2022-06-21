@@ -451,6 +451,6 @@
       'Create'}}</button>
       <button type="button" *ngIf="isCloneEdit" class="btn btn-sm btn-primary add-row mr-2" (click)="cloneRules();"
       [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isCloneEdit
-      ? 'Clone' : 'Clone'}}</button>
+      ? 'Override' : 'Clone'}}</button>
   </div>
 </div>

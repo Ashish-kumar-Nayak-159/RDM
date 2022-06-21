@@ -69,6 +69,13 @@ export class RulesComponent implements OnInit {
     setTimeout(() => (this.selectedAccrodionType = type), 200);
   }
 
+  accordionByCondition(val:any,str){
+    if(val){
+       this.onAccordionClick(str)
+    }
+    console.log("close called resetData",val)
+  }
+
   cloneRule() {
     this.selectedTab = '';
     this.isEdit = false;
@@ -79,7 +86,8 @@ export class RulesComponent implements OnInit {
   }
  
   overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, action) {
-    this.onAccordionClick('Asset');
+    debugger
+      this.onAccordionClick('Asset');
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
       if (action === 'toggle' || action === '') {
         this.toggleRows = {};

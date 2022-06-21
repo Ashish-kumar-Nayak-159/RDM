@@ -27,10 +27,10 @@
     <tfoot>
       <tr *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <th scope="col"colspan="3">
-          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
+          <button type="button" class="btn btn-sm btn-primary" (click)="onSaveMetadata()"
             [disabled]="saveConfigAPILoading || isFileUploading || !isConfigEditable">SAVE
             <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveConfigAPILoading || isFileUploading"></em></button>
-          <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick();"
+          <button type="button" class="btn btn-sm btn-white ml-1" (click)="onCancelClick();"
             [disabled]="!isConfigEditable">
             CANCEL</button>
         </th>

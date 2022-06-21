@@ -314,6 +314,33 @@
                   </div>
                 </ng-container>
               </div> -->
+              
+              <div class="row mt-3">
+                <div class="col-sm-12 col-md-6">
+                  <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                      <label for="true" class="mt-1">True:</label>&nbsp;
+                    </div>
+                    <div class="col-sm-3 col-md-10">
+                      <input type="text" id="true" autocomplete="off" #trueConditional="ngModel" class="form-control form-control-sm shadow-none" name="fortrue" [(ngModel)]="trueConditionalNumber" [disabled]="isDisabled">
+                      <span *ngIf="trueConditionalNumber?.length > 5  && trueConditionalNumber!='ON'" class="text-danger">only 5 characters allowed.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                      <label for="false" class="mt-1">False:</label>&nbsp;
+                    </div>
+                    <div class="col-sm-3 col-md-10">
+                      <input type="text" id="false" autocomplete="off" #falseConditional="ngModel" class="form-control form-control-sm shadow-none" name="forfalse" [(ngModel)]="falseConditionalNumber" [disabled]="isDisabled">
+                      <span *ngIf="falseConditionalNumber?.length > 5  && falseConditionalNumber!='OFF'" class="text-danger">only 5 characters allowed.</span>        
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+             
             </div>
           </ng-container>
           <div  *ngIf="widgetObj.widgetType === 'ConditionalNumber'">

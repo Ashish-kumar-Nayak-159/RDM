@@ -22,10 +22,23 @@ export class ToasterService {
     this.toastr.warning(message, header);
   }
 
-  showCriticalAlert(message, header, positionClass, timeOut) {
-    this.toastr.error(message, header, {positionClass, timeOut});
+  showErrorAlert(message, header,toastClass, positionClass, timeOut) {
+    this.toastr.error(message, header, {toastClass, positionClass, timeOut });
   }
-  showclear(){
+
+  showCriticalAlert(message, header, toastClass, positionClass, timeOut) {
+    this.toastr.error(message, header, { toastClass, positionClass, timeOut });
+  }
+
+  showWarningAlert(message, header, positionClass, timeOut) {
+    this.toastr.warning(message, header, { positionClass, timeOut });
+  }
+
+  showInformationalAlert(message, header, positionClass, timeOut) {
+    this.toastr.success(message, header, { positionClass, timeOut });
+  }
+
+  showclear() {
     this.toastr.clear();
   }
 }

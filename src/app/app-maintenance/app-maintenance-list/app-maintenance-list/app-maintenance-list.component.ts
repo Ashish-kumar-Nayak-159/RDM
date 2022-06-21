@@ -1187,16 +1187,16 @@ async getMaintenance_data(id,title)
           data_key: 'email_subject',
           //is_sort: true
         },
-        {
-          header_name: 'Notification Type',
-          is_display_filter: true,
-          value_type: 'string',
-          // is_sort_required: true,
-          fixed_value_list: [],
-          data_type: 'text',
-          data_key: 'notification_type',
-          //is_sort: true
-        },
+        // {
+        //   header_name: 'Notification Type',
+        //   is_display_filter: true,
+        //   value_type: 'string',
+        //   // is_sort_required: true,
+        //   fixed_value_list: [],
+        //   data_type: 'text',
+        //   data_key: 'notification_type',
+        //   //is_sort: true
+        // },
         {
           header_name: 'Status',
           value_type: 'string',

@@ -189,7 +189,7 @@
             <div *ngIf="item?.json?.type">
             <tr>
               <td>
-                <label for="inputPassword" class="col-form-label" [ngClass]="item?.json?.required ? 'required' :''">{{item.name}}:</label>
+                <label for="inputPassword" class="col-form-label" [ngClass]="item?.json?.required ? 'required' :''">{{item.name}}{{item.name && item.json?.units ? (" (" + item.json.units + ")") : "" }}:</label>
               </td>
               <td>
                 <div>

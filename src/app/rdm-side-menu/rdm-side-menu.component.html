@@ -26,4 +26,31 @@
     </ng-container>
   </ng-container>
   <!-- side menu HTML for other user end -->
+  <div class="toaster-wrapper">
+   <!-- custom toaster -->
+    <div *ngIf="criticalToaster"  [ngClass]="{'critical-toast': criticalToaster, 'bg-critical':criticalFlag}">
+      <a href="javascript:void(0)" (click)="criticalToaster=false" style="text-decoration:none;">x</a>
+      <p class="mb-0 font-weight-bold mb-1">{{c_message_asset_display_name ? c_message_asset_display_name : c_message_asset_id}}</p>
+      <p class="mb-0">{{c_message}}</p>
+   </div>
+    <div *ngIf="errorToaster"  [ngClass]="{'error-toast':errorToaster, 'bg-error': errorFlag}">
+      <a href="javascript:void(0)" (click)="errorToaster=false" style="text-decoration:none;">x</a>
+      <p class="mb-0 font-weight-bold mb-1">{{e_message_asset_display_name ? e_message_asset_display_name : e_message_asset_id}}</p>
+      <p class="mb-0">{{e_message}}</p>
+   </div>
+    <div *ngIf="warningToaster"  [ngClass]="{'warning-toast':warningToaster, 'bg-warning': warningFlag}">
+      <a href="javascript:void(0)" (click)="warningToaster=false" style="text-decoration:none;">x</a>
+      <p class="mb-0 font-weight-bold mb-1">{{w_message_asset_display_name ? w_message_asset_display_name : w_message_asset_id}}</p>
+      <p class="mb-0">{{w_message}}</p>
+   </div>
+    <div *ngIf="informationalToaster"  [ngClass]="{'informational-toast':informationalToaster, 'bg-informational': informationalFlag}">
+      <a href="javascript:void(0)" (click)="informationalToaster=false" style="text-decoration:none;">x</a>
+      <p class="mb-0 font-weight-bold mb-1">{{i_message_asset_display_name ? i_message_asset_display_name : i_message_asset_id}}</p>
+      <p class="mb-0">{{i_message}}</p>
+   </div>
+
+  </div>
 </ul>
+
+
+

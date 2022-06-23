@@ -383,6 +383,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   }
 
   async registerProperties() {
+
+    if( this.optionsValue.alerts || this.optionsValue.measured_properties || this.optionsValue.edge_derived_properties){
     let count = 0;
     Object.keys(this.optionsValue).forEach((key) => {
       if (!this.optionsValue[key]) {
@@ -438,12 +440,20 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     //   });
     // }
     //if (this.optionsValue.chunk_data_send) {
-    this.sync_asset_data();
+      
+        this.sync_asset_data();
 
     // }
     // else {
     //   this.callC2dMethod(obj);
     // }
+  }
+   else if(this.optionsValue.chunk_data_send && (!this.optionsValue.alerts && !this.optionsValue.measured_properties && !this.optionsValue.edge_derived_properties)){
+    this.toasterService.showError('Please select valid options.','Register Properties')
+   }
+  else{
+    this.toasterService.showError('Please select any property.','Register Properties')
+  }
   }
   sync_asset_data() {
     this.isAPILoading = true;
@@ -454,6 +464,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       should_sync_alert: this.optionsValue.alerts == undefined ? false : this.optionsValue.alerts,
       should_sync_measured_property: this.optionsValue.measured_properties == undefined ? false : this.optionsValue.measured_properties,
       should_sync_edge_derived_property: this.optionsValue.edge_derived_properties == undefined ? false : this.optionsValue.edge_derived_properties,
+      request_type:'Sync Properties/Alerts',
       metadata: { "acknowledge": "Full", "expire_in_min": "2880" }
     };
 

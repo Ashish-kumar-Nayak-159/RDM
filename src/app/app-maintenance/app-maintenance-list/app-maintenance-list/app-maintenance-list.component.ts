@@ -1008,6 +1008,7 @@ async getMaintenance_data(id,title)
 
     }
     else if (obj.for === 'Trigger') {
+      console.log("trigger",obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -1266,11 +1267,12 @@ async getMaintenance_data(id,title)
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
       var today= new Date();
-    
+     console.log("historyofperticularmain..",res)
       res?.data?.forEach((item) => {
-        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item.trigger_date, "MMM dd, yyyy, hh:mm a"),
+        item.maintenance_date = this.commonService.convertUTCDateToLocalDate(item?.maintenance_date, "MMM dd, yyyy, hh:mm a")
+        item.trigger_date = this.commonService.convertUTCDateToLocalDate(item?.trigger_date, "MMM dd, yyyy, hh:mm a"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required
-          if( new Date(item.trigger_date) < today){
+          if( item?.maintenance_date ? new Date(item?.maintenance_date) < today : new Date(item?.trigger_date) < today){
             item.acknowledged_required = true;
           }else{
             item.acknowledged_required = false;

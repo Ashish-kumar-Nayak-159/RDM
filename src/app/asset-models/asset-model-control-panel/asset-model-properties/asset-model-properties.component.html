@@ -226,7 +226,7 @@
       <div class="modal-footer fixed-bottom bg-white"   >
         <button type="button" class="btn btn-primary "
           *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
-          [disabled]="!form.valid || (!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
+          [disabled]="!form.valid || !setupForm.valid"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           <div *ngIf="displaybutton == false">
             <button type="button" class="btn btn-primary"

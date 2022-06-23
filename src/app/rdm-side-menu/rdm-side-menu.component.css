@@ -1,0 +1,48 @@
+.toaster-wrapper{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.critical-toast, .error-toast, .warning-toast, .informational-toast{
+   position: relative;
+    width: 280px;
+    /* height: 60px; */
+    background-color: blue;
+    color: #fff;
+    padding: 16px;  
+    /* align-items: center; */
+}
+
+.critical-toast p, .error-toast p, .warning-toast p, .informational-toast p{
+    font-size: 14px;
+}
+
+.bg-critical { 
+    background-color: #cc0000;
+}
+
+.bg-error{
+   background-color: #fb5515;
+}
+
+.bg-warning{
+    background-color: #f6c23e;
+}
+
+.bg-informational{
+    background-color: #229954;
+}
+
+.critical-toast a, .error-toast a, .warning-toast a, .informational-toast a{
+    color: #fff;
+    /* margin-right: -8px;
+    margin-top: -15px; */
+    font-size: 16px;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}

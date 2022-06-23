@@ -20,6 +20,27 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   activeFragment: any;
   currentURL: string;
+  criticalToaster:boolean = false;
+  errorToaster:boolean = false;
+  warningToaster:boolean = false;
+  informationalToaster:boolean = false;
+  criticalFlag:boolean = false;
+  errorFlag:boolean = false;
+  warningFlag:boolean = false;
+  informationalFlag:boolean = false;
+  c_message:any;
+  e_message:any;
+  w_message:any;
+  i_message:any;
+  c_message_asset_display_name:any;
+  e_message_asset_display_name:any;
+  w_message_asset_display_name:any;
+  i_message_asset_display_name:any;
+  c_message_asset_id:any;
+  e_message_asset_id:any;
+  w_message_asset_id:any;
+  i_message_asset_id:any;
+
   constructor(
     private commonService: CommonService,
     private router: Router,
@@ -28,7 +49,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     public route: ActivatedRoute
   ) { }
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> { 
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp && !this.userData?.is_super_admin) {
@@ -36,34 +57,44 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         debugger
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
-          this.toasterService.showCriticalAlert(
-            msg.message,
-            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-            'toast-critical',
-            'toast-bottom-right',
-            60000
-          );
+          this.c_message = msg?.message
+          this.c_message_asset_display_name = msg?.asset_display_name
+          this.c_message_asset_id = msg?.asset_id
+           this.criticalToaster = true
+           this.criticalFlag = true
+           setTimeout(()=>{
+            this.criticalToaster = false;
+          },20000)
         }
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'error') {
-          this.toasterService.showErrorAlert(
-            msg.message,
-            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-            'toast-livealert-error',
-            'toast-bottom-right',
-            60000
-          );
+          this.e_message = msg?.message
+          this.e_message_asset_display_name = msg?.asset_display_name
+          this.e_message_asset_id = msg?.asset_id
+          this.errorToaster = true
+          this.errorFlag = true
+          setTimeout(()=>{
+            this.errorToaster = false;
+          },20000)
         }
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
-          this.toasterService.showWarningAlert(
-            msg.message,
-            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-            'toast-bottom-right',
-            60000
-          );
+          this.w_message = msg?.message
+          this.w_message_asset_display_name = msg?.asset_display_name
+          this.w_message_asset_id = msg?.asset_id
+          this.warningToaster = true
+          this.warningFlag = true
+          setTimeout(()=>{
+            this.warningToaster = false;
+          },20000)
         }
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'informational') {
-         
-          this.toasterService.showInformationalAlert(msg.message, msg.asset_display_name ? msg.asset_display_name : msg.asset_id, 'toast-bottom-right',60000)
+          this.i_message = msg?.message
+          this.i_message_asset_display_name = msg?.asset_display_name
+          this.i_message_asset_id = msg?.asset_id
+          this.informationalToaster = true
+          this.informationalFlag = true
+          setTimeout(()=>{
+            this.informationalToaster = false;
+          },20000)
         }
       });
     }

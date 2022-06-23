@@ -6,7 +6,7 @@
     </div>
     <div class="row pl-3">
       <ng-container *ngIf="!isUserApplicationLoading && userData?.apps.length > 0">
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4 position-relative" *ngFor="let app of userData?.apps; let index = index">
           <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)" class="card card-hover">
             <div class="overlay"></div>
             <div style="z-index:0">
@@ -16,10 +16,13 @@
                   : constantData.DEFAULT_APP_ICON  + blobToken)
               }}" alt="" />
             </div>
-            <p style="text-align:center ;">{{app.app}} <em class="fa fa-spinner fa-spin fa-fw fa-2x"
-              *ngIf="isAppDataLoading && isAppDataLoading[index]"></em></p>
+            <p style="text-align:center ;">{{app.app}}</p>
             <p class="mx-3 mt-3 text-center text-xs truncate" style="font-size:0.9rem">
-              {{app.metadata.description ? app.metadata.description: 'This application is designed to track assets & its data.'}}</p>   
+              {{app.metadata.description ? app.metadata.description: 'This application is designed to track assets & its data.'}}</p>
+            <div class="full-overlay">
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x"
+              *ngIf="isAppDataLoading && isAppDataLoading[index]"></em>
+            </div>   
           </a>
         </div>
       </ng-container>

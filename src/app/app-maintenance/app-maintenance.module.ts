@@ -31,6 +31,8 @@ import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker
  
   ],
   providers: [BsDatepickerConfig],
-
+  exports:[
+    AppMaintenanceListComponent,
+  ]
 })
 export class AppMaintenanceModule { }

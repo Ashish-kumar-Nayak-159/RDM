@@ -464,6 +464,11 @@ export class AssetModelService {
     }
   }
 
+  
+  getReferenceDocs(app_name:string, asset_model:any){
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS, encodeURIComponent(app_name), encodeURIComponent(asset_model)) )
+  }
+
   createAssetsModelDocument(modelObj, app, assetModel) {
     const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModelItem && assetModelItem.documents && assetModelItem.name === assetModel) {

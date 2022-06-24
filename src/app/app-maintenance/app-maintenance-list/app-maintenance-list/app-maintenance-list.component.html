@@ -1,4 +1,4 @@
-<div class="blue-nav-bar">
+<div class="blue-nav-bar" *ngIf="blueNavBar">
   <!-- Diplay the Title and the + icon  -->
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
@@ -150,9 +150,9 @@
             <label for="message-text" class="col-form-label required">Name</label>
             <input type="text" disabled  *ngIf="isView && !isEdit" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
             <input type="text" placeholder="Name" (input)="containSpecialChar($event)" required  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
+            <div *ngIf="createMaintenanceForm?.get('name')?.errors && createMaintenanceForm?.get('name')?.touched"
               class="alert-danger">
-              <div *ngIf="createMaintenanceForm.get('name').errors.required">
+              <div *ngIf="createMaintenanceForm?.get('name')?.errors?.required">
                 Maintenanace Name is required.
               </div>
             </div>
@@ -168,7 +168,7 @@
                 </span>
               </ng-template>
             </ng-select>
-            <ng-select [items]="assetDropdown" required *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
+            <ng-select (change)="assetChange($event)" [items]="assetDropdown" required *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
               bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
               dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids"  required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
@@ -352,7 +352,7 @@
                       {{notify_user_groups}}
                     </span>
                   </ng-template>
-                 </ng-select>
+                 </ng-select> 
                 <ng-select [items]="userGroupArray" *ngIf="!isView"  clearSearchOnAdd="true" [multiple]="true"
                 class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
                  bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
@@ -367,6 +367,14 @@
                 </ng-template>
               </ng-select>
             </div>
+            </div>
+            <div class="form-group">
+                <label for="message-text" class="col-form-label">Reference Documents</label>
+                <div class="form-group">
+                   <ng-select [multiple]="true" placeholder="Select Documents" (change)="getRefDocData($event)">
+                      <ng-option *ngFor="let doc of referenceDocs" [value]="doc?.id">{{doc?.name}}</ng-option>
+                   </ng-select>
+                </div>
             </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Email Body</label>

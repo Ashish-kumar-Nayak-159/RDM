@@ -75,6 +75,7 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
 import { WhiteListAssetComponent } from './white-list-asset/white-list-asset.component';
 import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset-list/white-list-asset-list.component';
 import { AssetUptimeComponent } from './asset-uptime/asset-uptime.component';
+import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module';
 
 @NgModule({
   declarations: [
@@ -158,6 +159,7 @@ import { AssetUptimeComponent } from './asset-uptime/asset-uptime.component';
     TooltipModule,
     AssetModelModule,
     NgxIntlTelInputModule,
+    AppMaintenanceModule
   ],
   exports: [FilterComponent, TableComponent],
 })

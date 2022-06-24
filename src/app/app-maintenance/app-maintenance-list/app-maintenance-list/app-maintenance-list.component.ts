@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DateAxis } from '@amcharts/amcharts4/charts';
 import { threadId } from 'worker_threads';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
  
 declare var $: any;
 
@@ -23,6 +24,9 @@ declare var $: any;
 })
 
 export class AppMaintenanceListComponent implements OnInit {
+  temparray = ["item1","item2","item3"]
+  referenceDocs: any[] = []
+  referenceDocsValue: number[] = [];
   userGroupArray: any[] = [];
   userGroups: any[] = [];
   tileData: any;
@@ -119,12 +123,16 @@ export class AppMaintenanceListComponent implements OnInit {
   defaultDate: any;
   validDate:boolean;
   isClone = false;
+  @Input() assetFromControlPanel;
+  @Input() componentState;
+  blueNavBar:boolean = true;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private maintenanceService: MaintenanceService,
     private toasterService: ToasterService,
-    private router: Router
+    private router: Router,
+    private assetModelService: AssetModelService
   ) {
     this.disableBeforeDate.setDate(this.disableBeforeDate.getDate() + 1)
   }
@@ -147,6 +155,10 @@ export class AppMaintenanceListComponent implements OnInit {
     this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
   }
   async ngOnInit(): Promise<void> {
+    // if(this.assetFromControlPanel?.asset_id){
+    //   this.blueNavBar = false
+    // }
+    this.selectedDropdownAsset = this.assetFromControlPanel?.asset_id
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -168,8 +180,7 @@ export class AppMaintenanceListComponent implements OnInit {
       is_acknowledge_required: false,
       is_escalation_required: false,
       maintenance_escalation_registry: [],
-      email_body: ''
-
+      email_body: '',
     };
     this.getTileName();
     this.getMaitenanceModel();
@@ -385,8 +396,6 @@ export class AppMaintenanceListComponent implements OnInit {
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy)
     }
-    console.log("payload", this.custObjP)
-    console.log("AssetID", this.selectedDropdownAsset)
     this.tableConfig.is_table_data_loading = true
     this.maintenanceService.getMaintenance(this.custObjP).subscribe((response: any) => {
       response.data.forEach((item) => {
@@ -463,9 +472,10 @@ export class AppMaintenanceListComponent implements OnInit {
         for (var i = 0; i < response?.data.length; i++) {
 
           this.assetDropdown.push({
-            asset_name: response?.data[i].display_name,
-            asset_ids: response?.data[i].asset_id,
-            asset_type: response?.data[i].type
+            asset_name: response?.data[i]?.display_name,
+            asset_ids: response?.data[i]?.asset_id,
+            asset_type: response?.data[i]?.type,
+            asset_model: response?.data[i]?.asset_model
           });
         }
       }
@@ -646,6 +656,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.maintenanceModel.is_notify_user = this.is_notify_user;
     this.maintenanceModel.is_escalation_required = this.is_escalation_required;
     this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
+    this.maintenanceModel["reference_documents"] = this.referenceDocsValue;
     if (this.is_notify_user) {
       if (this.notifyMaintenanceForm.get('hoursOrdays').value === 'Days') {
         this.maintenanceModel.notify_before_hours = parseInt(this.notifyMaintenanceForm.get('notifyBefore').value) * 24;
@@ -1009,7 +1020,6 @@ async getMaintenance_data(id,title)
 
     }
     else if (obj.for === 'Trigger') {
-      // console.log("trigger",obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -1268,7 +1278,6 @@ async getMaintenance_data(id,title)
     this.maintenanceConfig.is_table_data_loading = true
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, this.custObjP).subscribe((res: any) => {
       var today= new Date();
-    //  console.log("historyofperticularmain..",res)
       res?.data?.forEach((item) => {
         item.maintenance_date = this.commonService.convertUTCDateToLocalDate(item?.maintenance_date, "MMM dd, yyyy, hh:mm a")
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item?.trigger_date, "MMM dd, yyyy, hh:mm a"),
@@ -1421,6 +1430,18 @@ async getMaintenance_data(id,title)
            return;
         }
       })
+}
+
+//listen when asset is change
+assetChange(data:any){
+   this.assetModelService.getReferenceDocs(this.contextApp.app, data?.asset_model).subscribe((response:any)=>{
+     this.referenceDocs = response?.data
+   })
+}
+
+getRefDocData(value:any){
+    console.log("RD",value)
+    this.referenceDocsValue = value
 }
 
 }

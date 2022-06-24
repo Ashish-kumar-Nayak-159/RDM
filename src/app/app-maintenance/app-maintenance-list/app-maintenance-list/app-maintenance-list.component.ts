@@ -43,7 +43,8 @@ export class AppMaintenanceListComponent implements OnInit {
   htmlContent: any;
   emailbody1: any;
   currentItem: any;
-  selectedAsset_id: any;
+  selectedDropdownAsset: any;
+  custObjP:any;
   maintenanceModel: Maintenanace = new Maintenanace();
   userData: any;
   maintenance_registry_id: any;
@@ -139,7 +140,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   onChangeOfAsset() {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    this.selectedAsset_id = asset.asset_id
+    this.selectedDropdownAsset = asset.asset_id
   }
   setHours()
   {
@@ -378,16 +379,16 @@ export class AppMaintenanceListComponent implements OnInit {
 
   //getting data list from maintenance APi
   getMaintenance() {
-
-    const custObj = {
-      asset_id: this.selectedAsset_id,
+    this.custObjP = {
+      asset_id: this.selectedDropdownAsset,
       offset: this.currentOffset,
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy)
     }
-
+    console.log("payload", this.custObjP)
+    console.log("AssetID", this.selectedDropdownAsset)
     this.tableConfig.is_table_data_loading = true
-    this.maintenanceService.getMaintenance(custObj).subscribe((response: any) => {
+    this.maintenanceService.getMaintenance(this.custObjP).subscribe((response: any) => {
       response.data.forEach((item) => {
         item.inspection_frequency = this.itemArray.find((data) => {
           return data.id == item.inspection_frequency
@@ -1008,7 +1009,7 @@ async getMaintenance_data(id,title)
 
     }
     else if (obj.for === 'Trigger') {
-      console.log("trigger",obj)
+      // console.log("trigger",obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -1260,14 +1261,14 @@ async getMaintenance_data(id,title)
 
   // getting data for perticular maintenance when someone click on trigger btn
   historyOfPerticularMaintenance() {
-    const custObj = {
+     this.custObjP = {
       offset: this.singleOffset,
       count: this.singleLimit,
     }
     this.maintenanceConfig.is_table_data_loading = true
-    this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
+    this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, this.custObjP).subscribe((res: any) => {
       var today= new Date();
-     console.log("historyofperticularmain..",res)
+    //  console.log("historyofperticularmain..",res)
       res?.data?.forEach((item) => {
         item.maintenance_date = this.commonService.convertUTCDateToLocalDate(item?.maintenance_date, "MMM dd, yyyy, hh:mm a")
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item?.trigger_date, "MMM dd, yyyy, hh:mm a"),
@@ -1374,28 +1375,27 @@ async getMaintenance_data(id,title)
   filteredHiearchyObj() {
     this.maintenances = []
     this.currentOffset = 0;
-    // const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
-    // Object.keys(configuredHierarchy).length === 0;
+    const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+    Object.keys(configuredHierarchy).length === 0;
     // this.onClearHierarchy();
-    // this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (this.contextApp) {
-    //   Object.keys(configuredHierarchy).forEach((key) => {
-    //     if (configuredHierarchy[key]) {
-    //       this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
-    //     }
-    //   });
-    // }
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp) {
+      Object.keys(configuredHierarchy).forEach((key) => {
+        if (configuredHierarchy[key]) {
+          this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
+        }
+      });
+    }
     this.getMaintenance();
 
 
   }
 
   onClearHierarchy() {
-    this.selectedAsset_id = null;
+    this.selectedDropdownAsset = '';
     this.hierarchy = { App: this.contextApp?.app };
   }
-
-
+  
   searchAssets(updateFilterObj = true) {
   }
 

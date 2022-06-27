@@ -55,9 +55,9 @@ export class GatewayAssetsSettingComponent implements OnInit {
 
       if (!this.asset.metadata.measurement_settings) {
         this.asset.metadata.measurement_settings = {
-          g1_measurement_frequency_in_ms: 60,
-          g2_measurement_frequency_in_ms: 120,
-          g3_measurement_frequency_in_ms: 180,
+          g1_measurement_frequency_in_ms: 60 * 1000,
+          g2_measurement_frequency_in_ms: 120 * 1000,
+          g3_measurement_frequency_in_ms: 180 * 1000,
         };
       }
       if (!this.asset.metadata.data_ingestion_settings) {
@@ -67,13 +67,13 @@ export class GatewayAssetsSettingComponent implements OnInit {
       }
       if (!this.asset.metadata.telemetry_mode_settings) {
         this.asset.metadata.telemetry_mode_settings = {
-          turbo_mode_timeout_time: 120,
-          g1_turbo_mode_frequency_in_ms: 60,
-          g2_turbo_mode_frequency_in_ms: 120,
-          g3_turbo_mode_frequency_in_ms: 180,
-          g1_ingestion_frequency_in_ms: 600,
-          g2_ingestion_frequency_in_ms: 1200,
-          g3_ingestion_frequency_in_ms: 1800,
+          turbo_mode_timeout_time: 120 * 1000,
+          g1_turbo_mode_frequency_in_ms: 60 * 1000,
+          g2_turbo_mode_frequency_in_ms: 120 * 1000,
+          g3_turbo_mode_frequency_in_ms: 180 * 1000,
+          g1_ingestion_frequency_in_ms: 600 * 1000,
+          g2_ingestion_frequency_in_ms: 1200 * 1000,
+          g3_ingestion_frequency_in_ms: 1800 * 1000,
         };
       }
       this.asset.settings_enabled = false;
@@ -130,9 +130,9 @@ export class GatewayAssetsSettingComponent implements OnInit {
               }
               if (!asset.metadata.measurement_settings) {
                 asset.metadata.measurement_settings = {
-                  g1_measurement_frequency_in_ms: 60,
-                  g2_measurement_frequency_in_ms: 120,
-                  g3_measurement_frequency_in_ms: 180,
+                  g1_measurement_frequency_in_ms: 60 * 1000,
+                  g2_measurement_frequency_in_ms: 120 * 1000,
+                  g3_measurement_frequency_in_ms: 180 * 1000,
                 };
               }
               if (!asset.metadata.data_ingestion_settings) {
@@ -142,13 +142,13 @@ export class GatewayAssetsSettingComponent implements OnInit {
               }
               if (!asset.metadata.telemetry_mode_settings) {
                 asset.metadata.telemetry_mode_settings = {
-                  turbo_mode_timeout_time: 120,
-                  g1_turbo_mode_frequency_in_ms: 60,
-                  g2_turbo_mode_frequency_in_ms: 120,
-                  g3_turbo_mode_frequency_in_ms: 180,
-                  g1_ingestion_frequency_in_ms: 600,
-                  g2_ingestion_frequency_in_ms: 1200,
-                  g3_ingestion_frequency_in_ms: 1800,
+                  turbo_mode_timeout_time: 120 * 1000,
+                  g1_turbo_mode_frequency_in_ms: 60 * 1000,
+                  g2_turbo_mode_frequency_in_ms: 120 * 1000,
+                  g3_turbo_mode_frequency_in_ms: 180 * 1000,
+                  g1_ingestion_frequency_in_ms: 600 * 1000,
+                  g2_ingestion_frequency_in_ms: 1200 * 1000,
+                  g3_ingestion_frequency_in_ms: 1800 * 1000,
                 };
               }
               asset.settings_enabled = false;

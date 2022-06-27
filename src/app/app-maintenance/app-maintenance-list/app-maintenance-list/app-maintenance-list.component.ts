@@ -124,6 +124,7 @@ export class AppMaintenanceListComponent implements OnInit {
   isClone = false;
   @Input() assetFromControlPanel;
   @Input() componentState;
+  @Input() isControl;
   blueNavBar:boolean = true;
   tempAssetId:any;
   tempAssetModel:any;
@@ -686,7 +687,9 @@ export class AppMaintenanceListComponent implements OnInit {
           $('#createMaintainenceModelModal').modal('hide');
           this.isEdit = false;
           this.createMaitenanceCall = false;
-          this.redirectTo(this.router.url);
+          if(!this.isControl){
+            this.redirectTo(this.router.url);
+          }
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
@@ -713,7 +716,9 @@ export class AppMaintenanceListComponent implements OnInit {
           }
           $('#createMaintainenceModelModal').modal('hide');
           this.createMaitenanceCall = false;
-          this.redirectTo(this.router.url);
+          if(!this.isControl){
+            this.redirectTo(this.router.url);
+          }
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;

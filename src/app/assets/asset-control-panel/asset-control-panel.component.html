@@ -97,7 +97,7 @@
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel"
             id="asset_progress">
              <app-app-maintenance-list *ngIf="activeTab === 'maintenance_schedule' && asset" 
-             [componentState]="componentState" [assetFromControlPanel]="asset"></app-app-maintenance-list>
+             [componentState]="componentState" [isControl]="true" [assetFromControlPanel]="asset"></app-app-maintenance-list>
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel"
             id="asset_properties">

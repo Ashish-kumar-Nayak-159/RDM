@@ -1,4 +1,4 @@
-<div class="blue-nav-bar" *ngIf="blueNavBar">
+<div class="blue-nav-bar" *ngIf="blueNavBar && !isControl">
   <!-- Diplay the Title and the + icon  -->
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
@@ -108,6 +108,83 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="isControl">
+<div class="overlap-wrapper">
+  <div class="over-lap">
+    <br />
+    <div class="d-flex">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
+        class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+      </svg>
+      <p class="p-2 rounded mb-0 ml-3">{{registryName | titlecase}}</p>
+    </div>
+
+
+    <div class="custom-table">
+      <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"
+        (btnClickEvent)="onTableFunctionCall($event)">
+      </app-common-data-table>
+      <span class="d-flex justify-content-center w-100"
+        *ngIf="maintenanceData?.length > 0 && singleLoadMoreVisibility && !insideScrollFunFlag">
+        <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+          (click)="currentOffset = currentOffset + currentLimit;historyOfPerticularMaintenance();" placement="bottom"
+          tooltip="Load More Records...">Load More...</a>
+      </span>
+    </div>
+  </div>
+  <div class="" id="table-wrapper d-flex flex-column">
+    <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
+      (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+    <span class="d-flex justify-content-center w-100"
+      *ngIf="maintenances?.length > 0 && loadMoreVisibility && !insideScrollFunFlag">
+      <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+        (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
+        tooltip="Load More Records...">Load More...</a>
+    </span>
+  </div>
+</div>
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+    </app-message-modal>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="maintenanceForm">
+          <label for="maintenance-date">Enable Maintenance From: </label>
+          <!-- <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
+            name="maintenance-date" class="form-control" (change)="checkDateAndTime()"> -->
+          <input type="text" [minDate]="disableBeforeDate" class="form-control" bsDatepicker
+            formControlName="dateAndTime" id="maintenance-date" name="maintenance-date"
+            [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+
+          <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onSave()"
+          [disabled]="!maintenanceForm.valid">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
 
 <div class="modal right fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

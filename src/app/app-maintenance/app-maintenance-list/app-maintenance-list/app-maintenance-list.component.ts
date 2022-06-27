@@ -24,7 +24,6 @@ declare var $: any;
 })
 
 export class AppMaintenanceListComponent implements OnInit {
-  temparray = ["item1","item2","item3"]
   referenceDocs: any[] = []
   referenceDocsValue: number[] = [];
   userGroupArray: any[] = [];
@@ -126,6 +125,9 @@ export class AppMaintenanceListComponent implements OnInit {
   @Input() assetFromControlPanel;
   @Input() componentState;
   blueNavBar:boolean = true;
+  tempAssetId:any;
+  tempAssetModel:any;
+  defaultRefDocs:number[] = []
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -757,6 +759,8 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaintenanceForm.get('asset_ids').disable()
       this.createMaintenanceForm.get('start_date').disable();
     }
+    this.defaultRefDocs = []
+    this.referenceDocs = []
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
   }
@@ -847,6 +851,29 @@ async getMaintenance_data(id,title)
           response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
         this.maintenanceModel = response.data;
         if(title === 'View'){
+          this.tempAssetId = response.data.asset_id
+          if(this.tempAssetId){
+            const assetLists =  this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+            assetLists?.forEach((item)=>{
+            if(item?.asset_id === this.tempAssetId){
+              this.tempAssetModel = item?.asset_model
+            }
+          })
+        
+          this.assetModelService.getReferenceDocs(this.contextApp.app, this.tempAssetModel).subscribe((resData:any)=>{
+            this.referenceDocs = resData?.data
+            this.defaultRefDocs = []
+           response.data.reference_documents.map((indexID)=>{
+      
+                  resData?.data?.forEach((item)=>{
+                      if(item?.id == indexID){
+                         this.defaultRefDocs.push(item?.id)
+                      }
+                  })
+            
+            })
+          })
+        }
           setTimeout(() => {
             this.setViewFields();
             this.createMaitenanceCall = false;
@@ -854,6 +881,29 @@ async getMaintenance_data(id,title)
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
         
         }else if(title === 'Edit'){
+          this.tempAssetId = response.data.asset_id
+          if(this.tempAssetId){
+            const assetLists =  this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+            assetLists?.forEach((item)=>{
+            if(item?.asset_id === this.tempAssetId){
+              this.tempAssetModel = item?.asset_model
+            }
+          })
+        
+          this.assetModelService.getReferenceDocs(this.contextApp.app, this.tempAssetModel).subscribe((resData:any)=>{
+            this.referenceDocs = resData?.data
+            this.defaultRefDocs = []
+           response.data.reference_documents.map((indexID)=>{
+      
+                  resData?.data?.forEach((item)=>{
+                      if(item?.id == indexID){
+                         this.defaultRefDocs.push(item?.id)
+                      }
+                  })
+            
+            })
+          })
+        }
           this.setEditFields();
           this.createMaitenanceCall = false;
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -1434,13 +1484,13 @@ async getMaintenance_data(id,title)
 
 //listen when asset is change
 assetChange(data:any){
+  this.referenceDocs = []
    this.assetModelService.getReferenceDocs(this.contextApp.app, data?.asset_model).subscribe((response:any)=>{
-     this.referenceDocs = response?.data
+    this.referenceDocs = response?.data
    })
 }
 
 getRefDocData(value:any){
-    console.log("RD",value)
     this.referenceDocsValue = value
 }
 

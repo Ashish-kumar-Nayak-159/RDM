@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DateAxis } from '@amcharts/amcharts4/charts';
 import { threadId } from 'worker_threads';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
  
 declare var $: any;
 
@@ -23,6 +24,8 @@ declare var $: any;
 })
 
 export class AppMaintenanceListComponent implements OnInit {
+  referenceDocs: any[] = []
+  referenceDocsValue: number[] = [];
   userGroupArray: any[] = [];
   userGroups: any[] = [];
   tileData: any;
@@ -43,7 +46,8 @@ export class AppMaintenanceListComponent implements OnInit {
   htmlContent: any;
   emailbody1: any;
   currentItem: any;
-  selectedAsset_id: any;
+  selectedDropdownAsset: any;
+  custObjP:any;
   maintenanceModel: Maintenanace = new Maintenanace();
   userData: any;
   maintenance_registry_id: any;
@@ -118,12 +122,20 @@ export class AppMaintenanceListComponent implements OnInit {
   defaultDate: any;
   validDate:boolean;
   isClone = false;
+  @Input() assetFromControlPanel;
+  @Input() componentState;
+  @Input() isControl;
+  blueNavBar:boolean = true;
+  tempAssetId:any;
+  tempAssetModel:any;
+  defaultRefDocs:number[] = []
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private maintenanceService: MaintenanceService,
     private toasterService: ToasterService,
-    private router: Router
+    private router: Router,
+    private assetModelService: AssetModelService
   ) {
     this.disableBeforeDate.setDate(this.disableBeforeDate.getDate() + 1)
   }
@@ -139,13 +151,17 @@ export class AppMaintenanceListComponent implements OnInit {
 
   onChangeOfAsset() {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    this.selectedAsset_id = asset.asset_id
+    this.selectedDropdownAsset = asset.asset_id
   }
   setHours()
   {
     this.notifyMaintenanceForm.get('hoursOrdays').setValue('Hours');
   }
   async ngOnInit(): Promise<void> {
+    // if(this.assetFromControlPanel?.asset_id){
+    //   this.blueNavBar = false
+    // }
+    this.selectedDropdownAsset = this.assetFromControlPanel?.asset_id
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -167,8 +183,7 @@ export class AppMaintenanceListComponent implements OnInit {
       is_acknowledge_required: false,
       is_escalation_required: false,
       maintenance_escalation_registry: [],
-      email_body: ''
-
+      email_body: '',
     };
     this.getTileName();
     this.getMaitenanceModel();
@@ -378,16 +393,14 @@ export class AppMaintenanceListComponent implements OnInit {
 
   //getting data list from maintenance APi
   getMaintenance() {
-
-    const custObj = {
-      asset_id: this.selectedAsset_id,
+    this.custObjP = {
+      asset_id: this.selectedDropdownAsset,
       offset: this.currentOffset,
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy)
     }
-
     this.tableConfig.is_table_data_loading = true
-    this.maintenanceService.getMaintenance(custObj).subscribe((response: any) => {
+    this.maintenanceService.getMaintenance(this.custObjP).subscribe((response: any) => {
       response.data.forEach((item) => {
         item.inspection_frequency = this.itemArray.find((data) => {
           return data.id == item.inspection_frequency
@@ -462,9 +475,10 @@ export class AppMaintenanceListComponent implements OnInit {
         for (var i = 0; i < response?.data.length; i++) {
 
           this.assetDropdown.push({
-            asset_name: response?.data[i].display_name,
-            asset_ids: response?.data[i].asset_id,
-            asset_type: response?.data[i].type
+            asset_name: response?.data[i]?.display_name,
+            asset_ids: response?.data[i]?.asset_id,
+            asset_type: response?.data[i]?.type,
+            asset_model: response?.data[i]?.asset_model
           });
         }
       }
@@ -645,6 +659,7 @@ export class AppMaintenanceListComponent implements OnInit {
     this.maintenanceModel.is_notify_user = this.is_notify_user;
     this.maintenanceModel.is_escalation_required = this.is_escalation_required;
     this.maintenanceModel.is_acknowledge_required = this.is_acknowledge_required;
+    this.maintenanceModel["reference_documents"] = this.referenceDocsValue;
     if (this.is_notify_user) {
       if (this.notifyMaintenanceForm.get('hoursOrdays').value === 'Days') {
         this.maintenanceModel.notify_before_hours = parseInt(this.notifyMaintenanceForm.get('notifyBefore').value) * 24;
@@ -672,7 +687,9 @@ export class AppMaintenanceListComponent implements OnInit {
           $('#createMaintainenceModelModal').modal('hide');
           this.isEdit = false;
           this.createMaitenanceCall = false;
-          this.redirectTo(this.router.url);
+          if(!this.isControl){
+            this.redirectTo(this.router.url);
+          }
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
@@ -699,7 +716,9 @@ export class AppMaintenanceListComponent implements OnInit {
           }
           $('#createMaintainenceModelModal').modal('hide');
           this.createMaitenanceCall = false;
-          this.redirectTo(this.router.url);
+          if(!this.isControl){
+            this.redirectTo(this.router.url);
+          }
         },
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
@@ -745,6 +764,8 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaintenanceForm.get('asset_ids').disable()
       this.createMaintenanceForm.get('start_date').disable();
     }
+    this.defaultRefDocs = []
+    this.referenceDocs = []
     $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
   }
@@ -835,6 +856,29 @@ async getMaintenance_data(id,title)
           response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
         this.maintenanceModel = response.data;
         if(title === 'View'){
+          this.tempAssetId = response.data.asset_id
+          if(this.tempAssetId){
+            const assetLists =  this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+            assetLists?.forEach((item)=>{
+            if(item?.asset_id === this.tempAssetId){
+              this.tempAssetModel = item?.asset_model
+            }
+          })
+        
+          this.assetModelService.getReferenceDocs(this.contextApp.app, this.tempAssetModel).subscribe((resData:any)=>{
+            this.referenceDocs = resData?.data
+            this.defaultRefDocs = []
+           response.data.reference_documents.map((indexID)=>{
+      
+                  resData?.data?.forEach((item)=>{
+                      if(item?.id == indexID){
+                         this.defaultRefDocs.push(item?.id)
+                      }
+                  })
+            
+            })
+          })
+        }
           setTimeout(() => {
             this.setViewFields();
             this.createMaitenanceCall = false;
@@ -842,6 +886,29 @@ async getMaintenance_data(id,title)
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
         
         }else if(title === 'Edit'){
+          this.tempAssetId = response.data.asset_id
+          if(this.tempAssetId){
+            const assetLists =  this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+            assetLists?.forEach((item)=>{
+            if(item?.asset_id === this.tempAssetId){
+              this.tempAssetModel = item?.asset_model
+            }
+          })
+        
+          this.assetModelService.getReferenceDocs(this.contextApp.app, this.tempAssetModel).subscribe((resData:any)=>{
+            this.referenceDocs = resData?.data
+            this.defaultRefDocs = []
+           response.data.reference_documents.map((indexID)=>{
+      
+                  resData?.data?.forEach((item)=>{
+                      if(item?.id == indexID){
+                         this.defaultRefDocs.push(item?.id)
+                      }
+                  })
+            
+            })
+          })
+        }
           this.setEditFields();
           this.createMaitenanceCall = false;
           $('#createMaintainenceModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -1008,7 +1075,6 @@ async getMaintenance_data(id,title)
 
     }
     else if (obj.for === 'Trigger') {
-      console.log("trigger",obj)
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
@@ -1260,14 +1326,13 @@ async getMaintenance_data(id,title)
 
   // getting data for perticular maintenance when someone click on trigger btn
   historyOfPerticularMaintenance() {
-    const custObj = {
+     this.custObjP = {
       offset: this.singleOffset,
       count: this.singleLimit,
     }
     this.maintenanceConfig.is_table_data_loading = true
-    this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, custObj).subscribe((res: any) => {
+    this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, this.custObjP).subscribe((res: any) => {
       var today= new Date();
-     console.log("historyofperticularmain..",res)
       res?.data?.forEach((item) => {
         item.maintenance_date = this.commonService.convertUTCDateToLocalDate(item?.maintenance_date, "MMM dd, yyyy, hh:mm a")
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item?.trigger_date, "MMM dd, yyyy, hh:mm a"),
@@ -1374,28 +1439,27 @@ async getMaintenance_data(id,title)
   filteredHiearchyObj() {
     this.maintenances = []
     this.currentOffset = 0;
-    // const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
-    // Object.keys(configuredHierarchy).length === 0;
+    const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
+    Object.keys(configuredHierarchy).length === 0;
     // this.onClearHierarchy();
-    // this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (this.contextApp) {
-    //   Object.keys(configuredHierarchy).forEach((key) => {
-    //     if (configuredHierarchy[key]) {
-    //       this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
-    //     }
-    //   });
-    // }
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp) {
+      Object.keys(configuredHierarchy).forEach((key) => {
+        if (configuredHierarchy[key]) {
+          this.hierarchy[this.contextApp.hierarchy.levels[key]] = configuredHierarchy[key];
+        }
+      });
+    }
     this.getMaintenance();
 
 
   }
 
   onClearHierarchy() {
-    this.selectedAsset_id = null;
+    this.selectedDropdownAsset = '';
     this.hierarchy = { App: this.contextApp?.app };
   }
-
-
+  
   searchAssets(updateFilterObj = true) {
   }
 
@@ -1421,6 +1485,18 @@ async getMaintenance_data(id,title)
            return;
         }
       })
+}
+
+//listen when asset is change
+assetChange(data:any){
+  this.referenceDocs = []
+   this.assetModelService.getReferenceDocs(this.contextApp.app, data?.asset_model).subscribe((response:any)=>{
+    this.referenceDocs = response?.data
+   })
+}
+
+getRefDocData(value:any){
+    this.referenceDocsValue = value
 }
 
 }

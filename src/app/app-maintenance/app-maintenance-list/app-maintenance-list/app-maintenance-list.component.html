@@ -1,4 +1,4 @@
-<div class="blue-nav-bar">
+<div class="blue-nav-bar" *ngIf="blueNavBar && !isControl">
   <!-- Diplay the Title and the + icon  -->
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
@@ -6,8 +6,8 @@
       <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
       </div>
       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateMaintenanceModelModal()"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('MNTCA') > -1 && showHierarchy" placement="bottom"
-        tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('MNTCA') > -1 && showHierarchy"
+        placement="bottom" tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><em
           class="fas fa-plus fa-sm"></em></button>
     </div>
     <!-- Display the Hierachy and Search Icon display -->
@@ -16,7 +16,7 @@
         <form class="form-inline">
           <ng-container *ngIf="showHierarchy">
             <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
+              [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
               (clearHierarchyEvent)="onClearHierarchy()">
             </app-hierarchy-dropdown>
             <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
@@ -92,12 +92,11 @@
             <label for="maintenance-date">Enable Maintenance From: </label>
             <!-- <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
               name="maintenance-date" class="form-control" (change)="checkDateAndTime()"> -->
-              <input type="text"  [minDate]="disableBeforeDate" class="form-control" bsDatepicker
-              formControlName="dateAndTime" id="maintenance-date"
-              name="maintenance-date"         
+            <input type="text" [minDate]="disableBeforeDate" class="form-control" bsDatepicker
+              formControlName="dateAndTime" id="maintenance-date" name="maintenance-date"
               [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
-              
-             <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
+
+            <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
           </form>
         </div>
         <div class="modal-footer">
@@ -109,6 +108,83 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="isControl">
+<div class="overlap-wrapper">
+  <div class="over-lap">
+    <br />
+    <div class="d-flex">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
+        class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+      </svg>
+      <p class="p-2 rounded mb-0 ml-3">{{registryName | titlecase}}</p>
+    </div>
+
+
+    <div class="custom-table">
+      <app-common-data-table [tableData]="maintenanceData" [tableConfig]="maintenanceConfig"
+        (btnClickEvent)="onTableFunctionCall($event)">
+      </app-common-data-table>
+      <span class="d-flex justify-content-center w-100"
+        *ngIf="maintenanceData?.length > 0 && singleLoadMoreVisibility && !insideScrollFunFlag">
+        <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+          (click)="currentOffset = currentOffset + currentLimit;historyOfPerticularMaintenance();" placement="bottom"
+          tooltip="Load More Records...">Load More...</a>
+      </span>
+    </div>
+  </div>
+  <div class="" id="table-wrapper d-flex flex-column">
+    <app-common-data-table [tableData]="maintenances" [tableConfig]="tableConfig"
+      (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+    <span class="d-flex justify-content-center w-100"
+      *ngIf="maintenances?.length > 0 && loadMoreVisibility && !insideScrollFunFlag">
+      <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
+        (click)="currentOffset = currentOffset + currentLimit;getMaintenance();" placement="bottom"
+        tooltip="Load More Records...">Load More...</a>
+    </span>
+  </div>
+</div>
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+    </app-message-modal>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Maintenance</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="maintenanceForm">
+          <label for="maintenance-date">Enable Maintenance From: </label>
+          <!-- <input type="datetime-local" [min]="disableBeforeDate" formControlName="dateAndTime" id="maintenance-date"
+            name="maintenance-date" class="form-control" (change)="checkDateAndTime()"> -->
+          <input type="text" [minDate]="disableBeforeDate" class="form-control" bsDatepicker
+            formControlName="dateAndTime" id="maintenance-date" name="maintenance-date"
+            [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
+
+          <span class="text-danger" *ngIf="validDate">Start date must be greater than or equal to today.</span>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onSave()"
+          [disabled]="!maintenanceForm.valid">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
 
 <div class="modal right fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
@@ -135,7 +211,7 @@
 
 <div class="modal right fade" id="createMaintainenceModelModal" tabindex="-1" role="dialog"
   aria-labelledby="ModalLabel2">
-  
+
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -148,34 +224,39 @@
         <div [formGroup]="createMaintenanceForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Name</label>
-            <input type="text" disabled  *ngIf="isView && !isEdit" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <input type="text" placeholder="Name" (input)="containSpecialChar($event)" required  *ngIf="!isView" class="form-control form-control-sm" id="maintenance_name" formControlName="name">
-            <div *ngIf="createMaintenanceForm.get('name').errors && createMaintenanceForm.get('name').touched"
+            <input type="text" disabled *ngIf="isView && !isEdit" class="form-control form-control-sm"
+              id="maintenance_name" formControlName="name">
+            <input type="text" placeholder="Name" (input)="containSpecialChar($event)" required *ngIf="!isView"
+              class="form-control form-control-sm" id="maintenance_name" formControlName="name">
+            <div *ngIf="createMaintenanceForm?.get('name')?.errors && createMaintenanceForm?.get('name')?.touched"
               class="alert-danger">
-              <div *ngIf="createMaintenanceForm.get('name').errors.required">
+              <div *ngIf="createMaintenanceForm?.get('name')?.errors?.required">
                 Maintenanace Name is required.
               </div>
             </div>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Asset</label>
-            <ng-select [items]="assetDropdown"  [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm" [searchable]="true"
-              bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
-              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids" required formControlName="asset_ids">
+            <ng-select [items]="assetDropdown" [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm"
+              [searchable]="true" bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset"
+              groupBy="asset_type" dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids" required
+              formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
                 <span [tooltip]="item.asset_name">
-                      {{item.asset_name}}
+                  {{item.asset_name}}
                 </span>
               </ng-template>
             </ng-select>
-            <ng-select [items]="assetDropdown" required *ngIf="isAsset"  class="custom-dropdown w-12 sm" [searchable]="true"
-              bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset" groupBy="asset_type"
-              dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids"  required formControlName="asset_ids">
+            <ng-select (change)="assetChange($event)" [items]="assetDropdown" required *ngIf="isAsset"
+              class="custom-dropdown w-12 sm" [searchable]="true" bindLabel="asset_name" [closeOnSelect]="true"
+              placeholder="Select Asset" groupBy="asset_type" dropdownPosition="bottom" name="asset-dropdown"
+              bindValue="asset_ids" required formControlName="asset_ids">
               <ng-template ng-option-tmp let-item="item">
-                  {{item.asset_name}}
+                {{item.asset_name}}
               </ng-template>
             </ng-select>
-            <div *ngIf="!isView && createMaintenanceForm.get('asset_ids').errors && createMaintenanceForm.get('asset_ids').touched"
+            <div
+              *ngIf="!isView && createMaintenanceForm.get('asset_ids').errors && createMaintenanceForm.get('asset_ids').touched"
               class="alert-danger">
               <div *ngIf="createMaintenanceForm.get('asset_ids').errors.required">
                 Asset is required.
@@ -184,22 +265,23 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Description</label>
-            <textarea id="description" [ngClass]="[isView ? 'disabled':'']"  class="form-control form-control-sm" [(ngModel)]="description"
-              formControlName="description" rows="5" cols="80" placeholder="Enter text here"></textarea>
+            <textarea id="description" [ngClass]="[isView ? 'disabled':'']" class="form-control form-control-sm"
+              [(ngModel)]="description" formControlName="description" rows="5" cols="80"
+              placeholder="Enter text here"></textarea>
           </div>
           <div></div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Maintenance Start From</label>
             <!-- <input type="datetime-local" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time"> -->
-              <input type="text" *ngIf="isView" [attr.disabled]="isView"[minDate]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
-              formControlName="start_date" placement="top"         
+            <input type="text" *ngIf="isView" [attr.disabled]="isView" [minDate]="disableBeforeDate"
+              class="form-control form-control-sm" bsDatepicker formControlName="start_date" placement="top"
               [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
 
-              <input type="text" *ngIf="!isView" [minDate]="disableBeforeDate" class="form-control form-control-sm" bsDatepicker
-              formControlName="start_date" placement="top"         
+            <input type="text" *ngIf="!isView" [minDate]="disableBeforeDate" class="form-control form-control-sm"
+              bsDatepicker formControlName="start_date" placement="top"
               [bsConfig]="{'customTodayClass': 'today',showWeekNumbers:true,withTimepicker: true, rangeInputFormat : 'YYYY-MM-DD, h:mm A', dateInputFormat: 'YYYY-MM-DD h:mm A'}">
-              
+
             <div
               *ngIf="!isView && createMaintenanceForm.get('start_date').errors && createMaintenanceForm.get('start_date').touched"
               class="alert-danger">
@@ -209,16 +291,18 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name"  class="col-form-label required">Inspection Frequency</label>
-            <select class="form-control form-control-sm" [attr.disabled]="isView && !isEdit" id="template" [(ngModel)]="inspection_frequency"
-              formControlName="inspection_frequency" *ngIf="isView" name="model_type">
+            <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
+            <select class="form-control form-control-sm" [attr.disabled]="isView && !isEdit" id="template"
+              [(ngModel)]="inspection_frequency" formControlName="inspection_frequency" *ngIf="isView"
+              name="model_type">
               <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
             </select>
 
-            <select  class="form-control form-control-sm" required *ngIf="!isView" id="template" [(ngModel)]="inspection_frequency"
-            formControlName="inspection_frequency" name="model_type" (change)="setHours()">
+            <select class="form-control form-control-sm" required *ngIf="!isView" id="template"
+              [(ngModel)]="inspection_frequency" formControlName="inspection_frequency" name="model_type"
+              (change)="setHours()">
               <option [ngValue]="null" selected disabled>Select Inspection Frequency</option>
-              <option  *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
+              <option *ngFor="let item of itemArray" [(ngValue)]="item.id">{{item.name}}</option>
             </select>
             <div
               *ngIf="createMaintenanceForm.get('inspection_frequency').value===null && createMaintenanceForm.get('inspection_frequency').errors && createMaintenanceForm.get('inspection_frequency').touched"
@@ -229,51 +313,53 @@
             </div>
           </div>
         </div>
-       
+
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Acknowledge Required</label>
-          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" id="ack" name="ack"
-            [(ngModel)]="is_acknowledge_required" >
-            <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="ack" name="ack"
-            [(ngModel)]="is_acknowledge_required" >
+          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
+            id="ack" name="ack" [(ngModel)]="is_acknowledge_required">
+          <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="ack" name="ack"
+            [(ngModel)]="is_acknowledge_required">
 
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Do you want to update user about upcoming
             maintenance?</label>
-          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
-            >
-          <input type="checkbox" *ngIf="!isView"  class="form-check-input checkboxloc" [(ngModel)]="is_notify_user" id="notify"
-            >
+          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
+            [(ngModel)]="is_notify_user" id="notify">
+          <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user"
+            id="notify">
         </div>
         <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
           <div class="d-flex align-items-center w-100">
-           
-                <div class="form-group mr-4">
-   
 
-                    <div class="d-flex align-items-center">
+            <div class="form-group mr-4">
 
-                      <input *ngIf="isView" [attr.disabled]="isView && !isEdit" type="number" min="2"
-                        class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
-                        id="nbefore_name" formControlName="notifyBefore">
-                        <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2"  max="23" (keyup)="checkHours()" (change)="checkHours()"
-                        class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
-                        id="nbefore_name" formControlName="notifyBefore">
-                      <input *ngIf="inspection_frequency!==0 && !isView" type="number"
-                        style="width: 65px !important;height: 30px!important;"  min="2"  (keyup)="checkHours()"  (change)="checkHours()" class="form-control form-control-sm mr-4"
-                        id="nbefore_name" formControlName="notifyBefore">
-                        
-                        <select  *ngIf="isView" style="width: 85px;"   [attr.disabled]="isView && !isEdit" class="custom-dropdown w-12 sm form-control form-control-sm"
-                        id="nbefore_name">
-                        <option value="Hours" selected>Hours</option>
-                      </select>
-                      <select  *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()" class="custom-dropdown w-12 sm form-control form-control-sm"
-                      id="nbefore_name">
-                      <option value="Hours" selected>Hours</option>
-                      <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
-                    </select>
-                    </div>
+
+              <div class="d-flex align-items-center">
+
+                <input *ngIf="isView" [attr.disabled]="isView && !isEdit" type="number" min="2"
+                  class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
+                  id="nbefore_name" formControlName="notifyBefore">
+                <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2" max="23" (keyup)="checkHours()"
+                  (change)="checkHours()" class="form-control form-control-sm mr-4"
+                  style="width: 65px !important;height: 30px!important;" id="nbefore_name"
+                  formControlName="notifyBefore">
+                <input *ngIf="inspection_frequency!==0 && !isView" type="number"
+                  style="width: 65px !important;height: 30px!important;" min="2" (keyup)="checkHours()"
+                  (change)="checkHours()" class="form-control form-control-sm mr-4" id="nbefore_name"
+                  formControlName="notifyBefore">
+
+                <select *ngIf="isView" style="width: 85px;" [attr.disabled]="isView && !isEdit"
+                  class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
+                  <option value="Hours" selected>Hours</option>
+                </select>
+                <select *ngIf="!isView" style="width: 85px;" formControlName="hoursOrdays" (change)="checkHours()"
+                  class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
+                  <option value="Hours" selected>Hours</option>
+                  <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
+                </select>
+              </div>
 
 
               <div
@@ -299,10 +385,10 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Notify Email Subject</label>
-            <input type="text" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-control form-control-sm" id="sub_name"
-              formControlName="notify_email_subject">
+            <input type="text" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-control form-control-sm"
+              id="sub_name" formControlName="notify_email_subject">
             <input type="text" *ngIf="!isView" class="form-control form-control-sm" id="sub_name"
-            formControlName="notify_email_subject">
+              formControlName="notify_email_subject">
             <div
               *ngIf="notifyMaintenanceForm.get('notify_email_subject').errors && notifyMaintenanceForm.get('notify_email_subject').touched"
               class="alert-danger">
@@ -313,7 +399,7 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label">Email Recipients:</label>
-            <div class="" >
+            <div class="">
               <div class="form-inline">
                 <ng-container>
                   <div class="form-group col-11">
@@ -321,42 +407,40 @@
                       placeholder="Email ID" formControlName="notify_user_emails">
                   </div>
                   <div class="form-group col-1">
-                    <button type="button" *ngIf="!isView" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
-                      (click)="addEmailNotifyRecipient()">
+                    <button type="button" *ngIf="!isView" class="btn btn-primary btn-sm mx-2" placement="bottom"
+                      tooltip="Add" (click)="addEmailNotifyRecipient()">
                       <em class="fa fa-plus fa-sm"></em></button>
                   </div>
                 </ng-container>
               </div>
             </div>
-            <div class="my-2"  *ngIf="notifyEmails?.length > 0">
+            <div class="my-2" *ngIf="notifyEmails?.length > 0">
               <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                 <ng-container *ngFor="let user of notifyEmails; let index = index">
                   <span class="tag">
                     <span class="tag-text">{{user}}</span>
-                    <button class="tag-remove" *ngIf="!isView"
-                      (click)="removeEmailNotifyRecipient(index)"></button>
+                    <button class="tag-remove" *ngIf="!isView" (click)="removeEmailNotifyRecipient(index)"></button>
                   </span>
                 </ng-container>
               </div>
             </div>
-            </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Select Users Group</label>
             <div class="form-group">
-              <label for="message-text" class="col-form-label">Select Users Group</label>
-              <div class="form-group">
-                <ng-select [items]="userGroupArray" [ngClass]="[isView ? 'disabled':'']"  [disabled]="isView"
-                *ngIf="isView"  clearSearchOnAdd="true" [multiple]="true"
-                  class="custom-dropdown w-12 sm" 
-                   name="group-dropdown" [(ngModel)]="notify_user_groups" formControlName="notify_user_groups" required>
-                  <ng-template ng-option-tmp let-item="item">
-                    <span>
-                      {{notify_user_groups}}
-                    </span>
-                  </ng-template>
-                 </ng-select>
-                <ng-select [items]="userGroupArray" *ngIf="!isView"  clearSearchOnAdd="true" [multiple]="true"
+              <ng-select [items]="userGroupArray" [ngClass]="[isView ? 'disabled':'']" [disabled]="isView"
+                *ngIf="isView" clearSearchOnAdd="true" [multiple]="true" class="custom-dropdown w-12 sm"
+                name="group-dropdown" [(ngModel)]="notify_user_groups" formControlName="notify_user_groups" required>
+                <ng-template ng-option-tmp let-item="item">
+                  <span>
+                    {{notify_user_groups}}
+                  </span>
+                </ng-template>
+              </ng-select>
+              <ng-select [items]="userGroupArray" *ngIf="!isView" clearSearchOnAdd="true" [multiple]="true"
                 class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
-                 bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
-                name="group-dropdown" [closeOnSelect]="false" formControlName="notify_user_groups" required>
+                bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom" name="group-dropdown"
+                [closeOnSelect]="false" formControlName="notify_user_groups" required>
                 <ng-template ng-option-tmp let-item="item">
                   <span>
                     {{item.group_name}}
@@ -367,74 +451,90 @@
                 </ng-template>
               </ng-select>
             </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Reference Documents</label>
+            <div class="form-group">
+              <!-- <ng-select [items]="referenceDocs" placeholder="Select Documents" [multiple]="true" bindLabel="name" bindValue="id" name="refdoc" [(ngModel)]="defaultRefDocs" [ngModelOptions]="{standalone: true}" (change)="getRefDocData($event)">
+              </ng-select> -->
+              <ng-select [(ngModel)]="defaultRefDocs" placeholder="Select Documents" [multiple]="true" name="refdoc" [ngModelOptions]="{standalone: true}" (change)="getRefDocData($event)" [disabled]="isView && !isEdit">
+                <ng-option *ngFor="let doc of referenceDocs" [value]="doc?.id">{{doc?.name}}</ng-option>
+             </ng-select>
             </div>
+          </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label ">Email Body</label>
-            <app-text-editor id="htmlEmail1"  [ngClass]="[ isView ? 'disabled':'']" [inputItem]="currentItem" (htmlContentDetect)="emailBodyDetect($event)">
+            <app-text-editor id="htmlEmail1" [ngClass]="[ isView ? 'disabled':'']" [inputItem]="currentItem"
+              (htmlContentDetect)="emailBodyDetect($event)">
             </app-text-editor>
           </div>
         </div>
         <div class="form-group">
           <label class="col-form-label " for="alert_management">Escalation Required</label>
-          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc" id="is_escal" [(ngModel)]="is_escalation_required"
-            (click)="addNewEsacalation(0);">
-            <input type="checkbox" *ngIf="!isView" (click)="addNewEsacalation(0);" class="form-check-input checkboxloc" id="is_escal" [(ngModel)]="is_escalation_required"
-            >
+          <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
+            id="is_escal" [(ngModel)]="is_escalation_required" (click)="addNewEsacalation(0);">
+          <input type="checkbox" *ngIf="!isView" (click)="addNewEsacalation(0);" class="form-check-input checkboxloc"
+            id="is_escal" [(ngModel)]="is_escalation_required">
         </div>
         <div *ngIf="is_escalation_required">
-          <button id="insert-more"  *ngIf="!isView" (click)="addNewEsacalation(1);" class="btn btn-sm btn-primary cursor-pointer"><em
-              class="fas fa fa-plus-circle mr-1 my-1"></em>
+          <button id="insert-more" *ngIf="!isView" (click)="addNewEsacalation(1);"
+            class="btn btn-sm btn-primary cursor-pointer"><em class="fas fa fa-plus-circle mr-1 my-1"></em>
             Escalation</button>
           <ng-container *ngFor="let obj of maintenanceModel.maintenance_escalation_registry; let i = index">
             <div *ngIf="i==0 || i==1 || i==2">
               <div class="form-group add-row">
                 <div class="d-flex align-items-center">
                   <h6 class="mr-3 mb-0 mt-3">Escalation {{i+1}}</h6>
-                    <button id="delete" *ngIf="!isView && i!=0 " class="btn btn-sm btn-light cursor-pointer mt-3"
-                      (click)="deleteEscalation(i);"><em class="fas fa fa-trash"></em>
-                    </button>
+                  <button id="delete" *ngIf="!isView && i!=0 " class="btn btn-sm btn-light cursor-pointer mt-3"
+                    (click)="deleteEscalation(i);"><em class="fas fa fa-trash"></em>
+                  </button>
                 </div>
-                </div>
-                <div class="form-group">
+              </div>
+              <div class="form-group">
                 <div class="d-flex align-items-center w-100">
                   <div class="form-group mr-4">
                     <label for="recipient-name" class="col-form-label ">Escalation Duration</label>
                     <input [attr.disabled]="isView && !isEdit" *ngIf="isView" type="number" min="2"
                       class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;"
                       id="nbefore_name" [(ngModel)]="obj.duration_hours">
-                      <input  *ngIf="!isView && inspection_frequency===0" type="number" min="2" max="23"
+                    <input *ngIf="!isView && inspection_frequency===0" type="number" min="2" max="23"
                       class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;"
-                      id="nbefore_name" [(ngModel)]="obj.duration_hours" (keyup)="esccheckHours(i)" (change)="esccheckHours(i)">
+                      id="nbefore_name" [(ngModel)]="obj.duration_hours" (keyup)="esccheckHours(i)"
+                      (change)="esccheckHours(i)">
                     <input *ngIf="inspection_frequency!==0 && !isView" type="number"
                       style="width: 65px !important;height: 30px!important;" min="2"
-                      class="form-control form-control-sm" id="nbefore_name" (keyup)="esccheckHours(i)" (change)="esccheckHours(i)" [(ngModel)]="obj.duration_hours">
+                      class="form-control form-control-sm" id="nbefore_name" (keyup)="esccheckHours(i)"
+                      (change)="esccheckHours(i)" [(ngModel)]="obj.duration_hours">
                   </div>
                   <div class="form-group d-flex flex-column">
-                    <select [attr.disabled]="isView && !isEdit" *ngIf="isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
+                    <select [attr.disabled]="isView && !isEdit" *ngIf="isView"
+                      style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
                       class="custom-dropdown w-12 sm form-control form-control-sm" id="nbefore_name">
                       <option value="Hours" selected>Hours</option>
                     </select>
-                    <select *ngIf="!isView" style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
-                      class="custom-dropdown w-12  sm form-control form-control-sm"  [(ngModel)]="obj.duration_select" id="nbefore_name" (change)="esccheckHours(i)">
+                    <select *ngIf="!isView"
+                      style="margin-top: 32px;margin-left: -3.5rem!important;width: 85px!important;"
+                      class="custom-dropdown w-12  sm form-control form-control-sm" [(ngModel)]="obj.duration_select"
+                      id="nbefore_name" (change)="esccheckHours(i)">
                       <option value="Hours">Hours</option>
                       <option *ngIf="inspection_frequency!==0" value="Days">Days</option>
                     </select>
                   </div>
                 </div>
-                
+
               </div>
               <div class="form-group">
                 <label for="message-text" class="col-form-label">Email Recipients:</label>
-                <div class="" >
+                <div class="">
                   <div class="form-inline">
                     <ng-container>
                       <div class="form-group col-11">
-                        <input type="email" class="form-control form-control-sm small" *ngIf="!isView" min="0" name="Email"
-                          placeholder="Email ID" [(ngModel)]="obj.user_emails">
+                        <input type="email" class="form-control form-control-sm small" *ngIf="!isView" min="0"
+                          name="Email" placeholder="Email ID" [(ngModel)]="obj.user_emails">
                       </div>
                       <div class="form-group col-1">
-                        <button type="button"  *ngIf="!isView" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
-                          (click)="addEmailRecipient(i)">
+                        <button type="button" *ngIf="!isView" class="btn btn-primary btn-sm mx-2" placement="bottom"
+                          tooltip="Add" (click)="addEmailRecipient(i)">
                           <em class="fa fa-plus fa-sm"></em></button>
                       </div>
                     </ng-container>
@@ -451,25 +551,25 @@
                     </ng-container>
                   </div>
                 </div> -->
-                <div class="my-2"  *ngIf="(obj.user_email?.length > 0)">
+                <div class="my-2" *ngIf="(obj.user_email?.length > 0)">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                    <ng-container  *ngFor="let user of obj.user_email; let index = index">
+                    <ng-container *ngFor="let user of obj.user_email; let index = index">
                       <span class="tag">
                         <span class="tag-text">{{user}}</span>
-                        <button class="tag-remove" *ngIf="!isView"
-                          (click)="removeEmailRecipient(i,index)"></button>
+                        <button class="tag-remove" *ngIf="!isView" (click)="removeEmailRecipient(i,index)"></button>
                       </span>
                     </ng-container>
                   </div>
                 </div>
-                </div>
+              </div>
               <div class="form-group">
                 <label for="message-text" class="col-form-label">Select Users Group</label>
                 <div class="form-group">
-                  <ng-select [items]="userGroupArray" *ngIf="isView" [disabled]="isView && !isEdit"  clearSearchOnAdd="true" [multiple]="true"
-                    class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
-                     bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
-                    name="group-dropdown" [closeOnSelect]="false" [(ngModel)]="obj.user_groups" required>
+                  <ng-select [items]="userGroupArray" *ngIf="isView" [disabled]="isView && !isEdit"
+                    clearSearchOnAdd="true" [multiple]="true" class="custom-dropdown w-12 sm" [clearable]="false"
+                    [searchable]="true" placeholder="Select Group" bindLabel="group_name" bindValue="group_name"
+                    dropdownPosition="bottom" name="group-dropdown" [closeOnSelect]="false"
+                    [(ngModel)]="obj.user_groups" required>
                     <ng-template ng-option-tmp let-item="item">
                       <span>
                         {{item.group_name}}
@@ -479,42 +579,45 @@
                       {{items.length}} groups selected
                     </ng-template>
                   </ng-select>
-                  <ng-select [items]="userGroupArray" *ngIf="!isView"  clearSearchOnAdd="true" [multiple]="true"
-                  class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
-                   bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
-                  name="group-dropdown" [closeOnSelect]="false" [(ngModel)]="obj.user_groups" required>
-                  <ng-template ng-option-tmp let-item="item">
-                    <span>
-                      {{item.group_name}}
-                    </span>
-                  </ng-template>
-                  <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
-                    {{items.length}} groups selected
-                  </ng-template>
-                </ng-select>
-              </div>
+                  <ng-select [items]="userGroupArray" *ngIf="!isView" clearSearchOnAdd="true" [multiple]="true"
+                    class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true" placeholder="Select Group"
+                    bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom" name="group-dropdown"
+                    [closeOnSelect]="false" [(ngModel)]="obj.user_groups" required>
+                    <ng-template ng-option-tmp let-item="item">
+                      <span>
+                        {{item.group_name}}
+                      </span>
+                    </ng-template>
+                    <ng-template ng-multi-label-tmp let-items="items" *ngIf='!isView'>
+                      {{items.length}} groups selected
+                    </ng-template>
+                  </ng-select>
+                </div>
               </div>
               <div class="form-group">
                 <label for="message-text" class="col-form-labe ">Email Subject</label>
-                <input type="email" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-control form-control-sm" id="app_name" [(ngModel)]="obj.email_subject">
-                <input type="email" *ngIf="!isView" class="form-control form-control-sm" id="app_name" [(ngModel)]="obj.email_subject">
+                <input type="email" *ngIf="isView" [attr.disabled]="isView && !isEdit"
+                  class="form-control form-control-sm" id="app_name" [(ngModel)]="obj.email_subject">
+                <input type="email" *ngIf="!isView" class="form-control form-control-sm" id="app_name"
+                  [(ngModel)]="obj.email_subject">
               </div>
               <div class="form-group">
                 <label for="message-text" class="col-form-label ">Email Body</label>
-                <app-text-editor id="{{i}}" [ngClass]="[isView ? 'disabled':'']" [inputItem]="obj.email_body" (htmlContentDetect)="emailBody1Detect($event,i)">
+                <app-text-editor id="{{i}}" [ngClass]="[isView ? 'disabled':'']" [inputItem]="obj.email_body"
+                  (htmlContentDetect)="emailBody1Detect($event,i)">
                 </app-text-editor>
               </div>
-            
+
             </div>
           </ng-container>
         </div>
         <div class="modal-footer fixed-bottom bg-white">
           <button type="button" *ngIf="(!isEdit && !isView && !isClone)" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
+            (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid">Save</button>
           <button type="button" *ngIf="isEdit && !isView && !isClone" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()" >Update</button>
-            <button type="button" *ngIf="isClone" class="btn btn-primary add-row"
-            (click)="onSaveMaintenanceModelModal()" [disabled]="createMaintenanceForm.invalid" >Save</button>
+            (click)="onSaveMaintenanceModelModal()">Update</button>
+          <button type="button" *ngIf="isClone" class="btn btn-primary add-row" (click)="onSaveMaintenanceModelModal()"
+            [disabled]="createMaintenanceForm.invalid">Save</button>
           <button type="button" *ngIf="!isView" class="btn btn-secondary" (click)="onCloseMaintenanceModelModal()">
             Cancel
           </button>

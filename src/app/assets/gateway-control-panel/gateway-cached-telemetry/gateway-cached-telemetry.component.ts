@@ -113,10 +113,10 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
           ],
         },
       ],
-      rowHighlight: {
-        param: 'process_status',
-        value: 'Success',
-      },
+      // rowHighlight: {
+      //   param: 'process_status',
+      //   value: 'Success',
+      // },
     };
     this.loadFromCache();
     this.filterObj.epoch = true;

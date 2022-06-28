@@ -56,46 +56,55 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         debugger
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
-          this.c_message = msg?.message
-          this.c_message_asset_display_name = msg?.asset_display_name
-          this.c_message_asset_id = msg?.asset_id
-           this.criticalToaster = true
-           this.criticalFlag = true
-           setTimeout(()=>{
-            this.criticalToaster = false;
-          },20000)
+        if ((!msg.type || msg.type === 'alert')) {
+          this.toasterService.showCriticalAlert(
+            msg.message,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-bottom-right',
+            60000
+          );
         }
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'error') {
-          this.e_message = msg?.message
-          this.e_message_asset_display_name = msg?.asset_display_name
-          this.e_message_asset_id = msg?.asset_id
-          this.errorToaster = true
-          this.errorFlag = true
-          setTimeout(()=>{
-            this.errorToaster = false;
-          },20000)
-        }
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
-          this.w_message = msg?.message
-          this.w_message_asset_display_name = msg?.asset_display_name
-          this.w_message_asset_id = msg?.asset_id
-          this.warningToaster = true
-          this.warningFlag = true
-          setTimeout(()=>{
-            this.warningToaster = false;
-          },20000)
-        }
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'informational') {
-          this.i_message = msg?.message
-          this.i_message_asset_display_name = msg?.asset_display_name
-          this.i_message_asset_id = msg?.asset_id
-          this.informationalToaster = true
-          this.informationalFlag = true
-          setTimeout(()=>{
-            this.informationalToaster = false;
-          },20000)
-        }
+        // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
+        //   this.c_message = msg?.message
+        //   this.c_message_asset_display_name = msg?.asset_display_name
+        //   this.c_message_asset_id = msg?.asset_id
+        //    this.criticalToaster = true
+        //    this.criticalFlag = true
+        //    setTimeout(()=>{
+        //     this.criticalToaster = false;
+        //   },20000)
+        // }
+
+        // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'error') {
+        //   this.e_message = msg?.message
+        //   this.e_message_asset_display_name = msg?.asset_display_name
+        //   this.e_message_asset_id = msg?.asset_id
+        //   this.errorToaster = true
+        //   this.errorFlag = true
+        //   setTimeout(()=>{
+        //     this.errorToaster = false;
+        //   },20000)
+        // }
+        // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
+        //   this.w_message = msg?.message
+        //   this.w_message_asset_display_name = msg?.asset_display_name
+        //   this.w_message_asset_id = msg?.asset_id
+        //   this.warningToaster = true
+        //   this.warningFlag = true
+        //   setTimeout(()=>{
+        //     this.warningToaster = false;
+        //   },20000)
+        // }
+        // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'informational') {
+        //   this.i_message = msg?.message
+        //   this.i_message_asset_display_name = msg?.asset_display_name
+        //   this.i_message_asset_id = msg?.asset_id
+        //   this.informationalToaster = true
+        //   this.informationalFlag = true
+        //   setTimeout(()=>{
+        //     this.informationalToaster = false;
+        //   },20000)
+        // }
       });
     }
     this.processAppMenuData();
@@ -154,7 +163,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-              'toast-critical',
               'toast-bottom-right',
               60000
             );

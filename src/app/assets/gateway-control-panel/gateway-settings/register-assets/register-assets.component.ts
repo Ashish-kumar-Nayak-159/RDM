@@ -54,11 +54,11 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
         this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
         if (
           this.assetTwin.twin_properties.reported &&
-          this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
-          this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+          this.assetTwin.twin_properties.reported[this.asset?.appObj?.type] &&
+          this.assetTwin.twin_properties.reported[this.asset?.appObj?.type][this.asset?.appObj?.name]
         ) {
           if (
-            this.assetTwin.twin_properties.reported[this.asset.appObj.type][
+            this.assetTwin.twin_properties.reported[this.asset?.appObj?.type][
               this.asset.appObj.name
             ].status?.toLowerCase() !== 'running'
           ) {

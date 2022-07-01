@@ -39,7 +39,7 @@
 </div>
 <div class="">
   <div id="map-container-google-1" class="z-depth-1-half map-container">
-    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle" [fitBounds]="mapFitBounds">
+    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle" [fitBounds]="mapFitBounds" [fullscreenControl]='true' [mapTypeControl]='true' >
       <agm-marker-cluster imagePath="./assets/img/m">
         <ng-container *ngFor="let asset of mapAssets; let i = index; ">
           <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
@@ -47,37 +47,57 @@
             [iconUrl]="asset.icon">
             <agm-info-window #infowindow>
               <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
-                  <label>{{asset.display_name ? asset.display_name: asset.asset_id}}</label><br/>
-        
-                      <a *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1" href="javascript:void(0)" style="z-index: 1;"
-                        (click)="redirectToAsset(asset)" class="float-left" >
-                        <em class="fa fa-fw fa-table" title="View Control Panel" style="font-size: 15px;padding-bottom: 10px;"></em>
-                      </a>&nbsp;&nbsp;
-                      <a *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) " href="javascript:void(0)" style="z-index: 1;margin-left: 10px;"
-                        (click)="redirectToLiveData(asset)" class="float-left" >
-                        <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true" class="fa fa-chart-bar fa-fw" title="{{tooltipmapicon}}" style="font-size: 15px;padding-bottom: 10px;"></em>
-                        <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw" title="View Historic Data"  style="font-size: 15px;padding-bottom: 10px;"></em>
-                      </a>
-                
-                  <br/>
-              <ng-container>
-                <hr>
-                <div *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
-                  <div *ngFor="let kpi of asset.map_content.data | keyvalue">
-                      <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+              <div class="card border-0 border-top-1 border-primary" style="min-width:180px; max-width: 430px;" >
+                <div class="card-header bg-white" style="padding: .75rem 1rem; border-bottom: 0; padding-bottom: 0;">
+                  <strong class="mb-0 fw-bold">{{asset.display_name ? asset.display_name: asset.asset_id}}</strong>
+                </div>
+                <div class="card-body" style="padding: 1rem;">
+                  <div class="row">
+
+                    <div class="col-sm-12 col-md-12">
+                      <div class="d-flex" style="gap: 12px;">
+                        <a type="button" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1" style="z-index: 1;"
+                          (click)="redirectToAsset(asset)" class="text-primary d-flex align-items-center" style="gap: 6px;" >
+                          <em class="fa fa-fw fa-table me-4" title="View Control Panel" style="font-size: 15px;"></em>View Control Panel
+                        </a>&nbsp;&nbsp;
+                        <a type="button" *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) " style="z-index: 1;"
+                          (click)="redirectToLiveData(asset)" class="text-primary d-flex align-items-center" style="gap: 6px;" >
+                          <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true" class="fa fa-chart-bar fa-fw me-4" title="{{tooltipmapicon}}" style="font-size: 15px;"></em>
+                          <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw me-4" title="View Historic Data"  style="font-size: 15px;"></em>Live Data
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12">
+                      <hr>
+                      <div *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
+                        <div *ngFor="let kpi of asset.map_content.data | keyvalue">
+                            <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12">
+                      <ng-template #noSPCDTemplate>
+                        <p class="mb-0">No data available.</p>
+                      </ng-template>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12">
+                      <ng-container *ngIf="environmentApp === 'KCMS'">
+                        <hr>
+                        <p class="mb-1"><b>MTTR:</b> {{asset.mttr}}</p>
+                        <p class="mb-1"><b>MTBF:</b> {{asset.mtbf}}</p>
+                        <p class="mb-1"><b>Gas loss:</b>{{asset.gas}}</p>
+                        <p class="mb-1"><b>Gas Consumption:</b>{{asset.power}}</p>
+                      </ng-container>
+                    </div>
+
                   </div>
                 </div>
-                <ng-template #noSPCDTemplate>
-                  <p>No data available.</p>
-                </ng-template>
-              </ng-container>
-              <ng-container *ngIf="environmentApp === 'KCMS'">
-                <hr>
-                <p><b>MTTR:</b> {{asset.mttr}}</p>
-                <p><b>MTBF:</b> {{asset.mtbf}}</p>
-                <p><b>Gas loss:</b>{{asset.gas}}</p>
-                <p><b>Gas Consumption:</b>{{asset.power}}</p>
-              </ng-container>
+              </div>
+  
+              
             </agm-info-window>
           </agm-marker>
         </ng-container>

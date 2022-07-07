@@ -48,9 +48,13 @@ export class AssetUptimeComponent implements OnInit {
       }
       if (!response?.data?.is_alltime_working) {
         response?.data?.asset_uptime_registry.forEach((item) => {
+          let dummyLocalFromtime = '2022-01-15T'+ item?.from_time +'Z'
+          let dummyLocalTotime = '2022-01-15T'+ item?.to_time +'Z'
+          let localFromDate = new Date(dummyLocalFromtime).toLocaleString('it-IT').split(',')
+          let localToDate = new Date(dummyLocalTotime).toLocaleString('it-IT').split(',')
           const newFormGroup = new FormGroup({
-            from_time: new FormControl(item?.from_time),
-            to_time: new FormControl(item?.to_time)
+            from_time: new FormControl(localFromDate[1].trim()),
+            to_time: new FormControl(localToDate[1].trim())
           })
           control.push(newFormGroup)
           this.asset_uptime_registry_id.push(item?.asset_uptime_registry_id)
@@ -95,10 +99,10 @@ export class AssetUptimeComponent implements OnInit {
       var obj = {
         is_alltime_working: true
       }
-      this.commonService.upTime(this.asset.asset_id, obj).subscribe((response) => {
+      this.commonService.upTime(this.asset.asset_id, obj).subscribe((response:any) => {
         this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset Uptime')
       }, (err) => {
-        this.toasterService.showError('something went wrong !', 'Error')
+        this.toasterService.showError(err.message, 'Asset Uptime')
       })
     }
     else {
@@ -107,8 +111,6 @@ export class AssetUptimeComponent implements OnInit {
       let array = this.timeForm.get('times') as FormArray;
       array.controls.forEach((formGroup, index) => {
         formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
-        console.log('fromTime',formGroup.value.from_time.split(':'))
-        console.log('toTime',formGroup.value.to_time.split(':'))
         let array = formGroup.value.from_time.split(':')
         let array1 = formGroup.value.to_time.split(':')
         var date = new Date(2022,2,5, +array[0], +array[1], +array[2]);
@@ -127,12 +129,11 @@ export class AssetUptimeComponent implements OnInit {
         asset_uptime_registry: this.payloadUptimeArray
       }
  
-      console.log("payload",payload)
      
       this.commonService.upTime(this.asset.asset_id, payload).subscribe((response) => {
         this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset Uptime')
       }, (err) => {
-        this.toasterService.showError('something went wrong !', 'Error')
+        this.toasterService.showError(err.message, 'Asset Uptime')
       })
 
     }
@@ -189,8 +190,7 @@ export class AssetUptimeComponent implements OnInit {
         if (startFrom > (formGroup?.get('from_time')?.value) && startFrom < (formGroup?.get('to_time')?.value)) {
           this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
           event.target.value = ''
-        }
-
+        } 
       })
     }
   }
@@ -232,7 +232,6 @@ export class AssetUptimeComponent implements OnInit {
   }
 
   onModalEvents(eventType) {
-    console.log("eventtype", eventType)
     if (eventType === 'save') {
       const control: any = this?.timeForm?.get('times') as FormArray
       control.removeAt(this.deleteIndex)

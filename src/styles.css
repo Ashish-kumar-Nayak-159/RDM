@@ -5,6 +5,12 @@
   color: #909090;
   font-size: 0.6rem;
 }
+
+.fix-height-image{
+  max-height: 50px;
+  object-fit: cover;
+}
+
 #toast-container > .toast-livealert-error {
   background-color: #fb5515;
   position: relative;

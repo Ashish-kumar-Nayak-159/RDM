@@ -223,7 +223,7 @@
       <div class="modal-body">
         <div [formGroup]="createMaintenanceForm">
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Name</label>
+            <label for="message-text" class="col-form-label required">Name:</label>
             <input type="text" disabled *ngIf="isView && !isEdit" class="form-control form-control-sm"
               id="maintenance_name" formControlName="name">
             <input type="text" placeholder="Name" (input)="containSpecialChar($event)" required *ngIf="!isView"
@@ -236,7 +236,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Asset</label>
+            <label for="message-text" class="col-form-label required">Asset:</label>
             <ng-select [items]="assetDropdown" [attr.disabled]="true" *ngIf="isView" class="custom-dropdown w-12 sm"
               [searchable]="true" bindLabel="asset_name" [closeOnSelect]="true" placeholder="Select Asset"
               groupBy="asset_type" dropdownPosition="bottom" name="asset-dropdown" bindValue="asset_ids" required
@@ -264,14 +264,14 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label ">Description</label>
+            <label for="message-text" class="col-form-label ">Description:</label>
             <textarea id="description" [ngClass]="[isView ? 'disabled':'']" class="form-control form-control-sm"
               [(ngModel)]="description" formControlName="description" rows="5" cols="80"
               placeholder="Enter text here"></textarea>
           </div>
           <div></div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Maintenance Start From</label>
+            <label for="message-text" class="col-form-label required">Maintenance Start From:</label>
             <!-- <input type="datetime-local" *ngIf="isView" [attr.disabled]="isView" [min]="disableBeforeDate" class="form-control form-control-sm"
               formControlName="start_date" placeholder="Date Time"> -->
             <input type="text" *ngIf="isView" [attr.disabled]="isView" [minDate]="disableBeforeDate"
@@ -291,7 +291,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">Inspection Frequency</label>
+            <label for="recipient-name" class="col-form-label required">Inspection Frequency:</label>
             <select class="form-control form-control-sm" [attr.disabled]="isView && !isEdit" id="template"
               [(ngModel)]="inspection_frequency" formControlName="inspection_frequency" *ngIf="isView"
               name="model_type">
@@ -384,7 +384,7 @@
             </div> -->
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Notify Email Subject</label>
+            <label for="message-text" class="col-form-label required">Notify Email Subject:</label>
             <input type="text" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-control form-control-sm"
               id="sub_name" formControlName="notify_email_subject">
             <input type="text" *ngIf="!isView" class="form-control form-control-sm" id="sub_name"
@@ -398,7 +398,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Email Recipients:</label>
+            <label for="message-text" class="col-form-label required">Email Recipients:</label>
             <div class="">
               <div class="form-inline">
                 <ng-container>
@@ -426,7 +426,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Select Users Group</label>
+            <label for="message-text" class="col-form-label">Select Users Group:</label>
             <div class="form-group">
               <ng-select [items]="userGroupArray" [ngClass]="[isView ? 'disabled':'']" [disabled]="isView"
                 *ngIf="isView" clearSearchOnAdd="true" [multiple]="true" class="custom-dropdown w-12 sm"
@@ -453,7 +453,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Reference Documents</label>
+            <label for="message-text" class="col-form-label">Reference Documents:</label>
             <div class="form-group">
               <!-- <ng-select [items]="referenceDocs" placeholder="Select Documents" [multiple]="true" bindLabel="name" bindValue="id" name="refdoc" [(ngModel)]="defaultRefDocs" [ngModelOptions]="{standalone: true}" (change)="getRefDocData($event)">
               </ng-select> -->
@@ -463,7 +463,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label ">Email Body</label>
+            <label for="message-text" class="col-form-label required">Email Body:</label>
             <app-text-editor id="htmlEmail1" [ngClass]="[ isView ? 'disabled':'']" [inputItem]="currentItem"
               (htmlContentDetect)="emailBodyDetect($event)">
             </app-text-editor>
@@ -493,7 +493,7 @@
               <div class="form-group">
                 <div class="d-flex align-items-center w-100">
                   <div class="form-group mr-4">
-                    <label for="recipient-name" class="col-form-label ">Escalation Duration</label>
+                    <label for="recipient-name" class="col-form-label ">Escalation Duration:</label>
                     <input [attr.disabled]="isView && !isEdit" *ngIf="isView" type="number" min="2"
                       class="form-control form-control-sm" style="width: 65px !important;height: 30px!important;"
                       id="nbefore_name" [(ngModel)]="obj.duration_hours">
@@ -524,7 +524,7 @@
 
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-label">Email Recipients:</label>
+                <label for="message-text" class="col-form-label required">Email Recipients:</label>
                 <div class="">
                   <div class="form-inline">
                     <ng-container>
@@ -563,7 +563,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-label">Select Users Group</label>
+                <label for="message-text" class="col-form-label">Select Users Group:</label>
                 <div class="form-group">
                   <ng-select [items]="userGroupArray" *ngIf="isView" [disabled]="isView && !isEdit"
                     clearSearchOnAdd="true" [multiple]="true" class="custom-dropdown w-12 sm" [clearable]="false"
@@ -595,14 +595,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-labe ">Email Subject</label>
+                <label for="message-text" class="col-form-labe required">Email Subject:</label>
                 <input type="email" *ngIf="isView" [attr.disabled]="isView && !isEdit"
                   class="form-control form-control-sm" id="app_name" [(ngModel)]="obj.email_subject">
                 <input type="email" *ngIf="!isView" class="form-control form-control-sm" id="app_name"
                   [(ngModel)]="obj.email_subject">
               </div>
               <div class="form-group">
-                <label for="message-text" class="col-form-label ">Email Body</label>
+                <label for="message-text" class="col-form-label required">Email Body:</label>
                 <app-text-editor id="{{i}}" [ngClass]="[isView ? 'disabled':'']" [inputItem]="obj.email_body"
                   (htmlContentDetect)="emailBody1Detect($event,i)">
                 </app-text-editor>

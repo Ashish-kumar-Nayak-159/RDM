@@ -25,7 +25,7 @@
   box-shadow: 0 0 12px #999999;
   color: #FFFFFF;
 }
-#toast-container > .toast-critical{
+/* #toast-container > .toast-critical{
   background-color: #cc0000;  
   position: relative;
   overflow: hidden;
@@ -39,10 +39,7 @@
   box-shadow: 0 0 12px #999999;
   color: #FFFFFF;
 
-}
-#toast-container > .toast-warning{
-  background-color: #f6c23e;
-}
+} */
 #toast-container > .toast-informational{
   background-color: #229954;
 }

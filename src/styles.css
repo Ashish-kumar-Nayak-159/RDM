@@ -5,6 +5,12 @@
   color: #909090;
   font-size: 0.6rem;
 }
+
+.fix-height-image{
+  max-height: 50px;
+  object-fit: cover;
+}
+
 #toast-container > .toast-livealert-error {
   background-color: #fb5515;
   position: relative;
@@ -19,7 +25,7 @@
   box-shadow: 0 0 12px #999999;
   color: #FFFFFF;
 }
-#toast-container > .toast-critical{
+/* #toast-container > .toast-critical{
   background-color: #cc0000;  
   position: relative;
   overflow: hidden;
@@ -33,10 +39,7 @@
   box-shadow: 0 0 12px #999999;
   color: #FFFFFF;
 
-}
-#toast-container > .toast-warning{
-  background-color: #f6c23e;
-}
+} */
 #toast-container > .toast-informational{
   background-color: #229954;
 }

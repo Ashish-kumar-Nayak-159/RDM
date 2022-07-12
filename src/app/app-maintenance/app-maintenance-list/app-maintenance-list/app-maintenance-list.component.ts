@@ -698,7 +698,7 @@ export class AppMaintenanceListComponent implements OnInit {
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
           this.setEditFields();
-          this.toasterService.showError(err.message, " Maitenance Update");
+          this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', "Maitenance Update");
         }
       );
     }
@@ -730,7 +730,7 @@ export class AppMaintenanceListComponent implements OnInit {
           {
             this.setEditFields();
           }
-          this.toasterService.showError(err.message, " Maitenance Create");
+          this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', " Maitenance Create");
         }
       );
     }

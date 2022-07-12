@@ -129,6 +129,7 @@ export class AppMaintenanceListComponent implements OnInit {
   tempAssetId:any;
   tempAssetModel:any;
   defaultRefDocs:number[] = []
+  formSubmitted:boolean;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -336,6 +337,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   addNewEsacalation(i) { 
+    this.formSubmitted = false;
     if(i===0)
     {
       this.is_escalation_required = !this.is_escalation_required;
@@ -519,6 +521,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   onCloseMaintenanceModelModal() {
+    this.formSubmitted = false;
     this.createMaintenanceForm.reset();
     this.maintenanceForm.reset();
     this.notifyMaintenanceForm.reset();
@@ -554,6 +557,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   onSaveMaintenanceModelModal() {
     this.createMaitenanceCall = true;
+    this.formSubmitted = true;
     if ((this.createMaintenanceForm.get("name").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("asset_ids").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("start_date").value === undefined || this.createMaintenanceForm.get("start_date").value === '')
@@ -771,7 +775,8 @@ export class AppMaintenanceListComponent implements OnInit {
   }
   emails = [];
   addEmailRecipient(i) {
-
+    debugger
+    this.formSubmitted = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -802,6 +807,7 @@ export class AppMaintenanceListComponent implements OnInit {
   }
   notifyEmails = [];
   addEmailNotifyRecipient() {
+    this.formSubmitted = false;
     if (!this.notifyEmails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {

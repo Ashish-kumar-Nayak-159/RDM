@@ -341,12 +341,12 @@
                 <input *ngIf="isView" [attr.disabled]="isView && !isEdit" type="number" min="2"
                   class="form-control form-control-sm mr-4" style="width: 65px !important;height: 30px!important;"
                   id="nbefore_name" formControlName="notifyBefore">
-                <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2" max="23" (keyup)="checkHours()"
+                <input *ngIf="inspection_frequency===0 && !isView" type="number" min="2" max="23" 
                   (change)="checkHours()" class="form-control form-control-sm mr-4"
                   style="width: 65px !important;height: 30px!important;" id="nbefore_name"
                   formControlName="notifyBefore">
                 <input *ngIf="inspection_frequency!==0 && !isView" type="number"
-                  style="width: 65px !important;height: 30px!important;" min="2" (keyup)="checkHours()"
+                  style="width: 65px !important;height: 30px!important;" min="2" 
                   (change)="checkHours()" class="form-control form-control-sm mr-4" id="nbefore_name"
                   formControlName="notifyBefore">
 

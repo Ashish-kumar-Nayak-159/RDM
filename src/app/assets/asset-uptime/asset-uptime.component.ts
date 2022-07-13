@@ -34,6 +34,7 @@ export class AssetUptimeComponent implements OnInit {
   };
   isAPILoading = false;
   deleteIndex: number;
+  emptyUptime:boolean = false;
   constructor(private commonService: CommonService, private toasterService: ToasterService) {
   }
 
@@ -95,7 +96,9 @@ export class AssetUptimeComponent implements OnInit {
 
   // call when someone click on save button
   saveUpTime() {
+    this.emptyUptime = false
     if (this.on) {
+      (this.timeForm.get('times') as FormArray).controls.splice(1,(this.timeForm.get('times') as FormArray)?.length- 1)
       var obj = {
         is_alltime_working: true
       }
@@ -104,39 +107,51 @@ export class AssetUptimeComponent implements OnInit {
       }, (err) => {
         this.toasterService.showError(err.message, 'Asset Uptime')
       })
+
+      this.timeForm.reset();
     }
-    else {
+    else{
+    
+        this.payloadUptimeArray = []
+        let array = this.timeForm.get('times') as FormArray;
 
-      this.payloadUptimeArray = []
-      let array = this.timeForm.get('times') as FormArray;
-      array.controls.forEach((formGroup, index) => {
-        formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
-        let array = formGroup.value.from_time.split(':')
-        let array1 = formGroup.value.to_time.split(':')
-        var date = new Date(2022,2,5, +array[0], +array[1], +array[2]);
-        var date1 = new Date(2022,2,5, +array1[0], +array1[1], +array1[2]);
-        let utc_from_time:any = [this.padTo2Digits(date.getUTCHours()), this.padTo2Digits(date.getUTCMinutes()), this.padTo2Digits(date.getUTCSeconds())].join(':')
-        let utc_to_time:any = [this.padTo2Digits(date1.getUTCHours()), this.padTo2Digits(date1.getUTCMinutes()), this.padTo2Digits(date1.getUTCSeconds())].join(':')
-        formGroup.value.from_time = utc_from_time
-        formGroup.value.to_time = utc_to_time
-        this.payloadUptimeArray.push(formGroup.value)
-      })
-
-
-
-      var payload = {
-        is_alltime_working: false,
-        asset_uptime_registry: this.payloadUptimeArray
+        array.controls.forEach((formGroup)=>{
+        if( !formGroup.get('from_time').value || !formGroup.get('to_time').value || !formGroup.get('from_time').value && !formGroup.get('to_time').value){
+           this.emptyUptime = true
+           this.toasterService.showError('Please Select Time','Asset Uptime')
+           return;
+        }
+        
+   })
+        array.controls.forEach((formGroup, index) => {
+          formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
+          let array = formGroup.value.from_time.split(':')
+          let array1 = formGroup.value.to_time.split(':')
+          var date = new Date(2022,2,5, +array[0], +array[1], +array[2]);
+          var date1 = new Date(2022,2,5, +array1[0], +array1[1], +array1[2]);
+          let utc_from_time:any = [this.padTo2Digits(date.getUTCHours()), this.padTo2Digits(date.getUTCMinutes()), this.padTo2Digits(date.getUTCSeconds())].join(':')
+          let utc_to_time:any = [this.padTo2Digits(date1.getUTCHours()), this.padTo2Digits(date1.getUTCMinutes()), this.padTo2Digits(date1.getUTCSeconds())].join(':')
+          formGroup.value.from_time = utc_from_time
+          formGroup.value.to_time = utc_to_time
+          this.payloadUptimeArray.push(formGroup.value)
+        })
+  
+        if(!this.emptyUptime){
+   
+        var payload = {
+          is_alltime_working: false,
+          asset_uptime_registry: this.payloadUptimeArray
+        }
+   
+        this.commonService.upTime(this.asset.asset_id, payload).subscribe((response) => {
+          this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset Uptime')
+        }, (err) => {
+          this.toasterService.showError(err.message, 'Asset Uptime')
+        })
       }
- 
-     
-      this.commonService.upTime(this.asset.asset_id, payload).subscribe((response) => {
-        this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset Uptime')
-      }, (err) => {
-        this.toasterService.showError(err.message, 'Asset Uptime')
-      })
-
     }
+    
+    
   }
 
   // add new input time field when click on (+) icon

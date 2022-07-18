@@ -8,7 +8,7 @@
             <span class="text-secondary">Asset Alerts
             </span></a>
           </li> -->
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="contextApp.app != 'Indygo'">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>
@@ -713,7 +713,7 @@
               [(ngModel)]="alertObj.alert_type">
               <option [ngValue]="undefined">Select Alert Source</option>
               <!-- <option [ngValue]="'Asset'" >Asset</option> -->
-              <option [ngValue]="'Edge'">Edge</option>
+              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo'">Edge</option>
               <option [ngValue]="'Cloud'">Cloud</option>
             </select>
           </div>

@@ -309,9 +309,9 @@
                     (click)="onUpdateAlertConditions()"><em class="fa fa-save fa-sm"></em></button>
                 </div>
                 <div class="col-12 my-3 accordion-padding ">
-
                   <div class="">
-                    <h6>Email / Whatsapp Attachments: </h6>
+                    <h6 *ngIf="contextApp.app!='Indygo'">Email / Whatsapp Attachments: </h6>
+                    <h6 *ngIf="contextApp.app=='Indygo'">Email Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                      placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><em class="fa fa-plus fa-sm"></em></button>
                      <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -458,9 +458,9 @@
 
                   </div>
 
-                  <hr>
+                  <hr *ngIf="contextApp.app!='Indygo'">
 
-                  <div class="form-group accordion-padding mx-3">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
                     <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
                       [(ngModel)]="alertObj.actions.whatsapp.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMS') === -1">
@@ -521,9 +521,9 @@
                     </div>
                   </div>
 
-                  <hr>
+                  <hr *ngIf="contextApp.app!='Indygo'">
 
-                  <div class="form-group accordion-padding mx-3">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
                       [(ngModel)]="alertObj.actions.sms.enabled"
@@ -585,11 +585,10 @@
                       </div>
                     </div>
                   </div>
-                  <hr>
+                  
+                  <hr *ngIf="contextApp.app!='Indygo'">
                 
-                
-                
-                  <div class="form-group accordion-padding mx-3">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
                       [(ngModel)]="alertObj.actions.push_notification.enabled"

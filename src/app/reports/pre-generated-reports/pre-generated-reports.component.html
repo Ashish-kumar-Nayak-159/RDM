@@ -170,11 +170,11 @@
               <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
                 [multiple]="true" bindLabel="display_name" bindValue="asset_id" [closeOnSelect]="false"
                 placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
-                [(ngModel)]="reportsObj.assets" (onDeSelectAll)="Deselect($event)">
+                [(ngModel)]="reportsObj.assets">
                 <ng-template ng-header-tmp>
                   <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                     <li *ngIf="reportsObj.assets.length !== assets.length"> <a href="javascript:void(0)"
-                        (click)="reportsObj.assets = assets">Select All</a></li>
+                        (click)="selectAll();">Select All</a></li>
                     <li *ngIf="reportsObj.assets.length === assets.length"> <a href="javascript:void(0)"
                         (click)="reportsObj.assets = []">Deselect All</a></li>
                   </ul>

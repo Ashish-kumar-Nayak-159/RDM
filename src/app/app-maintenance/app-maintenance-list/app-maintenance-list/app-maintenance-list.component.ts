@@ -129,6 +129,7 @@ export class AppMaintenanceListComponent implements OnInit {
   tempAssetId:any;
   tempAssetModel:any;
   defaultRefDocs:number[] = []
+  formSubmitted:boolean;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -336,6 +337,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   addNewEsacalation(i) { 
+    this.formSubmitted = false;
     if(i===0)
     {
       this.is_escalation_required = !this.is_escalation_required;
@@ -519,6 +521,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   }
   onCloseMaintenanceModelModal() {
+    this.formSubmitted = false;
     this.createMaintenanceForm.reset();
     this.maintenanceForm.reset();
     this.notifyMaintenanceForm.reset();
@@ -554,6 +557,7 @@ export class AppMaintenanceListComponent implements OnInit {
 
   onSaveMaintenanceModelModal() {
     this.createMaitenanceCall = true;
+    this.formSubmitted = true;
     if ((this.createMaintenanceForm.get("name").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("asset_ids").value === undefined || this.createMaintenanceForm.get("name").value === '')
       || (this.createMaintenanceForm.get("start_date").value === undefined || this.createMaintenanceForm.get("start_date").value === '')
@@ -694,7 +698,7 @@ export class AppMaintenanceListComponent implements OnInit {
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
           this.setEditFields();
-          this.toasterService.showError(err.message, " Maitenance Update");
+          this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', "Maitenance Update");
         }
       );
     }
@@ -726,7 +730,7 @@ export class AppMaintenanceListComponent implements OnInit {
           {
             this.setEditFields();
           }
-          this.toasterService.showError(err.message, " Maitenance Create");
+          this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', " Maitenance Create");
         }
       );
     }
@@ -771,7 +775,8 @@ export class AppMaintenanceListComponent implements OnInit {
   }
   emails = [];
   addEmailRecipient(i) {
-
+    debugger
+    this.formSubmitted = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -802,6 +807,7 @@ export class AppMaintenanceListComponent implements OnInit {
   }
   notifyEmails = [];
   addEmailNotifyRecipient() {
+    this.formSubmitted = false;
     if (!this.notifyEmails) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -1277,12 +1283,12 @@ async getMaintenance_data(id,title)
           //is_sort: true
         },
         {
-          header_name: 'Trigger Date',
+          header_name: 'Maintenance Date',
           value_type: 'string',
           // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
-          data_key: 'trigger_date',
+          data_key: 'maintenance_date',
           data_tooltip: 'last_ingestion_on',
           data_cellclass: 'ingestionCss'
         },
@@ -1476,7 +1482,7 @@ async getMaintenance_data(id,title)
  
   //checking that input value contains special characters or not
   containSpecialChar(event:any){
-    const NOT_ALLOWED_SPECIAL_CHARS_NAME = ['.', '$', '#','`','@','%','^','&','*','~','(',')','?','-','/','|','}','{',']','[','+','=','_']
+    const NOT_ALLOWED_SPECIAL_CHARS_NAME = ['.',',', '$', '#','`','@','%','^','&','*','~','(',')','?','-','/','|','}','{',']','[','+','=','_']
       NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char)=>{
         if((event.target.value).includes(char)){
            this.toasterService.showError("Name should not include '.', '_', '$', '#' etc","Add Maintenance")

@@ -123,7 +123,7 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
         for (let arrvalue of arr) {
           header += arrvalue.toString(16);
         }
-        if (allowedZipMagicNumbers.includes(header)) {  //[0,1,2]
+        // if (allowedZipMagicNumbers.includes(header)) {  //[0,1,2]
           
           // this.uploadedFile[i].fileName = fileList?.item(0).name;
           let control = (this.formData.get('files') as FormArray).controls[i].get('filetype'); 
@@ -138,11 +138,8 @@ export class AppMaintenanceModalComponent implements OnInit, OnChanges {
           // this.uploadedFile.push({'file':fileList?.item(0)})
           this.isCanUploadFile = true;
           // this.fileName = file.name;
-        }
-        else {
-          this.toasterService.showError('Only Image, Video & PDF files are allowed', 'Select File');
-          // this.fileName = 'Choose File';
-        }
+       
+      
         return;
       }
       filereader.readAsArrayBuffer(file);

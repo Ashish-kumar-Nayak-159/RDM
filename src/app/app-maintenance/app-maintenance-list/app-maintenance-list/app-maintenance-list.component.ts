@@ -1283,12 +1283,12 @@ async getMaintenance_data(id,title)
           //is_sort: true
         },
         {
-          header_name: 'Trigger Date',
+          header_name: 'Maintenance Date',
           value_type: 'string',
           // is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
-          data_key: 'trigger_date',
+          data_key: 'maintenance_date',
           data_tooltip: 'last_ingestion_on',
           data_cellclass: 'ingestionCss'
         },
@@ -1482,7 +1482,7 @@ async getMaintenance_data(id,title)
  
   //checking that input value contains special characters or not
   containSpecialChar(event:any){
-    const NOT_ALLOWED_SPECIAL_CHARS_NAME = ['.', '$', '#','`','@','%','^','&','*','~','(',')','?','-','/','|','}','{',']','[','+','=','_']
+    const NOT_ALLOWED_SPECIAL_CHARS_NAME = ['.',',', '$', '#','`','@','%','^','&','*','~','(',')','?','-','/','|','}','{',']','[','+','=','_']
       NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char)=>{
         if((event.target.value).includes(char)){
            this.toasterService.showError("Name should not include '.', '_', '$', '#' etc","Add Maintenance")

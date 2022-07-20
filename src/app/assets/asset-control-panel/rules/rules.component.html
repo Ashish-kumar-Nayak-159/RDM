@@ -7,7 +7,7 @@
           <em class="fa fa-fw fa-cloud"></em>
           Cloud Rules</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="contextApp.app !='Indygo'">
         <a class="nav-link" href="javascript:void(0)" (click)="onTabClick('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>

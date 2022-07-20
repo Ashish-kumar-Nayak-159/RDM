@@ -9,7 +9,7 @@
     [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo">
   </a>
   <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin" [routerLink]="['applications']">
-    <img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" class="d-block img-fluid img-logo">
+    <img src="../../assets/img/kpix-logo.png" class="d-block img-fluid img-logo fix-height-image">
   </a>
 
   <ul class="navbar-nav ml-auto">
@@ -93,8 +93,8 @@
   *ngIf="isLoginRoute  && url.includes('login')">
   <ng-container *ngIf="defaultAppName === undefined || defaultAppName === null || defaultAppName === ''">
     <div class="container" id="header">
-      <div class=""><a><img alt="" src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" 
-            class="d-block img-fluid"></a>
+      <div class=""><a><img alt="" src="../../assets/img/kpix-logo.png" 
+            class="d-block img-fluid fix-height-image"></a>
       </div>
       <div class="ml-auto"><a><img alt="" src="../../assets/img/Kemsys-Logo.png" style="width: 80%;"
             class="d-none d-md-block img-fluid"></a>
@@ -141,8 +141,8 @@
     <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
       <a class="d-flex align-items-center">
         <img alt="" 
-          src="{{defaultAppName !== 'Indygo' ? '../../assets/img/KemPaas-Logo-Blue.png' : '../../assets/img/indygo.png'}}"
-          style="width: 60%;" class="d-block img-fluid">
+          src="{{defaultAppName !== 'Indygo' ? '../../assets/img/kpix-logo.png' : '../../assets/img/indygo.png'}}"
+           class="d-block img-fluid fix-height-image" style="max-height: 40px;">
       </a>
     </ng-container>
     <ul class="navbar-nav ml-auto" *ngIf="!url.includes('login')">

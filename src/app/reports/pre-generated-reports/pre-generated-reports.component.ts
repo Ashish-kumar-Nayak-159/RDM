@@ -161,11 +161,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onOpenConfigurePGRModal() {
+    debugger
     this.isAddReport = true;
     this.reportsObj = { assets: [] };
     this.assets = this.originalAssets;
     this.selectedAssets = this.originalAssets;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    console.log('assets',this.assets)
   }
 
   onCloseConfigurePGRModal() {
@@ -657,6 +659,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('#downloadPreGeneratedReportReportModal').modal('hide');
     this.reportDownloadSubscription?.unsubscribe();
     this.isDownloadCloseOptionAvailable = false;
+  }
+
+  selectAll(){
+    var assetIds = this.assets.map((asset)=>{
+       return asset?.asset_id
+     })
+     console.log("assetIds",assetIds)
+     this.reportsObj.assets = assetIds
   }
 
   ngOnDestroy() {

@@ -241,13 +241,15 @@
                           <option [ngValue]="'<'"><</option>
                           <option [ngValue]="'>'">></option>
                           <option [ngValue]="'=='">==</option>
+                          <option [ngValue]="'!='">!=</option>
+
 
                         </select>
                       <!-- <label for="operator" class="h4 col-form-label ">OR</label> -->
                     </div>
                     <div class="col-4">
                       <input type="number" [disabled]="isDisabled" class="form-control form-control-sm" id="constant{{propIndex}}"
-                        name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
+                        name="constant{{propIndex}}" placeholder="Enter Value" [(ngModel)]="propObj.value">
                     </div>
                   </div>
                   <div class="form-group row" *ngIf="!isLast">

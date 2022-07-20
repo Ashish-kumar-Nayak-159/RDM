@@ -31,6 +31,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   selectedUserGroup: any;
   isAddUserGroup = false;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  contextApp: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -38,6 +39,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.getApplicationUserGroups();

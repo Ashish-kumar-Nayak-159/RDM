@@ -129,6 +129,21 @@ export class CONSTANTS {
       deleted: false,
       type: 'apps',
     },
+    {
+
+      id: 9,
+      name: 'BLE_Engine',
+      is_start: false,
+      is_stop: false,
+      is_restart: false,
+      is_install: false,
+      is_uninstall: false,
+      is_update: true,
+      display_name: 'BLE_Engine',
+      metadata: {},
+      deleted: false,
+      type: 'system_apps',
+    },
   ];
 
   public static PROTOCOLS = [

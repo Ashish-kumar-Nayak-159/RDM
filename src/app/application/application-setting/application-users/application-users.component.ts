@@ -191,7 +191,13 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
         this.hierarchyArr[key] = [];
       }
     });
-    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == i && r.key == this.configureHierarchy[i]);
+    let parentId = 0;
+    Object.keys(this.configureHierarchy).forEach((key,index) => {
+      if (this.configureHierarchy[key]) {
+        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;        
+      }
+    });
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
     if (selectedHierarchy) {
       this.hierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }

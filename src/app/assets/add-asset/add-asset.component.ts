@@ -176,7 +176,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.addAssetHierarchyArr[key] = [];
       }
     });
-    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == i && r.key == this.addAssetConfigureHierarchy[i]);
+    let parentId = 0;
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key,index) => {
+      if (this.addAssetConfigureHierarchy[key]) {
+        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;        
+      }
+    });
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
     if (selectedHierarchy) {
       this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }

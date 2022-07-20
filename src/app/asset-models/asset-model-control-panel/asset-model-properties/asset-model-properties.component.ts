@@ -267,6 +267,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj = {
       json_model: {},
       threshold: {},
+      read : true
     };
     if (this.type === 'edge_derived_properties') {
       this.propertyObj.metadata = {
@@ -301,7 +302,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             d: new FormControl(null, [Validators.required]),
             sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
             a: new FormControl(false),
-            fc: new FormControl(null, [Validators.required]),
+            fc_r: new FormControl(null, [Validators.required]),
+            fc_w: new FormControl(null, [Validators.required]),
           });
         } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
           this.setupForm = new FormGroup({
@@ -994,7 +996,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 Validators.max(99999),
               ]),
               a: new FormControl(false),
-              fc: new FormControl(this.propertyObj?.metadata?.fc, [Validators.required]),
+              fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
             });
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({

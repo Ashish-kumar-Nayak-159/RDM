@@ -93,6 +93,15 @@
               <option value="G3">G3</option>
             </select>
           </div>
+          <div class="row">
+            <div class="col-6">
+              <input class="form-group" type="checkbox" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" required/> Read<br>
+            </div>
+            <div class="col-6">
+              <input class="form-group" type="checkbox" [(ngModel)]="propertyObj.write" name="write" id="write" value="16" required/> Write<br>
+            </div>
+          </div>
+          
           <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
           </div>
@@ -142,9 +151,9 @@
                     Property Register Details
                   </button>
                 </ng-container>
-                <app-model-protocol-specific-details [setupForm]="setupForm" [dataObj]="propertyObj.metadata"
+                <app-model-protocol-specific-details [setupForm]="setupForm" [propertyObj]="propertyObj" [dataObj]="propertyObj.metadata"
                   [pageType]="propertyObj.edit ? 'edit' : 'add'" [assetModel]="assetModel" [slaveData]="slaveData"
-                  *ngIf="setupForm && propertyObj">
+                  *ngIf="setupForm && propertyObj" >
                 </app-model-protocol-specific-details>
               </accordion-group>
             </accordion>

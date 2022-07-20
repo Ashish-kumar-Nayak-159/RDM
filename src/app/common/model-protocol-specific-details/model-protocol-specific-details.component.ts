@@ -10,13 +10,14 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
   @Input() setupForm: FormGroup;
   @Input() slaveData: any[] = [];
   @Input() assetModel: any;
+  @Input() propertyObj : any;
   @Input() pageType = 'add'; // add or edit
   @Input() dataObj: any;
   constructor() {}
 
   ngOnInit(): void {
-     console.log("slaveData",this.slaveData)
-      if (this.pageType === 'edit') {
+    console.log("slaveData",this.slaveData)
+    if (this.pageType === 'edit') {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.onChangeOfSetupType(this.dataObj);
         this.onChangeOfSetupSecondaryType(this.dataObj);
@@ -120,7 +121,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
   }
 
   onChangeOfSetupFunctionCode(obj = undefined) {
-    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
+    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_r === 3 || this.setupForm.value.fc_r === 4)) {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl(
         'bn',

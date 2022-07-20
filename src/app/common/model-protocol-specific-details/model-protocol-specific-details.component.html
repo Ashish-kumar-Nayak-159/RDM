@@ -213,13 +213,12 @@
 
       </div>
     </div>
-    <div class="form-group"
-      *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
-      <label for="recipient-name" class="col-form-label required">Function Code:</label>
+    <div class="form-group" *ngIf="propertyObj.read == true && assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+      <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
       <div class="input-group">
-        <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
+        <select class="form-control form-control-sm" id="fc_r" name="fc_r" formControlName="fc_r"
           (change)="onChangeOfSetupFunctionCode()">
-          <option [ngValue]="null">Select Function Code</option>
+          <option [ngValue]="null">Select Read Function Code</option>
           <ng-container *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">
             <!-- <option [ngValue]="1" >Read Coil (DIGITAL)</option>
           <option [ngValue]="2" >Read
@@ -242,14 +241,34 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="setupForm.get('fc').errors && setupForm.get('fc').touched" class="alert-danger">
-        <div *ngIf="setupForm.get('fc').errors.required">
-          Function Code is required.
+      <div *ngIf="setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
+        <div *ngIf="setupForm.get('fc_r').errors.required">
+          Read Function Code is required.
         </div>
       </div>
     </div>
+    <div class="form-group" *ngIf="propertyObj.write == true">
+      <label for="recipient-name" class="col-form-label required">Write Function Code:</label>
+      <div class="input-group">
+        <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w"
+          (change)="onChangeOfSetupFunctionCode()">
+          <option [ngValue]="null">Select Write Function Code</option>
+          <ng-container>
+            <option [ngValue]="5">Write Single Coil</option>
+            <option [ngValue]="16">Write Multiple Register</option>
+          </ng-container>
+        </select>
+      </div>
+      <div *ngIf="setupForm.get('fc_w').errors && setupForm.get('fc_w').touched" class="alert-danger">
+        <div *ngIf="setupForm.get('fc_w').errors.required">
+          Write Function Code is required.
+        </div>
+      </div>
+    </div>
+
+
     <div class="form-group"
-      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc').value === 3 || setupForm.get('fc').value === 4)">
+      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('rfc').value === 3 || setupForm.get('rfc').value === 4)">
       <label for="message-text" class="col-form-label required">Bit Number:</label>
       <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
         placeholder="Enter Bit Number" min="0" max="15">

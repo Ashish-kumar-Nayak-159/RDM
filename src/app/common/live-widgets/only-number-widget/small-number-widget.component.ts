@@ -26,6 +26,7 @@ export class SmallNumberWidgetComponent implements OnInit {
   subscriptions: Subscription[] = [];
   decodedToken: any;
   widgetStringFromMenu: any;
+  contextApp: any;
 
   constructor(private chartService:ChartService, private commonService:CommonService) { }
 
@@ -33,6 +34,7 @@ export class SmallNumberWidgetComponent implements OnInit {
 
   async ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);

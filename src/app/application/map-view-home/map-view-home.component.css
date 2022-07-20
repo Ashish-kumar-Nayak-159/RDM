@@ -10,4 +10,9 @@ agm-map {
   position: absolute;
 }
 
-
+.gm-style-iw-d + .gm-ui-hover-effect,
+.gm-ui-hover-effect{
+  position: absolute;
+  right: 8px !important;
+  top: 8px !important;
+}

@@ -242,7 +242,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         //     (prop) => (prop.condition = '(' + prop.condition + ')')
         //   );
         // }
+        
         this.isPropertiesLoading = false;
+        // ADDEd filter for measured_properties, i.e. return only r and rw records
+        if(this.type == 'measured_properties') {
+          this.properties[this.type] = this.properties[this.type].filter((detail)=>{ return detail.rw == 'r' || detail.rw == 'rw'})
+        } 
+        
+        // ADDEd filter for controllable_properties, i.e. return only w and rw records
+        if(this.type == 'controllable_properties') {
+          this.properties[this.type] = this.properties[this.type].filter((detail)=>{ return detail.rw == 'w' || detail.rw == 'rw'})
+        }
       })
     );
   }
@@ -686,12 +696,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    if(obj.properties.measured_properties[0].read == true && obj.properties.measured_properties[0].write == true) {
-      obj.properties.measured_properties[0]['rw'] = 'rw'
-    } else if(obj.properties.measured_properties[0].read == true) {
-      obj.properties.measured_properties[0]['rw'] = 'r'
-    } else if(obj.properties.measured_properties[0].write == true) {
-      obj.properties.measured_properties[0]['rw'] = 'w'
+    if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1 ].read == true && obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'rw'
+    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].read == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'r'
+    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'w'
     }
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
@@ -998,7 +1008,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.formula = obj?.data?.metadata?.condition;
       this.isDisabled = false;
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
-      console.log("this.propertyObj",this.propertyObj)
       if(!this.propertyObj.threshold)
       {
         this.propertyObj.threshold = {};

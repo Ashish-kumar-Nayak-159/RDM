@@ -1656,7 +1656,6 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
     },
-
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
@@ -1666,6 +1665,16 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
     },
+    {
+      page: 'control_properties',
+      system_name: 'Control Properties',
+      url: '#asset_model_control_properties',
+      display_name: 'Control Properties',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false,
+    },
+
     {
       page: 'c2d',
       system_name: 'Control',

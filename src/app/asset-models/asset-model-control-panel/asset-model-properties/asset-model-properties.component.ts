@@ -208,6 +208,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
+        
         if(this.type === 'measured_properties'){
           response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key]?.units;
@@ -248,10 +249,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         if(this.type == 'measured_properties') {
           this.properties[this.type] = this.properties[this.type].filter((detail)=>{ return detail.rw == 'r' || detail.rw == 'rw'})
         } 
-        
+
         // ADDEd filter for controllable_properties, i.e. return only w and rw records
         if(this.type == 'controllable_properties') {
-          this.properties[this.type] = this.properties[this.type].filter((detail)=>{ return detail.rw == 'w' || detail.rw == 'rw'})
+          //Here for controllable properties, it dont have data, we need to copy it from  measured_properties
+          // ANd added acroding condition for data
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.rw == 'w' || detail.rw == 'rw'})
         }
       })
     );

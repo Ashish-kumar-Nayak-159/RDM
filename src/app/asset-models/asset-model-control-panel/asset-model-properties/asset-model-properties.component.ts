@@ -1,4 +1,4 @@
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, RequiredValidator } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -45,7 +45,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   formula:String;
   isDisabled  = false;
   displaybutton = false;
-
+  setBasedOnSelection : boolean = false;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -259,7 +259,29 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj.metadata.properties.splice(-1, 1);
 
   }
-
+  readWriteValue(type) {
+    if(this.propertyObj.write == true) {
+      this.setupForm.controls["fc_w"].setValidators([Validators.required]);
+      this.setupForm.get('fc_w').updateValueAndValidity();
+    } else if(this.propertyObj.write == false) {
+      this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
+      this.setupForm.get('fc_w').setValue(''); // or clearValidators()
+      this.setupForm.get('fc_w').updateValueAndValidity();
+    }
+    if(this.propertyObj.read == true) {
+      this.setupForm.controls["fc_r"].setValidators([Validators.required]);
+      this.setupForm.get('fc_r').updateValueAndValidity();
+    } else if(this.propertyObj.read == false) {
+      this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
+      this.setupForm.get('fc_r').setValue('');
+      this.setupForm.get('fc_r').updateValueAndValidity();
+    }
+    if(this.propertyObj.read == false && this.propertyObj.write == false) {
+      this.setBasedOnSelection = true;
+    } else {
+      this.setBasedOnSelection = false;
+    }
+  }
   openAddPropertiesModal() {
     this.isDisabled =false;
     this.displaybutton = false;
@@ -267,7 +289,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj = {
       json_model: {},
       threshold: {},
-      read : true
+      read : true,
+      write : false,
     };
     if (this.type === 'edge_derived_properties') {
       this.propertyObj.metadata = {
@@ -303,7 +326,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
             a: new FormControl(false),
             fc_r: new FormControl(null, [Validators.required]),
-            fc_w: new FormControl(null, [Validators.required]),
+            fc_w: new FormControl(null),
           });
         } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
           this.setupForm = new FormGroup({
@@ -659,10 +682,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.validateSetThreshold();
     }
     this.isCreatePropertyLoading = true;
-    const obj = JSON.parse(JSON.stringify(this.assetModel));
+    var obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    if(obj.properties.measured_properties[0].read == true && obj.properties.measured_properties[0].write == true) {
+      obj.properties.measured_properties[0]['rw'] = 'rw'
+    } else if(obj.properties.measured_properties[0].read == true) {
+      obj.properties.measured_properties[0]['rw'] = 'r'
+    } else if(obj.properties.measured_properties[0].write == true) {
+      obj.properties.measured_properties[0]['rw'] = 'w'
+    }
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -997,6 +1027,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               ]),
               a: new FormControl(false),
               fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
+              fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
             });
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({

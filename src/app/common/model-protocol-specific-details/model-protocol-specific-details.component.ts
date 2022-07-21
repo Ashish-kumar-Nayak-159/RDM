@@ -132,4 +132,5 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
     }
   }
+  onChangeOfWriteSetupFunctionCode(obj = undefined) {}
 }

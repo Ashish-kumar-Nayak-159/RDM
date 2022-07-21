@@ -93,12 +93,15 @@
               <option value="G3">G3</option>
             </select>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
             <div class="col-6">
-              <input class="form-group" type="checkbox" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" required/> Read<br>
+              <input class="form-group" type="checkbox" #read="ngModel" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" (change)="readWriteValue('read')" required="{{setBasedOnSelection}}"/> Read<br>
             </div>
             <div class="col-6">
-              <input class="form-group" type="checkbox" [(ngModel)]="propertyObj.write" name="write" id="write" value="16" required/> Write<br>
+              <input class="form-group" type="checkbox" #write="ngModel" [(ngModel)]="propertyObj.write" name="write" id="write" value="16"  (change)="readWriteValue('write')"/> Write<br>
+            </div>
+            <div *ngIf="propertyObj.read == false && propertyObj.write == false" class="col-12">
+              <span class=" form-group alert-danger" >Please Select Atleast one of Read/Write.</span>
             </div>
           </div>
           
@@ -106,7 +109,6 @@
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
           </div>
           <div class="row col-12" *ngIf="type === 'measured_properties'">
-
             <div class="form-group col-6">
               <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
               <input type="number" class="form-control form-control-sm" id="l1" name="l1"
@@ -239,7 +241,7 @@
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           <div *ngIf="displaybutton == false">
             <button type="button" class="btn btn-primary"
-              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || !isDisabled "
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || !isDisabled"
               (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           </div>
           <div *ngIf="displaybutton == true">

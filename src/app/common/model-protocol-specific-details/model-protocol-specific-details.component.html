@@ -241,7 +241,7 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
+      <div *ngIf="propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
         <div *ngIf="setupForm.get('fc_r').errors.required">
           Read Function Code is required.
         </div>
@@ -250,8 +250,7 @@
     <div class="form-group" *ngIf="propertyObj.write == true">
       <label for="recipient-name" class="col-form-label required">Write Function Code:</label>
       <div class="input-group">
-        <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w"
-          (change)="onChangeOfSetupFunctionCode()">
+        <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w">
           <option [ngValue]="null">Select Write Function Code</option>
           <ng-container>
             <option [ngValue]="5">Write Single Coil</option>
@@ -259,7 +258,7 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="setupForm.get('fc_w').errors && setupForm.get('fc_w').touched" class="alert-danger">
+      <div *ngIf="propertyObj.write == true && setupForm.get('fc_w').errors && setupForm.get('fc_w').touched" class="alert-danger">
         <div *ngIf="setupForm.get('fc_w').errors.required">
           Write Function Code is required.
         </div>

@@ -516,6 +516,7 @@ export class AddRuleComponent implements OnInit {
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
       element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         this.ruleModel.properties.push({
+          sid: prop?.value?.slave,
           property: prop.value.json_key,
           type: prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         });

@@ -33,6 +33,7 @@ export class Rule {
 export class Properties {
     property: string;
     type: string;
+    sid?:any;
 }
 
 export class Conditions {

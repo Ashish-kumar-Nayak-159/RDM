@@ -1124,6 +1124,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
+    // if file name contains single comma then 
+    if(files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")){
+      this.toasterService.showError("file name should not contain ' '",'Select File');
+      return;     
+    }
+
     this.uploadedFiles.splice(index, 1, {
       'file': files?.item(0),
       'index': index

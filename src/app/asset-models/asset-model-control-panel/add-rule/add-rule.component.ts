@@ -97,13 +97,13 @@ export class AddRuleComponent implements OnInit {
   private DefaultRuleModelSetup() {
     if (!this.ruleModel.actions) {
       this.ruleModel.actions = {
-        alert_management: { enabled: false, alert_condition_code: null },
+        alert_management: { enabled: false, alert_condition_code: null,severity:null },
         notification: { enabled: false, email: { subject: null, body: null, groups: [] } },
         asset_control: { enabled: false, disable: false },
       };
     }
     if (!this.ruleModel.actions.alert_management) {
-      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null,severity:null };
     }
     if (!this.ruleModel.actions.alert_management.alert_condition_code) {
       this.ruleModel.actions.alert_management.alert_condition_code = null;
@@ -203,6 +203,7 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfRule() {
     const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
+    console.log('rule',rule)
     this.ruleData = rule;
     delete this.ruleData.rule_id;
     this.configureData();
@@ -238,7 +239,7 @@ export class AddRuleComponent implements OnInit {
     this.getAlertConditions(this.ruleData.type);
     if (!this.ruleData.actions || Object.keys(this.ruleData.actions).length === 0) {
       this.ruleModel.actions = {
-        alert_management: { enabled: false, alert_condition_code: '' },
+        alert_management: { enabled: false, alert_condition_code: '',severity:'' },
         notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
         asset_control: { enabled: false, disable: false },
       };
@@ -246,7 +247,7 @@ export class AddRuleComponent implements OnInit {
       this.ruleModel.actions = this.ruleData.actions;
     }
     if (!this.ruleModel.actions.alert_management) {
-      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null,severity:null };
     }
     if (!this.ruleModel.actions.alert_management.alert_condition_code) {
       this.ruleModel.actions.alert_management.alert_condition_code = null;
@@ -358,6 +359,7 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfSendAlertCheckbox() {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
+    this.ruleModel.actions.alert_management.severity = null;
   }
   onSlaveSelection() {
     this.getAssetsModelProperties();
@@ -409,6 +411,12 @@ export class AddRuleComponent implements OnInit {
     let alertCondition = this.alertConditionList.find(
       (condition) => condition.code === this.ruleModel.actions.alert_management.alert_condition_code
     );
+    if(alertCondition)
+    {
+      this.ruleModel.actions.alert_management.severity =alertCondition.severity;
+    }
+    console.log('alertCondition',alertCondition)
+    console.log('this.ruleModel.actions.alert_management',this.ruleModel.actions.alert_management)
     this.selectedAlertCondition = alertCondition;
     // this.selectedAlertCondition.actions.email = alertCondition.actions.email.enabled;
     // this.selectedAlertCondition.actions.sms = alertCondition.actions.sms.enabled;
@@ -514,9 +522,10 @@ export class AddRuleComponent implements OnInit {
       }
 
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
+      console.log('prop',prop)
       element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         this.ruleModel.properties.push({
-          sid: prop?.value?.slave,
+          sid: prop?.value?.metadata?.slave_id,
           property: prop.value.json_key,
           type: prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         });
@@ -643,6 +652,7 @@ export class AddRuleComponent implements OnInit {
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
       element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
         this.ruleModel.properties.push({
+          sid: prop?.value?.metadata?.slave_id,
           property: prop.value.json_key,
           type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
         });

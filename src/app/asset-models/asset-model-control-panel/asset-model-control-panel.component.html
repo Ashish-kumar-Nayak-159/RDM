@@ -82,6 +82,10 @@
             <app-asset-model-settings *ngIf="activeTab === 'settings'  && assetModel" [assetModel]="assetModel">
             </app-asset-model-settings>
           </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel" id="asset_model_control_properties">
+            <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_properties'" ></app-asset-model-control-properties>
+          </div>
+
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel"
             id="asset_model_properties">
             <app-asset-model-properties *ngIf="activeTab.includes('properties') && assetModel" [type]="activeTab"
@@ -114,10 +118,10 @@
           </div>
 
 
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel"
-            id="asset_model_control_properties">
-              <app-asset-model-control-properties *ngIf="activeTab === 'control_properties' && assetModel" ></app-asset-model-control-properties>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel" id="asset_model_control_properties">
+              <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_properties'" ></app-asset-model-control-properties>
           </div>
+
 
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
             id="asset_model_control_widgets">

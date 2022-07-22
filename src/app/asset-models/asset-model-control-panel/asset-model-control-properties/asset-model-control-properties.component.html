@@ -1,1 +1,614 @@
-<p>asset-model-control-properties works!</p>
+<div class="table-responsive">
+    <div class="tableFixHead">
+      <app-common-table [tableData]="properties" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
+        [isTableDataLoading]="isPropertiesLoading"></app-common-table>
+    </div>
+  </div>
+
+
+<div class="table-responsive">
+    <!-- <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers or from
+      external sensors...</p>
+    <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on
+      Gateways...</p>
+    <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...
+    </p> -->
+    <div class="tableFixHead table-fix-head-alert-conditions">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">
+                <input type="checkbox" id="multiSelect"></th>
+            <th scope="col">Property Name</th>
+            <th scope="col">JSON Key</th>
+            <th scope="col">Datatype</th>
+            <th scope="col">Current Value</th>
+            <th scope="col">New Value</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input type="checkbox" id="multiSelect">
+                </td>
+                <td>temperature</td>
+                <td>temperature</td>
+                <td>Number</td>
+                <td>5</td>
+                <td class="form-group">
+                    <input type="text" class="form-control">
+                </td>
+                <td><button class="btn btn-primary btn-sm">Sync</button></td>
+            </tr>
+        </tbody>
+        <!-- <tbody>
+          <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length > 0">
+            <ng-container *ngFor="let alert of alertConditions; let i = index">
+              <tr [ngClass]="{ 'accordion-bg' : alertObj?.code === alert.code }">
+                <td>
+                  <a href="javascript:void(0)" (click)="onToggleRows(i)">
+                    <em [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></em>
+                  </a>
+                </td>
+                <td>{{i + 1}}</td>
+                <td><em placement="bottom" [tooltip]="alert.severity" [style.color]="
+                  (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                  (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                  (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                  (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
+                  )
+                  )" class="fa fa-exclamation-triangle"></em>
+                  {{alert.code}}</td>
+                <td>{{alert.message}}</td>
+                <td>
+                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Visualization"
+                    (click)="onClickOfViewActionIcon('Visualization', i)">
+                    <img class="img-icon" src="../../../../assets/img/visualization.png">
+                  </a>
+                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Recommendations"
+                    (click)="onClickOfViewActionIcon('Recommendations', i)">
+                    <img class="img-icon" src="../../../../assets/img/recommendation.png">
+                  </a>
+                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Attachments"
+                    (click)="onClickOfViewActionIcon('Attachments', i)">
+                    <em class="fa fa-paperclip"></em>
+                  </a>
+  
+                  <a href="javascript:void(0)" placement="bottom" tooltip="Actions"
+                    (click)="onClickOfViewActionIcon('Actions', i)">
+                    <em class="fa fa-tasks"></em>
+                  </a>
+                </td>
+                <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                  <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
+                    [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
+                    <em class="fa fa-fw fa-edit"></em>
+                  </a>
+                  <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)" placement="bottom"
+                    tooltip="Delete Alert Condition" [class.disabled]="assetModel.freezed">
+                    <em class="fa fa-fw fa-trash"></em>
+                  </a>
+                </td>
+              </tr>
+              <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
+                <td colspan="6" class="accordion-border" *ngIf="viewType === 'Visualization'">
+                  <div class="col-12  my-2 accordion-padding">
+                    Following {{widgetStringFromMenu}} have been defined so far.
+                    You can define more.
+  
+                    
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      [disabled]="isCreateAlertConditionLoading || assetModel.freezed" placement="bottom" tooltip="Save"
+                      (click)="onUpdateAlertConditions()"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><em
+                        class="fa fa-save fa-sm"></em></button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></em>
+  
+                  </div>
+  
+                  <div class="col-12  my-2 accordion-padding"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                    <div class="form-inline">
+                      <ng-container>
+                        <div class="form-group">
+                          <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
+                            clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
+                            groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            name="model_type" [(ngModel)]="selectedWidgets"
+                            (onDeSelectAll)="onDeselectAll($event,'widget')">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                              {{items.length}} widgets selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                              <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = widgets">Select All</a></li>
+                                <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = []">Deselect All</a></li>
+                              </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                              <span [tooltip]="item.title">
+                                {{item.title}}</span>
+                            </ng-template>
+                          </ng-select>
+                        </div>
+                        <div class="form-group">
+                          
+                          <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                            (click)="addVisualizationWidget()">
+                            <em class="fa fa-plus fa-sm"></em></button>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-12 my-2 accordion-padding" *ngIf="alertObj?.visualization_widgets?.length > 0">
+                    <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                      <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
+                        <span class="tag">
+                          <span class="tag-text">{{item}}</span>
+                          <button class="tag-remove" (click)="removeVisualizationWidget(index)"
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+                <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
+                  <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can
+                    configure more.
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
+                      tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
+                        class="fa fa-save fa-sm"></em></button>
+                  </div>
+                  <div class="col-12 my-2 accordion-padding">
+                    <h6>Debugging Steps: </h6>
+                   
+                    <div class="">
+                      <form #form="ngForm">
+                      <table id="mytable" width="100%" class="">
+                        <thead style="display: none;">
+                          <tr>
+                            <th scope="col">Step</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Activity</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container>
+                            <tr *ngFor="let step of alertObj.recommendations; let i = index;"
+                              style="background-color:transparent">
+                              <ng-container>
+                                <td style="width: 15%;">Step - {{i + 1}}</td>
+                                <td style="width: 30%;">{{step.description}}</td>
+                                <td style="width: 30%;">{{step.activity}} Activity</td>
+  
+                                <td style="width: 10%;"
+                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                                  <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)"
+                                    placement="bottom" tooltip="Remove" [class.disabled]="assetModel.freezed">
+                                    <em class="fa fa-trash fa-sm"></em> </a>
+                                </td>
+                              </ng-container>
+                            </tr>
+                            <ng-container
+                              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                              <tr *ngIf="recommendationObj" style="background-color:transparent">
+                                <ng-container>
+                                  <td style="width: 15%;">
+                                    Step - {{alertObj.recommendations.length + 1}}
+                                  </td>
+                                  <td style="width: 30%;">
+                                    <input #description="ngModel" validateText type="text" id="description" name="description" size="20"
+                                      class="form-control form-control-sm" [(ngModel)]="recommendationObj.description">
+                                      <div *ngIf="description.errors?.whitespace && description.touched" class="alert-danger">
+                                        Please enter valid description.
+                                      </div>
+                                  </td>
+                                  <td style="width: 30%;">
+                                    <select class="form-control form-control-sm" id="template" name="model_type"
+                                      [(ngModel)]="recommendationObj.activity">
+                                      <option [ngValue]="undefined">Select Activity</option>
+                                      <option [ngValue]="'Auto'">Auto Activity</option>
+                                      <option [ngValue]="'Manual'">Manual Activity</option>
+                                    </select>
+                                  </td>
+                                 
+                                  <td>
+                                    <a href="javascript:void(0)" class="ml-2" [class.disabled]="assetModel.freezed"
+                                      (click)="addRecommendationStep()" placement="bottom" tooltip="Add"  [class.disabled]="!form.valid">
+                                      <em class="fa fa-plus fa-sm"></em> </a>
+                                   
+                                  </td>
+  
+                                </ng-container>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </form>
+                    </div>
+                    <!-- <div class="row col-12">
+                    <h6>Email / Whatsapp Attachments:
+                      </h6>
+                  </div>
+  
+                  <div class="col-12 mt-2">
+                    <div class="form-inline row" >
+                      <ng-container>
+                      <div class="form-group" >
+                        <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
+                        >
+                          <option [ngValue]="undefined">Select Document</option>
+                          <ng-container *ngFor="let document of documents">
+                            <option [ngValue]="document.name">
+                            {{document.name}}</option>
+                          </ng-container>
+                        </select>
+                        </div><div class="form-group" >
+                          <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add" [disabled]="assetModel.freezed" (click)="addReferenceDocument()" >
+                            <em class="fa fa-plus fa-sm"></em></button>
+                      </div>
+  
+                    </ng-container>
+                    </div>
+                  </div>
+  
+                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
+                    <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
+                      <span class="tag" >
+                        <span class="tag-text">{{item}}</span>
+                        <button class="tag-remove" [disabled]="assetModel.freezed" (click)="removeDocument(index)"></button>
+                      </span>
+                    </ng-container>
+                </div>
+                  </div>
+                </td>
+                <td colspan="6" class="accordion-border" *ngIf="viewType === 'Attachments'">
+  
+                  <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
+  
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
+                      tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
+                        class="fa fa-save fa-sm"></em></button>
+                  </div>
+                  <div class="col-12 my-3 accordion-padding ">
+  
+                    <div class=""
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                      <h6 *ngIf="contextApp.app!='Indygo'">Email / Whatsapp Attachments: </h6>
+                      <h6 *ngIf="contextApp.app=='Indygo'">Email Attachments: </h6>
+                    
+                    </div>
+  
+                    <div class=""
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                      <div class="form-inline">
+                        <ng-container>
+                          <div class="form-group">
+                            <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
+                              clearSearchOnAdd="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
+                              groupBy="type" placeholder="Select Document" dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                              name="model_type" [(ngModel)]="selectedDocuments"
+                              (onDeSelectAll)="onDeselectAll($event,'document')">
+                              <ng-template ng-multi-label-tmp let-items="items">
+                                {{items.length}} documents selected
+                              </ng-template>
+                              <ng-template ng-header-tmp>
+                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                  <li *ngIf="documents.length !== selectedDocuments.length"> <a href="javascript:void(0)"
+                                      (click)="selectedDocuments = documents">Select All</a></li>
+                                  <li *ngIf="documents.length === selectedDocuments.length"> <a href="javascript:void(0)"
+                                      (click)="selectedDocuments = []">Deselect All</a></li>
+                                </ul>
+                              </ng-template>
+                              <ng-template ng-option-tmp let-item="item">
+                                <span [tooltip]="item.name">
+                                  {{item.name}}</span>
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                          <div class="form-group">
+                           
+                            <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
+                              (click)="addReferenceDocument()">
+                              <em class="fa fa-plus fa-sm"></em></button>
+                          </div>
+  
+                        </ng-container>
+                      </div>
+                    </div>
+                    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                      *ngIf="alertObj?.reference_documents?.length > 0">
+                      <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
+                        <span class="tag">
+                          <span class="tag-text">{{item}}</span>
+                          <button class="tag-remove" (click)="removeDocument(index)"
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+  
+  
+                <td colspan="6" class="accordion-border" *ngIf="viewType === 'Actions'">
+                  <div class="col-12  accordion-padding m-2">
+                    <h6>Actions:
+                      <button type="button" class="btn btn-success btn-sm mx-1"
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+                        placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"
+                        [disabled]="assetModel.freezed"><em class="fa fa-save fa-sm"></em></button>
+                    </h6>
+                  </div>
+                  <div class="col-12 my-3">
+                    <div class="form-group accordion-padding mx-3 ">
+                      <input type="checkbox" class="form-check-input" id="email" name="email"
+                        [(ngModel)]="alertObj.actions.email.enabled"
+                        [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
+                      <label class="form-check-label" for="email">Email</label>
+  
+                      <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
+                        <div class="col-auto">
+                          <div class=""
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                            <div class="form-inline">
+                              <ng-container>
+                                <div class="form-group">
+                                  <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                    class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                    placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                    name="group-dropdown" [(ngModel)]="selectedUserGroups['email']"
+                                    [closeOnSelect]="false" required>
+                                    <ng-template ng-header-tmp>
+                                      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                        <li *ngIf="userGroups.length !== selectedUserGroups['email'].length"> <a
+                                            href="javascript:void(0)"
+                                            (click)="selectedUserGroups['email'] = userGroups">Select All</a></li>
+                                        <li *ngIf="userGroups.length === selectedUserGroups['email'].length"> <a
+                                            href="javascript:void(0)" (click)="selectedUserGroups['email'] = []">Deselect
+                                            All</a></li>
+                                      </ul>
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item">
+                                      <span>
+                                        {{item.group_name}}
+                                      </span>
+                                    </ng-template>
+                                    <ng-template ng-multi-label-tmp let-items="items">
+                                      {{items.length}} groups selected
+                                    </ng-template>
+                                  </ng-select>
+  
+  
+                                </div>
+                                <div class="form-group">
+                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                    tooltip="Add" [disabled]="assetModel.freezed" (click)="addUserGroup('email')">
+                                    <em class="fa fa-plus fa-sm"></em></button>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+  
+                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                            *ngIf="alertObj?.actions?.email?.recipients?.length > 0">
+                            <ng-container *ngFor="let item of alertObj.actions.email.recipients; let index = index">
+                              <span class="tag">
+                                <span class="tag-text">{{item}}</span>
+                                <button class="tag-remove" (click)="removeUserGroup(index, 'email')"
+                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                              </span>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <hr *ngIf="contextApp.app!='Indygo'">
+  
+                    <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                      <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
+                        [(ngModel)]="alertObj.actions.whatsapp.enabled"
+                        [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
+                      <label class="form-check-label" for="whatsapp">Whatsapp</label>
+  
+                      <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
+                        <div class="col-auto">
+                          <div class=""
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                            <div class="form-inline">
+                              <ng-container>
+                                <div class="form-group">
+                                  <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                    class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                    placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                    name="group-dropdown" [(ngModel)]="selectedUserGroups['whatsapp']"
+                                    [closeOnSelect]="false" required>
+                                    <ng-template ng-header-tmp>
+                                      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                        <li *ngIf="userGroups.length !== selectedUserGroups['whatsapp'].length"> <a
+                                            href="javascript:void(0)"
+                                            (click)="selectedUserGroups['whatsapp'] = userGroups">Select All</a></li>
+                                        <li *ngIf="userGroups.length === selectedUserGroups['whatsapp'].length"> <a
+                                            href="javascript:void(0)"
+                                            (click)="selectedUserGroups['whatsapp'] = []">Deselect All</a></li>
+                                      </ul>
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item">
+                                      <span>
+                                        {{item.group_name}}
+                                      </span>
+                                    </ng-template>
+                                    <ng-template ng-multi-label-tmp let-items="items">
+                                      {{items.length}} groups selected
+                                    </ng-template>
+                                  </ng-select>
+                                </div>
+                                <div class="form-group">
+                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                    tooltip="Add" (click)="addUserGroup('whatsapp')">
+                                    <em class="fa fa-plus fa-sm"></em></button>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+  
+                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                            *ngIf="alertObj?.actions?.whatsapp?.recipients?.length > 0">
+                            <ng-container *ngFor="let item of alertObj.actions.whatsapp.recipients; let index = index">
+                              <span class="tag">
+                                <span class="tag-text">{{item}}</span>
+                                <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
+                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                              </span>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <hr *ngIf="contextApp.app!='Indygo'">
+  
+                    <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+  
+                      <input type="checkbox" class="form-check-input" id="sms" name="sms"
+                        [(ngModel)]="alertObj.actions.sms.enabled"
+                        [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
+                      <label class="form-check-label" for="sms">SMS</label>
+  
+  
+                      <div class="row my-2"
+                        *ngIf="alertObj.actions.sms.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
+  
+                        <div class="col-auto">
+                          <div class=""
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                            <div class="form-inline">
+                              <ng-container>
+                                <div class="form-group">
+                                  <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                    class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                    placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                    name="group-dropdown" [(ngModel)]="selectedUserGroups['sms']" [closeOnSelect]="false"
+                                    required>
+                                    <ng-template ng-header-tmp>
+                                      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                        <li *ngIf="userGroups.length !== selectedUserGroups['sms'].length"> <a
+                                            href="javascript:void(0)"
+                                            (click)="selectedUserGroups['sms'] = userGroups">Select All</a></li>
+                                        <li *ngIf="userGroups.length === selectedUserGroups['sms'].length"> <a
+                                            href="javascript:void(0)" (click)="selectedUserGroups['sms'] = []">Deselect
+                                            All</a></li>
+                                      </ul>
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item">
+                                      <span>
+                                        {{item.group_name}}
+                                      </span>
+                                    </ng-template>
+                                    <ng-template ng-multi-label-tmp let-items="items">
+                                      {{items.length}} groups selected
+                                    </ng-template>
+                                  </ng-select>
+                                </div>
+                                <div class="form-group">
+                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                    tooltip="Add" (click)="addUserGroup('sms')">
+                                    <em class="fa fa-plus fa-sm"></em></button>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+  
+                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                            *ngIf="alertObj?.actions?.sms?.recipients?.length > 0">
+                            <ng-container *ngFor="let item of alertObj.actions.sms.recipients; let index = index">
+                              <span class="tag">
+                                <span class="tag-text">{{item}}</span>
+                                <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
+                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                              </span>
+                            </ng-container>
+                          </div>
+                        </div>
+  
+                      </div>
+                    </div>
+                    <hr *ngIf="contextApp.app!='Indygo'">
+                    <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                      <input type="checkbox" class="form-check-input" id="push_notification" name="push_notification"
+                      [(ngModel)]="alertObj.actions.push_notification.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
+                    <label class="form-check-label" for="push_notification">Push Notification</label>
+                    <div class="row my-2"
+                    *ngIf="alertObj.actions.push_notification.enabled && decodedToken?.privileges?.indexOf('APMV') > -1">
+                    <div class="col-auto">
+                      <div class=""
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                        <div class="form-inline">
+                          <ng-container>
+                            <div class="form-group">
+                              <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                                class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                                placeholder="Select Group" bindLabel="group_name" dropdownPosition="bottom"
+                                name="group-dropdown" [(ngModel)]="selectedUserGroups['push_notification']" [closeOnSelect]="false"
+                                required>
+                                <ng-template ng-header-tmp>
+                                  <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                    <li *ngIf="userGroups.length !== selectedUserGroups['push_notification'].length"> <a
+                                        href="javascript:void(0)"
+                                        (click)="selectedUserGroups['push_notification'] = userGroups">Select All</a></li>
+                                    <li *ngIf="userGroups.length === selectedUserGroups['push_notification'].length"> <a
+                                        href="javascript:void(0)" (click)="selectedUserGroups['push_notification'] = []">Deselect
+                                        All</a></li>
+                                  </ul>
+                                </ng-template>
+                                <ng-template ng-option-tmp let-item="item">
+                                  <span>
+                                    {{item.group_name}}
+                                  </span>
+                                </ng-template>
+                                <ng-template ng-multi-label-tmp let-items="items">
+                                  {{items.length}} groups selected
+                                </ng-template>
+                              </ng-select>
+                            </div>
+                            <div class="form-group">
+                              <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                tooltip="Add" (click)="addUserGroup('push_notification')">
+                                <em class="fa fa-plus fa-sm"></em></button>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+  
+                      <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                        *ngIf="alertObj?.actions?.push_notification?.recipients?.length > 0">
+                        <ng-container *ngFor="let item of alertObj.actions.push_notification.recipients; let index = index">
+                          <span class="tag">
+                            <span class="tag-text">{{item}}</span>
+                            <button class="tag-remove" (click)="removeUserGroup(index, 'push_notification')"
+                              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
+                          </span>
+                        </ng-container>
+                      </div>
+                    </div>
+                    </div>  
+                  
+                  </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+         
+        </tbody> -->
+      </table>
+    </div>
+  </div>

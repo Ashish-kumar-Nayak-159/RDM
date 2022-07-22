@@ -886,6 +886,15 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+
+    if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1 ].read == true && obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'rw'
+    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].read == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'r'
+    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
+      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'w'
+    }
+    
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {

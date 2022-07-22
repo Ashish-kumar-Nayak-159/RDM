@@ -44,6 +44,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    console.log("CONSTANTS.SELECTED_APP_DATA.........",CONSTANTS.SELECTED_APP_DATA)
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -51,41 +52,41 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
-          console.log('this.contextApp........',this.contextApp)
-          this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
-          let titleObj;
-          let count;
-          this.menuItems.forEach((menu) => {
-            if (menu.visible) {
-              let trueCount = 0;
-              let falseCount = 0;
-              menu?.privileges_required?.forEach((privilege) => {
-                if (this.decodedToken?.privileges?.indexOf(privilege) !== -1) {
-                  trueCount++;
-                } else {
-                  falseCount++;
-                }
-              });
-              if (trueCount > 0) {
-                menu.visible = true;
-              } else {
-                if (falseCount > 0) {
-                  menu.visible = false;
-                }
-              }
-            }
-            if (menu.isTitle) {
-              if (titleObj) {
-                titleObj.isDisplay = count > 0 ? true : false;
-              }
-              count = 0;
-              titleObj = menu;
-            } else {
-              if (menu.visible) {
-                count++;
-              }
-            }
-          });
+          // this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
+          // console.log('menuItems........',this.menuItems)
+          // let titleObj;
+          // let count;
+          // this.menuItems.forEach((menu) => {
+          //   if (menu.visible) {
+          //     let trueCount = 0;
+          //     let falseCount = 0;
+          //     menu?.privileges_required?.forEach((privilege) => {
+          //       if (this.decodedToken?.privileges?.indexOf(privilege) !== -1) {
+          //         trueCount++;
+          //       } else {
+          //         falseCount++;
+          //       }
+          //     });
+          //     if (trueCount > 0) {
+          //       menu.visible = true;
+          //     } else {
+          //       if (falseCount > 0) {
+          //         menu.visible = false;
+          //       }
+          //     }
+          //   }
+          //   if (menu.isTitle) {
+          //     if (titleObj) {
+          //       titleObj.isDisplay = count > 0 ? true : false;
+          //     }
+          //     count = 0;
+          //     titleObj = menu;
+          //   } else {
+          //     if (menu.visible) {
+          //       count++;
+          //     }
+          //   }
+          // });
         }
         this.getAssetModelData(params.get('assetModelId'));
       })

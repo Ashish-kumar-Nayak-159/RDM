@@ -51,6 +51,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
+          console.log('this.contextApp........',this.contextApp)
           this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
           let titleObj;
           let count;

@@ -16,6 +16,7 @@
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
 
         <ng-container *ngFor="let menu of menuItems">
+          <!-- {{menu | json}} -->
           <ng-container *ngIf="menu.isTitle && menu.isDisplay">
             <div class="sidebar1-heading ">
               <span>{{menu.display_name}}</span>
@@ -111,6 +112,13 @@
             <app-asset-model-alert-conditions *ngIf="activeTab === 'alert_conditioning' && assetModel"
               [assetModel]="assetModel"></app-asset-model-alert-conditions>
           </div>
+
+
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel"
+            id="asset_model_control_properties">
+              <app-asset-model-control-properties *ngIf="activeTab === 'control_properties' && assetModel" ></app-asset-model-control-properties>
+          </div>
+
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
             id="asset_model_control_widgets">
             <app-asset-model-control-widgets *ngIf="activeTab === 'control_widgets' && assetModel"

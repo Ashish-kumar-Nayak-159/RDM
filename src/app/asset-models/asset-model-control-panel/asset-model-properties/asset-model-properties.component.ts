@@ -278,7 +278,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.setupForm.get('fc_w').updateValueAndValidity();
     } else if(this.propertyObj.write == false) {
       this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
-      this.setupForm.get('fc_w').setValue(''); // or clearValidators()
+      this.setupForm.get('fc_w').setValue(null); // or clear Values()
       this.setupForm.get('fc_w').updateValueAndValidity();
     }
     if(this.propertyObj.read == true) {
@@ -286,7 +286,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.setupForm.get('fc_r').updateValueAndValidity();
     } else if(this.propertyObj.read == false) {
       this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
-      this.setupForm.get('fc_r').setValue('');
+      this.setupForm.get('fc_r').setValue(null);
       this.setupForm.get('fc_r').updateValueAndValidity();
     }
     if(this.propertyObj.read == false && this.propertyObj.write == false) {

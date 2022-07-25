@@ -32,9 +32,9 @@
     overflow-y: auto;
     height: calc(100vh - 180px);
     }
-.modal-live-widget-container{
+/* .modal-live-widget-container{
     height: auto;
-}
+} */
 
 .conditions-container{
     display: grid;

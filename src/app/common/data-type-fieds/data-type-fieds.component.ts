@@ -35,7 +35,7 @@ export class DataTypeFieldsComponent implements OnInit {
       let minValue: number = obj.minValue;
       let maxValue: number = obj.maxValue ?? 0;
       if ((maxValue < minValue)) {
-        this.toasterService.showError('Max Value can not be greater than min value', 'Add Proper Value');
+        this.toasterService.showError('Min Value can not be greater than max value', 'Add Proper Value');
         this.obj.maxValue = '';
       }
     }
@@ -43,7 +43,7 @@ export class DataTypeFieldsComponent implements OnInit {
       let minValue: number = obj.minLength;
       let maxValue: number = obj.maxLength  ?? 0;
       if ((maxValue < minValue)) {
-        this.toasterService.showError('Max length can not be greater than min length', 'Add Proper Value');
+        this.toasterService.showError('Min length can not be greater than max length', 'Add Proper Value');
         this.obj.maxLength = '';
       }
     }

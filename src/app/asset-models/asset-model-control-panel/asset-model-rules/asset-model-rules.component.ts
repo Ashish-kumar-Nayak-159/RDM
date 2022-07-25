@@ -35,6 +35,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   confirmHeaderMessage:any;
   tabData: any;
   type:any;
+  ruleType:any;
   modalConfig: { cancelBtnText?:any;  saveBtnText?:any;stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetModelService: AssetModelService,
@@ -85,6 +86,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.isEdit = isEdit;
     this.isView = isView;
     this.ruleData = rule;
+    this.ruleType = rule?.rule_type;
   }
 
   getRules() {

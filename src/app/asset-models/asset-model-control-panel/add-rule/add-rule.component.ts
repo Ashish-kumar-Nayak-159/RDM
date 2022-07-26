@@ -25,6 +25,7 @@ export class AddRuleComponent implements OnInit {
   @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;
+  @Input() ruleTypee:any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
   ruleModel: Rule = new Rule();
   contextApp: any;
@@ -203,7 +204,6 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfRule() {
     const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
-    console.log('rule',rule)
     this.ruleData = rule;
     delete this.ruleData.rule_id;
     this.configureData();
@@ -235,6 +235,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.updated_by = this.ruleData.updated_by;
     this.ruleModel.isEdgeRule = this.ruleData.type === 'Edge';
     this.ruleModel.type = this.ruleData.type;
+    this.ruleModel.rule_type = this.ruleTypee;
     this.ruleModel.isKpixCategory = this.ruleData.rule_category === 'KPIX Analytics';
     this.getAlertConditions(this.ruleData.type);
     if (!this.ruleData.actions || Object.keys(this.ruleData.actions).length === 0) {
@@ -415,8 +416,6 @@ export class AddRuleComponent implements OnInit {
     {
       this.ruleModel.actions.alert_management.severity =alertCondition.severity;
     }
-    console.log('alertCondition',alertCondition)
-    console.log('this.ruleModel.actions.alert_management',this.ruleModel.actions.alert_management)
     this.selectedAlertCondition = alertCondition;
     // this.selectedAlertCondition.actions.email = alertCondition.actions.email.enabled;
     // this.selectedAlertCondition.actions.sms = alertCondition.actions.sms.enabled;
@@ -485,7 +484,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.properties = [];
     // // Note : Remove adding new rule to fix rule_Category
     // this.ruleModel.rule_category = "Stream Analytics";
-    this.ruleModel.conditions?.forEach((element, index) => {
+    this.ruleModel?.conditions?.forEach((element, index) => {
       let operator = this.findOperator(element.operator);
       if (this.data_type === 'Number') {
         str +=
@@ -522,12 +521,11 @@ export class AddRuleComponent implements OnInit {
       }
 
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
-      console.log('prop',prop)
-      element["type"] = prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
+      element["type"] = prop?.type === 'Cloud Derived Properties' ? 'cd' : (prop?.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         this.ruleModel.properties.push({
           sid: prop?.value?.metadata?.slave_id,
-          property: prop.value.json_key,
-          type: prop.type === 'Cloud Derived Properties' ? 'cd' : (prop.type === 'Edge Derived Properties' ? 'ed' : 'm'),
+          property: prop?.value?.json_key,
+          type: prop?.type === 'Cloud Derived Properties' ? 'cd' : (prop?.type === 'Edge Derived Properties' ? 'ed' : 'm'),
         });
     });
     this.ruleModel.condition_str = str.slice(0, -2).trim();

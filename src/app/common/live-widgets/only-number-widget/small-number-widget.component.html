@@ -57,7 +57,7 @@
                   undefined
                   && telemetryObj[prop.property?.json_key]?.value !== null)) ?
                   (prop.property?.data_type === 'Number' ?
-                  (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
+                  (convertToNumber(telemetryObj[prop.property?.json_key]?.value)) :
                   (telemetryObj[prop.property?.json_key].value))
                   : 'NA'}}  
                   <sub class="text-xs live-widget-title mb-0">

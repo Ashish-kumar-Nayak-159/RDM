@@ -125,13 +125,13 @@
               <div class="col-auto">
                 <div class="">
                   <div class="">
-                    <label for="exampleEmail" class="required">Time Threshold</label>
+                    <label for="exampleEmail" class="required">Time Threshold (In sec) :</label>
                   </div>
                   <div class="">
                     <input id="timethreshold" placeholder="Time"
                     [(ngModel)]="ruleModel.escalation_time_in_sec"
                      name="threshold" type="number" min="5" max="1440" value="5"
-                    class="form-control form-control-sm w-auto"/>
+                    class="form-control form-control-sm w-auto" [disabled]="isView"/>
                 </div>
               </div>
             </div>

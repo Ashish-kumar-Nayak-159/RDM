@@ -30,7 +30,7 @@
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
                 <em class="{{menu.icon}}" placement="bottom"></em>
-                <span>{{menu.display_name}}</span></a>
+                <span> {{menu.display_name}}</span></a>
             </li>
           </ng-container>
         </ng-container>
@@ -82,9 +82,10 @@
             <app-asset-model-settings *ngIf="activeTab === 'settings'  && assetModel" [assetModel]="assetModel">
             </app-asset-model-settings>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel" id="asset_model_control_properties">
+          
+          <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel" id="asset_model_control_properties">
             <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_properties'" ></app-asset-model-control-properties>
-          </div>
+          </div> -->
 
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel"
             id="asset_model_properties">
@@ -118,11 +119,11 @@
           </div>
 
 
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel" id="asset_model_control_properties">
-              <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_properties'" ></app-asset-model-control-properties>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_property'}" role="tabpanel" id="asset_model_control_properties">
+              <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_property'" ></app-asset-model-control-properties>
           </div>
 
-
+          
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
             id="asset_model_control_widgets">
             <app-asset-model-control-widgets *ngIf="activeTab === 'control_widgets' && assetModel"

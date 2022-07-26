@@ -213,7 +213,7 @@
 
       </div>
     </div>
-    <div class="form-group" *ngIf="propertyObj.read == true && assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+    <div class="form-group" *ngIf="propertyObj && propertyObj.read == true && assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
       <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc_r" name="fc_r" formControlName="fc_r"
@@ -241,13 +241,13 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
+      <div *ngIf="propertyObj && propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
         <div *ngIf="setupForm.get('fc_r').errors.required">
           Read Function Code is required.
         </div>
       </div>
     </div>
-    <div class="form-group" *ngIf="propertyObj.write == true">
+    <div class="form-group" *ngIf="propertyObj && propertyObj.write == true">
       <label for="recipient-name" class="col-form-label required">Write Function Code:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w">

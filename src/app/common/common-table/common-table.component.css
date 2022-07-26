@@ -1,0 +1,16 @@
+.assetList {
+    width:300px;
+    display: inline-block;
+}
+#selected_asset {
+    width: 230px;
+}
+.new_value {
+    padding: 7px;
+    border-radius: 5px;
+    border: 1px solid;
+    width: 160px;
+}
+input[type='checkbox'] {
+    outline : 1px solid #000;
+}

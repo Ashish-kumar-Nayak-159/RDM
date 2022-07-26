@@ -9,6 +9,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./common-table.component.css'],
 })
 export class CommonTableComponent implements OnInit {
+  @Input() saveDataFlag : boolean = false;
   @Input() tableConfig: any;
   @Input() tableData: any[] = [];
   @Input() isTableDataLoading = false;
@@ -42,17 +43,11 @@ export class CommonTableComponent implements OnInit {
     if(this.tableConfig.selectCheckBoxs == true) {
       this.tableConfig.selectCheckBoxs = false;
       this.tableData.map((detail)=>{
-        // if(detail?.new_value?.toString().length <= 0) {
-        //   this.isEnteredAnyValue = false;
-        // }
         return detail.syncUp = true;
       })
     } else {
       this.tableConfig.selectCheckBoxs = true;
       this.tableData.map((detail)=>{
-        // if(detail?.new_value?.toString().length <= 0) {
-        //   this.isEnteredAnyValue = false;
-        // }
         return detail.syncUp = false;
       })
     }
@@ -73,14 +68,29 @@ export class CommonTableComponent implements OnInit {
     return current;
   }
   changeAssetSelection() {
-    console.log(this.assetSelectForm.get('selected_asset')?.value)
     this.assetSelectionChange.emit(this.assetSelectForm.get('selected_asset')?.value);
   }
-  inputBoxValueChange(value:string) {
-    if(value.toString().length > 0 ){
-      this.isEnteredAnyValue = true;
-    } else {
-      this.isEnteredAnyValue = false;
-    }
+  inputBoxValueChange(data,value:string) {
+    this.isEnteredAnyValue = false;
+    this.tableData.map((detail)=>{
+      if(detail.id == data.id && data.data_type == 'Number') {
+        detail.new_value = detail.new_value.replace(/[^0-9]+/gi,"");
+        value = value.replace(/[^0-9]+/gi,"");
+      }
+      if(detail.id == data.id && data.data_type == 'String') {
+        detail.new_value = detail.new_value.replace(/[^a-zA-Z_]+/gi,"");
+        value = value.replace(/[^a-zA-Z_]+/gi,"");
+      }
+      if(detail?.new_value?.toString()?.length > 0) {
+        this.isEnteredAnyValue = true;
+      }
+      return detail;
+    })
+
+    // if(value.toString().length > 0 ){
+    //   this.isEnteredAnyValue = true;
+    // } else {
+    //   this.isEnteredAnyValue = false;
+    // }
   }
 }

@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from 'src/app/services/toaster.service';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-asset-model-control-properties',
@@ -15,18 +20,43 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   assetModelData : any = [];
   assetSelectForm: FormGroup;
   selectedAssets : any = {};
+  isAPILoading : boolean = false;
+  contextApp: any;
+  asset : any;
   constructor(
+    private toasterService: ToasterService,
+    private commonService: CommonService,
+    private assetService: AssetService,
     private assetModelService: AssetModelService,
   ) { 
 
   }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetSelectForm = new FormGroup({
       selected_asset: new FormControl("", []),
     });
     this.setUpPropertyData();
     this.getAssetModelData();
+  }
+  getAssets(hierarchy) {
+    return new Promise<void>((resolve1) => {
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+      };
+      this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data) {
+          response.data.forEach((detail)=>{
+            if(detail.type == this.selectedAssets.model_type) {
+              this.asset = detail;
+            }
+          })
+        }
+        resolve1();
+      })
+    });
   }
   setUpPropertyData() {
     this.properties = [];
@@ -100,7 +130,6 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     this.getAssetsModelProperties();
   }
   getAssetsModelProperties() {
-    // this.properties = {};
     this.isPropertiesLoading = true;
     const obj = {
       app: this.assetModel.app,
@@ -116,8 +145,6 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     const obj = {
       app: this.assetModel.app,
     };
-    console.log("WITHIN OBJ>>>>>>>>>>>>>>>>>>>>.....", obj)
-
     this.assetModelService.getAssetsModelsList(obj.app).subscribe((response: any) => {
       if (response) {
         response.data.forEach((detail)=>{
@@ -125,34 +152,101 @@ export class AssetModelControlPropertiesComponent implements OnInit {
             this.assetModelData.push(detail)
           }
         })
-        console.log(this.assetModel,"this is asset model data........", this.assetModelData)
       }
     })
   }
   singleSyncuoCall(event : any) {
-    console.log("single or multi select... call back..........",event,this.selectedAssets)
     let setProperties : any = {};
+    
+    let uniqueId = (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +'_' +this.commonService.generateUUID();
 
     setProperties = {
-      "asset_id": this.selectedAssets.id,
-      "command": "write_data",
-      "sub_job_id": "",
-      properties : {}
+      "asset_id":this.asset.asset_id,
+      "message":{
+        "command":"write_data",
+        "asset_id": "TempAsset",
+        "properties": {}
+      },
+      "app":"Indygo",
+      "timestamp":datefns.getUnixTime(new Date()),
+      "acknowledge":"Full",
+      "expire_in_min":1,
+      "job_id": uniqueId,
+      "request_type": 'Sync Control Properties',
+      "job_type":"Message",
+      "sub_job_id": uniqueId + "_1",
     }
+
+
     if(event.length > 0) {
+      // let counter = 0;
       event.forEach((detail)=>{
         if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
-          setProperties['properties'][detail.data_type] = detail.new_value;
+          if(detail.data_type == 'Number') {
+            detail.new_value = parseInt(detail.new_value);
+          }
+          if(detail.data_type == 'Float') {
+            detail.new_value = parseFloat(detail.new_value);
+          }
+          setProperties['message']['properties'][detail.data_type] = detail.new_value;
+        // } else if(event?.data?.syncUp == false || !event?.data?.syncUp)  {
+        //   if(detail?.new_value?.toString().length > 0) {
+        //     counter++;
+        //   }
         }
       })
     } else {
-      if(event?.data?.syncUp == true && event?.data?.new_value?.toString().length > 0){
-        setProperties['properties'][event.data.data_type] = event.data.new_value;
-      }
+      // if(event?.data?.syncUp == false || !event?.data?.syncUp)  {
+      //   this.toasterService.showError('To Sync Control Properties for given please select checkbox','Check Box Selection');
+      // } else {
+        if(event?.data?.syncUp == true && event?.data?.new_value?.toString().length > 0){
+          if(event.data.data_type == 'Number') {
+            event.data.new_value = parseInt(event.data.new_value);
+          }
+          if(event.data.data_type == 'Float') {
+            event.data.new_value = parseFloat(event.data.new_value);
+          }
+          setProperties['message']['properties'][event.data.data_type] = event.data.new_value;
+        }
+        // this.syncControlProperties(setProperties);
+      // }
     }
-    console.log(setProperties);
+    const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
+    console.log(isEmpty); 
+    if(isEmpty) {
+      this.toasterService.showError('To Sync Control Properties select checkbox','Check Box Selection');
+    } else {
+      this.syncControlProperties(setProperties);
+    }
+
   }
-  assetSelectionChangeFun(selected_asset) {
+  async assetSelectionChangeFun(selected_asset) {
     this.selectedAssets = selected_asset;
+    await this.getAssets(this.contextApp.user.hierarchy);
+  }
+
+
+
+  syncControlProperties(propertyObject) {
+    this.isAPILoading = true;
+
+    this.assetService
+      .sendC2DMessage(
+        propertyObject,
+        this.contextApp.app,
+        this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+      )
+      .subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Sync Control Properties');
+          this.assetService.refreshRecentJobs.emit();
+          this.isAPILoading = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Sync Control Properties');
+          this.assetService.refreshRecentJobs.emit();
+          this.isAPILoading = false;
+        }
+      )
   }
 }

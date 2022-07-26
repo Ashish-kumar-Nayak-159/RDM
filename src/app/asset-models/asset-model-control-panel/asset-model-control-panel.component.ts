@@ -44,7 +44,6 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    console.log("CONSTANTS.SELECTED_APP_DATA.........",CONSTANTS.SELECTED_APP_DATA)
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -53,7 +52,6 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
           // this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
-          // console.log('menuItems........',this.menuItems)
           // let titleObj;
           // let count;
           // this.menuItems.forEach((menu) => {

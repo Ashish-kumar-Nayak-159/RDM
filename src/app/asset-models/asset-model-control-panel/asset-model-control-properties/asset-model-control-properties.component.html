@@ -5,5 +5,5 @@
   </a>
 </li> -->
 <br>
-<app-common-table [assetModelData]="assetModelData" [tableData]="properties" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
+<app-common-table [assetModelData]="asset" [tableData]="properties" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
   [isTableDataLoading]="isPropertiesLoading" [saveDataFlag]="isAPILoading" (viewMessageEvent)="singleSyncuoCall($event)" (assetSelectionChange)="assetSelectionChangeFun($event)"></app-common-table>

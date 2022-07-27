@@ -5,7 +5,7 @@
     <div class="input-group assetList">
       <select class="form-control form-control-sm" id="selected_asset"  (change)="changeAssetSelection()" name="selected_asset" formControlName="selected_asset">
         <option value="">Select Asset</option>
-        <option [ngValue]="asset" *ngFor="let asset of assetModelData">{{asset.name}}</option>
+        <option [ngValue]="asset" *ngFor="let asset of assetModelData">{{asset.display_name}}</option>
       </select>
     </div>
     <button [ngClass]="{'disabled' : saveDataFlag || (assetModelData.length > 0 && isEnteredAnyValue == false) }" type="button" class="mr-5 mt-1 btn btn-primary btn-md pull-right" (click)="multiSyncupData()">
@@ -37,11 +37,11 @@
           <ng-container *ngFor="let header of tableConfig?.data">
           <td *ngIf="!header.isColumnHidden" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'checkbox'">
-              <input [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.id" class="form-group" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp" />
+              <input [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="form-group" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp" />
             </ng-container>
             <ng-container *ngIf="header.key === 'new_value'">
-             <input *ngIf="data.data_type != 'Boolean'" [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />
-             <select  placeholder="Select" *ngIf="data.data_type == 'Boolean'" [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.id" class="new_value" id="selected_asset"  #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"  (change)="inputBoxValueChange(data,data.new_value)">
+             <input *ngIf="data.data_type != 'Boolean'" [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />
+             <select  placeholder="Select" *ngIf="data.data_type == 'Boolean'" [disabled] = "assetModelData.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="new_value" id="selected_asset"  #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"  (change)="inputBoxValueChange(data,data.new_value)">
                 <option disabled [ngValue]="undefined">Select</option>
                 <option [ngValue]="false">False</option>
                 <option [ngValue]="true">True</option>

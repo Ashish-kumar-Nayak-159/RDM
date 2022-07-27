@@ -1673,9 +1673,6 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-sun-o',
       visible: true,
       isTitle: false,
-      privileges_required: ['COPRV', 'COPRM'],
-      showAccordion: [],
-      accordion_value: {},
     },
     {
       page: 'c2d',

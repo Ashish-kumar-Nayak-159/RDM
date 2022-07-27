@@ -3,7 +3,7 @@
     <label for="recipient-name" class="col-form-label required">Slave:</label>
     <div class="input-group">
       <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id">
-        <option [ngValue]="null">Select Slave</option>
+        <option value="">Select Slave</option>
         <option [ngValue]="slave?.slave_id" *ngFor="let slave of slaveData">{{slave?.slave_name}}</option>
       </select>
     </div>
@@ -267,7 +267,7 @@
 
 
     <div class="form-group"
-      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('rfc').value === 3 || setupForm.get('rfc').value === 4)">
+      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('rfc')?.value === 3 || setupForm.get('rfc')?.value === 4)">
       <label for="message-text" class="col-form-label required">Bit Number:</label>
       <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
         placeholder="Enter Bit Number" min="0" max="15">

@@ -232,6 +232,18 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  onMappingRule(rule) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
+    this.selectedrule = rule;
+    $('#confirmMessRuleMappingModalageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+  onJSONModalEvents($event) {
+
+  }
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.onCloseDeleteModal();

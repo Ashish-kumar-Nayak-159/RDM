@@ -22,7 +22,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   selectedAssets : any = {};
   isAPILoading : boolean = false;
   contextApp: any;
-  asset : any;
+  asset : any = [];
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
@@ -60,24 +60,6 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     });
   }
 
-  // getAssets(hierarchy) {
-  //   return new Promise<void>((resolve1) => {
-  //     const obj = {
-  //       hierarchy: JSON.stringify(hierarchy),
-  //       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-  //     };
-  //     this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-  //       if (response?.data) {
-  //         response.data.forEach((detail)=>{
-  //           if(detail.type == this.selectedAssets.model_type) {
-  //             this.asset = detail;
-  //           }
-  //         })
-  //       }
-  //       resolve1();
-  //     })
-  //   });
-  // }
   setUpPropertyData() {
     this.properties = [];
     this.propertyTableConfig = {
@@ -156,7 +138,10 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       name: this.assetModel.name,
     };
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-        this.properties = response.properties['measured_properties'].filter((detail)=>{ return detail.rw == 'w' || detail.rw == 'rw'})
+        console.log(response)
+        let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
+        console.log("localObject.........",localObject)
+        this.properties = localObject.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
         this.isPropertiesLoading = false;
       })
   }

@@ -163,7 +163,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         },
       ],
     };
-    if (this.type.includes('measured')) {
+    if (this.type.includes('measured') || this.type.includes('controllable')) {
       this.propertyTableConfig.data.splice(3, 0, {
         name: 'Group',
         key: 'group',
@@ -245,16 +245,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // }
         
         this.isPropertiesLoading = false;
+        // console.log("============",JSON.parse(JSON.stringify(this.properties)));
         // ADDEd filter for measured_properties, i.e. return only r and rw records
         if(this.type == 'measured_properties') {
-          this.properties[this.type] = this.properties[this.type].filter((detail)=>{ return detail.rw == 'r' || detail.rw == 'rw'})
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
         } 
 
         // ADDEd filter for controllable_properties, i.e. return only w and rw records
         if(this.type == 'controllable_properties') {
           //Here for controllable properties, it dont have data, we need to copy it from  measured_properties
           // ANd added acroding condition for data
-          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.rw == 'w' || detail.rw == 'rw'})
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
         }
       })
     );
@@ -368,6 +369,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       }
     }
+    
     // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -412,6 +414,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] = obj;
       this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
+
+      
+
     } else {
       this.propertyObj.json_model = {};
     }
@@ -699,13 +704,38 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1 ].read == true && obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'rw'
-    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].read == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'r'
-    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'w'
+    // if(this.type == 'measured_properties') {
+    //   let localObject = [];
+    //   obj.properties['measured_properties'].forEach((detail)=>{
+    //     if(detail.recordOfControlProperties == true) {} else {
+    //       localObject.push(detail);
+    //     }
+    //   })
+    //   obj.properties['measured_properties'] = localObject;
+    // }
+    // if(this.type == 'controllable_properties') {
+    //   let localObject = [];
+    //   obj.properties['controllable_properties'].forEach((detail)=>{
+    //     if(detail.recordOfMeasuredProperties == true) {} else {
+    //       localObject.push(detail);
+    //     }
+    //   })
+    //   obj.properties['controllable_properties'] = localObject;
+    // }
+    if(this.type == 'controllable_properties') {
+      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
+      obj.properties['controllable_properties'] = [];
     }
+    if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+      if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1 ].read == true && obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'rw'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].read == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'r'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'w'
+      }
+    }
+    
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -759,11 +789,24 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   deleteProperty() {
+    
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
-    const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
-    obj.properties[this.type].splice(index, 1);
+    
+    // const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+    // obj.properties[this.type].splice(index, 1);
+
+    if(this.type == 'controllable_properties' || this.type == 'measured_properties') {
+      const index = obj.properties['measured_properties'].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      obj.properties['measured_properties'].splice(index, 1);
+    } else {
+      const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      obj.properties[this.type].splice(index, 1);
+
+    }
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+
+
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -887,14 +930,46 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
 
-    if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1 ].read == true && obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'rw'
-    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].read == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'r'
-    } else if(obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1].write == true) {
-      obj.properties.measured_properties[obj.properties.measured_properties,obj.properties.measured_properties.length - 1]['rw'] = 'w'
+    if(this.type == 'measured_properties') {
+      let localObject = [];
+      obj.properties['measured_properties'].forEach((detail)=>{
+        if(detail.recordOfControlProperties == true) {} else {
+          localObject.push(detail);
+        }
+      })
+      obj.properties['measured_properties'] = localObject;
     }
-    
+    if(this.type == 'controllable_properties') {
+      let localObject = [];
+      obj.properties['controllable_properties'].forEach((detail)=>{
+        if(detail.recordOfMeasuredProperties == true) {} else {
+          localObject.push(detail);
+        }
+      })
+      obj.properties['controllable_properties'] = localObject;
+    }
+
+    if(this.type == 'controllable_properties') {
+      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
+      obj.properties['controllable_properties'] = [];
+    }
+    if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+      if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1 ].read == true && obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'rw'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].read == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'r'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'w'
+      }
+    }
+
+    // if(obj.properties[this.type][obj.properties[this.type].length - 1 ].read == true && obj.properties[this.type][obj.properties[this.type].length - 1].write == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'rw'
+    // } else if(obj.properties[this.type][obj.properties[this.type].length - 1].read == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'r'
+    // } else if(obj.properties[this.type][obj.properties[this.type].length - 1].write == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'w'
+    // }
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -1083,6 +1158,23 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             });
           }
         }
+      }
+
+      if(this.propertyObj.write == true) {
+        this.setupForm.controls["fc_w"].setValidators([Validators.required]);
+        this.setupForm.get('fc_w').updateValueAndValidity();
+      } else if(this.propertyObj.write == false) {
+        this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
+        this.setupForm.get('fc_w').setValue(null); // or clear Values()
+        this.setupForm.get('fc_w').updateValueAndValidity();
+      }
+      if(this.propertyObj.read == true) {
+        this.setupForm.controls["fc_r"].setValidators([Validators.required]);
+        this.setupForm.get('fc_r').updateValueAndValidity();
+      } else if(this.propertyObj.read == false) {
+        this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
+        this.setupForm.get('fc_r').setValue(null);
+        this.setupForm.get('fc_r').updateValueAndValidity();
       }
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       // setTimeout(() => {

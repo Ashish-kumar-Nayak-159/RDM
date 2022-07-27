@@ -86,7 +86,7 @@
           <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]" [type]="type" [disabled]="isDisabled" 
             *ngIf="propertyObj.json_key && propertyObj.data_type && propertyObj?.json_model[propertyObj.json_key]">
           </app-data-type-fields>
-          <div class="form-group" *ngIf="type.includes('measured')">
+          <div class="form-group" *ngIf="type.includes('measured') || this.type.includes('controllable')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="undefined">Select Group</option>
@@ -95,7 +95,7 @@
               <option value="G3">G3</option>
             </select>
           </div>
-          <div class="row" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+          <div class="row pt-2" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
             <div class="col-6">
               <input class="form-group" type="checkbox" #read="ngModel" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" (change)="readWriteValue('read')" required="{{setBasedOnSelection}}"/> Read<br>
             </div>

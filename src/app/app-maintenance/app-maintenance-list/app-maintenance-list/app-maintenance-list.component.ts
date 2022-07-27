@@ -1250,16 +1250,16 @@ async getMaintenance_data(id,title)
       is_load_more_required: true,
       // item_count: this.currentLimit,
       data: [
-        {
-          header_name: 'Email Subject',
-          is_display_filter: true,
-          value_type: 'string',
-          // is_sort_required: true,
-          fixed_value_list: [],
-          data_type: 'text',
-          data_key: 'email_subject',
-          //is_sort: true
-        },
+        // {
+        //   header_name: 'Email Subject',
+        //   is_display_filter: true,
+        //   value_type: 'string',
+        //   // is_sort_required: true,
+        //   fixed_value_list: [],
+        //   data_type: 'text',
+        //   data_key: 'email_subject',
+        //   //is_sort: true
+        // },
         // {
         //   header_name: 'Notification Type',
         //   is_display_filter: true,
@@ -1271,7 +1271,7 @@ async getMaintenance_data(id,title)
         //   //is_sort: true
         // },
         {
-          header_name: 'Status',
+          header_name: 'Notification Status',
           value_type: 'string',
           // is_sort_required: true,
           fixed_value_list: [],

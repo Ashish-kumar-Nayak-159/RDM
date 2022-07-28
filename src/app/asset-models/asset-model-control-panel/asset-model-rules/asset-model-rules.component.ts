@@ -6,6 +6,9 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as datefns from 'date-fns';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 declare var $: any;
 @Component({
   selector: 'app-asset-model-rules',
@@ -36,14 +39,22 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   tabData: any;
   type:any;
   ruleType:any;
+  // selectedRuleList : any
+  filteredRuleList:  any = [];
+  asset : any = [];
+  ruleMappingForm;
   modalConfig: { cancelBtnText?:any;  saveBtnText?:any;stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
+    private assetService: AssetService,
     private assetModelService: AssetModelService,
     private commonService: CommonService,
     private toasterService: ToasterService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.ruleMappingForm = new FormGroup({
+      selectedRuleList: new FormControl("", [Validators.required]),
+    });
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -177,6 +188,21 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       );
   }
 
+  getAssets(hierarchy) {
+    return new Promise<void>((resolve1) => {
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+      };
+        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+          if (response?.data) {
+            this.asset = response.data;
+          }
+          resolve1();
+        })
+    });
+  }
+
   deployEdgeRule(rule, isRevert = false) {
     this.ruleData = rule;
     this.isDeleteRuleLoading = true;
@@ -232,17 +258,42 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onMappingRule(rule) {
+  async onMappingRule(rule) {
+    this.ruleMappingForm.get('selectedRuleList').setValue(null);
+    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
       isDisplayCancel: true,
     };
     this.selectedrule = rule;
-    $('#confirmMessRuleMappingModalageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.filteredRuleList = [];
+    await this.getAssets(this.contextApp.user.hierarchy);
+    $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.filteredRuleList = this.rules.filter((localRule)=> localRule.rule_id != rule.rule_id)
   }
   onJSONModalEvents($event) {
 
+  }
+  onCloseModal() {
+    $('#RuleMappingModal').modal('hide');
+  }
+  onSaveModal(event) {
+    const obj = {
+      rule_code : this.selectedrule.code,
+      model_name : this.assetModel.name,
+      link_rule_code : this.ruleMappingForm.get('selectedRuleList').value,
+    }
+    this.assetModelService.assetModelRuleMapping(obj).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Mapping Rule');
+        this.onCloseModal();
+      },
+      (err) => {
+        this.toasterService.showError(err.message, 'Mapping Rule');
+        this.onCloseModal();
+      }
+    );
   }
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -303,7 +354,12 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.isView = false;
     this.ruleData = undefined;
   }
-
+  
+  onChangeOfRule() {
+    // const rule = this.rules.find((rule) => rule.code === this.ruleModel.rule_code);
+    // this.ruleData = rule;
+    // delete this.ruleData.rule_id;
+  }
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }

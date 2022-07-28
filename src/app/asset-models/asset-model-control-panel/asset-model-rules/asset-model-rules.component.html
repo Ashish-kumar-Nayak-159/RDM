@@ -87,7 +87,7 @@
                 <!-- <td>{{rule.description}}</td> -->
                 <!-- <td>{{rule.type}}</td> -->
                 <td>
-                  <a href="javascript:void(0)"
+                 <a href="javascript:void(0)"
                     (click)="toggleRows[this.selectedTab + '_' + i] && isView ? onToggleRows(i, rule, true, false, 'toggle') : onToggleRows(i, rule, true, false, 'notoggle')"
                     class="mr-1" placement="bottom" tooltip="View">
                     <em class="fa fa-fw fa-eye"></em>
@@ -192,11 +192,50 @@
 </div>
 
 
-<div class="modal right fade" id="RuleMappingModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal right fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div>dffdkjfdkjfdkfdj</div>
     <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedrule" [headerMessage]="'Rule Mapping Model'"
       (modalEvents)="onJSONModalEvents($event)" [modalConfig]="modalConfig">
     </app-message-modal>
+  </div>
+</div>
+
+
+
+<div class="modal right fade" id="RuleMappingModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Rule Mapping</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="ruleMappingBody">
+        <form [formGroup]="ruleMappingForm">
+         
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Select Rule For Mapping</label>
+            <ng-select [items]="filteredRuleList"   [clearable]="false" [searchable]="true"
+            bindLabel="name" [closeOnSelect]="true" placeholder="Select Rule" groupBy="type"
+            [multiple]="true" dropdownPosition="bottom" name="selectedRuleList" id="selectedRuleList" bindValue="code"
+            formControlName="selectedRuleList" required>
+              <ng-template ng-option-tmp let-item="item">
+                <span [tooltip]="item.code + ' - ' + item.name">
+                  {{item.code}} - {{item.name}}
+                </span>
+              </ng-template>
+            </ng-select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button  [disabled]="!this.ruleMappingForm.get('selectedRuleList')?.value" type="button" class="btn btn-primary" (click)="onSaveModal('save')">
+          {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
+        <button  type="button" class="btn btn-secondary" (click)="onCloseModal()">
+          {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+        </button>
+      </div>
+    </div>
   </div>
 </div>

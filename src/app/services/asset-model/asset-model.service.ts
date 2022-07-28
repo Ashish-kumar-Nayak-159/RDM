@@ -939,4 +939,11 @@ export class AssetModelService {
       { params }
     );
   }
+
+  assetModelRuleMapping(ruleModel) {
+    return this.http.post(
+      this.url + String.Format(AppUrls.ASSET_MODEL_RULE_MAPPING),
+      ruleModel
+    );
+  }
 }

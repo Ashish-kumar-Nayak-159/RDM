@@ -1,0 +1,13 @@
+<!-- 
+<li class="nav-item" *ngIf="isAPILoading">
+  <a class="nav-link" href="javascript:void(0)">
+    <em class="fa fa-spinner fa-spin fa-fw"></em>
+  </a>
+</li> -->
+<br>
+<div class="table-responsive">
+  <div class="tableFixHead">
+    <app-common-table [assetModelData]="asset" [tableData]="properties" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
+  [isTableDataLoading]="isPropertiesLoading" [saveDataFlag]="isAPILoading" (viewMessageEvent)="singleSyncuoCall($event)" (assetSelectionChange)="assetSelectionChangeFun($event)"></app-common-table>
+  </div>
+</div>

@@ -1656,13 +1656,21 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
     },
-
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
       url: '#asset_model_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false,
+    },
+    {
+      page: 'control_property',
+      system_name: 'Control Properties',
+      url: '#asset_model_control_properties',
+      display_name: 'Control Properties',
+      icon: 'fa fa-fw fa-sun-o',
       visible: true,
       isTitle: false,
     },

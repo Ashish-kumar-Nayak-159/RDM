@@ -1,3 +1,5 @@
+
+
 <!-- Page Heading -->
 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
@@ -84,7 +86,7 @@
           <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]" [type]="type" [disabled]="isDisabled" 
             *ngIf="propertyObj.json_key && propertyObj.data_type && propertyObj?.json_model[propertyObj.json_key]">
           </app-data-type-fields>
-          <div class="form-group" *ngIf="type.includes('measured')">
+          <div class="form-group" *ngIf="type.includes('measured') || this.type.includes('controllable')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="undefined">Select Group</option>
@@ -93,11 +95,22 @@
               <option value="G3">G3</option>
             </select>
           </div>
+          <div class="row pt-2" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+            <div class="col-6">
+              <input class="form-group" type="checkbox" #read="ngModel" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" (change)="readWriteValue('read')" required="{{setBasedOnSelection}}"/> Read<br>
+            </div>
+            <div class="col-6">
+              <input class="form-group" type="checkbox" #write="ngModel" [(ngModel)]="propertyObj.write" name="write" id="write" value="16"  (change)="readWriteValue('write')"/> Write<br>
+            </div>
+            <div *ngIf="propertyObj.read == false && propertyObj.write == false" class="col-12">
+              <span class=" form-group alert-danger" >Please Select Atleast one of Read/Write.</span>
+            </div>
+          </div>
+          
           <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
           </div>
           <div class="row col-12" *ngIf="type === 'measured_properties'">
-
             <div class="form-group col-6">
               <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
               <input type="number" class="form-control form-control-sm" id="l1" name="l1"
@@ -142,9 +155,9 @@
                     Property Register Details
                   </button>
                 </ng-container>
-                <app-model-protocol-specific-details [setupForm]="setupForm" [dataObj]="propertyObj.metadata"
+                <app-model-protocol-specific-details [setupForm]="setupForm" [propertyObj]="propertyObj" [dataObj]="propertyObj.metadata"
                   [pageType]="propertyObj.edit ? 'edit' : 'add'" [assetModel]="assetModel" [slaveData]="slaveData"
-                  *ngIf="setupForm && propertyObj">
+                  *ngIf="setupForm && propertyObj" >
                 </app-model-protocol-specific-details>
               </accordion-group>
             </accordion>
@@ -230,7 +243,7 @@
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           <div *ngIf="displaybutton == false">
             <button type="button" class="btn btn-primary"
-              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || !isDisabled "
+              *ngIf="type === 'edge_derived_properties' || type === 'cloud_derived_properties'" [disabled]="!form.valid || !isDisabled"
               (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
           </div>
           <div *ngIf="displaybutton == true">

@@ -1,4 +1,4 @@
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, RequiredValidator } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -45,7 +45,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   formula:String;
   isDisabled  = false;
   displaybutton = false;
-
+  setBasedOnSelection : boolean = false;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -163,7 +163,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         },
       ],
     };
-    if (this.type.includes('measured')) {
+    if (this.type.includes('measured') || this.type.includes('controllable')) {
       this.propertyTableConfig.data.splice(3, 0, {
         name: 'Group',
         key: 'group',
@@ -208,6 +208,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
+        
         if(this.type === 'measured_properties'){
           response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key]?.units;
@@ -242,7 +243,20 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         //     (prop) => (prop.condition = '(' + prop.condition + ')')
         //   );
         // }
+        
         this.isPropertiesLoading = false;
+        // console.log("============",JSON.parse(JSON.stringify(this.properties)));
+        // ADDEd filter for measured_properties, i.e. return only r and rw records
+        if(this.type == 'measured_properties') {
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
+        } 
+
+        // ADDEd filter for controllable_properties, i.e. return only w and rw records
+        if(this.type == 'controllable_properties') {
+          //Here for controllable properties, it dont have data, we need to copy it from  measured_properties
+          // ANd added acroding condition for data
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+        }
       })
     );
   }
@@ -259,7 +273,29 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj.metadata.properties.splice(-1, 1);
 
   }
-
+  readWriteValue(type) {
+    if(this.propertyObj.write == true) {
+      this.setupForm.controls["fc_w"].setValidators([Validators.required]);
+      this.setupForm.get('fc_w').updateValueAndValidity();
+    } else if(this.propertyObj.write == false) {
+      this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
+      this.setupForm.get('fc_w').setValue(null); // or clear Values()
+      this.setupForm.get('fc_w').updateValueAndValidity();
+    }
+    if(this.propertyObj.read == true) {
+      this.setupForm.controls["fc_r"].setValidators([Validators.required]);
+      this.setupForm.get('fc_r').updateValueAndValidity();
+    } else if(this.propertyObj.read == false) {
+      this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
+      this.setupForm.get('fc_r').setValue(null);
+      this.setupForm.get('fc_r').updateValueAndValidity();
+    }
+    if(this.propertyObj.read == false && this.propertyObj.write == false) {
+      this.setBasedOnSelection = true;
+    } else {
+      this.setBasedOnSelection = false;
+    }
+  }
   openAddPropertiesModal() {
     this.isDisabled =false;
     this.displaybutton = false;
@@ -267,6 +303,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj = {
       json_model: {},
       threshold: {},
+      read : true,
+      write : false,
     };
     if (this.type === 'edge_derived_properties') {
       this.propertyObj.metadata = {
@@ -301,7 +339,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             d: new FormControl(null, [Validators.required]),
             sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
             a: new FormControl(false),
-            fc: new FormControl(null, [Validators.required]),
+            fc_r: new FormControl(null, [Validators.required]),
+            fc_w: new FormControl(null),
           });
         } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
           this.setupForm = new FormGroup({
@@ -330,6 +369,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       }
     }
+    
     // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -374,6 +414,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] = obj;
       this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
+
+      
+
     } else {
       this.propertyObj.json_model = {};
     }
@@ -657,10 +700,42 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.validateSetThreshold();
     }
     this.isCreatePropertyLoading = true;
-    const obj = JSON.parse(JSON.stringify(this.assetModel));
+    var obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    // if(this.type == 'measured_properties') {
+    //   let localObject = [];
+    //   obj.properties['measured_properties'].forEach((detail)=>{
+    //     if(detail.recordOfControlProperties == true) {} else {
+    //       localObject.push(detail);
+    //     }
+    //   })
+    //   obj.properties['measured_properties'] = localObject;
+    // }
+    // if(this.type == 'controllable_properties') {
+    //   let localObject = [];
+    //   obj.properties['controllable_properties'].forEach((detail)=>{
+    //     if(detail.recordOfMeasuredProperties == true) {} else {
+    //       localObject.push(detail);
+    //     }
+    //   })
+    //   obj.properties['controllable_properties'] = localObject;
+    // }
+    if(this.type == 'controllable_properties') {
+      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
+      obj.properties['controllable_properties'] = [];
+    }
+    if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+      if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1 ].read == true && obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'rw'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].read == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'r'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'w'
+      }
+    }
+    
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -714,11 +789,24 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   deleteProperty() {
+    
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
-    const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
-    obj.properties[this.type].splice(index, 1);
+    
+    // const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+    // obj.properties[this.type].splice(index, 1);
+
+    if(this.type == 'controllable_properties' || this.type == 'measured_properties') {
+      const index = obj.properties['measured_properties'].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      obj.properties['measured_properties'].splice(index, 1);
+    } else {
+      const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      obj.properties[this.type].splice(index, 1);
+
+    }
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+
+
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -841,6 +929,47 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+
+    if(this.type == 'measured_properties') {
+      let localObject = [];
+      obj.properties['measured_properties'].forEach((detail)=>{
+        if(detail.recordOfControlProperties == true) {} else {
+          localObject.push(detail);
+        }
+      })
+      obj.properties['measured_properties'] = localObject;
+    }
+    if(this.type == 'controllable_properties') {
+      let localObject = [];
+      obj.properties['controllable_properties'].forEach((detail)=>{
+        if(detail.recordOfMeasuredProperties == true) {} else {
+          localObject.push(detail);
+        }
+      })
+      obj.properties['controllable_properties'] = localObject;
+    }
+
+    if(this.type == 'controllable_properties') {
+      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
+      obj.properties['controllable_properties'] = [];
+    }
+    if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+      if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1 ].read == true && obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'rw'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].read == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'r'
+      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
+        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'w'
+      }
+    }
+
+    // if(obj.properties[this.type][obj.properties[this.type].length - 1 ].read == true && obj.properties[this.type][obj.properties[this.type].length - 1].write == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'rw'
+    // } else if(obj.properties[this.type][obj.properties[this.type].length - 1].read == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'r'
+    // } else if(obj.properties[this.type][obj.properties[this.type].length - 1].write == true) {
+    //   obj.properties[this.type][obj.properties[this.type].length - 1]['metadata']['rw'] = 'w'
+    // }
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -966,7 +1095,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.formula = obj?.data?.metadata?.condition;
       this.isDisabled = false;
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
-      console.log("this.propertyObj",this.propertyObj)
       if(!this.propertyObj.threshold)
       {
         this.propertyObj.threshold = {};
@@ -994,7 +1122,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 Validators.max(99999),
               ]),
               a: new FormControl(false),
-              fc: new FormControl(this.propertyObj?.metadata?.fc, [Validators.required]),
+              fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
+              fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
             });
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({
@@ -1029,6 +1158,23 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             });
           }
         }
+      }
+
+      if(this.propertyObj.write == true) {
+        this.setupForm.controls["fc_w"].setValidators([Validators.required]);
+        this.setupForm.get('fc_w').updateValueAndValidity();
+      } else if(this.propertyObj.write == false) {
+        this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
+        this.setupForm.get('fc_w').setValue(null); // or clear Values()
+        this.setupForm.get('fc_w').updateValueAndValidity();
+      }
+      if(this.propertyObj.read == true) {
+        this.setupForm.controls["fc_r"].setValidators([Validators.required]);
+        this.setupForm.get('fc_r').updateValueAndValidity();
+      } else if(this.propertyObj.read == false) {
+        this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
+        this.setupForm.get('fc_r').setValue(null);
+        this.setupForm.get('fc_r').updateValueAndValidity();
       }
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       // setTimeout(() => {

@@ -31,6 +31,7 @@ import { AssetModelAlertAcknowledgementReasonsComponent } from './asset-model-co
 import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-model-slave-info/asset-model-slave-info.component';
 import { AddRuleComponent } from './asset-model-control-panel/add-rule/add-rule.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
+import { AssetModelControlPropertiesComponent } from './asset-model-control-panel/asset-model-control-properties/asset-model-control-properties.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     AssetModelAlertAcknowledgementReasonsComponent,
     AssetModelSlaveInfoComponent,
     AddRuleComponent,
+    AssetModelControlPropertiesComponent,
   ],
   imports: [
     CommonModule,

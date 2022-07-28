@@ -40,6 +40,8 @@ export class RulesComponent implements OnInit {
   selectedAccrodionType = 'Asset';
   filteredRuleList : any = [];
   ruleMappingForm;
+  isApiLoading : boolean = false;
+
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetService: AssetService,
@@ -353,8 +355,7 @@ export class RulesComponent implements OnInit {
     this.isDeleteRuleLoading = false;
   }
   async onMappingRule(rule) {
-    this.ruleMappingForm.get('selectedRuleList').setValue(null);
-    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
+    this.isApiLoading = false;
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
@@ -362,6 +363,13 @@ export class RulesComponent implements OnInit {
     };
     this.filteredRuleList = [];
     this.selectedrule = rule;
+    console.log(this.selectedrule)
+    if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
+      this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
+    } else {
+      this.ruleMappingForm.get('selectedRuleList').setValue(null);
+    }
+    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
     $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
   }
@@ -369,6 +377,7 @@ export class RulesComponent implements OnInit {
     $('#RuleMappingModal').modal('hide');
   }
   onSaveModal(event) {
+    this.isApiLoading = true;
     const obj = {
       rule_code : this.selectedrule.code,
       asset_id : this.asset.asset_id,
@@ -376,10 +385,12 @@ export class RulesComponent implements OnInit {
     }
     this.assetService.assetRuleMapping(obj).subscribe(
       (response: any) => {
+        this.isApiLoading = false;
         this.toasterService.showSuccess(response.message, 'Mapping Rule');
         this.onCloseModal();
       },
       (err) => {
+        this.isApiLoading = false;
         this.toasterService.showError(err.message, 'Mapping Rule');
         this.onCloseModal();
       }

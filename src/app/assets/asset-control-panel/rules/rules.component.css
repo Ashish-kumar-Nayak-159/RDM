@@ -1,9 +1,0 @@
-
-#RuleMappingModal .modal-dialog {
-    height : 330px
-}
-#ruleMappingBody {
-    height: 200px;
-    overflow: auto;
-    padding: 15px 15px;
-}

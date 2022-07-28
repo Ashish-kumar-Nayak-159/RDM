@@ -138,8 +138,8 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       name: this.assetModel.name,
     };
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-        let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
-        this.properties = localObject.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+        // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
+        this.properties = response.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
         this.isPropertiesLoading = false;
       })
   }
@@ -159,56 +159,58 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     })
   }
   singleSyncuoCall(event : any) {
-    let setProperties : any = {};
-    
-    let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAssets.asset_id : this.selectedAssets.gateway_id) +'_' +this.commonService.generateUUID();
-
-    setProperties = {
-      "asset_id":this.selectedAssets.asset_id,
-      "message":{
-        "command":"write_data",
-        "asset_id": "TempAsset",
-        "properties": {}
-      },
-      "app":"Indygo",
-      "timestamp":datefns.getUnixTime(new Date()),
-      "acknowledge":"Full",
-      "expire_in_min":1,
-      "job_id": uniqueId,
-      "request_type": 'Sync Control Properties',
-      "job_type":"Message",
-      "sub_job_id": uniqueId + "_1",
-    }
-
-
-    if(event.length > 0) {
-      event.forEach((detail)=>{
-        if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
-          if(detail.data_type == 'Number') {
-            detail.new_value = parseInt(detail.new_value);
+    if(event?.data?.new_value || event.length > 0) {
+      let setProperties : any = {};
+      
+      let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAssets.asset_id : this.selectedAssets.gateway_id) +'_' +this.commonService.generateUUID();
+  
+      setProperties = {
+        "asset_id":this.selectedAssets.asset_id,
+        "message":{
+          "command":"write_data",
+          "asset_id": "TempAsset",
+          "properties": {}
+        },
+        "app":"Indygo",
+        "timestamp":datefns.getUnixTime(new Date()),
+        "acknowledge":"Full",
+        "expire_in_min":1,
+        "job_id": uniqueId,
+        "request_type": 'Sync Control Properties',
+        "job_type":"Message",
+        "sub_job_id": uniqueId + "_1",
+      }
+  
+  
+      if(event.length > 0) {
+        event.forEach((detail)=>{
+          if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
+            if(detail.data_type == 'Number') {
+              detail.new_value = parseInt(detail.new_value);
+            }
+            if(detail.data_type == 'Float') {
+              detail.new_value = parseFloat(detail.new_value);
+            }
+            setProperties['message']['properties'][detail.json_key] = detail.new_value;
           }
-          if(detail.data_type == 'Float') {
-            detail.new_value = parseFloat(detail.new_value);
+        })
+      } else {
+          if(event?.data?.new_value?.toString().length > 0){
+            if(event.data.data_type == 'Number') {
+              event.data.new_value = parseInt(event.data.new_value);
+            }
+            if(event.data.data_type == 'Float') {
+              event.data.new_value = parseFloat(event.data.new_value);
+            }
+            setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
           }
-          setProperties['message']['properties'][detail.json_key] = detail.new_value;
-        }
-      })
-    } else {
-        if(event?.data?.new_value?.toString().length > 0){
-          if(event.data.data_type == 'Number') {
-            event.data.new_value = parseInt(event.data.new_value);
-          }
-          if(event.data.data_type == 'Float') {
-            event.data.new_value = parseFloat(event.data.new_value);
-          }
-          setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
-        }
-    }
-    const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
-    if(isEmpty) {
-      this.toasterService.showError('To Sync Control Properties select checkbox','Check Box Selection');
-    } else {
-      this.syncControlProperties(setProperties);
+      }
+      const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
+      if(isEmpty) {
+        this.toasterService.showError('To Sync Control Properties select checkbox','Check Box Selection');
+      } else {
+        this.syncControlProperties(setProperties);
+      }
     }
 
   }

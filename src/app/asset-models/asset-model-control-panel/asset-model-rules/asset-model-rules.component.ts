@@ -43,6 +43,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   filteredRuleList:  any = [];
   asset : any = [];
   ruleMappingForm;
+  isApiLoading : boolean = false;
   modalConfig: { cancelBtnText?:any;  saveBtnText?:any;stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetService: AssetService,
@@ -259,15 +260,22 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   }
 
   async onMappingRule(rule) {
-    this.ruleMappingForm.get('selectedRuleList').setValue(null);
-    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
+    this.isApiLoading = false;
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
       isDisplayCancel: true,
     };
     this.selectedrule = rule;
+    console.log(this.selectedrule)
     this.filteredRuleList = [];
+    if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
+      this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
+    } else {
+      this.ruleMappingForm.get('selectedRuleList').setValue(null);
+    }
+    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
+
     await this.getAssets(this.contextApp.user.hierarchy);
     $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.filteredRuleList = this.rules.filter((localRule)=> localRule.rule_id != rule.rule_id)
@@ -279,6 +287,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     $('#RuleMappingModal').modal('hide');
   }
   onSaveModal(event) {
+    this.isApiLoading = true;
     const obj = {
       rule_code : this.selectedrule.code,
       model_name : this.assetModel.name,
@@ -286,10 +295,12 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     }
     this.assetModelService.assetModelRuleMapping(obj).subscribe(
       (response: any) => {
+        this.isApiLoading = false;
         this.toasterService.showSuccess(response.message, 'Mapping Rule');
         this.onCloseModal();
       },
       (err) => {
+        this.isApiLoading = false;
         this.toasterService.showError(err.message, 'Mapping Rule');
         this.onCloseModal();
       }

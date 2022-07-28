@@ -138,9 +138,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       name: this.assetModel.name,
     };
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-        console.log(response)
         let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
-        console.log("localObject.........",localObject)
         this.properties = localObject.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
         this.isPropertiesLoading = false;
       })
@@ -184,9 +182,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
 
 
     if(event.length > 0) {
-      // let counter = 0;
       event.forEach((detail)=>{
-        console.log("detail.......",detail)
         if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
           if(detail.data_type == 'Number') {
             detail.new_value = parseInt(detail.new_value);
@@ -195,17 +191,10 @@ export class AssetModelControlPropertiesComponent implements OnInit {
             detail.new_value = parseFloat(detail.new_value);
           }
           setProperties['message']['properties'][detail.json_key] = detail.new_value;
-        // } else if(event?.data?.syncUp == false || !event?.data?.syncUp)  {
-        //   if(detail?.new_value?.toString().length > 0) {
-        //     counter++;
-        //   }
         }
       })
     } else {
-      // if(event?.data?.syncUp == false || !event?.data?.syncUp)  {
-      //   this.toasterService.showError('To Sync Control Properties for given please select checkbox','Check Box Selection');
-      // } else {
-        if(event?.data?.syncUp == true && event?.data?.new_value?.toString().length > 0){
+        if(event?.data?.new_value?.toString().length > 0){
           if(event.data.data_type == 'Number') {
             event.data.new_value = parseInt(event.data.new_value);
           }
@@ -214,12 +203,8 @@ export class AssetModelControlPropertiesComponent implements OnInit {
           }
           setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
         }
-        // this.syncControlProperties(setProperties);
-      // }
     }
-    console.log(setProperties)
     const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
-    console.log(isEmpty); 
     if(isEmpty) {
       this.toasterService.showError('To Sync Control Properties select checkbox','Check Box Selection');
     } else {
@@ -229,11 +214,8 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   }
   async assetSelectionChangeFun(selected_asset) {
     this.selectedAssets = selected_asset;
-    console.log(this.selectedAssets)
     //await this.getAssets(this.contextApp.user.hierarchy);
   }
-
-
 
   syncControlProperties(propertyObject) {
     this.isAPILoading = true;

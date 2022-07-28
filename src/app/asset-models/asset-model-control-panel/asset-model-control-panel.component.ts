@@ -55,6 +55,10 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
           let titleObj;
           let count;
           this.menuItems.forEach((menu) => {
+            if(menu.url == '#asset_model_control_properties') {
+              menu.page = "control_property";
+              menu.icon = 'fa fa-fw fa-sun-o';
+            }
             if (menu.visible) {
               let trueCount = 0;
               let falseCount = 0;

@@ -139,7 +139,9 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     };
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
-        this.properties = response.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+        if(response?.properties['measured_properties'] && response?.properties['measured_properties'].length>0) {
+          this.properties = response?.properties?.['measured_properties']?.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+        }
         this.isPropertiesLoading = false;
       })
   }

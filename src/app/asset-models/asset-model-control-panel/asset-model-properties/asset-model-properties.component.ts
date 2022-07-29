@@ -245,17 +245,15 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // }
         
         this.isPropertiesLoading = false;
-        // console.log("============",JSON.parse(JSON.stringify(this.properties)));
         // ADDEd filter for measured_properties, i.e. return only r and rw records
-        if(this.type == 'measured_properties') {
-          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
-        } 
-
+        if(this.type == 'measured_properties' && this.properties['measured_properties'] && this.properties['measured_properties'].length>0) {
+          this.properties[this.type] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
+        }
         // ADDEd filter for controllable_properties, i.e. return only w and rw records
-        if(this.type == 'controllable_properties') {
+        if(this.type == 'controllable_properties' && this.properties['measured_properties'] && this.properties['measured_properties'].length>0) {
           //Here for controllable properties, it dont have data, we need to copy it from  measured_properties
           // ANd added acroding condition for data
-          this.properties[this.type] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+          this.properties[this.type] = this.properties['measured_properties']?.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
         }
       })
     );

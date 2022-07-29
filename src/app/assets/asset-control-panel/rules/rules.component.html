@@ -108,7 +108,6 @@
                               class="mr-1" placement="bottom" tooltip="Rule Mapping">
                               <em class="fa fa-fw fa-asterisk"></em>
                             </a>
-                            
                           </td>
                         </tr>
                         <tr *ngIf="!isCloneEdit && toggleRows[selectedTab + '_model_' + i]" style="background-color:#fdfeff;">
@@ -257,6 +256,11 @@
                                 <em class="fa fa-fw fa-undo"></em>
                               </a>
                             </ng-container>
+                            <a href="javascript:void(0)"
+                              (click)="onMappingRule(rule)" 
+                                class="mr-1" placement="bottom" tooltip="Rule Mapping">
+                                <em class="fa fa-fw fa-asterisk"></em>
+                            </a>
 
                             
                           </td>

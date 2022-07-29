@@ -143,7 +143,6 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   }
 
   setActiveTab(tab) {
-    console.log(tab)
     this.activeTab = tab;
     window.location.hash = tab;
   }

@@ -81,7 +81,6 @@ export class RulesComponent implements OnInit {
     if(val){
        this.onAccordionClick(str)
     }
-    console.log("close called resetData",val)
   }
   
   cloneRule() {
@@ -363,7 +362,6 @@ export class RulesComponent implements OnInit {
     };
     this.filteredRuleList = [];
     this.selectedrule = rule;
-    console.log("test=========>",this.selectedrule)
     if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
       this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
     } else {
@@ -385,6 +383,12 @@ export class RulesComponent implements OnInit {
     }
     this.assetService.assetRuleMapping(obj).subscribe(
       (response: any) => {
+        this.modelrules.map((detail)=>{
+          if(detail.rule_id == this.selectedrule.rule_id) {
+            detail.link_rule_code = obj.link_rule_code;
+          }
+          return detail;
+        })
         this.isApiLoading = false;
         this.toasterService.showSuccess(response.message, 'Mapping Rule');
         this.onCloseModal();

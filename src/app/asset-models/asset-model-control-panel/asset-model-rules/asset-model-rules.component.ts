@@ -267,7 +267,6 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       isDisplayCancel: true,
     };
     this.selectedrule = rule;
-    console.log(this.selectedrule)
     this.filteredRuleList = [];
     if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
       this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
@@ -295,6 +294,12 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     }
     this.assetModelService.assetModelRuleMapping(obj).subscribe(
       (response: any) => {
+        this.rules.map((detail)=>{
+          if(detail.rule_id == this.selectedrule.rule_id) {
+            detail.link_rule_code = obj.link_rule_code;
+          }
+          return detail;
+        })
         this.isApiLoading = false;
         this.toasterService.showSuccess(response.message, 'Mapping Rule');
         this.onCloseModal();

@@ -320,8 +320,8 @@
             [multiple]="true" dropdownPosition="bottom" name="selectedRuleList" id="selectedRuleList" bindValue="code"
             formControlName="selectedRuleList" required>
               <ng-template ng-option-tmp let-item="item">
-                <span [tooltip]="item.code + ' - ' + item.name">
-                  {{item.code}} - {{item.name}}
+                <span [tooltip]="item.name + ' - ' + item.code">
+                  {{item.name}} - {{item.code}}
                 </span>
               </ng-template>
             </ng-select>

@@ -103,10 +103,11 @@
                               placement="bottom" tooltip="Override">
                               <em class="fa fa-fw fa-clone"(click)="overRideRule(i, rule, 'model', false, true,true,'')"></em>
                             </a>
-                            <a href="javascript:void(0)"
-                            (click)="onMappingRule(rule)" 
-                              class="mr-1" placement="bottom" tooltip="Rule Mapping">
-                              <em class="fa fa-fw fa-asterisk"></em>
+                            <a style="padding-left:4px" href="javascript:void(0)"
+                            (click)="onMappingRule(rule,'modelrules')" 
+                              class="mr-1" tooltip="Rule Mapping">
+                              <!-- <em class="fa fa-fw fa-asterisk"></em> -->
+                              <img src="../assets/img/card-checklist.svg" />
                             </a>
                           </td>
                         </tr>
@@ -256,13 +257,11 @@
                                 <em class="fa fa-fw fa-undo"></em>
                               </a>
                             </ng-container>
-                            <a href="javascript:void(0)"
-                              (click)="onMappingRule(rule)" 
-                                class="mr-1" placement="bottom" tooltip="Rule Mapping">
-                                <em class="fa fa-fw fa-asterisk"></em>
+                            <a style="padding-left:4px"  href="javascript:void(0)"
+                              (click)="onMappingRule(rule,'assetRules')" 
+                                class="mr-1" tooltip="Rule Mapping">
+                                <img src="../assets/img/card-checklist.svg" />
                             </a>
-
-                            
                           </td>
                         </tr>
                         <tr *ngIf="toggleRows[selectedTab + '_asset_' + i]" style="background-color:#fdfeff;">

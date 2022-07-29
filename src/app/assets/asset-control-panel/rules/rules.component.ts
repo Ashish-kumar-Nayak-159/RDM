@@ -353,7 +353,7 @@ export class RulesComponent implements OnInit {
     $('#confirmMessageModal').modal('hide');
     this.isDeleteRuleLoading = false;
   }
-  async onMappingRule(rule) {
+  async onMappingRule(rule,ruleType) {
     this.isApiLoading = false;
     this.modalConfig = {
       stringDisplay: true,
@@ -369,7 +369,11 @@ export class RulesComponent implements OnInit {
     }
     this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
     $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+    if(ruleType == 'assetRules') {
+      this.filteredRuleList = this.assetRules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+    } else {
+      this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+    }
   }
   onCloseModal() {
     $('#RuleMappingModal').modal('hide');

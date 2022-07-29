@@ -363,7 +363,7 @@ export class RulesComponent implements OnInit {
     };
     this.filteredRuleList = [];
     this.selectedrule = rule;
-    console.log(this.selectedrule)
+    console.log("test=========>",this.selectedrule)
     if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
       this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
     } else {

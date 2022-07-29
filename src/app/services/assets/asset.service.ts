@@ -1371,4 +1371,11 @@ export class AssetService {
   deWhitelistedAsset(app, assetId) {
     return this.http.delete(this.url + String.Format(AppUrls.DE_WHITELIST_ASSET, encodeURIComponent(app),assetId));
   }
+
+  assetRuleMapping(ruleModel) {
+    return this.http.post(
+      this.url + String.Format(AppUrls.ASSET_RULE_MAPPING),
+      ruleModel
+    );
+  }
 }

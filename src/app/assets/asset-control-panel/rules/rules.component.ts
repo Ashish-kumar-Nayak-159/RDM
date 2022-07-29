@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as datefns from 'date-fns';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -37,6 +38,10 @@ export class RulesComponent implements OnInit {
   selectedrule: any;
   isView = false;
   selectedAccrodionType = 'Asset';
+  filteredRuleList : any = [];
+  ruleMappingForm;
+  isApiLoading : boolean = false;
+
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetService: AssetService,
@@ -46,6 +51,9 @@ export class RulesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.ruleMappingForm = new FormGroup({
+      selectedRuleList: new FormControl("", [Validators.required]),
+    });
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -73,9 +81,8 @@ export class RulesComponent implements OnInit {
     if(val){
        this.onAccordionClick(str)
     }
-    console.log("close called resetData",val)
   }
-
+  
   cloneRule() {
     this.selectedTab = '';
     this.isEdit = false;
@@ -345,6 +352,53 @@ export class RulesComponent implements OnInit {
   onCloseDeleteModal() {
     $('#confirmMessageModal').modal('hide');
     this.isDeleteRuleLoading = false;
+  }
+  async onMappingRule(rule) {
+    this.isApiLoading = false;
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
+    this.filteredRuleList = [];
+    this.selectedrule = rule;
+    if(this.selectedrule.link_rule_code && this.selectedrule.link_rule_code.length>0) {
+      this.ruleMappingForm.get('selectedRuleList').setValue(this.selectedrule.link_rule_code);
+    } else {
+      this.ruleMappingForm.get('selectedRuleList').setValue(null);
+    }
+    this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
+    $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+  }
+  onCloseModal() {
+    $('#RuleMappingModal').modal('hide');
+  }
+  onSaveModal(event) {
+    this.isApiLoading = true;
+    const obj = {
+      rule_code : this.selectedrule.code,
+      asset_id : this.asset.asset_id,
+      link_rule_code : this.ruleMappingForm.get('selectedRuleList').value,
+    }
+    this.assetService.assetRuleMapping(obj).subscribe(
+      (response: any) => {
+        this.modelrules.map((detail)=>{
+          if(detail.rule_id == this.selectedrule.rule_id) {
+            detail.link_rule_code = obj.link_rule_code;
+          }
+          return detail;
+        })
+        this.isApiLoading = false;
+        this.toasterService.showSuccess(response.message, 'Mapping Rule');
+        this.onCloseModal();
+      },
+      (err) => {
+        this.isApiLoading = false;
+        this.toasterService.showError(err.message, 'Mapping Rule');
+        this.onCloseModal();
+      }
+    );
   }
 
   ngOnDestroy() {

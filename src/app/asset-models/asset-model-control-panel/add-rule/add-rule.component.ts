@@ -87,6 +87,7 @@ export class AddRuleComponent implements OnInit {
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
+      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" ? 300000000 : this.ruleModel.escalation_time_in_sec;
       this.getAlertConditions('Cloud');
     }
     if (this.isClone) {
@@ -123,7 +124,7 @@ export class AddRuleComponent implements OnInit {
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
-    this.getAssetsModelProperties();
+    this.getAssetsModelProperties();    
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
@@ -220,7 +221,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.description = this.ruleData.description;
     this.ruleModel.aggregation_window_in_sec = this.ruleData.aggregation_window_in_sec;
     this.ruleModel.alert_condition_id = this.ruleData.alert_condition_id;
-    this.ruleModel.condition_str = this.ruleData.metadata.condition_str;
+    this.ruleModel.condition_str = this.ruleData?.metadata?.condition_str;
     if (this.ruleData.type === 'Edge') {
       this.ruleModel.conditions = JSON.parse(this.ruleData.metadata.conditions);
     } else {
@@ -229,7 +230,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.created_by = this.ruleData.created_by;
     if (this.ruleData?.metadata?.sid)
       this.ruleModel.metadata.sid = this.ruleData.metadata.sid;
-    this.ruleModel.escalation_time_in_sec = this.ruleData.escalation_time_in_sec;
+    this.ruleModel.escalation_time_in_sec = this.ruleData?.escalation_time_in_sec;    
     this.ruleModel.properties = this.ruleData.properties;
     this.ruleModel.aggregation_enabled = this.ruleData.aggregation_enabled;
     this.ruleModel.updated_by = this.ruleData.updated_by;

@@ -269,6 +269,8 @@
                     <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
                         (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><em
                           class="fas fa-search fa-sm"></em></button></div>
+                      <!-- Show and Hide Button Based on Selected Widgets For Search Length is greater then 0 -->
+                    <button type="button" class="btn btn-sm btn-primary btn-selected-widgets" *ngIf="selectedWidgetsForSearch.length !== 0" (click)="showWidgetList()">{{ShowSelectedWidgets?"Hide ": "Show "}} {{selectedWidgetsForSearch.length}} Selected widgets</button>
                   </form>
                 </ng-template>
                 <ng-container *ngIf="isShowOpenFilter">
@@ -285,7 +287,8 @@
                 </ng-container>
               </div>
             </div>
-            <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
+            <!-- Selected Widgets Only show if selected widgets are greater than 0 and show selected widget is true-->
+            <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0 && ShowSelectedWidgets">
 
               <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
                 <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"

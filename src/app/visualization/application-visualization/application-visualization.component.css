@@ -74,3 +74,12 @@ input:invalid {
 .adjust-height{
   max-height: calc(100vh - 11rem);
 }
+
+.btn-selected-widgets{
+  background-color: #eef3fa !important;
+  color: royalblue;
+}
+
+.btn-selected-widgets:hover{
+  color: #000;
+}

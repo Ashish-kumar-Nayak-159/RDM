@@ -370,7 +370,22 @@ export class RulesComponent implements OnInit {
     this.ruleMappingForm.get('selectedRuleList').updateValueAndValidity();
     $('#RuleMappingModal').modal({ backdrop: 'static', keyboard: false, show: true });
     if(ruleType == 'assetRules') {
-      this.filteredRuleList = this.assetRules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+      //this.filteredRuleList = this.assetRules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+      let localAssetRules = this.assetRules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+      let localModelRules = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
+      
+      let codeList = [];
+      localAssetRules.forEach((detail)=>{
+        codeList.push(detail.code)
+      });
+      let localModelArray = [];
+      localModelRules.forEach((detail)=>{
+        if(codeList.indexOf(detail.code) <= -1) {
+          localModelArray.push(detail);
+        }
+      })
+      this.filteredRuleList = [...localAssetRules,...localModelArray]
+
     } else {
       this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
     }

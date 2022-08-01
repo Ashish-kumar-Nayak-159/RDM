@@ -5,8 +5,10 @@
   </button>
   <a class="d-flex align-items-center" *ngIf="!userData?.is_super_admin" href="javascript:void(0)"
     (click)="redirectToFirstMenu()">
-    <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
-    [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo">
+    <!-- <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
+    [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo"> -->
+    <img src="../../assets/img/kpix-logo.png"
+    [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo fix-height-image">
   </a>
   <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin" [routerLink]="['applications']">
     <img src="../../assets/img/kpix-logo.png" class="d-block img-fluid img-logo fix-height-image">

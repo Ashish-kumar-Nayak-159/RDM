@@ -332,7 +332,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button  [disabled]="isApiLoading || !this.ruleMappingForm?.get('selectedRuleList').value" type="button" class="btn btn-primary" (click)="onSaveModal('save')">
+        <button  [disabled]="isApiLoading" type="button" class="btn btn-primary" (click)="onSaveModal('save')">
           Save
           <em *ngIf="isApiLoading" class="fa fa-spinner fa-spin fa-fw"></em>
         </button>

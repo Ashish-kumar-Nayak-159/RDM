@@ -385,7 +385,6 @@ export class RulesComponent implements OnInit {
         }
       })
       this.filteredRuleList = [...localAssetRules,...localModelArray]
-
     } else {
       this.filteredRuleList = this.modelrules.filter((localRule)=> localRule.rule_id != rule.rule_id)
     }
@@ -408,6 +407,13 @@ export class RulesComponent implements OnInit {
           }
           return detail;
         })
+        this.assetRules.map((detail)=>{
+          if(detail.rule_id == this.selectedrule.rule_id) {
+            detail.link_rule_code = obj.link_rule_code;
+          }
+          return detail;
+        })
+
         this.isApiLoading = false;
         this.toasterService.showSuccess(response.message, 'Mapping Rule');
         this.onCloseModal();

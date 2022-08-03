@@ -30,7 +30,6 @@ export class CommonTableComponent implements OnInit {
   }
 
   onClickOfButton(data, value) {
-    console.log(data);
     this.viewMessageEvent.emit({
       data,
       for: value,
@@ -38,7 +37,6 @@ export class CommonTableComponent implements OnInit {
     });
   }
   multiSyncupData() {
-    console.log(this.tableData);
     this.viewMessageEvent.emit(this.tableData);
   }
   updateAllCheckBox(event) {

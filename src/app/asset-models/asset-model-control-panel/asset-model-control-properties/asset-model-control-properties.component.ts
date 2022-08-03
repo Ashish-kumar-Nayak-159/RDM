@@ -187,9 +187,10 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       if(event.length > 0) {
         event.forEach((detail)=>{
           if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
-            console.log("detail.data_type........",detail)
             if(detail.data_type == 'Number') {
-              if(detail.new_value.indexOf('.') > -1) {
+              let newValue = detail?.new_value;
+              newValue = newValue.toString();
+              if(newValue.indexOf('.') > -1) {
                 detail.new_value = parseFloat(detail.new_value);
               } else {
                 detail.new_value = parseInt(detail.new_value);
@@ -203,9 +204,10 @@ export class AssetModelControlPropertiesComponent implements OnInit {
         })
       } else {
           if(event?.data?.new_value?.toString().length > 0){
-            console.log("detail.data_type........",event.data.new_value);
             if(event.data.data_type == 'Number') {
-              if(event.data.new_value.indexOf('.') > -1) {
+              let newValue = event?.data?.new_value;
+              newValue = newValue.toString();
+              if(newValue.indexOf('.') > -1) {
                 event.data.new_value = parseFloat(event.data.new_value);
               } else {
                 event.data.new_value = parseInt(event.data.new_value);

@@ -30,6 +30,7 @@ export class CommonTableComponent implements OnInit {
   }
 
   onClickOfButton(data, value) {
+    console.log(data);
     this.viewMessageEvent.emit({
       data,
       for: value,
@@ -37,6 +38,7 @@ export class CommonTableComponent implements OnInit {
     });
   }
   multiSyncupData() {
+    console.log(this.tableData);
     this.viewMessageEvent.emit(this.tableData);
   }
   updateAllCheckBox(event) {
@@ -74,7 +76,7 @@ export class CommonTableComponent implements OnInit {
     this.isEnteredAnyValue = false;
     this.tableData.map((detail)=>{
       if(detail.id == data.id && data.data_type == 'Number') {
-        detail.new_value = detail?.new_value?.replace(/[^0-9]+/gi,"");
+        detail.new_value = detail?.new_value?.replace(/[^0-9.]+/gi,"");
         value = value?.replace(/[^0-9]+/gi,"");
       }
       if(detail.id == data.id && data.data_type == 'String') {

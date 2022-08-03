@@ -87,6 +87,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   derivedKPIHistoricData: any;
   nullValueArr: any[];
   frequency: any;
+  ShowSelectedWidgets: boolean = false; // Property to show hide Show Selected Property widgets
+  showWidgetList(){ // Function call on show / hide selected widgets button click 
+    this.ShowSelectedWidgets = !this.ShowSelectedWidgets; // Toggle Selected Property Widgets
+  }
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   configuredHierarchy: any = {};
   noOfRecords = CONSTANTS.NO_OF_RECORDS;

@@ -29,6 +29,7 @@ declare var $: any;
   styleUrls: ['./application-visualization.component.css'],
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
+  ruleCode:any;
   @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
@@ -1075,6 +1076,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
+    this.ruleCode = alert?.source_info?.rule_code
     this.acknowledgedAlertIndex = this.latestAlerts.findIndex((alertObj) => alertObj.id === alert.id);
     if (!this.acknowledgedAlert || !this.acknowledgedAlert.metadata) {
       this.acknowledgedAlert.metadata = {
@@ -1173,6 +1175,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       message_date: this.acknowledgedAlert.start_event_message_date,
       code: this.acknowledgedAlert.code,
       message: this.acknowledgedAlert.message,
+      rule_code: this.ruleCode,
       metadata: this.acknowledgedAlert.metadata,
       from_date: null,
       to_date: null,

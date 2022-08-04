@@ -95,7 +95,7 @@
               <option value="G3">G3</option>
             </select>
           </div>
-          <div class="row pt-2" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+          <div class="row pt-2"*ngIf="(type.includes('measured') || this.type.includes('controllable'))  && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
             <div class="col-6">
               <input class="form-group" type="checkbox" #read="ngModel" [(ngModel)]="propertyObj.read" name="read" id="read" value="3" [checked]="true" (change)="readWriteValue('read')" required="{{setBasedOnSelection}}"/> Read<br>
             </div>

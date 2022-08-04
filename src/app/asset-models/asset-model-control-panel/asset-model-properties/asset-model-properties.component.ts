@@ -990,7 +990,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       })
     }
-
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -1134,6 +1133,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
             this.assetModel.tags.protocol === 'ModbusRTUMaster'
           ) {
+            console.log(this.propertyObj)
             this.setupForm = new FormGroup({
               slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
               d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),

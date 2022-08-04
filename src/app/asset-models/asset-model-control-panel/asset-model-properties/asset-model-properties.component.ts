@@ -245,36 +245,30 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // }
         
         this.isPropertiesLoading = false;
+        console.log(this.properties['measured_properties']);
         // ADDEd filter for measured_properties, i.e. return only r and rw records
-        if(this.properties['measured_properties']?.length > 0) {
-          if(this.type == 'measured_properties' && this.properties['measured_properties'] && this.properties['measured_properties'].length>0) {
-            this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
-              if(!detail.metadata.rw) { 
-                detail.metadata.rw = 'r';
+        if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
+          this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
+            if(!detail.metadata.rw) { 
+              detail.metadata.rw = 'r';
+              detail.read = true;
+            } else {
+              if(detail.metadata.rw == 'rw') {
                 detail.read = true;
-              } else {
-                if(detail.metadata.rw == 'rw' ) {
-                  detail.read = true;
-                  detail.write = true;
-                } else if(detail.metadata.rw == 'r' ) {
-                  detail.read = true;
-                } else if(detail.metadata.rw == 'w' ) {
-                  detail.write = true;
-                }
+                detail.write = true;
+              } else if(detail.metadata.rw == 'r' ) {
+                detail.read = true;
+              } else if(detail.metadata.rw == 'w' ) {
+                detail.write = true;
               }
-              return detail;
-            })
-            this.properties[this.type] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
-            // console.log("this.properties[this.type]...............",JSON.parse(JSON.stringify(this.properties[this.type])));
-          }
-          // ADDEd filter for controllable_properties, i.e. return only w and rw records
-          if(this.type == 'controllable_properties' && this.properties['measured_properties'] && this.properties['measured_properties'].length>0) {
-            //Here for controllable properties, it dont have data, we need to copy it from  measured_properties
-            // ANd added acroding condition for data
-            this.properties[this.type] = this.properties['measured_properties']?.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
-          } else if(this.type == 'controllable_properties') {
-            this.properties[this.type] = [];
-          }
+            }
+            return detail;
+          })
+          //do not change the order of this two line.. because in this some case what it doest it will filter of r | rw and assined again to measured properties 
+          //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
+          this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+          this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
+
         } else {
           this.properties[this.type] = [];
         }
@@ -359,14 +353,26 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
           this.assetModel.tags.protocol === 'ModbusRTUMaster'
         ) {
-          this.setupForm = new FormGroup({
-            slave_id: new FormControl("", [Validators.required]),
-            d: new FormControl(null, [Validators.required]),
-            sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
-            a: new FormControl(false),
-            fc_r: new FormControl(null, [Validators.required]),
-            fc_w: new FormControl(null),
-          });
+          if(this.propertyObj.read == true) {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl("", [Validators.required]),
+              d: new FormControl(null, [Validators.required]),
+              sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+              a: new FormControl(false),
+              fc_r: new FormControl(null, [Validators.required]),
+              fc_w: new FormControl(null),
+            });
+          } else {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl("", [Validators.required]),
+              d: new FormControl(null, [Validators.required]),
+              sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+              a: new FormControl(false),
+              fc_r: new FormControl(null),
+              fc_w: new FormControl(null, [Validators.required]),
+            });
+          }
+          
         } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
           this.setupForm = new FormGroup({
             slave_id: new FormControl("", [Validators.required]),
@@ -666,11 +672,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       return;
     }
     if (this.propertyObj.threshold && this.type === 'measured_properties') {
-      if (
-        this.propertyObj.threshold.l1 &&
-        this.propertyObj.threshold.h1 &&
-        this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1
-      ) {
+      if ( this.propertyObj.threshold.l1 && this.propertyObj.threshold.h1 && this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1 ) {
         this.toasterService.showError('H1 must be greater than L1', 'Add Property');
         return;
       }
@@ -727,39 +729,27 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.isCreatePropertyLoading = true;
     var obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
-    obj.properties[this.type].push(this.propertyObj);
-    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    // if(this.type == 'measured_properties') {
-    //   let localObject = [];
-    //   obj.properties['measured_properties'].forEach((detail)=>{
-    //     if(detail.recordOfControlProperties == true) {} else {
-    //       localObject.push(detail);
-    //     }
-    //   })
-    //   obj.properties['measured_properties'] = localObject;
-    // }
-    // if(this.type == 'controllable_properties') {
-    //   let localObject = [];
-    //   obj.properties['controllable_properties'].forEach((detail)=>{
-    //     if(detail.recordOfMeasuredProperties == true) {} else {
-    //       localObject.push(detail);
-    //     }
-    //   })
-    //   obj.properties['controllable_properties'] = localObject;
-    // }
-    if(this.type == 'controllable_properties') {
-      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
-      obj.properties['controllable_properties'] = [];
-    }
+
     if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
-      if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1 ].read == true && obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
-        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'rw'
-      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].read == true) {
-        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'r'
-      } else if(obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1].write == true) {
-        obj.properties['measured_properties'][obj.properties['measured_properties'].length - 1]['metadata']['rw'] = 'w'
+      if(this.propertyObj.read == true && this.propertyObj.write == true) {
+        this.propertyObj['metadata']['rw'] = 'rw'
+      } else if(this.propertyObj.read == true) {
+        this.propertyObj['metadata']['rw'] = 'r'
+      } else if(this.propertyObj.write == true) {
+        this.propertyObj['metadata']['rw'] = 'w'
       }
+
+      let mergedObject = [...obj.properties['measured_properties'],...obj.properties['controllable_properties']];
+      const unique = [...new Map(mergedObject.map(item => [item.id, item])).values()];
+
+      obj.properties['measured_properties'] = unique;
+
+      obj.properties['measured_properties'].push(this.propertyObj);
+    } else {
+      obj.properties[this.type].push(this.propertyObj);
     }
+    
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
@@ -814,7 +804,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   deleteProperty() {
-    alert("delete...")
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     

@@ -35,7 +35,6 @@ export class CommonTableComponent implements OnInit {
   }
   ngOnChanges(changes:any) {
     if(!changes?.saveDataFlag?.firstChange) {
-      console.log("this.saveDataFlag",this.saveDataFlag)
       if(this.saveDataFlag == false) {
         this.tableData.map(detail => detail.clicked = false);
       }

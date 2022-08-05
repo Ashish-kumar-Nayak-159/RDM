@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD
 <div class="container-fluid pl-0" *ngIf="assetModelData?.length>0">
-=======
-<div class="container" *ngIf="assetModelData?.length>0">
->>>>>>> cf476ba9 (Write button should be tickable by default  on controllable property page)
   <form [formGroup]="assetSelectForm">
     <div class="d-flex justify-content-between align-items-center w-100">
       <div class="left ml-3">
@@ -32,11 +28,7 @@
           {{item.name}}
         </th>
         <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
-<<<<<<< HEAD
-          <input [disabled] = "assetModelData?.length > 0" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
-=======
           <input type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
->>>>>>> 0425113d (Loading bar continuously appear and data not loaded in page)
         </th>
         </ng-container>
       </tr>

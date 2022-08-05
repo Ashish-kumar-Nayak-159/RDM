@@ -253,6 +253,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       )
       .subscribe(
         (response: any) => {
+          console.log("this.table.........",this.properties,propertyObject)
           this.toasterService.showSuccess(response.message, 'Sync Control Properties');
           this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;

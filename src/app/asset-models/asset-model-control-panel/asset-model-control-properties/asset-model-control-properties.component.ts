@@ -33,6 +33,8 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+
+    
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetSelectForm = new FormGroup({
       selected_asset: new FormControl("", []),
@@ -141,6 +143,12 @@ export class AssetModelControlPropertiesComponent implements OnInit {
         // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
         if(response?.properties['measured_properties'] && response?.properties['measured_properties'].length>0) {
           this.properties = response?.properties?.['measured_properties']?.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+          this.properties.map((detail:any)=>{ 
+            if(!("current_value" in detail)) {
+              detail.current_value = "-";
+            }
+            return detail;
+          })
         }
         this.isPropertiesLoading = false;
       })
@@ -230,6 +238,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   }
   async assetSelectionChangeFun(selected_asset) {
     this.selectedAssets = selected_asset;
+    
     //await this.getAssets(this.contextApp.user.hierarchy);
   }
 

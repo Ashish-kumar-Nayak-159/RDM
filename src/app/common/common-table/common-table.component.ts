@@ -83,9 +83,15 @@ export class CommonTableComponent implements OnInit {
       type: 'telemetry',
       app: contextApp.app,
     };
+    
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe((data) => {
-      console.log("data............",data)
+      this.tableData.map((detail)=>{
+        if(data['m'][detail.json_key]) {
+          detail.current_value = data['m'][detail.json_key];
+        }
+        return detail;
+      });
     });
   }
   inputBoxValueChange(data,value:string) {

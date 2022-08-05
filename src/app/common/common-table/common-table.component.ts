@@ -33,7 +33,14 @@ export class CommonTableComponent implements OnInit {
     });
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
   }
-
+  ngOnChanges(changes:any) {
+    if(!changes?.saveDataFlag?.firstChange) {
+      console.log("this.saveDataFlag",this.saveDataFlag)
+      if(this.saveDataFlag == false) {
+        this.tableData.map(detail => detail.clicked = false);
+      }
+    }
+  }
   onClickOfButton(data, value) {
     this.viewMessageEvent.emit({
       data,

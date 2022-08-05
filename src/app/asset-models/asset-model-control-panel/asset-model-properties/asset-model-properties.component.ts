@@ -245,7 +245,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // }
         
         this.isPropertiesLoading = false;
-        console.log(this.properties['measured_properties']);
         // ADDEd filter for measured_properties, i.e. return only r and rw records
         if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
           this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
@@ -991,8 +990,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       })
     }
 
-    console.log(obj)
-
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -1133,7 +1130,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
             this.assetModel.tags.protocol === 'ModbusRTUMaster'
           ) {
-            console.log(this.propertyObj)
             this.setupForm = new FormGroup({
               slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
               d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),

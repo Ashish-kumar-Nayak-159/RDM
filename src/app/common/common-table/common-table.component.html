@@ -28,7 +28,7 @@
           {{item.name}}
         </th>
         <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
-          <input type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
+          <input [disabled] = "assetModelData?.length > 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
         </th>
         </ng-container>
       </tr>

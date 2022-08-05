@@ -32,7 +32,11 @@
           {{item.name}}
         </th>
         <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
+<<<<<<< HEAD
           <input [disabled] = "assetModelData?.length > 0" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
+=======
+          <input type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
+>>>>>>> 0425113d (Loading bar continuously appear and data not loaded in page)
         </th>
         </ng-container>
       </tr>

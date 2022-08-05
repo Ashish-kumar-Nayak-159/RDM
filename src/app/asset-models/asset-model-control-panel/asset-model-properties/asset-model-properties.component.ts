@@ -249,7 +249,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // ADDEd filter for measured_properties, i.e. return only r and rw records
         if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
           this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
-            console.log(detail)
             if(!detail?.metadata?.rw) { 
               if(!("metadata" in detail)) {
                 detail.metadata =  {};
@@ -991,6 +990,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       })
     }
+
+    console.log(obj)
+
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {

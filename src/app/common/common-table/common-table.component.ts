@@ -89,6 +89,7 @@ export class CommonTableComponent implements OnInit {
       type: 'telemetry',
       app: contextApp.app,
     };
+    
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe((data) => {
       this.tableData.map((detail)=>{

@@ -229,7 +229,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       }
       const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
       if(isEmpty) {
-        this.toasterService.showError('To Sync Control Properties select checkbox','Check Box Selection');
+        this.toasterService.showError('To Multi Sync Control Properties select checkbox','Check Box Selection');
       } else {
         this.syncControlProperties(setProperties);
       }
@@ -253,6 +253,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       )
       .subscribe(
         (response: any) => {
+          console.log("this.table.........",this.properties,propertyObject)
           this.toasterService.showSuccess(response.message, 'Sync Control Properties');
           this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;

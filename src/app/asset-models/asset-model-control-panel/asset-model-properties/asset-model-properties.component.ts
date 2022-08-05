@@ -263,7 +263,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 detail.write = true;
               }
             }
-            if(!("fc_r" in detail) && detail.metadata.fc) {
+            if(!("fc_r" in detail) && ("fc" in detail)) {
               detail.metadata.fc_r = detail.metadata.fc;
             }
             return detail;

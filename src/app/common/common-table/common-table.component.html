@@ -77,14 +77,14 @@
                 </a>
               </ng-container>
               <ng-template #normalBtns>
-                 <a [ngClass]="{'disabled' :  saveDataFlag && data.syncUp || assetModelData?.length > 0 && data?.new_value?.length <= 0  }" href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
+                 <a [ngClass]="{'disabled' :  saveDataFlag && data.syncUp || assetModelData?.length > 0 && data?.new_value?.length <= 0  }" href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id);data.clicked = true"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
                   <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
                   [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
                   && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
                   <span>{{btnData.text}}</span>
-                  <em *ngIf="saveDataFlag && data.syncUp && data?.new_value?.toString().length > 0" class="fa fa-spinner fa-spin fa-fw"></em>
+                  <em *ngIf="saveDataFlag && data.clicked == true && data?.new_value?.toString().length > 0" class="fa fa-spinner fa-spin fa-fw"></em>
                 </a>
               </ng-template>
               </ng-container>

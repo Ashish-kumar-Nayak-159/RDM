@@ -248,7 +248,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // ADDEd filter for measured_properties, i.e. return only r and rw records
         if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
           this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
-            if(!detail.metadata.rw) { 
+            console.log(detail)
+            if(!detail?.metadata?.rw) { 
+              if(!("metadata" in detail)) {
+                detail.metadata =  {};
+              }
               detail.metadata.rw = 'r';
               detail.read = true;
             } else {

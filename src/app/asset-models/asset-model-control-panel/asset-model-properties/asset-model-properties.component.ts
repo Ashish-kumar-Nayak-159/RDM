@@ -249,6 +249,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         // ADDEd filter for measured_properties, i.e. return only r and rw records
         if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
           this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
+            console.log(detail.metadata)
             if(!detail.metadata.rw) { 
               detail.metadata.rw = 'r';
               detail.read = true;
@@ -261,6 +262,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               } else if(detail.metadata.rw == 'w' ) {
                 detail.write = true;
               }
+            }
+            if(!("fc_r" in detail) && detail.metadata.fc) {
+              detail.metadata.fc_r = detail.metadata.fc;
             }
             return detail;
           })
@@ -929,25 +933,45 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       );
       return;
     }
-    const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
-    this.properties[this.type].splice(index, 1);
+    var index;
+    if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+      let mergedObject = [...this.properties['measured_properties'],...this.properties['controllable_properties']];
+      const unique = [...new Map(mergedObject.map(item => [item.id, item])).values()];
+
+      this.properties['measured_properties'] = unique;
+
+      index = this.properties['measured_properties'].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      this.properties['measured_properties'].splice(index, 1);
+
+    } else {
+
+      index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
+      this.properties[this.type].splice(index, 1);
+    }
+    
     this.validateSetThreshold();
     if (this.propertyObj?.edit) {
       // this.propertyObj.derived_function = this.code;
-      this.properties[this.type].splice(index, 0, this.propertyObj);
+      if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+        this.properties['measured_properties'].splice(index, 0, this.propertyObj);
+      } else {
+        this.properties[this.type].splice(index, 0, this.selectedProperty);
+      }
     } else {
       // this.selectedProperty.derived_function = this.code;
-      this.properties[this.type].splice(index, 0, this.selectedProperty);
+      if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+        this.properties['measured_properties'].splice(index, 0, this.propertyObj);
+      } else {
+        this.properties[this.type].splice(index, 0, this.selectedProperty);
+      }
     }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
 
-    if(this.type == 'controllable_properties') {
-      obj.properties['measured_properties'] = obj.properties['controllable_properties'];
-      obj.properties['controllable_properties'] = [];
-    }
+
+
     if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
       obj.properties['measured_properties'].map((detail)=>{
         if(detail.id == this.selectedProperty.id) {
@@ -964,6 +988,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       })
     }
+
+    console.log(obj)
+
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {

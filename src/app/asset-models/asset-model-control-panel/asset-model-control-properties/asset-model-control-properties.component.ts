@@ -142,7 +142,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
         if(response?.properties['measured_properties'] && response?.properties['measured_properties'].length>0) {
-          this.properties = response?.properties?.['measured_properties']?.filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+          this.properties = response?.properties?.['measured_properties']?.filter((detail)=>{ return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw')})
           this.properties.map((detail:any)=>{ 
             if(!("current_value" in detail)) {
               detail.current_value = "-";

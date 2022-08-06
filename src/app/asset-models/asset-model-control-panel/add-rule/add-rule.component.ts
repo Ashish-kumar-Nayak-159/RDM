@@ -346,14 +346,16 @@ export class AddRuleComponent implements OnInit {
           alert_type: alert_type,
         };
         this.assetService.getAlertConditions(this.contextApp.app, obj1).subscribe((response: any) => {
+          var arrayOfID =  this.alertConditionList.map((item)=>{
+            return item?.id
+       })
           response.data.forEach((item,index) => {
             item.type = 'Asset Alert Conditions';
-          if(this.alertConditionList[this.alertConditionList?.length - 1]?.id!=item?.id){
+          if(!arrayOfID.includes(item?.id)){
             this.alertConditionList.push(item);
           }
           });
           this.alertConditionList = JSON.parse(JSON.stringify(this.alertConditionList));
-
           this.onChangeOfAssetCondition();
         });
       }

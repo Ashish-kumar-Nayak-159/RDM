@@ -1090,6 +1090,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             data: {},
           },
         ],
+        resolution_date: new Date().toISOString()
       };
     } else if (!this.acknowledgedAlert.metadata.files || this.acknowledgedAlert.metadata.files.length === 0) {
       this.acknowledgedAlert.metadata.files = [

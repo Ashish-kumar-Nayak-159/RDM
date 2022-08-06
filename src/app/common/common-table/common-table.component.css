@@ -8,9 +8,12 @@
 .new_value {
     padding: 7px;
     border-radius: 5px;
-    border: 1px solid;
+    border: 1px solid rgba(118, 118, 118, 0.3);
     width: 160px;
 }
-input[type='checkbox'] {
+.v-align-middle tr td{
+    vertical-align: middle;
+}  
+/* input[type='checkbox'] {
     outline : 1px solid #000;
-}
+} */

@@ -188,7 +188,13 @@ export class AssetModelControlPropertiesComponent implements OnInit {
         event.forEach((detail)=>{
           if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
             if(detail.data_type == 'Number') {
-              detail.new_value = parseInt(detail.new_value);
+              let newValue = detail?.new_value;
+              newValue = newValue.toString();
+              if(newValue.indexOf('.') > -1) {
+                detail.new_value = parseFloat(detail.new_value);
+              } else {
+                detail.new_value = parseInt(detail.new_value);
+              }
             }
             if(detail.data_type == 'Float') {
               detail.new_value = parseFloat(detail.new_value);
@@ -199,7 +205,13 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       } else {
           if(event?.data?.new_value?.toString().length > 0){
             if(event.data.data_type == 'Number') {
-              event.data.new_value = parseInt(event.data.new_value);
+              let newValue = event?.data?.new_value;
+              newValue = newValue.toString();
+              if(newValue.indexOf('.') > -1) {
+                event.data.new_value = parseFloat(event.data.new_value);
+              } else {
+                event.data.new_value = parseInt(event.data.new_value);
+              }
             }
             if(event.data.data_type == 'Float') {
               event.data.new_value = parseFloat(event.data.new_value);

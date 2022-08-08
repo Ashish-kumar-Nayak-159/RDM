@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="right" style="margin-right: 68px;">
-        <button [ngClass]="{'disabled' : saveDataFlag || (assetModelData?.length > 0 && isEnteredAnyValue == false) }" type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
+        <button [ngClass]="{'disabled' : saveDataFlag || (assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id && isEnteredAnyValue == false) }" type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
           Multi Sync
         </button>
       </div>

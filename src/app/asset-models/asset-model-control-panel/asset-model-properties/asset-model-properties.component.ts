@@ -993,6 +993,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseAssetsPropertyModal();
+          this.toasterService.showSuccess(response.message, 'Edit Property');
           this.onCloseModal('configureDerivedPropModal');
           this.getAssetsModelProperties();
         },

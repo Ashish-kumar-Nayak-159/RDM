@@ -213,7 +213,7 @@
 
       </div>
     </div>
-    <div class="form-group" *ngIf="propertyObj && propertyObj.read == true && assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+    <div class="form-group" *ngIf="assetModel.alert_type !=='Asset' && propertyObj && propertyObj.read == true && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
       <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc_r" name="fc_r" formControlName="fc_r"
@@ -243,6 +243,40 @@
       </div>
       <div *ngIf="propertyObj && propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
         <div *ngIf="setupForm.get('fc_r').errors.required">
+          Read Function Code is required.
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="assetModel.alert_type ==='Asset' && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
+      <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
+      <div class="input-group">
+        <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
+          (change)="onChangeOfSetupFunctionCode()">
+          <option [ngValue]="null">Select Read Function Code</option>
+          <ng-container *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">
+            <!-- <option [ngValue]="1" >Read Coil (DIGITAL)</option>
+          <option [ngValue]="2" >Read
+            Discrete Input (DIGITAL)</option> -->
+            <option [ngValue]="3">Read
+              Holding
+              Registers (ANALOG)</option>
+            <option [ngValue]="4">Read Input
+              Registers (ANALOG)</option>
+          </ng-container>
+          <ng-container *ngIf="setupForm.get('d').value === 'd'">
+            <option [ngValue]="1">Read Coil (DIGITAL)</option>
+            <option [ngValue]="2">Read
+              Discrete Input (DIGITAL)</option>
+            <option [ngValue]="3">Read
+              Holding
+              Registers (ANALOG)</option>
+            <option [ngValue]="4">Read Input
+              Registers (ANALOG)</option>
+          </ng-container>
+        </select>
+      </div>
+      <div *ngIf="setupForm.get('fc').errors && setupForm.get('fc').touched" class="alert-danger">
+        <div *ngIf="setupForm.get('fc').errors.required">
           Read Function Code is required.
         </div>
       </div>

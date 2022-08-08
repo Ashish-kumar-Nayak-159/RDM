@@ -8,7 +8,7 @@
 
 .fix-height-image{
   max-height: 50px;
-  object-fit: cover;
+  /* object-fit: cover; */
 }
 
 #toast-container > .toast-livealert-error {
@@ -402,3 +402,10 @@ json-editor > div{
   height: 100%;
 }
 /* end */
+
+/* for hierarchy dropdown  */
+/* .dropdown-menu.show{
+  display: block;
+  width: 220px;
+  transform: translate3d(1129px, 90px, 0px) !important;
+} */

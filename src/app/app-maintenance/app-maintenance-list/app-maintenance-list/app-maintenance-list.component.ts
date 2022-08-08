@@ -775,7 +775,6 @@ export class AppMaintenanceListComponent implements OnInit {
   }
   emails = [];
   addEmailRecipient(i) {
-    debugger
     this.formSubmitted = false;
     if (!this.emails) {
       this.toasterService.showError('Email is required', 'Add Email');
@@ -1081,6 +1080,8 @@ async getMaintenance_data(id,title)
 
     }
     else if (obj.for === 'Trigger') {
+      this.singleOffset = 0;
+      this.singleLoadMoreVisibility = true;
       this.showHierarchy = false;
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')

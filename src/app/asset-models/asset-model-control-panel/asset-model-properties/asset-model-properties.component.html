@@ -60,7 +60,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Display Name:</label>
             <input #display_name="ngModel" validateText type="text" class="form-control form-control-sm" id="display_name" name="display_name"
-              [(ngModel)]="propertyObj.name" placeholder="Enter Property Name" [disabled]="isDisabled">
+              [(ngModel)]="propertyObj.name" placeholder="Enter Property Name">
               <div *ngIf="display_name.errors?.whitespace && display_name.touched" class="alert-danger">
                 Please enter valid name.
               </div>
@@ -69,7 +69,7 @@
             <label for="message-text" class="col-form-label required">JSON Key:</label>
             <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name" name="name"
               [(ngModel)]="propertyObj.json_key" placeholder="Enter Key Name" (change)="onJSONKeyChange()"
-              [disabled]="propertyObj.edit || isDisabled">
+              [disabled]="propertyObj.edit">
               <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
                 Please enter valid key.
               </div>
@@ -77,7 +77,7 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Data Type:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
-              [(ngModel)]="propertyObj.data_type" (change)="onDataTypeChange()"  [disabled]="isDisabled">
+              [(ngModel)]="propertyObj.data_type" (change)="onDataTypeChange()">
               <option value="undefined">Select Data Type</option>
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>

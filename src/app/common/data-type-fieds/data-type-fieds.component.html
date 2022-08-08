@@ -3,24 +3,24 @@
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Min Value:</label>
       <input type="number" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="obj.minValue"
-        placeholder="Min Value" [disabled]="disabled">
+        placeholder="Min Value">
     </div>
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Max Value:</label>
       <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="obj.maxValue"
-        placeholder="Max Value" (blur)="onKeyUp(obj)" [disabled]="disabled">
+        placeholder="Max Value" (blur)="onKeyUp(obj)">
     </div>
   </div>
   <div class="row col-lg-12 p-0">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Precision:</label>
       <input type="number" class="form-control form-control-sm" min="0" id="precision" name="precision"
-        [(ngModel)]="obj.precision" placeholder="Precision" [disabled]="disabled">
+        [(ngModel)]="obj.precision" placeholder="Precision">
     </div>
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Unit:</label>
       <input type="text" maxlength="10" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.units"
-        placeholder="Unit" [disabled]="disabled">
+        placeholder="Unit">
         <span *ngIf="obj?.units?.length > 10" class="text-danger">only 10 characters allowed.</span>
     </div>
   </div>
@@ -28,7 +28,7 @@
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
       <input type="number" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
-        [(ngModel)]="obj.defaultValue" placeholder="Default Value" [disabled]="disabled">
+        [(ngModel)]="obj.defaultValue" placeholder="Default Value">
     </div>
   </div>
 </ng-container>

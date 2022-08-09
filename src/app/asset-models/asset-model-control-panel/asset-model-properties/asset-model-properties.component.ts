@@ -263,8 +263,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                   detail.write = true;
                 }
               }
-              if(!("fc_r" in detail) || ("fc" in detail)) {
-                detail.metadata.fc_r = detail.metadata.fc;
+              if(!("fc_r" in detail.metadata)) {
+                if(("fc" in detail.metadata)) {
+                  detail.metadata.fc_r = detail.metadata.fc;
+                }
               }
               return detail;
             })
@@ -272,7 +274,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
             this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
             this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
-  
+
           } else {
             this.properties[this.type] = [];
           }

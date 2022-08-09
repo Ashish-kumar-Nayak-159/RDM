@@ -745,7 +745,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       }
 
       let mergedObject = [...obj.properties['measured_properties'],...obj.properties['controllable_properties']];
-      const unique = [...new Map(mergedObject.map(item => [item.id, item])).values()];
+      const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
 
       obj.properties['measured_properties'] = unique;
 
@@ -816,6 +816,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     // obj.properties[this.type].splice(index, 1);
 
     if(this.type == 'controllable_properties' || this.type == 'measured_properties') {
+      let mergedObject = [...obj.properties['measured_properties'],...obj.properties['controllable_properties']];
+      const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
+      obj.properties['measured_properties'] = unique;
       const index = obj.properties['measured_properties'].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
       obj.properties['measured_properties'].splice(index, 1);
     } else {
@@ -937,7 +940,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     var index;
     if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
       let mergedObject = [...this.properties['measured_properties'],...this.properties['controllable_properties']];
-      const unique = [...new Map(mergedObject.map(item => [item.id, item])).values()];
+      const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
 
       this.properties['measured_properties'] = unique;
 
@@ -993,6 +996,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseAssetsPropertyModal();
+          this.toasterService.showSuccess(response.message, 'Edit Property');
           this.onCloseModal('configureDerivedPropModal');
           this.getAssetsModelProperties();
         },

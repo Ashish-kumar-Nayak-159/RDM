@@ -632,8 +632,7 @@ export class AppMaintenanceListComponent implements OnInit {
       this.createMaitenanceCall = false;
       return;
     }
-    else if ((new Date(this.createMaintenanceForm.get("start_date").value).getTime()) < (new Date().getTime())) {
-
+     if ((new Date(this.createMaintenanceForm.get("start_date").value).getTime()) < (new Date().getTime())) {
       this.toasterService.showError('Start Date should not be less than todays date', 'Start Date');
       this.createMaitenanceCall = false;
       return;
@@ -698,7 +697,7 @@ export class AppMaintenanceListComponent implements OnInit {
         (err: HttpErrorResponse) => {
           this.createMaitenanceCall = false;
           this.setEditFields();
-          this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', "Maitenance Update");
+          // this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', "Maitenance Update");
         }
       );
     }

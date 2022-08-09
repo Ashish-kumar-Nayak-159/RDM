@@ -80,6 +80,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.assetModel['alert_type'] = this.selectedTab;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');

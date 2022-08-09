@@ -243,39 +243,39 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         //     (prop) => (prop.condition = '(' + prop.condition + ')')
         //   );
         // }
-        
         this.isPropertiesLoading = false;
-        // ADDEd filter for measured_properties, i.e. return only r and rw records
-        if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
-          this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
-            if(!detail?.metadata?.rw) { 
-              if(!("metadata" in detail)) {
-                detail.metadata =  {};
-              }
-              detail.metadata.rw = 'r';
-              detail.read = true;
-            } else {
-              if(detail.metadata.rw == 'rw') {
+        if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
+          if(this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
+            this.properties['measured_properties'] = this.properties['measured_properties'].map((detail:any)=>{ 
+              if(!detail?.metadata?.rw) { 
+                if(!("metadata" in detail)) {
+                  detail.metadata =  {};
+                }
+                detail.metadata.rw = 'r';
                 detail.read = true;
-                detail.write = true;
-              } else if(detail.metadata.rw == 'r' ) {
-                detail.read = true;
-              } else if(detail.metadata.rw == 'w' ) {
-                detail.write = true;
+              } else {
+                if(detail.metadata.rw == 'rw') {
+                  detail.read = true;
+                  detail.write = true;
+                } else if(detail.metadata.rw == 'r' ) {
+                  detail.read = true;
+                } else if(detail.metadata.rw == 'w' ) {
+                  detail.write = true;
+                }
               }
-            }
-            if(!("fc_r" in detail) && ("fc" in detail)) {
-              detail.metadata.fc_r = detail.metadata.fc;
-            }
-            return detail;
-          })
-          //do not change the order of this two line.. because in this some case what it doest it will filter of r | rw and assined again to measured properties 
-          //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
-          this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
-          this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
-
-        } else {
-          this.properties[this.type] = [];
+              if(!("fc_r" in detail) || ("fc" in detail)) {
+                detail.metadata.fc_r = detail.metadata.fc;
+              }
+              return detail;
+            })
+            //do not change the order of this two line.. because in this some case what it doest it will filter of r | rw and assined again to measured properties 
+            //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
+            this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
+            this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
+  
+          } else {
+            this.properties[this.type] = [];
+          }
         }
       })
     );

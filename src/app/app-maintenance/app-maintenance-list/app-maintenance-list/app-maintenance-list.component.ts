@@ -652,10 +652,10 @@ export class AppMaintenanceListComponent implements OnInit {
       })
 
     })
-    if(!this.isEdit){
+
     let convDate = new Date(this.createMaintenanceForm.get('start_date').value).toISOString().slice(0,16)
     this.createMaintenanceForm.get('start_date').setValue(convDate)
-  }
+ 
     this.maintenanceModel = this.createMaintenanceForm.value;
     this.maintenanceModel.asset_id = this.createMaintenanceForm.get("asset_ids").value;
     this.maintenanceModel.is_maintenance_required = true;
@@ -679,7 +679,6 @@ export class AppMaintenanceListComponent implements OnInit {
     this.maintenanceModel.notify_email_body = this.htmlContent;
     this.createMaintenanceForm.get('description').setValue(this.maintenanceModel.description);
     if (this.isEdit) {
-
       let method = this.maintenanceService.updateNewMaintenanceRule(this.maintenance_registry_id, this.maintenanceModel);
       method.subscribe(
         (response: any) => {

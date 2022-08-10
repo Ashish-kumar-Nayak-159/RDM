@@ -7,11 +7,11 @@
     (click)="redirectToFirstMenu()">
     <!-- <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
     [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo"> -->
-    <img src="../../assets/img/kpix-logo.png"
+    <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
     [ngStyle]="{'width': defaultAppName === 'MyEquipos' ? '20rem': ''}" class="d-block img-fluid img-logo">
   </a>
   <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin" [routerLink]="['applications']">
-    <img src="../../assets/img/kpix-logo.png" class="d-block img-fluid img-logo">
+    <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}" class="d-block img-fluid img-logo">
   </a>
 
   <ul class="navbar-nav ml-auto">
@@ -95,7 +95,7 @@
   *ngIf="isLoginRoute  && url.includes('login')">
   <ng-container *ngIf="defaultAppName === undefined || defaultAppName === null || defaultAppName === ''">
     <div class="container" id="header">
-      <div class=""><a><img alt="" src="../../assets/img/kpix-logo.png" 
+      <div class=""><a><img alt="" src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}" 
             class="d-block img-fluid fix-height-image"></a>
       </div>
       <div class="ml-auto"><a><img alt="" src="../../assets/img/Kemsys-Logo.png" style="width: 80%;"
@@ -143,7 +143,7 @@
     <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
       <a class="d-flex align-items-center">
         <img alt="" 
-          src="{{defaultAppName !== 'Indygo' ? '../../assets/img/kpix-logo.png' : '../../assets/img/indygo.png'}}"
+          src="{{defaultAppName !== 'Indygo' ? blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken : '../../assets/img/indygo.png'}}"
            class="d-block img-fluid fix-height-image" style="max-height: 40px;">
       </a>
     </ng-container>

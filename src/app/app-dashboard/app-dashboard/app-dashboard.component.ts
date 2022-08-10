@@ -116,7 +116,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
-
+     debugger
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       this.historicalDateFilter.dateOption = item.dateOption;
@@ -178,6 +178,34 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSaveHierachy() {
+    this.selectedDateRange =''
+    this.historicalDateFilter.dateOption =''
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+     this.historicalDateFilter.dateOption = item.dateOption;
+     setTimeout(() => {
+      this.selectedDateRange =  this.historicalDateFilter.dateOption
+    }, 150);
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historicalDateFilter.from_date = dateObj.from_date;
+        this.historicalDateFilter.to_date = dateObj.to_date;
+      } else {
+        this.historicalDateFilter.from_date = item.from_date;
+        this.historicalDateFilter.to_date = item.to_date;
+      }
+      this.historicalDateFilter.widgets = [];
+      this.historicalDateFilter.type = true;
+      this.historicalDateFilter.sampling_format = 'minute';
+      this.historicalDateFilter.sampling_time = 1;
+    
+    // this.selectedDateRange =''
+    // this.historicalDateFilter.dateOption =''
+    // const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    // setTimeout(() => {
+    //   this.historicalDateFilter.dateOption = item.dateOption
+    //   this.selectedDateRange =  this.historicalDateFilter.dateOption
+    // }, 150);
+
     this.originalFilter = {};
     if (this.filterObj.asset) {
       this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));

@@ -36,7 +36,14 @@ export class CommonTableComponent implements OnInit {
   ngOnChanges(changes:any) {
     if(!changes?.saveDataFlag?.firstChange) {
       if(this.saveDataFlag == false) {
-        this.tableData.map(detail => detail.clicked = false);
+        this.isEnteredAnyValue = false;
+        this.tableData.map((detail) => {detail.clicked = false; detail.new_value = undefined; detail.syncUp = false; return detail});
+        this.tableConfig?.data.map((detail)=>{
+          if(detail.type == "checkbox") {
+            detail['selectCheckBoxs'] = false;
+          }
+          return detail;
+        })
       }
     }
   }
@@ -50,9 +57,32 @@ export class CommonTableComponent implements OnInit {
   multiSyncupData() {
     this.viewMessageEvent.emit(this.tableData);
   }
+  updateSingleCheckBox(event) {
+    let counter = 0;
+    this.tableData.forEach((detail)=>{
+      if(detail.syncUp == true) {
+        counter++;
+      }
+    })
+    if(counter == this.tableData.length) {
+      this.tableConfig?.data.forEach((detail)=>{
+        if(detail.type == "checkbox") {
+          detail['selectCheckBoxs'] = true;
+        }
+      })
+    } else {
+      if(event == false) {
+        this.tableConfig?.data.forEach((detail)=>{
+          if(detail.type == "checkbox") {
+            detail['selectCheckBoxs'] = false;
+          }
+        })
+      }
+    }
+  }
   updateAllCheckBox(event) {
-    if(this.tableConfig.selectCheckBoxs == true) {
-      this.tableConfig.selectCheckBoxs = false;
+    if(event == true) {
+      this.tableConfig.selectCheckBoxs = true;
       this.tableData.map((detail)=>{
         return detail.syncUp = true;
       })
@@ -62,6 +92,17 @@ export class CommonTableComponent implements OnInit {
         return detail.syncUp = false;
       })
     }
+    // if(this.tableConfig.selectCheckBoxs == true) {
+    //   this.tableConfig.selectCheckBoxs = false;
+    //   this.tableData.map((detail)=>{
+    //     return detail.syncUp = true;
+    //   })
+    // } else {
+    //   this.tableConfig.selectCheckBoxs = true;
+    //   this.tableData.map((detail)=>{
+    //     return detail.syncUp = false;
+    //   })
+    // }
   }
   resolve(obj, path) {
     path = path.split('.');

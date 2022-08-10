@@ -263,8 +263,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                   detail.write = true;
                 }
               }
-              if(!("fc_r" in detail) || ("fc" in detail)) {
-                detail.metadata.fc_r = detail.metadata.fc;
+              if(!("fc_r" in detail.metadata)) {
+                if(("fc" in detail.metadata)) {
+                  detail.metadata.fc_r = detail.metadata.fc;
+                }
               }
               return detail;
             })
@@ -272,7 +274,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
             this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
             this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
-  
+
           } else {
             this.properties[this.type] = [];
           }
@@ -1136,35 +1138,75 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
             this.assetModel.tags.protocol === 'ModbusRTUMaster'
           ) {
-            this.setupForm = new FormGroup({
-              slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-              d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
-              sa: new FormControl(this.propertyObj?.metadata?.sa, [
-                Validators.required,
-                Validators.min(0),
-                Validators.max(99999),
-              ]),
-              a: new FormControl(false),
-              fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
-              fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
-            });
+            if(this.propertyObj.write == true && this.propertyObj.read == true) {
+              this.setupForm = new FormGroup({
+                slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+                d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+                sa: new FormControl(this.propertyObj?.metadata?.sa, [
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(99999),
+                ]),
+                a: new FormControl(false),
+                fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
+                fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
+              });
+            } else if(this.propertyObj.read == true) {
+              this.setupForm = new FormGroup({
+                slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+                d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+                sa: new FormControl(this.propertyObj?.metadata?.sa, [
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(99999),
+                ]),
+                a: new FormControl(false),
+                fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
+                fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, []),
+              });
+            } else if(this.propertyObj.write == true) {
+              this.setupForm = new FormGroup({
+                slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+                d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+                sa: new FormControl(this.propertyObj?.metadata?.sa, [
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(99999),
+                ]),
+                a: new FormControl(false),
+                fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, []),
+                fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
+              });
+            }
+            // this.setupForm = new FormGroup({
+            //   slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+            //   d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+            //   sa: new FormControl(this.propertyObj?.metadata?.sa, [
+            //     Validators.required,
+            //     Validators.min(0),
+            //     Validators.max(99999),
+            //   ]),
+            //   a: new FormControl(false),
+            //   fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
+            //   fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
+            // });
 
-            if(this.propertyObj.write == true) {
-              this.setupForm.controls["fc_w"].setValidators([Validators.required]);
-              this.setupForm.get('fc_w').updateValueAndValidity();
-            } else if(this.propertyObj.write == false) {
-              this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
-              this.setupForm.get('fc_w').setValue(null); // or clear Values()
-              this.setupForm.get('fc_w').updateValueAndValidity();
-            }
-            if(this.propertyObj.read == true) {
-              this.setupForm.controls["fc_r"].setValidators([Validators.required]);
-              this.setupForm.get('fc_r').updateValueAndValidity();
-            } else if(this.propertyObj.read == false) {
-              this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
-              this.setupForm.get('fc_r').setValue(null);
-              this.setupForm.get('fc_r').updateValueAndValidity();
-            }
+            // if(this.propertyObj.write == true) {
+            //   this.setupForm.controls["fc_w"].setValidators([Validators.required]);
+            //   this.setupForm.get('fc_w').updateValueAndValidity();
+            // } else if(this.propertyObj.write == false) {
+            //   this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
+            //   this.setupForm.get('fc_w').setValue(null); // or clear Values()
+            //   this.setupForm.get('fc_w').updateValueAndValidity();
+            // }
+            // if(this.propertyObj.read == true) {
+            //   this.setupForm.controls["fc_r"].setValidators([Validators.required]);
+            //   this.setupForm.get('fc_r').updateValueAndValidity();
+            // } else if(this.propertyObj.read == false) {
+            //   this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
+            //   this.setupForm.get('fc_r').setValue(null);
+            //   this.setupForm.get('fc_r').updateValueAndValidity();
+            // }
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({
               slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),

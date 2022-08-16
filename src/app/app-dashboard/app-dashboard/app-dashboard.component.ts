@@ -116,7 +116,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
-     debugger
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       this.historicalDateFilter.dateOption = item.dateOption;
@@ -139,7 +138,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.sampling_format = 'minute';
       this.historicalDateFilter.sampling_time = 1;
     }
-    console.log('historical Widget', this.historicalDateFilter)
     await this.getAssets(this.contextApp.user.hierarchy);
     this.onTabChange();
     if ($(window).width() < 992) {
@@ -179,7 +177,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSaveHierachy() {
-     debugger
+     
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       this.historicalDateFilter.dateOption = item.dateOption;

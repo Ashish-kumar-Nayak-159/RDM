@@ -746,8 +746,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       } else if(this.propertyObj.write == true) {
         this.propertyObj['metadata']['rw'] = 'w'
       }
+  
+      let mergedObject = [...(obj?.properties?.measured_properties)]
+if(obj?.properties?.controllable_properties){
 
-      let mergedObject = [...obj.properties['measured_properties'],...obj.properties['controllable_properties']];
+  mergedObject =  [ ...mergedObject, ...(obj?.properties?.controllable_properties)];
+}
+
       const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
 
       obj.properties['measured_properties'] = unique;

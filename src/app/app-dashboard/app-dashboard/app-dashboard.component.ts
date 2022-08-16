@@ -116,7 +116,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
-
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       this.historicalDateFilter.dateOption = item.dateOption;
@@ -178,11 +177,46 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSaveHierachy() {
+     
+    if (this.contextApp?.dashboard_config?.show_historical_widgets) {
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      this.historicalDateFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historicalDateFilter.from_date = dateObj.from_date;
+        this.historicalDateFilter.to_date = dateObj.to_date;
+        // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      } else {
+        this.historicalDateFilter.from_date = item.from_date;
+        this.historicalDateFilter.to_date = item.to_date;
+        // this.historicalDateFilter.last_n_secs = undefined;
+      }
+      // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      // this.historicalDateFilter.to_date = moment().utc().unix();
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      this.historicalDateFilter.widgets = [];
+      this.selectedDateRange = this.historicalDateFilter.dateOption;
+      this.historicalDateFilter.type = true;
+      this.historicalDateFilter.sampling_format = 'minute';
+      this.historicalDateFilter.sampling_time = 1;
+    }
+
+
     this.originalFilter = {};
     if (this.filterObj.asset) {
       this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
       this.onChangeOfAsset();
     }
+
+    this.selectedDateRange =''
+    this.historicalDateFilter.dateOption =''
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.historicalDateFilter.dateOption = item.dateOption
+      setTimeout(() => {
+        this.selectedDateRange =  this.historicalDateFilter.dateOption
+      }, 200);
+
+      this.historicalWidgets = [];
   }
 
   onClearHierarchy() {
@@ -615,7 +649,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
       pagefilterObj['assets'] = filterObj.asset;
-      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+      //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
@@ -895,7 +929,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     pagefilterObj['from_date'] = filterObj.from_date;
     pagefilterObj['to_date'] = filterObj.to_date;
     pagefilterObj['dateOption'] = this.historicalDateFilter.dateOption;
-    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
     filterObj.partition_key = asset.partition_key;
     delete filterObj.count;

@@ -1085,6 +1085,14 @@ async getMaintenance_data(id,title)
       this.maintenanceData = []
       $(".over-lap").css('display', 'block')
       this.setMaintenanceConfig();
+      if(!(obj?.data?.is_notify_user)){
+        this.maintenanceConfig.data[0].hide_col = true
+        this.maintenanceConfig.data[1].hide_col = true
+      }
+      else{
+        delete this.maintenanceConfig.data[0].hide_col
+        delete this.maintenanceConfig.data[1].hide_col
+      }
       this.triggerData = obj
       this.registryName = this.triggerData?.data?.name
       this.asset_id = this.triggerData?.data?.asset_id
@@ -1250,16 +1258,16 @@ async getMaintenance_data(id,title)
       is_load_more_required: true,
       // item_count: this.currentLimit,
       data: [
-        // {
-        //   header_name: 'Email Subject',
-        //   is_display_filter: true,
-        //   value_type: 'string',
-        //   // is_sort_required: true,
-        //   fixed_value_list: [],
-        //   data_type: 'text',
-        //   data_key: 'email_subject',
-        //   //is_sort: true
-        // },
+        {
+          header_name: 'Email Subject',
+          // is_display_filter: true,
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'email_subject',
+          //is_sort: true
+        },
         // {
         //   header_name: 'Notification Type',
         //   is_display_filter: true,
@@ -1340,6 +1348,12 @@ async getMaintenance_data(id,title)
     this.maintenanceService.Trigger(this.triggerData?.data?.maintenance_registry_id, this.custObjP).subscribe((res: any) => {
       var today= new Date();
       res?.data?.forEach((item) => {
+        if(item?.status?.trim() === 'NA' || item?.status === null || item?.status === undefined || item?.status === ''){
+          item.status = '-'
+        }
+        if(!item?.email_subject){
+          item.email_subject = '-'
+        }
         item.maintenance_date = this.commonService.convertUTCDateToLocalDate(item?.maintenance_date, "MMM dd, yyyy, hh:mm a")
         item.trigger_date = this.commonService.convertUTCDateToLocalDate(item?.trigger_date, "MMM dd, yyyy, hh:mm a"),
           item.is_escalation_required = this.triggerData?.data?.is_escalation_required

@@ -856,6 +856,7 @@ async getMaintenance_data(id,title)
     let method = this.maintenanceService.getMaintenancedata(id);
   method.subscribe(
     (response: any) => {
+       this.referenceDocsValue = response?.data?.reference_documents
           response.data.start_date = this.commonService.convertUTCDateToLocalDate(response.data.start_date, "yyyy MM dd HH:mm")
         this.maintenanceModel = response.data;
         if(title === 'View'){

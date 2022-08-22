@@ -33,6 +33,7 @@ const routes: Routes = [
     path: 'applications/:applicationId/dashboard',
     loadChildren: () => import('./app-dashboard/app-dashboard.module').then((module) => module.AppDashboardModule),
   },
+  
   {
     path: 'applications/:applicationId/reports',
     loadChildren: () => import('./reports/reports.module').then((module) => module.ReportsModule),

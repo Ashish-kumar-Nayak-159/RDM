@@ -29,6 +29,7 @@ import { ApplicationFilterSettingsComponent } from './application-setting/applic
 import { MatNativeDateModule } from '@angular/material/core';
 import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
 import { MatSortModule } from '@angular/material/sort';
+import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -47,6 +48,7 @@ import { MatSortModule } from '@angular/material/sort';
     ApplicationEmailAliasComponent,
     ApplicationFilterSettingsComponent,
     ApplicationGatewayMonitoringComponent,
+    ApplicationHistoricalLiveDataComponent,
   ],
   imports: [
     CommonModule,

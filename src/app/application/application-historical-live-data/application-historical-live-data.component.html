@@ -1,0 +1,21 @@
+<!-- <p>application-historical-live-data works!</p> -->
+<div class="blue-nav-bar">
+    <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center">
+        <div class="main-heading ">Historical & Live Data</div>
+      </div>
+      <div class="ml-auto">
+        <div class="">
+          <form class="form-inline">
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
+              [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
+              (clearHierarchyEvent)="onClearHierarchy()">
+            </app-hierarchy-dropdown>
+            <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+               [disabled]="isTelemetryDataLoading"><em
+                  class="fas fa-search fa-sm"></em></button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

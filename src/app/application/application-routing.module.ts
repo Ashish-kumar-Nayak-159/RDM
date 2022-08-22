@@ -7,6 +7,7 @@ import { ApplicationListComponent } from './application-list/application-list.co
 import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
+import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,11 @@ const routes: Routes = [
   {
     path: ':appName/gateway-monitoring',
     component: ApplicationGatewayMonitoringComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: ':appName/historical-live',
+    component: ApplicationHistoricalLiveDataComponent,
     canActivate: [AuthGuardService],
   },
   {

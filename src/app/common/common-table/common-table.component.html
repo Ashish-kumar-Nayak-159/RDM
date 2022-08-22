@@ -28,7 +28,7 @@
           {{item.name}}
         </th>
         <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
-          <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox($event)"/>
+          <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox(item.selectCheckBoxs)"/>
         </th>
         </ng-container>
       </tr>
@@ -43,7 +43,7 @@
           <ng-container *ngFor="let header of tableConfig?.data">
           <td *ngIf="!header.isColumnHidden" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'checkbox'">
-              <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp" />
+              <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp"  (change)="updateSingleCheckBox(data.syncUp)" />
             </ng-container>
             <ng-container *ngIf="header.key === 'new_value'">
              <input *ngIf="data.data_type != 'Boolean'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />

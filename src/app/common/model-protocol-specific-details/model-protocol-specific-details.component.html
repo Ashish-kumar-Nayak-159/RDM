@@ -301,15 +301,15 @@
 
 
     <div class="form-group"
-      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('rfc')?.value === 3 || setupForm.get('rfc')?.value === 4)">
+      *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc_r')?.value === 3 || setupForm.get('fc_r')?.value === 4)">
       <label for="message-text" class="col-form-label required">Bit Number:</label>
       <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
         placeholder="Enter Bit Number" min="0" max="15">
-      <div *ngIf="setupForm.get('bn').errors && setupForm.get('bn').touched" class="alert-danger">
+      <div *ngIf="setupForm.get('bn')?.errors && setupForm.get('bn').touched" class="alert-danger">
         <div *ngIf="setupForm.get('bn').errors.required">
           Bit Number is required.
         </div>
-        <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
+        <div *ngIf="setupForm.get('bn')?.errors.min || setupForm.get('bn')?.errors.max">
           Bit Number value must be between 0 and 15.
         </div>
       </div>

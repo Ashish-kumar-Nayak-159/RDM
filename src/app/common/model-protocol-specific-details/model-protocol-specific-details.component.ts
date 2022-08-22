@@ -82,6 +82,20 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
     } else {
       this.setupForm.removeControl('bn');
     }
+
+    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_r === 3 || this.setupForm.value.fc_r === 4)) {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl(
+        'bn',
+        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+      );
+    } else {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(-1, []));
+      this.setupForm.get('bn').setValidators([]); // or clearValidators()
+      this.setupForm.get('bn').setValue(null);
+      this.setupForm.get('bn').updateValueAndValidity();
+    }
   }
 
   onChangeOfSetupSecondaryType(obj = undefined) {
@@ -121,14 +135,19 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
 
   onChangeOfSetupFunctionCode(obj = undefined) {
     if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_r === 3 || this.setupForm.value.fc_r === 4)) {
+      console.log("if...........");
       this.setupForm.removeControl('bn');
       this.setupForm.addControl(
         'bn',
         new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
       );
     } else {
+      console.log("else......")
       this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
+      this.setupForm.addControl('bn', new FormControl(-1, []));
+      this.setupForm.get('bn').setValidators([]); // or clearValidators()
+      this.setupForm.get('bn').setValue(null);
+      this.setupForm.get('bn').updateValueAndValidity();
     }
   }
   onChangeOfWriteSetupFunctionCode(obj = undefined) {}

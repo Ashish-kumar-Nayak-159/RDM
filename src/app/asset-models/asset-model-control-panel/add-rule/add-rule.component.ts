@@ -211,7 +211,6 @@ export class AddRuleComponent implements OnInit {
   }
 
   configureData() {
-
     if (this.ruleData.rule_id) {
       this.ruleModel.rule_id = this.ruleData.rule_id;
     }
@@ -298,7 +297,7 @@ export class AddRuleComponent implements OnInit {
           this.propertyList.push(prop);
         });
       }
-      this.dropdownPropList = [];
+      // this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
         if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') {
           if (!this.ruleModel?.metadata?.sid || prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid) {
@@ -312,7 +311,6 @@ export class AddRuleComponent implements OnInit {
         }
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
-
     });
   }
 

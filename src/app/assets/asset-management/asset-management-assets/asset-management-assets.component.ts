@@ -55,6 +55,9 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   isAllocation = undefined;
   allocationObj: any;
   filteredUsers: any[] = [];
+  parentid:any;
+  actualhierarchyNewArr = [];
+
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -64,6 +67,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
     this.assetsList = [];
     this.getAssets();
@@ -108,6 +112,14 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == index && r.key == hierarchyKey && r.parent_id == parentid);
+    if (selectedHierarchy) {
+      this.parentid = selectedHierarchy.id;
+      return selectedHierarchy.name;
+    }
   }
 
   getTileName() {
@@ -176,11 +188,13 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
               if (item.hierarchy) {
                 item.hierarchyString = '';
                 const keys = Object.keys(item.hierarchy);
-                this.contextApp.hierarchy.levels.forEach((key, index) => {
-                  item.hierarchyString += item.hierarchy[key]
-                    ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                    : '';
-                });
+                this.parentid = 0;
+              this.contextApp.hierarchy.levels.forEach((key, index) => {
+                if(index != 0)
+                item.hierarchyString +=  item.hierarchy[key] ? this.getDisplayHierarchyString(index,item.hierarchy[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                else
+                item.hierarchyString +=  item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
+              });
               }
               if (this.type === CONSTANTS.NON_IP_ASSET) {
                 const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
@@ -221,11 +235,13 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
                 if (item.hierarchy) {
                   item.hierarchyString = '';
                   const keys = Object.keys(item.hierarchy);
-                  this.contextApp.hierarchy.levels.forEach((key, index) => {
-                    item.hierarchyString += item.hierarchy[key]
-                      ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                      : '';
-                  });
+                  this.parentid = 0;
+              this.contextApp.hierarchy.levels.forEach((key, index) => {
+                if(index != 0)
+                item.hierarchyString +=  item.hierarchy[key] ? this.getDisplayHierarchyString(index,item.hierarchy[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                else
+                item.hierarchyString +=  item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
+              });
                 }
                 if (!item.provision_status) {
                   item.provision_status = 'Pending';

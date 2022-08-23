@@ -296,7 +296,16 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         this.loadMoreVisibility = false
       }
 
-      this.applications = [...this.applications, ...response.data]
+      let mergedObject = [...this.applications, ...response.data];
+      const unique = [...new Map(mergedObject.map(item => [item.asset_id, item])).values()];
+
+      this.applications = unique;
+      
+      //Note: Searching on same function it will push the same data again and again of searched list
+      // So i have added list, and returned only unique record,
+      //Currently added for asset_id filter as unique.
+      //this.applications = [...this.applications, ...response.data];
+      
       this.loader = false;
     },
       (error) => this.loader = false)

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit,Output,Input } from '@angular/core';
+import { Component, EventEmitter, OnInit,Output,Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
   selector: 'app-text-editor',
@@ -6,13 +6,16 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
   styleUrls: ['./text-editor.component.css']
 })
 
-export class TextEditorComponent  {
+export class TextEditorComponent implements OnChanges {
   name = 'Angular ';
   htmlContent :any;
   @Input() inputItem ;
   @Output() htmlContentDetect = new EventEmitter<any>();
   constructor()
   {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       this.htmlContent = this.inputItem;
       this.htmlContentDetect.emit(this.htmlContent); 

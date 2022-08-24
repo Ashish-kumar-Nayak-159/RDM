@@ -1,21 +1,45 @@
 <!-- <p>application-historical-live-data works!</p> -->
 <div class="blue-nav-bar">
+  <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
-      <div class="d-flex align-items-center">
-        <div class="main-heading ">Historical & Live Data</div>
-      </div>
-      <div class="ml-auto">
-        <div class="">
-          <form class="form-inline">
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-              [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-              (clearHierarchyEvent)="onClearHierarchy()">
-            </app-hierarchy-dropdown>
-            <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-               [disabled]="isTelemetryDataLoading"><em
-                  class="fas fa-search fa-sm"></em></button></div>
-          </form>
-        </div>
+      <div class="main-heading ">Historical & Live Data</div>
+    </div>
+    <div class="ml-auto">
+      <div class="">
+        <form class="form-inline">
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
+            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
+            (clearHierarchyEvent)="onClearHierarchy()">
+          </app-hierarchy-dropdown>
+          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+            (click)="onFilterSelection(this.filterObj, true, true)"    [disabled]="isTelemetryDataLoading"><em class="fas fa-search fa-sm"></em></button></div>
+        </form>
       </div>
     </div>
   </div>
+</div>
+<div class="tab-bar">
+  <ng-container>
+    <div class=""
+      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset ">
+      <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
+        originalFilter.asset?.asset_id}}</div>
+    </div>
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_live_widgets">
+      <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
+        No data available since mid night.
+      </div>
+      <div class="ml-auto"
+        *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset">
+        <div class="">*{{sampleCountValue}} samples in last 1 minute
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="" *ngIf="!isFilterSelected">
+      Please select an asset and click on search to view the data.
+    </div>
+
+
+  </ng-container>
+</div>

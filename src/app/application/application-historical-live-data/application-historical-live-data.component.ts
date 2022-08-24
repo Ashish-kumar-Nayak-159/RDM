@@ -24,6 +24,16 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   frequency: any;
   historicalDateFilter: any = {};
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  selectedDateRange: string;
+  isFilterSelected = false;
+  sampleCountValue = 0;
+  originalFilter: any;
+  telemetryObj: any;
+  apiTelemetryObj: any;
+  widgetStringFromMenu: string;
+  tileData: any;
+
+
 
 
 
@@ -37,8 +47,36 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+    this.getTileName();
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.historicalDateFilter.dateOption = item.dateOption;
+    if (item.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+      this.historicalDateFilter.from_date = dateObj.from_date;
+      this.historicalDateFilter.to_date = dateObj.to_date;
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+    } else {
+      this.historicalDateFilter.from_date = item.from_date;
+      this.historicalDateFilter.to_date = item.to_date;
+      // this.historicalDateFilter.last_n_secs = undefined;
+    }
+    this.historicalDateFilter.widgets = [];
+    this.selectedDateRange = this.historicalDateFilter.dateOption;
+    this.historicalDateFilter.type = true;
+    this.historicalDateFilter.sampling_format = 'minute';
+    this.historicalDateFilter.sampling_time = 1;
     await this.getAssets(this.contextApp.user.hierarchy);
 
+  }
+  getTileName() {
+    let selectedItem;
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
+      if (item.page === 'Live Data') {
+        selectedItem = item.showAccordion;
+      }
+    });
+    this.tileData = selectedItem;
   }
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
@@ -82,11 +120,21 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     }
   }
 
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    alert('1')
+
+  }
+
   onClearHierarchy() {
   
   }
 
   onSaveHierachy() {
+    this.historicalDateFilter.widgets = [];
+    this.selectedDateRange = this.historicalDateFilter.dateOption;
+    this.historicalDateFilter.type = true;
+    this.historicalDateFilter.sampling_format = 'minute';
+    this.historicalDateFilter.sampling_time = 1;
 
   }
 

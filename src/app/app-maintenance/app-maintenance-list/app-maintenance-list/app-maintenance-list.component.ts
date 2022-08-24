@@ -739,6 +739,7 @@ export class AppMaintenanceListComponent implements OnInit {
   isAsset = false;
   /////// To open the Modal for the Maintenance Schedule
   async openCreateMaintenanceModelModal(obj = undefined) {
+    this.currentItem = ''
     var today = new Date();
     this.minDate.setDate(today.getDate() + 1);
     this.title = "Add";

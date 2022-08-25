@@ -30,6 +30,7 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   ruleCode:any;
+  docType:boolean;
   @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
@@ -1142,6 +1143,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       'index': index
     })
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
+    this.acknowledgedAlert.metadata.files[index].filetype = files?.item(0).type;
   }
 
   async uploadFile() {
@@ -1165,48 +1167,61 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async acknowledgeAlert() {
-    await this.uploadFile();
-    const files = [];
-    this.acknowledgedAlert.metadata.files.forEach((file) => {
-      if (file.type && file?.data?.url && file?.data?.name) {
-        files.push(file);
-      }
-    });
-    this.acknowledgedAlert.metadata.files = files;
-    const obj = {
-      app: this.contextApp.app,
-      asset_id: this.acknowledgedAlert.asset_id,
-      message_id: this.acknowledgedAlert.message_id,
-      message_date: this.acknowledgedAlert.start_event_message_date,
-      code: this.acknowledgedAlert.code,
-      message: this.acknowledgedAlert.message,
-      rule_code: this.ruleCode,
-      metadata: this.acknowledgedAlert.metadata,
-      from_date: null,
-      to_date: null,
-      epoch: true,
-    };
-    const epoch = this.commonService.convertDateToEpoch(this.acknowledgedAlert.start_event_message_date);
-    obj.from_date = epoch ? epoch - 300 : null;
-    obj.to_date = epoch ? epoch + 300 : null;
-    obj.metadata['user_id'] = this.userData.email;
-    obj.metadata['acknowledged_date'] = new Date().toISOString();
-    this.subscriptions.push(
-      this.assetService.acknowledgeAssetAlert(obj).subscribe(
-        (response) => {
-          this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
-          this.getLatestAlerts();
-          this.closeAcknowledgementModal();
-          this.acknowledgedAlert = undefined
-
-          //this.acknowledgedAlertIndex = -1
-          // this.getAlarms();
-        },
-        (error) => {
-          this.toasterService.showError(error.message, 'Acknowledge Alert');
+    this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
+         if(!file?.filetype?.includes(file?.type?.toLowerCase()))
+         {
+          this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+          this.docType = true
+          return;
+         }
+         else{
+          this.docType = false
+         }
+    })
+    if(!this.docType){
+      await this.uploadFile();
+      const files = [];
+      this.acknowledgedAlert.metadata.files.forEach((file) => {
+        if (file.type && file?.data?.url && file?.data?.name) {
+          files.push(file);
         }
-      )
-    );
+      });
+      this.acknowledgedAlert.metadata.files = files;
+      const obj = {
+        app: this.contextApp.app,
+        asset_id: this.acknowledgedAlert.asset_id,
+        message_id: this.acknowledgedAlert.message_id,
+        message_date: this.acknowledgedAlert.start_event_message_date,
+        code: this.acknowledgedAlert.code,
+        message: this.acknowledgedAlert.message,
+        rule_code: this.ruleCode,
+        metadata: this.acknowledgedAlert.metadata,
+        from_date: null,
+        to_date: null,
+        epoch: true,
+      };
+      const epoch = this.commonService.convertDateToEpoch(this.acknowledgedAlert.start_event_message_date);
+      obj.from_date = epoch ? epoch - 300 : null;
+      obj.to_date = epoch ? epoch + 300 : null;
+      obj.metadata['user_id'] = this.userData.email;
+      obj.metadata['acknowledged_date'] = new Date().toISOString();
+      this.subscriptions.push(
+        this.assetService.acknowledgeAssetAlert(obj).subscribe(
+          (response) => {
+            this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
+            this.getLatestAlerts();
+            this.closeAcknowledgementModal();
+            this.acknowledgedAlert = undefined
+  
+            //this.acknowledgedAlertIndex = -1
+            // this.getAlarms();
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Acknowledge Alert');
+          }
+        )
+      );
+    }
   }
 
   closeAcknowledgementModal(flag = false): void {

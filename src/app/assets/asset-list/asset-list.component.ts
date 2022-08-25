@@ -53,6 +53,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+  parentid:any;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -79,6 +80,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   environmentApp = environment.app;
   originalAssetsList: any[] = [];
   contextAppUserHierarchyLength = 0;
+  actualhierarchyNewArr = [];
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   blobURL = environment.blobURL;
@@ -98,6 +100,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.assetsList = [];
     this.getTileName();
     this.protocolList = CONSTANTS.PROTOCOLS;
+    this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.setAllAssetList();
   }
 
@@ -117,7 +120,13 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);    
     this.cdRef.detectChanges();
   }
-
+  getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == index && r.key == hierarchyKey && r.parent_id == parentid);
+    if (selectedHierarchy) {
+      this.parentid = selectedHierarchy.id;
+      return selectedHierarchy.name;
+    }
+  }
   async loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
     this.searchAssets(false);
@@ -532,8 +541,12 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);
+              this.parentid = 0;
               this.contextApp.hierarchy.levels.forEach((key, index) => {
-                item.hierarchyString += item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
+                if(index != 0)
+                item.hierarchyString +=  item.hierarchy[key] ? this.getDisplayHierarchyString(index,item.hierarchy[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                else
+                item.hierarchyString +=  item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
               });
             }
           });

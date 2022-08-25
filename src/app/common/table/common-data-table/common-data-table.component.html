@@ -6,7 +6,7 @@
         <th scope="col">No</th>
         <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
           <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
-            <th scope="col"><span>{{item.header_name}}</span>
+            <th scope="col" *ngIf="!item.hide_col"><span>{{item.header_name}}</span>
               <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
               &nbsp;<i *ngIf="item?.is_sort"
                 (click)="onSortClick($event, item?.sort_by_key ? item.sort_by_key : item.data_key)"
@@ -110,7 +110,7 @@
             {{dataIndex + 1}}
           </td>
           <ng-container *ngFor="let item of tableConfig.data">
-            <td class="{{item.value_class}}">
+            <td class="{{item.value_class}}" *ngIf="!item?.hide_col">
               <ng-container *ngIf="item.data_type === 'text' && item.btn_list?.length > 0">
 
                 <!-- {{resolve(dataItem, item.data_key)}} -->

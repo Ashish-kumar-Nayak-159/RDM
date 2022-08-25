@@ -209,7 +209,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
         
-        if(this.type === 'measured_properties'){
+        if(this.type === 'measured_properties'  || this.type == 'controllable_properties'){
           response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key]?.units;
           });
@@ -268,11 +268,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                   detail.metadata.fc_r = detail.metadata.fc;
                 }
               }
+              if(("fc_w" in detail.metadata) && typeof(detail.metadata.fc_w) == 'string') {
+                detail.metadata.fc_w = parseInt(detail.metadata.fc_w);
+              }
               return detail;
             })
             //do not change the order of this two line.. because in this some case what it doest it will filter of r | rw and assined again to measured properties 
             //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
-            console.log("this.properties['measured_properties']..........",this.properties['measured_properties'])
             this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail)=>{ return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw'})
             this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail:any)=>{ return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw'})
 

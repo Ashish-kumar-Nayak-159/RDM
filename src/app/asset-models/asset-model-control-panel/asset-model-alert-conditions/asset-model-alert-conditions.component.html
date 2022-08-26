@@ -1,3 +1,4 @@
+
 <div class="tab-bar">
   <div class="">
     <ul class="nav">
@@ -129,36 +130,34 @@
                   *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                   <div class="form-inline">
                     <ng-container>
-                      <div class="form-group">
-                        <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
-                          clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
-                          groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
-                          name="model_type" [(ngModel)]="selectedWidgets"
-                          (onDeSelectAll)="onDeselectAll($event,'widget')">
-                          <ng-template ng-multi-label-tmp let-items="items">
-                            {{items.length}} widgets selected
-                          </ng-template>
-                          <ng-template ng-header-tmp>
-                            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                              <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
-                                  (click)="selectedWidgets = widgets">Select All</a></li>
-                              <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
-                                  (click)="selectedWidgets = []">Deselect All</a></li>
-                            </ul>
-                          </ng-template>
-                          <ng-template ng-option-tmp let-item="item">
-                            <span [tooltip]="item.title">
-                              {{item.title}}</span>
-                          </ng-template>
-                        </ng-select>
-                      </div>
-                      <div class="form-group">
-                        <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
-                        <em class="fa fa-plus fa-sm"></em> </a> -->
-                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
-                          (click)="addVisualizationWidget()">
-                          <em class="fa fa-plus fa-sm"></em></button>
-                      </div>
+                        <div class="form-group" #addVisulizationWidgetDiv>
+                          <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
+                            clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
+                            groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            name="model_type" [(ngModel)]="selectedWidgets"
+                            (onDeSelectAll)="onDeselectAll($event,'widget')">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                              {{items.length}} widgets selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                              <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = widgets">Select All</a></li>
+                                <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = []">Deselect All</a></li>
+                              </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                              <span [tooltip]="item.title">
+                                {{item.title}}</span>
+                            </ng-template>
+                          </ng-select>
+                        </div>
+                        <div class="form-group">
+                          <button type="button" class="addWidgetBtn btn btn-primary btn-sm  mx-2" placement="bottom" tooltip="Add"
+                            (click)="addVisualizationWidget()">
+                            <em class="fa fa-plus fa-sm"></em></button>
+                        </div>
                     </ng-container>
                   </div>
                 </div>
@@ -308,10 +307,10 @@
                     tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
                       class="fa fa-save fa-sm"></em></button>
                 </div>
-                <div class="col-12 my-3 accordion-padding ">
+                <div class="col-12 my-3 accordion-padding " #documentSelectionDiv>
 
                   <div class=""
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed" #documentSelectionDiv>
                     <h6 *ngIf="contextApp.app!='Indygo'">Email / Whatsapp Attachments: </h6>
                     <h6 *ngIf="contextApp.app=='Indygo'">Email Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
@@ -322,7 +321,7 @@
 
                   <div class=""
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                    <div class="form-inline">
+                    <div class="form-inline" #documentSelectionDiv>
                       <ng-container>
                         <div class="form-group">
                           <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
@@ -588,7 +587,7 @@
                   <div class="col-auto">
                     <div class=""
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                      <div class="form-inline">
+                      <div class="form-inline" #addUserGroupDiv>
                         <ng-container>
                           <div class="form-group">
                             <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"

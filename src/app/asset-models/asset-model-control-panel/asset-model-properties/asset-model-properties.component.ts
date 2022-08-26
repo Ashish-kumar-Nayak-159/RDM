@@ -255,7 +255,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 detail.read = true;
               } else {
                 if (detail.metadata.fc_r == "0" || detail.metadata.fc_r == 0 ) {
-                  console.log("if..........");
                   detail.metadata.fc_r = null;
                   detail.metadata.fc = null;
                 }

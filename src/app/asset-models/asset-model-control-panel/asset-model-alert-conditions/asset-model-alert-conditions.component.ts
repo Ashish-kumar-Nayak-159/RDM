@@ -1,7 +1,7 @@
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -15,6 +15,8 @@ declare var $: any;
   styleUrls: ['./asset-model-alert-conditions.component.css'],
 })
 export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
+  dropdown = false;
+
   @Input() assetModel: any;
   alertConditions: {
     id?: string;
@@ -72,6 +74,12 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   userGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
+
+  @ViewChild('addVisulizationWidgetDiv', {static: false}) addVisulizationWidgetDiv;
+  @ViewChild('addUserGroupDiv', {static: false}) addUserGroupDiv;
+  @ViewChild('documentSelectionDiv', {static: false}) documentSelectionDiv;
+
+  
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -92,8 +100,27 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();
     }
+
+    $('.custom-dropdown').on('shown.bs.collapse', function(e) {
+        alert("Close");
+    });
   }
 
+  @HostListener('document:click', ['$event'])
+  public onClick(e) {
+    let clickedInside = this.addVisulizationWidgetDiv?.nativeElement?.contains(e.target);
+    if (!clickedInside) {
+      this.addVisualizationWidget();
+    }
+    clickedInside = this.addUserGroupDiv?.nativeElement?.contains(e.target);
+    if (!clickedInside) {
+      this.addUserGroup('push_notification');
+    }
+    clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
+    if (!clickedInside) {
+      this.addReferenceDocument();
+    }
+  }
   onClickOfTab(type) {
     this.selectedTab = type;
     this.toggleRows = {};
@@ -204,29 +231,29 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.onClickOfViewActionIcon('Visualization', i);
     }
   }
-
+ 
   addVisualizationWidget() {
-    // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-    this.selectedWidgets.forEach(element => {
-      const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === element.title);
-      if (index > -1) {
-        this.toasterService.showError(
-          'Same ' + this.widgetStringFromMenu + ' is already added.',
-          'Add ' + this.widgetStringFromMenu
-        );
-        return;
-      } else if (!element.title) {
-        this.toasterService.showError(
-          'Please select ' + this.widgetStringFromMenu + ' to add',
-          'Add ' + this.widgetStringFromMenu
-        );
-        return;
-      }
-      if (element.title && index === -1) {
-        this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
-      }
-    });
-    this.selectedWidgets = []
+      // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
+      this.selectedWidgets.forEach(element => {
+        const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === element.title);
+        if (index > -1) {
+          this.toasterService.showError(
+            'Same ' + this.widgetStringFromMenu + ' is already added.',
+            'Add ' + this.widgetStringFromMenu
+          );
+          return;
+        } else if (!element.title) {
+          this.toasterService.showError(
+            'Please select ' + this.widgetStringFromMenu + ' to add',
+            'Add ' + this.widgetStringFromMenu
+          );
+          return;
+        }
+        if (element.title && index === -1) {
+          this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
+        }
+      });
+      this.selectedWidgets = []
   }
 
   removeVisualizationWidget(index) {

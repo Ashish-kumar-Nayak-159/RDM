@@ -237,16 +237,54 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
   updateAssetManagerWithHierarchy(hierarchyObj) {
     let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-    let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    this.filteredUsers = this.appUsers.filter(function (user) {
-      if (!user.hierarchy.hasOwnProperty(lastObjKey)) {
-        let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
-        if (!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
-          return true;
-      }
-      else if (user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+    // let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
+    console.log("this.appUsers......",this.appUsers)
+    this.filteredUsers = this.appUsers.filter((user) => {
+      if(user.role == 'App Admin') {
         return true;
+      } else {
+          let firstObjectKeyApp = Object.keys(hierarchyObj)[0].trim();
+          let secondObjectMgt = Object.keys(hierarchyObj)[1]?.trim();
+          let thirdObjectClient = Object.keys(hierarchyObj)[2]?.trim();
+          let fourthObjectLocation = Object.keys(hierarchyObj)[3]?.trim();
+          if(
+            fourthObjectLocation && 
+            user.hierarchy[fourthObjectLocation] == hierarchyObj[fourthObjectLocation] &&
+            user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+            ) {
+              return true;
+          } else if(
+            !fourthObjectLocation && 
+            thirdObjectClient &&
+            user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+           ) {
+            return true;
+          } else if(
+            !fourthObjectLocation && 
+            !thirdObjectClient &&
+            secondObjectMgt &&
+            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+           ) {
+            return true;
+          } else if(
+            !fourthObjectLocation && 
+            !thirdObjectClient &&
+            !secondObjectMgt &&
+            firstObjectKeyApp &&
+            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+           ) {
+            return true;
+          }
+        } 
+      //if (user.hierarchy[lastObjKey] == hierarchyObj[lastObjKey] && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+        //return true;
     });
+    console.log("this.filteredUsers.......",this.filteredUsers)
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {

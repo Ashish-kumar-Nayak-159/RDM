@@ -792,9 +792,21 @@ export class AppMaintenanceListComponent implements OnInit {
       }
       if(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails!==undefined)
       {
-        this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
-        this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
-        this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+        if(typeof(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails) === 'object'){
+          this.emails = []
+          this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
+          this.emails.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+          this.maintenanceModel.maintenance_escalation_registry[i].user_email = []
+          this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+          this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
+        }else{
+          this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
+          this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+          this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+          this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';  
+        }
+        // this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+        // this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
   
       }
     }

@@ -315,20 +315,20 @@
         </div>
 
         <div class="form-group">
-          <label class="col-form-label " for="alert_management">Acknowledge Required</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
-            id="ack" name="ack" [(ngModel)]="is_acknowledge_required">
+          id="ack" name="ack" [(ngModel)]="is_acknowledge_required">
           <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" id="ack" name="ack"
-            [(ngModel)]="is_acknowledge_required">
+          [(ngModel)]="is_acknowledge_required">
+          <label class="col-form-label " for="ack" style="margin-left:24px;">Acknowledge Required</label>
 
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">Do you want to update user about upcoming
-            maintenance?</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
             [(ngModel)]="is_notify_user" id="notify">
           <input type="checkbox" *ngIf="!isView" class="form-check-input checkboxloc" [(ngModel)]="is_notify_user"
             id="notify">
+            <label for="notify" class="col-form-label" style="margin-left:24px;">Do you want to update user about upcoming
+              maintenance?</label>
         </div>
         <div *ngIf="is_notify_user" [formGroup]="notifyMaintenanceForm">
           <div class="d-flex align-items-center w-100">
@@ -470,11 +470,11 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-form-label " for="alert_management">Escalation Required</label>
           <input type="checkbox" *ngIf="isView" [attr.disabled]="isView && !isEdit" class="form-check-input checkboxloc"
             id="is_escal" [(ngModel)]="is_escalation_required" (click)="addNewEsacalation(0);">
           <input type="checkbox" *ngIf="!isView" (click)="addNewEsacalation(0);" class="form-check-input checkboxloc"
             id="is_escal" [(ngModel)]="is_escalation_required">
+            <label class="col-form-label " for="is_escal" style="margin-left:24px;">Escalation Required</label>
         </div>
         <div *ngIf="is_escalation_required">
           <button id="insert-more" *ngIf="!isView" (click)="addNewEsacalation(1);"

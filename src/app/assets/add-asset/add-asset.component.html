@@ -27,6 +27,7 @@
                   (change)="onChangeOfAddAssetHierarchy(hIndex)">
                   <option [ngValue]="undefined"> Select {{level}}</option>
                   <option [ngValue]="tag.key" *ngFor="let tag of addAssetHierarchyArr[hIndex]">{{tag.name}}</option>
+           
                 </select>
               </div>
             </ng-container>
@@ -37,7 +38,7 @@
               <select class="form-control form-control-sm" id="whitelist_asset" name="whitelist_asset"
                 (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset">
                 <option [ngValue]="undefined">Select Asset</option>
-                <option *ngFor="let asset of whiteListedAssets" [ngValue]="asset">{{asset.display_name}}</option>
+                <option *ngFor="let asset of whiteListedAssetsfilter" [ngValue]="asset">{{asset.display_name}}</option>
               </select>
             </div>
             <!-- End Whitelist Asset -->

@@ -62,6 +62,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService,
+    private applicationService:ApplicationService
   ) { }
 
   ngOnInit(): void {
@@ -71,6 +72,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.getTileName();
     this.assetsList = [];
     this.getAssets();
+    this.SetHierarchyTags();
     // if (this.type === 'legacy-assets') {
     //   this.componentState = CONSTANTS.NON_IP_ASSET;
     // } else if (this.type === 'iot-assets') {
@@ -94,6 +96,21 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     }, 2000);
   }
 
+  SetHierarchyTags() {
+    localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+    return new Promise<void>(async (resolve) => {
+      this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe(async (response: any) => {
+        if (response && response.data && response.data.length > 0) {
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+        }
+        resolve();
+      },
+        (error) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, []);
+          resolve();
+        })
+    });
+  }  
   getGatewayList() {
     this.gateways = [];
     const obj = {

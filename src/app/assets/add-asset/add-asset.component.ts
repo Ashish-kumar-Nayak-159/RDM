@@ -1,3 +1,4 @@
+import { object } from '@amcharts/amcharts4/core';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
@@ -28,7 +29,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   appUsers: any[] = [];
   filteredUsers: any[] = [];
   @Input() gateways: any[] = [];
-  actualGateways : any[] = [];
+  actualGateways: any[] = [];
   originalGateways: any[] = [];
   assetModels: any[] = [];
   userData: any;
@@ -38,8 +39,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isAssetEditable = false;
   isWhiteLablePriviledge = false;
   whiteListedAssets: any[] = [];
+  whiteListedAssetsfilter:any[] =[];
   selectedWhitelistAsset: any;
   actualhierarchyArr = [];
+
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -55,7 +58,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
-    
+
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     this.actualGateways = this.gateways;
@@ -133,11 +136,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
     };
     return new Promise<void>((resolve1, reject) => {
       this.whiteListedAssets = [];
+      this.whiteListedAssetsfilter = [];
       this.subscriptions.push(
         this.assetService.getWhiteListedAsset(obj, this.contextApp.app).subscribe(
           (response: any) => {
             if (response && response.data) {
               this.whiteListedAssets = response.data;
+              this.whiteListedAssetsfilter = response.data;              
             }
             resolve1();
           },
@@ -166,6 +171,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   onChangeOfAddAssetHierarchy(i) {
+    this.assetDetail.tags.display_name = [];
+    this.assetDetail.asset_id = [];
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -177,9 +184,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
     });
     let parentId = 0;
-    Object.keys(this.addAssetConfigureHierarchy).forEach((key,index) => {
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
       if (this.addAssetConfigureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;        
+        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;
       }
     });
     let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
@@ -188,11 +195,16 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
 
     const hierarchyObj: any = { App: this.contextApp.app };
+    let hierarchyObjString = this.contextApp.app;
+
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (this.addAssetConfigureHierarchy[key]) {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
+    Object.keys(hierarchyObj).forEach((key) =>{
+      this.whiteListedAssetsfilter = this.whiteListedAssets?.filter(f => f?.hierarchy_json == null || f?.hierarchy_json[key] ==  hierarchyObj[key])
+    })
     //let maxObject = hierarchyObj.fin
     if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.actualGateways));
@@ -238,53 +250,53 @@ export class AddAssetComponent implements OnInit, OnChanges {
   updateAssetManagerWithHierarchy(hierarchyObj) {
     let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
     // let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    console.log("this.appUsers......",this.appUsers)
+    console.log("this.appUsers......", this.appUsers)
     this.filteredUsers = this.appUsers.filter((user) => {
-      if(user.role == 'App Admin') {
+      if (user.role == 'App Admin') {
         return true;
       } else {
-          let firstObjectKeyApp = Object.keys(hierarchyObj)[0].trim();
-          let secondObjectMgt = Object.keys(hierarchyObj)[1]?.trim();
-          let thirdObjectClient = Object.keys(hierarchyObj)[2]?.trim();
-          let fourthObjectLocation = Object.keys(hierarchyObj)[3]?.trim();
-          if(
-            fourthObjectLocation && 
-            user.hierarchy[fourthObjectLocation] == hierarchyObj[fourthObjectLocation] &&
-            user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
-            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
-            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
-            ) {
-              return true;
-          } else if(
-            !fourthObjectLocation && 
-            thirdObjectClient &&
-            user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
-            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
-            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
-           ) {
-            return true;
-          } else if(
-            !fourthObjectLocation && 
-            !thirdObjectClient &&
-            secondObjectMgt &&
-            user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
-            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
-           ) {
-            return true;
-          } else if(
-            !fourthObjectLocation && 
-            !thirdObjectClient &&
-            !secondObjectMgt &&
-            firstObjectKeyApp &&
-            user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
-           ) {
-            return true;
-          }
-        } 
+        let firstObjectKeyApp = Object.keys(hierarchyObj)[0].trim();
+        let secondObjectMgt = Object.keys(hierarchyObj)[1]?.trim();
+        let thirdObjectClient = Object.keys(hierarchyObj)[2]?.trim();
+        let fourthObjectLocation = Object.keys(hierarchyObj)[3]?.trim();
+        if (
+          fourthObjectLocation &&
+          user.hierarchy[fourthObjectLocation] == hierarchyObj[fourthObjectLocation] &&
+          user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          thirdObjectClient &&
+          user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          !thirdObjectClient &&
+          secondObjectMgt &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          !thirdObjectClient &&
+          !secondObjectMgt &&
+          firstObjectKeyApp &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        }
+      }
       //if (user.hierarchy[lastObjKey] == hierarchyObj[lastObjKey] && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
-        //return true;
+      //return true;
     });
-    console.log("this.filteredUsers.......",this.filteredUsers)
+    console.log("this.filteredUsers.......", this.filteredUsers)
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
@@ -388,7 +400,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
   async onWhitelistedAssetChange() {
-    let newPromise = await this.getAssetsModels(this.componentState);    
+    let newPromise = await this.getAssetsModels(this.componentState);
     Promise.resolve(newPromise).then(res => {
       if (this.selectedWhitelistAsset === undefined) {
         this.assetDetail.asset_id = null;
@@ -415,10 +427,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
               }
             }
           });
-  
+
         }
       }
-    })  
+    })
   }
   onCreateAsset() {
     if (

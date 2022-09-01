@@ -171,6 +171,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   onChangeOfAddAssetHierarchy(i) {
+    this.assetDetail.tags.display_name = [];
+    this.assetDetail.asset_id = [];
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];

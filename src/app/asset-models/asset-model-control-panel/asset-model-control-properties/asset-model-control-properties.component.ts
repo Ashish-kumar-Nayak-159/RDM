@@ -169,7 +169,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     })
   }
   singleSyncuoCall(event : any) {
-    if(event?.data?.new_value || event.length > 0) {
+    if(event?.data?.hasOwnProperty('new_value') || event.length > 0) {
       let setProperties : any = {};
       
       let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAssets.asset_id : this.selectedAssets.gateway_id) +'_' +this.commonService.generateUUID();
@@ -195,34 +195,39 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       if(event.length > 0) {
         event.forEach((detail)=>{
           if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
-            if(detail.data_type == 'Number') {
-              let newValue = detail?.new_value;
-              newValue = newValue.toString();
-              if(newValue.indexOf('.') > -1) {
-                detail.new_value = parseFloat(detail.new_value);
-              } else {
-                detail.new_value = parseInt(detail.new_value);
+            if(detail?.metadata.d != 'd') {
+              if(detail.data_type == 'Number') {
+                let newValue = detail?.new_value;
+                newValue = newValue.toString();
+                if(newValue.indexOf('.') > -1) {
+                  detail.new_value = parseFloat(detail.new_value);
+                } else {
+                  detail.new_value = parseInt(detail.new_value);
+                }
               }
-            }
-            if(detail.data_type == 'Float') {
-              detail.new_value = parseFloat(detail.new_value);
+              if(detail.data_type == 'Float') {
+                detail.new_value = parseFloat(detail.new_value);
+              }
             }
             setProperties['message']['properties'][detail.json_key] = detail.new_value;
           }
         })
       } else {
           if(event?.data?.new_value?.toString().length > 0){
-            if(event.data.data_type == 'Number') {
-              let newValue = event?.data?.new_value;
-              newValue = newValue.toString();
-              if(newValue.indexOf('.') > -1) {
-                event.data.new_value = parseFloat(event.data.new_value);
-              } else {
-                event.data.new_value = parseInt(event.data.new_value);
+            if(event?.data?.metadata.d != 'd') {
+              if(event.data.data_type == 'Number') {
+                let newValue = event?.data?.new_value;
+                newValue = newValue.toString();
+                if(newValue.indexOf('.') > -1) {
+                  event.data.new_value = parseFloat(event.data.new_value);
+                } else {
+                  event.data.new_value = parseInt(event.data.new_value);
+                }
               }
-            }
-            if(event.data.data_type == 'Float') {
-              event.data.new_value = parseFloat(event.data.new_value);
+            
+              if(event.data.data_type == 'Float') {
+                event.data.new_value = parseFloat(event.data.new_value);
+              }
             }
             setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
           }

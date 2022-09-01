@@ -46,8 +46,8 @@
               <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp"  (change)="updateSingleCheckBox(data.syncUp)" />
             </ng-container>
             <ng-container *ngIf="header.key === 'new_value'">
-             <input *ngIf="data.data_type != 'Boolean'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />
-             <select  placeholder="Select" *ngIf="data.data_type == 'Boolean'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="new_value" id="selected_asset"  #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"  (change)="inputBoxValueChange(data,data.new_value)">
+             <input *ngIf="data.data_type != 'Boolean' &&  data.metadata.d != 'd'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />
+             <select  placeholder="Select" *ngIf="data.data_type == 'Boolean'  || data.metadata.d == 'd'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="new_value" id="selected_asset"  #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"  (change)="inputBoxValueChange(data,data.new_value)">
                 <option disabled [ngValue]="undefined">Select</option>
                 <option [ngValue]="false">False</option>
                 <option [ngValue]="true">True</option>

@@ -144,13 +144,15 @@ export class CommonTableComponent implements OnInit {
   inputBoxValueChange(data,value:string) {
     this.isEnteredAnyValue = false;
     this.tableData.map((detail)=>{
-      if(detail.id == data.id && data.data_type == 'Number') {
-        detail.new_value = detail?.new_value?.replace(/[^0-9.]+/gi,"");
-        value = value?.replace(/[^0-9.]+/gi,"");
-      }
-      if(detail.id == data.id && data.data_type == 'String') {
-        detail.new_value = detail?.new_value?.replace(/[^a-zA-Z_]+/gi,"");
-        value = value?.replace(/[^a-zA-Z_]+/gi,"");
+      if(data.metadata.d != 'd') {
+        if(detail.id == data.id && data.data_type == 'Number') {
+          detail.new_value = detail?.new_value?.replace(/[^0-9.]+/gi,"");
+          value = value?.replace(/[^0-9.]+/gi,"");
+        }
+        if(detail.id ==   data.id && data.data_type == 'String') {
+          detail.new_value = detail?.new_value?.replace(/[^a-zA-Z_]+/gi,"");
+          value = value?.replace(/[^a-zA-Z_]+/gi,"");
+        }
       }
       if(detail?.new_value?.toString()?.length > 0) {
         this.isEnteredAnyValue = true;

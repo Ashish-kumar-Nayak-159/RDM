@@ -793,6 +793,7 @@ export class AppMaintenanceListComponent implements OnInit {
       if(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails!==undefined)
       {
         if(typeof(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails) === 'object'){
+          debugger
           this.emails = []
           this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
           this.emails.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
@@ -800,8 +801,12 @@ export class AppMaintenanceListComponent implements OnInit {
           this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
           this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         }else{
+          debugger
           this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
           this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
+          if(this.maintenanceModel.maintenance_escalation_registry[i].user_email === undefined){
+            this.maintenanceModel.maintenance_escalation_registry[i].user_email = []
+          }
           this.maintenanceModel.maintenance_escalation_registry[i]?.user_email.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
           this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';  
         }

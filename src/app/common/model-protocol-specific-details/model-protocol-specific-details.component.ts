@@ -96,6 +96,11 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.get('bn').setValue(null);
       this.setupForm.get('bn').updateValueAndValidity();
     }
+
+    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_w === 5)) {
+      this.setupForm.get('fc_w').setValue(null);
+      this.setupForm.get('fc_w').updateValueAndValidity();
+    }
   }
 
   onChangeOfSetupSecondaryType(obj = undefined) {

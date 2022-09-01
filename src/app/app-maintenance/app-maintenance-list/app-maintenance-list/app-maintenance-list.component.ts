@@ -730,6 +730,10 @@ export class AppMaintenanceListComponent implements OnInit {
             this.setEditFields();
           }
            this.toasterService.showError(err.message,'Maintenance Create');
+           this.maintenanceModel.maintenance_escalation_registry.forEach((obj)=>{
+              obj.duration_select  = obj.duration_select ? obj.duration_select : "Hours"
+              obj.duration_hours = obj.duration_hours ? obj.duration_hours : 2
+           })
           // this.toasterService.showError('Please provide valid input for Email Body. Maximum 1000 characters are allowed', " Maitenance Create");
         }
       );
@@ -793,16 +797,12 @@ export class AppMaintenanceListComponent implements OnInit {
       if(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails!==undefined)
       {
         if(typeof(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails) === 'object'){
-          debugger
           this.emails = []
-          this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
           this.emails.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
           this.maintenanceModel.maintenance_escalation_registry[i].user_email = []
           this.maintenanceModel.maintenance_escalation_registry[i]?.user_email?.push(...this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
           this.maintenanceModel.maintenance_escalation_registry[i].user_emails = '';
         }else{
-          debugger
-          this.maintenanceModel.maintenance_escalation_registry[i].duration_select = "Hours"
           this.emails.push(this.maintenanceModel.maintenance_escalation_registry[i]?.user_emails);
           if(this.maintenanceModel.maintenance_escalation_registry[i].user_email === undefined){
             this.maintenanceModel.maintenance_escalation_registry[i].user_email = []

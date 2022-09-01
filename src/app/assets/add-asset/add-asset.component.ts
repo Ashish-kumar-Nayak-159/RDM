@@ -42,6 +42,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
   whiteListedAssetsfilter:any[] =[];
   selectedWhitelistAsset: any;
   actualhierarchyArr = [];
+  isHierarchyEditable = false;
+
 
   constructor(
     private commonService: CommonService,
@@ -171,8 +173,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   onChangeOfAddAssetHierarchy(i) {
-    this.assetDetail.tags.display_name = [];
-    this.assetDetail.asset_id = [];
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -195,7 +195,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
 
     const hierarchyObj: any = { App: this.contextApp.app };
-    let hierarchyObjString = this.contextApp.app;
 
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (this.addAssetConfigureHierarchy[key]) {
@@ -209,6 +208,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.actualGateways));
       this.filteredUsers = this.appUsers;
+
     } else {
       const arr = [];
       this.gateways = [];
@@ -250,7 +250,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   updateAssetManagerWithHierarchy(hierarchyObj) {
     let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
     // let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    console.log("this.appUsers......", this.appUsers)
+    //console.log("this.appUsers......", this.appUsers)
     this.filteredUsers = this.appUsers.filter((user) => {
       if (user.role == 'App Admin') {
         return true;
@@ -296,7 +296,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       //if (user.hierarchy[lastObjKey] == hierarchyObj[lastObjKey] && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
       //return true;
     });
-    console.log("this.filteredUsers.......", this.filteredUsers)
+    //console.log("this.filteredUsers.......", this.filteredUsers)
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
@@ -402,11 +402,14 @@ export class AddAssetComponent implements OnInit, OnChanges {
   async onWhitelistedAssetChange() {
     let newPromise = await this.getAssetsModels(this.componentState);
     Promise.resolve(newPromise).then(res => {
+
       if (this.selectedWhitelistAsset === undefined) {
         this.assetDetail.asset_id = null;
         this.assetDetail.tags.display_name = null;
         this.assetDetail.tags.cloud_connectivity = undefined;
         this.assetDetail.tags.protocol = undefined;
+        this.isHierarchyEditable = false;
+        this.onChangeOfAddAssetHierarchy(0)
       }
       else {
         this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
@@ -422,10 +425,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
               if (this.selectedWhitelistAsset?.hierarchy_json) {
                 this.addAssetConfigureHierarchy[index] = this.selectedWhitelistAsset?.hierarchy_json[level];
                 if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
+                  this.isHierarchyEditable = true;
                   this.onChangeOfAddAssetHierarchy(index);
+                  
                 }
               }
             }
+          
           });
 
         }

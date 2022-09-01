@@ -23,7 +23,7 @@
               <div class="form-group" *ngIf="hIndex !== 0">
                 <label for="message-text" class="col-form-label">{{level}}:</label>
                 <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
-                  [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
+                  [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level] ||  isHierarchyEditable"
                   (change)="onChangeOfAddAssetHierarchy(hIndex)">
                   <option [ngValue]="undefined"> Select {{level}}</option>
                   <option [ngValue]="tag.key" *ngFor="let tag of addAssetHierarchyArr[hIndex]">{{tag.name}}</option>
@@ -36,7 +36,7 @@
             <div class="form-group" *ngIf="decodedToken?.privileges?.indexOf('WASMP') > -1">
               <label for="whitelist_asset" class="col-form-label">WhiteListed Asset:</label>
               <select class="form-control form-control-sm" id="whitelist_asset" name="whitelist_asset"
-                (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset">
+                (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset" >
                 <option [ngValue]="undefined">Select Asset</option>
                 <option *ngFor="let asset of whiteListedAssetsfilter" [ngValue]="asset">{{asset.display_name}}</option>
               </select>

@@ -57,6 +57,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   contextAppUserHierarchyLength = 0;
   decodedToken: any;
   actualhierarchyArr;
+  reportsData:any[] = []
+
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -76,6 +78,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
+    this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
@@ -103,6 +106,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
       })
     );
+  }
+
+  getReportSubscriptionData(){
+     this.assetService.getReportSubscription(this.contextApp.app).subscribe((response:any)=>{
+        this.reportsData = response?.data
+     })
   }
 
   ngAfterViewInit() {
@@ -167,7 +176,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.assets = this.originalAssets;
     this.selectedAssets = this.originalAssets;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    console.log('assets',this.assets)
   }
 
   onCloseConfigurePGRModal() {
@@ -229,6 +237,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.isCreateReportAPILoading = false;
           this.toasterService.showSuccess('New Report Created', 'Create Report');
           this.onCloseConfigurePGRModal();
+          this.getReportSubscriptionData();   
         },
         (error) => {
           this.isCreateReportAPILoading = false;
@@ -236,6 +245,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         }
       )
     );
+   
   }
 
   onReportChange() {
@@ -671,7 +681,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     var assetIds = this.assets.map((asset)=>{
        return asset?.asset_id
      })
-     console.log("assetIds",assetIds)
      this.reportsObj.assets = assetIds
   }
 

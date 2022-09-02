@@ -4,16 +4,16 @@
       [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
       (clearHierarchyEvent)="onClearHierarchy($event)">
     </app-hierarchy-dropdown>
-    <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+    <!-- <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
       (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
-    </app-date-range-picker>
+    </app-date-range-picker> -->
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
         (click)="reports = [];currentOffset = 0;getReportsData(true)"><em class="fa fa-search fa-sm"></em></button>
     </div>
     <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
       <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom"
-        tooltip="Configure New PreGenerated Report"><em class="fa fa-cog fa-sm text-white"></em></button>
+        tooltip="Configure New PreGenerated Report"><em class="fas fa-plus fa-sm text-white"></em></button>
     </div>
   </form>
 </div>
@@ -26,41 +26,47 @@
         <thead>
           <tr>
             <th scope="col">No</th>
+            <th scope="col">Name</th>
             <th scope="col">Asset Name</th>
-            <th scope="col">Date</th>
+            <!-- <th scope="col">Date</th> -->
             <th scope="col">Category</th>
-            <th scope="col">Type</th>
-            <th scope="col">Size</th>
+            <th scope="col">Report Type</th>
+            <th scope="col">Frequency</th>
+            <!-- <th scope="col">Size</th> -->
             <!-- <th scope="col">Type</th>
         <th scope="col">Frequency</th> -->
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="reports.length > 0">
-            <tr *ngFor="let reportObj of reports; let index = index">
+          <ng-container *ngIf="reportsData.length > 0">
+            <tr *ngFor="let reportObj of reportsData; let index = index">
               <td>{{index + 1}}</td>
+              <td>{{reportObj?.report_name}}</td>
               <td>
                 <ng-container *ngFor="let assetId of reportObj.assets">
                   {{ getAssetNameById(assetId)}}
                 </ng-container>
               </td>
-              <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
-                (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td>
+              <!-- <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
+                (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td> -->
               <!-- <td>{{ reportObj.local_end_date }}</td> -->
 
-              <td>{{reportObj.report_type}}</td>
               <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' :
                 (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
+
+                <td>{{reportObj?.report_type}}</td>
               <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
-              <td>{{reportObj.metadata?.file_size}}</td>
+              <!-- <td>{{reportObj.metadata?.file_size}}</td> -->
+              <td>{{reportObj?.report_frequency}}</td>
               <td>
-                <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
+                --
+                <!-- <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
                   (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
                     class="fa fa-sm fa-download"></em></a>
                 <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
-                </ng-container>
+                </ng-container> -->
               </td>
             </tr>
           </ng-container>

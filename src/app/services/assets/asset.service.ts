@@ -804,6 +804,10 @@ export class AssetService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
   }
 
+  getReportSubscription(app){
+    return this.http.get(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)));
+  }
+
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

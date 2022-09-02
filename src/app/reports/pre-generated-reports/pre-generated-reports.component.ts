@@ -58,6 +58,19 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   decodedToken: any;
   actualhierarchyArr;
   reportsData:any[] = []
+  confirmBodyMessage: string;
+  confirmHeaderMessage: string;
+  modalConfig: {
+    isDisplaySave: boolean;
+    isDisplayCancel: boolean;
+    saveBtnText: string;
+    cancelBtnText: string;
+    stringDisplay: boolean;
+  };
+  isAPILoading = false;
+  recordID:number;
+  isUpdateReport:boolean = false;
+  updatePGR:any = {}
 
   constructor(
     private commonService: CommonService,
@@ -113,6 +126,21 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.reportsData = response?.data
      })
   }
+
+  deleteModal(id:number){
+    this.recordID = id;
+    this.modalConfig = {
+      isDisplaySave: true,
+      isDisplayCancel: true,
+      saveBtnText: 'Yes',
+      cancelBtnText: 'No',
+      stringDisplay: true,
+    };
+      this.confirmBodyMessage = 'Are you sure you want to delete this report?';
+      this.confirmHeaderMessage = 'Delete ' + 'Report';
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
 
   ngAfterViewInit() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -683,6 +711,50 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
      })
      this.reportsObj.assets = assetIds
   }
+
+
+   // data of single record while click on any action button
+   
+   singleRecordData(data:any, type?:string){
+      console.log('record',data)
+      if(type==='delete'){
+         this.deleteModal(data?.id);
+      }
+      else{
+          this.isUpdateReport = true;
+          this.updatePGR.report_name = data?.report_name;
+          
+        $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }
+   }
+
+   deleteRecord(){
+     this.assetService.deleteReportRecord(this.contextApp.app,this.recordID).subscribe((response:any)=>{
+      console.log("response del", response)
+      this.getReportSubscriptionData()
+      this.toasterService.showSuccess('Report deleted successfully !', 'Delete Report')
+     })
+   }
+
+    // showing and hiding modal
+    onModalEvents(eventType) {
+      if (eventType === 'save') {
+        this.deleteRecord()
+        $("#confirmMessageModal").modal('hide');
+      }
+      else {
+        $('#confirmMessageModal').modal('hide');
+      }
+    }
+
+    UpdatePGReports(){
+      console.log("updateModal")
+      $("#updatePGRModal").modal("hide");
+    }
+
+    UpdatePGRModal(){
+      $("#updatePGRModal").modal("hide");
+    }
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

@@ -808,6 +808,10 @@ export class AssetService {
     return this.http.get(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)));
   }
 
+  deleteReportRecord(app,id){
+    return this.http.delete(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`);
+  }
+
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

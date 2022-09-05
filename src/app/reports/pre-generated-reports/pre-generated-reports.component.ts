@@ -70,6 +70,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isAPILoading = false;
   recordID:number;
   isUpdateReport:boolean = false;
+  isViewReport:boolean = false;
   updatePGR:any = {}
 
   constructor(
@@ -727,8 +728,44 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
-      else{
+      else if(type==='edit'){
           this.isUpdateReport = true;
+          this.isViewReport = false;
+          this.updatePGR.report_name = data?.report_name;
+          this.updatePGR.report_category = data?.report_category;
+          this.updatePGR.report_frequency = data?.report_frequency;
+          this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.properties = data?.properties;
+          this.updatePGR.hierarchy = {}
+          this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+            if(index!=0){
+               //updateModalHierarchy[index] = data?.hierarchy[level]
+               this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+               this.configureHierarchy[index] = data?.hierarchy[level]
+               this.onChangeOfHierarchy(index, 'PG');
+            }
+         })
+         this.updatePGR.assets = data?.assets
+          // await this.getAssets(this.contextApp.user.hierarchy).then(r => {
+
+          //   this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+          //     if(index!=0){
+          //        //updateModalHierarchy[index] = data?.hierarchy[level]
+          //        this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+          //        this.configureHierarchy[index] = data?.hierarchy[level]
+          //        this.onChangeOfHierarchy(index, 'PG');
+          //     }
+          //  })
+
+          // });
+          //this.updatePGR.hierarchy = updateModalHierarchy
+          //console.log("updateHierarchy", updateModalHierarchy)
+          
+        $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }
+      else{
+          this.isUpdateReport = false;
+          this.isViewReport = true;
           this.updatePGR.report_name = data?.report_name;
           this.updatePGR.report_category = data?.report_category;
           this.updatePGR.report_frequency = data?.report_frequency;

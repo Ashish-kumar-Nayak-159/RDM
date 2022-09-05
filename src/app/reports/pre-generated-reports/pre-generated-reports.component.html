@@ -61,8 +61,8 @@
               <!-- <td>{{reportObj.metadata?.file_size}}</td> -->
               <td>{{reportObj?.report_frequency}}</td>
               <td class="d-flex align-items-center" style="gap:5px;">
-                <em class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj)"></em>
-                <em class="fa fa-fw fa-edit icon-gray" tooltip="Edit" (click)="singleRecordData(reportObj)"></em>
+                <em class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj,'view')"></em>
+                <em class="fa fa-fw fa-edit icon-gray" tooltip="Edit" (click)="singleRecordData(reportObj,'edit')"></em>
                 <em class="fa fa-fw fa-trash icon-gray" tooltip="Delete" (click)="singleRecordData(reportObj,'delete')"></em>
                 <!-- <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
                   (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
@@ -280,9 +280,9 @@
 <!-- update modal  -->
 <div class="modal right fade" id="updatePGRModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div class="modal-content" *ngIf="isUpdateReport">
+    <div class="modal-content" *ngIf="isUpdateReport || isViewReport">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Report</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{isViewReport ? "View Report" : "Update Report"}}</h5>
         <button type="button" class="close" [disabled]="isCreateReportAPILoading" (click)="UpdatePGRModal()"
           aria-label="Close">
           <span aria-hidden="true" tooltip="Close">&times;</span>
@@ -294,7 +294,7 @@
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Name:</label>
               <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm" id="report_name" name="u_report_name"
-                [(ngModel)]="updatePGR.report_name" placeholder="Enter Report Name">
+                [(ngModel)]="updatePGR.report_name" placeholder="Enter Report Name" [disabled]="isViewReport">
                 <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
                   Please enter valid name.
                 </div>
@@ -302,7 +302,7 @@
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Asset Model:</label>
               <select class="custom-select custom-select-sm" id="asset_model" name="u_asset_model"
-                [(ngModel)]="updatePGR.asset_model" (change)="onChangeAssetsModel()">
+                [(ngModel)]="updatePGR.asset_model" (change)="onChangeAssetsModel()" [disabled]="isViewReport">
                 <option [ngValue]="undefined"> Select Model</option>
                 <option *ngFor="let item of assetModels" [ngValue]="item.name">
                   {{item.name}}</option>
@@ -315,7 +315,7 @@
                   <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
                   <select *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}"
                     name="{{level}}_{{index}}" [(ngModel)]="updatePGR?.hierarchy[index]"
-                    [disabled]="contextApp.user.hierarchy[level]" (change)="onChangeOfHierarchy(index, 'PG')">
+                    [disabled]="contextApp.user.hierarchy[level] || isViewReport" (change)="onChangeOfHierarchy(index, 'PG')">
                     <option [ngValue]="undefined"> Select {{level}}</option>
                     <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
                   </select>
@@ -323,7 +323,7 @@
                     defaultValue="{{ contextApp.app }}" disabled />
                 </div>
               </ng-container>
-              <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+              <ng-select [disabled]="isViewReport" [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
                 [multiple]="true" bindLabel="display_name" bindValue="asset_id" [closeOnSelect]="false"
                 placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
                 [(ngModel)]="updatePGR.assets">
@@ -348,7 +348,7 @@
               <label for="message-text" class="col-form-label required">Report Category:</label>
               <select class="custom-select custom-select-sm" id="report_category"
                 [(ngModel)]="updatePGR.report_category" name="u_report_category" (change)="onReportChange()"
-                #reportType="ngModel">
+                #reportType="ngModel" [disabled]="isViewReport">
                 <option [ngValue]="undefined">Report Category</option>
                 <option [ngValue]="'telemetry'">Telemetry Report</option>
                 <option [ngValue]="'alert'">Alert Report</option>
@@ -357,7 +357,7 @@
             <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
-                <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
+                <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
                   [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
                   [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
                   name="asset-dropdown" [(ngModel)]="updatePGR.properties" (onDeSelectAll)="y1Deselect($event)">
@@ -385,7 +385,7 @@
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Type:</label>
               <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="updatePGR.report_type"
-                name="u_report_type">
+                name="u_report_type" [disabled]="isViewReport">
                 <option [ngValue]="undefined">Select Report Type</option>
                 <option [ngValue]="'Raw'">Raw</option>
                 <option [ngValue]="'Sampling'">Sampling</option>
@@ -394,7 +394,7 @@
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Frequency:</label>
               <select class="custom-select custom-select-sm" id="report_frequency"
-                [(ngModel)]="updatePGR.report_frequency" name="u_report_frequency">
+                [(ngModel)]="updatePGR.report_frequency" name="u_report_frequency" [disabled]="isViewReport">
                 <option [ngValue]="undefined">Select Report Frequency</option>
                 <option [ngValue]="'Daily'">Daily</option>
                 <option [ngValue]="'Weekly'">Weekly</option>
@@ -403,9 +403,9 @@
             </div>
          
       <div class="modal-footer fixed-bottom bg-white">
-        <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
+        <button type="button" *ngIf="!isViewReport" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
           (click)="UpdatePGReports()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
+        <button type="button" *ngIf="!isViewReport" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
           (click)="UpdatePGRModal()">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
       </div>

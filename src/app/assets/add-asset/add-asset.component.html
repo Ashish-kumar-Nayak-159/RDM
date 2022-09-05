@@ -47,7 +47,7 @@
             <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
               <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
                 ID:</label>
-              <input #asset_id="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_id"
+              <input #asset_id="ngModel" [disabled]="isHierarchyEditable"  validateText type="text" class="form-control form-control-sm" id="asset_id"
                 name="asset_id" [(ngModel)]="assetDetail.asset_id"
                 placeholder="Enter {{(tileData  ? tileData.table_key : '')}} ID">
               <div *ngIf="asset_id.errors?.whitespace && asset_id.touched" class="alert-danger">

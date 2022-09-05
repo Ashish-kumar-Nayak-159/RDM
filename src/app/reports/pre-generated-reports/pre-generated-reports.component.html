@@ -314,8 +314,8 @@
                 <div class="my-1">
                   <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
                   <select *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}"
-                    name="{{level}}_{{index}}" [(ngModel)]="configureHierarchy[index]"
-                    [disabled]="contextApp.user.hierarchy[level]" (change)="onChangeOfHierarchy(index, 'RS')">
+                    name="{{level}}_{{index}}" [(ngModel)]="updatePGR?.hierarchy[index]"
+                    [disabled]="contextApp.user.hierarchy[level]" (change)="onChangeOfHierarchy(index, 'PG')">
                     <option [ngValue]="undefined"> Select {{level}}</option>
                     <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
                   </select>
@@ -329,9 +329,9 @@
                 [(ngModel)]="updatePGR.assets">
                 <ng-template ng-header-tmp>
                   <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                    <li *ngIf="updatePGR.assets.length !== assets.length"> <a href="javascript:void(0)"
+                    <li *ngIf="updatePGR?.assets?.length !== assets?.length"> <a href="javascript:void(0)"
                         (click)="selectAll();">Select All</a></li>
-                    <li *ngIf="updatePGR.assets.length === assets.length"> <a href="javascript:void(0)"
+                    <li *ngIf="updatePGR?.assets?.length === assets?.length"> <a href="javascript:void(0)"
                         (click)="updatePGR.assets = []">Deselect All</a></li>
                   </ul>
                 </ng-template>
@@ -354,19 +354,19 @@
                 <option [ngValue]="'alert'">Alert Report</option>
               </select>
             </div>
-            <ng-container *ngIf="reportsObj.report_category === 'telemetry'">
+            <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
                   [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
                   [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
-                  name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+                  name="asset-dropdown" [(ngModel)]="updatePGR.properties" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>
                     <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                      <li *ngIf="props.length !== dropdownPropList.length"> <a href="javascript:void(0)"
+                      <li *ngIf="updatePGR.properties.length !== dropdownPropList.length"> <a href="javascript:void(0)"
                           (click)="props = dropdownPropList">Select All</a></li>
-                      <li *ngIf="props.length === dropdownPropList.length"> <a href="javascript:void(0)"
-                          (click)="props = []">Deselect All</a></li>
+                      <li *ngIf="updatePGR.properties.length === dropdownPropList.length"> <a href="javascript:void(0)"
+                          (click)="updatePGR.properties = []">Deselect All</a></li>
                     </ul>
                   </ng-template>
                   <ng-template ng-multi-label-tmp let-items="items">
@@ -398,7 +398,7 @@
                 <option [ngValue]="undefined">Select Report Frequency</option>
                 <option [ngValue]="'Daily'">Daily</option>
                 <option [ngValue]="'Weekly'">Weekly</option>
-                <option [ngValue]="'Monthly'"  *ngIf="reportsObj.report_category === 'alert'">Monthly</option>               
+                <option [ngValue]="'Monthly'"  *ngIf="updatePGR.report_category === 'alert'">Monthly</option>               
               </select>
             </div>
          

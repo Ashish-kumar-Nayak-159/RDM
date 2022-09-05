@@ -307,6 +307,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onChangeAssetsModel() {
     this.assets = [];
     this.reportsObj.assets = [];
+    this.updatePGR.assets = []
     if (this.reportsObj.asset_model) {
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
       this.assets = [...asset];
@@ -460,7 +461,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     });
   }
 
-  async onChangeOfHierarchy(i, e) {
+  async   onChangeOfHierarchy(i, e) {
+    debugger
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -474,7 +476,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     let parentId = 0;
     Object.keys(this.configureHierarchy).forEach((key,index) => {
       if (this.configureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;        
+        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId)?.id;        
+        if(parentId == null)
+          parentId = 0;
       }
     });
     let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
@@ -512,6 +516,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
     } else {
       this.reportsObj.assets = [];
+      this.updatePGR.assets = [];
       this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
@@ -519,6 +524,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         const arr = [];
         this.assets = [];
         this.reportsObj.assets = [];
+        this.updatePGR.assets = [];
         this.selectedAssets.forEach((asset) => {
           let trueFlag = 0;
           let flaseFlag = 0;
@@ -710,12 +716,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
        return asset?.asset_id
      })
      this.reportsObj.assets = assetIds
+     this.updatePGR.assets = assetIds
   }
 
 
    // data of single record while click on any action button
    
-   singleRecordData(data:any, type?:string){
+   async singleRecordData(data:any, type?:string){
       console.log('record',data)
       if(type==='delete'){
          this.deleteModal(data?.id);
@@ -723,6 +730,34 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       else{
           this.isUpdateReport = true;
           this.updatePGR.report_name = data?.report_name;
+          this.updatePGR.report_category = data?.report_category;
+          this.updatePGR.report_frequency = data?.report_frequency;
+          this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.properties = data?.properties;
+          this.updatePGR.hierarchy = {}
+          this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+            if(index!=0){
+               //updateModalHierarchy[index] = data?.hierarchy[level]
+               this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+               this.configureHierarchy[index] = data?.hierarchy[level]
+               this.onChangeOfHierarchy(index, 'PG');
+            }
+         })
+         this.updatePGR.assets = data?.assets
+          // await this.getAssets(this.contextApp.user.hierarchy).then(r => {
+
+          //   this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+          //     if(index!=0){
+          //        //updateModalHierarchy[index] = data?.hierarchy[level]
+          //        this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+          //        this.configureHierarchy[index] = data?.hierarchy[level]
+          //        this.onChangeOfHierarchy(index, 'PG');
+          //     }
+          //  })
+
+          // });
+          //this.updatePGR.hierarchy = updateModalHierarchy
+          //console.log("updateHierarchy", updateModalHierarchy)
           
         $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }

@@ -315,7 +315,7 @@
                   <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
                   <select *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}"
                     name="{{level}}_{{index}}" [(ngModel)]="updatePGR?.hierarchy[index]"
-                    [disabled]="contextApp.user.hierarchy[level] || isViewReport" (change)="onChangeOfHierarchy(index, 'PG')">
+                    [disabled]="contextApp.user.hierarchy[level] || isViewReport" (change)="onChangeOfHierarchy(index, 'RS')">
                     <option [ngValue]="undefined"> Select {{level}}</option>
                     <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
                   </select>

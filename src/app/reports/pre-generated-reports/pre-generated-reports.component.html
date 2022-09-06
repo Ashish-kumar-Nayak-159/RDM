@@ -355,6 +355,8 @@
               </select>
             </div>
             <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
+              {{dropdownPropList | json}}<br/><br/>
+              {{ updatePGR.properties | json}}
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
@@ -364,7 +366,7 @@
                   <ng-template ng-header-tmp>
                     <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                       <li *ngIf="updatePGR.properties.length !== dropdownPropList.length"> <a href="javascript:void(0)"
-                          (click)="props = dropdownPropList">Select All</a></li>
+                          (click)="updatePGR.properties = dropdownPropList">Select All</a></li>
                       <li *ngIf="updatePGR.properties.length === dropdownPropList.length"> <a href="javascript:void(0)"
                           (click)="updatePGR.properties = []">Deselect All</a></li>
                     </ul>

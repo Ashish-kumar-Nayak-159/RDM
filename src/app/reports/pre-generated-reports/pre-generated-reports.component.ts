@@ -258,7 +258,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // this.reportsObj.assets = assets;
     const reportObj = { ...this.reportsObj };
     reportObj.file_type = 'XLSX';
+    reportObj.metadata = {}
+    reportObj.metadata['asset_model'] = reportObj?.asset_model
     delete reportObj.asset_model;
+    console.log("report Payload",reportObj)
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, reportObj).subscribe(
         (response: any) => {
@@ -280,6 +283,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (this.reportsObj.report_category === 'telemetry') {
       if (this.reportsObj.asset_model) {
         this.getAssetsModelProperties(this.reportsObj.asset_model);
+      }
+    }
+    if(this.updatePGR?.report_category === 'telemetry')
+    {
+      debugger
+      if(this.updatePGR?.asset_model){
+        this.getAssetsModelProperties(this.updatePGR?.asset_model);
       }
     }
   }
@@ -317,7 +327,18 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onChangeOfHierarchy(index, 'RS');
         }
       });
-    } else {
+    } 
+    else if(this.updatePGR?.asset_model){
+      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
+      this.assets = [...asset];
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+          this.onChangeOfHierarchy(index, 'RS');
+        }
+      });
+    }
+    else {
       this.assets = this.originalAssets;
       this.selectedAssets = this.assets;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -366,6 +387,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+          console.log('dropdown assign',this.dropdownPropList)  
           // this.props = [...this.dropdownPropList];
           resolve();
         })
@@ -465,6 +487,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   async   onChangeOfHierarchy(i, e) {
 
      if(this.isUpdateReport){
+        // this.updatePGR.assets = []
         this.configureHierarchy = this.updatePGR?.hierarchy
      }
       Object.keys(this.configureHierarchy).forEach((key) => {
@@ -731,6 +754,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
    // data of single record while click on any action button
    
    async singleRecordData(data:any, type?:string){
+    console.log('data', data)
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
@@ -744,7 +768,18 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.updatePGR.report_category = data?.report_category;
           this.updatePGR.report_frequency = data?.report_frequency;
           this.updatePGR.report_type = data?.report_type;
-          this.updatePGR.properties = data?.properties;
+          let allProps = []
+          data?.properties?.cd?.forEach((item)=>{
+                allProps.push(item)
+          })
+          data?.properties?.ed?.forEach((edItem)=>{
+                allProps.push(edItem)
+          })
+          data?.properties?.m?.forEach((mItem)=>{
+                allProps.push(mItem)
+          })
+          this.updatePGR.properties = allProps;
+          this.updatePGR.asset_model = data?.metadata?.asset_model
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -755,6 +790,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             }
          })
          this.updatePGR.assets = data?.assets
+         if(this.updatePGR?.asset_model){
+           this.getAssetsModelProperties(this.updatePGR?.asset_model);
+         }
           
         $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }
@@ -768,7 +806,18 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.updatePGR.report_category = data?.report_category;
           this.updatePGR.report_frequency = data?.report_frequency;
           this.updatePGR.report_type = data?.report_type;
-          this.updatePGR.properties = data?.properties;
+          let allProps = []
+          data?.properties?.cd?.forEach((item)=>{
+                allProps.push(item)
+          })
+          data?.properties?.ed?.forEach((edItem)=>{
+                allProps.push(edItem)
+          })
+          data?.properties?.m?.forEach((mItem)=>{
+                allProps.push(mItem)
+          })
+          this.updatePGR.properties = allProps;
+          this.updatePGR.asset_model = data?.metadata?.asset_model
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -779,7 +828,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             }
          })
          this.updatePGR.assets = data?.assets
-  
+         if(this.updatePGR?.asset_model){
+          this.getAssetsModelProperties(this.updatePGR?.asset_model);
+        }
+
         $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }
    }

@@ -72,6 +72,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isUpdateReport:boolean = false;
   isViewReport:boolean = false;
   updatePGR:any = {}
+  updateId:number;
 
   constructor(
     private commonService: CommonService,
@@ -237,6 +238,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const edge_derived_message_props = [];
     const cloud_derived_message_props = [];
     this.props.forEach((prop, index) => {
+      debugger
       if (prop.value.type === 'Edge Derived Properties') {
         edge_derived_message_props.push(prop.value.json_key);
       } else if (prop.value.type === 'Cloud Derived Properties') {
@@ -261,7 +263,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     reportObj.metadata = {}
     reportObj.metadata['asset_model'] = reportObj?.asset_model
     delete reportObj.asset_model;
-    console.log("report Payload",reportObj)
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, reportObj).subscribe(
         (response: any) => {
@@ -387,7 +388,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
-          console.log('dropdown assign',this.dropdownPropList)  
           // this.props = [...this.dropdownPropList];
           resolve();
         })
@@ -754,7 +754,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
    // data of single record while click on any action button
    
    async singleRecordData(data:any, type?:string){
-    console.log('data', data)
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
@@ -763,11 +762,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.selectedAssets = this.originalAssets;
           this.isUpdateReport = true;
           this.isViewReport = false;
+          this.updateId = data?.id
           this.updatePGR = {}
           this.updatePGR.report_name = data?.report_name;
           this.updatePGR.report_category = data?.report_category;
           this.updatePGR.report_frequency = data?.report_frequency;
           this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.file_type = data?.file_type;
           let allProps = []
           data?.properties?.cd?.forEach((item)=>{
                 allProps.push(item)
@@ -779,7 +780,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
                 allProps.push(mItem)
           })
           this.updatePGR.properties = allProps;
-          this.updatePGR.asset_model = data?.metadata?.asset_model
+          this.updatePGR.asset_model = "GW_AHM_M01"
+          // this.updatePGR.asset_model = data?.metadata?.asset_model
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -806,6 +808,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.updatePGR.report_category = data?.report_category;
           this.updatePGR.report_frequency = data?.report_frequency;
           this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.file_type = data?.file_type;
           let allProps = []
           data?.properties?.cd?.forEach((item)=>{
                 allProps.push(item)
@@ -857,6 +860,50 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     UpdatePGReports(){
       this.assets = [];
       this.selectedAssets = [];
+      this.updatePGR.metadata = {}
+      this.updatePGR.metadata['asset_model'] = this.updatePGR?.asset_model;
+      delete this.updatePGR?.asset_model
+      const obj = {};
+      const measured_message_props = [];
+      const edge_derived_message_props = [];
+      const cloud_derived_message_props = [];
+      var newprop = []
+      if(!this.updatePGR?.properties[0]?.json_key){
+        this.updatePGR?.properties?.forEach((json_key)=>{
+          
+           var fprop = this.dropdownPropList?.map((item)=>{
+               if(item?.json_key === json_key){
+                return item
+               }
+           })
+           newprop.push(...fprop)
+        })
+      }
+      else{
+         newprop = this.updatePGR?.properties
+      }
+  
+      newprop?.forEach((prop, index) => {
+        if (prop.value.type === 'Edge Derived Properties') {
+          edge_derived_message_props.push(prop.value.json_key);
+        } else if (prop.value.type === 'Cloud Derived Properties') {
+          cloud_derived_message_props.push(prop.value.json_key);
+        } else {
+          measured_message_props.push(prop.value.json_key);
+        }
+      });
+      obj['m'] = measured_message_props ? measured_message_props : undefined;
+      obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+      obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+      this.updatePGR.properties = { ...obj };
+      console.log("calling", this.updatePGR)
+      this.assetService.updateReportRecord(this.contextApp.app, this.updateId, this.updatePGR).subscribe((response:any)=>{
+        console.log('response',response)
+        this.toasterService.showSuccess('Report Updated Successfully !', 'Update Report');
+      },(err)=>{
+        console.log('err',err)
+        this.toasterService.showError(err.message, 'Update Report');
+      })
       $("#updatePGRModal").modal("hide");
     }
 

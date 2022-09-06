@@ -355,8 +355,6 @@
               </select>
             </div>
             <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
-              {{dropdownPropList | json}}<br/><br/>
-              {{ updatePGR.properties | json}}
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"

@@ -812,6 +812,10 @@ export class AssetService {
     return this.http.delete(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`);
   }
 
+  updateReportRecord(app,id,obj){
+    return this.http.put(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`,obj);
+  }
+
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

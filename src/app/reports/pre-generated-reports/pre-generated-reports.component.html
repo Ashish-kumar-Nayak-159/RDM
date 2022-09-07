@@ -72,7 +72,12 @@
               </td>
             </tr>
           </ng-container>
-          <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
+          <ng-container *ngIf="reportsData.length === 0 && !isReportDataLoading">
+            <tr>
+              <td colspan="7">No reports available.</td>
+            </tr>
+          </ng-container>
+          <!-- <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
             <tr>
               <td colspan="7">No reports available for {{this.previousFilterObj.dateOption}}. <p
                   *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">
@@ -82,7 +87,7 @@
                 </ng-template>
               </td>
             </tr>
-          </ng-container>
+          </ng-container> -->
           <ng-container *ngIf="isReportDataLoading">
             <tr>
               <td colspan="7">
@@ -95,11 +100,16 @@
       </table>
     </div>
   </div>
-  <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
+  <span class="pull-right mt-1 mr-1" *ngIf="loadMoreVisibility && reportsData?.length > 0">
+    <a href="javascript:void(0)" class="mr-1"
+      (click)="prOffset = prOffset + prLimit;getReportsData(false);" placement="bottom"
+      tooltip="Load More Records...">Load More...</a>
+  </span>
+  <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
     <a href="javascript:void(0)" class="mr-1"
       (click)="currentOffset = currentOffset + currentLimit;getReportsData(false);" placement="bottom"
       tooltip="Load More Records...">Load More...</a>
-  </span>
+  </span> -->
 </ng-container>
 
 <div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog"

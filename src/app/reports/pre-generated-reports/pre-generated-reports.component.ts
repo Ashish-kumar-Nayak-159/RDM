@@ -42,6 +42,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   insideScrollFunFlag = false;
   currentOffset = 0;
   currentLimit = 20;
+  prOffset = 0;
+  prLimit = 20;
   hierarchyString: any;
   displayHierarchyString: string;
   selectedDateRange: string;
@@ -73,6 +75,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isViewReport:boolean = false;
   updatePGR:any = {}
   updateId:number;
+  loadMoreVisibility:boolean = true;
 
   constructor(
     private commonService: CommonService,
@@ -123,9 +126,17 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     );
   }
 
-  getReportSubscriptionData(){
-     this.assetService.getReportSubscription(this.contextApp.app).subscribe((response:any)=>{
+  getReportSubscriptionData(obj?:any){
+     this.assetService.getReportSubscription(this.contextApp.app,obj).subscribe((response:any)=>{
+       if(response?.data && response?.data?.length < this.prLimit ){
+    
+            this.loadMoreVisibility = false;
+       }
         this.reportsData = response?.data
+        this.isReportDataLoading = false;
+     },(err:any)=>{
+          this.toasterService.showError(err.message, 'Error')
+          this.isReportDataLoading = false;
      })
   }
 
@@ -238,7 +249,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const edge_derived_message_props = [];
     const cloud_derived_message_props = [];
     this.props.forEach((prop, index) => {
-      debugger
+      
       if (prop.value.type === 'Edge Derived Properties') {
         edge_derived_message_props.push(prop.value.json_key);
       } else if (prop.value.type === 'Cloud Derived Properties') {
@@ -288,7 +299,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     if(this.updatePGR?.report_category === 'telemetry')
     {
-      debugger
+  
       if(this.updatePGR?.asset_model){
         this.getAssetsModelProperties(this.updatePGR?.asset_model);
       }
@@ -683,35 +694,38 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     delete obj.dateOption;
     delete obj.report_type;
     delete obj.asset_id;
-    obj.offset = this.currentOffset;
-    obj.count = this.currentLimit;
+    delete obj.from_date;
+    delete obj.to_date;
+    obj.offset = this.prOffset;
+    obj.count = this.prLimit;
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     // this.reports = [];
-    this.subscriptions.push(
-      this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
-        (response: any) => {
-          if (response.data?.length > 0) {
-            // this.reports = response.data;
-            response.data.forEach((report) => {
-              report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
-              report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
-            });
-            this.reports = [...this.reports, ...response.data];
-            if (response.data.length === this.currentLimit) {
-              this.insideScrollFunFlag = false;
-            } else {
-              this.insideScrollFunFlag = true;
-            }
-          }
-          if (this.filterObj.dateOption === 'Custom Range') {
-            this.previousFilterObj.dateOption = 'this selected range';
-          }
-          this.isReportDataLoading = false;
-        },
-        (error) => (this.isReportDataLoading = false)
-      )
-    );
+    // this.subscriptions.push(
+    //   this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
+    //     (response: any) => {
+    //       if (response.data?.length > 0) {
+    //         // this.reports = response.data;
+    //         response.data.forEach((report) => {
+    //           report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
+    //           report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
+    //         });
+    //         this.reports = [...this.reports, ...response.data];
+    //         if (response.data.length === this.currentLimit) {
+    //           this.insideScrollFunFlag = false;
+    //         } else {
+    //           this.insideScrollFunFlag = true;
+    //         }
+    //       }
+    //       if (this.filterObj.dateOption === 'Custom Range') {
+    //         this.previousFilterObj.dateOption = 'this selected range';
+    //       }
+    //       this.isReportDataLoading = false;
+    //     },
+    //     (error) => (this.isReportDataLoading = false)
+    //   )
+    //   );
+      this.getReportSubscriptionData(obj)
   }
 
   getAssetNameById(assetId) {
@@ -858,6 +872,20 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
 
     UpdatePGReports(){
+
+      if (
+        !this.updatePGR.asset_model ||
+        // !this.reportsObj.assets ||
+        this.updatePGR.assets.length === 0 ||
+        !this.updatePGR.report_name ||
+        !this.updatePGR.report_category ||
+        !this.updatePGR.report_frequency ||
+        !this.updatePGR.report_type
+      ) {
+        this.toasterService.showError('Please fill all required details', 'Update Report');
+        return;
+      }
+      
       this.assets = [];
       this.selectedAssets = [];
       this.updatePGR.metadata = {}
@@ -884,12 +912,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
   
       newprop?.forEach((prop, index) => {
-        if (prop.value.type === 'Edge Derived Properties') {
-          edge_derived_message_props.push(prop.value.json_key);
-        } else if (prop.value.type === 'Cloud Derived Properties') {
-          cloud_derived_message_props.push(prop.value.json_key);
+        if (prop?.value?.type === 'Edge Derived Properties') {
+          edge_derived_message_props?.push(prop?.value?.json_key);
+        } else if (prop?.value?.type === 'Cloud Derived Properties') {
+          cloud_derived_message_props?.push(prop?.value?.json_key);
         } else {
-          measured_message_props.push(prop.value.json_key);
+          measured_message_props?.push(prop?.value?.json_key);
         }
       });
       obj['m'] = measured_message_props ? measured_message_props : undefined;

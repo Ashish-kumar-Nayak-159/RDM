@@ -87,7 +87,7 @@ export class AddRuleComponent implements OnInit {
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
-      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" ? 300000000 : this.ruleModel.escalation_time_in_sec;
+      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" || this.contextApp.app == "IndygoBeta" ? 300000000 : this.ruleModel.escalation_time_in_sec;
       this.getAlertConditions('Cloud');
     }
     if (this.isClone) {

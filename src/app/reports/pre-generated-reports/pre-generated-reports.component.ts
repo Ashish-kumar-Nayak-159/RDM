@@ -96,7 +96,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
-    this.getReportSubscriptionData();
+    // this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
@@ -131,6 +131,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
        if(response?.data && response?.data?.length < this.prLimit ){
     
             this.loadMoreVisibility = false;
+       }
+       else{
+        this.loadMoreVisibility = true;
        }
         this.reportsData = response?.data
         this.isReportDataLoading = false;
@@ -442,6 +445,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onSaveHierachy(configuredHierarchy) {
+    this.prOffset = 0
     this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
@@ -700,6 +704,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     obj.count = this.prLimit;
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    this.reportsData = []
     // this.reports = [];
     // this.subscriptions.push(
     //   this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
@@ -885,7 +890,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.toasterService.showError('Please fill all required details', 'Update Report');
         return;
       }
-      
+      if (!this.updatePGR.hierarchy) {
+        this.updatePGR.hierarchy = { App: this.contextApp.app };
+      }
       this.assets = [];
       this.selectedAssets = [];
       this.updatePGR.metadata = {}

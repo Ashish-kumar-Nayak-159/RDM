@@ -9,7 +9,7 @@
     </app-date-range-picker> -->
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-        (click)="reports = [];currentOffset = 0;getReportsData(true)"><em class="fa fa-search fa-sm"></em></button>
+        (click)="reportsData = [];prOffset = 0;getReportSubscriptionData()"><em class="fa fa-search fa-sm"></em></button>
     </div>
     <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
       <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom"
@@ -102,7 +102,7 @@
   </div>
   <span class="pull-right mt-1 mr-1" *ngIf="loadMoreVisibility && reportsData?.length > 0">
     <a href="javascript:void(0)" class="mr-1"
-      (click)="prOffset = prOffset + prLimit;getReportsData(false);" placement="bottom"
+      (click)="prOffset = prOffset + prLimit;getReportSubscriptionData();" placement="bottom"
       tooltip="Load More Records...">Load More...</a>
   </span>
   <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">

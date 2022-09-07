@@ -96,7 +96,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
-    // this.getReportSubscriptionData();
+    this.prOffset = 0;
+    this.reportsData = [];
+    this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
@@ -126,7 +128,24 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     );
   }
 
-  getReportSubscriptionData(obj?:any){
+  getReportSubscriptionData(){
+    debugger
+    let newHierarchy = {}
+    console.log("contextHie",this.contextApp.hierarchy)
+    this.contextApp.hierarchy.levels.forEach((level,index)=>{
+       if(index!=0){
+         newHierarchy[level] = this.configureHierarchy[index]
+       }else{
+        newHierarchy[level] =  this.contextApp.app 
+       }
+    })
+    console.log("newHierarchy",newHierarchy)
+   let obj = {
+      offset : this.prOffset,
+      count : this.prLimit,
+      hierarchy : JSON.stringify(Object.keys(this.configureHierarchy).length <= 0 ? this.contextApp.user.hierarchy : newHierarchy)
+   }
+
      this.assetService.getReportSubscription(this.contextApp.app,obj).subscribe((response:any)=>{
        if(response?.data && response?.data?.length < this.prLimit ){
     
@@ -135,7 +154,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
        else{
         this.loadMoreVisibility = true;
        }
-        this.reportsData = response?.data
+        this.reportsData = [...this.reportsData , ...response?.data]
         this.isReportDataLoading = false;
      },(err:any)=>{
           this.toasterService.showError(err.message, 'Error')
@@ -445,8 +464,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onSaveHierachy(configuredHierarchy) {
+    debugger
     this.prOffset = 0
     this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    console.log("configurehierarchy",this.configureHierarchy)
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         this.hierarchyString += ' > ' + this.configureHierarchy[key];
@@ -500,7 +521,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   async   onChangeOfHierarchy(i, e) {
-
+debugger
      if(this.isUpdateReport){
         // this.updatePGR.assets = []
         this.configureHierarchy = this.updatePGR?.hierarchy
@@ -704,33 +725,32 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     obj.count = this.prLimit;
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    this.reportsData = []
-    // this.reports = [];
-    // this.subscriptions.push(
-    //   this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
-    //     (response: any) => {
-    //       if (response.data?.length > 0) {
-    //         // this.reports = response.data;
-    //         response.data.forEach((report) => {
-    //           report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
-    //           report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
-    //         });
-    //         this.reports = [...this.reports, ...response.data];
-    //         if (response.data.length === this.currentLimit) {
-    //           this.insideScrollFunFlag = false;
-    //         } else {
-    //           this.insideScrollFunFlag = true;
-    //         }
-    //       }
-    //       if (this.filterObj.dateOption === 'Custom Range') {
-    //         this.previousFilterObj.dateOption = 'this selected range';
-    //       }
-    //       this.isReportDataLoading = false;
-    //     },
-    //     (error) => (this.isReportDataLoading = false)
-    //   )
-    //   );
-      this.getReportSubscriptionData(obj)
+    this.reports = [];
+    this.subscriptions.push(
+      this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response.data?.length > 0) {
+            // this.reports = response.data;
+            response.data.forEach((report) => {
+              report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
+              report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
+            });
+            this.reports = [...this.reports, ...response.data];
+            if (response.data.length === this.currentLimit) {
+              this.insideScrollFunFlag = false;
+            } else {
+              this.insideScrollFunFlag = true;
+            }
+          }
+          if (this.filterObj.dateOption === 'Custom Range') {
+            this.previousFilterObj.dateOption = 'this selected range';
+          }
+          this.isReportDataLoading = false;
+        },
+        (error) => (this.isReportDataLoading = false)
+      )
+      );
+
   }
 
   getAssetNameById(assetId) {
@@ -860,6 +880,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
    deleteRecord(){
      this.assetService.deleteReportRecord(this.contextApp.app,this.recordID).subscribe((response:any)=>{
+      this.prOffset = 0;
+      this.reportsData = [];
       this.getReportSubscriptionData()
       this.toasterService.showSuccess('Report deleted successfully !', 'Delete Report')
      })
@@ -877,7 +899,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
 
     UpdatePGReports(){
-
+       
       if (
         !this.updatePGR.asset_model ||
         // !this.reportsObj.assets ||
@@ -943,6 +965,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
 
     UpdatePGRModal(){
+      this.configureHierarchy = []
       this.assets = [];
       this.selectedAssets = [];
       $("#updatePGRModal").modal("hide");

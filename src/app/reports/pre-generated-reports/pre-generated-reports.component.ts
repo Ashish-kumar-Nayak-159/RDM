@@ -587,8 +587,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         } else {
           const arr = [];
           this.assets = [];
-          this.reportsObj.assets = [];
-          this.updatePGR.assets = [];
+          if(!this.isUpdateReport){
+            this.reportsObj.assets = [];
+          }
+          if(this.isUpdateReport){
+            this.updatePGR.assets = [];
+          }
           this.selectedAssets.forEach((asset) => {
             let trueFlag = 0;
             let flaseFlag = 0;
@@ -794,7 +798,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
    // data of single record while click on any action button
    
    async singleRecordData(data:any, type?:string){
-     console.log("data", data)
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
@@ -835,6 +838,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
          const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
          this.assets = [...asset];
          this.selectedAssets = this.assets;
+        // this.onChangeAssetsModel()
          this.updatePGR.assets = data?.assets
          if(this.updatePGR?.asset_model){
            this.getAssetsModelProperties(this.updatePGR?.asset_model);
@@ -962,7 +966,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
       this.updatePGR.properties = { ...obj };
       this.assetService.updateReportRecord(this.contextApp.app, this.updateId, this.updatePGR).subscribe((response:any)=>{
-        console.log('response',response)
         this.toasterService.showSuccess('Report Updated Successfully !', 'Update Report');
         this.configureHierarchy = {}
         this.updatePGR.hierarchy = {}

@@ -129,9 +129,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getReportSubscriptionData(){
-    debugger
+    this.isReportDataLoading = true;
     let newHierarchy = {}
-    console.log("contextHie",this.contextApp.hierarchy)
     this.contextApp.hierarchy.levels.forEach((level,index)=>{
        if(index!=0){
          newHierarchy[level] = this.configureHierarchy[index]
@@ -139,7 +138,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         newHierarchy[level] =  this.contextApp.app 
        }
     })
-    console.log("newHierarchy",newHierarchy)
    let obj = {
       offset : this.prOffset,
       count : this.prLimit,
@@ -302,6 +300,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.isCreateReportAPILoading = false;
           this.toasterService.showSuccess('New Report Created', 'Create Report');
           this.onCloseConfigurePGRModal();
+          this.configureHierarchy = {}
+          this.reportsData = []
+          this.prOffset = 0;
           this.getReportSubscriptionData();   
         },
         (error) => {
@@ -464,10 +465,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onSaveHierachy(configuredHierarchy) {
-    debugger
     this.prOffset = 0
     this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
-    console.log("configurehierarchy",this.configureHierarchy)
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         this.hierarchyString += ' > ' + this.configureHierarchy[key];
@@ -521,7 +520,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   async   onChangeOfHierarchy(i, e) {
-debugger
      if(this.isUpdateReport){
         // this.updatePGR.assets = []
         this.configureHierarchy = this.updatePGR?.hierarchy
@@ -793,6 +791,7 @@ debugger
    // data of single record while click on any action button
    
    async singleRecordData(data:any, type?:string){
+     console.log("data", data)
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
@@ -819,8 +818,8 @@ debugger
                 allProps.push(mItem)
           })
           this.updatePGR.properties = allProps;
-          this.updatePGR.asset_model = "GW_AHM_M01"
-          // this.updatePGR.asset_model = data?.metadata?.asset_model
+          // this.updatePGR.asset_model = "GW_AHM_M01" // for testing 
+          this.updatePGR.asset_model = data?.metadata?.asset_model
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -953,12 +952,10 @@ debugger
       obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
       obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
       this.updatePGR.properties = { ...obj };
-      console.log("calling", this.updatePGR)
       this.assetService.updateReportRecord(this.contextApp.app, this.updateId, this.updatePGR).subscribe((response:any)=>{
         console.log('response',response)
         this.toasterService.showSuccess('Report Updated Successfully !', 'Update Report');
       },(err)=>{
-        console.log('err',err)
         this.toasterService.showError(err.message, 'Update Report');
       })
       $("#updatePGRModal").modal("hide");

@@ -351,9 +351,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onChangeAssetsModel() {
     this.assets = [];
-    this.reportsObj.assets = [];
-    this.updatePGR.assets = [];
-    if (this.reportsObj.asset_model) {
+
+    if (this.reportsObj?.asset_model) {
+      this.reportsObj.assets = [];
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
       this.assets = [...asset];
       this.selectedAssets = this.assets;
@@ -364,6 +364,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       });
     } 
     else if(this.updatePGR?.asset_model){
+      this.updatePGR.assets = [];
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
       this.assets = [...asset];
       this.selectedAssets = this.assets;
@@ -576,9 +577,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.assets = JSON.parse(JSON.stringify(arr));
         }
       } else {
-        this.reportsObj.assets = [];
+        if(!this.isUpdateReport){
+          this.reportsObj.assets = [];
+          this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+        }
         this.updatePGR.assets = [];
-        this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
         if (Object.keys(hierarchyObj).length === 1) {
           this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
         } else {
@@ -829,6 +832,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
                this.onChangeOfHierarchy(index, 'PG');
             }
          })
+         const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
+         this.assets = [...asset];
+         this.selectedAssets = this.assets;
          this.updatePGR.assets = data?.assets
          if(this.updatePGR?.asset_model){
            this.getAssetsModelProperties(this.updatePGR?.asset_model);
@@ -868,6 +874,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
                this.onChangeOfHierarchy(index, 'PG');
             }
          })
+         const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
+         this.assets = [...asset];
+         this.selectedAssets = this.assets;
          this.updatePGR.assets = data?.assets
          if(this.updatePGR?.asset_model){
           this.getAssetsModelProperties(this.updatePGR?.asset_model);

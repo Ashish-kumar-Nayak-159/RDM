@@ -955,6 +955,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.assetService.updateReportRecord(this.contextApp.app, this.updateId, this.updatePGR).subscribe((response:any)=>{
         console.log('response',response)
         this.toasterService.showSuccess('Report Updated Successfully !', 'Update Report');
+        this.configureHierarchy = {}
+        this.updatePGR.hierarchy = {}
+        this.reportsData = []
+        this.prOffset = 0;
+        this.getReportSubscriptionData(); 
       },(err)=>{
         this.toasterService.showError(err.message, 'Update Report');
       })

@@ -145,21 +145,23 @@ export class CommonTableComponent implements OnInit {
     this.isEnteredAnyValue = false;
     this.tableData.map((detail)=>{
       if(data.metadata.sd) {
-        if(data.metadata.sd == 1 || data.metadata.sd == 7) {
-          detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi,"");
-          value = value?.replace(/[^0-9-+]+/gi,"");
-        }
-        if(data.metadata.sd == 2 || data.metadata.sd == 8) {
-          detail.new_value = detail?.new_value?.replace(/[^0-9+]+/gi,"");
-          value = value?.replace(/[^0-9+]+/gi,"");
-        }
-        if(data.metadata.sd == 3 || data.metadata.sd == 4) {
-          detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi,"");
-          value = value?.replace(/[^0-9-+]+/gi,"");
-        }
-        if(data.metadata.sd == 5 || data.metadata.sd == 6) {
-          detail.new_value = detail?.new_value?.replace(/[^0-9-+.]+/gi,"");
-          value = value?.replace(/[^0-9-+.]+/gi,"");
+        if(detail.id == data.id) {
+          if(data.metadata.sd == 1 || data.metadata.sd == 7) {
+            detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi,"");
+            value = value?.replace(/[^0-9-+]+/gi,"");
+          }
+          if(data.metadata.sd == 2 || data.metadata.sd == 8) {
+            detail.new_value = detail?.new_value?.replace(/[^0-9]+/gi,"");
+            value = value?.replace(/[^0-9]+/gi,"");
+          }
+          if(data.metadata.sd == 3 || data.metadata.sd == 4) {
+            detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi,"");
+            value = value?.replace(/[^0-9-+]+/gi,"");
+          }
+          if(data.metadata.sd == 5 || data.metadata.sd == 6) {
+            detail.new_value = detail?.new_value?.replace(/[^0-9-+.]+/gi,"");
+            value = value?.replace(/[^0-9-+.]+/gi,"");
+          }
         }
       } else {
         if(data.metadata.d != 'd') {

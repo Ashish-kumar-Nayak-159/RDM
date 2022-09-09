@@ -51,7 +51,6 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       };
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
-            console.log(response.data,"this......",this.assetModel)
             response.data.forEach((detail)=>{
               if(detail.type == 'Legacy Asset' && detail.asset_model == this.assetModel.name) {
                 this.asset.push(detail);
@@ -149,7 +148,8 @@ export class AssetModelControlPropertiesComponent implements OnInit {
               detail.current_value = "-";
             }
             return detail;
-          })
+          });
+          console.log("this.properties.........",this.properties);
         }
         this.isPropertiesLoading = false;
       })

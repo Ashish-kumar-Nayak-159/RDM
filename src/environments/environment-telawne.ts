@@ -9,7 +9,7 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: 'MyEquipos',
   environment: 'PROD',
-  version: '15.0',
+  version: '15.0.1',
   packageManagementContainer: 'packages',
   storgageSecretKey: 'MyeQuIP0$',
   redirectToLogin: true,

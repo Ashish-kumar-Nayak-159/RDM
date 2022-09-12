@@ -4,16 +4,16 @@
       [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
       (clearHierarchyEvent)="onClearHierarchy($event)">
     </app-hierarchy-dropdown>
-    <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+    <!-- <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
       (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
-    </app-date-range-picker>
+    </app-date-range-picker> -->
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-        (click)="reports = [];currentOffset = 0;getReportsData(true)"><em class="fa fa-search fa-sm"></em></button>
+        (click)="reportsData = [];prOffset = 0;getReportSubscriptionData()"><em class="fa fa-search fa-sm"></em></button>
     </div>
     <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
       <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom"
-        tooltip="Configure New PreGenerated Report"><em class="fa fa-cog fa-sm text-white"></em></button>
+        tooltip="Configure New PreGenerated Report"><em class="fas fa-plus fa-sm text-white"></em></button>
     </div>
   </form>
 </div>
@@ -26,45 +26,58 @@
         <thead>
           <tr>
             <th scope="col">No</th>
+            <th scope="col">Name</th>
             <th scope="col">Asset Name</th>
-            <th scope="col">Date</th>
+            <!-- <th scope="col">Date</th> -->
             <th scope="col">Category</th>
-            <th scope="col">Type</th>
-            <th scope="col">Size</th>
+            <th scope="col">Report Type</th>
+            <th scope="col">Frequency</th>
+            <!-- <th scope="col">Size</th> -->
             <!-- <th scope="col">Type</th>
         <th scope="col">Frequency</th> -->
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="reports.length > 0">
-            <tr *ngFor="let reportObj of reports; let index = index">
+          <ng-container *ngIf="reportsData.length > 0">
+            <tr *ngFor="let reportObj of reportsData; let index = index">
               <td>{{index + 1}}</td>
+              <td>{{reportObj?.report_name}}</td>
               <td>
                 <ng-container *ngFor="let assetId of reportObj.assets">
                   {{ getAssetNameById(assetId)}}
                 </ng-container>
               </td>
-              <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
-                (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td>
+              <!-- <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
+                (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td> -->
               <!-- <td>{{ reportObj.local_end_date }}</td> -->
 
-              <td>{{reportObj.report_type}}</td>
               <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' :
                 (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
+
+                <td>{{reportObj?.report_type}}</td>
               <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
-              <td>{{reportObj.metadata?.file_size}}</td>
-              <td>
-                <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
+              <!-- <td>{{reportObj.metadata?.file_size}}</td> -->
+              <td>{{reportObj?.report_frequency}}</td>
+              <td class="d-flex align-items-center" style="gap:5px;">
+                <em class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj,'view')"></em>
+                <em class="fa fa-fw fa-edit icon-gray" tooltip="Edit" (click)="singleRecordData(reportObj,'edit')"></em>
+                <em class="fa fa-fw fa-trash icon-gray" tooltip="Delete" (click)="singleRecordData(reportObj,'delete')"></em>
+                <!-- <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
                   (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
                     class="fa fa-sm fa-download"></em></a>
                 <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
-                </ng-container>
+                </ng-container> -->
               </td>
             </tr>
           </ng-container>
-          <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
+          <ng-container *ngIf="reportsData.length === 0 && !isReportDataLoading">
+            <tr>
+              <td colspan="7">No reports available.</td>
+            </tr>
+          </ng-container>
+          <!-- <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
             <tr>
               <td colspan="7">No reports available for {{this.previousFilterObj.dateOption}}. <p
                   *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">
@@ -74,7 +87,7 @@
                 </ng-template>
               </td>
             </tr>
-          </ng-container>
+          </ng-container> -->
           <ng-container *ngIf="isReportDataLoading">
             <tr>
               <td colspan="7">
@@ -87,11 +100,16 @@
       </table>
     </div>
   </div>
-  <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
+  <span class="pull-right mt-1 mr-1" *ngIf="loadMoreVisibility && reportsData?.length > 0">
+    <a href="javascript:void(0)" class="mr-1"
+      (click)="prOffset = prOffset + prLimit;getReportSubscriptionData();" placement="bottom"
+      tooltip="Load More Records...">Load More...</a>
+  </span>
+  <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
     <a href="javascript:void(0)" class="mr-1"
       (click)="currentOffset = currentOffset + currentLimit;getReportsData(false);" placement="bottom"
       tooltip="Load More Records...">Load More...</a>
-  </span>
+  </span> -->
 </ng-container>
 
 <div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog"
@@ -251,6 +269,154 @@
           (click)="onCreateNewPGReports()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
           (click)="onCloseConfigurePGRModal()">Cancel</button>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
+      </div>
+    </form>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- delete Modal -->
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+    </app-message-modal>
+  </div>
+</div>
+
+<!-- update modal  -->
+<div class="modal right fade" id="updatePGRModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="isUpdateReport || isViewReport">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{isViewReport ? "View Report" : "Update Report"}}</h5>
+        <button type="button" class="close" [disabled]="isCreateReportAPILoading" (click)="UpdatePGRModal()"
+          aria-label="Close">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <form class="" #form="ngForm">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Name:</label>
+              <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm" id="report_name" name="u_report_name"
+                [(ngModel)]="updatePGR.report_name" placeholder="Enter Report Name" [disabled]="isViewReport">
+                <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
+                  Please enter valid name.
+                </div>
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Asset Model:</label>
+              <select class="custom-select custom-select-sm" id="asset_model" name="u_asset_model"
+                [(ngModel)]="updatePGR.asset_model" (change)="onChangeAssetsModel()" [disabled]="isViewReport">
+                <option [ngValue]="undefined"> Select Model</option>
+                <option *ngFor="let item of assetModels" [ngValue]="item.name">
+                  {{item.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Asset:</label>
+              <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index">
+                <div class="my-1">
+                  <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
+                  <select *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}"
+                    name="{{level}}_{{index}}" [(ngModel)]="updatePGR?.hierarchy[index]"
+                    [disabled]="contextApp.user.hierarchy[level] || isViewReport" (change)="onChangeOfHierarchy(index, 'RS')">
+                    <option [ngValue]="undefined"> Select {{level}}</option>
+                    <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
+                  </select>
+                  <input type="text" *ngIf="index === 0" class="form-control form-control-sm" name="{{level}}_{{index}}"
+                    defaultValue="{{ contextApp.app }}" disabled />
+                </div>
+              </ng-container>
+              <ng-select [disabled]="isViewReport" [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                [multiple]="true" bindLabel="display_name" bindValue="asset_id" [closeOnSelect]="false"
+                placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
+                [(ngModel)]="updatePGR.assets">
+                <ng-template ng-header-tmp>
+                  <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                    <li *ngIf="updatePGR?.assets?.length !== assets?.length"> <a href="javascript:void(0)"
+                        (click)="selectAll();">Select All</a></li>
+                    <li *ngIf="updatePGR?.assets?.length === assets?.length"> <a href="javascript:void(0)"
+                        (click)="updatePGR.assets = []">Deselect All</a></li>
+                  </ul>
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items">
+                  {{items.length}} Assets selected
+                </ng-template>
+                <ng-template ng-option-tmp let-asset="item">
+                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                    asset.display_name: asset.asset_id}}</span>
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Category:</label>
+              <select class="custom-select custom-select-sm" id="report_category"
+                [(ngModel)]="updatePGR.report_category" name="u_report_category" (change)="onReportChange()"
+                #reportType="ngModel" [disabled]="isViewReport">
+                <option [ngValue]="undefined">Report Category</option>
+                <option [ngValue]="'telemetry'">Telemetry Report</option>
+                <option [ngValue]="'alert'">Alert Report</option>
+              </select>
+            </div>
+            <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
+              <div class="form-group">
+                <label for="message-text" class="col-form-label required">Properties:</label>
+                <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
+                  [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
+                  name="asset-dropdown" [(ngModel)]="updatePGR.properties" (onDeSelectAll)="y1Deselect($event)">
+                  <ng-template ng-header-tmp>
+                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                      <li *ngIf="updatePGR.properties.length !== dropdownPropList.length"> <a href="javascript:void(0)"
+                          (click)="updatePGR.properties = dropdownPropList">Select All</a></li>
+                      <li *ngIf="updatePGR.properties.length === dropdownPropList.length"> <a href="javascript:void(0)"
+                          (click)="updatePGR.properties = []">Deselect All</a></li>
+                    </ul>
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items.length}} properties selected
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item">
+                    <span [tooltip]="item.id">
+                      <em
+                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></em>
+                      {{item.id}}
+                    </span>
+                  </ng-template>
+                </ng-select>
+              </div>
+            </ng-container>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Type:</label>
+              <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="updatePGR.report_type"
+                name="u_report_type" [disabled]="isViewReport">
+                <option [ngValue]="undefined">Select Report Type</option>
+                <option [ngValue]="'Raw'">Raw</option>
+                <option [ngValue]="'Sampling'">Sampling</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Frequency:</label>
+              <select class="custom-select custom-select-sm" id="report_frequency"
+                [(ngModel)]="updatePGR.report_frequency" name="u_report_frequency" [disabled]="isViewReport">
+                <option [ngValue]="undefined">Select Report Frequency</option>
+                <option [ngValue]="'Daily'">Daily</option>
+                <option [ngValue]="'Weekly'">Weekly</option>
+                <option [ngValue]="'Monthly'"  *ngIf="updatePGR.report_category === 'alert'">Monthly</option>               
+              </select>
+            </div>
+         
+      <div class="modal-footer fixed-bottom bg-white">
+        <button type="button" *ngIf="!isViewReport" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
+          (click)="UpdatePGReports()">Save</button>
+        <button type="button" *ngIf="!isViewReport" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
+          (click)="UpdatePGRModal()">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
       </div>
     </form>

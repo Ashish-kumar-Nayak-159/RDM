@@ -93,7 +93,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl('bn', new FormControl(-1, []));
       this.setupForm.get('bn').setValidators([]); // or clearValidators()
-      this.setupForm.get('bn').setValue(null);
+      this.setupForm.get('bn').setValue(-1);
       this.setupForm.get('bn').updateValueAndValidity();
     }
 
@@ -149,7 +149,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl('bn', new FormControl(-1, []));
       this.setupForm.get('bn').setValidators([]); // or clearValidators()
-      this.setupForm.get('bn').setValue(null);
+      this.setupForm.get('bn').setValue(-1);
       this.setupForm.get('bn').updateValueAndValidity();
     }
   }

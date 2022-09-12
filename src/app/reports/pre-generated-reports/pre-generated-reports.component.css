@@ -1,6 +1,9 @@
 .report-table {
   height: calc(100vh - 14.5rem)
 }
+.tableFixHead{
+  height: calc(100vh - 13.5rem)
+}
 .w-16 {
   width: 16rem;
 }
@@ -16,4 +19,7 @@ a.mr-1{
 }
 .pull-right{
   float: none;
+}
+.icon-gray{
+  color: #676c6e;
 }

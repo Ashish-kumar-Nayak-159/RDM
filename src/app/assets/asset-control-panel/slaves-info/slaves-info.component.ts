@@ -41,7 +41,7 @@ export class SlavesInfoComponent implements OnInit {
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -133,7 +133,7 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   addSlaveToAssetModal() {
-   // this.accordianflag = false;
+    // this.accordianflag = false;
     this.slaveObj = {
       metadata: {},
     };
@@ -149,19 +149,19 @@ export class SlavesInfoComponent implements OnInit {
       setupformGroup = new FormGroup({
         host_address: new FormControl(
           obj &&
-          obj.metadata &&
-          obj.metadata.host_address !== undefined &&
-          obj.metadata.host_address !== null
+            obj.metadata &&
+            obj.metadata.host_address !== undefined &&
+            obj.metadata.host_address !== null
             ? obj.metadata.host_address
             : null,
           [Validators.required]
         ),
         port_number: new FormControl(
           obj &&
-          obj.metadata &&
-          obj.metadata &&
-          obj.metadata.port_number !== undefined &&
-          obj.metadata.port_number !== null
+            obj.metadata &&
+            obj.metadata &&
+            obj.metadata.port_number !== undefined &&
+            obj.metadata.port_number !== null
             ? obj.metadata.port_number
             : null,
           [Validators.required, Validators.min(0)]
@@ -216,10 +216,10 @@ export class SlavesInfoComponent implements OnInit {
       setupformGroup = new FormGroup({
         host_address: new FormControl(
           obj &&
-          obj.metadata &&
-          obj.metadata &&
-          obj.metadata.host_address !== undefined &&
-          obj.metadata.host_address !== null
+            obj.metadata &&
+            obj.metadata &&
+            obj.metadata.host_address !== undefined &&
+            obj.metadata.host_address !== null
             ? obj.metadata.host_address
             : null,
           [Validators.required]
@@ -239,9 +239,9 @@ export class SlavesInfoComponent implements OnInit {
       });
     }
     if (obj) {
-             this.editSetupForm = setupformGroup ?? obj;
+      this.editSetupForm = setupformGroup ?? obj;
     } else {
-       this.addSetupForm = setupformGroup;
+      this.addSetupForm = setupformGroup;
     }
   }
 
@@ -301,6 +301,24 @@ export class SlavesInfoComponent implements OnInit {
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     // const macID = this.slaveObj.metadata.mac_id;
     this.slaveObj.metadata = this.addSetupForm?.value || {};
+    let slaveObjData = this.modelSlaveData.find(f => f.id == this.slaveObj.slave_id);
+    if (this.slaveObj?.sensor_display_name != null && this.slaveObj?.sensor_display_name != undefined) {
+      this.slaveObj.sensor_display_name = this.slaveObj.sensor_display_name.trim();
+      if (!CONSTANTS.COMMON_NAME_REGEX.test(this.slaveObj?.sensor_display_name)) {
+        this.toasterService.showError('Display name is not valid, only - and _ allowed in special character', 'Add Sensor Detail');
+        this.isAddSlaveAPILoading = false;
+        return;
+      }
+      else {
+        this.slaveObj.metadata["sensor_display_name"] = this.slaveObj.sensor_display_name;
+      }
+    }
+    else
+    {      
+      this.slaveObj.metadata["sensor_display_name"] = slaveObjData.slave_name;
+    }
+    if(this.slaveObj.hasOwnProperty('sensor_display_name'))
+    delete this.slaveObj['sensor_display_name'];
     // this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(
       this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj).subscribe(

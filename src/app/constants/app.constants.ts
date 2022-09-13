@@ -1867,6 +1867,7 @@ export class CONSTANTS {
   public static EMAIL_REGEX =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
   public static MAC_ADDRESS_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
+  public static COMMON_NAME_REGEX = /^[ A-Za-z0-9_-]*$/;
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z]+[a-zA-Z0-9\s]+$/;
   public static APP_NAME_REGEX = /^([a-zA-Z]+([a-zA-Z0-9]*[\s]?[a-zA-Z0-9]+)*){3,}$/;
   public static APP_ADMIN_ROLE = 'App Admin';

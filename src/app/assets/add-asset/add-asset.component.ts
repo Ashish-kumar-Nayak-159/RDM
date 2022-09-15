@@ -43,6 +43,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   selectedWhitelistAsset: any;
   actualhierarchyArr = [];
   isHierarchyEditable = false;
+  selectedHierarchy:any = {};
 
 
   constructor(
@@ -189,9 +190,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
         parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;
       }
     });
-    let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
-    if (selectedHierarchy) {
-      this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
+    this.selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
+    if (this.selectedHierarchy) {
+      this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == this.selectedHierarchy.id);
     }
 
     const hierarchyObj: any = { App: this.contextApp.app };
@@ -377,6 +378,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags.created_by = this.userData.email;
     }
     this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app };
+    this.assetDetail.tags.hierarchy_id = this.selectedHierarchy?.id;
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] =
         this.addAssetConfigureHierarchy[key];
@@ -512,6 +514,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.assetDetail.metadata.package_app = protocol.metadata?.app;
     this.assetDetail.tags.hierarchy = JSON.stringify(this.assetDetail.tags.hierarchy_json);
     this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.assetDetail.tags.hierarchy_id = this.selectedHierarchy?.id;
     this.assetDetail.app = this.contextApp.app;
     delete this.assetDetail.tags.reserved_tags;
     this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ? null : this.componentState;

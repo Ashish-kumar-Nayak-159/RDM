@@ -6,7 +6,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -15,6 +14,7 @@ declare var $: any;
   styleUrls: ['./slaves-info.component.css'],
 })
 export class SlavesInfoComponent implements OnInit {
+  defaultAppName = undefined;
   @Input() asset: any;
   slaveData: any[] = [];
   modelSlaveData: any[] = [];
@@ -36,6 +36,38 @@ export class SlavesInfoComponent implements OnInit {
   slaveProvisionedStatus: any = {};
   isAddSetupForm = false;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  cells = [
+    {
+      "id": 1,
+      "name": "Abc",
+      "model": "sdfsdfsdf",
+      "moto_make": "Hitachi",
+      "moto_power": "0.1kw",
+      "fan_info": "φ550",
+      "installationDate": "2022-09-01T06:16:28.455Z",
+      "app": "IndygoBeta"
+    },
+    {
+      "id": 2,
+      "name": "Pqr",
+      "model": "sdfsdfsdf",
+      "moto_make": "Hitachi",
+      "moto_power": "0.1kw",
+      "fan_info": "φ550",
+      "installationDate": "2022-09-01T06:16:28.455Z",
+      "app": "IndygoBeta"
+    },
+    {
+      "id": 3,
+      "name": "Xyz",
+      "model": "sdfsdfsdf",
+      "moto_make": "Hitachi",
+      "moto_power": "0.1kw",
+      "fan_info": "φ550",
+      "installationDate": "2022-09-01T06:16:28.455Z",
+      "app": "IndygoBeta"
+    }
+  ]
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -47,6 +79,10 @@ export class SlavesInfoComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp)
+      this.defaultAppName = this.contextApp.app;
+    if(this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta')
+      //this.getCellData();
     this.getAssetTwinData();
     this.getModelSlaveData();
     this.getSlaveData();
@@ -131,6 +167,21 @@ export class SlavesInfoComponent implements OnInit {
       )
     );
   }
+  getCellData() {
+    this.cells = [];    
+    const obj = {
+      hierarchy: JSON.stringify(this.asset?.tags?.hierarchy_json)
+    };
+    this.subscriptions.push(
+      this.assetService.getAssetCellDetails(obj).subscribe(
+        (response: any) => {
+          if (response.data) {
+            this.cells = response.data;
+          }
+        }
+      )
+    );
+  }
 
   addSlaveToAssetModal() {
     // this.accordianflag = false;
@@ -144,9 +195,42 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   setupFormData(obj = undefined) {
-    let setupformGroup: FormGroup;
+    let setupformGroup: FormGroup = new FormGroup({
+      sensor_display_name: new FormControl(
+        obj &&
+          obj.metadata &&
+          obj.metadata.sensor_display_name !== undefined &&
+          obj.metadata.sensor_display_name !== null
+          ? obj.metadata.sensor_display_name
+          : null
+      ),
+      // hierarchy_cell_id: new FormControl(
+      //   obj &&
+      //     obj.metadata &&
+      //     obj.metadata.hierarchy_cell_id !== undefined &&
+      //     obj.metadata.hierarchy_cell_id !== null
+      //     ? obj.metadata.hierarchy_cell_id
+      //     : null
+      // ),
+    });
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
       setupformGroup = new FormGroup({
+        sensor_display_name: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.sensor_display_name !== undefined &&
+            obj.metadata.sensor_display_name !== null
+            ? obj.metadata.sensor_display_name
+            : null
+        ),
+        // hierarchy_cell_id: new FormControl(
+        //   obj &&
+        //     obj.metadata &&
+        //     obj.metadata.hierarchy_cell_id !== undefined &&
+        //     obj.metadata.hierarchy_cell_id !== null
+        //     ? obj.metadata.hierarchy_cell_id
+        //     : null
+        // ),
         host_address: new FormControl(
           obj &&
             obj.metadata &&
@@ -175,6 +259,22 @@ export class SlavesInfoComponent implements OnInit {
       });
     } else if (this.asset.tags.protocol === 'ModbusRTUMaster') {
       setupformGroup = new FormGroup({
+        sensor_display_name: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.sensor_display_name !== undefined &&
+            obj.metadata.sensor_display_name !== null
+            ? obj.metadata.sensor_display_name
+            : null
+        ),
+        // hierarchy_cell_id: new FormControl(
+        //   obj &&
+        //     obj.metadata &&
+        //     obj.metadata.hierarchy_cell_id !== undefined &&
+        //     obj.metadata.hierarchy_cell_id !== null
+        //     ? obj.metadata.hierarchy_cell_id
+        //     : null
+        // ),
         com_port: new FormControl(
           obj && obj.metadata && obj.metadata && obj.metadata.com_port !== undefined && obj.metadata.com_port !== null
             ? obj.metadata.com_port
@@ -214,6 +314,22 @@ export class SlavesInfoComponent implements OnInit {
       });
     } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
       setupformGroup = new FormGroup({
+        sensor_display_name: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.sensor_display_name !== undefined &&
+            obj.metadata.sensor_display_name !== null
+            ? obj.metadata.sensor_display_name
+            : null
+        ),
+        // hierarchy_cell_id: new FormControl(
+        //   obj &&
+        //     obj.metadata &&
+        //     obj.metadata.hierarchy_cell_id !== undefined &&
+        //     obj.metadata.hierarchy_cell_id !== null
+        //     ? obj.metadata.hierarchy_cell_id
+        //     : null
+        // ),
         host_address: new FormControl(
           obj &&
             obj.metadata &&
@@ -301,24 +417,6 @@ export class SlavesInfoComponent implements OnInit {
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     // const macID = this.slaveObj.metadata.mac_id;
     this.slaveObj.metadata = this.addSetupForm?.value || {};
-    let slaveObjData = this.modelSlaveData.find(f => f.id == this.slaveObj.slave_id);
-    if (this.slaveObj?.sensor_display_name != null && this.slaveObj?.sensor_display_name != undefined) {
-      this.slaveObj.sensor_display_name = this.slaveObj.sensor_display_name.trim();
-      if (!CONSTANTS.COMMON_NAME_REGEX.test(this.slaveObj?.sensor_display_name)) {
-        this.toasterService.showError('Display name is not valid, only - and _ allowed in special character', 'Add Sensor Detail');
-        this.isAddSlaveAPILoading = false;
-        return;
-      }
-      else {
-        this.slaveObj.metadata["sensor_display_name"] = this.slaveObj.sensor_display_name;
-      }
-    }
-    else
-    {      
-      this.slaveObj.metadata["sensor_display_name"] = slaveObjData.slave_name;
-    }
-    if(this.slaveObj.hasOwnProperty('sensor_display_name'))
-    delete this.slaveObj['sensor_display_name'];
     // this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(
       this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj).subscribe(

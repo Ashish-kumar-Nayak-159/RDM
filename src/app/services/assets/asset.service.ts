@@ -1204,6 +1204,18 @@ export class AssetService {
       { params }
     );
   }
+  getAssetCellDetails(filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(
+      this.url + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
+      { params }
+    );
+  }
 
   createAssetSlaveDetail(app, assetId, obj) {
     return this.http.post(

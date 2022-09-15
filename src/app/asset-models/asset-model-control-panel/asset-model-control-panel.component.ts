@@ -368,6 +368,15 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       method.subscribe(
         (response: any) => {
+          
+          if(response?.data[this.assetModel?.name]?.invalid_properties?.length > 0){
+            let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(response?.data[this.assetModel?.name]?.invalid_properties))
+            let eleRef = document.getElementById("downloadFile");
+            eleRef.setAttribute('href',jsonData)
+            eleRef.setAttribute('download',`${this.assetModel?.name}-error.json`)
+            eleRef.click();
+          }
+
           this.toasterService.showSuccess(response.message, 'Updated Successfully');
           this.isCreatePackageAPILoading = false;
          localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
@@ -375,6 +384,17 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
           this.onCloseModal('addModelAsset');
         },
         (error) => {
+          
+          if(error?.data){
+            if(error?.data[this.assetModel?.name]?.invalid_properties?.length > 0){
+              let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(error?.data[this.assetModel?.name]?.invalid_properties))
+              let eleRef = document.getElementById("downloadFile");
+              eleRef.setAttribute('href',jsonData)
+              eleRef.setAttribute('download',`${this.assetModel?.name}-error.json`)
+              eleRef.click();
+            }
+          }
+
           this.toasterService.showError(error.message,"");
           this.isCreatePackageAPILoading = false;
         }

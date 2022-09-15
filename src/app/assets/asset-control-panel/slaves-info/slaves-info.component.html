@@ -30,260 +30,273 @@
       No slave data available.
     </div>
     <accordion [closeOthers]="'true'" *ngIf="slaveData.length > 0 && !isGetSlaveAPILoading" class="mb-2 p-3">
-      <accordion-group heading="" *ngFor="let slave of slaveData" (click)="onClickOfSlaveAccordion(slave)"
-        [panelClass]="'customClass'">
-        <ng-container accordion-heading>
-          <button class="btn" type="button">
-            {{slave?.metadata?.sensor_display_name ?? slave.slave_name}}&nbsp; ({{slave.slave_id}})&nbsp; ({{slave?.slave_position?.slave_position}})
-          </button>
-          <div class="float-right mt-1 mr-3">
-            <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">
+      <ng-container *ngFor="let slave of slaveData">
+        <accordion-group heading="" [panelClass]="'customClass'" (isOpenChange)="onClickOfSlaveAccordion(slave)">
+          <ng-container accordion-heading>
+            <button class="btn" type="button">
+              {{slave.slave_name}}&nbsp; ({{slave.slave_id}})&nbsp; ({{slave?.slave_position?.slave_position}})
+            </button>
+            <div class="float-right mt-1 mr-3">
+              <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">
             <em class="fa fa-check" style="color: green;"></em>
           </div> -->
-            <a class="mt-1 mr-2" tooltip="Provisioned" placement="left"
-              *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned';else Deprovisioned">
-              <em class="fa fa-check" style="color: green;"></em>
-            </a>
-            <ng-template #Deprovisioned>
-              <a class="mt-1 mr-2" tooltip="Not Provisioned" placement="left">
-                <em class="fa fa-ban" style="color: red;"></em>
+              <a class="mt-1 mr-2" tooltip="Provisioned" placement="left"
+                *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned';else Deprovisioned">
+                <em class="fa fa-check" style="color: green;"></em>
               </a>
-            </ng-template>
-            <a class="mt-1" *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1" href="javascript:void(0)"
-              (click)="removeSlaveFromAsset(slave)"><em class="fa fa-close" tooltip="Remove Slave"
-                placement="left"></em></a>
-          </div>
-        </ng-container>
-        <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1 && editSetupForm">
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">MAC Address:</label>
-            <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
-              [(ngModel)]="slave.mac_id" placeholder="Enter MAC Address">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Display Name:</label>
-            <input type="text" class="form-control form-control-sm" id="sensor_display_name" name="sensor_display_name"
-              [(ngModel)]="slave.sensor_display_name" placeholder="Enter Display Name">
-          </div>
-          <form *ngIf="asset.tags.protocol" [formGroup]="editSetupForm">
-            <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Host Address:</label>
-                <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
-                    formControlName="host_address" placeholder="Host Address">
+              <ng-template #Deprovisioned>
+                <a class="mt-1 mr-2" tooltip="Not Provisioned" placement="left">
+                  <em class="fa fa-ban" style="color: red;"></em>
+                </a>
+              </ng-template>
+              <a class="mt-1" *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1" href="javascript:void(0)"
+                (click)="removeSlaveFromAsset(slave)"><em class="fa fa-close" tooltip="Remove Slave"
+                  placement="left"></em></a>
+            </div>
+          </ng-container>
+          <form *ngIf="decodedToken?.privileges?.indexOf('ASMS') > -1 && editSetupForm">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">MAC Address:</label>
+              <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
+                [(ngModel)]="slave.mac_id" placeholder="Enter MAC Address">
+            </div>
+            <div *ngIf="asset.tags.protocol">
+              <form [formGroup]="editSetupForm">
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Display Name:</label>
+                  <input type="text" class="form-control form-control-sm" id="sensor_display_name"
+                    name="sensor_display_name" formControlName="sensor_display_name" placeholder="Enter Display Name">
                 </div>
-                <div *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)"
-                  class="alert-danger">
-                  <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
-                    Host Address is required.
-                  </div>
+                <div class="form-group" style="display: none;" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta'">
+                  <label for="recipient-name" class="col-form-label required">Select Cell:</label>
+                  <select class="form-control form-control-sm" id="hierarchy_cell_id" name="hierarchy_cell_id"
+                    formControlName="hierarchy_cell_id">
+                    <option [ngValue]="null">Select Cell</option>
+                    <option [ngValue]="cell.id" *ngFor="let cell of cells">{{cell.name}}</option>
+                  </select>
+                </div>
+                <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Host Address:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
+                        formControlName="host_address" placeholder="Host Address">
+                    </div>
+                    <div
+                      *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
+                        Host Address is required.
+                      </div>
 
-                </div>
-                <!-- <div *ngIf="editSetupForm.get('host_address').errors &&
+                    </div>
+                    <!-- <div *ngIf="editSetupForm.get('host_address').errors &&
                    editSetupForm.get('host_address').touched" class="alert-danger">
                   <div *ngIf="editSetupForm.get('host_address').errors.required">
                     Host Address is required.
                   </div>
                 </div> -->
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Port Number:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="port_number" name="port_number"
-                    formControlName="port_number" placeholder="Port Number" min="0">
-                </div>
-                <div *ngIf="(editSetupForm.get('port_number')?.errors && editSetupForm.get('port_number')?.touched)"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('port_number')?.errors?.required">
-                    Port Number is required.
                   </div>
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Port Number:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="port_number" name="port_number"
+                        formControlName="port_number" placeholder="Port Number" min="0">
+                    </div>
+                    <div *ngIf="(editSetupForm.get('port_number')?.errors && editSetupForm.get('port_number')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('port_number')?.errors?.required">
+                        Port Number is required.
+                      </div>
 
-                </div>
-                <!-- <div *ngIf="editSetupForm.get('port_number').errors &&  editSetupForm.get('port_number').touched"
+                    </div>
+                    <!-- <div *ngIf="editSetupForm.get('port_number').errors &&  editSetupForm.get('port_number').touched"
                   class="alert-danger">
                   <div *ngIf="editSetupForm.get('port_number').errors.required">
                     Port Number is required.
                   </div>
                 </div> -->
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Modbus Slave ID:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
-                    formControlName="slave_id" placeholder="Modbus Slave ID">
-                </div>
-                <div *ngIf="(editSetupForm.get('slave_id')?.errors && editSetupForm.get('slave_id')?.touched)"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('slave_id')?.errors?.required">
-                    Modbus Slave ID is required.
                   </div>
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Modbus Slave ID:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
+                        formControlName="slave_id" placeholder="Modbus Slave ID">
+                    </div>
+                    <div *ngIf="(editSetupForm.get('slave_id')?.errors && editSetupForm.get('slave_id')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('slave_id')?.errors?.required">
+                        Modbus Slave ID is required.
+                      </div>
 
-                </div>
-                <!-- <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
+                    </div>
+                    <!-- <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
                   class="alert-danger">
                   <div *ngIf="editSetupForm.get('slave_id').errors.required">
                     Modbus Slave ID is required.
                   </div>
                 </div> -->
-              </div>
-            </ng-container>
-            <ng-container *ngIf="asset.tags.protocol === 'SiemensTCPIP'">
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Host Address:</label>
-                <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
-                    formControlName="host_address" placeholder="Host Address">
-                </div>
-                <div *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)"
-                  class="alert-danger">
-                  <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
-                    Host Address is required.
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Rack:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="rack" name="rack" formControlName="rack"
-                    placeholder="Rack" min="0">
-                </div>
-                <div *ngIf="editSetupForm.get('rack').errors && editSetupForm.get('rack').touched" class="alert-danger">
-                  <div *ngIf="editSetupForm.get('rack').errors.required">
-                    Rack is required.
+                </ng-container>
+                <ng-container *ngIf="asset.tags.protocol === 'SiemensTCPIP'">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Host Address:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
+                        formControlName="host_address" placeholder="Host Address">
+                    </div>
+                    <div
+                      *ngIf="(editSetupForm.get('host_address')?.errors && editSetupForm.get('host_address')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="(editSetupForm.get('host_address')?.errors?.required)">
+                        Host Address is required.
+                      </div>
+                    </div>
                   </div>
-                  <div *ngIf="editSetupForm.get('rack').errors.min || editSetupForm.get('rack').errors.max">
-                    Rack value must be between 0 and 7.
-                  </div>
-                </div>
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Rack:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="rack" name="rack"
+                        formControlName="rack" placeholder="Rack" min="0">
+                    </div>
+                    <div *ngIf="editSetupForm.get('rack').errors && editSetupForm.get('rack').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('rack').errors.required">
+                        Rack is required.
+                      </div>
+                      <div *ngIf="editSetupForm.get('rack').errors.min || editSetupForm.get('rack').errors.max">
+                        Rack value must be between 0 and 7.
+                      </div>
+                    </div>
 
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Slot:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="slot" name="slot" formControlName="slot"
-                    placeholder="Slot" min="0">
-                </div>
-                <div *ngIf="editSetupForm.get('slot').errors &&  editSetupForm.get('slot').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('slot').errors.required">
-                    Slot is required.
                   </div>
-                  <div *ngIf="editSetupForm.get('slot').errors.min || editSetupForm.get('slot').errors.max">
-                    Slot value must be between 0 and 31.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Slot:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="slot" name="slot"
+                        formControlName="slot" placeholder="Slot" min="0">
+                    </div>
+                    <div *ngIf="editSetupForm.get('slot').errors &&  editSetupForm.get('slot').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('slot').errors.required">
+                        Slot is required.
+                      </div>
+                      <div *ngIf="editSetupForm.get('slot').errors.min || editSetupForm.get('slot').errors.max">
+                        Slot value must be between 0 and 31.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="asset.tags.protocol === 'ModbusRTUMaster'">
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Com Port:</label>
-                <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" id="com_port" name="com_port"
-                    formControlName="com_port" placeholder="Com Port">
-                </div>
-                <div *ngIf="editSetupForm.get('com_port').errors && editSetupForm.get('com_port').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('com_port').errors.required">
-                    Com Port is required.
+                </ng-container>
+                <ng-container *ngIf="asset.tags.protocol === 'ModbusRTUMaster'">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Com Port:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control form-control-sm" id="com_port" name="com_port"
+                        formControlName="com_port" placeholder="Com Port">
+                    </div>
+                    <div *ngIf="editSetupForm.get('com_port').errors && editSetupForm.get('com_port').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('com_port').errors.required">
+                        Com Port is required.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Baud Rate:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="baud_rate" name="baud_rate"
-                    formControlName="baud_rate" placeholder="Baud Rate" min="0">
-                </div>
-                <div *ngIf="editSetupForm.get('baud_rate').errors && editSetupForm.get('baud_rate').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('baud_rate').errors.required">
-                    Baud Rate is required.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Baud Rate:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="baud_rate" name="baud_rate"
+                        formControlName="baud_rate" placeholder="Baud Rate" min="0">
+                    </div>
+                    <div *ngIf="editSetupForm.get('baud_rate').errors && editSetupForm.get('baud_rate').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('baud_rate').errors.required">
+                        Baud Rate is required.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Data Bits:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="data_bits" name="data_bits"
-                    formControlName="data_bits" placeholder="Data Bits" min="5" max="9">
-                </div>
-                <div *ngIf="editSetupForm.get('data_bits').errors && editSetupForm.get('data_bits').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('data_bits').errors.required">
-                    Data Bits is required.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Data Bits:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="data_bits" name="data_bits"
+                        formControlName="data_bits" placeholder="Data Bits" min="5" max="9">
+                    </div>
+                    <div *ngIf="editSetupForm.get('data_bits').errors && editSetupForm.get('data_bits').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('data_bits').errors.required">
+                        Data Bits is required.
+                      </div>
+                      <div
+                        *ngIf="editSetupForm.get('data_bits').errors.min || editSetupForm.get('data_bits').errors.max">
+                        Data Bits value must be between 5 and 9.
+                      </div>
+                    </div>
                   </div>
-                  <div *ngIf="editSetupForm.get('data_bits').errors.min || editSetupForm.get('data_bits').errors.max">
-                    Data Bits value must be between 5 and 9.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Modbus Slave ID:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
+                        formControlName="slave_id" placeholder="Modbus Slave ID" min="0">
+                    </div>
+                    <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('slave_id').errors.required">
+                        Modbus Slave ID is required.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Modbus Slave ID:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
-                    formControlName="slave_id" placeholder="Modbus Slave ID" min="0">
-                </div>
-                <div *ngIf="editSetupForm.get('slave_id').errors && editSetupForm.get('slave_id').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('slave_id').errors.required">
-                    Modbus Slave ID is required.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Parity:</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm" id="parity" name="parity"
+                        formControlName="parity" placeholder="Parity" min="0" max="2">
+                    </div>
+                    <div *ngIf="editSetupForm.get('parity').errors && editSetupForm.get('parity').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('parity').errors.required">
+                        Parity is required.
+                      </div>
+                      <div *ngIf="editSetupForm.get('parity').errors.min || editSetupForm.get('parity').errors.max">
+                        Parity value must be between 0 and 2.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Parity:</label>
-                <div class="input-group">
-                  <input type="number" class="form-control form-control-sm" id="parity" name="parity"
-                    formControlName="parity" placeholder="Parity" min="0" max="2">
-                </div>
-                <div *ngIf="editSetupForm.get('parity').errors && editSetupForm.get('parity').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('parity').errors.required">
-                    Parity is required.
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label required">Stop Bits:</label>
+                    <div class="input-group">
+                      <select class="form-control form-control-sm" id="stop_bits" name="stop_bits"
+                        formControlName="stop_bits">
+                        <option [ngValue]="null"> Select Stop Bits</option>
+                        <option [ngValue]="1">1</option>
+                        <option [ngValue]="1.5">1.5</option>
+                        <option [ngValue]="2">2</option>
+                      </select>
+                    </div>
+                    <div *ngIf="editSetupForm.get('stop_bits').errors && editSetupForm.get('stop_bits').touched"
+                      class="alert-danger">
+                      <div *ngIf="editSetupForm.get('stop_bits').errors.required">
+                        Stop Bits is required.
+                      </div>
+                    </div>
                   </div>
-                  <div *ngIf="editSetupForm.get('parity').errors.min || editSetupForm.get('parity').errors.max">
-                    Parity value must be between 0 and 2.
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Stop Bits:</label>
-                <div class="input-group">
-                  <select class="form-control form-control-sm" id="stop_bits" name="stop_bits"
-                    formControlName="stop_bits">
-                    <option [ngValue]="null"> Select Stop Bits</option>
-                    <option [ngValue]="1">1</option>
-                    <option [ngValue]="1.5">1.5</option>
-                    <option [ngValue]="2">2</option>
-                  </select>
-                </div>
-                <div *ngIf="editSetupForm.get('stop_bits').errors && editSetupForm.get('stop_bits').touched"
-                  class="alert-danger">
-                  <div *ngIf="editSetupForm.get('stop_bits').errors.required">
-                    Stop Bits is required.
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-
-          </form>
-          <div class="form-group">
-
-            <button type="button" class="btn btn-primary"
-              *ngIf="asset.type === constantData.NON_IP_ASSET && (asset.tags.protocol === 'ModbusRTUMaster' || asset.tags.protocol === 'ModbusTCPMaster'  || asset.tags.protocol === 'SiemensTCPIP');else notDisableBtn"
-              class="btn btn-primary"
-              [disabled]="(!editSetupForm?.valid && (editSetupForm?.touched || !editSetupForm?.touched)) || isAddSlaveAPILoading"
-              (click)="updateSlaveObj(slave)">Save</button>
-            <ng-template #notDisableBtn>
-              <button type="button" class="btn btn-primary" class="btn btn-primary" [disabled]="isAddSlaveAPILoading"
+                </ng-container>
+              </form>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-primary"
+                *ngIf="asset.type === constantData.NON_IP_ASSET && (asset.tags.protocol === 'ModbusRTUMaster' || asset.tags.protocol === 'ModbusTCPMaster'  || asset.tags.protocol === 'SiemensTCPIP');else notDisableBtn"
+                class="btn btn-primary"
+                [disabled]="(!editSetupForm?.valid && (editSetupForm?.touched || !editSetupForm?.touched)) || isAddSlaveAPILoading"
                 (click)="updateSlaveObj(slave)">Save</button>
-            </ng-template>
-            <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></em>
-          </div>
-        </form>
+              <ng-template #notDisableBtn>
+                <button type="button" class="btn btn-primary" class="btn btn-primary" [disabled]="isAddSlaveAPILoading"
+                  (click)="updateSlaveObj(slave)">Save</button>
+              </ng-template>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></em>
+            </div>
+          </form>
 
-      </accordion-group>
+        </accordion-group>
+      </ng-container>
     </accordion>
     <!-- <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs> -->
   </div>
@@ -317,12 +330,20 @@
               <input type="text" class="form-control form-control-sm" id="mac_address" name="mac_address"
                 [(ngModel)]="slaveObj.mac_id" placeholder="Enter MAC Address">
             </div>
-            <div class="form-group">
-              <label for="message-text" class="col-form-label">Display Name:</label>
-              <input type="text" class="form-control form-control-sm" id="sensor_display_name" name="sensor_display_name"
-                [(ngModel)]="slaveObj.sensor_display_name" placeholder="Enter Display Name">
-            </div>
             <form *ngIf="asset.tags.protocol" [formGroup]="addSetupForm">
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Display Name:</label>
+                <input type="text" class="form-control form-control-sm" id="sensor_display_name"
+                  name="sensor_display_name" formControlName="sensor_display_name" placeholder="Enter Display Name">
+              </div>
+              <div class="form-group" style="display: none;" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta'">
+                <label for="recipient-name" class="col-form-label required">Select Cell:</label>
+                <select class="form-control form-control-sm" id="cell_detail" name="cell_detail"
+                formControlName="hierarchy_cell_id">
+                  <option [ngValue]="null">Select Cell</option>
+                  <option [ngValue]="cell.id" *ngFor="let cell of cells">{{cell.name}}</option>
+                </select>
+              </div>
               <ng-container *ngIf="asset.tags.protocol === 'ModbusTCPMaster'">
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label required">Host Address:</label>

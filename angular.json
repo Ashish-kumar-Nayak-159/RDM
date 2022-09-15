@@ -301,7 +301,7 @@
                 }
               ],
               "index": {
-                "input": "src/index-indygo.html",
+                "input": "src/index-indygo-beta.html",
                 "output": "index.html"
               },
               "optimization": true,

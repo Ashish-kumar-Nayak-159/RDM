@@ -9,7 +9,7 @@
           <span class="text-secondary">External Alerts
           </span></a>
       </li>
-      <li class="nav-item" *ngIf="contextApp.app!='Indygo'">
+      <li class="nav-item" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>
@@ -311,8 +311,8 @@
 
                   <div class=""
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed" #documentSelectionDiv>
-                    <h6 *ngIf="contextApp.app!='Indygo'">Email / Whatsapp Attachments: </h6>
-                    <h6 *ngIf="contextApp.app=='Indygo'">Email Attachments: </h6>
+                    <h6 *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">Email / Whatsapp Attachments: </h6>
+                    <h6 *ngIf="contextApp.app=='Indygo'  || contextApp.app =='IndygoBeta'">Email Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><em class="fa fa-plus fa-sm"></em></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -446,9 +446,9 @@
                     </div>
                   </div>
 
-                  <hr *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">
 
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">
                     <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
                       [(ngModel)]="alertObj.actions.whatsapp.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
@@ -509,9 +509,9 @@
                     </div>
                   </div>
 
-                  <hr *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
 
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
                       [(ngModel)]="alertObj.actions.sms.enabled"
@@ -576,8 +576,8 @@
 
                     </div>
                   </div>
-                  <hr *ngIf="contextApp.app!='Indygo'">
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
                     <input type="checkbox" class="form-check-input" id="push_notification" name="push_notification"
                     [(ngModel)]="alertObj.actions.push_notification.enabled"
                     [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
@@ -698,7 +698,7 @@
               [(ngModel)]="alertObj.alert_type" (change)="onChangeOfAlertSource()">
               <option [ngValue]="undefined">Select Alert Source</option>
               <option [ngValue]="'Asset'">External Alert</option>
-              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo'">Edge Alert</option>
+              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">Edge Alert</option>
               <option [ngValue]="'Cloud'">Cloud Alert</option>
             </select>
           </div>

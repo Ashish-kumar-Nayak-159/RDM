@@ -90,7 +90,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
-    if(this.contextApp.app ==='Indygo'){
+    if(this.contextApp.app ==='Indygo'|| this.contextApp.app ==='IndygoBeta'){
       this.onClickOfTab('Cloud');
     }else{
       this.onClickOfTab('Edge');

@@ -65,6 +65,8 @@ export class AddRuleComponent implements OnInit {
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
+
+  overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -426,9 +428,19 @@ export class AddRuleComponent implements OnInit {
 
   closeRuleModal(status) {
     this.isCloneEdit = false;
-    this.onCloseRuleModel.emit({
-      status: status,
-    });
+    if(this.overrideRuleMapping == true) {
+      this.overrideRuleMapping = false;
+      this.onCloseRuleModel.emit({
+        status: status,
+        selectedAssetModel:this.ruleModel,
+        overrideRuleMapping:true,
+      });
+    } else {
+      this.onCloseRuleModel.emit({
+        status: status,
+      });
+    }
+
     $('#addRuleModal').modal('hide');
     this.isEdit = false;
   }
@@ -662,12 +674,12 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     let method;
-
     method = !this.ruleModel.isEdgeRule
       ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
       : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
     method.subscribe(
       (response: any) => {
+        this.overrideRuleMapping = true;
         // this.onCloseRuleModel.emit({
         //   status: true,
         // });

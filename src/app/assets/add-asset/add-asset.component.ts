@@ -45,7 +45,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isHierarchyEditable = false;
   selectedHierarchy:any = {};
 
-
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -361,7 +360,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       )
     );
   }
-
   onUpdateAsset() {
     this.isCreateAssetAPILoading = true;
     if (
@@ -417,6 +415,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
         this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
         this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
+        this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
         this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
         if (this.selectedWhitelistAsset.hasOwnProperty('protocol') && this.selectedWhitelistAsset.protocol != null && this.selectedWhitelistAsset.protocol != '')
           this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
@@ -528,7 +527,27 @@ export class AddAssetComponent implements OnInit, OnChanges {
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
     this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
-    const obj = JSON.parse(JSON.stringify(this.assetDetail));
+    debugger
+    let parentId = 0;
+    let hierarchy_ids = {};
+    Object.keys(this.contextApp?.hierarchy?.levels).forEach((key, index) => {
+      if (index != 0) {
+        key = this.contextApp?.hierarchy?.levels[key]
+        if (this.assetDetail.tags.hierarchy_json[key]) {
+          let obj = this.actualhierarchyArr.find(r => r.level == index && r.key == this.assetDetail.tags.hierarchy_json[key] && r.parent_id == parentId);
+          if(obj)
+          {
+            parentId = obj.id;
+            hierarchy_ids[index] = obj.id;
+          }
+        }
+      }
+    });
+    if(Object.keys(hierarchy_ids).length > 0)
+    {
+      this.assetDetail.tags.hierarchy_ids = hierarchy_ids;
+    }
+    const obj = JSON.parse(JSON.stringify(this.assetDetail));    
     const methodToCall = this.SetMethodCallOnCondition(obj);
     this.subscriptions.push(
       methodToCall.subscribe(

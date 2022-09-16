@@ -101,7 +101,7 @@
                           </a>
                             <a href="javascript:void(0)" *ngIf="rule.type === 'Cloud' && rule.rule_category==='KPIX Analytics' && rule.rule_type=== 'THS' && rule.is_editable " (click)="overRideRule(i, rule, 'model', false, true,true,'')" class="mr-1"
                               placement="bottom" tooltip="Override">
-                              <em class="fa fa-fw fa-clone"(click)="overRideRule(i, rule, 'model', false, true,true,'')"></em>
+                              <em class="fa fa-fw fa-clone"></em>
                             </a>
                             <a style="padding-left:4px" href="javascript:void(0)"
                             (click)="onMappingRule(rule,'modelrules')" 
@@ -145,12 +145,12 @@
             </button>
           </ng-container>
           <div *ngFor="let rule of modeltoAssetrules; let i = index">
-          <div class="col-12 my-2 accordion-padding" *ngIf="toggleRows[selectedTab + '_model_' + i]">
-            <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
-              [isView]="isView" [isCloneEdit]="isCloneEdit" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
-            </app-add-rule>
+            <div class="col-12 my-2 accordion-padding" *ngIf="toggleRows[toggleRuleKey]">
+              <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit"
+                [isView]="isView" [isCloneEdit]="isCloneEdit" [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)">
+              </app-add-rule>
+            </div>
           </div>
-        </div>
           <div class="table-responsive">
             <p class="tab-bar mb-0">Following rules are exclusively running on this asset.</p>
            

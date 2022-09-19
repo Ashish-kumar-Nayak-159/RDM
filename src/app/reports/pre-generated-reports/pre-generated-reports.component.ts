@@ -814,8 +814,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
       else if(type==='trigger'){
         this.singleOffset = 0;
-        this.showPlus = false
-         console.log("trigger called",data)
+        this.showPlus = false;
+        this.pgrData = []
          this.reportName = data?.report_name;
          this.dataOfEachReport();
          $(".over-lap").css('display', 'block')
@@ -910,6 +910,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
    }
 
    backToMain() {
+    this.showPlus = true
     $(".over-lap").css('display', 'none')
   }
 
@@ -920,15 +921,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     this.isPGRDataLoading = true
     this.assetService.getPregeneratedReports(obj,this.contextApp.app).subscribe((res:any)=>{
-      debugger
       if(res?.data && res?.data?.length < this.singleLimit ){
-          debugger
         this.singleLoadMoreVisibility = false;
    }
     else{
       this.singleLoadMoreVisibility = true;
     }
-         console.log("dataofEachReport",res );
          this.isPGRDataLoading = false
          this.pgrData = [...this.pgrData,...res?.data]
     },(err)=>{

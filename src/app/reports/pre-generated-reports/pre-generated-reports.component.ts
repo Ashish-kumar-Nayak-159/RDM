@@ -76,6 +76,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   updatePGR:any = {}
   updateId:number;
   loadMoreVisibility:boolean = true;
+  pgrData:any[] = []
+  pgrConfig:any = []
+  singleLoadMoreVisibility: boolean = true;
+  singleOffset = 0;
+  singleLimit = 20;
+  isApplicationListLoading = false;
+  reportName:string;
+  isPGRDataLoading:boolean = false;
+  showPlus:boolean = true;
 
   constructor(
     private commonService: CommonService,
@@ -98,6 +107,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.getTileName();
     this.prOffset = 0;
     this.reportsData = [];
+    this.pgrData = [];
     this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
@@ -302,6 +312,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onCloseConfigurePGRModal();
           this.configureHierarchy = {}
           this.reportsData = []
+          this.pgrData = []
           this.prOffset = 0;
           this.getReportSubscriptionData();   
         },
@@ -801,6 +812,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
+      else if(type==='trigger'){
+        this.singleOffset = 0;
+        this.showPlus = false
+         console.log("trigger called",data)
+         this.reportName = data?.report_name;
+         this.dataOfEachReport();
+         $(".over-lap").css('display', 'block')
+      }
       else if(type==='edit'){
           this.assets = this.originalAssets;
           this.selectedAssets = this.originalAssets;
@@ -890,10 +909,40 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
    }
 
+   backToMain() {
+    $(".over-lap").css('display', 'none')
+  }
+
+  dataOfEachReport(){
+    var obj = {
+      offset: this.singleOffset,
+      count : this.singleLimit
+    }
+    this.isPGRDataLoading = true
+    this.assetService.getPregeneratedReports(obj,this.contextApp.app).subscribe((res:any)=>{
+      debugger
+      if(res?.data && res?.data?.length < this.singleLimit ){
+          debugger
+        this.singleLoadMoreVisibility = false;
+   }
+    else{
+      this.singleLoadMoreVisibility = true;
+    }
+         console.log("dataofEachReport",res );
+         this.isPGRDataLoading = false
+         this.pgrData = [...this.pgrData,...res?.data]
+    },(err)=>{
+          this.toasterService.showError(err.message, 'Error')
+          this.isPGRDataLoading = false
+    })
+  }
+
+
    deleteRecord(){
      this.assetService.deleteReportRecord(this.contextApp.app,this.recordID).subscribe((response:any)=>{
       this.prOffset = 0;
       this.reportsData = [];
+      this.pgrData = [];
       this.getReportSubscriptionData()
       this.toasterService.showSuccess('Report deleted successfully !', 'Delete Report')
      })
@@ -970,6 +1019,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.configureHierarchy = {}
         this.updatePGR.hierarchy = {}
         this.reportsData = []
+        this.pgrData = []
         this.prOffset = 0;
         this.getReportSubscriptionData(); 
       },(err)=>{

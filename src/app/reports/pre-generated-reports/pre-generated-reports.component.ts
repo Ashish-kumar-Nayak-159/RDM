@@ -85,6 +85,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   reportName:string;
   isPGRDataLoading:boolean = false;
   showPlus:boolean = true;
+  report_id:number;
 
   constructor(
     private commonService: CommonService,
@@ -242,6 +243,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onOpenConfigurePGRModal() {
     this.isAddReport = true;
+    this.isUpdateReport = false;
     this.reportsObj = { assets: [] };
     this.assets = this.originalAssets;
     this.selectedAssets = this.originalAssets;
@@ -362,7 +364,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onChangeAssetsModel() {
     this.assets = [];
-
+     debugger
     if (this.reportsObj?.asset_model) {
       this.reportsObj.assets = [];
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
@@ -589,7 +591,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         }
       } else {
         if(!this.isUpdateReport){
-          this.reportsObj.assets = [];
+          this.reportsObj.assets = []; 
           this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
         }
         this.updatePGR.assets = [];
@@ -817,6 +819,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.showPlus = false;
         this.pgrData = []
          this.reportName = data?.report_name;
+         this.report_id = data?.id
          this.dataOfEachReport();
          $(".over-lap").css('display', 'block')
       }
@@ -845,6 +848,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.updatePGR.properties = allProps;
           // this.updatePGR.asset_model = "GW_AHM_M01" // for testing 
           this.updatePGR.asset_model = data?.metadata?.asset_model
+          // this.onChangeAssetsModel();
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -917,7 +921,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   dataOfEachReport(){
     var obj = {
       offset: this.singleOffset,
-      count : this.singleLimit
+      count : this.singleLimit,
+      report_subscription_id: this.report_id
     }
     this.isPGRDataLoading = true
     this.assetService.getPregeneratedReports(obj,this.contextApp.app).subscribe((res:any)=>{

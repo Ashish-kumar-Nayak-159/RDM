@@ -76,6 +76,16 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   updatePGR:any = {}
   updateId:number;
   loadMoreVisibility:boolean = true;
+  pgrData:any[] = []
+  pgrConfig:any = []
+  singleLoadMoreVisibility: boolean = true;
+  singleOffset = 0;
+  singleLimit = 20;
+  isApplicationListLoading = false;
+  reportName:string;
+  isPGRDataLoading:boolean = false;
+  showPlus:boolean = true;
+  report_id:number;
 
   constructor(
     private commonService: CommonService,
@@ -98,6 +108,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.getTileName();
     this.prOffset = 0;
     this.reportsData = [];
+    this.pgrData = [];
     this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
@@ -232,6 +243,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onOpenConfigurePGRModal() {
     this.isAddReport = true;
+    this.isUpdateReport = false;
     this.reportsObj = { assets: [] };
     this.assets = this.originalAssets;
     this.selectedAssets = this.originalAssets;
@@ -302,6 +314,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onCloseConfigurePGRModal();
           this.configureHierarchy = {}
           this.reportsData = []
+          this.pgrData = []
           this.prOffset = 0;
           this.getReportSubscriptionData();   
         },
@@ -351,7 +364,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onChangeAssetsModel() {
     this.assets = [];
-
     if (this.reportsObj?.asset_model) {
       this.reportsObj.assets = [];
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
@@ -557,6 +569,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
         if (Object.keys(hierarchyObj).length === 1) {
           this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+          if(this.updatePGR.asset_model)
+          {
+            this.assets = this.assets.filter((assetObj) => assetObj.asset_model === this.updatePGR.asset_model);
+          }
         } else {
           const arr = [];
           this.assets = [];
@@ -575,10 +591,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             }
           });
           this.assets = JSON.parse(JSON.stringify(arr));
+          if(this.updatePGR.asset_model)
+          {
+            this.assets = this.assets.filter((assetObj) => assetObj.asset_model === this.updatePGR.asset_model);
+          }
         }
       } else {
         if(!this.isUpdateReport){
-          this.reportsObj.assets = [];
+          this.reportsObj.assets = []; 
           this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
         }
         this.updatePGR.assets = [];
@@ -801,6 +821,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       if(type==='delete'){
          this.deleteModal(data?.id);
       }
+      else if(type==='trigger'){
+        this.singleOffset = 0;
+        this.showPlus = false;
+        this.pgrData = []
+         this.reportName = data?.report_name;
+         this.report_id = data?.id
+         this.dataOfEachReport();
+         $(".over-lap").css('display', 'block')
+      }
       else if(type==='edit'){
           this.assets = this.originalAssets;
           this.selectedAssets = this.originalAssets;
@@ -826,6 +855,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.updatePGR.properties = allProps;
           // this.updatePGR.asset_model = "GW_AHM_M01" // for testing 
           this.updatePGR.asset_model = data?.metadata?.asset_model
+          // this.onChangeAssetsModel();
           this.updatePGR.hierarchy = {}
           this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
             if(index!=0){
@@ -835,9 +865,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
                this.onChangeOfHierarchy(index, 'PG');
             }
          })
-         const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
-         this.assets = [...asset];
-         this.selectedAssets = this.assets;
         // this.onChangeAssetsModel()
          this.updatePGR.assets = data?.assets
          if(this.updatePGR?.asset_model){
@@ -890,10 +917,39 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
    }
 
+   backToMain() {
+    this.showPlus = true
+    $(".over-lap").css('display', 'none')
+  }
+
+  dataOfEachReport(){
+    var obj = {
+      offset: this.singleOffset,
+      count : this.singleLimit,
+      report_subscription_id: this.report_id
+    }
+    this.isPGRDataLoading = true
+    this.assetService.getPregeneratedReports(obj,this.contextApp.app).subscribe((res:any)=>{
+      if(res?.data && res?.data?.length < this.singleLimit ){
+        this.singleLoadMoreVisibility = false;
+   }
+    else{
+      this.singleLoadMoreVisibility = true;
+    }
+         this.isPGRDataLoading = false
+         this.pgrData = [...this.pgrData,...res?.data]
+    },(err)=>{
+          this.toasterService.showError(err.message, 'Error')
+          this.isPGRDataLoading = false
+    })
+  }
+
+
    deleteRecord(){
      this.assetService.deleteReportRecord(this.contextApp.app,this.recordID).subscribe((response:any)=>{
       this.prOffset = 0;
       this.reportsData = [];
+      this.pgrData = [];
       this.getReportSubscriptionData()
       this.toasterService.showSuccess('Report deleted successfully !', 'Delete Report')
      })
@@ -970,6 +1026,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.configureHierarchy = {}
         this.updatePGR.hierarchy = {}
         this.reportsData = []
+        this.pgrData = []
         this.prOffset = 0;
         this.getReportSubscriptionData(); 
       },(err)=>{

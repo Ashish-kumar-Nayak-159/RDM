@@ -836,6 +836,10 @@ export class AssetService {
     });
   }
 
+  eachPregeneratedReportsData(app){
+     return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS, encodeURIComponent(app)))
+  }
+
   getAssetTwin(app, assetId) {
     return this.http.get(
       this.url + String.Format(AppUrls.GET_ASSET_TWIN, encodeURIComponent(app), encodeURIComponent(assetId))

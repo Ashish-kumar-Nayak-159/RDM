@@ -81,8 +81,8 @@ export class SlavesInfoComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp)
       this.defaultAppName = this.contextApp.app;
-    if(this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta')
-      //this.getCellData();
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta')
+      this.getCellData();
     this.getAssetTwinData();
     this.getModelSlaveData();
     this.getSlaveData();
@@ -168,7 +168,7 @@ export class SlavesInfoComponent implements OnInit {
     );
   }
   getCellData() {
-    this.cells = [];    
+    this.cells = [];
     const obj = {
       hierarchy: JSON.stringify(this.asset?.tags?.hierarchy_json)
     };
@@ -204,14 +204,14 @@ export class SlavesInfoComponent implements OnInit {
           ? obj.metadata.sensor_display_name
           : null
       ),
-      // hierarchy_cell_id: new FormControl(
-      //   obj &&
-      //     obj.metadata &&
-      //     obj.metadata.hierarchy_cell_id !== undefined &&
-      //     obj.metadata.hierarchy_cell_id !== null
-      //     ? obj.metadata.hierarchy_cell_id
-      //     : null
-      // ),
+      hierarchy_cell_id: new FormControl(
+        obj &&
+          obj.metadata &&
+          obj.metadata.hierarchy_cell_id !== undefined &&
+          obj.metadata.hierarchy_cell_id !== null
+          ? obj.metadata.hierarchy_cell_id
+          : null
+      ),
     });
     if (this.asset.tags.protocol === 'ModbusTCPMaster') {
       setupformGroup = new FormGroup({
@@ -223,14 +223,14 @@ export class SlavesInfoComponent implements OnInit {
             ? obj.metadata.sensor_display_name
             : null
         ),
-        // hierarchy_cell_id: new FormControl(
-        //   obj &&
-        //     obj.metadata &&
-        //     obj.metadata.hierarchy_cell_id !== undefined &&
-        //     obj.metadata.hierarchy_cell_id !== null
-        //     ? obj.metadata.hierarchy_cell_id
-        //     : null
-        // ),
+        hierarchy_cell_id: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.hierarchy_cell_id !== undefined &&
+            obj.metadata.hierarchy_cell_id !== null
+            ? obj.metadata.hierarchy_cell_id
+            : null
+        ),
         host_address: new FormControl(
           obj &&
             obj.metadata &&
@@ -267,14 +267,14 @@ export class SlavesInfoComponent implements OnInit {
             ? obj.metadata.sensor_display_name
             : null
         ),
-        // hierarchy_cell_id: new FormControl(
-        //   obj &&
-        //     obj.metadata &&
-        //     obj.metadata.hierarchy_cell_id !== undefined &&
-        //     obj.metadata.hierarchy_cell_id !== null
-        //     ? obj.metadata.hierarchy_cell_id
-        //     : null
-        // ),
+        hierarchy_cell_id: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.hierarchy_cell_id !== undefined &&
+            obj.metadata.hierarchy_cell_id !== null
+            ? obj.metadata.hierarchy_cell_id
+            : null
+        ),
         com_port: new FormControl(
           obj && obj.metadata && obj.metadata && obj.metadata.com_port !== undefined && obj.metadata.com_port !== null
             ? obj.metadata.com_port
@@ -322,14 +322,14 @@ export class SlavesInfoComponent implements OnInit {
             ? obj.metadata.sensor_display_name
             : null
         ),
-        // hierarchy_cell_id: new FormControl(
-        //   obj &&
-        //     obj.metadata &&
-        //     obj.metadata.hierarchy_cell_id !== undefined &&
-        //     obj.metadata.hierarchy_cell_id !== null
-        //     ? obj.metadata.hierarchy_cell_id
-        //     : null
-        // ),
+        hierarchy_cell_id: new FormControl(
+          obj &&
+            obj.metadata &&
+            obj.metadata.hierarchy_cell_id !== undefined &&
+            obj.metadata.hierarchy_cell_id !== null
+            ? obj.metadata.hierarchy_cell_id
+            : null
+        ),
         host_address: new FormControl(
           obj &&
             obj.metadata &&
@@ -410,13 +410,24 @@ export class SlavesInfoComponent implements OnInit {
         this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
         return;
       }
+    }    
+    this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
+    // const macID = this.slaveObj.metadata.mac_id;    
+    this.slaveObj.metadata = this.addSetupForm?.value || {};
+
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' && Object.keys(this.slaveObj.metadata).length > 0 && this.slaveObj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
+      if (this.slaveObj?.metadata?.hierarchy_cell_id == null || this.slaveObj?.metadata?.hierarchy_cell_id == undefined) {
+        this.toasterService.showError('Cell ID is required', 'Add Slave');
+        return;
+      }
+    }
+    else if(this.slaveObj?.metadata?.hierarchy_cell_id)
+    {
+      delete this.slaveObj?.metadata?.hierarchy_cell_id;
     }
 
     this.isAddSlaveAPILoading = true;
-    this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
-    // const macID = this.slaveObj.metadata.mac_id;
-    this.slaveObj.metadata = this.addSetupForm?.value || {};
     // this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(
       this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj).subscribe(
@@ -456,10 +467,19 @@ export class SlavesInfoComponent implements OnInit {
         return;
       }
     }
-
+    obj.metadata = this.editSetupForm?.value || {};
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' && Object.keys(obj.metadata).length > 0 && obj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
+      if (obj?.metadata?.hierarchy_cell_id == null || obj?.metadata?.hierarchy_cell_id == undefined) {
+        this.toasterService.showError('Cell ID is required', 'Add Slave');
+        return;
+      }
+    }    
+    else if(obj?.metadata?.hierarchy_cell_id)
+    {
+      delete obj?.metadata?.hierarchy_cell_id;
+    }
     // const macID = obj.mac_id;
     this.isAddSlaveAPILoading = true;
-    obj.metadata = this.editSetupForm?.value || {};
     // obj.metadata.mac_id = macID;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(

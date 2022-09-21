@@ -165,7 +165,7 @@ export class AppUrls {
   public static UPDATE_MODEL_SLAVE_CATEGORIES = 'apps/{0}/asset_models/{1}/slave_categories/{2}';
   public static DELETE_MODEL_SLAVE_CATEGORIES = 'apps/{0}/asset_models/{1}/slave_categories/{2}';
   public static GET_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves';
-  public static GET_ASSET_CELL_DETAILS = 'apps/assets/cells';
+  public static GET_ASSET_CELL_DETAILS = 'apps/hierarchy_cells_by_hierarchyorid';
   public static CREATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves';
   public static UPDATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static DELETE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';

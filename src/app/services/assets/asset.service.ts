@@ -1216,14 +1216,15 @@ export class AssetService {
       }
     });
     return this.http.get(
-      this.url + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
+      'http://localhost:7074/api/' //this.url 
+      + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
       { params }
     );
   }
 
   createAssetSlaveDetail(app, assetId, obj) {
     return this.http.post(
-      this.url +
+      'http://localhost:7074/api/' + //this.url +
         String.Format(AppUrls.CREATE_ASSET_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetId)),
       obj
     );
@@ -1231,7 +1232,7 @@ export class AssetService {
 
   updateAssetSlaveDetail(app, assetId, slaveId, obj) {
     return this.http.patch(
-      this.url +
+      'http://localhost:7074/api/' + //this.url +
         String.Format(
           AppUrls.UPDATE_ASSET_SLAVE_DETAILS,
           encodeURIComponent(app),
@@ -1244,7 +1245,7 @@ export class AssetService {
 
   deleteAssetSlaveDetail(app, assetId, slaveId) {
     return this.http.delete(
-      this.url +
+      'http://localhost:7074/api/' + //this.url +
         String.Format(
           AppUrls.DELETE_ASSET_SLAVE_DETAILS,
           encodeURIComponent(app),

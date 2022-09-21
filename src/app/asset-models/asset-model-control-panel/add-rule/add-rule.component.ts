@@ -585,6 +585,7 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
+          this.overrideRuleMapping = true;
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });
@@ -766,6 +767,7 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
+          this.overrideRuleMapping = true;
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });

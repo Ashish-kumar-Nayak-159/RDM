@@ -1216,7 +1216,8 @@ export class AssetService {
       }
     });
     return this.http.get(
-      this.url + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
+      this.url 
+      + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
       { params }
     );
   }

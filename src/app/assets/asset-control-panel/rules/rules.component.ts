@@ -155,10 +155,13 @@ export class RulesComponent implements OnInit {
       this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
         (response: any) => {
           if (response?.data) {
+            console.log("this.....overRideRule on create...", this.overRidedRule)
             if(this.overRidedRule?.code) {
+              console.log("if...");
               let rule = response.data.filter(detail => detail.code == this.overRidedRule.code && detail.source == "Asset");
               this.deployRuleed(rule[0]);
             } else {
+              console.log("else.....");
               this.isRulesLoading = false;
               response.data.forEach((rule) => {
                 if (rule.updated_date) {

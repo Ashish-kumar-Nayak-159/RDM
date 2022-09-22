@@ -45,6 +45,8 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   ruleMappingForm;
   isApiLoading : boolean = false;
   modalConfig: { cancelBtnText?:any;  saveBtnText?:any;stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+
+  overRidedRule : any = {};
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -111,21 +113,28 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       this.assetModelService.getRules(this.contextApp.app, this.assetModel.name, obj).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.rules = response.data;
-            this.rules.forEach((rule) => {
-              if (rule.updated_date) {
-                rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
-                rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
+            if(this.overRidedRule?.code) {
+              let rule = response.data.filter(detail => detail.code == this.overRidedRule.code);
+              if(rule.length>0) {
+                this.deployRuleed(rule[0]);
               }
-              if (rule.deployed_on) {
-                rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
-                rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
-              }
-              if (rule.synced_on) {
-                rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
-                rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
-              }
-            });
+            } else {
+              this.rules = response.data;
+              this.rules.forEach((rule) => {
+                if (rule.updated_date) {
+                  rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
+                  rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
+                }
+                if (rule.deployed_on) {
+                  rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
+                  rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
+                }
+                if (rule.synced_on) {
+                  rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
+                  rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
+                }
+              });
+            }
           }
           this.isRulesLaoading = false;
         },
@@ -173,13 +182,16 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
       .subscribe(
         (response: any) => {
           this.onCloseDeleteModal();
-          this.getRules();
           this.toggleRows ={}
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(
-            isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
-            isRevert ? 'Disable Rule' : 'Enable Rule'
-          );
+          if(!this.overRidedRule?.code) {
+            this.toasterService.showSuccess(
+              isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
+              isRevert ? 'Disable Rule' : 'Enable Rule'
+            );
+          }
+          this.overRidedRule = {};
+          this.getRules();
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
@@ -360,6 +372,9 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   }
 
   onCloseRuleModel(event) {
+    if(event.overrideRuleMapping) {
+      this.overRidedRule = event.selectedAssetModel;
+    }
     this.isAddRule = false;
     this.isCloneRule = false;
     if (event.status) {

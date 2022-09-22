@@ -145,8 +145,7 @@ export class RulesComponent implements OnInit {
   }
 
   getRules() {
-    this.modelrules = [];
-    this.assetRules = [];
+    
     this.isRulesLoading = true;
     const obj = {
       type: this.selectedTab,
@@ -162,6 +161,8 @@ export class RulesComponent implements OnInit {
               }
             } else {
               this.isRulesLoading = false;
+              this.modelrules = [];
+              this.assetRules = [];
               response.data.forEach((rule) => {
                 if (rule.updated_date) {
                   rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);

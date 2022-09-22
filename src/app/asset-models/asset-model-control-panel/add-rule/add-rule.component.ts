@@ -461,6 +461,7 @@ export class AddRuleComponent implements OnInit {
       type: '',
       bolCon: true,
       strText: null,
+      newRuleForOverride:true
     };
     this.ruleModel.conditions.push(condition);
   }

@@ -98,7 +98,7 @@
             <label for="slaveid" class="col-3">Slave</label>
             <div class="col-6">
               <select id="slave_id" [(ngModel)]="ruleModel.metadata.sid" name="slave_id" [disabled]="isView || isCloneEdit"
-                class="form-control form-control-sm w-auto" (change)="onSlaveSelection()">
+                class="form-control form-control-sm w-auto" (change)="onSlaveSelection(ruleModel.metadata.sid)">
                 <option [ngValue]="undefined">Select Slave</option>
                 <option [ngValue]="item.slave_id" *ngFor="let item of slaveData">{{item.slave_name}}</option>
               </select>

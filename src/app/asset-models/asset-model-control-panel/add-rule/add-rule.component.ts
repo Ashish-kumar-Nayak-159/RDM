@@ -368,6 +368,10 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.actions.alert_management.severity = null;
   }
   onSlaveSelection(item) {
+    this.ruleModel.conditions.map((detail)=>{
+      detail.property = null;
+      return detail;
+    })
     this.getAssetsModelProperties(item);
   }
 

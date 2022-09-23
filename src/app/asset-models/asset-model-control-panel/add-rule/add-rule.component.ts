@@ -270,7 +270,7 @@ export class AddRuleComponent implements OnInit {
 
   }
 
-  getAssetsModelProperties() {
+  getAssetsModelProperties(item:any = {}) {
     let obj = {
       app: this.contextApp.app,
       name: this.asset ? this.asset.tags.asset_model : this.name,
@@ -299,11 +299,12 @@ export class AddRuleComponent implements OnInit {
           this.propertyList.push(prop);
         });
       }
-      // this.dropdownPropList = [];
+      let localDropDownPropList = [];
+      this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
         if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') {
-          if (!this.ruleModel?.metadata?.sid || prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid) {
-            this.dropdownPropList.push({
+          if (!this.ruleModel?.metadata?.sid || (prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid)) {
+            localDropDownPropList.push({
               id: prop.name,
               type: prop.type,
               json_key: prop.json_key,
@@ -312,7 +313,7 @@ export class AddRuleComponent implements OnInit {
           }
         }
       });
-      this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+      this.dropdownPropList = JSON.parse(JSON.stringify(localDropDownPropList));
     });
   }
 
@@ -366,8 +367,8 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
     this.ruleModel.actions.alert_management.severity = null;
   }
-  onSlaveSelection() {
-    this.getAssetsModelProperties();
+  onSlaveSelection(item) {
+    this.getAssetsModelProperties(item);
   }
 
   onChangeOfSendEmailCheckbox() {
@@ -461,6 +462,7 @@ export class AddRuleComponent implements OnInit {
       type: '',
       bolCon: true,
       strText: null,
+      newRuleForOverride:true
     };
     this.ruleModel.conditions.push(condition);
   }

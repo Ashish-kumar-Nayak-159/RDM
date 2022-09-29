@@ -44,7 +44,7 @@
         Select a existing rule to clone.
       </div>
       <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isClone]="isCloneRule"
-        [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
+        [ruleData]="ruleData" [isCloneEdit]="false" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
     </div>
     <div *ngIf="!isAddRule && !isCloneRule">
       <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>

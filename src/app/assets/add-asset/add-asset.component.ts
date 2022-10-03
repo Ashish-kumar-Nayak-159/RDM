@@ -186,7 +186,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     let parentId = 0;
     Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
       if (this.addAssetConfigureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;
+        let parentData = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId) 
+        if(parentData){
+        parentId =parentData.id;
+        }
       }
     });
     this.selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);

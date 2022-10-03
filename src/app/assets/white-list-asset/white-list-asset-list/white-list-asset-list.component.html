@@ -7,7 +7,8 @@
                 <th scope="col">{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
                 <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
                 <th scope="col">Protocol</th>
-                <th scope="col">Cloud Connectivity</th>
+                <th scope="col">Hierarchy</th>
+                <th scope="col">Cloud Connectivity</th>                   
                 <th scope="col">Un-Whitelist</th>
             </thead>
             <tbody>
@@ -19,6 +20,18 @@
                         <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.provisioned ? 'Provisioned' :
                             'Non-Provisioned'}}</td>
                         <td>{{asset.protocol}}</td>
+                        <td class="hierarchy_list"> 
+                            <span *ngIf="asset?.hierarchy_json?.App?.length > 0">{{asset.hierarchy_json.App}}</span>
+                            <span *ngIf="asset?.hierarchy_json?.Country?.length > 0">{{asset.hierarchy_json.Country}}</span>
+                            <span *ngIf="asset?.hierarchy_json?.State?.length > 0">{{asset.hierarchy_json.State}}</span>
+                            <span *ngIf="asset?.hierarchy_json?.Location?.length > 0">{{asset.hierarchy_json.Location}}</span> 
+                            <span *ngIf="asset?.hierarchy_json?.ManagementCompany?.length > 0">{{asset.hierarchy_json.ManagementCompany}}</span>
+                            <span *ngIf="asset?.hierarchy_json?.Customer?.length > 0">{{asset.hierarchy_json.Customer}}</span>
+                            <span *ngIf="asset?.hierarchy_json?.Property?.length > 0">{{asset.hierarchy_json.Property}}</span>
+                            <span class="last" *ngIf="asset?.hierarchy_json?.City?.length > 0">{{asset.hierarchy_json.City}}</span> 
+                            <span class="last" *ngIf="asset?.hierarchy_json?.CoolingTower?.length > 0">{{asset.hierarchy_json.CoolingTower}}</span>
+                            <span class="last" *ngIf="asset?.hierarchy_json?.Client?.length > 0">{{asset.hierarchy_json.Client}}</span>  
+                        </td> 
                         <td>{{asset.cloud_connectivity}}</td>
                         <td>
                             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel"

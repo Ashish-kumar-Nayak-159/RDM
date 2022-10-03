@@ -144,8 +144,11 @@ export class WhiteListAssetListComponent implements OnInit {
                 const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
                 item.gateway_display_name = name ? name : item.gateway_id;
               }
+              
             });
             this.assetsList = [...this.assetsList, ...response.data];
+            console.log('test assetsList', (this.assetsList));
+           
           }
           if (response.data.length === this.currentLimit) {
             this.insideScrollFunFlag = false;

@@ -1,3 +1,4 @@
+import { object } from '@amcharts/amcharts4/core';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
@@ -28,7 +29,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   appUsers: any[] = [];
   filteredUsers: any[] = [];
   @Input() gateways: any[] = [];
-  actualGateways : any[] = [];
+  actualGateways: any[] = [];
   originalGateways: any[] = [];
   assetModels: any[] = [];
   userData: any;
@@ -38,8 +39,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isAssetEditable = false;
   isWhiteLablePriviledge = false;
   whiteListedAssets: any[] = [];
+  whiteListedAssetsfilter:any[] =[];
   selectedWhitelistAsset: any;
   actualhierarchyArr = [];
+  isHierarchyEditable = false;
+  selectedHierarchy:any = {};
+
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -55,7 +60,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.decodedToken?.privileges?.indexOf('WASMP') > -1) {
       this.getWhiteListedAsset();
     }
-    
+
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     this.actualGateways = this.gateways;
@@ -133,11 +138,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
     };
     return new Promise<void>((resolve1, reject) => {
       this.whiteListedAssets = [];
+      this.whiteListedAssetsfilter = [];
       this.subscriptions.push(
         this.assetService.getWhiteListedAsset(obj, this.contextApp.app).subscribe(
           (response: any) => {
             if (response && response.data) {
               this.whiteListedAssets = response.data;
+              this.whiteListedAssetsfilter = response.data;              
             }
             resolve1();
           },
@@ -177,26 +184,34 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
     });
     let parentId = 0;
-    Object.keys(this.addAssetConfigureHierarchy).forEach((key,index) => {
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
       if (this.addAssetConfigureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId).id;        
+        let parentData = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId) 
+        if(parentData){
+        parentId =parentData.id;
+        }
       }
     });
-    let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
-    if (selectedHierarchy) {
-      this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
+    this.selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
+    if (this.selectedHierarchy) {
+      this.addAssetHierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == this.selectedHierarchy.id);
     }
 
     const hierarchyObj: any = { App: this.contextApp.app };
+
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (this.addAssetConfigureHierarchy[key]) {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
+    Object.keys(hierarchyObj).forEach((key) =>{
+      this.whiteListedAssetsfilter = this.whiteListedAssets?.filter(f => f?.hierarchy_json == null || f?.hierarchy_json[key] ==  hierarchyObj[key])
+    })
     //let maxObject = hierarchyObj.fin
     if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.actualGateways));
       this.filteredUsers = this.appUsers;
+
     } else {
       const arr = [];
       this.gateways = [];
@@ -237,16 +252,54 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
   updateAssetManagerWithHierarchy(hierarchyObj) {
     let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
-    let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    this.filteredUsers = this.appUsers.filter(function (user) {
-      if (!user.hierarchy.hasOwnProperty(lastObjKey)) {
-        let prevLastObjKey = Object.keys(hierarchyObj).reverse()[1].trim();
-        if (!user.hierarchy.hasOwnProperty(prevLastObjKey) || user.hierarchy[prevLastObjKey] === hierarchyObj[prevLastObjKey])
-          return true;
-      }
-      else if (user.hierarchy[lastObjKey] == selectedObjValue && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+    // let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
+    //console.log("this.appUsers......", this.appUsers)
+    this.filteredUsers = this.appUsers.filter((user) => {
+      if (user.role == 'App Admin') {
         return true;
+      } else {
+        let firstObjectKeyApp = Object.keys(hierarchyObj)[0].trim();
+        let secondObjectMgt = Object.keys(hierarchyObj)[1]?.trim();
+        let thirdObjectClient = Object.keys(hierarchyObj)[2]?.trim();
+        let fourthObjectLocation = Object.keys(hierarchyObj)[3]?.trim();
+        if (
+          fourthObjectLocation &&
+          user.hierarchy[fourthObjectLocation] == hierarchyObj[fourthObjectLocation] &&
+          user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          thirdObjectClient &&
+          user.hierarchy[thirdObjectClient] == hierarchyObj[thirdObjectClient] &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          !thirdObjectClient &&
+          secondObjectMgt &&
+          user.hierarchy[secondObjectMgt] == hierarchyObj[secondObjectMgt] &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        } else if (
+          !fourthObjectLocation &&
+          !thirdObjectClient &&
+          !secondObjectMgt &&
+          firstObjectKeyApp &&
+          user.hierarchy[firstObjectKeyApp] == hierarchyObj[firstObjectKeyApp]
+        ) {
+          return true;
+        }
+      }
+      //if (user.hierarchy[lastObjKey] == hierarchyObj[lastObjKey] && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
+      //return true;
     });
+    //console.log("this.filteredUsers.......", this.filteredUsers)
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
@@ -310,7 +363,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       )
     );
   }
-
   onUpdateAsset() {
     this.isCreateAssetAPILoading = true;
     if (
@@ -327,6 +379,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags.created_by = this.userData.email;
     }
     this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app };
+    this.assetDetail.tags.hierarchy_id = this.selectedHierarchy?.id;
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] =
         this.addAssetConfigureHierarchy[key];
@@ -350,18 +403,22 @@ export class AddAssetComponent implements OnInit, OnChanges {
     );
   }
   async onWhitelistedAssetChange() {
-    let newPromise = await this.getAssetsModels(this.componentState);    
+    let newPromise = await this.getAssetsModels(this.componentState);
     Promise.resolve(newPromise).then(res => {
+
       if (this.selectedWhitelistAsset === undefined) {
         this.assetDetail.asset_id = null;
         this.assetDetail.tags.display_name = null;
         this.assetDetail.tags.cloud_connectivity = undefined;
         this.assetDetail.tags.protocol = undefined;
+        this.isHierarchyEditable = false;
+        this.onChangeOfAddAssetHierarchy(0)
       }
       else {
         this.assetDetail.asset_id = this.selectedWhitelistAsset.asset_id;
         this.assetDetail.tags.display_name = this.selectedWhitelistAsset.display_name;
         this.assetDetail.tags.protocol = this.selectedWhitelistAsset.protocol;
+        this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
         this.assetDetail.tags.cloud_connectivity = this.selectedWhitelistAsset.cloud_connectivity;
         if (this.selectedWhitelistAsset.hasOwnProperty('protocol') && this.selectedWhitelistAsset.protocol != null && this.selectedWhitelistAsset.protocol != '')
           this.assetModels = this.assetModels.filter((type) => type.protocol === this.selectedWhitelistAsset.protocol);
@@ -372,15 +429,18 @@ export class AddAssetComponent implements OnInit, OnChanges {
               if (this.selectedWhitelistAsset?.hierarchy_json) {
                 this.addAssetConfigureHierarchy[index] = this.selectedWhitelistAsset?.hierarchy_json[level];
                 if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
+                  this.isHierarchyEditable = true;
                   this.onChangeOfAddAssetHierarchy(index);
+                  
                 }
               }
             }
+          
           });
-  
+
         }
       }
-    })  
+    })
   }
   onCreateAsset() {
     if (
@@ -456,6 +516,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.assetDetail.metadata.package_app = protocol.metadata?.app;
     this.assetDetail.tags.hierarchy = JSON.stringify(this.assetDetail.tags.hierarchy_json);
     this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.assetDetail.tags.hierarchy_id = this.selectedHierarchy?.id;
     this.assetDetail.app = this.contextApp.app;
     delete this.assetDetail.tags.reserved_tags;
     this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ? null : this.componentState;
@@ -469,7 +530,27 @@ export class AddAssetComponent implements OnInit, OnChanges {
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
     this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
-    const obj = JSON.parse(JSON.stringify(this.assetDetail));
+    debugger
+    let parentId = 0;
+    let hierarchy_ids = {};
+    Object.keys(this.contextApp?.hierarchy?.levels).forEach((key, index) => {
+      if (index != 0) {
+        key = this.contextApp?.hierarchy?.levels[key]
+        if (this.assetDetail.tags.hierarchy_json[key]) {
+          let obj = this.actualhierarchyArr.find(r => r.level == index && r.key == this.assetDetail.tags.hierarchy_json[key] && r.parent_id == parentId);
+          if(obj)
+          {
+            parentId = obj.id;
+            hierarchy_ids[index] = obj.id;
+          }
+        }
+      }
+    });
+    if(Object.keys(hierarchy_ids).length > 0)
+    {
+      this.assetDetail.tags.hierarchy_ids = hierarchy_ids;
+    }
+    const obj = JSON.parse(JSON.stringify(this.assetDetail));    
     const methodToCall = this.SetMethodCallOnCondition(obj);
     this.subscriptions.push(
       methodToCall.subscribe(

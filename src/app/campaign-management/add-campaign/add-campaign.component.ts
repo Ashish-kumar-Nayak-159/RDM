@@ -157,7 +157,10 @@ export class AddCampaignComponent implements OnInit {
     let parentId = 0;
     Object.keys(this.configureHierarchy).forEach((key,index) => {
       if (this.configureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;        
+        let parentData = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId)
+        if (parentData) {
+          parentId = parentData.id;
+        }
       }
     });
     let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);

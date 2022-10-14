@@ -254,6 +254,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 detail.metadata.rw = 'r';
                 detail.read = true;
               } else {
+                if (detail.metadata.fc_r == "0" || detail.metadata.fc_r == 0 ) {
+                  detail.metadata.fc_r = null;
+                  detail.metadata.fc = null;
+                }
                 if(detail.metadata.rw == 'rw') {
                   detail.read = true;
                   detail.write = true;
@@ -748,7 +752,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       } else if(this.propertyObj.write == true) {
         this.propertyObj['metadata']['rw'] = 'w'
       }
-  
+      this.propertyObj['metadata']['fc'] = this.propertyObj['metadata']['fc_r'];
       let mergedObject = [...(obj?.properties?.measured_properties)]
 if(obj?.properties?.controllable_properties){
 
@@ -996,6 +1000,7 @@ if(obj?.properties?.controllable_properties){
           } else if(detail.write == true) {
             detail['metadata']['rw'] = 'w'
           }
+          detail['metadata']['fc'] = detail['metadata']['fc_r'];
           return detail;
         } else {
           return detail;

@@ -42,6 +42,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   insideScrollFunFlag = false;
   currentOffset = 0;
   currentLimit = 20;
+  prOffset = 0;
+  prLimit = 20;
   hierarchyString: any;
   displayHierarchyString: string;
   selectedDateRange: string;
@@ -57,6 +59,34 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   contextAppUserHierarchyLength = 0;
   decodedToken: any;
   actualhierarchyArr;
+  reportsData:any[] = []
+  confirmBodyMessage: string;
+  confirmHeaderMessage: string;
+  modalConfig: {
+    isDisplaySave: boolean;
+    isDisplayCancel: boolean;
+    saveBtnText: string;
+    cancelBtnText: string;
+    stringDisplay: boolean;
+  };
+  isAPILoading = false;
+  recordID:number;
+  isUpdateReport:boolean = false;
+  isViewReport:boolean = false;
+  updatePGR:any = {}
+  updateId:number;
+  loadMoreVisibility:boolean = true;
+  pgrData:any[] = []
+  pgrConfig:any = []
+  singleLoadMoreVisibility: boolean = true;
+  singleOffset = 0;
+  singleLimit = 20;
+  isApplicationListLoading = false;
+  reportName:string;
+  isPGRDataLoading:boolean = false;
+  showPlus:boolean = true;
+  report_id:number;
+
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -76,6 +106,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
+    this.prOffset = 0;
+    this.reportsData = [];
+    this.pgrData = [];
+    this.getReportSubscriptionData();
     this.getAssetsModels();
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
@@ -104,6 +138,53 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       })
     );
   }
+
+  getReportSubscriptionData(){
+    this.isReportDataLoading = true;
+    let newHierarchy = {}
+    this.contextApp.hierarchy.levels.forEach((level,index)=>{
+       if(index!=0){
+         newHierarchy[level] = this.configureHierarchy[index]
+       }else{
+        newHierarchy[level] =  this.contextApp.app 
+       }
+    })
+   let obj = {
+      offset : this.prOffset,
+      count : this.prLimit,
+      hierarchy : JSON.stringify(Object.keys(this.configureHierarchy).length <= 0 ? this.contextApp.user.hierarchy : newHierarchy)
+   }
+
+     this.assetService.getReportSubscription(this.contextApp.app,obj).subscribe((response:any)=>{
+       if(response?.data && response?.data?.length < this.prLimit ){
+    
+            this.loadMoreVisibility = false;
+       }
+       else{
+        this.loadMoreVisibility = true;
+       }
+        this.reportsData = [...this.reportsData , ...response?.data]
+        this.isReportDataLoading = false;
+     },(err:any)=>{
+          this.toasterService.showError(err.message, 'Error')
+          this.isReportDataLoading = false;
+     })
+  }
+
+  deleteModal(id:number){
+    this.recordID = id;
+    this.modalConfig = {
+      isDisplaySave: true,
+      isDisplayCancel: true,
+      saveBtnText: 'Yes',
+      cancelBtnText: 'No',
+      stringDisplay: true,
+    };
+      this.confirmBodyMessage = 'Are you sure you want to delete this report?';
+      this.confirmHeaderMessage = 'Delete ' + 'Report';
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
 
   ngAfterViewInit() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -161,13 +242,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onOpenConfigurePGRModal() {
-    debugger
     this.isAddReport = true;
+    this.isUpdateReport = false;
     this.reportsObj = { assets: [] };
     this.assets = this.originalAssets;
     this.selectedAssets = this.originalAssets;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    console.log('assets',this.assets)
   }
 
   onCloseConfigurePGRModal() {
@@ -201,6 +281,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const edge_derived_message_props = [];
     const cloud_derived_message_props = [];
     this.props.forEach((prop, index) => {
+      
       if (prop.value.type === 'Edge Derived Properties') {
         edge_derived_message_props.push(prop.value.json_key);
       } else if (prop.value.type === 'Cloud Derived Properties') {
@@ -222,6 +303,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // this.reportsObj.assets = assets;
     const reportObj = { ...this.reportsObj };
     reportObj.file_type = 'XLSX';
+    reportObj.metadata = {}
+    reportObj.metadata['asset_model'] = reportObj?.asset_model
     delete reportObj.asset_model;
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, reportObj).subscribe(
@@ -229,6 +312,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.isCreateReportAPILoading = false;
           this.toasterService.showSuccess('New Report Created', 'Create Report');
           this.onCloseConfigurePGRModal();
+          this.configureHierarchy = {}
+          this.reportsData = []
+          this.pgrData = []
+          this.prOffset = 0;
+          this.getReportSubscriptionData();   
         },
         (error) => {
           this.isCreateReportAPILoading = false;
@@ -236,12 +324,20 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         }
       )
     );
+   
   }
 
   onReportChange() {
     if (this.reportsObj.report_category === 'telemetry') {
       if (this.reportsObj.asset_model) {
         this.getAssetsModelProperties(this.reportsObj.asset_model);
+      }
+    }
+    if(this.updatePGR?.report_category === 'telemetry')
+    {
+  
+      if(this.updatePGR?.asset_model){
+        this.getAssetsModelProperties(this.updatePGR?.asset_model);
       }
     }
   }
@@ -268,8 +364,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onChangeAssetsModel() {
     this.assets = [];
-    this.reportsObj.assets = [];
-    if (this.reportsObj.asset_model) {
+    if (this.reportsObj?.asset_model) {
+      this.reportsObj.assets = [];
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
       this.assets = [...asset];
       this.selectedAssets = this.assets;
@@ -278,7 +374,19 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onChangeOfHierarchy(index, 'RS');
         }
       });
-    } else {
+    } 
+    else if(this.updatePGR?.asset_model){
+      this.updatePGR.assets = [];
+      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
+      this.assets = [...asset];
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+          this.onChangeOfHierarchy(index, 'RS');
+        }
+      });
+    }
+    else {
       this.assets = this.originalAssets;
       this.selectedAssets = this.assets;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -343,6 +451,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   Deselect(e) {
     if (e === [] || e.length === 0) {
       this.reportsObj.assets = [];
+      this.updatePGR.assets = []
     }
   }
 
@@ -369,6 +478,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onSaveHierachy(configuredHierarchy) {
+    this.prOffset = 0
     this.configureHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
@@ -422,96 +532,122 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     });
   }
 
-  async onChangeOfHierarchy(i, e) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (key > i) {
-        delete this.configureHierarchy[key];
+  async   onChangeOfHierarchy(i, e) {
+     if(this.isUpdateReport){
+        // this.updatePGR.assets = []
+        this.configureHierarchy = this.updatePGR?.hierarchy
+     }
+      Object.keys(this.configureHierarchy).forEach((key) => {
+        if (key > i) {
+          delete this.configureHierarchy[key];
+        }
+      });
+      Object.keys(this.hierarchyArr).forEach((key) => {
+        if (key > i) {
+          this.hierarchyArr[key] = [];
+        }
+      });
+      let parentId = 0;
+      Object.keys(this.configureHierarchy).forEach((key,index) => {
+        if (this.configureHierarchy[key]) {
+          parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId)?.id;        
+          if(parentId == null)
+            parentId = 0;
+        }
+      });
+      let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
+      if (selectedHierarchy) {
+        this.hierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
       }
-    });
-    Object.keys(this.hierarchyArr).forEach((key) => {
-      if (key > i) {
-        this.hierarchyArr[key] = [];
-      }
-    });
-    let parentId = 0;
-    Object.keys(this.configureHierarchy).forEach((key,index) => {
-      if (this.configureHierarchy[key]) {
-        parentId = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;        
-      }
-    });
-    let selectedHierarchy = this.actualhierarchyArr.find(r => r.id == parentId);
-    if (selectedHierarchy) {
-      this.hierarchyArr[i + 1] = this.actualhierarchyArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
-    }
-    const hierarchyObj: any = { App: this.contextApp.app };
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      }
-    });
-    if (e === 'PG') {
-      this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
-      if (Object.keys(hierarchyObj).length === 1) {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      } else {
-        const arr = [];
-        this.assets = [];
-        this.originalAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
+      const hierarchyObj: any = { App: this.contextApp.app };
+      Object.keys(this.configureHierarchy).forEach((key) => {
+        if (this.configureHierarchy[key]) {
+          hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+        }
+      });
+      if (e === 'PG') {
+        this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+        if (Object.keys(hierarchyObj).length === 1) {
+          this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+          if(this.updatePGR.asset_model)
+          {
+            this.assets = this.assets.filter((assetObj) => assetObj.asset_model === this.updatePGR.asset_model);
+          }
+        } else {
+          const arr = [];
+          this.assets = [];
+          this.originalAssets.forEach((asset) => {
+            let trueFlag = 0;
+            let flaseFlag = 0;
+            Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+              if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+                trueFlag++;
+              } else {
+                flaseFlag++;
+              }
+            });
+            if (trueFlag > 0 && flaseFlag === 0) {
+              arr.push(asset);
             }
           });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
+          this.assets = JSON.parse(JSON.stringify(arr));
+          if(this.updatePGR.asset_model)
+          {
+            this.assets = this.assets.filter((assetObj) => assetObj.asset_model === this.updatePGR.asset_model);
           }
-        });
-        this.assets = JSON.parse(JSON.stringify(arr));
-      }
-    } else {
-      this.reportsObj.assets = [];
-      this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
-      if (Object.keys(hierarchyObj).length === 1) {
-        this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
+        }
       } else {
-        const arr = [];
-        this.assets = [];
-        this.reportsObj.assets = [];
-        this.selectedAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
+        if(!this.isUpdateReport){
+          this.reportsObj.assets = []; 
+          this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+        }
+        this.updatePGR.assets = [];
+        if (Object.keys(hierarchyObj).length === 1) {
+          this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
+        } else {
+          const arr = [];
+          this.assets = [];
+          if(!this.isUpdateReport){
+            this.reportsObj.assets = [];
+          }
+          if(this.isUpdateReport){
+            this.updatePGR.assets = [];
+          }
+          this.selectedAssets.forEach((asset) => {
+            let trueFlag = 0;
+            let flaseFlag = 0;
+            Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+              if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+                trueFlag++;
+              } else {
+                flaseFlag++;
+              }
+            });
+            if (trueFlag > 0 && flaseFlag === 0) {
+              arr.push(asset);
             }
           });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
-          }
-        });
-        this.assets = JSON.parse(JSON.stringify(arr));
+          this.assets = JSON.parse(JSON.stringify(arr));
+        }
       }
-    }
-    this.filterObj.assetArr = undefined;
-    this.filterObj.asset_id = undefined;
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset_id = undefined;
+      let count = 0;
+      Object.keys(this.configureHierarchy).forEach((key) => {
+        if (this.configureHierarchy[key]) {
+          count++;
+        }
+      });
+      if (count === 0) {
+        this.hierarchyArr = [];
+        if (this.contextApp.hierarchy.levels.length > 1) {
+          this.hierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
+        }
       }
-    });
-    if (count === 0) {
-      this.hierarchyArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
-      }
-    }
+
+
+   
+
   }
 
   onAssetDeselect() {
@@ -608,11 +744,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     delete obj.dateOption;
     delete obj.report_type;
     delete obj.asset_id;
-    obj.offset = this.currentOffset;
-    obj.count = this.currentLimit;
+    delete obj.from_date;
+    delete obj.to_date;
+    obj.offset = this.prOffset;
+    obj.count = this.prLimit;
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    // this.reports = [];
+    this.reports = [];
     this.subscriptions.push(
       this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
         (response: any) => {
@@ -636,7 +774,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         },
         (error) => (this.isReportDataLoading = false)
       )
-    );
+      );
+
   }
 
   getAssetNameById(assetId) {
@@ -671,9 +810,237 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     var assetIds = this.assets.map((asset)=>{
        return asset?.asset_id
      })
-     console.log("assetIds",assetIds)
      this.reportsObj.assets = assetIds
+     this.updatePGR.assets = assetIds
   }
+
+
+   // data of single record while click on any action button
+   
+   async singleRecordData(data:any, type?:string){
+      if(type==='delete'){
+         this.deleteModal(data?.id);
+      }
+      else if(type==='trigger'){
+        this.singleOffset = 0;
+        this.showPlus = false;
+        this.pgrData = []
+         this.reportName = data?.report_name;
+         this.report_id = data?.id
+         this.dataOfEachReport();
+         $(".over-lap").css('display', 'block')
+      }
+      else if(type==='edit'){
+          this.assets = this.originalAssets;
+          this.selectedAssets = this.originalAssets;
+          this.isUpdateReport = true;
+          this.isViewReport = false;
+          this.updateId = data?.id
+          this.updatePGR = {}
+          this.updatePGR.report_name = data?.report_name;
+          this.updatePGR.report_category = data?.report_category;
+          this.updatePGR.report_frequency = data?.report_frequency;
+          this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.file_type = data?.file_type;
+          let allProps = []
+          data?.properties?.cd?.forEach((item)=>{
+                allProps.push(item)
+          })
+          data?.properties?.ed?.forEach((edItem)=>{
+                allProps.push(edItem)
+          })
+          data?.properties?.m?.forEach((mItem)=>{
+                allProps.push(mItem)
+          })
+          this.updatePGR.properties = allProps;
+          // this.updatePGR.asset_model = "GW_AHM_M01" // for testing 
+          this.updatePGR.asset_model = data?.metadata?.asset_model
+          // this.onChangeAssetsModel();
+          this.updatePGR.hierarchy = {}
+          this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+            if(index!=0){
+               //updateModalHierarchy[index] = data?.hierarchy[level]
+               this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+               this.configureHierarchy[index] = data?.hierarchy[level]
+               this.onChangeOfHierarchy(index, 'PG');
+            }
+         })
+        // this.onChangeAssetsModel()
+         this.updatePGR.assets = data?.assets
+         if(this.updatePGR?.asset_model){
+           this.getAssetsModelProperties(this.updatePGR?.asset_model);
+         }
+          
+        $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }
+      else{
+          this.assets = this.originalAssets;
+          this.selectedAssets = this.originalAssets;
+          this.isUpdateReport = false;
+          this.isViewReport = true;
+          this.updatePGR = {}
+          this.updatePGR.report_name = data?.report_name;
+          this.updatePGR.report_category = data?.report_category;
+          this.updatePGR.report_frequency = data?.report_frequency;
+          this.updatePGR.report_type = data?.report_type;
+          this.updatePGR.file_type = data?.file_type;
+          let allProps = []
+          data?.properties?.cd?.forEach((item)=>{
+                allProps.push(item)
+          })
+          data?.properties?.ed?.forEach((edItem)=>{
+                allProps.push(edItem)
+          })
+          data?.properties?.m?.forEach((mItem)=>{
+                allProps.push(mItem)
+          })
+          this.updatePGR.properties = allProps;
+          this.updatePGR.asset_model = data?.metadata?.asset_model
+          this.updatePGR.hierarchy = {}
+          this.contextApp?.hierarchy?.levels?.forEach((level,index)=>{
+            if(index!=0){
+               //updateModalHierarchy[index] = data?.hierarchy[level]
+               this.updatePGR.hierarchy[index] = data?.hierarchy[level]                
+               this.configureHierarchy[index] = data?.hierarchy[level]
+               this.onChangeOfHierarchy(index, 'PG');
+            }
+         })
+         const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.updatePGR?.asset_model);
+         this.assets = [...asset];
+         this.selectedAssets = this.assets;
+         this.updatePGR.assets = data?.assets
+         if(this.updatePGR?.asset_model){
+          this.getAssetsModelProperties(this.updatePGR?.asset_model);
+        }
+
+        $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }
+   }
+
+   backToMain() {
+    this.showPlus = true
+    $(".over-lap").css('display', 'none')
+  }
+
+  dataOfEachReport(){
+    var obj = {
+      offset: this.singleOffset,
+      count : this.singleLimit,
+      report_subscription_id: this.report_id
+    }
+    this.isPGRDataLoading = true
+    this.assetService.getPregeneratedReports(obj,this.contextApp.app).subscribe((res:any)=>{
+      if(res?.data && res?.data?.length < this.singleLimit ){
+        this.singleLoadMoreVisibility = false;
+   }
+    else{
+      this.singleLoadMoreVisibility = true;
+    }
+         this.isPGRDataLoading = false
+         this.pgrData = [...this.pgrData,...res?.data]
+    },(err)=>{
+          this.toasterService.showError(err.message, 'Error')
+          this.isPGRDataLoading = false
+    })
+  }
+
+
+   deleteRecord(){
+     this.assetService.deleteReportRecord(this.contextApp.app,this.recordID).subscribe((response:any)=>{
+      this.prOffset = 0;
+      this.reportsData = [];
+      this.pgrData = [];
+      this.getReportSubscriptionData()
+      this.toasterService.showSuccess('Report deleted successfully !', 'Delete Report')
+     })
+   }
+
+    // showing and hiding modal
+    onModalEvents(eventType) {
+      if (eventType === 'save') {
+        this.deleteRecord()
+        $("#confirmMessageModal").modal('hide');
+      }
+      else {
+        $('#confirmMessageModal').modal('hide');
+      }
+    }
+
+    UpdatePGReports(){
+       
+      if (
+        !this.updatePGR.asset_model ||
+        // !this.reportsObj.assets ||
+        this.updatePGR.assets.length === 0 ||
+        !this.updatePGR.report_name ||
+        !this.updatePGR.report_category ||
+        !this.updatePGR.report_frequency ||
+        !this.updatePGR.report_type
+      ) {
+        this.toasterService.showError('Please fill all required details', 'Update Report');
+        return;
+      }
+      if (!this.updatePGR.hierarchy) {
+        this.updatePGR.hierarchy = { App: this.contextApp.app };
+      }
+      this.assets = [];
+      this.selectedAssets = [];
+      this.updatePGR.metadata = {}
+      this.updatePGR.metadata['asset_model'] = this.updatePGR?.asset_model;
+      delete this.updatePGR?.asset_model
+      const obj = {};
+      const measured_message_props = [];
+      const edge_derived_message_props = [];
+      const cloud_derived_message_props = [];
+      var newprop = []
+      if(!this.updatePGR?.properties[0]?.json_key){
+        this.updatePGR?.properties?.forEach((json_key)=>{
+          
+           var fprop = this.dropdownPropList?.map((item)=>{
+               if(item?.json_key === json_key){
+                return item
+               }
+           })
+           newprop.push(...fprop)
+        })
+      }
+      else{
+         newprop = this.updatePGR?.properties
+      }
+  
+      newprop?.forEach((prop, index) => {
+        if (prop?.value?.type === 'Edge Derived Properties') {
+          edge_derived_message_props?.push(prop?.value?.json_key);
+        } else if (prop?.value?.type === 'Cloud Derived Properties') {
+          cloud_derived_message_props?.push(prop?.value?.json_key);
+        } else {
+          measured_message_props?.push(prop?.value?.json_key);
+        }
+      });
+      obj['m'] = measured_message_props ? measured_message_props : undefined;
+      obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+      obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+      this.updatePGR.properties = { ...obj };
+      this.assetService.updateReportRecord(this.contextApp.app, this.updateId, this.updatePGR).subscribe((response:any)=>{
+        this.toasterService.showSuccess('Report Updated Successfully !', 'Update Report');
+        this.configureHierarchy = {}
+        this.updatePGR.hierarchy = {}
+        this.reportsData = []
+        this.pgrData = []
+        this.prOffset = 0;
+        this.getReportSubscriptionData(); 
+      },(err)=>{
+        this.toasterService.showError(err.message, 'Update Report');
+      })
+      $("#updatePGRModal").modal("hide");
+    }
+
+    UpdatePGRModal(){
+      this.configureHierarchy = []
+      this.assets = [];
+      this.selectedAssets = [];
+      $("#updatePGRModal").modal("hide");
+    }
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

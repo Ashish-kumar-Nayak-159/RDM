@@ -286,9 +286,22 @@
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w">
           <option [ngValue]="null">Select Write Function Code</option>
-          <ng-container>
-            <option [ngValue]="5">Write Single Coil</option>
-            <option [ngValue]="16">Write Multiple Register</option>
+          <!-- <ng-container *ngIf="setupForm.get('d').value !== 's' && (setupForm.get('d').value === 'd' || setupForm.get('fc_r').value !== '4')">
+            <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+          </ng-container> -->
+          <ng-container *ngIf="setupForm.get('d').value === 'a'">
+            <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+            <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+          </ng-container>
+          <ng-container *ngIf="(setupForm.get('d').value === 'd' && (setupForm.get('fc_r').value === 3 || setupForm.get('fc_r').value === 4))">
+            <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+          </ng-container>
+          <ng-container *ngIf="(setupForm.get('d').value === 'd' && setupForm.get('fc_r').value !== 3 && setupForm.get('fc_r').value !== 4)">
+            <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+            <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+          </ng-container>
+          <ng-container *ngIf="setupForm.get('d').value === 's'">
+            <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
           </ng-container>
         </select>
       </div>

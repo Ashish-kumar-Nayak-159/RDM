@@ -21,7 +21,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
-  @Input() isCloneEdit: any;
+  @Input() isCloneEdit : boolean = false;
   @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;
@@ -65,6 +65,8 @@ export class AddRuleComponent implements OnInit {
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
+
+  overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -87,7 +89,7 @@ export class AddRuleComponent implements OnInit {
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
-      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" ? 300000000 : this.ruleModel.escalation_time_in_sec;
+      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" || this.contextApp.app == "IndygoBeta" ? 300000000 : this.ruleModel.escalation_time_in_sec;
       this.getAlertConditions('Cloud');
     }
     if (this.isClone) {
@@ -268,7 +270,7 @@ export class AddRuleComponent implements OnInit {
 
   }
 
-  getAssetsModelProperties() {
+  getAssetsModelProperties(item:any = {}) {
     let obj = {
       app: this.contextApp.app,
       name: this.asset ? this.asset.tags.asset_model : this.name,
@@ -297,11 +299,12 @@ export class AddRuleComponent implements OnInit {
           this.propertyList.push(prop);
         });
       }
-      // this.dropdownPropList = [];
+      let localDropDownPropList = [];
+      this.dropdownPropList = [];
       this.propertyList.forEach((prop) => {
         if (prop.data_type === 'String' || prop.data_type === 'Number' || prop.data_type === 'Boolean') {
-          if (!this.ruleModel?.metadata?.sid || prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid) {
-            this.dropdownPropList.push({
+          if (!this.ruleModel?.metadata?.sid || (prop?.metadata?.slave_id == this.ruleModel?.metadata?.sid)) {
+            localDropDownPropList.push({
               id: prop.name,
               type: prop.type,
               json_key: prop.json_key,
@@ -310,7 +313,7 @@ export class AddRuleComponent implements OnInit {
           }
         }
       });
-      this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+      this.dropdownPropList = JSON.parse(JSON.stringify(localDropDownPropList));
     });
   }
 
@@ -364,8 +367,12 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
     this.ruleModel.actions.alert_management.severity = null;
   }
-  onSlaveSelection() {
-    this.getAssetsModelProperties();
+  onSlaveSelection(item) {
+    this.ruleModel.conditions.map((detail)=>{
+      detail.property = null;
+      return detail;
+    })
+    this.getAssetsModelProperties(item);
   }
 
   onChangeOfSendEmailCheckbox() {
@@ -426,9 +433,19 @@ export class AddRuleComponent implements OnInit {
 
   closeRuleModal(status) {
     this.isCloneEdit = false;
-    this.onCloseRuleModel.emit({
-      status: status,
-    });
+    if(this.overrideRuleMapping == true) {
+      this.overrideRuleMapping = false;
+      this.onCloseRuleModel.emit({
+        status: status,
+        selectedAssetModel:this.ruleModel,
+        overrideRuleMapping:true,
+      });
+    } else {
+      this.onCloseRuleModel.emit({
+        status: status,
+      });
+    }
+
     $('#addRuleModal').modal('hide');
     this.isEdit = false;
   }
@@ -449,6 +466,7 @@ export class AddRuleComponent implements OnInit {
       type: '',
       bolCon: true,
       strText: null,
+      newRuleForOverride:true
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -573,6 +591,7 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
+          this.overrideRuleMapping = true;
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });
@@ -662,12 +681,12 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     let method;
-
     method = !this.ruleModel.isEdgeRule
       ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
       : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
     method.subscribe(
       (response: any) => {
+        this.overrideRuleMapping = true;
         // this.onCloseRuleModel.emit({
         //   status: true,
         // });
@@ -754,6 +773,7 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
+          this.overrideRuleMapping = true;
           // this.onCloseRuleModel.emit({
           //   status: true,
           // });

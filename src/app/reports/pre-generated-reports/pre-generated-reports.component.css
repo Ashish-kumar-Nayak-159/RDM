@@ -1,6 +1,12 @@
 .report-table {
   height: calc(100vh - 14.5rem)
 }
+#table-top-1{
+  height: calc(100vh - 13.5rem)
+}
+#table-top-2{
+  height: calc(100vh - 14rem)
+}
 .w-16 {
   width: 16rem;
 }
@@ -16,4 +22,18 @@ a.mr-1{
 }
 .pull-right{
   float: none;
+}
+.icon-gray{
+  color: #676c6e;
+}
+
+
+.over-lap{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  display: none;
+  /* position: absolute; */
+  top: 0;
+  z-index: 2;
 }

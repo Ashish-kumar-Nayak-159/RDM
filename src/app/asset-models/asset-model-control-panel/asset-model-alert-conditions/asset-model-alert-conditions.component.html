@@ -1,3 +1,4 @@
+
 <div class="tab-bar">
   <div class="">
     <ul class="nav">
@@ -8,7 +9,7 @@
           <span class="text-secondary">External Alerts
           </span></a>
       </li>
-      <li class="nav-item" *ngIf="contextApp.app!='Indygo'">
+      <li class="nav-item" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>
@@ -129,36 +130,34 @@
                   *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
                   <div class="form-inline">
                     <ng-container>
-                      <div class="form-group">
-                        <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
-                          clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
-                          groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
-                          name="model_type" [(ngModel)]="selectedWidgets"
-                          (onDeSelectAll)="onDeselectAll($event,'widget')">
-                          <ng-template ng-multi-label-tmp let-items="items">
-                            {{items.length}} widgets selected
-                          </ng-template>
-                          <ng-template ng-header-tmp>
-                            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                              <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
-                                  (click)="selectedWidgets = widgets">Select All</a></li>
-                              <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
-                                  (click)="selectedWidgets = []">Deselect All</a></li>
-                            </ul>
-                          </ng-template>
-                          <ng-template ng-option-tmp let-item="item">
-                            <span [tooltip]="item.title">
-                              {{item.title}}</span>
-                          </ng-template>
-                        </ng-select>
-                      </div>
-                      <div class="form-group">
-                        <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
-                        <em class="fa fa-plus fa-sm"></em> </a> -->
-                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
-                          (click)="addVisualizationWidget()">
-                          <em class="fa fa-plus fa-sm"></em></button>
-                      </div>
+                        <div class="form-group" #addVisulizationWidgetDiv>
+                          <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
+                            clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
+                            groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
+                            name="model_type" [(ngModel)]="selectedWidgets"
+                            (onDeSelectAll)="onDeselectAll($event,'widget')">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                              {{items.length}} widgets selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                              <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                <li *ngIf="widgets.length !== selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = widgets">Select All</a></li>
+                                <li *ngIf="widgets.length === selectedWidgets.length"> <a href="javascript:void(0)"
+                                    (click)="selectedWidgets = []">Deselect All</a></li>
+                              </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                              <span [tooltip]="item.title">
+                                {{item.title}}</span>
+                            </ng-template>
+                          </ng-select>
+                        </div>
+                        <div class="form-group">
+                          <button type="button" class="addWidgetBtn btn btn-primary btn-sm  mx-2" placement="bottom" tooltip="Add"
+                            (click)="addVisualizationWidget()">
+                            <em class="fa fa-plus fa-sm"></em></button>
+                        </div>
                     </ng-container>
                   </div>
                 </div>
@@ -308,12 +307,12 @@
                     tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><em
                       class="fa fa-save fa-sm"></em></button>
                 </div>
-                <div class="col-12 my-3 accordion-padding ">
+                <div class="col-12 my-3 accordion-padding " #documentSelectionDiv>
 
                   <div class=""
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                    <h6 *ngIf="contextApp.app!='Indygo'">Email / Whatsapp Attachments: </h6>
-                    <h6 *ngIf="contextApp.app=='Indygo'">Email Attachments: </h6>
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed" #documentSelectionDiv>
+                    <h6 *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">Email / Whatsapp Attachments: </h6>
+                    <h6 *ngIf="contextApp.app=='Indygo'  || contextApp.app =='IndygoBeta'">Email Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><em class="fa fa-plus fa-sm"></em></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -322,7 +321,7 @@
 
                   <div class=""
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                    <div class="form-inline">
+                    <div class="form-inline" #documentSelectionDiv>
                       <ng-container>
                         <div class="form-group">
                           <ng-select [items]="documents" class="custom-dropdown w-12 sm" [searchable]="true"
@@ -447,9 +446,9 @@
                     </div>
                   </div>
 
-                  <hr *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">
 
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">
                     <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
                       [(ngModel)]="alertObj.actions.whatsapp.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
@@ -510,9 +509,9 @@
                     </div>
                   </div>
 
-                  <hr *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
 
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
                       [(ngModel)]="alertObj.actions.sms.enabled"
@@ -577,8 +576,8 @@
 
                     </div>
                   </div>
-                  <hr *ngIf="contextApp.app!='Indygo'">
-                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'">
+                  <hr *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
+                  <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
                     <input type="checkbox" class="form-check-input" id="push_notification" name="push_notification"
                     [(ngModel)]="alertObj.actions.push_notification.enabled"
                     [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel.freezed">
@@ -588,7 +587,7 @@
                   <div class="col-auto">
                     <div class=""
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                      <div class="form-inline">
+                      <div class="form-inline" #addUserGroupDiv>
                         <ng-container>
                           <div class="form-group">
                             <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
@@ -699,7 +698,7 @@
               [(ngModel)]="alertObj.alert_type" (change)="onChangeOfAlertSource()">
               <option [ngValue]="undefined">Select Alert Source</option>
               <option [ngValue]="'Asset'">External Alert</option>
-              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo'">Edge Alert</option>
+              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">Edge Alert</option>
               <option [ngValue]="'Cloud'">Cloud Alert</option>
             </select>
           </div>

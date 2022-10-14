@@ -804,6 +804,26 @@ export class AssetService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
   }
 
+  getReportSubscription(app,filterObj?:any){
+    let params = new HttpParams();
+    if(filterObj){
+      Object?.keys(filterObj)?.forEach((key) => {
+        if (filterObj[key]) {
+          params = params.set(key, filterObj[key]);
+        }
+      });
+    }
+    return this.http.get(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), {params});
+  }
+
+  deleteReportRecord(app,id){
+    return this.http.delete(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`);
+  }
+
+  updateReportRecord(app,id,obj){
+    return this.http.put(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`,obj);
+  }
+
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
@@ -814,6 +834,10 @@ export class AssetService {
     return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS, encodeURIComponent(app)), {
       params,
     });
+  }
+
+  eachPregeneratedReportsData(app){
+     return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS, encodeURIComponent(app)))
   }
 
   getAssetTwin(app, assetId) {
@@ -1181,6 +1205,19 @@ export class AssetService {
     });
     return this.http.get(
       this.url + String.Format(AppUrls.GET_ASSET_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetId)),
+      { params }
+    );
+  }
+  getAssetCellDetails(filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(
+      this.url 
+      + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
       { params }
     );
   }

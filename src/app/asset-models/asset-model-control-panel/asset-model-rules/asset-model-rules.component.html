@@ -7,7 +7,7 @@
           <em class="fa fa-fw fa-cloud"></em>
           Cloud Rules</a>
       </li>
-      <li class="nav-item" *ngIf="contextApp.app!='Indygo'">
+      <li class="nav-item" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>
@@ -44,7 +44,7 @@
         Select a existing rule to clone.
       </div>
       <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isClone]="isCloneRule"
-        [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
+        [ruleData]="ruleData" [isCloneEdit]="false" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
     </div>
     <div *ngIf="!isAddRule && !isCloneRule">
       <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>

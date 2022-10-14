@@ -9,6 +9,8 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as datefns from 'date-fns';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+
 declare var $: any;
 
 @Component({
@@ -41,13 +43,16 @@ export class RulesComponent implements OnInit {
   filteredRuleList : any = [];
   ruleMappingForm;
   isApiLoading : boolean = false;
-
+  toggleRuleKey;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  overRidedRule : any = {};
+  ruleType;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private assetModelService : AssetModelService,
   ) {}
 
   ngOnInit(): void {
@@ -93,14 +98,14 @@ export class RulesComponent implements OnInit {
   }
  
   overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, action) {
-    debugger
-      this.onAccordionClick('Asset');
+    this.onAccordionClick('Asset');
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
       if (action === 'toggle' || action === '') {
         this.toggleRows = {};
       }
     } else {
       this.toggleRows = {};
+      this.toggleRuleKey = this.selectedTab + '_' + type + '_' + i;
       this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
     }
     delete rule["created_by"];
@@ -109,7 +114,7 @@ export class RulesComponent implements OnInit {
     delete rule["deployed_on"];
     delete rule["updated_by"];
     delete rule["updated_date"];
-    this.modeltoAssetrules.push(rule);
+    this.modeltoAssetrules = [rule];
     this.isEdit = isEdit;
     this.isView = isView;
     this.isCloneEdit = isCloneEdit;
@@ -140,8 +145,7 @@ export class RulesComponent implements OnInit {
   }
 
   getRules() {
-    this.modelrules = [];
-    this.assetRules = [];
+    
     this.isRulesLoading = true;
     const obj = {
       type: this.selectedTab,
@@ -150,31 +154,41 @@ export class RulesComponent implements OnInit {
       this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
         (response: any) => {
           if (response?.data) {
-            // this.modelrules = response.data;
-            response.data.forEach((rule) => {
-              if (rule.updated_date) {
-                rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
-                rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
+            if(this.overRidedRule?.code) {
+              let rule = response.data.filter(detail => detail.code == this.overRidedRule.code && detail.source == "Asset");
+              if(rule.length>0) {
+                this.deployRuleed(rule[0]);
               }
-              if (rule.deployed_on) {
-                rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
-                rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
-              }
-              if (rule.synced_on) {
-                rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
-                rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
-              }
-              if (rule.source === 'Model') {
-                this.modelrules.push(rule);
-              } else {
-                this.assetRules.push(rule);
-              }
-            });
+            } else {
+              this.isRulesLoading = false;
+              this.modelrules = [];
+              this.assetRules = [];
+              response.data.forEach((rule) => {
+                if (rule.updated_date) {
+                  rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
+                  rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
+                }
+                if (rule.deployed_on) {
+                  rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
+                  rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
+                }
+                if (rule.synced_on) {
+                  rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
+                  rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
+                }
+                if (rule.source === 'Model') {
+                  this.modelrules.push(rule);
+                } else {
+                  this.assetRules.push(rule);
+                }
+              });
+            }
             if (this.modelrules.length === 0) {
               this.selectedAccrodionType = 'Asset';
             }
+          } else {
+            this.isRulesLoading = false;
           }
-          this.isRulesLoading = false;
         },
         (error) => (this.isRulesLoading = false)
       )
@@ -182,6 +196,9 @@ export class RulesComponent implements OnInit {
   }
 
   onCloseRuleModel(event) {
+    if(event.overrideRuleMapping) {
+      this.overRidedRule = event.selectedAssetModel;
+    }
     this.isAddRule = false;
     this.isCloneRule = false;
     if (event.status) {
@@ -233,18 +250,23 @@ export class RulesComponent implements OnInit {
       .subscribe(
         (response: any) => {
           this.onCloseDeleteModal();
+          if(!this.overRidedRule?.code) {
+            this.toasterService.showSuccess(
+              isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
+              isRevert ? 'Disable Rule' : 'Enable Rule'
+            );
+          }
+          this.overRidedRule = {};
           this.getRules();
           // this.toggleRows = {};
           this.isDeleteRuleLoading = false;
-          this.toasterService.showSuccess(
-            isRevert ? 'Rule Disabled successfully' : 'Rule Enabled successfully',
-            isRevert ? 'Disable Rule' : 'Enable Rule'
-          );
+          
         },
         (err: HttpErrorResponse) => {
           this.isDeleteRuleLoading = false;
           this.toasterService.showError(err.message, isRevert ? 'Disable Rule' : 'Enable Rule');
           this.onCloseDeleteModal();
+          this.overRidedRule = {};
         }
       );
   }
@@ -354,6 +376,7 @@ export class RulesComponent implements OnInit {
     this.isDeleteRuleLoading = false;
   }
   async onMappingRule(rule,ruleType) {
+    this.ruleType = ruleType;
     this.isApiLoading = false;
     this.modalConfig = {
       stringDisplay: true,
@@ -394,36 +417,70 @@ export class RulesComponent implements OnInit {
   }
   onSaveModal(event) {
     this.isApiLoading = true;
-    const obj = {
-      rule_code : this.selectedrule.code,
-      asset_id : this.asset.asset_id,
-      link_rule_code : this.ruleMappingForm.get('selectedRuleList').value,
-    }
-    this.assetService.assetRuleMapping(obj).subscribe(
-      (response: any) => {
-        this.modelrules.map((detail)=>{
-          if(detail.rule_id == this.selectedrule.rule_id) {
-            detail.link_rule_code = obj.link_rule_code;
-          }
-          return detail;
-        })
-        this.assetRules.map((detail)=>{
-          if(detail.rule_id == this.selectedrule.rule_id) {
-            detail.link_rule_code = obj.link_rule_code;
-          }
-          return detail;
-        })
-
-        this.isApiLoading = false;
-        this.toasterService.showSuccess(response.message, 'Mapping Rule');
-        this.onCloseModal();
-      },
-      (err) => {
-        this.isApiLoading = false;
-        this.toasterService.showError(err.message, 'Mapping Rule');
-        this.onCloseModal();
+    if(this.ruleType == 'assetRules') {
+      const obj = {
+        rule_code : this.selectedrule.code,
+        asset_id : this.asset.asset_id,
+        link_rule_code : this.ruleMappingForm.get('selectedRuleList').value,
       }
-    );
+      this.assetService.assetRuleMapping(obj).subscribe(
+        (response: any) => {
+          this.modelrules.map((detail)=>{
+            if(detail.rule_id == this.selectedrule.rule_id) {
+              detail.link_rule_code = obj.link_rule_code;
+            }
+            return detail;
+          })
+          this.assetRules.map((detail)=>{
+            if(detail.rule_id == this.selectedrule.rule_id) {
+              detail.link_rule_code = obj.link_rule_code;
+            }
+            return detail;
+          })
+  
+          this.isApiLoading = false;
+          this.toasterService.showSuccess(response.message, 'Mapping Rule');
+          this.onCloseModal();
+        },
+        (err) => {
+          this.isApiLoading = false;
+          this.toasterService.showError(err.message, 'Mapping Rule');
+          this.onCloseModal();
+        }
+      );
+    } else {
+      const obj = {
+        rule_code : this.selectedrule.code,
+        model_name : this.asset.tags.asset_model,
+        link_rule_code : this.ruleMappingForm.get('selectedRuleList').value,
+      }
+      this.assetModelService.assetModelRuleMapping(obj).subscribe(
+        (response: any) => {
+          this.modelrules.map((detail)=>{
+            if(detail.rule_id == this.selectedrule.rule_id) {
+              detail.link_rule_code = obj.link_rule_code;
+            }
+            return detail;
+          })
+          this.assetRules.map((detail)=>{
+            if(detail.rule_id == this.selectedrule.rule_id) {
+              detail.link_rule_code = obj.link_rule_code;
+            }
+            return detail;
+          })
+
+          this.isApiLoading = false;
+          this.toasterService.showSuccess(response.message, 'Mapping Rule');
+          this.onCloseModal();
+        },
+        (err) => {
+          this.isApiLoading = false;
+          this.toasterService.showError(err.message, 'Mapping Rule');
+          this.onCloseModal();
+        }
+      );
+    }
+    
   }
 
   ngOnDestroy() {

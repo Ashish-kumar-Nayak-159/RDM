@@ -23,10 +23,11 @@
               <div class="form-group" *ngIf="hIndex !== 0">
                 <label for="message-text" class="col-form-label">{{level}}:</label>
                 <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
-                  [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
+                  [(ngModel)]="addAssetConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level] ||  isHierarchyEditable"
                   (change)="onChangeOfAddAssetHierarchy(hIndex)">
                   <option [ngValue]="undefined"> Select {{level}}</option>
                   <option [ngValue]="tag.key" *ngFor="let tag of addAssetHierarchyArr[hIndex]">{{tag.name}}</option>
+           
                 </select>
               </div>
             </ng-container>
@@ -35,9 +36,9 @@
             <div class="form-group" *ngIf="decodedToken?.privileges?.indexOf('WASMP') > -1">
               <label for="whitelist_asset" class="col-form-label">WhiteListed Asset:</label>
               <select class="form-control form-control-sm" id="whitelist_asset" name="whitelist_asset"
-                (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset">
+                (change)="onWhitelistedAssetChange()" [(ngModel)]="selectedWhitelistAsset" >
                 <option [ngValue]="undefined">Select Asset</option>
-                <option *ngFor="let asset of whiteListedAssets" [ngValue]="asset">{{asset.display_name}}</option>
+                <option *ngFor="let asset of whiteListedAssetsfilter" [ngValue]="asset">{{asset.display_name}}</option>
               </select>
             </div>
             <!-- End Whitelist Asset -->
@@ -46,7 +47,7 @@
             <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
               <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
                 ID:</label>
-              <input #asset_id="ngModel" validateText type="text" class="form-control form-control-sm" id="asset_id"
+              <input #asset_id="ngModel" [disabled]="isHierarchyEditable"  validateText type="text" class="form-control form-control-sm" id="asset_id"
                 name="asset_id" [(ngModel)]="assetDetail.asset_id"
                 placeholder="Enter {{(tileData  ? tileData.table_key : '')}} ID">
               <div *ngIf="asset_id.errors?.whitespace && asset_id.touched" class="alert-danger">

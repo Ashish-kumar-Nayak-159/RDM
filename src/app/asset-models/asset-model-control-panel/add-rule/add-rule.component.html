@@ -71,7 +71,7 @@
             <div class="col-auto">
             <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
-                [disabled]="contextApp.app == 'Indygo' ? true : isView"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
+                [disabled]="contextApp.app == 'Indygo' ? true : isView || isCloneEdit"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
               </ui-switch>
             </div>
           </div>
@@ -80,7 +80,7 @@
             <div class="col-auto">
               <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test1"
                 uncheckedTextColor="white" (valueChange)="onRuleCategorySwitchChange($event)" checkedLabel="KPIX Analytics"
-                [disabled]="isView"  uncheckedLabel="Stream Analytics" name="tpye" [(ngModel)]="ruleModel.isKpixCategory">
+                [disabled]="isView || isCloneEdit"  uncheckedLabel="Stream Analytics" name="tpye" [(ngModel)]="ruleModel.isKpixCategory">
               </ui-switch>
             </div>
         </div>
@@ -97,8 +97,8 @@
           <div class="form-group row"  *ngIf="!(!ruleModel.isEdgeRule && ruleModel.isKpixCategory && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway') && (ruleModel.rule_type==='ICT' || ruleModel.rule_type==='ILT'))">
             <label for="slaveid" class="col-3">Slave</label>
             <div class="col-6">
-              <select id="slave_id" [(ngModel)]="ruleModel.metadata.sid" name="slave_id" [disabled]="isView"
-                class="form-control form-control-sm w-auto" (change)="onSlaveSelection()">
+              <select id="slave_id" [(ngModel)]="ruleModel.metadata.sid" name="slave_id" [disabled]="isView || isCloneEdit"
+                class="form-control form-control-sm w-auto" (change)="onSlaveSelection(ruleModel.metadata.sid)">
                 <option [ngValue]="undefined">Select Slave</option>
                 <option [ngValue]="item.slave_id" *ngFor="let item of slaveData">{{item.slave_name}}</option>
               </select>
@@ -195,7 +195,7 @@
                     <!-- <input type="number" class="form-control form-control-sm"
                                                     placeholder="Escalation Time" name="escalation_time_in_sec"
                                                     [(ngModel)]="ruleModel.escalation_time_in_sec" required> -->
-                    <select *ngIf="contextApp.app!='Indygo'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
+                    <select *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
                       name="escalation_time_in_sec" [disabled]="isView" class="form-control form-control-sm w-auto">
                       <option [ngValue]="undefined">Select Escalation Time</option>
                       <!-- <option [ngValue]="0">0 minutes</option> -->
@@ -206,7 +206,7 @@
                       <option [ngValue]="86400">1 day</option>
                       <option [ngValue]="300000000">Infinite</option>
                     </select>
-                    <select *ngIf="contextApp.app==='Indygo'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
+                    <select *ngIf="contextApp.app ==='Indygo' ||  contextApp.app ==='IndygoBeta'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
                     name="escalation_time_in_sec" [disabled]="isView" class="form-control form-control-sm w-auto">
                     <option [ngValue]="300000000">Infinite</option>
                   </select>
@@ -229,18 +229,11 @@
             <div class="form-group row"  *ngFor="let condition of ruleModel.conditions; let i = index;">
               <div class="col-3" >
                 <label for="examplePassword" class="mb-2 required">Telemetry</label>
-                <!-- <select placeholder="Telemetry" name="telemetry_{{i}}"
-                                                class="form-control form-control-sm" [(ngModel)]="condition.property"
-                                                required>
-                                                <option [ngValue]="''">Select Telemetry</option>
-                                                <option *ngFor="let prop of dropdownPropList"
-                                                    [ngValue]="prop.value.json_key">
-                                                    {{prop.id}}</option>
-                                            </select> -->
                   <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" required name="telemetry_{{i}}"
                   [clearable]="false" [searchable]="true" bindLabel="id" *ngIf="!isView" [closeOnSelect]="true"
                   placeholder="Select Property" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
-                  bindValue="json_key" [(ngModel)]="condition.property" required (change) = "fillOperator(condition.property)">
+                  bindValue="json_key" [(ngModel)]="condition.property" required (change) = "fillOperator(condition.property)" 
+                  [disabled]="isCloneEdit && condition.property && !condition.newRuleForOverride">
                   <ng-template ng-option-tmp let-item="item">
                       <span [tooltip]="item.id">
                       <em [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties'  

@@ -119,6 +119,7 @@ import { HistoricalLivechartComponent } from './charts/historical-livechart/hist
     CylinderWidgetComponent,
     FormValidatorDirective,
     BsDatepickerModule,
+    HistoricalLivechartComponent
 
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },BsDatepickerConfig],

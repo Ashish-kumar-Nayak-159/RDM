@@ -21,7 +21,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
-  @Input() isCloneEdit: any;
+  @Input() isCloneEdit : boolean = false;
   @Input() isClone: any;
   @Input() isView = false;
   @Input() ruleData: any;

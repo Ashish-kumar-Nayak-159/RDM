@@ -420,6 +420,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
+          this.currentOffset = 0;
           this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
@@ -449,6 +450,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
+          this.currentOffset = 0;
           this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
@@ -477,6 +479,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
+          this.currentOffset = 0;
           const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
           if (item) {
             delete item.assets;

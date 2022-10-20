@@ -416,6 +416,7 @@ export class WhiteListAssetListComponent implements OnInit {
           this.isAPILoading = false;
           this.assetsList = [];
           this.selectedAssets = [];
+          this.currentOffset = 0
           this.getAssets(); 
           this.getAssetTimeout();
         },
@@ -425,7 +426,6 @@ export class WhiteListAssetListComponent implements OnInit {
         }
       )
     );
-
   }
 
 }

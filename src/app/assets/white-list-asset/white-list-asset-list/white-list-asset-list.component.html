@@ -8,6 +8,7 @@
                 <th scope="col" *ngIf="type !== constantData.NON_IP_ASSET">Provision Status</th>
                 <th scope="col">Protocol</th>
                 <th scope="col">Cloud Connectivity</th>
+                <th scope="col">Hierarchy</th>
                 <th scope="col">Un-Whitelist</th>
             </thead>
             <tbody>
@@ -20,6 +21,7 @@
                             'Non-Provisioned'}}</td>
                         <td>{{asset.protocol}}</td>
                         <td>{{asset.cloud_connectivity}}</td>
+                        <td>{{asset.hierarchyString}}</td>
                         <td>
                             <a href="javascript:void(0)" placement="bottom" tooltip="Cancel"
                                 (click)="unWhitelistAsset(asset.asset_id);"><em class="fa fa-times"></em></a>

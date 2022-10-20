@@ -52,6 +52,9 @@ export class WhiteListAssetListComponent implements OnInit {
   tabData: any;
   decodedToken: any;
   selectedAsset: any;
+  parentid:any;
+  actualhierarchyNewArr = [];
+
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -62,6 +65,7 @@ export class WhiteListAssetListComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getTileName();
     this.assetsList = [];
     this.getAssets(); 
@@ -120,7 +124,7 @@ export class WhiteListAssetListComponent implements OnInit {
   }
   async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
-    const obj: any = {type : this.type,provisioned: 'false'};
+    const obj: any = {type : this.type,provisioned: 'false', count: this.currentLimit, offset: this.currentOffset};
     let methodToCall;
     methodToCall = this.assetService.getWhiteListedAsset(obj, this.contextApp.app);
     this.subscriptions.push(
@@ -131,13 +135,15 @@ export class WhiteListAssetListComponent implements OnInit {
               if (!item.display_name) {
                 item.display_name = item.asset_id;
               }
-              if (item.hierarchy) {
+              if (item.hierarchy_json) {
                 item.hierarchyString = '';
-                const keys = Object.keys(item.hierarchy);
+                const keys = Object.keys(item.hierarchy_json);
+                this.parentid = 0;
                 this.contextApp.hierarchy.levels.forEach((key, index) => {
-                  item.hierarchyString += item.hierarchy[key]
-                    ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                    : '';
+                  if(index != 0)
+                  item.hierarchyString +=  item.hierarchy_json[key] ? this.getDisplayHierarchyString(index,item.hierarchy_json[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                  else
+                  item.hierarchyString +=  item.hierarchy_json[key] ? item.hierarchy_json[key] + (keys[index + 1] ? ' / ' : '') : '';
                 });
               }
               if (this.type === CONSTANTS.NON_IP_ASSET) {
@@ -163,6 +169,7 @@ export class WhiteListAssetListComponent implements OnInit {
       )
     );
   }
+  
 
   openAssetCreateModal(asset = undefined) {
     this.selectedAsset = asset;
@@ -385,6 +392,14 @@ export class WhiteListAssetListComponent implements OnInit {
     }
   }
 
+  getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == index && r.key == hierarchyKey && r.parent_id == parentid);
+    if (selectedHierarchy) {
+      this.parentid = selectedHierarchy.id;
+      return selectedHierarchy.name;
+    }
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
@@ -401,6 +416,7 @@ export class WhiteListAssetListComponent implements OnInit {
           this.isAPILoading = false;
           this.assetsList = [];
           this.selectedAssets = [];
+          this.currentOffset = 0
           this.getAssets(); 
           this.getAssetTimeout();
         },
@@ -410,7 +426,6 @@ export class WhiteListAssetListComponent implements OnInit {
         }
       )
     );
-
   }
 
 }

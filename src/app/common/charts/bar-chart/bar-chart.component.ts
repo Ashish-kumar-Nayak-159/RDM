@@ -6,6 +6,8 @@ import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import am4fonts_notosans_jp from '../CustomFont/notosans-jp'
+
 declare var $: any;
 
 @Component({
@@ -191,6 +193,15 @@ export class BarChartComponent implements OnInit, OnDestroy {
       });
       chart.exporting.dataFields = this.chartDataFields;
       chart.exporting.getFormatOptions('pdf').addURL = false;
+      chart.exporting.getFormatOptions('pdf').addURL = false;
+      var pdf = chart.exporting.getFormatOptions("pdf");
+      chart.exporting.getFormatOptions('pdf').addURL = false;
+      chart.exporting.getFormatOptions('pdfdata').addURL = false;
+      var pdfdata =chart.exporting.getFormatOptions("pdfdata");
+      chart.exporting.events.on("exportstarted", function(ev) {
+        chart.exporting.timeoutDelay= 20000;
+      })
+      pdfdata.font = am4fonts_notosans_jp;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
       if (chart.data.length > 0) {
         if (this.selectedAlert) {

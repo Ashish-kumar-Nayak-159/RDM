@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from './../../../services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
@@ -58,14 +59,14 @@ export class WhiteListAssetListComponent implements OnInit {
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private applicationService:ApplicationService
   ) { }
 
-  ngOnInit(): void {
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+  async ngOnInit() {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);    
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+  await this.getHierarchy();
     this.getTileName();
     this.assetsList = [];
     this.getAssets(); 
@@ -104,7 +105,18 @@ export class WhiteListAssetListComponent implements OnInit {
     }
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
-
+async getHierarchy()
+{
+  this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe(async (response: any) => {
+    localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+    if(response)
+    {
+      this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+      this.actualhierarchyNewArr = await this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+    }
+  });  
+  
+}
   getAssetTimeout()
   {
     setTimeout(() => {

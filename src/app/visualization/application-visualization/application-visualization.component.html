@@ -425,7 +425,7 @@
                 <ng-template #actionTakenTemplate>
                   <div class="table-responsive col-xl-12 col-lg-12">
                     <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
-                      {{selectedAlert?.metadata?.acknowledged_date}}.</p>
+                      {{selectedAlert?.metadata?.acknowledged_date_locale}}.</p>
                     <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
                       'NA'}}</p>
                     <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>

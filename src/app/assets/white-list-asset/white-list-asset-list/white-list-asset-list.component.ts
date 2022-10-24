@@ -66,11 +66,13 @@ export class WhiteListAssetListComponent implements OnInit {
   async ngOnInit() {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);    
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-  await this.getHierarchy();
-    this.getTileName();
-    this.assetsList = [];
-    this.getAssets(); 
-    this.getAssetTimeout();
+    let c = this.getHierarchy();
+    await Promise.all([c])
+      .then(result => {
+      }) // Then ["Resolved!", "Rejected!"]
+      .catch(err => console.log('Catch', err));
+  //await this.getHierarchy();
+  
   }
   getTileName() {
     let selectedItem;
@@ -113,6 +115,10 @@ async getHierarchy()
     {
       this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
       this.actualhierarchyNewArr = await this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+       this.getTileName();
+        this.assetsList = [];
+        this.getAssets(); 
+        this.getAssetTimeout();
     }
   });  
   
@@ -152,9 +158,10 @@ async getHierarchy()
                 const keys = Object.keys(item.hierarchy_json);
                 this.parentid = 0;
                 this.contextApp.hierarchy.levels.forEach((key, index) => {
-                  if(index != 0)
+                  if(index != 0){
+                    debugger
                   item.hierarchyString +=  item.hierarchy_json[key] ? this.getDisplayHierarchyString(index,item.hierarchy_json[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
-                  else
+                  }else
                   item.hierarchyString +=  item.hierarchy_json[key] ? item.hierarchy_json[key] + (keys[index + 1] ? ' / ' : '') : '';
                 });
               }

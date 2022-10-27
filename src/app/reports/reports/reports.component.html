@@ -200,11 +200,11 @@
           </form>
         </div>
         <p class="m-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</p>
-        <div class="filter-bar" *ngIf="isFilterSelected || isTelemetryLoading">
+        <div class="filter-bar" *ngIf="isFilterSelected || isTelemetryLoading ">
           <h5 class="mb-0" *ngIf="isFilterSelected || isTelemetryLoading">{{originalFilterObj.report_type}}
-            <a href="javascript:void(0)" (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><em
+            <a  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RSM') > -1"  href="javascript:void(0)" (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><em
                 class="fa fa-sm fa-file-pdf-o"></em></a>
-            <a href="javascript:void(0)" (click)="saveExcel()" placement="bottom" tooltip="Export as Excel"
+            <a *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RSM') > -1" href="javascript:void(0)" (click)="saveExcel()" placement="bottom" tooltip="Export as Excel"
               class="ml-1"><em class="fa fa-sm fa-file-excel-o"></em></a>
             <!-- <em  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></em> -->
           </h5>

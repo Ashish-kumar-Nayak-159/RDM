@@ -6,6 +6,8 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ChartService } from 'src/app/services/chart/chart.service';
 import { environment } from './../../../../environments/environment';
 import { CommonService } from './../../../services/common.service';
+import am4fonts_notosans_jp from '../CustomFont/notosans-jp'
+
 declare var $: any;
 @Component({
   selector: 'app-live-chart-data',
@@ -202,6 +204,15 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.exporting.dataFields = this.chartDataFields;
       chart.zoomOutButton.disabled = true;
       chart.exporting.getFormatOptions('pdf').addURL = false;
+      var pdf = chart.exporting.getFormatOptions("pdf");
+      pdf.font = am4fonts_notosans_jp;
+      chart.exporting.getFormatOptions('pdf').addURL = false;
+      chart.exporting.getFormatOptions('pdfdata').addURL = false;
+      var pdfdata =chart.exporting.getFormatOptions("pdfdata");
+      chart.exporting.events.on("exportstarted", function(ev) {
+        chart.exporting.timeoutDelay= 20000;
+      })
+      pdfdata.font = am4fonts_notosans_jp;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
       if (chart.data.length > 0) {
         if (this.selectedAlert) {

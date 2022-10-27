@@ -425,7 +425,7 @@
                 <ng-template #actionTakenTemplate>
                   <div class="table-responsive col-xl-12 col-lg-12">
                     <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
-                      {{selectedAlert?.metadata?.acknowledged_date}}.</p>
+                      {{selectedAlert?.metadata?.acknowledged_date_locale}}.</p>
                     <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
                       'NA'}}</p>
                     <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
@@ -443,18 +443,18 @@
                           style="width: 100%;height: 80vh"></iframe>
                       </ng-container> -->
                       <div class="table-responsive">
-                        <div class="tableFixHead">
+                        <!-- <div class="tableFixHead"> -->
                           <app-common-table [tableData]="selectedAlert?.metadata?.files" [tableConfig]="docTableConfig"
                             [isTableFilterSelected]="true" [isTableDataLoading]="isAlertModalDataLoading"
                             (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
-                        </div>
+                        <!-- </div> -->
                       </div>
                     </div>
                   </div>
                 </ng-template>
               </li>
               <li>
-                <h6 class="py-2 font-weight-light-bold">Action taken by KpiX:</h6>
+                <h6 class="py-2 font-weight-light-bold mt-3">Action taken by KpiX:</h6>
                 <div class="col-xl-12 col-lg-12">
                   No Actions recorded by KpiX yet.
                 </div>

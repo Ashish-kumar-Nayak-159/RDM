@@ -708,7 +708,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.aggregation_format = 'AVG';
     this.onChangeTimeValue();
     if (this.selectedAlert?.metadata?.acknowledged_date) {
-      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(
+      this.selectedAlert.metadata.acknowledged_date_locale = this.commonService.convertUTCDateToLocal(
         this.selectedAlert.metadata.acknowledged_date
       );
     }

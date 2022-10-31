@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from './../../../services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 declare var $: any;
@@ -52,20 +53,26 @@ export class WhiteListAssetListComponent implements OnInit {
   tabData: any;
   decodedToken: any;
   selectedAsset: any;
+  parentid:any;
+  actualhierarchyNewArr = [];
+
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private applicationService:ApplicationService
   ) { }
 
-  ngOnInit(): void {
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+  async ngOnInit() {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);    
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.getTileName();
-    this.assetsList = [];
-    this.getAssets(); 
-    this.getAssetTimeout();
+    let c = this.getHierarchy();
+    await Promise.all([c])
+      .then(result => {
+      }) // Then ["Resolved!", "Rejected!"]
+      .catch(err => console.log('Catch', err));
+  //await this.getHierarchy();
+  
   }
   getTileName() {
     let selectedItem;
@@ -100,7 +107,22 @@ export class WhiteListAssetListComponent implements OnInit {
     }
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
-
+async getHierarchy()
+{
+  this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe(async (response: any) => {
+    localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
+    if(response)
+    {
+      this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+      this.actualhierarchyNewArr = await this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+       this.getTileName();
+        this.assetsList = [];
+        this.getAssets(); 
+        this.getAssetTimeout();
+    }
+  });  
+  
+}
   getAssetTimeout()
   {
     setTimeout(() => {
@@ -120,7 +142,7 @@ export class WhiteListAssetListComponent implements OnInit {
   }
   async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
-    const obj: any = {type : this.type,provisioned: 'false'};
+    const obj: any = {type : this.type,provisioned: 'false', count: this.currentLimit, offset: this.currentOffset};
     let methodToCall;
     methodToCall = this.assetService.getWhiteListedAsset(obj, this.contextApp.app);
     this.subscriptions.push(
@@ -131,13 +153,16 @@ export class WhiteListAssetListComponent implements OnInit {
               if (!item.display_name) {
                 item.display_name = item.asset_id;
               }
-              if (item.hierarchy) {
+              if (item.hierarchy_json) {
                 item.hierarchyString = '';
-                const keys = Object.keys(item.hierarchy);
+                const keys = Object.keys(item.hierarchy_json);
+                this.parentid = 0;
                 this.contextApp.hierarchy.levels.forEach((key, index) => {
-                  item.hierarchyString += item.hierarchy[key]
-                    ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                    : '';
+                  if(index != 0){
+                    debugger
+                  item.hierarchyString +=  item.hierarchy_json[key] ? this.getDisplayHierarchyString(index,item.hierarchy_json[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                  }else
+                  item.hierarchyString +=  item.hierarchy_json[key] ? item.hierarchy_json[key] + (keys[index + 1] ? ' / ' : '') : '';
                 });
               }
               if (this.type === CONSTANTS.NON_IP_ASSET) {
@@ -163,6 +188,7 @@ export class WhiteListAssetListComponent implements OnInit {
       )
     );
   }
+  
 
   openAssetCreateModal(asset = undefined) {
     this.selectedAsset = asset;
@@ -385,6 +411,14 @@ export class WhiteListAssetListComponent implements OnInit {
     }
   }
 
+  getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == index && r.key == hierarchyKey && r.parent_id == parentid);
+    if (selectedHierarchy) {
+      this.parentid = selectedHierarchy.id;
+      return selectedHierarchy.name;
+    }
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
@@ -401,6 +435,7 @@ export class WhiteListAssetListComponent implements OnInit {
           this.isAPILoading = false;
           this.assetsList = [];
           this.selectedAssets = [];
+          this.currentOffset = 0
           this.getAssets(); 
           this.getAssetTimeout();
         },
@@ -410,7 +445,6 @@ export class WhiteListAssetListComponent implements OnInit {
         }
       )
     );
-
   }
 
 }

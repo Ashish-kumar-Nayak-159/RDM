@@ -162,7 +162,7 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
             id="asset_alert_conditioning">
-            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset">
+            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset" [menuDetail]="getMenuDetail('alert_conditioning')">
             </app-asset-alert-conditions>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"

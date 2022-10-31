@@ -18,6 +18,7 @@ declare var $: any;
 })
 export class AssetAlertConditionsComponent implements OnInit {
   @Input() asset: any;
+  @Input() menuDetail: any;
   alertConditions: {
     id?: string;
     message?: string;

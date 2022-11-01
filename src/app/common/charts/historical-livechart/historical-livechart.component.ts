@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import * as am4core from '@amcharts/amcharts4/core';
+import { AssetService } from 'src/app/services/assets/asset.service';
+import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 
 @Component({
   selector: 'app-historical-livechart',
@@ -22,12 +26,40 @@ export class HistoricalLivechartComponent implements OnInit {
   decodedToken: any;
   widgetStringFromMenu: any;
   chart_Id: any;
+  userData: any;
+  contextApp: any = {};
+  telemetryData: any[] = [];
 
-  constructor() { }
+
+  constructor(private assetService: AssetService, private commonService: CommonService, private assetModelService: AssetModelService) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.chartHeight = '23rem';
     this.chartWidth = '100%';
+    const filterObj = {
+      epoch: true,
+      app: this.contextApp.app,
+      asset_id: 'PrefecturalSkatingRinkCT_CellA',
+      from_date: 1667196197,
+      to_date: 1667282597
+
+    }
+    this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response)=>{
+      if(response && response?.data){
+        this.telemetryData = response?.data;
+        console.log('telemetryData', this.telemetryData);
+      }
+    });
+    const params = {
+      app: this.contextApp.app,
+      name: 'Cooling Tower Model V1'
+    };
+
+    this.assetModelService.getAssetsModelLayout(params).subscribe((response)=>{
+      console.log('historical_widget',response)
+    })
     this.lineChart();
   }
 

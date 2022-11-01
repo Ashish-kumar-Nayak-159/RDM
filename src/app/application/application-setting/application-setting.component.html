@@ -13,14 +13,14 @@
                 aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
                 Metadata</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_menu_setting === true">
+            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_database_config === true">
               <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'database-configuration'}" href="#app-database-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"
                 (click)="setActiveTab('database-configuration')">
                 Database Config</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_menu_setting === true">
+            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_dashboard_config === true">
               <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'dashboard-configuration'}" href="#app-dashboard-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"

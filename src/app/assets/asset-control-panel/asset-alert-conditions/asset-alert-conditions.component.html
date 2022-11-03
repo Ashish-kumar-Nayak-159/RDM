@@ -9,7 +9,7 @@
             </span></a>
           </li> -->
       <!-- <li class="nav-item" *ngIf="contextApp.app != 'Indygo'"> -->
-        <li class="nav-item" *ngIf="contextApp.app != 'Indygo' && menuDetail?.accordion_value?.edge">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.edge">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>

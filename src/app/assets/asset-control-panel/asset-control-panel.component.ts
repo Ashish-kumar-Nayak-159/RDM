@@ -237,6 +237,11 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
               this.menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           }
+          if (this.contextApp?.menu_settings?.miscellaneous_menu.length > 0) {
+            this.menuItems = this.contextApp.menu_settings.miscellaneous_menu;
+          } else {
+            this.menuItems = CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
+          }
           let titleObj;
           let count;
           const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
@@ -273,14 +278,17 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
               }
             }
           });
-          const menu =
+          
+            const menu =
             this.componentState !== CONSTANTS.NON_IP_ASSET
               ? this.contextApp.menu_settings.asset_control_panel_menu.length > 0
                 ? this.contextApp.menu_settings.asset_control_panel_menu
                 : JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST))
               : this.contextApp.menu_settings.legacy_asset_control_panel_menu.length > 0
               ? this.contextApp.menu_settings.legacy_asset_control_panel_menu
-              : JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+              : JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST))
+              ? this.contextApp.menu_settings.miscellaneous_menu
+              : JSON.parse(JSON.stringify(CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST));
           menu.forEach((menuObj) => {
             if (!this.activeTab && menuObj.visible && !menuObj.isTitle) {
               this.activeTab = menuObj.page;

@@ -172,6 +172,14 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             );
           }
           if (
+            !this.applicationData.menu_settings.miscellaneous_menu ||
+            this.applicationData.menu_settings.miscellaneous_menu.length === 0
+          ) {
+            this.applicationData.menu_settings.miscellaneous_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST)
+            );
+          }
+          if (
             !this.applicationData.menu_settings.model_control_panel_menu ||
             this.applicationData.menu_settings.model_control_panel_menu.length === 0
           ) {

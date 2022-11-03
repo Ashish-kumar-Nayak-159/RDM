@@ -16,8 +16,8 @@ declare var $: any;
 })
 export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   dropdown = false;
-
   @Input() assetModel: any;
+  @Input() menuDetail: any;
   alertConditions: {
     id?: string;
     message?: string;

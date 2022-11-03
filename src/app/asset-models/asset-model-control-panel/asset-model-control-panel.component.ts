@@ -142,6 +142,9 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     );
   }
 
+  getMenuDetail(pageType) {
+    return this.menuItems.find((menu) => menu.page === pageType);
+  }  
   setActiveTab(tab) {
     this.activeTab = tab;
     window.location.hash = tab;

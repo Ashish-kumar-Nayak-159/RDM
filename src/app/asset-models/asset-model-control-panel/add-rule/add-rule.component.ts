@@ -65,7 +65,7 @@ export class AddRuleComponent implements OnInit {
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
-
+  escalationTimeDropdown: { visibility: any; };
   overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
@@ -89,13 +89,27 @@ export class AddRuleComponent implements OnInit {
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
-      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" || this.contextApp.app == "IndygoBeta" ? 300000000 : this.ruleModel.escalation_time_in_sec;
+      this.ruleModel.escalation_time_in_sec = this.escalationTimeDropdown ? 300000000 : this.ruleModel.escalation_time_in_sec;
       this.getAlertConditions('Cloud');
     }
     if (this.isClone) {
       this.getRules();
     }
     this.getApplicationUserGroups();
+    this.getEscalationTime();
+    console.log("menudetails",this.contextApp.menu_settings) 
+  }
+
+  getEscalationTime(){
+    let ruleEscalationTimeItem;
+        this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
+          // if (item.system_name === 'Escalation Time') { 
+            if (item.page === 'escalationTime') {          
+              ruleEscalationTimeItem = item.visible;
+              this.escalationTimeDropdown = ruleEscalationTimeItem;
+            }
+          // }
+        });
   }
 
   private DefaultRuleModelSetup() {

@@ -91,12 +91,11 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
-    if(this.contextApp.app ==='Indygo'|| this.contextApp.app ==='IndygoBeta'){
-      this.onClickOfTab('Cloud');
-    }else{
-      this.onClickOfTab('Edge');
-
-    }
+    // if(this.contextApp.app ==='Indygo'|| this.contextApp.app ==='IndygoBeta'){
+    //   this.onClickOfTab('Cloud');
+    // }else{
+    //   this.onClickOfTab('Edge');
+    // }
     this.getSlaveData();
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();

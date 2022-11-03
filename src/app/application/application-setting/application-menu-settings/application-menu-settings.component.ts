@@ -124,6 +124,27 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
       
     }
+  if (this.applicationData?.menu_settings?.miscellaneous_menu?.length === 0) {
+      this.applicationData.menu_settings.miscellaneous_menu =
+        CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
+    } else {
+      const arr = [];
+      CONSTANTS?.MISCELLANEOUS_MENU_SIDE_MENU_LIST?.forEach((item) => {
+        let flag = false;
+        this.applicationData.menu_settings.miscellaneous_menu.forEach((menu) => {
+          if (menu.system_name === item.system_name) {
+            flag = true;
+            item.display_name = menu.display_name;
+            item.visible = menu.visible;
+            arr.push(item);
+          }
+        });
+        if (!flag) {
+          arr.push(item);
+        }
+      });
+      this.applicationData.menu_settings.miscellaneous_menu = [...arr];
+    }
     if (this.applicationData.menu_settings?.main_menu?.length === 0) {
       this.sideMenuList.forEach((menu, i) => {
         if (menu.index === undefined || menu.index === null) {

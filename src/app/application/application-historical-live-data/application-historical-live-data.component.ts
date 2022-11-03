@@ -2,6 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
@@ -32,7 +33,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   apiTelemetryObj: any;
   widgetStringFromMenu: string;
   tileData: any;
-
+  historicalCombineWidgets:any[] = [];
+  assetWiseTelemetryData = [];
 
 
 
@@ -40,7 +42,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
 
   constructor(
     private commonService:CommonService,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private assetModelService: AssetModelService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -66,6 +69,29 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     this.historicalDateFilter.type = true;
     this.historicalDateFilter.sampling_format = 'minute';
     this.historicalDateFilter.sampling_time = 1;
+    const params = {
+      app: this.contextApp.app,
+      name: 'Cooling Tower Model V1'
+    };
+
+    this.assetModelService.getAssetsModelLayout(params).subscribe((response:any)=>{
+      console.log('historical_widget',response)
+      this.historicalCombineWidgets = response?.historical_widgets;
+    })
+    const filterObj = {
+      epoch: true,
+      app: this.contextApp.app,
+      asset_id: 'PrefecturalSkatingRinkCT_CellA',
+      from_date: 1667196197,
+      to_date: 1667282597
+
+    }
+    this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response)=>{
+      if(response && response?.data){
+        this.assetWiseTelemetryData = response?.data;
+         console.log('tel',this.assetWiseTelemetryData)
+      }
+    });
     await this.getAssets(this.contextApp.user.hierarchy);
 
   }

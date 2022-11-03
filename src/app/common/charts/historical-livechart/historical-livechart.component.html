@@ -1,57 +1,53 @@
-<!-- <p class="ml-5">historical-livechart works!</p> -->
-<div id="temp" #temp
-[ngStyle]="{'width': chartWidth, 'height': chartHeight}">
-</div>
 <accordion class="mb-2" id="{{ chartConfig.chart_Id}}_{{ chartConfig.chart_Id}}">
-    <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
-      <ng-container accordion-heading>
-        <a class="btn d-flex justify-content-between align-items-center w-100 p-0 accordion-container"
+  <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
+    <ng-container accordion-heading>
+      <a class="btn d-flex justify-content-between align-items-center w-100 p-0 accordion-container"
+        id="{{ chartConfig.chart_Id}}_{{ chartConfig.chart_Id}}"
+        [ngClass]="anchorAdditionalClass?.length > 0 ? anchorAdditionalClass : ''">
+        {{chartTitle}}
+        <!-- Add Svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
           id="{{ chartConfig.chart_Id}}_{{ chartConfig.chart_Id}}"
-          [ngClass]="anchorAdditionalClass?.length > 0 ? anchorAdditionalClass : ''">
-          {{chartTitle}}
-          <!-- Add Svg -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            id="{{ chartConfig.chart_Id}}_{{ chartConfig.chart_Id}}"
-            [ngClass]="{'bi':true,'bi-chevron-down':true ,'accordion-chevron-up': isAccordionOpen ,'accordion-chevron-down': !isAccordionOpen}"
-            viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-          </svg>
-        </a>
-        <div class="float-right pull-right mt-1">
-          <!-- <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
-          <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
-            ED</div>
-          <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
-            *ngIf="chartConfig.cloud_derived_props">CD</div>
-          <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div> -->
-          <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1" class="mt-1"
-            [ngClass]="hideCancelButtonAddOnClass?.length > 0 ? hideCancelButtonAddOnClass : ''" href="javascript:void(0)"
-            (click)="modalOpenEvents.emit()" placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"><em
-              class="fa fa-close"></em></a>
-        </div>
-      </ng-container>
-      <div class="row">
-        <div class="col-12">
-          <div class="dvRowCardHeaderClass?.length > 0 ? dvRowCardHeaderClass? : ''">
-            <!-- <span  *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{ 'loaderMessage' | translate }}</span> -->
-            <div class="dvRowCardBodyClass?.length > 0 ? dvRowCardBodyClass? : ''"
-              style="max-height: 27rem; overflow-y: auto;">            
-              <div #chartConfig.chart_Id id="{{chartConfig.chart_Id}}"
-                [ngStyle]="{'width': chartWidth, 'height': chartHeight}">
-              </div>
+          [ngClass]="{'bi':true,'bi-chevron-down':true ,'accordion-chevron-up': isAccordionOpen ,'accordion-chevron-down': !isAccordionOpen}"
+          viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+        </svg>
+      </a>
+      <div class="float-right pull-right mt-1">
+        <!-- <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+          ED</div>
+        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+          *ngIf="chartConfig.cloud_derived_props">CD</div>
+        <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div> -->
+        <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1" class="mt-1"
+          [ngClass]="hideCancelButtonAddOnClass?.length > 0 ? hideCancelButtonAddOnClass : ''" href="javascript:void(0)"
+          (click)="modalOpenEvents.emit()" placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"><em
+            class="fa fa-close"></em></a>
+      </div>
+    </ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="dvRowCardHeaderClass?.length > 0 ? dvRowCardHeaderClass? : ''">
+          <!-- <span  *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em> {{ 'loaderMessage' | translate }}</span> -->
+          <div class="dvRowCardBodyClass?.length > 0 ? dvRowCardBodyClass? : ''"
+            style="max-height: 27rem; overflow-y: auto;">            
+            <div #chartConfig.chart_Id id="{{chartConfig.chart_Id}}"
+              [ngStyle]="{'width': chartWidth, 'height': chartHeight}">
             </div>
           </div>
         </div>
       </div>
-    </accordion-group>
-  </accordion>
-  
-  
-  <div class="modal fade" id="confirmRemoveWidgetModal{{chart_Id}}" tabindex="-1" role="dialog"
-    aria-labelledby="ModalLabel2">
-    <!-- <div class="modal-dialog" role="document">
-        <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
-          (modalEvents)="modalEvents.emit($event)" [modalConfig]="modalConfig"></app-confirm-modal>
-      </div> -->
-  </div>
+    </div>
+  </accordion-group>
+</accordion>
+
+
+<div class="modal fade" id="confirmRemoveWidgetModal{{chart_Id}}" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
+  <!-- <div class="modal-dialog" role="document">
+      <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+        (modalEvents)="modalEvents.emit($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+    </div> -->
+</div>

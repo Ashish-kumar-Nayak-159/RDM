@@ -12,7 +12,8 @@
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-            (click)="onFilterSelection(this.filterObj, true, true)"    [disabled]="isTelemetryDataLoading"><em class="fas fa-search fa-sm"></em></button></div>
+              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
+                class="fas fa-search fa-sm"></em></button></div>
         </form>
       </div>
     </div>
@@ -20,8 +21,7 @@
 </div>
 <div class="tab-bar">
   <ng-container>
-    <div class=""
-      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset ">
+    <div class="" *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset ">
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
@@ -29,8 +29,7 @@
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
       </div>
-      <div class="ml-auto"
-        *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset">
+      <div class="ml-auto" *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset">
         <div class="">*{{sampleCountValue}} samples in last 1 minute
         </div>
       </div>
@@ -43,4 +42,18 @@
 
   </ng-container>
 </div>
-<app-historical-livechart></app-historical-livechart>
+<!-- <app-historical-livechart></app-historical-livechart> -->
+<ng-container
+*ngFor="let widget of historicalCombineWidgets; let i = index;">
+<app-historical-livechart
+    [chartConfig]="widget"
+    [assetWiseTelemetryData]="assetWiseTelemetryData"
+    [chartHeight]="" [chartWidth]=""
+    [dvRowCardHeaderClass]="'card shadow h-100'"
+    [chartStartdate]=" filterObj.from_date"
+    [chartEnddate]="filterObj.to_date"
+    [hideCancelButtonAddOnClass]=""
+    [anchorAdditionalClass]="'border-0 rounded-0'"
+    *ngIf="widget.chartType === 'LineChart' || widget.chartType === 'AreaChart'">
+</app-historical-livechart>
+</ng-container>

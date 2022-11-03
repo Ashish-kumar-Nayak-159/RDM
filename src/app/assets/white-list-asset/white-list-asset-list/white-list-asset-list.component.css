@@ -7,7 +7,3 @@ a.mr-1{
   .pull-right{
     float: none;
   }
-  .hierarchy_list{position: relative;}
-  .hierarchy_list span{display: inline-block; padding: 0 4px 0 2px;}
-  .hierarchy_list span.last::after{content: "";position: absolute; }
-  .hierarchy_list span::after{ content: " / "; position: absolute; width: 20px;}

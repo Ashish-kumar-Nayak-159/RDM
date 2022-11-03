@@ -171,9 +171,7 @@ async getHierarchy()
               }
               
             });
-            this.assetsList = [...this.assetsList, ...response.data];
-            console.log('test assetsList', (this.assetsList));
-           
+            this.assetsList = [...this.assetsList, ...response.data];           
           }
           if (response.data.length === this.currentLimit) {
             this.insideScrollFunFlag = false;

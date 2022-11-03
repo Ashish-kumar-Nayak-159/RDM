@@ -97,18 +97,15 @@ export class AddRuleComponent implements OnInit {
     }
     this.getApplicationUserGroups();
     this.getEscalationTime();
-    console.log("menudetails",this.contextApp.menu_settings) 
   }
 
   getEscalationTime(){
     let ruleEscalationTimeItem;
         this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
-          // if (item.system_name === 'Escalation Time') { 
             if (item.page === 'escalationTime') {          
               ruleEscalationTimeItem = item.visible;
               this.escalationTimeDropdown = ruleEscalationTimeItem;
             }
-          // }
         });
   }
 

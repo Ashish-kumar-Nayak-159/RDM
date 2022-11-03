@@ -20,9 +20,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
   apiSubscriptions: Subscription[] = [];
-  sMS_recipientsForm: { visibility: any; };
-  whatsapp_recipientsForm: { visibility: any; };
-  push_notification_recipientsForm: { visibility: any; };
+  smsrecipientsForm: { visibility: boolean; };
+  whatsapprecipientsForm: { visibility: boolean; };
+  pushnotificationrecipientsForm: { visibility: boolean; };
   recipientemail: any = {};
   recipientemailpush: any = {};
   recipientsms: any = {};
@@ -50,26 +50,20 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   getTileName(){
-    let sMS_recipientsItem;
-    let whatsapp_recipientsItem;
-    let push_notification_recipientsItem;
     this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
       if (item.system_name === 'SMS Recipients') {
         if (item.page === 'sMS_recipients') {          
-          sMS_recipientsItem = item.visible;
-          this.sMS_recipientsForm = sMS_recipientsItem;
+          this.smsrecipientsForm = item.visible;
         }
       }
       if (item.system_name === 'Whatsapp Recipients') {
         if (item.page === 'whatsapp_recipients') {          
-          whatsapp_recipientsItem = item.visible;
-          this.whatsapp_recipientsForm = whatsapp_recipientsItem;
+          this.whatsapprecipientsForm = item.visible;
         }
       }
       if (item.system_name === 'Push Notification Recipients') {
         if (item.page === 'push_notification_recipients') {          
-          push_notification_recipientsItem = item.visible;
-          this.push_notification_recipientsForm = push_notification_recipientsItem;
+          this.pushnotificationrecipientsForm = item.visible;
         }
       }
     });

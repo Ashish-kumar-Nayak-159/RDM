@@ -100,7 +100,7 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel"
             id="asset_model_rules">
-            <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel">
+            <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel" [menuDetail]="getMenuDetail('rules')">
             </app-asset-model-rules>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel"
@@ -111,7 +111,7 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
             id="asset_model_alert_conditioning">
             <app-asset-model-alert-conditions *ngIf="activeTab === 'alert_conditioning' && assetModel"
-              [assetModel]="assetModel"></app-asset-model-alert-conditions>
+              [assetModel]="assetModel" [menuDetail]="getMenuDetail('alert_conditioning')"></app-asset-model-alert-conditions>
           </div>
 
 

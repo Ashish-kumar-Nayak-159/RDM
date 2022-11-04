@@ -8,7 +8,8 @@
             <span class="text-secondary">Asset Alerts
             </span></a>
           </li> -->
-      <li class="nav-item" *ngIf="contextApp.app != 'Indygo'">
+      <!-- <li class="nav-item" *ngIf="contextApp.app != 'Indygo'"> -->
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.edge">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <em class="fab fa-fw fa-edge"></em>
@@ -17,7 +18,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
-          [ngClass]="{'active': selectedTab === 'Cloud'}">
+          [ngClass]="{'active': selectedTab === 'Cloud','active ': menuDetail?.accordion_value?.edge === false}">
           <em class="fa fa-fw fa-cloud"></em>
           <span class="text-secondary">Cloud Alerts
           </span></a>
@@ -711,9 +712,10 @@
             <select class="form-control form-control-sm" id="alert_type" name="alert_type"
               [(ngModel)]="alertObj.alert_type">
               <option [ngValue]="undefined">Select Alert Source</option>
-              <!-- <option [ngValue]="'Asset'" >Asset</option> -->
-              <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">Edge</option>
-              <option [ngValue]="'Cloud'">Cloud</option>
+              <!-- <option [ngValue]="'Asset'" >Asset</option> --> 
+              <!-- <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">Edge</option> -->
+              <option [ngValue]="'Edge'" *ngIf="menuDetail?.accordion_value?.edge">Edge</option>
+              <option [ngValue]="'Cloud'" [defaultSelected]="menuDetail?.accordion_value?.edge === false">Cloud</option>
             </select>
           </div>
         </form>

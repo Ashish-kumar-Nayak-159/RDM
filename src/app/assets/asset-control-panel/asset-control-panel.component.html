@@ -80,7 +80,7 @@
             </app-telemetry>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="asset_alerts">
-            <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset">
+            <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset" [menuDetail]="getMenuDetail('alerts')">
             </app-alerts>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
@@ -109,7 +109,7 @@
             <app-derived-kpis *ngIf="activeTab === 'derived_kpis' && asset" [asset]="asset"></app-derived-kpis>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'rules'}" role="tabpanel" id="asset_rules">
-            <app-rules *ngIf="activeTab === 'rules' && asset" [asset]="asset"></app-rules>
+            <app-rules *ngIf="activeTab === 'rules' && asset" [asset]="asset" [menuDetail]="getMenuDetail('rules')"></app-rules>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel"
             id="asset_trend_analysis">
@@ -162,7 +162,7 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
             id="asset_alert_conditioning">
-            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset">
+            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset" [menuDetail]="getMenuDetail('alert_conditioning')">
             </app-asset-alert-conditions>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"

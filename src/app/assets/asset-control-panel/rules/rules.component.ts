@@ -20,6 +20,7 @@ declare var $: any;
 })
 export class RulesComponent implements OnInit {
   @Input() asset: Asset = new Asset();
+  @Input() menuDetail: any;
   modelrules: any[] = [];
   assetRules: any[] = [];
   modeltoAssetrules:any [] = [];

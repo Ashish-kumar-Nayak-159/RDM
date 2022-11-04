@@ -70,6 +70,7 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
               gateway_control_panel_menu: [],
               model_control_panel_menu: [],
               main_menu: [],
+              miscellaneous_menu: [],
             };
           }
           if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
@@ -82,6 +83,10 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
             this.applicationData.menu_settings.gateway_control_panel_menu =
               CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
+          }
+          if (this.applicationData?.menu_settings?.miscellaneous_menu?.length === 0) {
+            this.applicationData.menu_settings.miscellaneous_menu =
+              CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
           }
           if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
             this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;

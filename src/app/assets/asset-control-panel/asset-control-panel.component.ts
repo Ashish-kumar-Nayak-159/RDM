@@ -237,11 +237,6 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
               this.menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           }
-          if (this.contextApp?.menu_settings?.miscellaneous_menu.length > 0) {
-            this.menuItems = this.contextApp.menu_settings.miscellaneous_menu;
-          } else {
-            this.menuItems = CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
-          }
           let titleObj;
           let count;
           const token = localStorage.getItem(CONSTANTS.APP_TOKEN);

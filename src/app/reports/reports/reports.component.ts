@@ -45,7 +45,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   tileData: any;
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
-  preGeneratedTab: { visibility: any; name: any };
+  preGeneratedTab: { visibility: boolean; name: any };
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;

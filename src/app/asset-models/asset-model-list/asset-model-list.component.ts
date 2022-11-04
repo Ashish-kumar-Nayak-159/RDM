@@ -33,10 +33,10 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   originalAssetsModelFilterObj: any;
   tileData: any;
   subscriptions: Subscription[] = [];
-  addOptionBtn: { visibility: any; name: any };
-  iotAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
-  legacyAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
-  iotGatewaysTab: { visibility: any; tab_name: any; table_key: any; name: any };
+  addOptionBtn: { visibility: boolean; name: any };
+  iotAssetsTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
+  legacyAssetsTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
+  iotGatewaysTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
   componentState: any;
   decodedToken: any;
   constructor(

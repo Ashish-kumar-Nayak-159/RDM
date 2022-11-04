@@ -65,7 +65,7 @@ export class AddRuleComponent implements OnInit {
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
-  escalationTimeDropdown: { visibility: any; };
+  escalationTimeDropdown: { visibility: true; };
   overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
@@ -83,6 +83,7 @@ export class AddRuleComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getSlaveData();
     this.DefaultRuleModelSetup();
+    this.getEscalationTime();
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     // this.addNewCondition();
     this.getAssetsModelProperties();
@@ -96,15 +97,12 @@ export class AddRuleComponent implements OnInit {
       this.getRules();
     }
     this.getApplicationUserGroups();
-    this.getEscalationTime();
   }
 
   getEscalationTime(){
-    let ruleEscalationTimeItem;
         this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
             if (item.page === 'escalationTime') {          
-              ruleEscalationTimeItem = item.visible;
-              this.escalationTimeDropdown = ruleEscalationTimeItem;
+              this.escalationTimeDropdown = item.visible;
             }
         });
   }

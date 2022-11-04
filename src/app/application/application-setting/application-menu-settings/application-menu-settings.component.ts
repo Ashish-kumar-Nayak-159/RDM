@@ -124,7 +124,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
       
     }
-  if (this.applicationData?.menu_settings?.miscellaneous_menu?.length === 0) {
+  if (!this.applicationData?.menu_settings?.miscellaneous_menu) {
       this.applicationData.menu_settings.miscellaneous_menu =
         CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
     } else {

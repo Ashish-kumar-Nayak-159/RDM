@@ -5,6 +5,7 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -35,7 +36,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   tileData: any;
   historicalCombineWidgets:any[] = [];
   assetWiseTelemetryData = [];
-
+  propertyList: any[] = [];
 
 
 
@@ -43,7 +44,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   constructor(
     private commonService:CommonService,
     private assetService: AssetService,
-    private assetModelService: AssetModelService
+    private assetModelService: AssetModelService,
+    private toasterService: ToasterService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -69,21 +71,18 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     this.historicalDateFilter.type = true;
     this.historicalDateFilter.sampling_format = 'minute';
     this.historicalDateFilter.sampling_time = 1;
-    const params = {
-      app: this.contextApp.app,
-      name: 'Cooling Tower Model V1'
-    };
 
-    this.assetModelService.getAssetsModelLayout(params).subscribe((response:any)=>{
-      console.log('historical_widget',response)
-      this.historicalCombineWidgets = response?.historical_widgets;
-    })
     const filterObj = {
       epoch: true,
       app: this.contextApp.app,
       asset_id: 'PrefecturalSkatingRinkCT_CellA',
-      from_date: 1667196197,
-      to_date: 1667282597
+      from_date: 1665314220,
+      to_date: 1667819820,
+      measured_message_props : 'T001,T002',
+      partition_key: 'PrefecturalSkatingRinkCT_CellA',
+      order_dir: 'ASC',
+      sampling_time: 1*60,
+      sampling_format : 'minute'
 
     }
     this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response)=>{
@@ -92,7 +91,47 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
          console.log('tel',this.assetWiseTelemetryData)
       }
     });
+  
     await this.getAssets(this.contextApp.user.hierarchy);
+
+    const obj = {
+      app: this.contextApp.app,
+      name: "Cooling Tower Model V1",
+    };
+ 
+    this.assetModelService.getAssetsModelProperties(obj).subscribe(
+      (response: any) => {
+        this.propertyList = response.properties.measured_properties
+          ? response.properties.measured_properties
+          : [];
+        response.properties.edge_derived_properties = response.properties.edge_derived_properties
+          ? response.properties.edge_derived_properties
+          : [];
+        response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+          ? response.properties.cloud_derived_properties
+          : [];
+        response.properties.edge_derived_properties.forEach((prop) => {
+          prop.type = 'Edge Derived Properties';
+          this.propertyList.push(prop);
+        });
+        response.properties.cloud_derived_properties.forEach((prop) => {
+          prop.type = 'Cloud Derived Properties';
+          this.propertyList.push(prop);
+        });
+        // this.derivedKPIs.forEach((kpi) => {
+        //   const obj: any = {};
+        //   obj.type = 'Derived KPIs';
+        //   obj.name = kpi.name;
+        //   obj.json_key = kpi.kpi_json_key;
+        //   obj.json_model = {};
+        //   obj.json_model[obj.json_key] = {};
+        //   this.propertyList.push(obj);
+        // });
+        // resolve1();
+        console.log("propList",this.propertyList);
+      },
+      (error) => (this.isTelemetryDataLoading = false)
+    )
 
   }
   getTileName() {
@@ -147,7 +186,22 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
-    alert('1')
+   
+    console.log('filterobj',this.filterObj)
+    if(this.filterObj?.asset){
+      const params = {
+        app: this.contextApp.app,
+        name: this.filterObj?.asset?.asset_model
+      };
+  
+      this.assetModelService.getAssetsModelLayout(params).subscribe((response:any)=>{
+        this.historicalCombineWidgets = response?.historical_widgets;
+      })
+    }
+    else{
+      this.historicalCombineWidgets = []
+      this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
+    }
 
   }
 

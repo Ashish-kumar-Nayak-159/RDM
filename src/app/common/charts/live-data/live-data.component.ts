@@ -48,6 +48,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
+    console.log('check',this.propertyList)
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryData.length > 0) {
@@ -103,13 +104,16 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         chart.data = data;
       } else {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
+        debugger
         chart.data = this.telemetryData;
+        console.log('this.telemetr',this.telemetryData)
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+      debugger
       if (this.chartStartdate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartStartdate);

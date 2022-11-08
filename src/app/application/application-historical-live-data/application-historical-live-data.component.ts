@@ -127,8 +127,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
 
-    console.log('filterobj', this.filterObj)
-    console.log('historicaldate', this.historicalDateFilter)
     if (this.filterObj?.asset) {
 
       this.isFilterSelected = true
@@ -166,16 +164,13 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
           //   this.propertyList.push(obj);
           // });
           // resolve1();
-          console.log("propList", this.propertyList);
         },
         (error) => (this.isTelemetryDataLoading = false)
       )
       this.historicalCombineWidgets = []
-      debugger
       this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
         this.historicalCombineWidgets = response?.historical_widgets;
       })
-      console.log('historicalwidget', this.historicalCombineWidgets)
 
       this.measuredMessageProps = [];
       if (this.historicalCombineWidgets) {
@@ -191,7 +186,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
             }
           })
         })
-        console.log('measuredMessage', this.measuredMessageProps)
       }
 
       const filterObj = {
@@ -202,13 +196,18 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
         from_date: this.historicalDateFilter?.from_date,
         to_date: this.historicalDateFilter?.to_date,
         order_dir: 'ASC',
-        measured_message_props: this?.measuredMessageProps
+        measured_message_props: this.measuredMessageProps,
+        sampling_time:1,
+        sampling_format: 'minute'
 
       }
       this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
         if (response && response?.data) {
           this.assetWiseTelemetryData = response?.data;
-          console.log('assetWiseTelemetry', this.assetWiseTelemetryData)
+          this.assetWiseTelemetryData.forEach((item) => {
+            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            item.message_date_obj = new Date(item.message_date);
+          });
         }
       });
 
@@ -249,7 +248,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
 
     this.onFilterSelection('', true, false, true);
     // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
-    console.log('from_date', 'to_date', filterObj?.from_date, filterObj?.to_date);
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,

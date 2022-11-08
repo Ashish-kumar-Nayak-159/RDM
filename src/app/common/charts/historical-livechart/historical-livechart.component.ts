@@ -28,8 +28,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   @Output() modalEvents: EventEmitter<any> = new EventEmitter<any>();
   @Output() modalOpenEvents: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
   @Input() modalConfig: any;
-  @Input() chartStartdate: any = '1667730600';
-  @Input() chartEnddate: any ='1667817000';
+  @Input() chartStartdate: any;
+  @Input() chartEnddate: any;
   @Input() chartHeight: any;;
   @Input() chartWidth: any;
   @Input() hideCancelButtonAddOnClass: any;
@@ -327,15 +327,15 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarY = new am4core.Scrollbar();
 
-      series.dataFields.dateX = 'message_date';
+      series.dataFields.dateX = 'message_date_obj';
       series.dataFields.valueY = prop.json_key;
       series.groupFields.valueY = 'value';
       series.compareText = true;
       series.calculatePercent = true;
       series.contentwidth = 'value'
       series.strokeWidth = 2;
-      series.strokeOpacity = 1;
-      series.minBulletDistance = 20;
+      // series.strokeOpacity = 1;
+      // series.minBulletDistance = 20;
 
       if (series.units) {
         series.legendSettings.labelText = '({propType}) {name} ({units})';
@@ -344,13 +344,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
 
       series.fillOpacity = this.chartConfig?.chartType.includes('Area') ? 0.3 : 0;
-      // if (series.units) {
-      //   series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}) \n: [bold]{valueY}[/]';
-      // } else {
-      //   series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
-      // }
+      if (series.units) {
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}) \n: [bold]{valueY}[/]';
+      } else {
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+      }
       var bullet = series.bullets?.push(new am4charts.CircleBullet());
-      bullet.propertyFields.strokeWidth = "strokeWidthDynamic";
+      bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
       bullet.propertyFields.stroke = "color";
       bullet.propertyFields.fill = "color"
@@ -484,7 +484,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   this.loader = true;
   setTimeout(() => {
     this.plotChart();
-  }, 200);
+  }, 430);
 }
 
 
@@ -509,15 +509,17 @@ plotChart() {
     //   }
     //   return detail;
     // }) : [];
-    chart.data = this.assetWiseTelemetryData
+    debugger
+    chart.data =  this.assetWiseTelemetryData
+    console.log('chart telemetry historical', this.assetWiseTelemetryData);
     chart.responsive.enabled = true;
 
     chart.dateFormatter.inputDateFormat = "x";;
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
     const dateAxis = chart.xAxes?.push(new am4charts.DateAxis());
     // chart.svgContainer.hideOverflow = true;
-    dateAxis.extraMax = 0.5;
-    dateAxis.extraMin = 0.5;
+    // dateAxis.extraMax = 0.5;
+    // dateAxis.extraMin = 0.5;
     if (this.chartStartdate) {
       const date = new Date(0);
       date.setUTCSeconds(this.chartStartdate);
@@ -529,10 +531,11 @@ plotChart() {
       dateAxis.max = date.getTime();
 
     }
+    dateAxis.renderer.grid.template.location = 0;
     dateAxis.renderer.labels.template.location = 0.1;
-    dateAxis.renderer.minGridDistance = 100;
+    // dateAxis.renderer.minGridDistance = 100;
     dateAxis.renderer.inside = false;
-    dateAxis.renderer.grid.template.disabled = true;
+    dateAxis.renderer.grid.template.disabled = false;
 
     chart.events.on('ready', (ev) => {
       // this.changeLoader()

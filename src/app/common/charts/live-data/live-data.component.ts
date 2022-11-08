@@ -104,16 +104,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         chart.data = data;
       } else {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
-        debugger
         chart.data = this.telemetryData;
-        console.log('this.telemetr',this.telemetryData)
+        console.log('chart telemetry',this.telemetryData)
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      debugger
       if (this.chartStartdate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartStartdate);

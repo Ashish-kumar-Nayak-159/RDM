@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -34,15 +34,15 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   apiTelemetryObj: any;
   widgetStringFromMenu: string;
   tileData: any;
-  historicalCombineWidgets:any[] = [];
+  historicalCombineWidgets: any[] = [];
   assetWiseTelemetryData = [];
   propertyList: any[] = [];
-
+  measuredMessageProps: any[] = [];
 
 
 
   constructor(
-    private commonService:CommonService,
+    private commonService: CommonService,
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService
@@ -72,67 +72,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     this.historicalDateFilter.sampling_format = 'minute';
     this.historicalDateFilter.sampling_time = 1;
 
-    const filterObj = {
-      epoch: true,
-      app: this.contextApp.app,
-      asset_id: 'PrefecturalSkatingRinkCT_CellA',
-      from_date: 1665314220,
-      to_date: 1667819820,
-      measured_message_props : 'T001,T002',
-      partition_key: 'PrefecturalSkatingRinkCT_CellA',
-      order_dir: 'ASC',
-      sampling_time: 1*60,
-      sampling_format : 'minute'
-
-    }
-    this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response)=>{
-      if(response && response?.data){
-        this.assetWiseTelemetryData = response?.data;
-         console.log('tel',this.assetWiseTelemetryData)
-      }
-    });
-  
     await this.getAssets(this.contextApp.user.hierarchy);
-
-    const obj = {
-      app: this.contextApp.app,
-      name: "Cooling Tower Model V1",
-    };
- 
-    this.assetModelService.getAssetsModelProperties(obj).subscribe(
-      (response: any) => {
-        this.propertyList = response.properties.measured_properties
-          ? response.properties.measured_properties
-          : [];
-        response.properties.edge_derived_properties = response.properties.edge_derived_properties
-          ? response.properties.edge_derived_properties
-          : [];
-        response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-          ? response.properties.cloud_derived_properties
-          : [];
-        response.properties.edge_derived_properties.forEach((prop) => {
-          prop.type = 'Edge Derived Properties';
-          this.propertyList.push(prop);
-        });
-        response.properties.cloud_derived_properties.forEach((prop) => {
-          prop.type = 'Cloud Derived Properties';
-          this.propertyList.push(prop);
-        });
-        // this.derivedKPIs.forEach((kpi) => {
-        //   const obj: any = {};
-        //   obj.type = 'Derived KPIs';
-        //   obj.name = kpi.name;
-        //   obj.json_key = kpi.kpi_json_key;
-        //   obj.json_model = {};
-        //   obj.json_model[obj.json_key] = {};
-        //   this.propertyList.push(obj);
-        // });
-        // resolve1();
-        console.log("propList",this.propertyList);
-      },
-      (error) => (this.isTelemetryDataLoading = false)
-    )
-
   }
   getTileName() {
     let selectedItem;
@@ -186,27 +126,106 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
-   
-    console.log('filterobj',this.filterObj)
-    if(this.filterObj?.asset){
-      const params = {
+
+    console.log('filterobj', this.filterObj)
+    console.log('historicaldate', this.historicalDateFilter)
+    if (this.filterObj?.asset) {
+
+      this.isFilterSelected = true
+      const obj = {
         app: this.contextApp.app,
-        name: this.filterObj?.asset?.asset_model
+        name: this?.filterObj?.asset?.asset_model,
       };
-  
-      this.assetModelService.getAssetsModelLayout(params).subscribe((response:any)=>{
+      this.propertyList = [];
+      this.assetModelService.getAssetsModelProperties(obj).subscribe(
+        (response: any) => {
+          this.propertyList = response.properties.measured_properties
+            ? response.properties.measured_properties
+            : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
+            prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach((prop) => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
+          });
+          // this.derivedKPIs.forEach((kpi) => {
+          //   const obj: any = {};
+          //   obj.type = 'Derived KPIs';
+          //   obj.name = kpi.name;
+          //   obj.json_key = kpi.kpi_json_key;
+          //   obj.json_model = {};
+          //   obj.json_model[obj.json_key] = {};
+          //   this.propertyList.push(obj);
+          // });
+          // resolve1();
+          console.log("propList", this.propertyList);
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+      this.historicalCombineWidgets = []
+      debugger
+      this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
         this.historicalCombineWidgets = response?.historical_widgets;
       })
+      console.log('historicalwidget', this.historicalCombineWidgets)
+
+      this.measuredMessageProps = [];
+      if (this.historicalCombineWidgets) {
+        this.historicalCombineWidgets?.forEach((widget) => {
+          widget?.y1axis?.forEach((item) => {
+            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+              this.measuredMessageProps?.push(item?.json_key);
+            }
+          })
+          widget?.y2axis?.forEach((item) => {
+            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+              this.measuredMessageProps?.push(item?.json_key);
+            }
+          })
+        })
+        console.log('measuredMessage', this.measuredMessageProps)
+      }
+
+      const filterObj = {
+        epoch: true,
+        app: this.contextApp.app,
+        asset_id: this.filterObj?.asset?.asset_id,
+        partition_key: this.filterObj?.asset?.partition_key,
+        from_date: this.historicalDateFilter?.from_date,
+        to_date: this.historicalDateFilter?.to_date,
+        order_dir: 'ASC',
+        measured_message_props: this?.measuredMessageProps
+
+      }
+      this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+        if (response && response?.data) {
+          this.assetWiseTelemetryData = response?.data;
+          console.log('assetWiseTelemetry', this.assetWiseTelemetryData)
+        }
+      });
+
+
     }
-    else{
-      this.historicalCombineWidgets = []
+    else {
+      this.historicalCombineWidgets = [];
+      this.assetWiseTelemetryData = [];
+      this.propertyList = [];
+      this.measuredMessageProps = [];
       this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
     }
 
   }
 
   onClearHierarchy() {
-  
+    this.isFilterSelected = false;
   }
 
   onSaveHierachy() {
@@ -217,5 +236,33 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     this.historicalDateFilter.sampling_time = 1;
 
   }
+
+  selectedDate(filterObj) {
+
+    this.historicalCombineWidgets = [];
+    this.assetWiseTelemetryData = [];
+    this.propertyList = [];
+    this.measuredMessageProps = [];
+    this.historicalDateFilter.from_date = filterObj.from_date;
+    this.historicalDateFilter.to_date = filterObj.to_date;
+    this.historicalDateFilter.dateOption = filterObj.dateOption;
+
+    this.onFilterSelection('', true, false, true);
+    // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
+    console.log('from_date', 'to_date', filterObj?.from_date, filterObj?.to_date);
+    if (this.filterObj.asset) {
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.historicalDateFilter.from_date,
+        this.historicalDateFilter.to_date
+      );
+      if (records > this.noOfRecords) {
+        this.historicalDateFilter.isTypeEditable = true;
+      } else {
+        this.historicalDateFilter.isTypeEditable = false;
+      }
+    }
+  }
+
 
 }

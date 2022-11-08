@@ -147,8 +147,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
       if(changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0 )
       {
-        // this.hideIndicator();
-        // this.showLoadingIndicator();
+        this.hideIndicator();
+        this.showLoadingIndicator();
       }
       else{
       let previousAsset = changes.assetWiseTelemetryData?.previousValue?.find(r => r.assetId == this.chartConfig.asset_id);
@@ -211,15 +211,15 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
           (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection =false;
           if (this.chart?.tooltipContainer) {            
             setTimeout(() => {
-              // this.hideIndicator();
+              this.hideIndicator();
             }, 300);
           }
         }
       }
       else {
         this.isNoData = true;
-        // this.hideIndicator();
-        // this.showNoDataIndicator();
+        this.hideIndicator();
+        this.showNoDataIndicator();
         if (this.chart) {
           this.chart.data = [...liveHistoricalData];
           this.liveAndHistoricalData = [...liveHistoricalData];
@@ -252,6 +252,19 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.displayseriestooltip()
 
     }
+  }
+  showNoDataIndicator() {
+    this.indicator = this.chart.tooltipContainer.createChild(am4core.Container);
+    this.indicator.background.fill = am4core.color("#fff");
+    this.indicator.background.fillOpacity = 0.8;
+    this.indicator.width = am4core.percent(100);
+    this.indicator.height = am4core.percent(100);
+    this.indicatorLabel = this.indicator.createChild(am4core.Label);
+    this.indicatorLabel.text = 'No_Data_Found_For_Selected_Time_Interval';
+    this.indicatorLabel.align = "center";
+    this.indicatorLabel.valign = "middle";
+    this.indicatorLabel.fontSize = 20;
+    this.indicatorLabel.fill = am4core.color("#a7aac0");
   }
 
   displayseriestooltip(){
@@ -467,67 +480,6 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   }
 
- lineChart(){
-  var chart = am4core.create(this.chartElement?.nativeElement, am4charts.XYChart)
-
-  chart.data = [{
-    "date": new Date(2018, 0, 1),
-    "value": 450,
-    "value2": 362,
-    "value3": 699
-  }, {
-    "date": new Date(2018, 0, 2),
-    "value": 269,
-    "value2": 450,
-    "value3": 841
-  }, {
-    "date": new Date(2018, 0, 3),
-    "value": 700,
-    "value2": 358,
-    "value3": 699
-  }, {
-    "date": new Date(2018, 0, 4),
-    "value": 490,
-    "value2": 367,
-    "value3": 500
-  }, {
-    "date": new Date(2018, 0, 5),
-    "value": 500,
-    "value2": 485,
-    "value3": 369
-  }, {
-    "date": new Date(2018, 0, 6),
-    "value": 550,
-    "value2": 354,
-    "value3": 250
-  }, {
-    "date": new Date(2018, 0, 7),
-    "value": 420,
-    "value2": 350,
-    "value3": 600
-  }];
-
-  var categoryAxis = chart.xAxes.push(new am4charts.DateAxis());
-  categoryAxis.renderer.grid.template.location = 0;
-
-  var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-  var series = chart.series.push(new am4charts.LineSeries());
-  series.dataFields.valueY = "value2";
-  series.dataFields.dateX = "date";
-  series.name = "test";
-  series.tooltipText = "{dateX}: [b]{valueY}[/]";
-  series.strokeWidth = 2;
-
-  var bullet = series.bullets.push(new am4charts.CircleBullet());
-  bullet.events.on("hit", function (ev) {
-    alert("Clicked on ");
-  });
-
-  chart.legend = new am4charts.Legend();
-  chart.cursor = new am4charts.XYCursor();
- }
-
  RenderChartWithTelemetryData() {
   this.loader = true;
   setTimeout(() => {
@@ -683,6 +635,9 @@ plotChart() {
     chart.scrollbarY.parent = chart.leftAxesContainer;
     this.chart = chart;
     // this.showLoadingIndicator();
+    // setTimeout(()=>{
+    //   this.hideIndicator()
+    // },20)
     //});
   }
 }

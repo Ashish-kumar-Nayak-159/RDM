@@ -41,22 +41,41 @@
 
 
   </ng-container>
+  <div class="form-group mb-0">
+    <ng-template #filterTemplate>
+      <form class="form-inline">
+
+        <app-date-range-picker *ngIf="historicalDateFilter.from_date && historicalDateFilter.to_date"
+          [filterObj]="historicalDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
+          [selectedDateRange]="selectedDateRange">
+        </app-date-range-picker>
+      
+      </form>
+    </ng-template>
+
+    <ng-container *ngIf="isFilterSelected">
+      <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+    </ng-container>
+  
+  </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
 <ng-container *ngIf="assetWiseTelemetryData?.length > 0">
-  <ng-container
-  *ngFor="let widget of historicalCombineWidgets; let i = index;">
-  <app-historical-livechart
-      [chartConfig]="widget"
-      [propertyList]="propertyList"
-      [assetWiseTelemetryData]="assetWiseTelemetryData"
-      [chartHeight]="" [chartWidth]=""
-      [dvRowCardHeaderClass]="'card shadow h-100'"
-      [chartStartdate]=" filterObj.from_date"
-      [chartEnddate]="filterObj.to_date"
-      [hideCancelButtonAddOnClass]=""
-      [anchorAdditionalClass]="'border-0 rounded-0'"
-      *ngIf="widget.chartType === 'LineChart' || widget.chartType === 'AreaChart'">
-  </app-historical-livechart>
-  </ng-container>
+  <div class="historical-livechart-container">
+    <ng-container
+    *ngFor="let widget of historicalCombineWidgets; let i = index;">
+    <app-historical-livechart
+        [chartConfig]="widget"
+        [propertyList]="propertyList"
+        [assetWiseTelemetryData]="assetWiseTelemetryData"
+        [chartHeight]="" [chartWidth]=""
+        [dvRowCardHeaderClass]="'card shadow h-100'"
+        [chartStartdate]=" filterObj.from_date"
+        [chartEnddate]="filterObj.to_date"
+        [hideCancelButtonAddOnClass]=""
+        [anchorAdditionalClass]="'border-0 rounded-0'"
+        *ngIf="widget.chartType === 'LineChart' || widget.chartType === 'AreaChart'">
+    </app-historical-livechart>
+    </ng-container>
+  </div>
 </ng-container>

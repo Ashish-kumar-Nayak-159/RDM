@@ -60,11 +60,13 @@
   </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-  <div class="historical-livechart-container" *ngIf="assetWiseTelemetryData?.length > 0">
+  <div class="historical-livechart-container"  *ngIf="historicalCombineWidgets.length > 0 && assetWiseTelemetryData?.length> 0">
     <ng-container
     *ngFor="let widget of historicalCombineWidgets; let i = index;">
     <app-historical-livechart
         [chartConfig]="widget"
+        [live_Date]="live_Date"
+        [newData]="historical_livedata"
         [propertyList]="propertyList"
         [assetWiseTelemetryData]="assetWiseTelemetryData"
         [chartHeight]="" [chartWidth]=""

@@ -1,19 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
+import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { environment } from 'src/environments/environment';
+import * as datefns from 'date-fns';
+
 
 @Component({
   selector: 'app-application-historical-live-data',
   templateUrl: './application-historical-live-data.component.html',
   styleUrls: ['./application-historical-live-data.component.css']
 })
-export class ApplicationHistoricalLiveDataComponent implements OnInit {
+export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy {
   isTelemetryDataLoading = false;
   assets: any[] = [];
   filterObj: any = {};
@@ -38,6 +41,10 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   assetWiseTelemetryData = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
+  live_Date = false;
+ signalRTelemetrySubscription: any;
+ historical_livedata = [];
+ 
 
 
 
@@ -45,7 +52,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     private commonService: CommonService,
     private assetService: AssetService,
     private assetModelService: AssetModelService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private signalRService: SignalRService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -187,7 +195,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
           })
         })
       }
-
+      this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
       const filterObj = {
         epoch: true,
         app: this.contextApp.app,
@@ -210,7 +218,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
           });
         }
       });
-
 
     }
     else {
@@ -237,7 +244,10 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
   }
 
   selectedDate(filterObj) {
-
+    this.signalRService.disconnectFromSignalR('telemetry');
+    this.signalRTelemetrySubscription?.unsubscribe()
+    this.historical_livedata = []
+    this.live_Date = false;
     this.historicalCombineWidgets = [];
     this.assetWiseTelemetryData = [];
     this.propertyList = [];
@@ -262,5 +272,52 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit {
     }
   }
 
+  private SubscribeLiveTelemetryOnDateOption(endDate: any = null) {
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let to_date = new Date(endDate * 1000);
+    to_date.setHours(0, 0, 0, 0);
+    if (currentDate <= to_date) {
+      const obj1 = {
+        hierarchy: this.contextApp.user.hierarchy,
+        levels: this.contextApp.hierarchy.levels,
+        asset_id: this.filterObj?.asset?.asset_id,
+        type: 'telemetry',
+        app: this.contextApp.app,
+      };
+      this.signalRService.connectToSignalR(obj1);
+      this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+        (data) => {
+          if (data) {
+            let obj = JSON.parse(JSON.stringify(data));
+            delete obj.m;
+            delete obj.ed;
+            delete obj.cd;
+            delete obj.dkpi;
+            obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+            data = JSON.parse(JSON.stringify(obj));
+            this.getLatestHistoricalTelemetry(data);
+          }
+        });
+    }
+    else {
+      this.historical_livedata = [];
+      this.live_Date = false;
+    }
+  }
+
+  getLatestHistoricalTelemetry(data) {
+    this.historical_livedata = data;
+    console.log('signalr',this.historical_livedata);
+    this.live_Date = true;
+  }
+
+
+
+  ngOnDestroy(): void {
+    this.signalRTelemetrySubscription?.unsubscribe();
+    this.signalRService.disconnectFromSignalR('telemetry');
+
+  }
 
 }

@@ -684,6 +684,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       model_control_panel_menu: [],
       gateway_control_panel_menu: [],
       legacy_asset_control_panel_menu: [],
+      miscellaneous_menu: [],
     };
 
     const methodToCall = this.applicationService.createApp(applicationDetail);

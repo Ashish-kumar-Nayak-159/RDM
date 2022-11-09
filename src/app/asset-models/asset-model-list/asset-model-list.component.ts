@@ -33,9 +33,10 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   originalAssetsModelFilterObj: any;
   tileData: any;
   subscriptions: Subscription[] = [];
-  iotAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
-  legacyAssetsTab: { visibility: any; tab_name: any; table_key: any; name: any };
-  iotGatewaysTab: { visibility: any; tab_name: any; table_key: any; name: any };
+  addOptionBtn: { visibility: boolean; name: any };
+  iotAssetsTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
+  legacyAssetsTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
+  iotGatewaysTab: { visibility: boolean; tab_name: any; table_key: any; name: any };
   componentState: any;
   decodedToken: any;
   constructor(
@@ -178,6 +179,8 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     let assetItem;
+    let addBtnItem;
+    const addBtnDataItem = {};
     const assetDataItem = {};
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === 'Asset Models') {
@@ -186,11 +189,21 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       if (item.page === 'Assets') {
         assetItem = item.showAccordion;
       }
+      if (item.page === 'Asset Models') {
+        addBtnItem = item.showAccordion;
+      }
     });
     this.tileData = selectedItem;
     assetItem.forEach((item) => {
       assetDataItem[item.name] = item.value;
     });
+    addBtnItem.forEach((item) => {
+      addBtnDataItem[item.name] = item.value;
+    });
+    this.addOptionBtn = {
+        visibility: addBtnDataItem['Add Option'],
+        name: addBtnDataItem['Add Option'],
+    };
     this.iotAssetsTab = {
       visibility: assetDataItem['IoT Assets'],
       tab_name: assetDataItem['IoT Assets Tab Name'],

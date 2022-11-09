@@ -45,6 +45,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   tileData: any;
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
+  preGeneratedTab: { visibility: boolean; name: any };
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -152,12 +153,24 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   getTileName() {
     let selectedItem;
+    let reportItem;
+    const reportDataItem = {};
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
       }
+      if (item.page === 'Reports') {
+        reportItem = item.showAccordion;
+      }
     });
     this.tileData = selectedItem;
+    reportItem.forEach((item) => {
+      reportDataItem[item.name] = item.value;
+    });
+    this.preGeneratedTab  = {
+      visibility: reportDataItem['Pre-Generated Reports'],
+      name: reportDataItem['Pre-Generated Reports'],
+    };
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 

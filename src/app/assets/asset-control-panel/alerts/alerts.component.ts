@@ -18,6 +18,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   contextApp: any;
   @Input() asset: Asset = new Asset();
   @Input() componentState: any;
+  @Input() menuDetail: any;
   isAlertLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedAlert: any;

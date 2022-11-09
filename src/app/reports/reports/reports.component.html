@@ -8,12 +8,12 @@
             <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
               id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
               aria-controls="nav-pre-generated" aria-selected="true" (click)="onTabSelect('pre-generated')"
-              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1">
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1 && preGeneratedTab?.visibility">
               <em class="fas fa-chart-line mr-2"></em>
               <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value :
                 ''}}</span>
             </a>
-            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'custom'}" id="nav-custom-tab"
+            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'custom','active ': preGeneratedTab?.visibility === false}" id="nav-custom-tab"
               data-toggle="tab" href="#custom" role="tab" aria-controls="nav-custom" aria-selected="false"
               (click)="onTabSelect('custom')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
@@ -31,7 +31,7 @@
   <div id="assetTabContent" class="tab-content">
     <div id="pre-generated" role="tabpanel" aria-labelledby="pre-generated-tab" class="tab-pane fade show"
       [ngClass]="{'active': tabType === 'pre-generated'}"
-      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1">
+      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1 && preGeneratedTab?.visibility">
       <!-- <div class="tab-bar">
         <form class="form-inline">
         </form>
@@ -39,7 +39,7 @@
       <app-pre-generated-reports *ngIf="tabType === 'pre-generated'"></app-pre-generated-reports>
     </div>
     <div id="custom" role="tabpanel" aria-labelledby="custom-tab" class="tab-pane fade show"
-      [ngClass]="{'active': tabType === 'custom'}">
+      [ngClass]="{'active': tabType === 'custom','active ': preGeneratedTab?.visibility === false}">
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
         <div class="tab-bar">
           <form class="form-inline">

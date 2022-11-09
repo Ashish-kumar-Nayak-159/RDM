@@ -1922,6 +1922,17 @@ export class CONSTANTS {
       showAccordion: [],
       hide_menu_setting: false,
     },
+    {
+      page: 'rulesType',
+      system_name: 'Type (Cloud Rule/Edge Rule - enable/disable)',
+      url: '#asset_rules',
+      display_name: 'Type',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false,
+      privileges_required: [],
+      showAccordion: [],
+    },
   ];
 
   public static PROPERTY_DATA_TYPE_LIST = [

@@ -66,6 +66,7 @@ export class AddRuleComponent implements OnInit {
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
   escalationTimeDropdown: { visibility: true; };
+  typeRulesDropdown: { visibility: boolean; };
   overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
@@ -103,6 +104,9 @@ export class AddRuleComponent implements OnInit {
         this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
             if (item.page === 'escalationTime') {          
               this.escalationTimeDropdown = item.visible;
+            }
+            if (item.page === 'rulesType') {          
+              this.typeRulesDropdown = item.visible;
             }
         });
   }

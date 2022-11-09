@@ -7,64 +7,64 @@
       <div class="asset-nav-tabs">
         <div class="settings-tabs">
           <ul class="nav nav-tabs " role="tablist" (click)="responsiveTabs()">
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'meta-data'}" href="#app-meta-data" role="tab"
                 aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
                 Metadata</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_database_config === true">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true && this.hideshowMenuDatabaseConfig === true">
               <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'database-configuration'}" href="#app-database-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"
                 (click)="setActiveTab('database-configuration')">
                 Database Config</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_dashboard_config === true">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true && this.hideshowMenuDashboardConfig === true">
               <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'dashboard-configuration'}" href="#app-dashboard-configuration"
                 role="tab" aria-controls="nav-home" aria-selected="true"
                 (click)="setActiveTab('dashboard-configuration')">
                 Dashboard Config</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_menu_setting === true">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true && this.hideshowMenuSettingsOnly === true">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'menu-settings'}" href="#app-menu-settings" role="tab"
                 aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
                 Menu Settings</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'filter-settings'}" href="#app-filter-settings" role="tab"
                 aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('filter-settings')">
                 Filter Settings</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'org-tree'}" href="#app-org-tree" role="tab"
                 aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('org-tree')">
                 Org Tree</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'asset-hierarchy'}" href="#app-asset-hierarchy" role="tab"
                 aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('asset-hierarchy')">
                 Hierarchy</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-contact-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'roles'}" href="#app-roles" role="tab" aria-controls="nav-contact"
                 aria-selected="false" (click)="setActiveTab('roles')">
                 Roles</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'users'}" href="#app-users" role="tab" aria-controls="nav-about"
                 aria-selected="false" (click)="setActiveTab('users')"
                 *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMV') > -1">
                 Users</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="this.hideshowMenu === true">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'user-groups'}" href="#app-user-groups" role="tab"
                 aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('user-groups')">

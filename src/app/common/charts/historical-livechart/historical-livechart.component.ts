@@ -180,13 +180,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
           tempArray.push(variable)
         }
         if (!tempArray.includes('message_date_obj')) {
-          newTelemetryObj['message_date_obj'] = this.commonService.convertUTCDateToLocalDate(newTelemetryObj['ts']);
+          newTelemetryObj['message_date_obj'] = this.commonService.convertUTCDateToLocalDateObj(newTelemetryObj['ts']);
           newTelemetryObj['color'] = 'steelblue';
           newTelemetryObj['strokeWidthDynamic'] = 2;
         }
       }
       (this.isChartResized ? this.unProcessedTelemetryData : this.liveAndHistoricalData)?.push(newTelemetryObj)
-      const myDate = new Date(newTelemetryObj['message_date_obj']);
+      const myDate = newTelemetryObj['message_date_obj'];
       if (!this.isChartResized && myDate) {
         // this.hideIndicator();
         this.lastTelemetryBeforeZoomTimestamp = myDate as Date;

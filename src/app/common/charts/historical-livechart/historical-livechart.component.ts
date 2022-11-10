@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef,OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import * as am4core from '@amcharts/amcharts4/core';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import am4fonts_notosans_jp from '../CustomFont/notosans-jp'
 
@@ -111,7 +111,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.RenderChartWithTelemetryData();
-
+    // this.ChangeIndicatorLabel()
 
     // const filterObj = {
     //   epoch: true,
@@ -141,19 +141,16 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     // },300)
   }
 
-  
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
-      if(changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0 )
-      {
+      if (changes.assetWiseTelemetryData.previousValue != changes.assetWiseTelemetryData.currentValue) {
         this.hideIndicator();
         this.showLoadingIndicator();
-      }
-      else{        
-          setTimeout(() => {
-            //this.loader = !this.loader;
-            this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
-          }, 300);
+        setTimeout(() => {
+          // this.loader = !this.loader;
+          this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+        }, 300);
       }
     }
     if (this.live_Date === true) {
@@ -192,8 +189,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.isNoData = false;
     }
     else {
-      debugger
-      this.isLoadingData = false;    
+      this.isLoadingData = false;
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
         this.isNoData = false;
         if (this.chart) {
@@ -201,8 +197,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
           this.liveAndHistoricalData = liveHistoricalData;
           this.chart.invalidateRawData();
           this.ChangeDateXAxis();
-          (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection =false;
-          if (this.chart?.tooltipContainer) {            
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;
+          if (this.chart?.tooltipContainer) {
             setTimeout(() => {
               this.hideIndicator();
             }, 300);
@@ -247,23 +243,29 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
   }
   showNoDataIndicator() {
-    debugger
     this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
-    if(this.indicator){
-      this.indicator.background.fill = am4core.color("#fff");
-      this.indicator.background.fillOpacity = 0.8;
-      this.indicator.width = am4core.percent(100);
-      this.indicator.height = am4core.percent(100);
-      this.indicatorLabel = this.indicator.createChild(am4core.Label);
-      this.indicatorLabel.text = 'No_Data_Found_For_Selected_Time_Interval';
-      this.indicatorLabel.align = "center";
-      this.indicatorLabel.valign = "middle";
-      this.indicatorLabel.fontSize = 20;
-      this.indicatorLabel.fill = am4core.color("#a7aac0");
+    this.indicator.background.fill = am4core.color("#fff");
+    this.indicator.background.fillOpacity = 0.8;
+    this.indicator.width = am4core.percent(100);
+    this.indicator.height = am4core.percent(100);
+    this.indicatorLabel = this.indicator.createChild(am4core.Label);
+    this.indicatorLabel.text = 'No data found for selected time interval.';
+    this.indicatorLabel.align = "center";
+    this.indicatorLabel.valign = "middle";
+    this.indicatorLabel.fontSize = 20;
+    this.indicatorLabel.fill = am4core.color("#a7aac0");
+  }
+
+  ChangeIndicatorLabel() {
+    if (this.isNoData) {
+      this.indicatorLabel.text = 'No data found for selected time interval.';
+    }
+    else if (this.isLoadingData) {
+      this.indicatorLabel.text = 'Loading Data. Wait...';
     }
   }
 
-  displayseriestooltip(){
+  displayseriestooltip() {
     this.seriesArr.forEach(element => {
       if (element.units) {
         element.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}) \n: [bold]{valueY}[/]';
@@ -477,174 +479,170 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   }
 
- RenderChartWithTelemetryData() {
-  this.loader = true;
-  setTimeout(() => {
-    this.plotChart();
-  }, 430);
-}
+  RenderChartWithTelemetryData() {
+    this.loader = true;
+    setTimeout(() => {
+      this.plotChart();
+    }, 430);
+  }
 
 
-plotChart() {
-  am4core.options.minPolylineStep = 5;
-  if (this.chartElement?.nativeElement) {
-    // this.zone.runOutsideAngular(() => {
-    // am4core.options.autoDispose = true;
-    const chart = am4core.create(this.chartElement?.nativeElement, am4charts.XYChart)
-    chart.paddingLeft = 0;
-    chart.paddingRight = 20;
-    let convertedTelemetrytime = new Date(this.commonService.convertUTCDateToLocalDate(this.selectedAlert?.message.telemetry_ts, 'dd-MMM-yyyy HH:mm:ss'));
-    chart.data = this.liveAndHistoricalData && this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
-      var d1 = new Date(detail.message_date_obj || this.commonService.convertUTCDateToLocalDate(detail.ts, 'dd-MMM-yyyy HH:mm:ss'));
-      var same = d1.getTime() === convertedTelemetrytime.getTime();
-      if (same) {
-        detail['color'] = 'red';
-        detail['strokeWidthDynamic'] = 5;
-      } else {
-        detail['color'] = 'steelblue';
-        detail['strokeWidthDynamic'] = 2;
+  plotChart() {
+    am4core.options.minPolylineStep = 5;
+    if (this.chartElement?.nativeElement) {
+      // this.zone.runOutsideAngular(() => {
+      // am4core.options.autoDispose = true;
+      const chart = am4core.create(this.chartElement?.nativeElement, am4charts.XYChart)
+      chart.paddingLeft = 0;
+      chart.paddingRight = 20;
+      let convertedTelemetrytime = new Date(this.commonService.convertUTCDateToLocalDate(this.selectedAlert?.message.telemetry_ts, 'dd-MMM-yyyy HH:mm:ss'));
+      chart.data = this.liveAndHistoricalData && this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
+        var d1 = new Date(detail.message_date_obj || this.commonService.convertUTCDateToLocalDate(detail.ts, 'dd-MMM-yyyy HH:mm:ss'));
+        var same = d1.getTime() === convertedTelemetrytime.getTime();
+        if (same) {
+          detail['color'] = 'red';
+          detail['strokeWidthDynamic'] = 5;
+        } else {
+          detail['color'] = 'steelblue';
+          detail['strokeWidthDynamic'] = 2;
+        }
+        return detail;
+      }) : [];
+      // chart.data =  this.assetWiseTelemetryData
+      chart.responsive.enabled = true;
+
+      chart.dateFormatter.inputDateFormat = "x";;
+      chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
+      const dateAxis = chart.xAxes?.push(new am4charts.DateAxis());
+      // chart.svgContainer.hideOverflow = true;
+      // dateAxis.extraMax = 0.5;
+      // dateAxis.extraMin = 0.5;
+      if (this.chartStartdate) {
+        const date = new Date(0);
+        date.setUTCSeconds(this.chartStartdate);
+        dateAxis.min = date.getTime();
       }
-      return detail;
-    }) : [];
-    // chart.data =  this.assetWiseTelemetryData
-    chart.responsive.enabled = true;
+      if (this.chartEnddate) {
+        const date = new Date(0);
+        date.setUTCSeconds(this.chartEnddate);
+        dateAxis.max = date.getTime();
 
-    chart.dateFormatter.inputDateFormat = "x";;
-    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-    const dateAxis = chart.xAxes?.push(new am4charts.DateAxis());
-    // chart.svgContainer.hideOverflow = true;
-    // dateAxis.extraMax = 0.5;
-    // dateAxis.extraMin = 0.5;
-    if (this.chartStartdate) {
-      const date = new Date(0);
-      date.setUTCSeconds(this.chartStartdate);
-      dateAxis.min = date.getTime();
-    }
-    if (this.chartEnddate) {
-      const date = new Date(0);
-      date.setUTCSeconds(this.chartEnddate);
-      dateAxis.max = date.getTime();
+      }
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.labels.template.location = 0.1;
+      // dateAxis.renderer.minGridDistance = 100;
+      dateAxis.renderer.inside = false;
+      dateAxis.renderer.grid.template.disabled = false;
 
-    }
-    dateAxis.renderer.grid.template.location = 0;
-    dateAxis.renderer.labels.template.location = 0.1;
-    // dateAxis.renderer.minGridDistance = 100;
-    dateAxis.renderer.inside = false;
-    dateAxis.renderer.grid.template.disabled = false;
-
-    chart.events.on('ready', (ev) => {
-      // this.changeLoader()
-      this.loaderMessage = 'Loading Data. Wait...';
-    });
-    dateAxis.start = 0
-    dateAxis.end = 1;
-    dateAxis.keepSelection = true
-
-
-    this.createValueAxis(chart, 0);
-    this.createValueAxis(chart, 1);
-    chart.legend = new am4charts.Legend();
-    chart.logo.disabled = true;
-    chart.legend.maxHeight = 80;
-    chart.svgContainer.autoResize = true;
-    chart.svgContainer.measure();
-    chart.legend.scrollable = true;
-    chart.legend.labels.template.maxWidth = 30;
-    chart.legend.labels.template.truncate = true;
-    chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
-    chart.cursor = new am4charts.XYCursor();
-    if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
-      var range = dateAxis.axisRanges.create();
-      range.date = new Date(this.selectedAlert.local_created_date);
-      range.endDate = new Date(this.selectedAlert.local_end_created_date);
-      range.axisFill.fillOpacity = 5;
-      range.grid.strokeOpacity = 0;
-      range.axisFill.fill = am4core.color('red');
-      range.axisFill.tooltip = new am4core.Tooltip();
-      range.axisFill.tooltipText = 'Alert Start Time: [bold]{date}[/]\n Alert End Time: [bold]{endDate}[/]';
-      range.axisFill.interactionsEnabled = true;
-      range.axisFill.isMeasured = true;
-    } else if (this.selectedAlert ? this.selectedAlert?.message.telemetry_ts : this.selectedAlert?.local_created_date) {
-    }
-    chart.legend.itemContainers.template.togglable = false;
-    dateAxis.dateFormatter = new am4core.DateFormatter();
-    dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-    chart.cursor.xAxis = dateAxis;
-    chart.exporting.menu = new am4core.ExportMenu();
-    chart.exporting.getFormatOptions('xlsx').useLocale = false;
-    chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-    if (chart.data.length > 0) {
-      chart.exporting.title =
-        this.chartTitle +
-        ' from ' +
-        chart.data[0].message_date_obj?.toString() +
-        ' to ' +
-        chart.data[chart.data.length - 1].message_date_obj?.toString();
-    }
-    this.chartDataFields = {
-      message_date_obj: 'Timestamp',
-    };
-    this.chartConfig.y1axis.forEach((prop) => {
-      this.propertyList.forEach((propObj) => {
-        if (prop.json_key === propObj.json_key) {
-          const units = propObj.json_model[propObj.json_key].units;
-          this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
-        }
+      chart.events.on('ready', (ev) => {
+        // this.changeLoader()
+        this.loaderMessage = 'Loading Data. Wait...';
       });
-    });
-    this.chartConfig.y2axis.forEach((prop) => {
-      this.propertyList.forEach((propObj) => {
-        if (prop.json_key === propObj.json_key) {
-          const units = propObj.json_model[propObj.json_key].units;
-          this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
-        }
-      });
-    });
-    chart.exporting.dataFields = this.chartDataFields;
-    chart.zoomOutButton.disabled = true;
-    var pdf = chart.exporting.getFormatOptions("pdf");
-    pdf.font = am4fonts_notosans_jp;
-    chart.exporting.getFormatOptions('pdf').addURL = false;
-    chart.exporting.getFormatOptions('pdfdata').addURL = false;
-    var pdfdata =chart.exporting.getFormatOptions("pdfdata");
-    pdfdata.font = am4fonts_notosans_jp;
-    chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-    if (chart.data.length > 0) {
-      if (this.selectedAlert) {
-        chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
-      } else if (this.asset?.asset_id) {
-        chart.exporting.filePrefix =
-          this.asset.asset_id +
-          '_' +
+      dateAxis.start = 0
+      dateAxis.end = 1;
+      dateAxis.keepSelection = true
+
+
+      this.createValueAxis(chart, 0);
+      this.createValueAxis(chart, 1);
+      chart.legend = new am4charts.Legend();
+      chart.logo.disabled = true;
+      chart.legend.maxHeight = 80;
+      chart.svgContainer.autoResize = true;
+      chart.svgContainer.measure();
+      chart.legend.scrollable = true;
+      chart.legend.labels.template.maxWidth = 30;
+      chart.legend.labels.template.truncate = true;
+      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
+      chart.cursor = new am4charts.XYCursor();
+      if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
+        var range = dateAxis.axisRanges.create();
+        range.date = new Date(this.selectedAlert.local_created_date);
+        range.endDate = new Date(this.selectedAlert.local_end_created_date);
+        range.axisFill.fillOpacity = 5;
+        range.grid.strokeOpacity = 0;
+        range.axisFill.fill = am4core.color('red');
+        range.axisFill.tooltip = new am4core.Tooltip();
+        range.axisFill.tooltipText = 'Alert Start Time: [bold]{date}[/]\n Alert End Time: [bold]{endDate}[/]';
+        range.axisFill.interactionsEnabled = true;
+        range.axisFill.isMeasured = true;
+      } else if (this.selectedAlert ? this.selectedAlert?.message.telemetry_ts : this.selectedAlert?.local_created_date) {
+      }
+      chart.legend.itemContainers.template.togglable = false;
+      dateAxis.dateFormatter = new am4core.DateFormatter();
+      dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
+      chart.cursor.xAxis = dateAxis;
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.getFormatOptions('xlsx').useLocale = false;
+      chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
+      if (chart.data.length > 0) {
+        chart.exporting.title =
+          this.chartTitle +
+          ' from ' +
           chart.data[0].message_date_obj?.toString() +
-          '_' +
-          chart.data[chart.data.length - 1].message_date_obj?.toString();
-      } else {
-        chart.exporting.filePrefix =
-          chart.data[0].message_date_obj?.toString() +
-          '_' +
+          ' to ' +
           chart.data[chart.data.length - 1].message_date_obj?.toString();
       }
-    }
-    chart.scrollbarX = new am4core.Scrollbar();
-    chart.scrollbarY = new am4core.Scrollbar();
+      this.chartDataFields = {
+        message_date_obj: 'Timestamp',
+      };
+      this.chartConfig.y1axis.forEach((prop) => {
+        this.propertyList.forEach((propObj) => {
+          if (prop.json_key === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
+          }
+        });
+      });
+      this.chartConfig.y2axis.forEach((prop) => {
+        this.propertyList.forEach((propObj) => {
+          if (prop.json_key === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
+          }
+        });
+      });
+      chart.exporting.dataFields = this.chartDataFields;
+      chart.zoomOutButton.disabled = true;
+      var pdf = chart.exporting.getFormatOptions("pdf");
+      pdf.font = am4fonts_notosans_jp;
+      chart.exporting.getFormatOptions('pdf').addURL = false;
+      chart.exporting.getFormatOptions('pdfdata').addURL = false;
+      var pdfdata = chart.exporting.getFormatOptions("pdfdata");
+      pdfdata.font = am4fonts_notosans_jp;
+      chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
+      if (chart.data.length > 0) {
+        if (this.selectedAlert) {
+          chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
+        } else if (this.asset?.asset_id) {
+          chart.exporting.filePrefix =
+            this.asset.asset_id +
+            '_' +
+            chart.data[0].message_date_obj?.toString() +
+            '_' +
+            chart.data[chart.data.length - 1].message_date_obj?.toString();
+        } else {
+          chart.exporting.filePrefix =
+            chart.data[0].message_date_obj?.toString() +
+            '_' +
+            chart.data[chart.data.length - 1].message_date_obj?.toString();
+        }
+      }
+      chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarY = new am4core.Scrollbar();
 
-    chart.scrollbarX.parent = chart.bottomAxesContainer;
-    chart.scrollbarY.parent = chart.leftAxesContainer;
-    this.chart = chart;
-    this.showLoadingIndicator();
-    // setTimeout(()=>{
-    //   this.hideIndicator()
-    // },20)
-    //});
+      chart.scrollbarX.parent = chart.bottomAxesContainer;
+      chart.scrollbarY.parent = chart.leftAxesContainer;
+      this.chart = chart;
+      this.showLoadingIndicator();
+    }
   }
-}
-ngOnDestroy() {
-  if (this.chart) {
-    this.chart.dispose()
+  ngOnDestroy() {
+    if (this.chart) {
+      this.chart.dispose()
+    }
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-  this.subscriptions.forEach((sub) => sub.unsubscribe());
-}
 
 }
 

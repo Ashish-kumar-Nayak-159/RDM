@@ -133,7 +133,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string) {
 
     if (this.filterObj?.asset) {
 
@@ -175,26 +175,28 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         },
         (error) => (this.isTelemetryDataLoading = false)
       )
-      this.historicalCombineWidgets = []
-      this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-        this.historicalCombineWidgets = response?.historical_widgets;
-      })
-
-      this.measuredMessageProps = [];
-      if (this.historicalCombineWidgets) {
-        this.historicalCombineWidgets?.forEach((widget) => {
-          widget?.y1axis?.forEach((item) => {
-            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-              this.measuredMessageProps?.push(item?.json_key);
-            }
-          })
-          widget?.y2axis?.forEach((item) => {
-            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-              this.measuredMessageProps?.push(item?.json_key);
-            }
-          })
+      if(!callFromSelectedDate){
+        this.historicalCombineWidgets = []
+        this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+          this.historicalCombineWidgets = response?.historical_widgets;
         })
-      }
+
+        this.measuredMessageProps = [];
+        if (this.historicalCombineWidgets) {
+          this.historicalCombineWidgets?.forEach((widget) => {
+            widget?.y1axis?.forEach((item) => {
+              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                this.measuredMessageProps?.push(item?.json_key);
+              }
+            })
+            widget?.y2axis?.forEach((item) => {
+              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                this.measuredMessageProps?.push(item?.json_key);
+              }
+            })
+          })
+        }
+    }
       this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
       const filterObj = {
         epoch: true,
@@ -248,15 +250,15 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.signalRTelemetrySubscription?.unsubscribe()
     this.historical_livedata = []
     this.live_Date = false;
-    this.historicalCombineWidgets = [];
-    this.assetWiseTelemetryData = [];
+    // this.historicalCombineWidgets = [];
+    // this.assetWiseTelemetryData = [];
     this.propertyList = [];
-    this.measuredMessageProps = [];
+    // this.measuredMessageProps = [];
     this.historicalDateFilter.from_date = filterObj.from_date;
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
+    this.onFilterSelection('', true, false, true,'callFromSelectedDate');
 
-    this.onFilterSelection('', true, false, true);
     // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(

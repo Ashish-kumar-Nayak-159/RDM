@@ -18,10 +18,6 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
   isApplicationDataLoading = false;
   apiSubscriptions: Subscription[] = [];
   decodedToken: any;
-  hideshowMenu: boolean;
-  hideshowMenuSettingsOnly: boolean;
-  hideshowMenuDashboardConfig: boolean;
-  hideshowMenuDatabaseConfig: boolean;
   constructor(
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
@@ -76,19 +72,6 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
               main_menu: [],
               miscellaneous_menu: [],
             };
-          }
-          this.hideshowMenu = true;
-          this.hideshowMenuSettingsOnly = true;
-          this.hideshowMenuDashboardConfig = true;
-          this.hideshowMenuDatabaseConfig = true;
-          if(this.applicationData?.metadata?.settings?.hide_dashboard_config === true){
-            this.hideshowMenuDashboardConfig = false;
-          }
-          if(this.applicationData?.metadata?.settings?.hide_database_config === true){
-            this.hideshowMenuDatabaseConfig = false;
-          }
-          if(this.applicationData?.metadata?.settings?.hide_menu_setting === true){
-            this.hideshowMenuSettingsOnly = false;
           }
           if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
             this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;

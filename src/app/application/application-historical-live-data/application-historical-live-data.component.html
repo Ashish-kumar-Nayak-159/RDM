@@ -21,7 +21,7 @@
 </div>
 <div class="tab-bar">
   <ng-container>
-    <div class="" *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset ">
+    <!-- <div class="" *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset ">
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
@@ -33,7 +33,7 @@
         <div class="">*{{sampleCountValue}} samples in last 1 minute
         </div>
       </div>
-    </ng-container>
+    </ng-container> -->
 
     <div class="" *ngIf="!isFilterSelected">
       Please select an asset and click on search to view the data.

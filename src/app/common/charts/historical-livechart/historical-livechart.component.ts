@@ -244,16 +244,18 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   }
   showNoDataIndicator() {
     this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
-    this.indicator.background.fill = am4core.color("#fff");
-    this.indicator.background.fillOpacity = 0.8;
-    this.indicator.width = am4core.percent(100);
-    this.indicator.height = am4core.percent(100);
-    this.indicatorLabel = this.indicator.createChild(am4core.Label);
-    this.indicatorLabel.text = 'No data found for selected time interval.';
-    this.indicatorLabel.align = "center";
-    this.indicatorLabel.valign = "middle";
-    this.indicatorLabel.fontSize = 20;
-    this.indicatorLabel.fill = am4core.color("#a7aac0");
+    if(this.indicator){
+      this.indicator.background.fill = am4core.color("#fff");
+      this.indicator.background.fillOpacity = 0.8;
+      this.indicator.width = am4core.percent(100);
+      this.indicator.height = am4core.percent(100);
+      this.indicatorLabel = this.indicator.createChild(am4core.Label);
+      this.indicatorLabel.text = 'No data found for selected time interval.';
+      this.indicatorLabel.align = "center";
+      this.indicatorLabel.valign = "middle";
+      this.indicatorLabel.fontSize = 20;
+      this.indicatorLabel.fill = am4core.color("#a7aac0");
+    }
   }
 
   ChangeIndicatorLabel() {
@@ -277,17 +279,19 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   showLoadingIndicator() {
     this.isLoadingData = true;
-    this.indicator = this.chart.tooltipContainer.createChild(am4core.Container);
-    this.indicator.background.fill = am4core.color("#fff");
-    this.indicator.background.fillOpacity = 0.8;
-    this.indicator.width = am4core.percent(100);
-    this.indicator.height = am4core.percent(100);
-    this.indicatorLabel = this.indicator.createChild(am4core.Label);
-    this.indicatorLabel.text = 'Loading Data. Wait...';
-    this.indicatorLabel.align = "center";
-    this.indicatorLabel.valign = "middle";
-    this.indicatorLabel.fontSize = 20;
-    this.indicatorLabel.fill = am4core.color("#a7aac0");
+    this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
+    if(this.indicator){
+      this.indicator.background.fill = am4core.color("#fff");
+      this.indicator.background.fillOpacity = 0.8;
+      this.indicator.width = am4core.percent(100);
+      this.indicator.height = am4core.percent(100);
+      this.indicatorLabel = this.indicator.createChild(am4core.Label);
+      this.indicatorLabel.text = 'Loading Data. Wait...';
+      this.indicatorLabel.align = "center";
+      this.indicatorLabel.valign = "middle";
+      this.indicatorLabel.fontSize = 20;
+      this.indicatorLabel.fill = am4core.color("#a7aac0");
+    }
   }
 
   createValueAxis(chart, axis) {
@@ -515,8 +519,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       const dateAxis = chart.xAxes?.push(new am4charts.DateAxis());
       // chart.svgContainer.hideOverflow = true;
-      // dateAxis.extraMax = 0.5;
-      // dateAxis.extraMin = 0.5;
+       dateAxis.extraMax = 0.5;
+       dateAxis.extraMin = 0.5;
       if (this.chartStartdate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartStartdate);

@@ -308,7 +308,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
   getLatestHistoricalTelemetry(data) {
     this.historical_livedata = data;
-    console.log('signalr',this.historical_livedata);
     this.live_Date = true;
   }
 

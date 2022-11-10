@@ -96,7 +96,6 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   constructor(private assetService: AssetService, private commonService: CommonService, private assetModelService: AssetModelService) { }
 
   ngOnInit(): void {
-    console.log('oninit',this.assetWiseTelemetryData)
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.chartHeight = '23rem';
@@ -104,7 +103,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     this.isChartResized = false;
     if (this.telemetryData?.length > 0) this.lastTelemetryBeforeZoomTimestamp = this.telemetryData[this.telemetryData.length - 1].message_date_obj
     else this.telemetryData = [];
-    this.liveAndHistoricalData = this.assetWiseTelemetryData;
+    //this.liveAndHistoricalData = this.assetWiseTelemetryData;
     this.chartTitle = this.chartConfig.title;
     this.chart_Id = this.chartConfig.chart_Id;
     this.chartHeight = '23rem';
@@ -147,22 +146,15 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
       if(changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0 )
       {
-        // this.hideIndicator();
-        // this.showLoadingIndicator();
+        this.hideIndicator();
+        this.showLoadingIndicator();
       }
-      else{
-      let previousAsset = changes.assetWiseTelemetryData?.previousValue?.find(r => r.assetId == this.chartConfig.asset_id);
-      if (!previousAsset) {
-        let asssetTelemetry = this.assetWiseTelemetryData.find(r => r.assetId == this.chartConfig.asset_id);
-        if (asssetTelemetry) {
-          this.telemetryData = asssetTelemetry?.telemetryData == undefined || asssetTelemetry?.telemetryData == null ? [] : asssetTelemetry?.telemetryData;
+      else{        
           setTimeout(() => {
             //this.loader = !this.loader;
-            this.handleLiveTelemetry(null, this.telemetryData);
+            this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
           }, 300);
-        }
       }
-    }
     }
     if (this.live_Date === true) {
       setTimeout(() => {
@@ -173,7 +165,6 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   handleLiveTelemetry(newTelemetryObj: any = null, liveHistoricalData: any[] = null) {
     if (newTelemetryObj) {
-      debugger
       for (const variable in newTelemetryObj) {
         let tempArray = []
         if (variable) {
@@ -188,7 +179,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       (this.isChartResized ? this.unProcessedTelemetryData : this.liveAndHistoricalData)?.push(newTelemetryObj)
       const myDate = newTelemetryObj['message_date_obj'];
       if (!this.isChartResized && myDate) {
-        // this.hideIndicator();
+        this.hideIndicator();
         this.lastTelemetryBeforeZoomTimestamp = myDate as Date;
         if (this.chart?.cursor?.xAxis) {
           (this.chart?.cursor.xAxis as am4charts.DateAxis).max = myDate?.getTime();
@@ -201,29 +192,30 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.isNoData = false;
     }
     else {
+      debugger
       this.isLoadingData = false;    
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
         this.isNoData = false;
         if (this.chart) {
-          this.chart.data = [...liveHistoricalData];
-          this.liveAndHistoricalData = [...liveHistoricalData];
+          this.chart.data = liveHistoricalData;
+          this.liveAndHistoricalData = liveHistoricalData;
           this.chart.invalidateRawData();
           this.ChangeDateXAxis();
           (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection =false;
           if (this.chart?.tooltipContainer) {            
             setTimeout(() => {
-              // this.hideIndicator();
+              this.hideIndicator();
             }, 300);
           }
         }
       }
       else {
         this.isNoData = true;
-        // this.hideIndicator();
-        // this.showNoDataIndicator();
+        this.hideIndicator();
+        this.showNoDataIndicator();
         if (this.chart) {
-          this.chart.data = [...liveHistoricalData];
-          this.liveAndHistoricalData = [...liveHistoricalData];
+          this.chart.data = [];
+          this.liveAndHistoricalData = [];
           this.chart.invalidateRawData();
           this.ChangeDateXAxis();
         }
@@ -255,17 +247,20 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
   }
   showNoDataIndicator() {
-    this.indicator = this.chart.tooltipContainer.createChild(am4core.Container);
-    this.indicator.background.fill = am4core.color("#fff");
-    this.indicator.background.fillOpacity = 0.8;
-    this.indicator.width = am4core.percent(100);
-    this.indicator.height = am4core.percent(100);
-    this.indicatorLabel = this.indicator.createChild(am4core.Label);
-    this.indicatorLabel.text = 'No_Data_Found_For_Selected_Time_Interval';
-    this.indicatorLabel.align = "center";
-    this.indicatorLabel.valign = "middle";
-    this.indicatorLabel.fontSize = 20;
-    this.indicatorLabel.fill = am4core.color("#a7aac0");
+    debugger
+    this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
+    if(this.indicator){
+      this.indicator.background.fill = am4core.color("#fff");
+      this.indicator.background.fillOpacity = 0.8;
+      this.indicator.width = am4core.percent(100);
+      this.indicator.height = am4core.percent(100);
+      this.indicatorLabel = this.indicator.createChild(am4core.Label);
+      this.indicatorLabel.text = 'No_Data_Found_For_Selected_Time_Interval';
+      this.indicatorLabel.align = "center";
+      this.indicatorLabel.valign = "middle";
+      this.indicatorLabel.fontSize = 20;
+      this.indicatorLabel.fill = am4core.color("#a7aac0");
+    }
   }
 
   displayseriestooltip(){
@@ -286,6 +281,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     this.indicator.width = am4core.percent(100);
     this.indicator.height = am4core.percent(100);
     this.indicatorLabel = this.indicator.createChild(am4core.Label);
+    this.indicatorLabel.text = 'Loading Data. Wait...';
     this.indicatorLabel.align = "center";
     this.indicatorLabel.valign = "middle";
     this.indicatorLabel.fontSize = 20;
@@ -498,7 +494,7 @@ plotChart() {
     chart.paddingLeft = 0;
     chart.paddingRight = 20;
     let convertedTelemetrytime = new Date(this.commonService.convertUTCDateToLocalDate(this.selectedAlert?.message.telemetry_ts, 'dd-MMM-yyyy HH:mm:ss'));
-    chart.data = this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
+    chart.data = this.liveAndHistoricalData && this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
       var d1 = new Date(detail.message_date_obj || this.commonService.convertUTCDateToLocalDate(detail.ts, 'dd-MMM-yyyy HH:mm:ss'));
       var same = d1.getTime() === convertedTelemetrytime.getTime();
       if (same) {
@@ -511,7 +507,6 @@ plotChart() {
       return detail;
     }) : [];
     // chart.data =  this.assetWiseTelemetryData
-    console.log('chart telemetry historical', this.assetWiseTelemetryData);
     chart.responsive.enabled = true;
 
     chart.dateFormatter.inputDateFormat = "x";;
@@ -637,7 +632,7 @@ plotChart() {
     chart.scrollbarX.parent = chart.bottomAxesContainer;
     chart.scrollbarY.parent = chart.leftAxesContainer;
     this.chart = chart;
-    // this.showLoadingIndicator();
+    this.showLoadingIndicator();
     // setTimeout(()=>{
     //   this.hideIndicator()
     // },20)

@@ -62,23 +62,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    this.historicalDateFilter.dateOption = item.dateOption;
-    if (item.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-      this.historicalDateFilter.from_date = dateObj.from_date;
-      this.historicalDateFilter.to_date = dateObj.to_date;
-      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    } else {
-      this.historicalDateFilter.from_date = item.from_date;
-      this.historicalDateFilter.to_date = item.to_date;
-      // this.historicalDateFilter.last_n_secs = undefined;
-    }
-    this.historicalDateFilter.widgets = [];
-    this.selectedDateRange = this.historicalDateFilter.dateOption;
-    this.historicalDateFilter.type = true;
-    this.historicalDateFilter.sampling_format = 'minute';
-    this.historicalDateFilter.sampling_time = 1;
+    this.getDefaultFilters();
 
     await this.getAssets(this.contextApp.user.hierarchy);
   }
@@ -234,6 +218,12 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
   onClearHierarchy() {
     this.isFilterSelected = false;
+    this.historicalCombineWidgets = [];
+    this.historical_livedata = [];
+    this.measuredMessageProps = [];
+    this.propertyList = [];
+    this.assetWiseTelemetryData = [];
+    this.getDefaultFilters();
   }
 
   onSaveHierachy() {
@@ -312,6 +302,26 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historical_livedata = data;
     this.live_Date = true;
   }
+  
+   getDefaultFilters(){
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.historicalDateFilter.dateOption = item.dateOption;
+    if (item.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+      this.historicalDateFilter.from_date = dateObj.from_date;
+      this.historicalDateFilter.to_date = dateObj.to_date;
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+    } else {
+      this.historicalDateFilter.from_date = item.from_date;
+      this.historicalDateFilter.to_date = item.to_date;
+      // this.historicalDateFilter.last_n_secs = undefined;
+    }
+    this.historicalDateFilter.widgets = [];
+    this.selectedDateRange = this.historicalDateFilter.dateOption;
+    this.historicalDateFilter.type = true;
+    this.historicalDateFilter.sampling_format = 'minute';
+    this.historicalDateFilter.sampling_time = 1;
+   }
 
 
 

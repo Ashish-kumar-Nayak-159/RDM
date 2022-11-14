@@ -12,7 +12,7 @@
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
+              (click)="onFilterSelection(this.filterObj, true, true);assetWiseTelemetryData=[]" [disabled]="isTelemetryDataLoading"><em
                 class="fas fa-search fa-sm"></em></button></div>
         </form>
       </div>

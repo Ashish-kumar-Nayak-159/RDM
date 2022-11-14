@@ -46,6 +46,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   live_Date = false;
  signalRTelemetrySubscription: any;
  historical_livedata = [];
+ selectDateFlag:boolean = false;
  @ViewChild('historicalLivechart') historicalLivechart: ElementRef; 
 
 
@@ -120,7 +121,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {
-
     if (this.filterObj?.asset) {
 
       this.isFilterSelected = true
@@ -163,27 +163,32 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
       )
       if(!callFromSelectedDate){
         this.historicalCombineWidgets = []
+        this.widgetBySplice = []
         this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
           this.newHistoricalCombineWidets = response?.historical_widgets;
         })
         this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
         this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
       }
-      this.measuredMessageProps = [];
-      if (this.widgetBySplice) {
-        this.widgetBySplice?.forEach((widget) => {
-          widget?.y1axis?.forEach((item) => {
-            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-              this.measuredMessageProps?.push(item?.json_key);
-            }
+       if(this.selectDateFlag){
+        this.widgetBySplice = this.historicalCombineWidgets
+       }
+        this.measuredMessageProps = [];
+        if (this.widgetBySplice) {
+          this.widgetBySplice?.forEach((widget) => {
+            widget?.y1axis?.forEach((item) => {
+              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                this.measuredMessageProps?.push(item?.json_key);
+              }
+            })
+            widget?.y2axis?.forEach((item) => {
+              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                this.measuredMessageProps?.push(item?.json_key);
+              }
+            })
           })
-          widget?.y2axis?.forEach((item) => {
-            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-              this.measuredMessageProps?.push(item?.json_key);
-            }
-          })
-        })
-      }
+        }
+    
       this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
       const filterObj = {
         epoch: true,
@@ -204,11 +209,13 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
             item.message_date_obj = new Date(item.message_date);
           });
-          this.assetWiseTelemetryData = [ ...this.assetWiseTelemetryData ,...response?.data];
-          // response?.data?.forEach((eachData)=>{
-          //      this.assetWiseTelemetryData.push(eachData)
-          // })
-          console.log('assetwiseTel',this.assetWiseTelemetryData)
+          if(this?.selectDateFlag){
+            this.assetWiseTelemetryData = response?.data
+          }else{
+
+            this.assetWiseTelemetryData = [ ...this.assetWiseTelemetryData ,...response?.data];
+          }
+          this.selectDateFlag = false;
          
         }
       });
@@ -231,6 +238,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.measuredMessageProps = [];
     this.propertyList = [];
     this.assetWiseTelemetryData = [];
+    this.selectDateFlag = false;
+    this.widgetBySplice = [];
     this.getDefaultFilters();
   }
 
@@ -244,6 +253,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   selectedDate(filterObj) {
+    this.selectDateFlag = true;
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe()
     this.historical_livedata = []

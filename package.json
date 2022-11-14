@@ -19,8 +19,6 @@
     "build-rogers": "ng build --configuration rogers --output-path=dist/rogers",
     "build-telawne": "ng build --configuration telawne --output-path=dist/MyEquipos",
     "build-indygo-beta": "ng build --configuration indygobeta --output-path=dist/Indygo-Beta"
-
-
   },
   "private": true,
   "dependencies": {

@@ -60,7 +60,7 @@
   </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-  <div class="historical-livechart-container"  *ngIf="historicalCombineWidgets.length > 0">
+  <div class="historical-livechart-container" #historicalLivechart *ngIf="historicalCombineWidgets.length > 0" (scroll)="onScroll()">
     <ng-container
     *ngFor="let widget of historicalCombineWidgets; let i = index;">
     <app-historical-livechart

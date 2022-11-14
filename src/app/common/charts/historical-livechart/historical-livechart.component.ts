@@ -337,8 +337,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       series.calculatePercent = true;
       series.contentwidth = 'value'
       series.strokeWidth = 2;
-      // series.strokeOpacity = 1;
-      // series.minBulletDistance = 20;
+      series.strokeOpacity = 1;
+      series.minBulletDistance = 20;
 
       if (series.units) {
         series.legendSettings.labelText = '({propType}) {name} ({units})';

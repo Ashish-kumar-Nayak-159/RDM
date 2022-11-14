@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -38,13 +38,15 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   widgetStringFromMenu: string;
   tileData: any;
   historicalCombineWidgets: any[] = [];
+  newHistoricalCombineWidets:any[] = [];
+  widgetBySplice:any[] = [];
   assetWiseTelemetryData = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
   live_Date = false;
  signalRTelemetrySubscription: any;
  historical_livedata = [];
- 
+ @ViewChild('historicalLivechart') historicalLivechart: ElementRef; 
 
 
 
@@ -117,7 +119,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string) {
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {
 
     if (this.filterObj?.asset) {
 
@@ -162,25 +164,26 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
       if(!callFromSelectedDate){
         this.historicalCombineWidgets = []
         this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-          this.historicalCombineWidgets = response?.historical_widgets;
+          this.newHistoricalCombineWidets = response?.historical_widgets;
         })
-
-        this.measuredMessageProps = [];
-        if (this.historicalCombineWidgets) {
-          this.historicalCombineWidgets?.forEach((widget) => {
-            widget?.y1axis?.forEach((item) => {
-              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                this.measuredMessageProps?.push(item?.json_key);
-              }
-            })
-            widget?.y2axis?.forEach((item) => {
-              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                this.measuredMessageProps?.push(item?.json_key);
-              }
-            })
+        this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+        this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
+      }
+      this.measuredMessageProps = [];
+      if (this.widgetBySplice) {
+        this.widgetBySplice?.forEach((widget) => {
+          widget?.y1axis?.forEach((item) => {
+            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+              this.measuredMessageProps?.push(item?.json_key);
+            }
           })
-        }
-    }
+          widget?.y2axis?.forEach((item) => {
+            if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+              this.measuredMessageProps?.push(item?.json_key);
+            }
+          })
+        })
+      }
       this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
       const filterObj = {
         epoch: true,
@@ -197,11 +200,16 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
       }
       this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
         if (response && response?.data) {
-          this.assetWiseTelemetryData = response?.data;
-          this.assetWiseTelemetryData.forEach((item) => {
+          response?.data.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
             item.message_date_obj = new Date(item.message_date);
           });
+          this.assetWiseTelemetryData = [ ...this.assetWiseTelemetryData ,...response?.data];
+          // response?.data?.forEach((eachData)=>{
+          //      this.assetWiseTelemetryData.push(eachData)
+          // })
+          console.log('assetwiseTel',this.assetWiseTelemetryData)
+         
         }
       });
 
@@ -323,7 +331,21 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historicalDateFilter.sampling_time = 1;
    }
 
+   onScroll(){
+    var elementGrab = this.historicalLivechart?.nativeElement
+      if((elementGrab?.scrollHeight - elementGrab?.clientHeight) === elementGrab?.scrollTop){
 
+        //  if(this.historicalCombineWidgets?.length > 10){
+        //   return;
+        //  }
+        this.widgetBySplice = []
+        let histoLength = this.historicalCombineWidgets?.length
+        this.widgetBySplice = this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2)
+         this.historicalCombineWidgets = [...this.historicalCombineWidgets , ...(this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2))]
+         this.onFilterSelection('', true, false, true,'callFromSelectedDate', histoLength, histoLength + 2);
+      }
+   
+  }
 
   ngOnDestroy(): void {
     this.signalRTelemetrySubscription?.unsubscribe();

@@ -41,6 +41,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   newHistoricalCombineWidets:any[] = [];
   widgetBySplice:any[] = [];
   assetWiseTelemetryData = [];
+  allTelemetryData:any[] = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
   live_Date = false;
@@ -163,19 +164,19 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
       )
       if(!callFromSelectedDate){
         this.historicalCombineWidgets = []
-        this.widgetBySplice = []
+        // this.widgetBySplice = []
         this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
           this.newHistoricalCombineWidets = response?.historical_widgets;
         })
         this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
-        this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
+        // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
       }
-       if(this.selectDateFlag){
-        this.widgetBySplice = this.historicalCombineWidgets
-       }
+      //  if(this.selectDateFlag){
+      //   this.widgetBySplice = this.historicalCombineWidgets
+      //  }
         this.measuredMessageProps = [];
-        if (this.widgetBySplice) {
-          this.widgetBySplice?.forEach((widget) => {
+        if (this.newHistoricalCombineWidets) {
+          this.newHistoricalCombineWidets?.forEach((widget) => {
             widget?.y1axis?.forEach((item) => {
               if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
                 this.measuredMessageProps?.push(item?.json_key);
@@ -209,12 +210,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
             item.message_date_obj = new Date(item.message_date);
           });
-          if(this?.selectDateFlag){
-            this.assetWiseTelemetryData = response?.data
-          }else{
-
-            this.assetWiseTelemetryData = [ ...this.assetWiseTelemetryData ,...response?.data];
-          }
+          this.allTelemetryData = response?.data
+          this.assetWiseTelemetryData = response?.data
           this.selectDateFlag = false;
          
         }
@@ -348,11 +345,11 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         //  if(this.historicalCombineWidgets?.length > 10){
         //   return;
         //  }
-        this.widgetBySplice = []
-        let histoLength = this.historicalCombineWidgets?.length
-        this.widgetBySplice = this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2)
+        // this.widgetBySplice = []
+        // let histoLength = this.historicalCombineWidgets?.length
+        // this.widgetBySplice = this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2)
          this.historicalCombineWidgets = [...this.historicalCombineWidgets , ...(this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2))]
-         this.onFilterSelection('', true, false, true,'callFromSelectedDate', histoLength, histoLength + 2);
+         //  this.onFilterSelection('', true, false, true,'callFromSelectedDate', histoLength, histoLength + 2);
       }
    
   }

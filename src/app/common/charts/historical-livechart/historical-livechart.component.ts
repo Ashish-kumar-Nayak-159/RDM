@@ -103,7 +103,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     this.isChartResized = false;
     if (this.telemetryData?.length > 0) this.lastTelemetryBeforeZoomTimestamp = this.telemetryData[this.telemetryData.length - 1].message_date_obj
     else this.telemetryData = [];
-    //this.liveAndHistoricalData = this.assetWiseTelemetryData;
+    this.liveAndHistoricalData = this.assetWiseTelemetryData;
     this.chartTitle = this.chartConfig.title;
     this.chart_Id = this.chartConfig.chart_Id;
     this.chartHeight = '23rem';
@@ -244,7 +244,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   }
   showNoDataIndicator() {
     this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
-    if(this.indicator){
+    if (this.indicator) {
       this.indicator.background.fill = am4core.color("#fff");
       this.indicator.background.fillOpacity = 0.8;
       this.indicator.width = am4core.percent(100);
@@ -280,7 +280,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   showLoadingIndicator() {
     this.isLoadingData = true;
     this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
-    if(this.indicator){
+    if (this.indicator) {
       this.indicator.background.fill = am4core.color("#fff");
       this.indicator.background.fillOpacity = 0.8;
       this.indicator.width = am4core.percent(100);
@@ -512,15 +512,14 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         }
         return detail;
       }) : [];
-      // chart.data =  this.assetWiseTelemetryData
       chart.responsive.enabled = true;
 
       chart.dateFormatter.inputDateFormat = "x";;
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       const dateAxis = chart.xAxes?.push(new am4charts.DateAxis());
       // chart.svgContainer.hideOverflow = true;
-       dateAxis.extraMax = 0.5;
-       dateAxis.extraMin = 0.5;
+      dateAxis.extraMax = 0.5;
+      dateAxis.extraMin = 0.5;
       if (this.chartStartdate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartStartdate);
@@ -638,7 +637,10 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
-      this.showLoadingIndicator();
+      if (this.liveAndHistoricalData?.length > 0)
+        this.hideIndicator();
+      else
+        this.showLoadingIndicator();
     }
   }
   ngOnDestroy() {

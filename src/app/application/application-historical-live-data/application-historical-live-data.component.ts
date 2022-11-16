@@ -121,7 +121,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {    
     if (this.filterObj?.asset) {
 
       this.isFilterSelected = true
@@ -163,6 +163,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         (error) => (this.isTelemetryDataLoading = false)
       )
       if(!callFromSelectedDate){
+        this.assetWiseTelemetryData = []
         this.historicalCombineWidgets = []
         // this.widgetBySplice = []
         this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
@@ -204,19 +205,17 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         sampling_format: 'minute'
 
       }
-      this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+            this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
         if (response && response?.data) {
           response?.data.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
             item.message_date_obj = new Date(item.message_date);
           });
-          this.allTelemetryData = response?.data
           this.assetWiseTelemetryData = response?.data
           this.selectDateFlag = false;
          
         }
       });
-
     }
     else {
       this.historicalCombineWidgets = [];

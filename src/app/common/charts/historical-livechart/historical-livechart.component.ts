@@ -8,6 +8,8 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import am4fonts_notosans_jp from '../CustomFont/notosans-jp'
+import { element } from 'protractor';
+import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 
 @Component({
   selector: 'app-historical-livechart',
@@ -181,7 +183,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         if (this.chart?.cursor?.xAxis) {
           (this.chart?.cursor.xAxis as am4charts.DateAxis).max = myDate?.getTime();
         }
-        this.chart?.addData(newTelemetryObj)
+        // this.chart?.addData(newTelemetryObj)
+        this.setSeriesWiseData(newTelemetryObj);
         this.chart?.invalidateRawData()
         this.chartEnddate = myDate.getTime();
       }
@@ -193,7 +196,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
         this.isNoData = false;
         if (this.chart) {
-          this.chart.data = liveHistoricalData;
+          // this.chart.data = liveHistoricalData;
           this.liveAndHistoricalData = liveHistoricalData;
           this.chart.invalidateRawData();
           this.ChangeDateXAxis();
@@ -267,7 +270,42 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
   }
 
+  setSeriesWiseData(liveData?){
+    if(liveData){
+      for(let key in liveData){
+       let filterSeriesData =  this.seriesArr?.map((element) => {
+        if(element?.dataFields?.valueY === key){
+          return element?.data
+          }
+       })
+        filterSeriesData?.push(liveData)
+      }
+    }
+    else{
+      this.seriesArr.forEach((element)=>{
+  
+        let seriesData = []
+
+        this.liveAndHistoricalData.map((data)=>{
+        
+             for(let key in data){
+              let obj = {
+                message_date : data?.message_date,
+                message_date_obj: data?.message_date_obj
+               }
+               if(key === element?.dataFields?.valueY && data[key]){
+                 obj[key] = data[key]
+                 seriesData.push(obj)
+               }
+             }
+       })
+       element.data = seriesData;
+      })
+    }
+  }
+
   displayseriestooltip() {
+    this.setSeriesWiseData();
     this.seriesArr.forEach(element => {
       if (element.units) {
         element.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}) \n: [bold]{valueY}[/]';
@@ -299,10 +337,20 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     if (chart?.yAxes.indexOf(valueYAxis) !== 0) {
       valueYAxis.syncWithAxis = chart?.yAxes.getIndex(0);
     }
-
-
     const arr = axis === 0 ? this.chartConfig.y1axis : this.chartConfig.y2axis;
     arr.forEach((prop, index) => {
+    var seriesData = this.assetWiseTelemetryData.map((data)=>{
+         let obj = {
+          message_date : data?.message_date,
+          message_date_obj: data?.message_date_obj
+         }
+            for(let key in data){
+              if(key === prop?.json_key){
+                obj[key] = data[key]
+              }
+            }
+            return obj
+      })
       const series = chart.series?.push(new am4charts.LineSeries());
       this.propertyList.forEach((propObj) => {
         if (propObj.json_key === prop.json_key) {
@@ -322,7 +370,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       series.propKey = prop.json_key;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
-
+      
       series.yAxis.properties.extraMin = 0.1;
       series.yAxis.properties.extraMax = 0.1;
       // series.xAxis.extraMax = 0.05;
@@ -339,7 +387,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       series.strokeWidth = 2;
       series.strokeOpacity = 1;
       series.minBulletDistance = 20;
-
+      series.data = seriesData
       if (series.units) {
         series.legendSettings.labelText = '({propType}) {name} ({units})';
       } else {
@@ -500,18 +548,18 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.paddingLeft = 0;
       chart.paddingRight = 20;
       let convertedTelemetrytime = new Date(this.commonService.convertUTCDateToLocalDate(this.selectedAlert?.message.telemetry_ts, 'dd-MMM-yyyy HH:mm:ss'));
-      chart.data = this.liveAndHistoricalData && this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
-        var d1 = new Date(detail.message_date_obj || this.commonService.convertUTCDateToLocalDate(detail.ts, 'dd-MMM-yyyy HH:mm:ss'));
-        var same = d1.getTime() === convertedTelemetrytime.getTime();
-        if (same) {
-          detail['color'] = 'red';
-          detail['strokeWidthDynamic'] = 5;
-        } else {
-          detail['color'] = 'steelblue';
-          detail['strokeWidthDynamic'] = 2;
-        }
-        return detail;
-      }) : [];
+      // chart.data = this.liveAndHistoricalData && this.liveAndHistoricalData.length > 0 ? this.liveAndHistoricalData.map((detail: any) => {
+      //   var d1 = new Date(detail.message_date_obj || this.commonService.convertUTCDateToLocalDate(detail.ts, 'dd-MMM-yyyy HH:mm:ss'));
+      //   var same = d1.getTime() === convertedTelemetrytime.getTime();
+      //   if (same) {
+      //     detail['color'] = 'red';
+      //     detail['strokeWidthDynamic'] = 5;
+      //   } else {
+      //     detail['color'] = 'steelblue';
+      //     detail['strokeWidthDynamic'] = 2;
+      //   }
+      //   return detail;
+      // }) : [];
       chart.responsive.enabled = true;
 
       chart.dateFormatter.inputDateFormat = "x";;

@@ -218,8 +218,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
             this.showNoDataIndicator();
           }
           this.ChangeDateXAxis();
-          //(this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;    
-          this.chart.invalidateRawData();
+          //(this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).start = 0;    
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).end = 1;      
         }
       }
       else {

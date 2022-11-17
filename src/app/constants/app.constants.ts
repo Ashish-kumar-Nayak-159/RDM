@@ -736,7 +736,6 @@ export class CONSTANTS {
       privileges_required: [],
       showAccordion: [{ name: 'Edge Alert', key: 'edge' }],
       accordion_value: { edge: true },
-      hide_menu_setting: false,
     },
     // {
     //   page: 'alertendevents',
@@ -805,7 +804,6 @@ export class CONSTANTS {
       privileges_required: [],
       showAccordion: [{ name: 'Edge Alert', key: 'edge' }],
       accordion_value: { edge: true },
-      hide_menu_setting: false,
       visible: true,
       isTitle: false,
     },
@@ -912,7 +910,6 @@ export class CONSTANTS {
       privileges_required: ['RKPIV'],
       showAccordion: [{ name: 'Edge Rules', key: 'edgeRules' }],
       accordion_value: { edgeRules: true },
-      hide_menu_setting: false,
     },
     {
       page: 'visualize',
@@ -1218,7 +1215,6 @@ export class CONSTANTS {
       privileges_required: [],
       showAccordion: [{ name: 'Edge Alert', key: 'edge' }],
       accordion_value: { edge: true },
-      hide_menu_setting: false,
       visible: true,
       isTitle: false,
     },
@@ -1311,7 +1307,6 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [{ name: 'Edge Rules', key: 'edgeRules' }],
       accordion_value: { edgeRules: true },
-      hide_menu_setting: false,
     },
     {
       page: 'visualization',
@@ -1920,7 +1915,6 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: [],
       showAccordion: [],
-      hide_menu_setting: false,
     },
     {
       page: 'rulesType',

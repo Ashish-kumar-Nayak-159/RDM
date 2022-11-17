@@ -71,7 +71,7 @@
             <div class="col-auto">
             <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
-                [disabled]="contextApp.app == 'Indygo' ? true : isView || isCloneEdit"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
+                [disabled]="!this.typeRulesDropdown ? true : isView || isCloneEdit"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
               </ui-switch>
             </div>
           </div>

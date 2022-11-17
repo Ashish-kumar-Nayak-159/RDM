@@ -8,8 +8,6 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import am4fonts_notosans_jp from '../CustomFont/notosans-jp'
-import { element } from 'protractor';
-import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 
 @Component({
   selector: 'app-historical-livechart',
@@ -71,6 +69,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   indicatorLabel: any;
   isLoadingData = false;
   isNoData = false;
+  isSeriesHasDataInInit = false;
 
 
   // @Input() chartConfig: any;
@@ -146,15 +145,29 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
-      if (changes.assetWiseTelemetryData.previousValue != changes.assetWiseTelemetryData.currentValue) {
+      if (changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0) {
         this.hideIndicator();
         this.showLoadingIndicator();
+      }
+      else {
         setTimeout(() => {
-          // this.loader = !this.loader;
-          this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+          //this.loader = !this.loader;
+          this.handleLiveTelemetry(null, this.assetWiseTelemetryData);
         }, 300);
       }
     }
+
+
+    // if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
+    //   if (changes.assetWiseTelemetryData.previousValue != changes.assetWiseTelemetryData.currentValue) {
+    //     this.hideIndicator();
+    //     this.showLoadingIndicator();
+    //     setTimeout(() => {
+    //       // this.loader = !this.loader;
+    //       this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+    //     }, 300);
+    //   }
+    // }
     if (this.live_Date === true) {
       setTimeout(() => {
         this.handleLiveTelemetry(this.newData);
@@ -183,10 +196,11 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         if (this.chart?.cursor?.xAxis) {
           (this.chart?.cursor.xAxis as am4charts.DateAxis).max = myDate?.getTime();
         }
+        this.displayseriestooltip();
         // this.chart?.addData(newTelemetryObj)
         this.setSeriesWiseData(newTelemetryObj);
-        this.chart?.invalidateRawData()
-        this.chartEnddate = myDate.getTime();
+        //this.chart?.invalidateRawData()
+        // this.chartEnddate = myDate.getTime();
       }
       this.isLoadingData = false;
       this.isNoData = false;
@@ -196,16 +210,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
         this.isNoData = false;
         if (this.chart) {
-          // this.chart.data = liveHistoricalData;
-          this.liveAndHistoricalData = liveHistoricalData;
-          this.chart.invalidateRawData();
+          this.liveAndHistoricalData = liveHistoricalData;  
+          this.hideIndicator();        
+          this.displayseriestooltip();
+          this.setSeriesWiseData();
           this.ChangeDateXAxis();
-          (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;
-          if (this.chart?.tooltipContainer) {
-            setTimeout(() => {
-              this.hideIndicator();
-            }, 300);
-          }
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;    
+          this.chart.invalidateRawData();      
         }
       }
       else {
@@ -213,9 +224,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         this.hideIndicator();
         this.showNoDataIndicator();
         if (this.chart) {
-          this.chart.data = [];
           this.liveAndHistoricalData = [];
-          this.chart.invalidateRawData();
           this.ChangeDateXAxis();
         }
       }
@@ -241,12 +250,10 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     this.indicator?.hide();
     if (this.chart?.tooltipContainer) {
       this.chart.tooltipContainer.removeChildren();
-      this.displayseriestooltip()
-
     }
   }
-  showNoDataIndicator() {
-    this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
+  showNoDataIndicator(chart?) {
+    this.indicator = chart ? chart?.tooltipContainer?.createChild(am4core.Container) : this.chart?.tooltipContainer?.createChild(am4core.Container);
     if (this.indicator) {
       this.indicator.background.fill = am4core.color("#fff");
       this.indicator.background.fillOpacity = 0.8;
@@ -270,42 +277,53 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
   }
 
-  setSeriesWiseData(liveData?){
-    if(liveData){
-      for(let key in liveData){
-       let filterSeriesData =  this.seriesArr?.map((element) => {
-        if(element?.dataFields?.valueY === key){
-          return element?.data
+  setSeriesWiseData(liveData?) {
+    if (liveData) {
+      console.log('livedata', liveData);
+      for (let key in liveData) {
+        this.seriesArr?.forEach((element) => {
+          if (element?.dataFields?.valueY === key) {
+            debugger
+            let obj = {
+              message_date_obj: liveData?.message_date_obj,
+              color: liveData?.color
+            };
+            obj[element.dataFields.valueY] = liveData[key]
+            element.data = [...element.data, obj];
           }
-       })
-        filterSeriesData?.push(liveData)
+        })
       }
     }
-    else{
-      this.seriesArr.forEach((element)=>{
-  
+    else {
+      let isAnySeriesHasData = false;
+      this.seriesArr.forEach((element) => {
         let seriesData = []
+        debugger
+        this.liveAndHistoricalData.map((data) => {
+          for (let key in data) {
+            let obj = {
+              //message_date: data?.message_date,
+              message_date_obj: data?.message_date_obj
+            }
+            if (key === element?.dataFields?.valueY && data[key]) {
+              obj[key] = data[key];
+              isAnySeriesHasData = true;
+              seriesData.push(obj);
+            }
+          }
+        })
 
-        this.liveAndHistoricalData.map((data)=>{
-        
-             for(let key in data){
-              let obj = {
-                message_date : data?.message_date,
-                message_date_obj: data?.message_date_obj
-               }
-               if(key === element?.dataFields?.valueY && data[key]){
-                 obj[key] = data[key]
-                 seriesData.push(obj)
-               }
-             }
-       })
-       element.data = seriesData;
+        element.data = seriesData;
+
       })
+      if (this.liveAndHistoricalData?.length > 0 && !isAnySeriesHasData) {
+        this.hideIndicator();
+        this.showNoDataIndicator();
+      }
     }
   }
 
   displayseriestooltip() {
-    this.setSeriesWiseData();
     this.seriesArr.forEach(element => {
       if (element.units) {
         element.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}) \n: [bold]{valueY}[/]';
@@ -339,17 +357,20 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
     const arr = axis === 0 ? this.chartConfig.y1axis : this.chartConfig.y2axis;
     arr.forEach((prop, index) => {
-    var seriesData = this.assetWiseTelemetryData.map((data)=>{
-         let obj = {
-          message_date : data?.message_date,
-          message_date_obj: data?.message_date_obj
-         }
-            for(let key in data){
-              if(key === prop?.json_key){
-                obj[key] = data[key]
-              }
-            }
-            return obj
+      let seriesData = []
+      this.assetWiseTelemetryData.map((data) => {
+
+        for (let key in data) {
+          let obj = {
+            //message_date: data?.message_date,
+            message_date_obj: data?.message_date_obj
+          }
+          if (key === prop?.json_key && data[key]) {
+            obj[key] = data[key];
+            this.isSeriesHasDataInInit = true;
+            seriesData?.push(obj);
+          }
+        }
       })
       const series = chart.series?.push(new am4charts.LineSeries());
       this.propertyList.forEach((propObj) => {
@@ -370,7 +391,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       series.propKey = prop.json_key;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
-      
+
       series.yAxis.properties.extraMin = 0.1;
       series.yAxis.properties.extraMax = 0.1;
       // series.xAxis.extraMax = 0.05;
@@ -387,7 +408,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       series.strokeWidth = 2;
       series.strokeOpacity = 1;
       series.minBulletDistance = 20;
-      series.data = seriesData
+      series.data = seriesData;
       if (series.units) {
         series.legendSettings.labelText = '({propType}) {name} ({units})';
       } else {
@@ -592,10 +613,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       dateAxis.start = 0
       dateAxis.end = 1;
       dateAxis.keepSelection = true
-
-
+      this.isSeriesHasDataInInit = false;
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
+      if (!this.isSeriesHasDataInInit && this.assetWiseTelemetryData?.length > 0) {
+        this.hideIndicator();
+        this.showNoDataIndicator(chart);
+      }
       chart.legend = new am4charts.Legend();
       chart.logo.disabled = true;
       chart.legend.maxHeight = 80;
@@ -685,9 +709,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
-      if (this.liveAndHistoricalData?.length > 0)
-        this.hideIndicator();
-      else
+      if ((this.liveAndHistoricalData && this.liveAndHistoricalData.length == 0) || (this.assetWiseTelemetryData && this.assetWiseTelemetryData.length == 0))
         this.showLoadingIndicator();
     }
   }

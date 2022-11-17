@@ -255,7 +255,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historical_livedata = []
     this.live_Date = false;
     // this.historicalCombineWidgets = [];
-    // this.assetWiseTelemetryData = [];
+    this.assetWiseTelemetryData = [];
     this.propertyList = [];
     // this.measuredMessageProps = [];
     this.historicalDateFilter.from_date = filterObj.from_date;

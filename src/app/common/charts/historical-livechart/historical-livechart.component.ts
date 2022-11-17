@@ -210,13 +210,16 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
         this.isNoData = false;
         if (this.chart) {
-          this.liveAndHistoricalData = liveHistoricalData;  
-          this.hideIndicator();        
+          this.liveAndHistoricalData = liveHistoricalData;
           this.displayseriestooltip();
           this.setSeriesWiseData();
+          this.hideIndicator();
+          if (this.liveAndHistoricalData?.length > 0 && !this.isSeriesHasDataInInit) {           
+            this.showNoDataIndicator();
+          }
           this.ChangeDateXAxis();
-          (this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;    
-          this.chart.invalidateRawData();      
+          //(this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;    
+          this.chart.invalidateRawData();
         }
       }
       else {
@@ -235,13 +238,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     if (this.chartStartdate) {
       const date = new Date(0);
       date.setUTCSeconds(this.chartStartdate);
-      if (this.chart?.xAxes && this.chart?.xAxes?.length == 1 && this.chart.xAxes.values[0].className == "DateAxis")
+      if (this.chart?.xAxes && this.chart?.xAxes?.length == 1 && this.chart.xAxes?.values[0]?.className == "DateAxis")
         (this.chart.xAxes.values[0] as am4charts.DateAxis).min = date.getTime();
     }
     if (this.chartEnddate) {
       const date = new Date(0);
       date.setUTCSeconds(this.chartEnddate);
-      if (this.chart?.xAxes && this.chart?.xAxes?.length == 1 && this.chart.xAxes.values[0].className == "DateAxis")
+      if (this.chart?.xAxes && this.chart?.xAxes?.length == 1 && this.chart.xAxes?.values[0]?.className == "DateAxis")
         (this.chart.xAxes.values[0] as am4charts.DateAxis).max = date.getTime();
     }
   }
@@ -279,11 +282,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   setSeriesWiseData(liveData?) {
     if (liveData) {
-      console.log('livedata', liveData);
       for (let key in liveData) {
         this.seriesArr?.forEach((element) => {
           if (element?.dataFields?.valueY === key) {
-            debugger
             let obj = {
               message_date_obj: liveData?.message_date_obj,
               color: liveData?.color
@@ -295,31 +296,23 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
     }
     else {
-      let isAnySeriesHasData = false;
+      this.isSeriesHasDataInInit = false;
       this.seriesArr.forEach((element) => {
         let seriesData = []
-        debugger
         this.liveAndHistoricalData.map((data) => {
           for (let key in data) {
             let obj = {
-              //message_date: data?.message_date,
               message_date_obj: data?.message_date_obj
             }
             if (key === element?.dataFields?.valueY && data[key]) {
               obj[key] = data[key];
-              isAnySeriesHasData = true;
+              this.isSeriesHasDataInInit = true;
               seriesData.push(obj);
             }
           }
         })
-
         element.data = seriesData;
-
       })
-      if (this.liveAndHistoricalData?.length > 0 && !isAnySeriesHasData) {
-        this.hideIndicator();
-        this.showNoDataIndicator();
-      }
     }
   }
 

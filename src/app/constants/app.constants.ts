@@ -411,7 +411,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: true,
       exactMatch: true,
-      //privileges_required: ['ASMV', 'RMV'],
+      privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
         {
           name: 'Title',

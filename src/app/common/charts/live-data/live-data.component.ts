@@ -48,6 +48,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
+    console.log('check',this.propertyList)
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryData.length > 0) {
@@ -104,6 +105,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       } else {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
         chart.data = this.telemetryData;
+        console.log('chart telemetry',this.telemetryData)
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';

@@ -173,12 +173,14 @@ input:invalid {
 }
 
 .accordion-toggle[aria-expanded='true']:before {
-  content: '\f139';
+  /* content: '\f139'; */
+  content: '';
   font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
 }
 
 .accordion-toggle[aria-expanded='false']:before {
-  content: '\f13a';
+  /* content: '\f13a'; */
+  content: '';
   font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
 }
 

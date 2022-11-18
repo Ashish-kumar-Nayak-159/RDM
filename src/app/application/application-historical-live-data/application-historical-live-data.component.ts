@@ -48,6 +48,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
  signalRTelemetrySubscription: any;
  historical_livedata = [];
  selectDateFlag:boolean = false;
+ myPromise:any;
  @ViewChild('historicalLivechart') historicalLivechart: ElementRef; 
 
 
@@ -166,16 +167,24 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         this.assetWiseTelemetryData = []
         this.historicalCombineWidgets = []
         // this.widgetBySplice = []
-        this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-          this.newHistoricalCombineWidets = response?.historical_widgets;
-          this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
-        })
+        // this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+        //   this.newHistoricalCombineWidets = response?.historical_widgets;
+        //   this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+        // })
+        this.myPromise = new Promise((resolve, reject) => {
+          this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+            this.newHistoricalCombineWidets = response?.historical_widgets;
+            this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+            resolve('');
+          })
+        });
         // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
       }
       //  if(this.selectDateFlag){
       //   this.widgetBySplice = this.historicalCombineWidgets
       //  }
-      setTimeout(()=>{
+
+      this.myPromise.then(()=>{
         this.measuredMessageProps = [];
         if (this.newHistoricalCombineWidets) {
           this.newHistoricalCombineWidets?.forEach((widget) => {
@@ -216,7 +225,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             }
           });
         }
-      },990)
+      })
+
     }
     else {
       this.historicalCombineWidgets = [];

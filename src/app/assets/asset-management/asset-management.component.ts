@@ -51,7 +51,7 @@ export class AssetManagementComponent implements OnInit {
       if (item.page === 'Asset Management') {
         selectedItem = item.showAccordion;
       }
-      if (item.page === 'Assets') {
+      if (item.page === 'Asset Management') {
         assetItem = item.showAccordion;
       }
     });

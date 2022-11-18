@@ -31,6 +31,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   today = new Date();
   subscriptions: Subscription[] = [];
   selectedDateRange: string;
+  edgealerts: boolean;
   constructor(private commonService: CommonService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -45,6 +46,11 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.originalFilterObj = {};
     this.originalFilterObj = { ...this.filterObj };
+    this.contextApp.menu_settings.legacy_asset_control_panel_menu.forEach((item) => {
+      if (item.page === 'edgealerts') {   
+        this.edgealerts = item.visible;
+      }
+    });
   }
 
   ngAfterViewInit() {

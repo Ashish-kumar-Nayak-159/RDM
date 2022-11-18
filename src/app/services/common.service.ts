@@ -83,6 +83,23 @@ export class CommonService {
     return null;
   }
 
+  convertUTCDateToLocalDateObj(utcDate: any) {
+    if (!utcDate) return null;
+    utcDate = utcDate.toString();
+    if (utcDate.includes('T') && utcDate.includes('Z')) {
+      return new Date(utcDate);
+    } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
+      return new Date(utcDate + 'Z');
+    } else if (/^[0-9]{10}$/.test(utcDate)) {
+      return new Date(Number(utcDate) * 1000);
+    } else if (/^[0-9]{13}$/.test(utcDate)) {
+      const newDate = new Date(Number(utcDate));
+      return newDate;
+    } else {
+      return new Date(utcDate + ' UTC');
+    }
+  }
+
   convertUTCDateToLocalDate(utcDate: any, format: string = '') {
     if (utcDate) {
       const options = { year: 'numeric', month: 'short', day: '2-digit' } as const;

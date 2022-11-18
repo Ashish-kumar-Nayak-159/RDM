@@ -39,6 +39,7 @@ import { FormValidatorDirective } from '../validator/form-validator.directive';
 import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/small-number-widget.component';
 import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/conditional-widget/conditional-widget.component';
 import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { HistoricalLivechartComponent } from './charts/historical-livechart/historical-livechart.component';
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker
     ColumnchartLivedataComponentComponent,
     FormValidatorDirective,
     SmallNumberWidgetComponent,
-    ConditionalWidgetComponent
+    ConditionalWidgetComponent,
+    HistoricalLivechartComponent
   ],
   imports: [
     CommonModule,
@@ -117,6 +119,7 @@ import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker
     CylinderWidgetComponent,
     FormValidatorDirective,
     BsDatepickerModule,
+    HistoricalLivechartComponent
 
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },BsDatepickerConfig],

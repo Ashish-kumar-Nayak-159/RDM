@@ -404,6 +404,23 @@ export class CONSTANTS {
       priority: 1,
     }, 
     {
+      page: 'Historical & Live Data',
+      system_name: 'Historical & Live Data',
+      url: 'applications/:appName/historical-live',
+      display_name: 'Historical & Live Data',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Historical & Live Data',
+        },
+      ],
+      priority: 1,
+    }, 
+    {
       page: 'GateWay Monitoring',
       system_name: 'Gateway Monitoring',
       url: 'applications/:appName/gateway-monitoring',

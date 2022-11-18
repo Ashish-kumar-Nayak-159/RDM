@@ -121,7 +121,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {    
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string) {    
     if (this.filterObj?.asset) {
 
       this.isFilterSelected = true
@@ -168,13 +168,14 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         // this.widgetBySplice = []
         this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
           this.newHistoricalCombineWidets = response?.historical_widgets;
+          this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
         })
-        this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
         // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
       }
       //  if(this.selectDateFlag){
       //   this.widgetBySplice = this.historicalCombineWidgets
       //  }
+      setTimeout(()=>{
         this.measuredMessageProps = [];
         if (this.newHistoricalCombineWidets) {
           this.newHistoricalCombineWidets?.forEach((widget) => {
@@ -189,33 +190,33 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
               }
             })
           })
-        }
+          this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
+          const filterObj = {
+            epoch: true,
+            app: this.contextApp.app,
+            asset_id: this.filterObj?.asset?.asset_id,
+            partition_key: this.filterObj?.asset?.partition_key,
+            from_date: this.historicalDateFilter?.from_date,
+            to_date: this.historicalDateFilter?.to_date,
+            order_dir: 'ASC',
+            measured_message_props: this.measuredMessageProps,
+            sampling_time:1,
+            sampling_format: 'minute'
     
-      this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
-      const filterObj = {
-        epoch: true,
-        app: this.contextApp.app,
-        asset_id: this.filterObj?.asset?.asset_id,
-        partition_key: this.filterObj?.asset?.partition_key,
-        from_date: this.historicalDateFilter?.from_date,
-        to_date: this.historicalDateFilter?.to_date,
-        order_dir: 'ASC',
-        measured_message_props: this.measuredMessageProps,
-        sampling_time:1,
-        sampling_format: 'minute'
-
-      }
-            this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
-        if (response && response?.data) {
-          response?.data.forEach((item) => {
-            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-            item.message_date_obj = new Date(item.message_date);
+          }
+                this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+            if (response && response?.data) {
+              response?.data.forEach((item) => {
+                item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+                item.message_date_obj = new Date(item.message_date);
+              });
+              this.assetWiseTelemetryData = response?.data
+              this.selectDateFlag = false;
+             
+            }
           });
-          this.assetWiseTelemetryData = response?.data
-          this.selectDateFlag = false;
-         
         }
-      });
+      },990)
     }
     else {
       this.historicalCombineWidgets = [];

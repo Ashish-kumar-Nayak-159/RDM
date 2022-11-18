@@ -70,6 +70,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   isLoadingData = false;
   isNoData = false;
   isSeriesHasDataInInit = false;
+  isSeriesHasDataInChanges = false;
 
 
   // @Input() chartConfig: any;
@@ -144,6 +145,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue)
     if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
       if (changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0) {
         this.hideIndicator();
@@ -152,7 +154,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       else {
         setTimeout(() => {
           //this.loader = !this.loader;
-          this.handleLiveTelemetry(null, this.assetWiseTelemetryData);
+          this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
         }, 300);
       }
     }
@@ -214,7 +216,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
           this.displayseriestooltip();
           this.setSeriesWiseData();
           this.hideIndicator();
-          if (this.liveAndHistoricalData?.length > 0 && !this.isSeriesHasDataInInit) {           
+          if (this.liveAndHistoricalData?.length > 0 && !this.isSeriesHasDataInChanges) {           
             this.showNoDataIndicator();
           }
           this.ChangeDateXAxis();
@@ -297,7 +299,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
     }
     else {
-      this.isSeriesHasDataInInit = false;
+      this.isSeriesHasDataInChanges = false;
       this.seriesArr.forEach((element) => {
         let seriesData = []
         this.liveAndHistoricalData.map((data) => {
@@ -307,7 +309,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
             }
             if (key === element?.dataFields?.valueY && data[key]) {
               obj[key] = data[key];
-              this.isSeriesHasDataInInit = true;
+              this.isSeriesHasDataInChanges = true;
               seriesData.push(obj);
             }
           }

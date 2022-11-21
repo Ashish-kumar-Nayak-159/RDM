@@ -1968,7 +1968,7 @@ export class CONSTANTS {
     },
     {
       page: 'edgealerts',
-      system_name: 'Edge Alert',
+      system_name: 'Edge Alerts (MONITOR (D2C))',
       url: '#edge_alert',
       display_name: 'Edge Alert',
       icon: 'fa fa-fw fa-bolt',

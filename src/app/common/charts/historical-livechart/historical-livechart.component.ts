@@ -36,6 +36,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   @Input() refresh = false;
   @Input() live_Date = false
   @Input() newData: any;
+  @Input() isLoadingData = false;
   isOverlayVisible = false;
   hideCancelButton = false;
   isAccordionOpen: boolean;
@@ -67,9 +68,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   @ViewChild('chartConfig.chart_Id', { static: false }) chartElement: ElementRef;
   indicator: any;
   indicatorLabel: any;
-  isLoadingData = false;
   isNoData = false;
   isSeriesHasDataInInit = false;
+  isSeriesHasDataInChanges = false;
 
 
   // @Input() chartConfig: any;
@@ -144,30 +145,15 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
-      if (changes.assetWiseTelemetryData.previousValue && changes.assetWiseTelemetryData.previousValue.length > 0 && changes.assetWiseTelemetryData.currentValue && changes.assetWiseTelemetryData.currentValue.length == 0) {
-        this.hideIndicator();
-        this.showLoadingIndicator();
-      }
-      else {
-        setTimeout(() => {
-          //this.loader = !this.loader;
-          this.handleLiveTelemetry(null, this.assetWiseTelemetryData);
-        }, 300);
-      }
+    if (changes.hasOwnProperty("isLoadingData") && changes.isLoadingData.currentValue) {
+      this.hideIndicator();
+      this.showLoadingIndicator();
     }
-
-
-    // if (changes.hasOwnProperty("assetWiseTelemetryData") && changes.assetWiseTelemetryData.currentValue != changes.assetWiseTelemetryData.previousValue) {
-    //   if (changes.assetWiseTelemetryData.previousValue != changes.assetWiseTelemetryData.currentValue) {
-    //     this.hideIndicator();
-    //     this.showLoadingIndicator();
-    //     setTimeout(() => {
-    //       // this.loader = !this.loader;
-    //       this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
-    //     }, 300);
-    //   }
-    // }
+    else {
+      setTimeout(() => {
+        this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+      }, 300);
+    }
     if (this.live_Date === true) {
       setTimeout(() => {
         this.handleLiveTelemetry(this.newData);
@@ -202,29 +188,24 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         //this.chart?.invalidateRawData()
         // this.chartEnddate = myDate.getTime();
       }
-      this.isLoadingData = false;
-      this.isNoData = false;
     }
     else {
-      this.isLoadingData = false;
       if (liveHistoricalData && liveHistoricalData?.length > 0) {
-        this.isNoData = false;
         if (this.chart) {
           this.liveAndHistoricalData = liveHistoricalData;
           this.displayseriestooltip();
           this.setSeriesWiseData();
           this.hideIndicator();
-          if (this.liveAndHistoricalData?.length > 0 && !this.isSeriesHasDataInInit) {           
+          if (this.liveAndHistoricalData?.length > 0 && !this.isSeriesHasDataInChanges) {
             this.showNoDataIndicator();
           }
           this.ChangeDateXAxis();
           //(this.chart.xAxes.values[0] as am4charts.DateAxis).keepSelection = false;
-          (this.chart.xAxes.values[0] as am4charts.DateAxis).start = 0;    
-          (this.chart.xAxes.values[0] as am4charts.DateAxis).end = 1;      
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).start = 0;
+          (this.chart.xAxes.values[0] as am4charts.DateAxis).end = 1;
         }
       }
       else {
-        this.isNoData = true;
         this.hideIndicator();
         this.showNoDataIndicator();
         if (this.chart) {
@@ -272,15 +253,6 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
   }
 
-  ChangeIndicatorLabel() {
-    if (this.isNoData) {
-      this.indicatorLabel.text = 'No data found for selected time interval.';
-    }
-    else if (this.isLoadingData) {
-      this.indicatorLabel.text = 'Loading Data. Wait...';
-    }
-  }
-
   setSeriesWiseData(liveData?) {
     if (liveData) {
       for (let key in liveData) {
@@ -297,7 +269,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
     }
     else {
-      this.isSeriesHasDataInInit = false;
+      this.isSeriesHasDataInChanges = false;
       this.seriesArr.forEach((element) => {
         let seriesData = []
         this.liveAndHistoricalData.map((data) => {
@@ -307,7 +279,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
             }
             if (key === element?.dataFields?.valueY && data[key]) {
               obj[key] = data[key];
-              this.isSeriesHasDataInInit = true;
+              this.isSeriesHasDataInChanges = true;
               seriesData.push(obj);
             }
           }
@@ -328,7 +300,6 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   }
 
   showLoadingIndicator() {
-    this.isLoadingData = true;
     this.indicator = this.chart?.tooltipContainer?.createChild(am4core.Container);
     if (this.indicator) {
       this.indicator.background.fill = am4core.color("#fff");
@@ -704,7 +675,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
       if ((this.liveAndHistoricalData && this.liveAndHistoricalData.length == 0) || (this.assetWiseTelemetryData && this.assetWiseTelemetryData.length == 0))
-        this.showLoadingIndicator();
+        this.showNoDataIndicator();
     }
   }
   ngOnDestroy() {

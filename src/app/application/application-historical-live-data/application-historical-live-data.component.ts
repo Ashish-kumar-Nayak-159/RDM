@@ -38,17 +38,19 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   widgetStringFromMenu: string;
   tileData: any;
   historicalCombineWidgets: any[] = [];
-  newHistoricalCombineWidets:any[] = [];
-  widgetBySplice:any[] = [];
+  newHistoricalCombineWidets: any[] = [];
+  widgetBySplice: any[] = [];
   assetWiseTelemetryData = [];
-  allTelemetryData:any[] = [];
+  allTelemetryData: any[] = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
   live_Date = false;
- signalRTelemetrySubscription: any;
- historical_livedata = [];
- selectDateFlag:boolean = false;
- @ViewChild('historicalLivechart') historicalLivechart: ElementRef; 
+  signalRTelemetrySubscription: any;
+  historical_livedata = [];
+  selectDateFlag: boolean = false;
+  myPromise: any;
+  isLoadingData: boolean = false;
+  @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
 
 
 
@@ -121,7 +123,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?:string, from?:number , to?:number) {    
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true, callFromSelectedDate?: string) {
     if (this.filterObj?.asset) {
 
       this.isFilterSelected = true
@@ -162,19 +164,28 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
         },
         (error) => (this.isTelemetryDataLoading = false)
       )
-      if(!callFromSelectedDate){
+      if (!callFromSelectedDate) {
         this.assetWiseTelemetryData = []
         this.historicalCombineWidgets = []
         // this.widgetBySplice = []
-        this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-          this.newHistoricalCombineWidets = response?.historical_widgets;
-        })
-        this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+        // this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+        //   this.newHistoricalCombineWidets = response?.historical_widgets;
+        //   this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+        // })
+        this.myPromise = new Promise((resolve, reject) => {
+          this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+            this.newHistoricalCombineWidets = response?.historical_widgets;
+            this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
+            resolve('');
+          })
+        });
         // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
       }
       //  if(this.selectDateFlag){
       //   this.widgetBySplice = this.historicalCombineWidgets
       //  }
+
+      this.myPromise.then(() => {
         this.measuredMessageProps = [];
         if (this.newHistoricalCombineWidets) {
           this.newHistoricalCombineWidets?.forEach((widget) => {
@@ -189,33 +200,35 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
               }
             })
           })
-        }
-    
-      this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
-      const filterObj = {
-        epoch: true,
-        app: this.contextApp.app,
-        asset_id: this.filterObj?.asset?.asset_id,
-        partition_key: this.filterObj?.asset?.partition_key,
-        from_date: this.historicalDateFilter?.from_date,
-        to_date: this.historicalDateFilter?.to_date,
-        order_dir: 'ASC',
-        measured_message_props: this.measuredMessageProps,
-        sampling_time:1,
-        sampling_format: 'minute'
+          this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
+          const filterObj = {
+            epoch: true,
+            app: this.contextApp.app,
+            asset_id: this.filterObj?.asset?.asset_id,
+            partition_key: this.filterObj?.asset?.partition_key,
+            from_date: this.historicalDateFilter?.from_date,
+            to_date: this.historicalDateFilter?.to_date,
+            order_dir: 'ASC',
+            measured_message_props: this.measuredMessageProps,
+            sampling_time: 1,
+            sampling_format: 'minute'
 
-      }
-            this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
-        if (response && response?.data) {
-          response?.data.forEach((item) => {
-            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-            item.message_date_obj = new Date(item.message_date);
+          }
+          this.isLoadingData = true;
+          this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+            if (response && response?.data) {
+              response?.data.forEach((item) => {
+                item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+                item.message_date_obj = new Date(item.message_date);
+              });
+              this.assetWiseTelemetryData = response?.data
+              this.selectDateFlag = false;
+              this.isLoadingData = false;
+            }
           });
-          this.assetWiseTelemetryData = response?.data
-          this.selectDateFlag = false;
-         
         }
-      });
+      })
+
     }
     else {
       this.historicalCombineWidgets = [];
@@ -261,7 +274,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historicalDateFilter.from_date = filterObj.from_date;
     this.historicalDateFilter.to_date = filterObj.to_date;
     this.historicalDateFilter.dateOption = filterObj.dateOption;
-    this.onFilterSelection('', true, false, true,'callFromSelectedDate');
+    this.onFilterSelection('', true, false, true, 'callFromSelectedDate');
 
     // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
     if (this.filterObj.asset) {
@@ -316,8 +329,8 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historical_livedata = data;
     this.live_Date = true;
   }
-  
-   getDefaultFilters(){
+
+  getDefaultFilters() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.historicalDateFilter.dateOption = item.dateOption;
     if (item.dateOption !== 'Custom Range') {
@@ -335,22 +348,22 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historicalDateFilter.type = true;
     this.historicalDateFilter.sampling_format = 'minute';
     this.historicalDateFilter.sampling_time = 1;
-   }
+  }
 
-   onScroll(){
+  onScroll() {
     var elementGrab = this.historicalLivechart?.nativeElement
-      if((elementGrab?.scrollHeight - elementGrab?.clientHeight) === elementGrab?.scrollTop){
+    if ((elementGrab?.scrollHeight - elementGrab?.clientHeight) === elementGrab?.scrollTop) {
 
-        //  if(this.historicalCombineWidgets?.length > 10){
-        //   return;
-        //  }
-        // this.widgetBySplice = []
-        // let histoLength = this.historicalCombineWidgets?.length
-        // this.widgetBySplice = this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2)
-         this.historicalCombineWidgets = [...this.historicalCombineWidgets , ...(this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2))]
-         //  this.onFilterSelection('', true, false, true,'callFromSelectedDate', histoLength, histoLength + 2);
-      }
-   
+      //  if(this.historicalCombineWidgets?.length > 10){
+      //   return;
+      //  }
+      // this.widgetBySplice = []
+      // let histoLength = this.historicalCombineWidgets?.length
+      // this.widgetBySplice = this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length,this.historicalCombineWidgets?.length + 2)
+      this.historicalCombineWidgets = [...this.historicalCombineWidgets, ...(this.newHistoricalCombineWidets.slice(this.historicalCombineWidgets?.length, this.historicalCombineWidgets?.length + 2))]
+      //  this.onFilterSelection('', true, false, true,'callFromSelectedDate', histoLength, histoLength + 2);
+    }
+
   }
 
   ngOnDestroy(): void {

@@ -402,7 +402,7 @@ export class CONSTANTS {
         },
       ],
       priority: 1,
-    }, 
+    },
     {
       page: 'Historical & Live Data',
       system_name: 'Historical & Live Data',
@@ -419,7 +419,7 @@ export class CONSTANTS {
         },
       ],
       priority: 1,
-    }, 
+    },
     {
       page: 'GateWay Monitoring',
       system_name: 'Gateway Monitoring',
@@ -436,7 +436,7 @@ export class CONSTANTS {
         },
       ],
       priority: 1,
-    },   
+    },
     {
       page: 'Live Alerts',
       system_name: 'Live Alerts',
@@ -595,7 +595,7 @@ export class CONSTANTS {
       priority: 1,
     },
 
-    
+
   ];
 
   public static ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -761,22 +761,10 @@ export class CONSTANTS {
       system_name: 'Alert',
       url: '#asset_alerts',
       display_name: 'Alert',
-      icon: 'fa fa-fw fa-bolt',      
-      privileges_required: [],
-      visible: true,
-      isTitle: false,
-    },
-    {
-      page: 'edgealerts',
-      system_name: 'Edge Alert',
-      url: '#edge_alert',
-      display_name: 'Edge Alert',
       icon: 'fa fa-fw fa-bolt',
+      privileges_required: [],
       visible: true,
       isTitle: false,
-      privileges_required: [],
-      showAccordion: [],
-      accordion_value: {},
     },
     // {
     //   page: 'alertendevents',
@@ -1041,7 +1029,7 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {},
     },
-    
+
   ];
 
   public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -1182,23 +1170,23 @@ export class CONSTANTS {
       system_name: 'Alert',
       url: '#asset_alerts',
       display_name: 'Alert',
-      icon: 'fa fa-fw fa-bolt',      
-      privileges_required: [],
-      visible: true,
-      isTitle: false,
-    },
-    {
-      page: 'edgealerts',
-      system_name: 'Edge Alert',
-      url: '#edge_alert',
-      display_name: 'Edge Alert',
       icon: 'fa fa-fw fa-bolt',
+      privileges_required: [],
       visible: true,
       isTitle: false,
-      privileges_required: [],
-      showAccordion: [],
-      accordion_value: {},
     },
+    // {
+    //   page: 'edgealerts',
+    //   system_name: 'Edge Alert',
+    //   url: '#edge_alert',
+    //   display_name: 'Edge Alert',
+    //   icon: 'fa fa-fw fa-bolt',
+    //   visible: true,
+    //   isTitle: false,
+    //   privileges_required: [],
+    //   showAccordion: [],
+    //   accordion_value: {},
+    // },
     // {
     //   page: 'alertendevents',
     //   system_name: 'Alert End Events',
@@ -1977,6 +1965,18 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: [],
       showAccordion: [],
+    },
+    {
+      page: 'edgealerts',
+      system_name: 'Edge Alerts (MONITOR (D2C))',
+      url: '#edge_alert',
+      display_name: 'Edge Alert',
+      icon: 'fa fa-fw fa-bolt',
+      visible: true,
+      isTitle: false,
+      privileges_required: [],
+      showAccordion: [],
+      accordion_value: {},
     },
   ];
 

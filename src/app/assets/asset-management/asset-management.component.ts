@@ -50,8 +50,9 @@ export class AssetManagementComponent implements OnInit {
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Asset Management') {
         selectedItem = item.showAccordion;
+        assetItem = item.showAccordion;
       }
-      if (item.page === 'Asset Management') {
+      if (item.page === 'Assets') {
         assetItem = item.showAccordion;
       }
     });

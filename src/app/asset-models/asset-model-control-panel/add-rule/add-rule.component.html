@@ -71,7 +71,7 @@
             <div class="col-auto">
             <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e" checkedTextColor="white" id="test"
                 uncheckedTextColor="white" (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
-                [disabled]="contextApp.app == 'Indygo' ? true : isView || isCloneEdit"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
+                [disabled]="!this.typeRulesDropdown ? true : isView || isCloneEdit"  uncheckedLabel="Cloud Rule" name="tpye1" [(ngModel)]="ruleModel.isEdgeRule">
               </ui-switch>
             </div>
           </div>
@@ -195,7 +195,8 @@
                     <!-- <input type="number" class="form-control form-control-sm"
                                                     placeholder="Escalation Time" name="escalation_time_in_sec"
                                                     [(ngModel)]="ruleModel.escalation_time_in_sec" required> -->
-                    <select *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
+                                                    <!-- *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'"                        -->
+                    <select *ngIf="!this.escalationTimeDropdown" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
                       name="escalation_time_in_sec" [disabled]="isView" class="form-control form-control-sm w-auto">
                       <option [ngValue]="undefined">Select Escalation Time</option>
                       <!-- <option [ngValue]="0">0 minutes</option> -->
@@ -206,7 +207,7 @@
                       <option [ngValue]="86400">1 day</option>
                       <option [ngValue]="300000000">Infinite</option>
                     </select>
-                    <select *ngIf="contextApp.app ==='Indygo' ||  contextApp.app ==='IndygoBeta'" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
+                    <select *ngIf="this.escalationTimeDropdown" id="escalation_time_in_sec" [(ngModel)]="ruleModel.escalation_time_in_sec"
                     name="escalation_time_in_sec" [disabled]="isView" class="form-control form-control-sm w-auto">
                     <option [ngValue]="300000000">Infinite</option>
                   </select>

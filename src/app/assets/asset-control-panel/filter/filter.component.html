@@ -17,7 +17,7 @@
     <select class="form-control form-control-sm active" id="alertType" [(ngModel)]="filterObj.source" name="alertType">
       <option [ngValue]="undefined">All Alerts</option>
       <option [ngValue]="'Asset'">External Alerts</option>
-      <option [ngValue]="'Edge'">Edge Alerts</option>
+      <option [ngValue]="'Edge'" *ngIf="this.edgealerts">Edge Alerts</option>
       <option [ngValue]="'Cloud'">Cloud Alerts</option>
     </select>
   </div>

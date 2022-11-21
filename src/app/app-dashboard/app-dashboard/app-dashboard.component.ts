@@ -898,6 +898,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+      debugger
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
       // filterObj.last_n_secs = this.historicalDateFilter.last_n_secs;

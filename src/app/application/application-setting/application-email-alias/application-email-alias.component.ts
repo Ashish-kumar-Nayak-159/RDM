@@ -20,6 +20,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
   apiSubscriptions: Subscription[] = [];
+  smsrecipientsForm: { visibility: boolean; };
+  whatsapprecipientsForm: { visibility: boolean; };
+  pushnotificationrecipientsForm: { visibility: boolean; };
   recipientemail: any = {};
   recipientemailpush: any = {};
   recipientsms: any = {};
@@ -43,6 +46,27 @@ export class ApplicationEmailAliasComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.getApplicationUserGroups();
+    this.getTileName();
+  }
+
+  getTileName(){
+    this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
+      if (item.system_name === 'SMS Recipients') {
+        if (item.page === 'sMS_recipients') {          
+          this.smsrecipientsForm = item.visible;
+        }
+      }
+      if (item.system_name === 'Whatsapp Recipients') {
+        if (item.page === 'whatsapp_recipients') {          
+          this.whatsapprecipientsForm = item.visible;
+        }
+      }
+      if (item.system_name === 'Push Notification Recipients') {
+        if (item.page === 'push_notification_recipients') {          
+          this.pushnotificationrecipientsForm = item.visible;
+        }
+      }
+    });
   }
 
   getApplicationUserGroups() {

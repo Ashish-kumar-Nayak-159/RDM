@@ -65,7 +65,8 @@ export class AddRuleComponent implements OnInit {
   ];
   userGroups: any[] = [];
   subscriptions: Subscription[] = [];
-
+  escalationTimeDropdown: { visibility: true; };
+  typeRulesDropdown: { visibility: boolean; };
   overrideRuleMapping : boolean = false;
   constructor(
     private commonService: CommonService,
@@ -83,19 +84,31 @@ export class AddRuleComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getSlaveData();
     this.DefaultRuleModelSetup();
+    this.getEscalationTime();
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     // this.addNewCondition();
     this.getAssetsModelProperties();
     if (this.isEdit || this.isView) {
       this.configureData();
     } else {
-      this.ruleModel.escalation_time_in_sec = this.contextApp.app == "Indygo" || this.contextApp.app == "IndygoBeta" ? 300000000 : this.ruleModel.escalation_time_in_sec;
+      this.ruleModel.escalation_time_in_sec = this.escalationTimeDropdown ? 300000000 : this.ruleModel.escalation_time_in_sec;
       this.getAlertConditions('Cloud');
     }
     if (this.isClone) {
       this.getRules();
     }
     this.getApplicationUserGroups();
+  }
+
+  getEscalationTime(){
+        this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
+            if (item.page === 'escalationTime') {          
+              this.escalationTimeDropdown = item.visible;
+            }
+            if (item.page === 'rulesType') {          
+              this.typeRulesDropdown = item.visible;
+            }
+        });
   }
 
   private DefaultRuleModelSetup() {

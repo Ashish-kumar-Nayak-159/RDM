@@ -976,6 +976,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       method.subscribe((response: any) => {
         if (response && response.data) {
+          debugger
           this.telemetryData = response.data;
           if (this.derivedKPIHistoricData && this.derivedKPIHistoricData.length > 0) {
             this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);

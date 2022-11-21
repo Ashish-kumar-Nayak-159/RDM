@@ -17,6 +17,7 @@ declare var $: any;
 })
 export class AssetModelRulesComponent implements OnInit, OnDestroy {
   @Input() assetModel: any;
+  @Input() menuDetail: any;
   rules: any[] = [];
   rulesTableConfig: any;
   isRulesLaoading = false;

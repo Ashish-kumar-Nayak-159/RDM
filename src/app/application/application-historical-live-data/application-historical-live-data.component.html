@@ -12,7 +12,7 @@
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, true, true);assetWiseTelemetryData=[]" [disabled]="isTelemetryDataLoading"><em
+              (click)="onFilterSelection(this.filterObj, true, true);" [disabled]="isTelemetryDataLoading"><em
                 class="fas fa-search fa-sm"></em></button></div>
         </form>
       </div>
@@ -60,10 +60,11 @@
   </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-  <div class="historical-livechart-container" #historicalLivechart *ngIf="historicalCombineWidgets.length > 0" (scroll)="onScroll()">
+  <div class="historical-livechart-container" #historicalLivechart *ngIf="historicalCombineWidgets.length > 0" (scroll)="onScroll($event)">
     <ng-container
     *ngFor="let widget of historicalCombineWidgets; let i = index;">
     <app-historical-livechart
+        [chartId]="this.sameAsset + i"
         [chartConfig]="widget"
         [live_Date]="live_Date"
         [newData]="historical_livedata"

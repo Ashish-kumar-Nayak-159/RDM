@@ -46,8 +46,8 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.originalFilterObj = {};
     this.originalFilterObj = { ...this.filterObj };
-    this.contextApp.menu_settings.legacy_asset_control_panel_menu.forEach((item) => {
-      if (item.page === 'edgealerts') {   
+    this.contextApp.menu_settings.miscellaneous_menu.forEach((item) => {
+      if (item.page === 'edgealerts') {
         this.edgealerts = item.visible;
       }
     });
@@ -87,7 +87,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterObj.to_date = dateObj.to_date;
       // this.filterObj.last_n_secs = this.filterObj.to_date - this.filterObj.from_date;
     } else {
-      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");     
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date),"dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date),"dd-MM-yyyy HH:mm");
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.cdr.detectChanges();

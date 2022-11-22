@@ -51,7 +51,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   myPromise: any;
   isLoadingData: boolean = false;
   @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
-  sameAsset:string;
+  sameAsset: string;
 
 
 
@@ -123,121 +123,127 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {       
-    if(this.sameAsset != this?.filterObj?.asset?.asset_id){
-         if (this.filterObj?.asset) {
-       
-           this.isFilterSelected = true
-           const obj = {
-             app: this.contextApp.app,
-             name: this?.filterObj?.asset?.asset_model,
-           };
-           this.sameAsset = this.filterObj?.asset?.asset_id
-           this.propertyList = [];
-           this.assetModelService.getAssetsModelProperties(obj).subscribe(
-             (response: any) => {
-               this.propertyList = response.properties.measured_properties
-                 ? response.properties.measured_properties
-                 : [];
-               response.properties.edge_derived_properties = response.properties.edge_derived_properties
-                 ? response.properties.edge_derived_properties
-                 : [];
-               response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-                 ? response.properties.cloud_derived_properties
-                 : [];
-               response.properties.edge_derived_properties.forEach((prop) => {
-                 prop.type = 'Edge Derived Properties';
-                 this.propertyList.push(prop);
-               });
-               response.properties.cloud_derived_properties.forEach((prop) => {
-                 prop.type = 'Cloud Derived Properties';
-                 this.propertyList.push(prop);
-               });
-               // this.derivedKPIs.forEach((kpi) => {
-               //   const obj: any = {};
-               //   obj.type = 'Derived KPIs';
-               //   obj.name = kpi.name;
-               //   obj.json_key = kpi.kpi_json_key;
-               //   obj.json_model = {};
-               //   obj.json_model[obj.json_key] = {};
-               //   this.propertyList.push(obj);
-               // });
-               // resolve1();
-             },
-             (error) => (this.isTelemetryDataLoading = false)
-           )
-          this.assetWiseTelemetryData = []
-          this.historicalCombineWidgets = []
-          // this.widgetBySplice = []
-          // this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-          //   this.newHistoricalCombineWidets = response?.historical_widgets;
-          //   this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
-          // })
-          this.myPromise = new Promise((resolve, reject) => {
-            this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-              this.newHistoricalCombineWidets = response?.historical_widgets;
-              this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
-              resolve('');
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    if (this.sameAsset != this?.filterObj?.asset?.asset_id) {
+      if (this.filterObj?.asset) {
+
+        this.isFilterSelected = true
+        const obj = {
+          app: this.contextApp.app,
+          name: this?.filterObj?.asset?.asset_model,
+        };
+        this.sameAsset = this.filterObj?.asset?.asset_id
+        this.propertyList = [];
+        this.assetModelService.getAssetsModelProperties(obj).subscribe(
+          (response: any) => {
+            this.propertyList = response.properties.measured_properties
+              ? response.properties.measured_properties
+              : [];
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties
+              ? response.properties.edge_derived_properties
+              : [];
+            response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+              ? response.properties.cloud_derived_properties
+              : [];
+            response.properties.edge_derived_properties.forEach((prop) => {
+              prop.type = 'Edge Derived Properties';
+              this.propertyList.push(prop);
+            });
+            response.properties.cloud_derived_properties.forEach((prop) => {
+              prop.type = 'Cloud Derived Properties';
+              this.propertyList.push(prop);
+            });
+            // this.derivedKPIs.forEach((kpi) => {
+            //   const obj: any = {};
+            //   obj.type = 'Derived KPIs';
+            //   obj.name = kpi.name;
+            //   obj.json_key = kpi.kpi_json_key;
+            //   obj.json_model = {};
+            //   obj.json_model[obj.json_key] = {};
+            //   this.propertyList.push(obj);
+            // });
+            // resolve1();
+          },
+          (error) => (this.isTelemetryDataLoading = false)
+        )
+        this.assetWiseTelemetryData = []
+        this.historicalCombineWidgets = []
+        this.newHistoricalCombineWidets = []
+        // this.widgetBySplice = []
+        // this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+        //   this.newHistoricalCombineWidets = response?.historical_widgets;
+        //   this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0,2)
+        // })
+        this.myPromise = new Promise((resolve, reject) => {
+          this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+            this.newHistoricalCombineWidets = response?.historical_widgets;
+            this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
+            resolve('');
+          })
+        });
+        // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
+        //  if(this.selectDateFlag){
+        //   this.widgetBySplice = this.historicalCombineWidgets
+        //  }
+
+        this.myPromise.then(() => {
+          this.measuredMessageProps = [];
+          if (this.newHistoricalCombineWidets) {
+            this.newHistoricalCombineWidets?.forEach((widget) => {
+              widget?.y1axis?.forEach((item) => {
+                if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                  this.measuredMessageProps?.push(item?.json_key);
+                }
+              })
+              widget?.y2axis?.forEach((item) => {
+                if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+                  this.measuredMessageProps?.push(item?.json_key);
+                }
+              })
             })
-          });
-          // this.widgetBySplice = this.newHistoricalCombineWidets.slice(0,2)
-           //  if(this.selectDateFlag){
-           //   this.widgetBySplice = this.historicalCombineWidgets
-           //  }
-     
-           this.myPromise.then(() => {
-             this.measuredMessageProps = [];
-             if (this.newHistoricalCombineWidets) {
-               this.newHistoricalCombineWidets?.forEach((widget) => {
-                 widget?.y1axis?.forEach((item) => {
-                   if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                     this.measuredMessageProps?.push(item?.json_key);
-                   }
-                 })
-                 widget?.y2axis?.forEach((item) => {
-                   if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                     this.measuredMessageProps?.push(item?.json_key);
-                   }
-                 })
-               })
-               this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
-               const filterObj = {
-                 epoch: true,
-                 app: this.contextApp.app,
-                 asset_id: this.filterObj?.asset?.asset_id,
-                 partition_key: this.filterObj?.asset?.partition_key,
-                 from_date: this.historicalDateFilter?.from_date,
-                 to_date: this.historicalDateFilter?.to_date,
-                 order_dir: 'ASC',
-                 measured_message_props: this.measuredMessageProps,
-                 sampling_time: 1,
-                 sampling_format: 'minute'
-     
-               }
-               this.isLoadingData = true;
-               this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
-                 if (response && response?.data) {
-                   response?.data.forEach((item) => {
-                     item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-                     item.message_date_obj = new Date(item.message_date);
-                   });
-                   this.assetWiseTelemetryData = response?.data
-                   this.selectDateFlag = false;
-                   this.isLoadingData = false;
-                 }
-               });
-             }
-           })
-     
-         }
-         else {
-           this.historicalCombineWidgets = [];
-           this.assetWiseTelemetryData = [];
-           this.propertyList = [];
-           this.measuredMessageProps = [];
-           this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
-         }
-       }
+            this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
+            const filterObj = {
+              epoch: true,
+              app: this.contextApp.app,
+              asset_id: this.filterObj?.asset?.asset_id,
+              partition_key: this.filterObj?.asset?.partition_key,
+              from_date: this.historicalDateFilter?.from_date,
+              to_date: this.historicalDateFilter?.to_date,
+              order_dir: 'ASC',
+              measured_message_props: this.measuredMessageProps,
+              sampling_time: 1,
+              sampling_format: 'minute'
+
+            }
+            this.isLoadingData = true;
+            this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+              if (response && response?.data) {
+                response?.data.forEach((item) => {
+                  item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+                  item.message_date_obj = new Date(item.message_date);
+                });
+                this.assetWiseTelemetryData = response?.data
+                this.selectDateFlag = false;
+                this.isLoadingData = false;
+              }
+              else {
+                this.selectDateFlag = false;
+                this.isLoadingData = false;
+                this.assetWiseTelemetryData = []
+              }
+            });
+          }
+        })
+
+      }
+      else {
+        this.historicalCombineWidgets = [];
+        this.assetWiseTelemetryData = [];
+        this.propertyList = [];
+        this.measuredMessageProps = [];
+        this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
+      }
+    }
 
   }
 
@@ -250,6 +256,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.assetWiseTelemetryData = [];
     this.selectDateFlag = false;
     this.widgetBySplice = [];
+    this.sameAsset = '';
     this.getDefaultFilters();
   }
 
@@ -352,10 +359,10 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     this.historicalDateFilter.sampling_time = 1;
   }
 
-  onScroll(event:any) {
+  onScroll(event: any) {
 
     if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight - 1) {
-       //  if(this.historicalCombineWidgets?.length > 10){
+      //  if(this.historicalCombineWidgets?.length > 10){
       //   return;
       //  }
       // this.widgetBySplice = []
@@ -366,9 +373,9 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
     }
   }
 
-  onDateFilterSelection()  {
+  onDateFilterSelection() {
     if (this.filterObj?.asset) {
-       
+
       this.isFilterSelected = true
       const obj = {
         app: this.contextApp.app,
@@ -394,14 +401,14 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
-          
+
         },
         (error) => (this.isTelemetryDataLoading = false)
       )
       // if (!callFromSelectedDate) {
       //   this.assetWiseTelemetryData = []
       //   this.historicalCombineWidgets = []
-      
+
       //   this.myPromise = new Promise((resolve, reject) => {
       //     this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
       //       this.newHistoricalCombineWidets = response?.historical_widgets;
@@ -410,7 +417,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
       //     })
       //   });
       // }
-      
+
       this.myPromise.then(() => {
         this.measuredMessageProps = [];
         if (this.newHistoricalCombineWidets) {

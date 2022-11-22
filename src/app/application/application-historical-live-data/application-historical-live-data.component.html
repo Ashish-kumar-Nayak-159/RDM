@@ -64,6 +64,7 @@
     <ng-container
     *ngFor="let widget of historicalCombineWidgets; let i = index;">
     <app-historical-livechart
+        [chartId]="this.sameAsset + i"
         [chartConfig]="widget"
         [live_Date]="live_Date"
         [newData]="historical_livedata"

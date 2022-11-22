@@ -145,13 +145,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty("isLoadingData") && changes.isLoadingData.currentValue) {
+    if (changes.hasOwnProperty("isLoadingData") && changes?.isLoadingData?.currentValue) {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
     else {
       setTimeout(() => {
-        this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+        this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
       }, 300);
     }
     if (this.live_Date === true) {
@@ -467,7 +467,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   createThresholdSeries(valueAxis, propObj) {
     //console.log("CheckingThreshold", + valueAxis)
     if (!this.isThresholdAdded) {
-      propObj.threshold = propObj.threshold ? propObj.threshold : {};
+      propObj.threshold = propObj?.threshold ? propObj.threshold : {};
       if (propObj.threshold.hasOwnProperty("l1") && propObj.threshold.hasOwnProperty("h1")) {
         const rangeL1H1 = valueAxis.axisRanges.create();
         rangeL1H1.value = propObj.threshold.l1;
@@ -674,8 +674,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
-      if ((this.liveAndHistoricalData && this.liveAndHistoricalData.length == 0) || (this.assetWiseTelemetryData && this.assetWiseTelemetryData.length == 0))
+      if ((this.liveAndHistoricalData && this.liveAndHistoricalData.length == 0) || (this.assetWiseTelemetryData && this.assetWiseTelemetryData.length == 0)){
         this.showNoDataIndicator();
+      }
     }
   }
   ngOnDestroy() {

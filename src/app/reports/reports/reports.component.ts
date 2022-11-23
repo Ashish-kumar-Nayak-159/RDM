@@ -93,12 +93,38 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // this.getLatestAlerts();
         await this.getAssets(this.contextApp.user.hierarchy);
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
+        if(!this.preGeneratedTab?.visibility){
+          this.onTabSelect('custom');
+        } else{
+         this.onTabSelect('pre-generated');
+        }
       })
     );
     if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
     } else if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
       this.onTabSelect('custom');
+    }
+  }
+
+  onTabSelect(type) {
+    this.tabType = type;
+    if (type === 'custom') {
+      this.filterObj = {};
+      this.filterObj.app = this.contextApp.app;
+      this.filterObj.type = true;
+      this.filterObj.sampling_format = 'minute';
+      this.filterObj.sampling_time = 1;
+      this.filterObj.aggregation_minutes = 1;
+      this.filterObj.aggregation_format = 'AVG';
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.telemetry = [];
+      this.latestAlerts = [];
+      this.isFilterOpen = true;
+      this.isFilterSelected = false;
+      this.loadFromCache();
+    } else {
+      this.isFilterSelected = false;
     }
   }
 
@@ -458,26 +484,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onTabSelect(type) {
-    this.tabType = type;
-    if (type === 'custom') {
-      this.filterObj = {};
-      this.filterObj.app = this.contextApp.app;
-      this.filterObj.type = true;
-      this.filterObj.sampling_format = 'minute';
-      this.filterObj.sampling_time = 1;
-      this.filterObj.aggregation_minutes = 1;
-      this.filterObj.aggregation_format = 'AVG';
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      this.telemetry = [];
-      this.latestAlerts = [];
-      this.isFilterOpen = true;
-      this.isFilterSelected = false;
-      this.loadFromCache();
-    } else {
-      this.isFilterSelected = false;
-    }
-  }
+
 
   async getTelemetryData(filterObj, type = undefined, callScrollFnFlag = false) {
     return new Promise<void>((resolve) => {
@@ -718,7 +725,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         50
       );
       var elem = document.getElementById("dataTable1");
-        var res = pdf.autoTableHtmlToJson(elem);        
+        var res = pdf.autoTableHtmlToJson(elem);
         pdf.autoTable(res.columns, res.data,{
           styles: {
             overflow: 'linebreak'
@@ -740,7 +747,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  async saveExcel() {    
+  async saveExcel() {
     const now = datefns.getUnixTime(new Date());
     const fileName = (this.originalFilterObj.asset.display_name
       ? this.originalFilterObj.asset.display_name
@@ -777,8 +784,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
             Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
             'Acknowledged By': alert.metadata?.user_id,
           });
-        });              
-        exportFromJSON({ data, fileName, exportType });        
+        });
+        exportFromJSON({ data, fileName, exportType });
       } else {
         data = [];
         this.telemetry.forEach((telemetryObj) => {
@@ -798,7 +805,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             obj[prop.id] = telemetryObj[prop.value.json_key];
           });
           data.push(obj);
-        });      
+        });
         exportFromJSON({ data, fileName, exportType });
       }
       this.loadingMessage = undefined;

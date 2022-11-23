@@ -237,6 +237,15 @@ export class CONSTANTS {
       metadata: { app: 'N_AIoTInputs' },
       deleted: false,
     },
+    {
+      id: 10,
+      asset_model: 'Legacy Asset',
+      name: 'MQTTBroadsensClient',
+      display_name: 'MQTTBroadsensClient',
+      cloud_connectivity: ['MQTT Broadsens Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'MQTTBroadsensClient' },
+      deleted: false,
+    },
   ];
 
   public static DEFAULT_PRIVILEGES = {

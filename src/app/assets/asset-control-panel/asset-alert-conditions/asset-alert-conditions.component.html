@@ -35,9 +35,11 @@
 
 <div class="table-responsive">
   <!-- <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p> -->
-  <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'">These are the additional alerts conditions created by the user.
+  <p class="tab-bar mb-0 active" [ngClass]="{'active': selectedTab === 'Edge','d-none': selectedTab !== 'Edge'}" *ngIf="menuDetail?.accordion_value?.edge"
+  > These are the additional alerts conditions created by the user.
     Following alerts are possible by executing rules on Gateways...</p>
-  <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'">These are the additional alerts conditions created by the
+  <p class="tab-bar mb-0 active" [ngClass]="{'active': selectedTab === 'Cloud'}" *ngIf="!menuDetail?.accordion_value?.edge || selectedTab === 'Cloud'"
+  >These are the additional alerts conditions created by the
     user. Following alerts are possible by executing rules on Cloud...</p>
 
   <div class="tableFixHead table-fix-head-alert-conditions">
@@ -586,9 +588,9 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <hr *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">
-                
+
                   <div class="form-group accordion-padding mx-3" *ngIf="contextApp.app!='Indygo'  && contextApp.app!='IndygoBeta'">
 
                     <input type="checkbox" class="form-check-input" id="sms" name="sms"
@@ -651,8 +653,8 @@
                       </div>
                     </div>
                   </div>
-             
-             
+
+
               </div>
               </td>
             </tr>
@@ -712,7 +714,7 @@
             <select class="form-control form-control-sm" id="alert_type" name="alert_type"
               [(ngModel)]="alertObj.alert_type">
               <option [ngValue]="undefined">Select Alert Source</option>
-              <!-- <option [ngValue]="'Asset'" >Asset</option> --> 
+              <!-- <option [ngValue]="'Asset'" >Asset</option> -->
               <!-- <option [ngValue]="'Edge'" *ngIf="contextApp.app!='Indygo' && contextApp.app!='IndygoBeta'">Edge</option> -->
               <option [ngValue]="'Edge'" *ngIf="menuDetail?.accordion_value?.edge">Edge</option>
               <option [ngValue]="'Cloud'" [defaultSelected]="menuDetail?.accordion_value?.edge === false">Cloud</option>

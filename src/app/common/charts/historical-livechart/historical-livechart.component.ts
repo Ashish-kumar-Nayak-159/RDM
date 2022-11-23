@@ -19,6 +19,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   public chart: am4charts.XYChart;
   @Input() chartConfig: any;
+  @Input() chartId: any;
   @Input() anchorAdditionalClass: string;
   @Input() telemetryData: any;
   @Input() assetWiseTelemetryData: any = [];
@@ -145,13 +146,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty("isLoadingData") && changes.isLoadingData.currentValue) {
+    if (changes.hasOwnProperty("isLoadingData") && changes?.isLoadingData?.currentValue) {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
     else {
       setTimeout(() => {
-        this.handleLiveTelemetry(null, changes.assetWiseTelemetryData.currentValue);
+        this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
       }, 300);
     }
     if (this.live_Date === true) {
@@ -270,22 +271,38 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     }
     else {
       this.isSeriesHasDataInChanges = false;
-      this.seriesArr.forEach((element) => {
+      for (let series of this.seriesArr) {
         let seriesData = []
         this.liveAndHistoricalData.map((data) => {
           for (let key in data) {
             let obj = {
               message_date_obj: data?.message_date_obj
             }
-            if (key === element?.dataFields?.valueY && data[key]) {
+            if (key === series?.dataFields?.valueY && data[key]) {
               obj[key] = data[key];
               this.isSeriesHasDataInChanges = true;
               seriesData.push(obj);
             }
           }
         })
-        element.data = seriesData;
-      })
+        series.data = seriesData;
+      }
+      // this.seriesArr.forEach((element) => {
+      //   let seriesData = []
+      //   this.liveAndHistoricalData.map((data) => {
+      //     for (let key in data) {
+      //       let obj = {
+      //         message_date_obj: data?.message_date_obj
+      //       }
+      //       if (key === element?.dataFields?.valueY && data[key]) {
+      //         obj[key] = data[key];
+      //         this.isSeriesHasDataInChanges = true;
+      //         seriesData.push(obj);
+      //       }
+      //     }
+      //   })
+      //   element.data = seriesData;
+      // })
     }
   }
 
@@ -467,8 +484,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   createThresholdSeries(valueAxis, propObj) {
     //console.log("CheckingThreshold", + valueAxis)
     if (!this.isThresholdAdded) {
-      propObj.threshold = propObj.threshold ? propObj.threshold : {};
-      if (propObj.threshold.hasOwnProperty("l1") && propObj.threshold.hasOwnProperty("h1")) {
+      propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
         const rangeL1H1 = valueAxis.axisRanges.create();
         rangeL1H1.value = propObj.threshold.l1;
         rangeL1H1.endValue = propObj.threshold.h1;
@@ -477,7 +494,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         rangeL1H1.axisFill.fillOpacity = 0.2;
         rangeL1H1.grid.strokeOpacity = 1;
       }
-      if (propObj.threshold.hasOwnProperty("l2") && propObj.threshold.hasOwnProperty("h2")) {
+      if (propObj?.threshold?.hasOwnProperty("l2") && propObj?.threshold?.hasOwnProperty("h2")) {
         const rangeL2H3 = valueAxis.axisRanges.create();
         rangeL2H3.value = propObj.threshold.l2;
         rangeL2H3.endValue = propObj.threshold.h2;
@@ -493,8 +510,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   createThresholdSeries1(valueAxis, propObj) {
     if (!this.isThresholdAdded1) {
-      propObj.threshold = propObj.threshold ? propObj?.threshold : {};
-      if (propObj.threshold.hasOwnProperty("l1") && propObj.threshold.hasOwnProperty("h1")) {
+      propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
         const rangeL1H1 = valueAxis.axisRanges.create();
         rangeL1H1.value = propObj.threshold.l1;
         rangeL1H1.endValue = propObj.threshold.h1;
@@ -503,7 +520,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         rangeL1H1.axisFill.fillOpacity = 0.2;
         rangeL1H1.grid.strokeOpacity = 1;
       }
-      if (propObj.threshold.hasOwnProperty("l2") && propObj.threshold.hasOwnProperty("h2")) {
+      if (propObj?.threshold?.hasOwnProperty("l2") && propObj?.threshold?.hasOwnProperty("h2")) {
         const rangeL2H3 = valueAxis.axisRanges.create();
         rangeL2H3.value = propObj.threshold.l2;
         rangeL2H3.endValue = propObj.threshold.h2;
@@ -580,11 +597,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       dateAxis.keepSelection = true
       this.isSeriesHasDataInInit = false;
       this.createValueAxis(chart, 0);
-      this.createValueAxis(chart, 1);
-      if (!this.isSeriesHasDataInInit && this.assetWiseTelemetryData?.length > 0) {
-        this.hideIndicator();
-        this.showNoDataIndicator(chart);
-      }
+      this.createValueAxis(chart, 1);    
       chart.legend = new am4charts.Legend();
       chart.logo.disabled = true;
       chart.legend.maxHeight = 80;
@@ -674,8 +687,14 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
-      if ((this.liveAndHistoricalData && this.liveAndHistoricalData.length == 0) || (this.assetWiseTelemetryData && this.assetWiseTelemetryData.length == 0))
-        this.showNoDataIndicator();
+      if (this.isLoadingData){
+        this.hideIndicator();
+        this.showLoadingIndicator();
+      }
+      if (!this.isLoadingData && !this.isSeriesHasDataInInit) {
+        this.hideIndicator();
+        this.showNoDataIndicator(chart);
+      }
     }
   }
   ngOnDestroy() {

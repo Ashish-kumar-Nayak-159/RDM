@@ -9,7 +9,7 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: 'Indygo',
   environment: 'TEST',
-  version: '15.0.1',
+  version: '15.0.2',
   storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages',
   redirectToLogin: true,

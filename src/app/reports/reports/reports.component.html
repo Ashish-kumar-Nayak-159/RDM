@@ -7,7 +7,7 @@
           <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
             <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
               id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
-              aria-controls="nav-pre-generated" aria-selected="true" (click)="onClickOfTab('pre-generated')"
+              aria-controls="nav-pre-generated" aria-selected="true" (click)="onTabSelect('pre-generated')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1 && preGeneratedTab?.visibility">
               <em class="fas fa-chart-line mr-2"></em>
               <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value :
@@ -15,7 +15,7 @@
             </a>
             <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'custom','active ': preGeneratedTab?.visibility === false}" id="nav-custom-tab"
               data-toggle="tab" href="#custom" role="tab" aria-controls="nav-custom" aria-selected="false"
-              (click)="onClickOfTab('custom')"
+              (click)="onTabSelect('custom')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
               <em class="fa fa-chart-pie mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>

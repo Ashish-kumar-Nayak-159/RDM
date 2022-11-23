@@ -94,20 +94,20 @@ export class ReportsComponent implements OnInit, OnDestroy {
         await this.getAssets(this.contextApp.user.hierarchy);
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
         if(!this.preGeneratedTab?.visibility){
-          this.onClickOfTab('custom');
+          this.onTabSelect('custom');
         } else{
-         this.onClickOfTab('pre-generated');
+         this.onTabSelect('pre-generated');
         }
       })
     );
     if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
-      this.onClickOfTab('pre-generated');
+      this.onTabSelect('pre-generated');
     } else if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
-      this.onClickOfTab('custom');
+      this.onTabSelect('custom');
     }
   }
 
-  onClickOfTab(type) {
+  onTabSelect(type) {
     this.tabType = type;
     if (type === 'custom') {
       this.filterObj = {};

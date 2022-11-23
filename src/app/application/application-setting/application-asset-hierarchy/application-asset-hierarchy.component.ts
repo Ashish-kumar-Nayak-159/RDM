@@ -379,6 +379,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
     );
   }
   getHierarchy(id) {
+    alert('getHierarchy')
     this.apiSubscriptions.push(
       this.applicationService.getHierarchyById(id).subscribe(
         (response: any) => {
@@ -390,11 +391,12 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
             this.hierarchyForm.id = response.id;
             this.levelToAddUpdate = response.level;
             if (response?.metaData) {
+              // console.log('metadata',response?.metaData)
               Object.keys(response?.metaData).forEach((key, index) => {
                 this.assetCustomTags.push({
                   id: index,
                   name: key,
-                  value: response?.metaData[key],
+                  value: (typeof response?.metaData[key]) === 'object' ? response?.metaData[key]?.e164Number : response?.metaData[key],
                 });
               });
               this.assetCustomTags.push(
@@ -406,6 +408,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
                 },
               );
             }
+            // console.log("assetCustomTags",this.assetCustomTags);
             this.isEditMode = true;
             $('#addHierarchyModal').modal({ backdrop: 'static', keyboard: false, show: true });
           }
@@ -433,5 +436,5 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
           resolve();
         })
     });
-  }  
+  }
 }

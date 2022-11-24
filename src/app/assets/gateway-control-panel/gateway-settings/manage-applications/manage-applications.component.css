@@ -1,1 +1,2 @@
 .app_manage_applications_Box .tableFixHead{overflow: initial;}
+.table-responsive.responsive-height.app_manage_applications_Box{overflow-y: auto; height: calc(100vh - 26rem);}

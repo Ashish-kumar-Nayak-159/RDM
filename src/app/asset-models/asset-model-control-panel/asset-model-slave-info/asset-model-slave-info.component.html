@@ -78,7 +78,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Slave ID:</label>
             <input #slaveid="ngModel" validateText type="text" class="form-control form-control-sm" id="slave_id" name="slave_id"
-              [(ngModel)]="slaveObj.slave_id" placeholder="Enter Slave ID">
+              [(ngModel)]="slaveObj.slave_id" placeholder="Enter Slave ID" [disabled]="slaveObj.id > 0 ? true : null">
               <div *ngIf="slaveid.errors?.whitespace && slaveid.touched" class="alert-danger">
                 Please enter valid id.
               </div>
@@ -180,7 +180,7 @@
           </div>
         </form>
       </div>
-  
+
     </div>
   </div>
 </div>

@@ -267,7 +267,8 @@
                         <input type="checkbox" name="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                           id="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                           (change)="onPrivilegeSelection('add')" [ngModelOptions]="{standalone: true}"
-                          [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled" />
+                          [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled"
+                          [disabled]="privilegeObj['add'].privileges[privilege].display_name === 'Admin Portal - View' ? true : null" />
                         <label for="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                           class="col-form-label">&nbsp;&nbsp;{{privilegeObj['add'].privileges[privilege].display_name}}</label>
                       </div>
@@ -378,7 +379,8 @@
                 <input type="checkbox" name="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                   id="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                   (change)="onPrivilegeSelection('add')"
-                  [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled" />
+                  [(ngModel)]="privilegeObj['add'].privileges[privilege].enabled"
+                  [disabled]="privilegeObj['add'].privileges[privilege].display_name === 'Admin Portal - View' ? true : null" />
                 <label for="{{privilegeObj['add'].privileges[privilege].display_name}}_add"
                   class="col-form-label">&nbsp;&nbsp;{{privilegeObj['add'].privileges[privilege].display_name}}</label>
               </div>

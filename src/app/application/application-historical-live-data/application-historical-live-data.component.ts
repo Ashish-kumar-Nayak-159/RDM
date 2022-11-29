@@ -52,6 +52,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   isLoadingData: boolean = false;
   @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
   sameAsset: string;
+  isAssetSelected:boolean = false;
 
 
 
@@ -92,7 +93,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
           if (response?.data) {
             this.assets = response.data;
             if (this.assets?.length === 1) {
-              this.filterObj.asset = this.assets[0];
+              // this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
             }
           }
@@ -126,7 +127,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     if (this.sameAsset != this?.filterObj?.asset?.asset_id) {
       if (this.filterObj?.asset) {
-
         this.isFilterSelected = true
         const obj = {
           app: this.contextApp.app,
@@ -178,6 +178,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
           this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
             this.newHistoricalCombineWidets = response?.historical_widgets;
             this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
+            this.isAssetSelected = true
             resolve('');
           })
         });
@@ -237,6 +238,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
       }
       else {
+        this.isAssetSelected = false;
         this.historicalCombineWidgets = [];
         this.assetWiseTelemetryData = [];
         this.propertyList = [];
@@ -248,6 +250,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   onClearHierarchy() {
+    this.isAssetSelected = false;
     this.isFilterSelected = false;
     this.historicalCombineWidgets = [];
     this.historical_livedata = [];

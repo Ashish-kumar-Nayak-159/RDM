@@ -409,7 +409,7 @@ export class CONSTANTS {
       url: 'applications/:appName/historical-live',
       display_name: 'Historical & Live Data',
       icon: 'fa fa-fw fa-chart-bar',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [

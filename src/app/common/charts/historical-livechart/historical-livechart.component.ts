@@ -150,16 +150,17 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
+    else if(this.live_Date === true){
+      setTimeout(() => {
+        this.handleLiveTelemetry(this.newData);
+      }, 300);
+    }
     else {
       setTimeout(() => {
         this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
       }, 300);
     }
-    if (this.live_Date === true) {
-      setTimeout(() => {
-        this.handleLiveTelemetry(this.newData);
-      }, 300);
-    }
+
   }
 
   handleLiveTelemetry(newTelemetryObj: any = null, liveHistoricalData: any[] = null) {

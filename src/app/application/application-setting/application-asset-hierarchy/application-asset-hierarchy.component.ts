@@ -394,7 +394,7 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
                 this.assetCustomTags.push({
                   id: index,
                   name: key,
-                  value: response?.metaData[key],
+                  value: (typeof response?.metaData[key]) === 'object' ? response?.metaData[key]?.e164Number : response?.metaData[key],
                 });
               });
               this.assetCustomTags.push(
@@ -433,5 +433,5 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
           resolve();
         })
     });
-  }  
+  }
 }

@@ -242,7 +242,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
                 valueclass: '',
                 tooltip: 'Move to Provision',
               }
-            
+
             ],
           }
         ],
@@ -398,7 +398,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.searchApplications();
 
 
-    
+
     },
       (error) => this.loader = false)
   }
@@ -479,7 +479,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.applicationService.getAllPriviledges().subscribe((response: any) => {
           if (response && response.data) {
             this.privilegeObj['add'] = {};
-            // Note : Set Privilege with api call    
+            // Note : Set Privilege with api call
             this.isAllprivilegeSelected['add'] = true;
             this.privilegeObj['add'].privileges = JSON.parse(JSON.stringify(response.data.Priviledges));
             this.privilegeGroups = response.data.PrivilegeGroup;
@@ -758,7 +758,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     if (this.isAllprivilegeSelected[index]) {
       Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = true));
     } else {
-      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => (this.privilegeObj[index].privileges[privilege].enabled = false));
+      Object.keys(this.privilegeObj[index].privileges).forEach((privilege) => {
+        if(this.privilegeObj[index].privileges[privilege]?.module === 'Admin Portal'){
+          (this.privilegeObj[index].privileges[privilege].enabled = true)
+        } else{
+          (this.privilegeObj[index].privileges[privilege].enabled = false)
+        }
+      });
     }
   }
   ngOnDestroy() {

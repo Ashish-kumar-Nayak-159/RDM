@@ -47,7 +47,7 @@
 
         <app-date-range-picker *ngIf="historicalDateFilter.from_date && historicalDateFilter.to_date"
           [filterObj]="historicalDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
-          [selectedDateRange]="selectedDateRange">
+          [selectedDateRange]="selectedDateRange" [disabled]="isAssetWiseTelemetryData" >
         </app-date-range-picker>
       
       </form>

@@ -41,6 +41,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   newHistoricalCombineWidets: any[] = [];
   widgetBySplice: any[] = [];
   assetWiseTelemetryData = [];
+  isAssetWiseTelemetryData:boolean = false;
   allTelemetryData: any[] = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
@@ -217,6 +218,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
             }
             this.isLoadingData = true;
+            this.isAssetWiseTelemetryData = true;
             this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
               if (response && response?.data) {
                 response?.data.forEach((item) => {
@@ -226,11 +228,13 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
                 this.assetWiseTelemetryData = response?.data
                 this.selectDateFlag = false;
                 this.isLoadingData = false;
+                this.isAssetWiseTelemetryData = false;
               }
               else {
                 this.selectDateFlag = false;
                 this.isLoadingData = false;
                 this.assetWiseTelemetryData = []
+                this.isAssetWiseTelemetryData = false;
               }
             });
           }
@@ -445,12 +449,11 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             from_date: this.historicalDateFilter?.from_date,
             to_date: this.historicalDateFilter?.to_date,
             order_dir: 'ASC',
-            measured_message_props: this.measuredMessageProps,
-            sampling_time: 1,
-            sampling_format: 'minute'
+            measured_message_props: this.measuredMessageProps
 
           }
           this.isLoadingData = true;
+          this.isAssetWiseTelemetryData = true;
           this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
             if (response && response?.data) {
               response?.data.forEach((item) => {
@@ -460,6 +463,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
               this.assetWiseTelemetryData = response?.data
               this.selectDateFlag = false;
               this.isLoadingData = false;
+              this.isAssetWiseTelemetryData = false;
             }
           });
         }

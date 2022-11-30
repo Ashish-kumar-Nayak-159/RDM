@@ -10,6 +10,7 @@ import * as datefns from 'date-fns';
 })
 export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() filterObj: any;
+  @Input() disabled:any = false;
   @Input() options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,

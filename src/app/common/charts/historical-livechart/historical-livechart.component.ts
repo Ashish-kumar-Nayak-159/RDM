@@ -609,6 +609,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.legend.labels.template.truncate = true;
       chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
       chart.cursor = new am4charts.XYCursor();
+      chart.cursor.maxTooltipDistance = -1
       if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
         var range = dateAxis.axisRanges.create();
         range.date = new Date(this.selectedAlert.local_created_date);

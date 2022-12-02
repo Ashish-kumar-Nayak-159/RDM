@@ -144,6 +144,20 @@ export class CONSTANTS {
       deleted: false,
       type: 'system_apps',
     },
+    {
+      id: 10,
+      name: 'MQTTBroadsensClient',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'MQTTBroadsensClient',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    }
   ];
 
   public static PROTOCOLS = [

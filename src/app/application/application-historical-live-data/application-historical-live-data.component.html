@@ -47,7 +47,7 @@
 
         <app-date-range-picker *ngIf="historicalDateFilter.from_date && historicalDateFilter.to_date"
           [filterObj]="historicalDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
-          [selectedDateRange]="selectedDateRange">
+          [selectedDateRange]="selectedDateRange" [disabled]="isAssetWiseTelemetryData" >
         </app-date-range-picker>
       
       </form>
@@ -60,7 +60,7 @@
   </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-  <div class="historical-livechart-container" #historicalLivechart *ngIf="historicalCombineWidgets.length > 0" (scroll)="onScroll($event)">
+  <div class="historical-livechart-container" #historicalLivechart *ngIf="historicalCombineWidgets?.length > 0" (scroll)="onScroll($event)">
     <ng-container
     *ngFor="let widget of historicalCombineWidgets; let i = index;">
     <app-historical-livechart
@@ -80,4 +80,7 @@
         *ngIf="widget.chartType === 'LineChart' || widget.chartType === 'AreaChart'">
     </app-historical-livechart>
     </ng-container>
+  </div>
+  <div *ngIf="(historicalCombineWidgets && historicalCombineWidgets?.length === 0) && isAssetSelected">
+    <p class="mt-3 ml-3">No Widget Found For Selected Asset .</p>
   </div>

@@ -587,7 +587,7 @@
                   <div class="col-auto">
                     <div class=""
                       *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed">
-                      <div class="form-inline" #addUserGroupDiv>
+                      <div class="form-inline">
                         <ng-container>
                           <div class="form-group">
                             <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"

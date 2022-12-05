@@ -41,6 +41,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   newHistoricalCombineWidets: any[] = [];
   widgetBySplice: any[] = [];
   assetWiseTelemetryData = [];
+  isAssetWiseTelemetryData:boolean = false;
   allTelemetryData: any[] = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
@@ -52,6 +53,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   isLoadingData: boolean = false;
   @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
   sameAsset: string;
+  isAssetSelected:boolean = false;
 
 
 
@@ -92,7 +94,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
           if (response?.data) {
             this.assets = response.data;
             if (this.assets?.length === 1) {
-              this.filterObj.asset = this.assets[0];
+              // this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
             }
           }
@@ -126,7 +128,6 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     if (this.sameAsset != this?.filterObj?.asset?.asset_id) {
       if (this.filterObj?.asset) {
-
         this.isFilterSelected = true
         const obj = {
           app: this.contextApp.app,
@@ -178,6 +179,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
           this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
             this.newHistoricalCombineWidets = response?.historical_widgets;
             this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
+            this.isAssetSelected = true
             resolve('');
           })
         });
@@ -216,6 +218,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
             }
             this.isLoadingData = true;
+            this.isAssetWiseTelemetryData = true;
             this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
               if (response && response?.data) {
                 response?.data.forEach((item) => {
@@ -225,11 +228,13 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
                 this.assetWiseTelemetryData = response?.data
                 this.selectDateFlag = false;
                 this.isLoadingData = false;
+                this.isAssetWiseTelemetryData = false;
               }
               else {
                 this.selectDateFlag = false;
                 this.isLoadingData = false;
                 this.assetWiseTelemetryData = []
+                this.isAssetWiseTelemetryData = false;
               }
             });
           }
@@ -237,6 +242,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
 
       }
       else {
+        this.isAssetSelected = false;
         this.historicalCombineWidgets = [];
         this.assetWiseTelemetryData = [];
         this.propertyList = [];
@@ -248,6 +254,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   onClearHierarchy() {
+    this.isAssetSelected = false;
     this.isFilterSelected = false;
     this.historicalCombineWidgets = [];
     this.historical_livedata = [];
@@ -442,12 +449,11 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
             from_date: this.historicalDateFilter?.from_date,
             to_date: this.historicalDateFilter?.to_date,
             order_dir: 'ASC',
-            measured_message_props: this.measuredMessageProps,
-            sampling_time: 1,
-            sampling_format: 'minute'
+            measured_message_props: this.measuredMessageProps
 
           }
           this.isLoadingData = true;
+          this.isAssetWiseTelemetryData = true;
           this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
             if (response && response?.data) {
               response?.data.forEach((item) => {
@@ -457,6 +463,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
               this.assetWiseTelemetryData = response?.data
               this.selectDateFlag = false;
               this.isLoadingData = false;
+              this.isAssetWiseTelemetryData = false;
             }
           });
         }

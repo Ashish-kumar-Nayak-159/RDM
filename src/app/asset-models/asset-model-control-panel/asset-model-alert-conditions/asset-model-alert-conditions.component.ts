@@ -112,10 +112,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     if (!clickedInside) {
       this.addVisualizationWidget();
     }
-    clickedInside = this.addUserGroupDiv?.nativeElement?.contains(e.target);
-    if (!clickedInside) {
-      this.addUserGroup('push_notification');
-    }
+    // clickedInside = this.addUserGroupDiv?.nativeElement?.contains(e.target);
+    // if (!clickedInside) {
+    //   this.addUserGroup('push_notification');
+    // }
     clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
     if (!clickedInside) {
       this.addReferenceDocument();

@@ -23,7 +23,7 @@
                         <td>{{asset.cloud_connectivity}}</td>
                         <td>{{asset.hierarchyString}}</td>
                         <td>
-                            <a href="javascript:void(0)" placement="bottom" tooltip="Cancel"
+                            <a  placement="bottom" tooltip="Cancel"
                                 (click)="unWhitelistAsset(asset.asset_id);"><em class="fa fa-times"></em></a>
                         </td>
                     </tr>
@@ -46,7 +46,7 @@
         </table>
     </div>
     <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && assetsList.length > 0">
-        <a href="javascript:void(0)" class="mr-1"
+        <a  class="mr-1 load-more"
             (click)="currentOffset = currentOffset + currentLimit;getAssets(false);" placement="bottom"
             tooltip="Load More Records...">Load More...</a>
     </span>

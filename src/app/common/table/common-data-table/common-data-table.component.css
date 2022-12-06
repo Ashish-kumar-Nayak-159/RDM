@@ -30,3 +30,7 @@ a.scroll-to-top.rounded{
   height: 2rem !important;
   bottom: 2rem !important;
 }
+.table.table-hover tr td a:not([href]), .tab-content a.mr-1{color:#676c6e;}
+.table.table-hover tr td a:not([href]):hover, .tab-content a.mr-1:hover{color: #224abe; cursor: pointer;}
+.tab-content a.mr-1:hover{text-decoration: underline;}
+.table.table-hover tr td a.ml-2{margin-left: 0.3rem !important;}

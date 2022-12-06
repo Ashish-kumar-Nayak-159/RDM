@@ -221,10 +221,11 @@ export class ApplicationAssetHierarchyComponent implements OnInit, OnDestroy {
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
     this.selectedHierarchyItem = undefined;
-    this.applicationData.hierarchy.levels.forEach((_, index) => {
+    this.applicationData?.hierarchy?.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];
     });
     if (this.applicationData?.hierarchy?.levels.length > 1) {
+      this.hierarchyTags = this.applicationData?.hierarchy?.tags
       this.hierarchyArr['1'] = Object.keys(this.hierarchyTags);
       this.selectedHierarchyData['1'] = this.hierarchyTags;
     }

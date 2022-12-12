@@ -1973,7 +1973,7 @@ export class CONSTANTS {
       url: '#asset_rules',
       display_name: 'Escalation Time',
       icon: 'fa fa-fw fa-archive',
-      visible: true,
+      visible: false,
       isTitle: false,
       privileges_required: [],
       showAccordion: [],

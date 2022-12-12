@@ -10,3 +10,7 @@ a.mr-1{
 .pull-right{
   float: none;
 }
+.table.table-hover tr td a:not([href]), .tab-content a.load-more{color:#676c6e;}
+.table.table-hover tr td a:not([href]):hover, .tab-content a.load-more:hover{color: #224abe; cursor: pointer;}
+.tab-content a.load-more:hover{text-decoration: underline;}
+.table.table-hover tr td a + a{margin-left: 0.3rem !important;}

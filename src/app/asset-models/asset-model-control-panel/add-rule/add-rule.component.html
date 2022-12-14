@@ -87,7 +87,7 @@
           <div class="form-group row" *ngIf="!ruleModel.isEdgeRule && ruleModel.isKpixCategory && (addRuleCondition==='IoT Asset' || addRuleCondition==='IoT Gateway')">
             <label for="examplePassword" class="col-3">Rule Type</label>
             <div class="col-auto">
-              <select [disabled]="isView || isCloneEdit"  (change)="getRuleType()" id="kpixruleType" placeholder="Select Rule" class="form-control form-control-sm w-auto">
+              <select [disabled]="isView || isCloneEdit || isEdit"  (change)="getRuleType()" id="kpixruleType" placeholder="Select Rule" class="form-control form-control-sm w-auto">
                 <option value="THS" selected>THS (Telemetry Threshold)</option>
                 <option value="ICT">ICT (IOT Connectivity Threshold)</option>
                 <option value="ILT">ILT (Ingestion Loss Threshold)</option>

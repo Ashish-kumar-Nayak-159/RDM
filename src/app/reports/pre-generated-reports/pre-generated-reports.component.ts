@@ -257,6 +257,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.isAddReport = false;
     this.assets = [];
     this.selectedAssets = [];
+    this.dropdownPropList = [];
   }
 
   onCreateNewPGReports() {
@@ -375,6 +376,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onChangeOfHierarchy(index, 'RS');
         }
       });
+      this.getAssetsModelProperties(this.reportsObj?.asset_model)
     } 
     else if(this.updatePGR?.asset_model){
       this.updatePGR.assets = [];
@@ -386,6 +388,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           this.onChangeOfHierarchy(index, 'RS');
         }
       });
+      this.getAssetsModelProperties(this.updatePGR?.asset_model)
     }
     else {
       this.assets = this.originalAssets;
@@ -1040,6 +1043,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.configureHierarchy = []
       this.assets = [];
       this.selectedAssets = [];
+      this.dropdownPropList =[];
       $("#updatePGRModal").modal("hide");
     }
 

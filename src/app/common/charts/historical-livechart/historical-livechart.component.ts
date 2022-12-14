@@ -150,7 +150,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
-    else if(this.live_Date === true){
+    else{
+    if(this.live_Date === true){
       setTimeout(() => {
         this.handleLiveTelemetry(this.newData);
       }, 300);
@@ -160,7 +161,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
       }, 300);
     }
-
+  }
   }
 
   handleLiveTelemetry(newTelemetryObj: any = null, liveHistoricalData: any[] = null) {
@@ -212,6 +213,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         this.showNoDataIndicator();
         if (this.chart) {
           this.liveAndHistoricalData = [];
+          for (let series of this.seriesArr) {
+            series.data = [];
+          }
           this.ChangeDateXAxis();
         }
       }

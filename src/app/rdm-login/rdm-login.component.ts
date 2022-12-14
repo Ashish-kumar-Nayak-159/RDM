@@ -65,15 +65,25 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
       password: new FormControl(null, [Validators.required]),
+      remember: new FormControl(false)
     });
     this.registerForm = new FormGroup({
-      app: new FormControl(this.tenantId ? this.tenantId :'', [Validators.required]),
+      app: new FormControl(this.tenantId ? this.tenantId : '', [Validators.required]),
       name: new FormControl(null, [Validators.required]),
       phone: new FormControl(null),
       email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
       org: new FormControl(null, Validators.required),
       designation: new FormControl(null),
     });
+
+    let getCookies = document.cookie.split(';').join('=').split('=')
+    let cookies = {
+      username: JSON.parse(this.commonService.decryptString(getCookies[1])),
+      password: JSON.parse(this.commonService.decryptString(getCookies[3]))
+    }
+    if (getCookies) {
+      this.loginForm.patchValue({ email: cookies?.username, password: cookies?.password });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -247,6 +257,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async processUserData(data) {
+    if (this.loginForm.value.remember) {
+      document.cookie = "username=" + this.commonService.encryptJSON(this.loginForm.value.email) + '; ' +"expires=" + new Date( new Date().getTime() + 24*60*60*1000).toUTCString();
+      document.cookie = "password=" + this.commonService.encryptJSON(this.loginForm.value.password) + '; '+"expires=" + new Date( new Date().getTime() + 24*60*60*1000).toUTCString();
+    }
     // if user is supre admin
     if (data.is_super_admin) {
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
@@ -361,7 +375,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           const obj = {
             hierarchy: this.applicationData?.user?.hierarchy,
             dateOption: this.applicationData?.metadata?.filter_settings?.search_duration || 'Last 24 Hours',
-          };         
+          };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
             dateOption:
@@ -370,13 +384,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
             localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-            if(response)
-            {
+            if (response) {
               this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
               resolve();
             }
           },
-          (error)=> resolve());          
+            (error) => resolve());
         })
       );
     });

@@ -1,6 +1,6 @@
 <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isGetAPILoading"></em>
 <div class="table-responsive responsive-height" *ngIf="!isGetAPILoading">
-  <div class="tableFixHead">
+  <div class="tableFixHead fota-details-box">
     <div *ngIf="!assetTwin; else packageTemplate"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
     <ng-template #packageTemplate>
       <ng-container *ngIf="assetPackages.length === 0">

@@ -56,4 +56,6 @@
   background-color:#eef3fa;
 }
 
-
+.tableFixHead thead th, .tableFixHead table thead th{
+  z-index: 1051;
+}

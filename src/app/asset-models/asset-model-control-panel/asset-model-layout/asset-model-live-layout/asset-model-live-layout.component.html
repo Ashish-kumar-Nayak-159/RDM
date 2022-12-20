@@ -21,7 +21,7 @@
   </div>
 </div>
 
-  <div class="table-responsive">
+  <div class="table-responsive app-asset-model-live-layout-box">
   
     <!-- for the small widget -->
     <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
@@ -49,7 +49,7 @@
     </div>
   
     <!-- for the other widget -->
-    <div class="tableFixHead modal-live-widget-container">
+    <div class="clearfix">
       <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
       <div class="row col-md-12 mb-5">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">

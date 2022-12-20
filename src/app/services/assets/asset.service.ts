@@ -557,6 +557,9 @@ export class AssetService {
   acknowledgeAssetAlert(obj): Observable<any> {
     return this.http.put(this.url + AppUrls.ACKNOWLEGE_ASSET_ALERT, obj);
   }
+  acknowledgeAssetAlertIndygo(obj): Observable<any> {
+    return this.http.put(this.url + AppUrls.ACKNOWLEGE_ASSET_ALERT_Indygo, obj);
+  }
 
   getNonIPAssetTags(filterObj) {
     let params = new HttpParams();

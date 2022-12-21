@@ -59,3 +59,7 @@
 .tableFixHead thead th, .tableFixHead table thead th{
   z-index: 1051;
 }
+.tableFixHead.table-fix-head-alert-conditions{
+  position: relative; 
+  z-index: 3 !important;
+}

@@ -384,7 +384,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       // series.xAxis.extraMax = 0.05;
       //series.xAxis.properties.extraMin = 0.05;
       chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY = new am4core.Scrollbar();
+      chart.scrollbarY.parent = chart.leftAxesContainer;
 
       series.dataFields.dateX = 'message_date_obj';
       series.dataFields.valueY = prop.json_key;

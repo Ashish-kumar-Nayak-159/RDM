@@ -222,7 +222,6 @@ export class GatewayAssetsSettingComponent implements OnInit {
   }
 
   callC2dMethod(obj, type) {
-    debugger
     return new Promise<void>((resolve1, reject) => {
       this.isAPILoading = true;
       this.headerMessage = type;

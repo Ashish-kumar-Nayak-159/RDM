@@ -44,7 +44,7 @@
             <!-- End Whitelist Asset -->
             <label for="or"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1 && decodedToken.privileges.indexOf('WASMP') > -1">OR</label>
-            <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
+            <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1 && showAssetAndGatewayId">
               <label for="message-text" class="col-form-label required">{{(tileData ? tileData.table_key : '')}}
                 ID:</label>
               <input #asset_id="ngModel" [disabled]="isHierarchyEditable"  validateText type="text" class="form-control form-control-sm" id="asset_id"

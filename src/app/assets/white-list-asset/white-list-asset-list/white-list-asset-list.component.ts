@@ -159,7 +159,6 @@ async getHierarchy()
                 this.parentid = 0;
                 this.contextApp.hierarchy.levels.forEach((key, index) => {
                   if(index != 0){
-                    debugger
                   item.hierarchyString +=  item.hierarchy_json[key] ? this.getDisplayHierarchyString(index,item.hierarchy_json[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
                   }else
                   item.hierarchyString +=  item.hierarchy_json[key] ? item.hierarchy_json[key] + (keys[index + 1] ? ' / ' : '') : '';

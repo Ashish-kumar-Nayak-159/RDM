@@ -26,6 +26,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   selectedTab: any;
   isAddRule = false;
   isCloneRule = false;
+  isoverride = false;
   isEdit = false;
   ruleData: any;
   isDeleteRuleLoading = false;
@@ -69,6 +70,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.selectedTab = '';
     this.isEdit = false;
     this.isCloneRule = false;
+    this.isoverride = false;
     this.ruleData = {};
     this.isAddRule = true;
   }
@@ -79,6 +81,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.isAddRule = false;
     this.ruleData = {};
     this.isCloneRule = true;
+    this.isoverride = false;
   }
 
   onClickOfTab(type) {

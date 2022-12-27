@@ -33,6 +33,7 @@ export class RulesComponent implements OnInit {
   isCloneRule = false;
   isEdit = false;
   isCloneEdit = false;
+  isoverride = false;
   ruleData: any;
   isDeleteRuleLoading = false;
   userData: any;
@@ -98,7 +99,7 @@ export class RulesComponent implements OnInit {
     this.isCloneEdit = false;
   }
  
-  overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, action) {
+  overRideRule(i, rule, type, isView = false, isEdit = true, isCloneEdit = true, isoverride = true, action) {
     this.onAccordionClick('Asset');
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
       if (action === 'toggle' || action === '') {
@@ -119,6 +120,7 @@ export class RulesComponent implements OnInit {
     this.isEdit = isEdit;
     this.isView = isView;
     this.isCloneEdit = isCloneEdit;
+    this.isoverride = isoverride;
     this.ruleData = rule;
   }
   

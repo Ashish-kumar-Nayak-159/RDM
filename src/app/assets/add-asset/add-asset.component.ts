@@ -44,6 +44,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   actualhierarchyArr = [];
   isHierarchyEditable = false;
   selectedHierarchy:any = {};
+  showAssetAndGatewayId:boolean = false;
 
   constructor(
     private commonService: CommonService,
@@ -443,8 +444,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     })
   }
   onCreateAsset() {
+    if(!this.assetDetail.asset_id){
+      this.assetDetail.asset_id = 'AssetID';
+    }
     if (
-      !this.assetDetail.asset_id ||
       !this.assetDetail.tags.display_name ||
       !this.assetDetail.tags.asset_manager ||
       !this.assetDetail.tags.asset_model

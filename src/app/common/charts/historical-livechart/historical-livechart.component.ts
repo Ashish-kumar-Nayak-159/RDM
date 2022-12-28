@@ -150,7 +150,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
-    else if(this.live_Date === true){
+    else{
+    if(this.live_Date === true){
       setTimeout(() => {
         this.handleLiveTelemetry(this.newData);
       }, 300);
@@ -160,7 +161,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
       }, 300);
     }
-
+  }
   }
 
   handleLiveTelemetry(newTelemetryObj: any = null, liveHistoricalData: any[] = null) {
@@ -212,6 +213,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
         this.showNoDataIndicator();
         if (this.chart) {
           this.liveAndHistoricalData = [];
+          for (let series of this.seriesArr) {
+            series.data = [];
+          }
           this.ChangeDateXAxis();
         }
       }
@@ -380,7 +384,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       // series.xAxis.extraMax = 0.05;
       //series.xAxis.properties.extraMin = 0.05;
       chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY = new am4core.Scrollbar();
+      chart.scrollbarY.parent = chart.leftAxesContainer;
 
       series.dataFields.dateX = 'message_date_obj';
       series.dataFields.valueY = prop.json_key;
@@ -485,11 +491,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   createThresholdSeries(valueAxis, propObj) {
     //console.log("CheckingThreshold", + valueAxis)
     if (!this.isThresholdAdded) {
-      propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      if(propObj){
+        propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      }
       if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
         const rangeL1H1 = valueAxis.axisRanges.create();
-        rangeL1H1.value = propObj.threshold.l1;
-        rangeL1H1.endValue = propObj.threshold.h1;
+        rangeL1H1.value = propObj?.threshold?.l1;
+        rangeL1H1.endValue = propObj?.threshold?.h1;
         rangeL1H1.axisFill.fill = am4core.color("yellow");
         rangeL1H1.grid.stroke = rangeL1H1.axisFill.fill;
         rangeL1H1.axisFill.fillOpacity = 0.2;
@@ -497,8 +505,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
       if (propObj?.threshold?.hasOwnProperty("l2") && propObj?.threshold?.hasOwnProperty("h2")) {
         const rangeL2H3 = valueAxis.axisRanges.create();
-        rangeL2H3.value = propObj.threshold.l2;
-        rangeL2H3.endValue = propObj.threshold.h2;
+        rangeL2H3.value = propObj?.threshold?.l2;
+        rangeL2H3.endValue = propObj?.threshold?.h2;
         rangeL2H3.axisFill.fill = am4core.color("red");
         rangeL2H3.grid.stroke = rangeL2H3.axisFill.fill;
         rangeL2H3.axisFill.fillOpacity = 0.2;
@@ -511,11 +519,13 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   createThresholdSeries1(valueAxis, propObj) {
     if (!this.isThresholdAdded1) {
-      propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      if(propObj){
+        propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
+      }
       if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
         const rangeL1H1 = valueAxis.axisRanges.create();
-        rangeL1H1.value = propObj.threshold.l1;
-        rangeL1H1.endValue = propObj.threshold.h1;
+        rangeL1H1.value = propObj?.threshold?.l1;
+        rangeL1H1.endValue = propObj?.threshold?.h1;
         rangeL1H1.axisFill.fill = am4core.color("yellow");
         rangeL1H1.grid.stroke = rangeL1H1.axisFill.fill;
         rangeL1H1.axisFill.fillOpacity = 0.2;
@@ -523,8 +533,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       }
       if (propObj?.threshold?.hasOwnProperty("l2") && propObj?.threshold?.hasOwnProperty("h2")) {
         const rangeL2H3 = valueAxis.axisRanges.create();
-        rangeL2H3.value = propObj.threshold.l2;
-        rangeL2H3.endValue = propObj.threshold.h2;
+        rangeL2H3.value = propObj?.threshold?.l2;
+        rangeL2H3.endValue = propObj?.threshold?.h2;
         rangeL2H3.axisFill.fill = am4core.color("red");
         rangeL2H3.grid.stroke = rangeL2H3.axisFill.fill;
         rangeL2H3.axisFill.fillOpacity = 0.2;

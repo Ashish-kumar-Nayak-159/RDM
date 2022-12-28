@@ -44,6 +44,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   actualhierarchyArr = [];
   isHierarchyEditable = false;
   selectedHierarchy:any = {};
+  showAssetAndGatewayId:boolean = false;
 
   constructor(
     private commonService: CommonService,
@@ -443,8 +444,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     })
   }
   onCreateAsset() {
+    if(!this.assetDetail.asset_id){
+      this.assetDetail.asset_id = 'AssetID';
+    }
     if (
-      !this.assetDetail.asset_id ||
       !this.assetDetail.tags.display_name ||
       !this.assetDetail.tags.asset_manager ||
       !this.assetDetail.tags.asset_model
@@ -493,21 +496,21 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.metadata = {};
     }
     this.assetDetail.metadata.telemetry_mode_settings = {
-      g1_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g1_turbo_mode_frequency_in_ms || 60,
-      g2_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g2_turbo_mode_frequency_in_ms || 120,
-      g3_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_turbo_mode_frequency_in_ms || 180,
-      g1_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g1_ingestion_frequency_in_ms || 600,
-      g2_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g2_ingestion_frequency_in_ms || 1200,
-      g3_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_ingestion_frequency_in_ms || 1800,
-      turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120,
+      g1_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g1_turbo_mode_frequency_in_ms || 10000,
+      g2_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g2_turbo_mode_frequency_in_ms || 10000,
+      g3_turbo_mode_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_turbo_mode_frequency_in_ms || 10000,
+      g1_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g1_ingestion_frequency_in_ms || 60000,
+      g2_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g2_ingestion_frequency_in_ms || 60000,
+      g3_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_ingestion_frequency_in_ms || 60000,
+      turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120000,
     };
     this.assetDetail.metadata.data_ingestion_settings = {
       type: modelObj?.data_ingestion_settings?.type || 'all_props_at_fixed_interval',
     };
     this.assetDetail.metadata.measurement_settings = {
-      g1_measurement_frequency_in_ms: modelObj?.measurement_settings?.g1_measurement_frequency_in_ms || 60,
-      g2_measurement_frequency_in_ms: modelObj?.measurement_settings?.g2_measurement_frequency_in_ms || 120,
-      g3_measurement_frequency_in_ms: modelObj?.measurement_settings?.g3_measurement_frequency_in_ms || 180,
+      g1_measurement_frequency_in_ms: modelObj?.measurement_settings?.g1_measurement_frequency_in_ms || 10000,
+      g2_measurement_frequency_in_ms: modelObj?.measurement_settings?.g2_measurement_frequency_in_ms || 10000,
+      g3_measurement_frequency_in_ms: modelObj?.measurement_settings?.g3_measurement_frequency_in_ms || 10000,
     };
     // if (this.componentState === CONSTANTS.NON_IP_ASSET) {
     // this.assetDetail.metadata.setup_details = this.setupForm.value;
@@ -530,7 +533,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
     this.assetDetail.tags.recipients = JSON.stringify(this.assetDetail.tags.recipients);
-    debugger
     let parentId = 0;
     let hierarchy_ids = {};
     Object.keys(this.contextApp?.hierarchy?.levels).forEach((key, index) => {

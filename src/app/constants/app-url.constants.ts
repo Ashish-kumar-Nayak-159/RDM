@@ -76,6 +76,7 @@ export class AppUrls {
   public static GET_ASSETS_MODEL_ASSET_METHODS = 'apps/{0}/asset_models/{1}/direct_methods';
   public static GET_ASSETS_MODEL_LAYOUT = 'apps/{0}/asset_models/{1}/historical_widgets';
   public static ACKNOWLEGE_ASSET_ALERT = 'D2C_UpdateAlertMetadata';
+  public static ACKNOWLEGE_ASSET_ALERT_Indygo = 'D2C_UpdateAlertMetadata_Indygo';
   public static DELETE_CONTROL_WIDGET = 'apps/{0}/asset_models/{1}/control_widget/{2}';
   public static DELETE_CONFIGURATION_WIDGET = 'apps/{0}/asset_models/{1}/configuration_widget/{2}';
   public static UPDATE_APP_HIERARCHY = 'apps/{0}/hierarchy';

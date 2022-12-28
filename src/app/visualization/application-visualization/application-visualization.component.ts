@@ -976,7 +976,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       method.subscribe((response: any) => {
         if (response && response.data) {
-          debugger
           this.telemetryData = response.data;
           if (this.derivedKPIHistoricData && this.derivedKPIHistoricData.length > 0) {
             this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
@@ -1206,22 +1205,41 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.to_date = epoch ? epoch + 300 : null;
       obj.metadata['user_id'] = this.userData.email;
       obj.metadata['acknowledged_date'] = new Date().toISOString();
-      this.subscriptions.push(
-        this.assetService.acknowledgeAssetAlert(obj).subscribe(
-          (response) => {
-            this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
-            this.getLatestAlerts();
-            this.closeAcknowledgementModal();
-            this.acknowledgedAlert = undefined
-  
-            //this.acknowledgedAlertIndex = -1
-            // this.getAlarms();
-          },
-          (error) => {
-            this.toasterService.showError(error.message, 'Acknowledge Alert');
-          }
-        )
-      );
+      if(this.contextApp.app === 'Indygo' || this.contextApp.app ==='IndygoBeta'){
+        this.subscriptions.push(
+          this.assetService.acknowledgeAssetAlertIndygo(obj).subscribe(
+            (response) => {
+              this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
+              this.getLatestAlerts();
+              this.closeAcknowledgementModal();
+              this.acknowledgedAlert = undefined
+    
+              //this.acknowledgedAlertIndex = -1
+              // this.getAlarms();
+            },
+            (error) => {
+              this.toasterService.showError(error.message, 'Acknowledge Alert');
+            }
+          )
+        );
+      }else{
+        this.subscriptions.push(
+          this.assetService.acknowledgeAssetAlert(obj).subscribe(
+            (response) => {
+              this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
+              this.getLatestAlerts();
+              this.closeAcknowledgementModal();
+              this.acknowledgedAlert = undefined
+    
+              //this.acknowledgedAlertIndex = -1
+              // this.getAlarms();
+            },
+            (error) => {
+              this.toasterService.showError(error.message, 'Acknowledge Alert');
+            }
+          )
+        );
+      }
     }
   }
 

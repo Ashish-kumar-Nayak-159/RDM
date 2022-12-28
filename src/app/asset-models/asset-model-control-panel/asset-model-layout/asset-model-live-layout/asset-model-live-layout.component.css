@@ -32,6 +32,7 @@
     overflow-y: auto;
     height: calc(100vh - 180px);
     }
+    .table-responsive.app-asset-model-live-layout-box{height: calc(100vh - 30vh);}
 /* .modal-live-widget-container{
     height: auto;
 } */

@@ -411,3 +411,10 @@ json-editor > div{
   width: 220px;
   transform: translate3d(1129px, 90px, 0px) !important;
 } */
+
+.table_class_new {
+  overflow: auto;
+  height: 100%;
+  max-height: calc(100vh - 25.5rem - 1rem);
+  margin-bottom: 1rem;
+}

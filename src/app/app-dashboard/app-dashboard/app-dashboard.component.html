@@ -113,7 +113,7 @@
               [(ngModel)]="historicalDateFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
               [disabled]="!historicalDateFilter.isTypeEditable"
               [ngClass]="{'active': historicalDateFilter.sampling_format}">
-              <option [ngValue]="undefined">Sampling Format</option>
+              <option [ngValue]="" disabled>-- Sampling Format --</option>
               <option [ngValue]="'minute'">Minute</option>
               <option [ngValue]="'hour'">Hour</option>
               <option [ngValue]="'day'">Day</option>
@@ -135,7 +135,7 @@
             <select class="form-control form-control-sm" id="aggregationFormat"
               [(ngModel)]="historicalDateFilter.aggregation_format" name="aggregationFormat"
               style="width: 11rem!important;">
-              <option [ngValue]="undefined">Aggregartion Format</option>
+              <option [ngValue]="" disabled>-- Aggregartion Format --</option>
               <option [ngValue]="'AVG'">Average</option>
               <option [ngValue]="'SUM'">Sum</option>
               <option [ngValue]="'MIN'">Min</option>

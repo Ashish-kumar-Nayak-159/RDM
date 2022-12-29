@@ -52,12 +52,12 @@ export class AssetModelSettingsComponent implements OnInit {
             if (!this.assetModel.metadata.telemetry_mode_settings) {
               this.assetModel.metadata.telemetry_mode_settings = {
                 turbo_mode_timeout_time: 120 *1000,
-                g1_turbo_mode_frequency_in_ms: 60 * 1000,
-                g2_turbo_mode_frequency_in_ms: 120 * 1000,
-                g3_turbo_mode_frequency_in_ms: 180 * 1000,
-                g1_ingestion_frequency_in_ms: 600 * 1000,
-                g2_ingestion_frequency_in_ms: 1200 * 1000,
-                g3_ingestion_frequency_in_ms: 1800 * 1000,
+                g1_turbo_mode_frequency_in_ms: 10 * 1000,
+                g2_turbo_mode_frequency_in_ms: 10 * 1000,
+                g3_turbo_mode_frequency_in_ms: 10 * 1000,
+                g1_ingestion_frequency_in_ms: 60 * 1000,
+                g2_ingestion_frequency_in_ms: 60 * 1000,
+                g3_ingestion_frequency_in_ms: 60 * 1000,
                 
               };
             }
@@ -68,9 +68,9 @@ export class AssetModelSettingsComponent implements OnInit {
             }
             if (!this.assetModel.metadata.measurement_settings) {
               this.assetModel.metadata.measurement_settings = {
-                g1_measurement_frequency_in_ms: 60 * 1000,
-                g2_measurement_frequency_in_ms: 120 * 1000,
-                g3_measurement_frequency_in_ms: 180 * 1000,
+                g1_measurement_frequency_in_ms: 10 * 1000,
+                g2_measurement_frequency_in_ms: 10 * 1000,
+                g3_measurement_frequency_in_ms: 10 * 1000,
               };
             }
             this.originalAssetModel = JSON.parse(JSON.stringify(this.assetModel));

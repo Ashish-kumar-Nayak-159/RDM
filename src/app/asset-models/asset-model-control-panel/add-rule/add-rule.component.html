@@ -290,7 +290,7 @@
                 <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
                   class="form-control form-control-sm" required [disabled]="isView"
                   [(ngModel)]="condition.aggregation_type">
-                  <option [ngValue]="null">Aggregartion Type</option>
+                  <option [ngValue]="" disabled>-- Aggregartion Type --</option>
                   <option [ngValue]="'AVG'">Average</option>
                   <option [ngValue]="'SUM'">Sum</option>
                   <option [ngValue]="'MIN'">Min</option>

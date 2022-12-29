@@ -344,18 +344,18 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {
-      turbo_mode_timeout_time: 120,
-      g1_turbo_mode_frequency_in_ms: 60,
-      g2_turbo_mode_frequency_in_ms: 120,
-      g3_turbo_mode_frequency_in_ms: 180,
-      g1_ingestion_frequency_in_ms: 600,
-      g2_ingestion_frequency_in_ms: 1200,
-      g3_ingestion_frequency_in_ms: 1800,
+      turbo_mode_timeout_time: 120 * 1000,
+      g1_turbo_mode_frequency_in_ms: 10 * 1000,
+      g2_turbo_mode_frequency_in_ms: 10 * 1000,
+      g3_turbo_mode_frequency_in_ms: 10 * 1000,
+      g1_ingestion_frequency_in_ms: 60 * 1000,
+      g2_ingestion_frequency_in_ms: 60 * 1000,
+      g3_ingestion_frequency_in_ms: 60 * 1000,
     };
     this.assetModel.metadata.measurement_settings = {
-      g1_measurement_frequency_in_ms: 60,
-      g2_measurement_frequency_in_ms: 120,
-      g3_measurement_frequency_in_ms: 180,
+      g1_measurement_frequency_in_ms: 10 * 1000,
+      g2_measurement_frequency_in_ms: 10 * 1000,
+      g3_measurement_frequency_in_ms: 10 * 1000,
     };
     this.assetModel.metadata.data_ingestion_settings = {
       type: 'all_props_at_fixed_interval',

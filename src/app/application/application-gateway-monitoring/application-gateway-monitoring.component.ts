@@ -376,5 +376,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       });
     }
     this.assetMonitor();
+    this.assetStatic();
   }
 }

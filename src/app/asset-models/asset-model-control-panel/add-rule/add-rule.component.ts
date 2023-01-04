@@ -751,7 +751,6 @@ export class AddRuleComponent implements OnInit {
     if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
-      debugger
       this.ruleModel.isoverride = true;
       if (!this.asset) {
         method = !this.ruleModel.isEdgeRule

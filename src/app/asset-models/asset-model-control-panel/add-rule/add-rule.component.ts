@@ -566,6 +566,7 @@ export class AddRuleComponent implements OnInit {
     if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
+      this.ruleModel.isoverride = true;
       if (!this.asset) {
         method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
@@ -593,6 +594,7 @@ export class AddRuleComponent implements OnInit {
       );
     } else {
       let method;
+      this.ruleModel.isoverride = false;
       if (!this.asset) {
         method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
@@ -694,6 +696,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     let method;
+    this.ruleModel.isoverride = true;
     method = !this.ruleModel.isEdgeRule
       ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
       : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
@@ -748,6 +751,8 @@ export class AddRuleComponent implements OnInit {
     if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
+      debugger
+      this.ruleModel.isoverride = true;
       if (!this.asset) {
         method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
@@ -775,6 +780,7 @@ export class AddRuleComponent implements OnInit {
       );
     } else {
       let method;
+      this.ruleModel.isoverride = true;
       if (!this.asset) {
         method = !this.ruleModel.isEdgeRule
           ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel)

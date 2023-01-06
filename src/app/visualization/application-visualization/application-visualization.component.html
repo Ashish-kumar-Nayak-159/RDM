@@ -40,7 +40,9 @@
     </ng-container>
     <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
       <div class="col-md-12 p-3">
-        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24 hours.</span><span
+        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24 hours.<br><br>
+          <p><b>Note:-</b>  User can view & acknowledge past alerts from alert visualization screen under Assets' control panel.</p>
+        </span><span
           *ngIf="pageType === 'history'">{{this.originalFilterObj.dateOption}}. <p
             *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can
             choose large time window.</p>
@@ -467,7 +469,13 @@
 
     </div>
   </div>
+  
 </div>
+<div class="sticky_note_box" *ngIf="!isAlertAPILoading && latestAlerts.length != 0">
+  <b>Note:-</b>  User can view & acknowledge past alerts from alert visualization screen under Assets' control panel.
+</div>
+
+
 
 
 <div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

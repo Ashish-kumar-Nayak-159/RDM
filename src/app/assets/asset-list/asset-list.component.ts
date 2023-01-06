@@ -129,7 +129,9 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   }
   async loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
-    this.searchAssets(false);
+    setTimeout(() => {
+      this.searchAssets(false);
+    }, 400);
   }
 
   onMarkerClick(infowindow, gm) {
@@ -167,7 +169,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.assetFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
     this.originalAssetFilterObj = JSON.parse(JSON.stringify(this.assetFilterObj));
     if (type === CONSTANTS.NON_IP_ASSET) {
-      this.getGatewayList();
+       this.getGatewayList();
     }
     this.componentState = type;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
@@ -360,7 +362,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
 
   async openAssetEditModal(asset) {
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
-      this.getGatewayList();
+       this.getGatewayList();
     }
     await this.getAssetData(asset.asset_id);
     this.isOpenAssetCreateModal = true;

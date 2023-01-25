@@ -39,6 +39,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   actualhierarchyArr = [];
   contextApp : any;
   userLevel;
+  actualhierarchyNewArr:any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -51,6 +52,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     this.getApplicationUserRoles();
     this.getApplicationUsers();
     this.applicationData.hierarchy.levels.forEach((element, index) => {
@@ -109,9 +111,25 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     // }
     let userHierarchyItems = [];
     let currentUserHierarchyItems = [];
+    // let actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
+   let parentId = 0;
+   let tempLevel = 0;
     keyList.forEach(level => {
       if (userObj.hierarchy.hasOwnProperty(level)) 
-        userHierarchyItems.push(userObj.hierarchy[level]);
+      {
+        if(tempLevel == 0)
+        {
+          userHierarchyItems.push(userObj.hierarchy[level]);
+        }
+        else {let hierarchyObj = this.actualhierarchyNewArr.find(r => r.level == tempLevel && r.key == userObj.hierarchy[level] && r.parent_id == parentId)
+        if(hierarchyObj)
+        {
+          parentId = hierarchyObj.id;
+          userHierarchyItems.push(hierarchyObj.name);
+        }
+      }
+      tempLevel++;
+      }
       if (this.applicationData.user.hierarchy.hasOwnProperty(level)) 
         currentUserHierarchyItems.push(this.applicationData.user.hierarchy[level]);
     });

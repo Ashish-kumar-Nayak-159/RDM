@@ -473,7 +473,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
               const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
               item.gateway_display_name = name ? name : item.gateway_id;
             }
-            if (this.environmentApp === 'KCMS') {
+            if (this.environmentApp === 'Kirloskar') {
               item.mttr = '7 Mins';
               item.mtbf = '2 days 5 hours';
               item.gas = '0.4%';

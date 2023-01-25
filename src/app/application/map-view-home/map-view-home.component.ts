@@ -174,7 +174,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               this.mapAssets = JSON.parse(JSON.stringify(this.assets));
               this.isGetAssetsAPILoading = false;
               this.assets.forEach((asset) => {
-                if (this.environmentApp === 'KCMS') {
+                if (this.environmentApp === 'Kirloskar') {
                   asset.mttr = '7 Mins';
                   asset.mtbf = '2 days 5 hours';
                   asset.gas = '0.4%';

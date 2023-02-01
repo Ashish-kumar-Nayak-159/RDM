@@ -81,7 +81,7 @@ export class SlavesInfoComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp)
       this.defaultAppName = this.contextApp.app;
-    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta')
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta'|| this.defaultAppName == 'KemsysCoolingTower')
       this.getCellData();
     this.getAssetTwinData();
     this.getModelSlaveData();
@@ -416,7 +416,7 @@ export class SlavesInfoComponent implements OnInit {
     // const macID = this.slaveObj.metadata.mac_id;    
     this.slaveObj.metadata = this.addSetupForm?.value || {};
 
-    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' && Object.keys(this.slaveObj.metadata).length > 0 && this.slaveObj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' || this.defaultAppName == 'KemsysCoolingTower'  && Object.keys(this.slaveObj.metadata).length > 0 && this.slaveObj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
       if (this.slaveObj?.metadata?.hierarchy_cell_id == null || this.slaveObj?.metadata?.hierarchy_cell_id == undefined) {
         this.toasterService.showError('Cell ID is required', 'Add Slave');
         return;
@@ -468,7 +468,7 @@ export class SlavesInfoComponent implements OnInit {
       }
     }
     obj.metadata = this.editSetupForm?.value || {};
-    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' && Object.keys(obj.metadata).length > 0 && obj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' || this.defaultAppName == 'KemsysCoolingTower' && Object.keys(obj.metadata).length > 0 && obj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
       if (obj?.metadata?.hierarchy_cell_id == null || obj?.metadata?.hierarchy_cell_id == undefined) {
         this.toasterService.showError('Cell ID is required', 'Add Slave');
         return;

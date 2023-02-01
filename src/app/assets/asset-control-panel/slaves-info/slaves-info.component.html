@@ -67,7 +67,7 @@
                   <input type="text" class="form-control form-control-sm" id="sensor_display_name"
                     name="sensor_display_name" formControlName="sensor_display_name" placeholder="Enter Display Name">
                 </div>
-                <div class="form-group" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta'">
+                <div class="form-group" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta'  || defaultAppName == 'KemsysCoolingTower'">
                   <label for="recipient-name" class="col-form-label required">Select Cell:</label>
                   <select class="form-control form-control-sm" id="hierarchy_cell_id" name="hierarchy_cell_id"
                     formControlName="hierarchy_cell_id">
@@ -336,7 +336,7 @@
                 <input type="text" class="form-control form-control-sm" id="sensor_display_name"
                   name="sensor_display_name" formControlName="sensor_display_name" placeholder="Enter Display Name">
               </div>
-              <div class="form-group" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta'">
+              <div class="form-group" *ngIf="defaultAppName == 'Indygo' || defaultAppName == 'IndygoBeta' || defaultAppName == 'KemsysCoolingTower'">
                 <label for="recipient-name" class="col-form-label required">Select Cell:</label>
                 <select class="form-control form-control-sm" id="cell_detail" name="cell_detail"
                 formControlName="hierarchy_cell_id">

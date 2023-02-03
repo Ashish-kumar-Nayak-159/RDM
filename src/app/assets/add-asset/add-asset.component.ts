@@ -45,6 +45,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isHierarchyEditable = false;
   selectedHierarchy:any = {};
   showAssetAndGatewayId:boolean = false;
+  legacyassetId:any;
 
   constructor(
     private commonService: CommonService,
@@ -557,6 +558,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
+          this.legacyassetId = response.assetId;
+          console.log("Checkingggg232323", this.legacyassetId)
           localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);
           if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             this.updateGatewayTags(this.assetDetail);
@@ -589,9 +592,27 @@ export class AddAssetComponent implements OnInit, OnChanges {
       : this.selectedWhitelistAsset === undefined ? this.assetService.createAsset(obj, this.contextApp.app) : this.assetService.createWhitelistedAsset(obj, this.assetDetail.asset_id, this.contextApp);
   }
 
+
+  legacyAsset(obj:any){
+    this.subscriptions.push(
+      this.assetService.createNonIPAsset(obj,this.contextApp.app).subscribe(
+        (response: any) => {
+          let responsedata = response;
+          console.log("CheckingReponse", responsedata)
+          this.isCreateAssetAPILoading = false;
+          // this.toasterService.showSuccess(response.message, 'Create ' + this.componentState);
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Create ' + this.componentState);
+          // this.onCloseCreateAssetModal();
+        }
+      )
+    );
+  }
+
   updateGatewayTags(assetObj) {
     const obj = {
-      asset_id: assetObj.asset_id,
+      asset_id: this.legacyassetId ? this.legacyassetId : assetObj.asset_id,
       partition_key: assetObj.tags.partition_key,
       model_id: assetObj.tags.asset_model,
     };

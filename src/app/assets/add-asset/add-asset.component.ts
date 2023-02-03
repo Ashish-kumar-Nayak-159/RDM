@@ -613,7 +613,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   updateGatewayTags(assetObj) {
     const obj = {
       asset_id: this.legacyassetId ? this.legacyassetId : assetObj.asset_id,
-      partition_key: assetObj.tags.partition_key,
+      partition_key: this.legacyassetId ? this.legacyassetId : assetObj.tags.partition_key,
       model_id: assetObj.tags.asset_model,
     };
     // obj.partition_key[assetObj.asset_id] = assetObj.tags.partition_key;

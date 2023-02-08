@@ -80,7 +80,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   onFileSelected(files: FileList, type){
     if (type === "header_logo") {
-      this.uploadedLogoFile = files.item(0);
+      debugger
+      this.uploadedLogoFile = files?.item(0);
       if (!this.applicationData.metadata.header_logo) {
         this.applicationData.metadata.header_logo = {};
       }
@@ -92,7 +93,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
         const image = new Image();
         image.src = URL.createObjectURL(this.uploadedLogoFile);
         image.onload = (e: any) => {
-          const selectedImage = e.path[0] as HTMLImageElement;
+          debugger
+          const selectedImage = e?.currentTarget as HTMLImageElement;
           if (selectedImage.width <= CONSTANTS.APP_LOGO_WIDTH && selectedImage.height <= CONSTANTS.APP_LOGO_HEIGHT){
             this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
           } else {
@@ -102,7 +104,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
       }
     }
     if (type === "icon") {
-      this.uploadedIconFile = files.item(0);
+      this.uploadedIconFile = files?.item(0);
       if (!this.applicationData.metadata.icon) {
         this.applicationData.metadata.icon = {};
       }
@@ -114,7 +116,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
         const image = new Image();
         image.src = URL.createObjectURL(this.uploadedIconFile);
         image.onload = (e: any) => {
-          const selectedImage = e.path[0] as HTMLImageElement;
+          const selectedImage = e?.currentTarget as HTMLImageElement;
           if (selectedImage.width <= CONSTANTS.APP_ICON_WIDTH && selectedImage.height <= CONSTANTS.APP_ICON_HEIGHT){
             this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
           } else {

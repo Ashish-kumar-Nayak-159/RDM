@@ -54,7 +54,7 @@
           <div class="form-group row">
             <label for="exampleEmail" class="col-3 required">Code</label>
             <div class="col-6">
-              <input type="text" class="form-control form-control-sm" name="code" [disabled]="isView || isCloneEdit"
+              <input type="text" class="form-control form-control-sm" name="code" [disabled]="isView || isCloneEdit || isEdit"
                 [(ngModel)]="ruleModel.code" placeholder="Enter Rule Code" minlength="1" maxlength="6">
             </div>
           </div>

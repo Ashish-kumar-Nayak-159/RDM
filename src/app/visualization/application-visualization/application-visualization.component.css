@@ -83,3 +83,12 @@ input:invalid {
 .btn-selected-widgets:hover{
   color: #000;
 }
+.sticky_note_box {
+  background: #f8f9fc;
+  color: #000;
+  position: sticky;
+  bottom: 45px;
+  padding: 1em;
+  /* margin-bottom: 2px; */
+
+}

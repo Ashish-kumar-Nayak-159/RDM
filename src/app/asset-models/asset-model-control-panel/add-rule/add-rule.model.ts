@@ -2,6 +2,7 @@ export class Rule {
     rule_id?: any;
     name: string;
     code: string;
+    isoverride : boolean = false;
     escalation_time_in_sec: any;
     description: string;
     alert_condition_id: any;

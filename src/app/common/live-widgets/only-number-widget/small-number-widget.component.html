@@ -47,7 +47,7 @@
               <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
                   }}" alt="" />
             </div> -->
-            <div *ngIf="contextApp.app!='KCMS'"
+            <div *ngIf="contextApp.app!='Kirloskar'"
               [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}">
               <span class="text-darkblue display-5 font-weight-bold"
                 [ngStyle]="{'font-size': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget' ? '1.3rem' : '' }">
@@ -77,7 +77,7 @@
                 </ng-template>
               </span>
             </div>
-            <div *ngIf="contextApp.app=='KCMS'" 
+            <div *ngIf="contextApp.app=='Kirloskar'" 
             [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}">
             <span class="text-darkblue display-5 font-weight-bold"
               [ngStyle]="{'font-size': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget' ? '1.3rem' : '' }">

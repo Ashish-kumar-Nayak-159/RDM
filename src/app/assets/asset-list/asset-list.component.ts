@@ -129,7 +129,9 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   }
   async loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
-    this.searchAssets(false);
+    setTimeout(() => {
+      this.searchAssets(false);
+    }, 400);
   }
 
   onMarkerClick(infowindow, gm) {
@@ -167,7 +169,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.assetFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
     this.originalAssetFilterObj = JSON.parse(JSON.stringify(this.assetFilterObj));
     if (type === CONSTANTS.NON_IP_ASSET) {
-      this.getGatewayList();
+       this.getGatewayList();
     }
     this.componentState = type;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
@@ -360,7 +362,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
 
   async openAssetEditModal(asset) {
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
-      this.getGatewayList();
+       this.getGatewayList();
     }
     await this.getAssetData(asset.asset_id);
     this.isOpenAssetCreateModal = true;
@@ -471,7 +473,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
               const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
               item.gateway_display_name = name ? name : item.gateway_id;
             }
-            if (this.environmentApp === 'KCMS') {
+            if (this.environmentApp === 'Kirloskar') {
               item.mttr = '7 Mins';
               item.mtbf = '2 days 5 hours';
               item.gas = '0.4%';

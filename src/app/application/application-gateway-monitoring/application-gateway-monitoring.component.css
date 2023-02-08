@@ -11,11 +11,12 @@
     cursor: pointer;
 }
 
-.table_class{
+/* .table_class{
    overflow: auto !important;
    height: 16.625rem !important;
    margin-bottom: 28px !important;
-}
+} */
+
 .card-body{
     padding: 1rem;
 }

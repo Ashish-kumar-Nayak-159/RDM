@@ -98,7 +98,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     this.tableConfig = {
       type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
-      table_class: 'table_class',
+      table_class: 'table_class_new',
       no_data_message: '',
       data: [
         {
@@ -376,5 +376,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       });
     }
     this.assetMonitor();
+    this.assetStatic();
   }
 }

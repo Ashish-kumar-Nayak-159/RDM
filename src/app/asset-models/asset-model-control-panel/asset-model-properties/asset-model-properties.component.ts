@@ -298,9 +298,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       index: this.propertyObj.metadata.properties.length + 1,
     });
   }
-  deletePropertyCondtion(propindex){
-    this.propertyObj.metadata.properties.splice(-1, 1);
-
+  deletePropertyCondtion(propindex: number,propObj){
+    const index = this.propertyObj.metadata.properties.indexOf(propindex);
+    this.propertyObj.metadata.properties.splice(index, 1);
+     propObj.operator= ' ';
+     this.formula ='';
   }
   readWriteValue(type) {
     if(this.propertyObj.write == true) {
@@ -962,7 +964,6 @@ if(obj?.properties?.controllable_properties){
       this.properties['measured_properties'].splice(index, 1);
 
     } else {
-
       index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
       this.properties[this.type].splice(index, 1);
     }
@@ -973,14 +974,14 @@ if(obj?.properties?.controllable_properties){
       if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
         this.properties['measured_properties'].splice(index, 0, this.propertyObj);
       } else {
-        this.properties[this.type].splice(index, 0, this.selectedProperty);
+        this.properties[this.type].splice(index, 0, this.propertyObj);
       }
     } else {
       // this.selectedProperty.derived_function = this.code;
       if(this.type == 'measured_properties' || this.type == 'controllable_properties') {
         this.properties['measured_properties'].splice(index, 0, this.propertyObj);
       } else {
-        this.properties[this.type].splice(index, 0, this.selectedProperty);
+        this.properties[this.type].splice(index, 0, this.propertyObj);
       }
     }
     this.isCreatePropertyLoading = true;

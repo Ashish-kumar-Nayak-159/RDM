@@ -82,20 +82,19 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
     } else {
       this.setupForm.removeControl('bn');
     }
-
-    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_r === 3 || this.setupForm.value.fc_r === 4)) {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl(
-        'bn',
-        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
-      );
-    } else {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(-1, []));
-      this.setupForm.get('bn').setValidators([]); // or clearValidators()
-      this.setupForm.get('bn').setValue(-1);
-      this.setupForm.get('bn').updateValueAndValidity();
-    }
+    // if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_r === 3 || this.setupForm.value.fc_r === 4)) {
+    //   this.setupForm.removeControl('bn');
+    //   this.setupForm.addControl(
+    //     'bn',
+    //     new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+    //   );
+    // } else {
+    //   this.setupForm.removeControl('bn');
+    //   this.setupForm.addControl('bn', new FormControl(-1, []));
+    //   this.setupForm.get('bn').setValidators([]); // or clearValidators()
+    //   this.setupForm.get('bn').setValue(-1);
+    //   this.setupForm.get('bn').updateValueAndValidity();
+    // }
 
     if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc_w === 5)) {
       this.setupForm.get('fc_w').setValue(null);

@@ -1080,6 +1080,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
+    alert.metadata =null;
     this.acknowledgedAlert = alert;
     this.ruleCode = alert?.source_info?.rule_code
     this.acknowledgedAlertIndex = this.latestAlerts.findIndex((alertObj) => alertObj.id === alert.id);

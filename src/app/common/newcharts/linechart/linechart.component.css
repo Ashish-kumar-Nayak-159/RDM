@@ -1,0 +1,9 @@
+::ng-deep .micon button:focus {
+    border: none !important;
+    outline: 0 !important;
+}
+
+::ng-deep .btnStyle:focus {
+    border: none !important;
+    outline: 0 !important;
+}

@@ -1,0 +1,28 @@
+<div class="tab-bar">
+    <div class="">
+        <ul class="nav">
+            <!-- <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)">
+            <em class="fa fa-fw fa-eye"></em>
+            <span class="text-secondary">View</span></a>
+        </li> -->
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)"
+                    (click)="setViewType('history')">
+                    <em class="fa fa-fw fa-history"></em>
+                    <span class="text-secondary">Historical {{widgetStringFromMenu}}</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)"
+                    (click)="setViewType('live')">
+                    <em class="fa fa-fw fa-bar-chart"></em>
+                    <span class="text-secondary">Live {{widgetStringFromMenu}}</span></a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div>
+    <app-historicalwidget *ngIf="viewType === 'history'" [assetModel]="assetModel">
+    </app-historicalwidget>
+    <app-livewidget #livec *ngIf="viewType === 'live'" [assetModel]="assetModel"></app-livewidget>
+</div>

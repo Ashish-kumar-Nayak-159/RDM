@@ -1,0 +1,153 @@
+<div class="tab-bar" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+
+    <ul class="nav">
+        <li class="nav-item">
+            <button class="btn btn-sm btn-primary mt-1" (click)="onAdd(0)"><span class="fa fa-plus fa-sm"></span>
+                Add</button>
+        </li>
+        <li class="nav-item">
+            <button class="btn btn-sm btn-success ml-2 mt-1"><span class="fa fa-cog fa-sm text-white"></span>
+                Setting</button>
+        </li>
+    </ul>
+</div>
+<div class="table-responsive">
+    <div class="tableFixHead modal-live-widget-container" id="mainChartDiv">
+        <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
+            No Historical {{widgetStringFromMenu}} found.
+        </p>
+        <em *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+        <!-- <div id="layoutWidgetContainer" class="showLayout p-3">
+        </div> -->
+        <div style="overflow: scroll;height: 100%;">
+            <div *ngFor="let chart of layoutJson">
+                <app-linechart *ngIf="telemetryData" [chartConfig]="chart" [widgetStringFromMenu]="widgetStringFromMenu"
+                    [decodedToken]="decodedToken" [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                    [telemetryData]="telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                    [isOverlayVisible]="true" (chart_Id)="getChartId($event)" [propertyList]="propertyList"
+                    [asset]="asset"></app-linechart>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="showPopup" class="modal right fade" id="addHWidgetsModal" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add {{widgetStringFromMenu}}</h5>
+                <!-- <button type="button" class="close" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()"
+            aria-label="Close">
+            <span aria-hidden="true" tooltip="Close">&times;</span>
+          </button> -->
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="historicalWidgetForm" (ngSubmit)="submitHistorical()">
+                    <div class="form-group">
+                        <input type="text" id="chartTitle" class="form-control form-control-sm" name="chartTitle"
+                            placeholder="Display Name" [ngClass]="{ 'is-invalid': submitted && f.chartTitle.errors }"
+                            formControlName="chartTitle">
+                        <div *ngIf="submitted && f.chartTitle.errors" style="color: red;" class="invalid-feedback">
+                            <div *ngIf="f.chartTitle.errors.required">Display Name is required</div>
+                            <div *ngIf="!f.chartTitle.errors.required && f.chartTitle.hasError('whitespace')">
+                                Display Name can't contain
+                                leading or trailing whitespaces.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <ng-select [items]="chartTypes" class="custom-dropdown sm" [clearable]="false"
+                            [searchable]="true" [closeOnSelect]="true"
+                            placeholder="Select {{widgetStringFromMenu}} Type" dropdownPosition="bottom"
+                            name="asset-dropdown" (change)="onPopupWidgetTypeChange()"
+                            formControlName="selectedChartType"
+                            [ngClass]="{ 'is-invalid': submitted && f.selectedChartType.errors }">
+                            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                                <span [tooltip]="item"><em class="fa {{chartIcons[index]}}"></em>&nbsp;{{item}}</span>
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="submitted && f.selectedChartType.errors" style="color: red;"
+                            class="invalid-feedback">
+                            <div *ngIf="f.selectedChartType.errors.required">please select
+                                Chart Type
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <ng-select [items]="filteredPropList" class="custom-dropdown sm"
+                            (onDeSelectAll)="y1Deselect($event)" [searchable]="true" placeholder="Y1 Axis Props"
+                            clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key" [closeOnSelect]="false"
+                            groupBy="type" dropdownPosition="bottom" name="widget-dropdown1"
+                            formControlName="y1AxisProps"
+                            [ngClass]="{ 'is-invalid': submitted && f.y1AxisProps.errors }">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                                {{items.length}} properties selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                    <li *ngIf="y1AxisProps.length !== filteredPropList.length"> <a
+                                            href="javascript:void(0)" (click)="y1AxisProps = filteredPropList">Select
+                                            All</a></li>
+                                    <li *ngIf="y1AxisProps.length === filteredPropList.length"> <a
+                                            href="javascript:void(0)" (click)="y1AxisProps = []">Deselect All</a></li>
+                                </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                <span [tooltip]="item.name"> <em
+                                        [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                                    {{item.name}}</span>
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="submitted && f.y1AxisProps.errors" style="color: red;" class="invalid-feedback">
+                            <div *ngIf="f.y1AxisProps.errors.required">please select
+                                Y1 Axis Props
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="f.selectedChartType.value !== 'Vibration Damage Plot'">
+                        <ng-select [items]="filteredPropList" class="custom-dropdown sm"
+                            (onDeSelectAll)="y2Deselect($event)" [searchable]="true" placeholder="Y2 Axis Props"
+                            clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
+                            bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown2"
+                            formControlName="y2AxisProps"
+                            [ngClass]="{ 'is-invalid': submitted && f.y2AxisProps.errors }">
+                            <ng-template ng-multi-label-tmp let-items="items">
+                                {{items.length}} properties selected
+                            </ng-template>
+                            <ng-template ng-header-tmp>
+                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                    <li *ngIf="y2AxisProps.length !== filteredPropList.length"> <a
+                                            href="javascript:void(0)" (click)="y2AxisProps = filteredPropList">Select
+                                            All</a></li>
+                                    <li *ngIf="y2AxisProps.length === filteredPropList.length"> <a
+                                            href="javascript:void(0)" (click)="y2AxisProps = []">Deselect All</a></li>
+                                </ul>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                <span [tooltip]="item.name"> <em
+                                        [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                                    {{item.name}}</span>
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="submitted && f.y2AxisProps.errors" style="color: red;" class="invalid-feedback">
+                            <div *ngIf="f.y2AxisProps.errors.required">please select
+                                Y2 Axis Props
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer fixed-bottom bg-white">
+                        <button type="submit" class="btn btn-primary add-row">Save</button>
+                        <button type="button" class="btn btn-secondary"
+                            [disabled]="assetModel.freezed || isCreateWidgetAPILoading"
+                            (click)="onCloseAddWidgetModal()">Cancel</button>
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

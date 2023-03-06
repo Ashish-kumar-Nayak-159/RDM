@@ -388,7 +388,7 @@ export class CONSTANTS {
     'Remote Monitoring': ['RMV', 'RMM'],
     'Reports': ['RV', 'RSM'],
     'User Management': ['UMV', 'UMM'],
-    'Whitelisting Asset Management' : ['WASMI','WASMP','WASMV']
+    'Whitelisting Asset Management': ['WASMI', 'WASMP', 'WASMV']
   };
 
   public static SIDE_MENU_LIST = [
@@ -529,7 +529,7 @@ export class CONSTANTS {
         { name: 'Legacy Assets Tab Name', value: 'Legacy Assets' },
         { name: 'Legacy Assets Table Key Name', value: 'Asset' },
       ],
-      privileges_required: ['ASMP', 'ASMD', 'ASMED','WASMV'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED', 'WASMV'],
       priority: 1,
     },
     {
@@ -600,7 +600,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-object-group',
       visible: true,
       exactMatch: true,
-      privileges_required: ['ASCMV','ASCMM'],
+      privileges_required: ['ASCMV', 'ASCMM'],
       showAccordion: [{ name: 'Title', value: 'Campaigns' }],
       priority: 1,
     },
@@ -707,7 +707,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,
-      privileges_required: ['ASMP', 'ASMD', 'ASMED','WASMV'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED', 'WASMV'],
       showAccordion: [],
       accordion_value: {},
     },
@@ -1140,7 +1140,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,
-      privileges_required: ['ASMP', 'ASMD', 'ASMED','WASMV'],
+      privileges_required: ['ASMP', 'ASMD', 'ASMED', 'WASMV'],
       showAccordion: [],
       accordion_value: {},
     },
@@ -1893,6 +1893,17 @@ export class CONSTANTS {
       accordion_value: { widget: 'Widget' },
     },
     {
+      page: 'newlayout',
+      system_name: 'New Visualization Widgets',
+      url: '#asset_model_newlayout1',
+      display_name: 'New Visualization Widgets',
+      icon: 'fa fa-fw fa-bar-chart',
+      visible: true,
+      isTitle: false,
+      showAccordion: [{ name: 'Widget', key: 'widget', type: 'text' }],
+      accordion_value: { widget: 'Widget' },
+    },
+    {
       page: 'reference_material',
       system_name: 'Reference Material',
       url: null,
@@ -2006,19 +2017,19 @@ export class CONSTANTS {
   public static PROPERTY_DATA_TYPE_LIST = [
     {
       name: 'Number',
-      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue','required'],
+      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue', 'required'],
     },
     {
       name: 'Boolean',
-      validations: ['trueValue', 'falseValue', 'defaultValue','required'],
+      validations: ['trueValue', 'falseValue', 'defaultValue', 'required'],
     },
     {
       name: 'String',
-      validations: ['minLength', 'maxLength', 'units', 'defaultValue','required'],
+      validations: ['minLength', 'maxLength', 'units', 'defaultValue', 'required'],
     },
     {
       name: 'Enum',
-      validations: ['enum', 'defaultValue','required'],
+      validations: ['enum', 'defaultValue', 'required'],
     },
     {
       name: 'Array',

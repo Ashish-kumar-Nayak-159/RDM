@@ -1,0 +1,64 @@
+.grid-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 0 5px;
+    margin-bottom: 20px;
+}
+
+.smallnumber-widget-class {
+    max-width: calc(100%/12 - 5px);
+    margin-left: 0 !important;
+    /* margin-top: 2px !important; */
+}
+
+.smallnumber-widget-class-overflowhidden {
+    /* height: 70vh; */
+    /* height: 70vh; */
+    overflow-x: hidden !important;
+    overflow-y: auto;
+}
+
+/* .col-md-12{
+        flex: 0 !important;
+        max-width:0 !important;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 0 5px;
+    } */
+.table-responsive {
+    display: block;
+    /* height: 70vh; */
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100vh - 180px);
+}
+
+.table-responsive.app-asset-model-live-layout-box {
+    height: calc(100vh - 30vh);
+}
+
+/* .modal-live-widget-container{
+    height: auto;
+} */
+
+.conditions-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+}
+
+.unlockclass {
+    background-color: orangered;
+    opacity: 0.6;
+    color: white;
+
+}
+
+.lockclass,
+.unlockclass {
+    width: 75px;
+    height: 38px;
+}

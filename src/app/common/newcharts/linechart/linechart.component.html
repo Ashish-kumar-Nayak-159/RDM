@@ -1,0 +1,62 @@
+<accordion class="mb-2" id="{{chartId}}_{{chartId}}">
+    <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
+        <ng-container accordion-heading>
+            <a class="btn" [ngClass]="anchorAdditionalClass?.length > 0 ? anchorAdditionalClass : ''">
+                {{chartTitle}}
+            </a>
+            <div class="float-right pull-right mt-1">
+                <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+                <div class="round-badge badge-darkblue" tooltip="Edge Derived Property"
+                    *ngIf="chartConfig.edge_derived_props">
+                    ED</div>
+                <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+                    *ngIf="chartConfig.cloud_derived_props">CD</div>
+                <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M
+                </div>
+                <!-- <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1" class="mt-1"
+            [ngClass]="hideCancelButtonAddOnClass?.length > 0 ? hideCancelButtonAddOnClass : ''" href="javascript:void(0)"
+            (click)="modalOpenEvents.emit()" placement="bottom" tooltip="Remove {{widgetStringFromMenu}}"><em
+              class="fa fa-close"></em></a> -->
+                <button (click)="$event.stopPropagation()" class="border-0 btnStyle"
+                    style="background-color: transparent;" mat-icon-button [matMenuTriggerFor]="menu"
+                    aria-label="Example icon button with a horizontal three dot icon">
+                    <i class='fas fa-ellipsis-v'></i>
+                </button>
+                <mat-menu class="micon" #menu="matMenu">
+                    <button mat-menu-item><i class="fa fa-edit"></i> Edit</button>
+                    <button mat-menu-item (click)="onEdit(chartId)"><i class="fa fa-clone" aria-hidden="true"></i>
+                        Clone</button>
+                    <button mat-menu-item (click)="openConfirmRemoveWidgetModal()"
+                        *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1">
+                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                    </button>
+                </mat-menu>
+            </div>
+        </ng-container>
+        <div class="row">
+            <div class="col-12">
+                <div class="dvRowCardHeaderClass?.length > 0 ? dvRowCardHeaderClass? : ''">
+                    <div class="dvRowCardBodyClass?.length > 0 ? dvRowCardBodyClass? : ''"
+                        style="max-height: 27rem; overflow-y: auto;" *ngIf="telemetryData.length > 0 else noData;">
+                        <span *ngIf="loader"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+                            {{loaderMessage}}</span>
+                        <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
+                        <div class="overlay" *ngIf="isOverlayVisible">
+                            <div style="font-family:'Arial Black',sans-serif; font-size: 40px;">Sample Chart</div>
+                        </div>
+                    </div>
+                    <ng-template #noData>
+                        <p>No data found for selected time interval.</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </accordion-group>
+</accordion>
+<div class="modal fade" id="confirmRemoveWidgetModal{{chartId}}" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+            [modalConfig]="modalConfig" (modalEvents)="onModalEvents($event)"></app-confirm-modal>
+    </div>
+</div>

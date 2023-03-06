@@ -32,7 +32,13 @@ import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-
 import { AddRuleComponent } from './asset-model-control-panel/add-rule/add-rule.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { AssetModelControlPropertiesComponent } from './asset-model-control-panel/asset-model-control-properties/asset-model-control-properties.component';
-
+import { AddwidgetComponent } from './asset-model-control-panel/widget/addwidget/addwidget.component';
+import { HistoricalwidgetComponent } from './asset-model-control-panel/widget/historicalwidget/historicalwidget.component';
+import { LivewidgetComponent } from './asset-model-control-panel/widget/livewidget/livewidget.component';
+import { WidgetComponent } from './asset-model-control-panel/widget/widget.component';
+import { LinechartComponent } from '../common/newcharts/linechart/linechart.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
   declarations: [
     AssetModelListComponent,
@@ -57,6 +63,13 @@ import { AssetModelControlPropertiesComponent } from './asset-model-control-pane
     AssetModelSlaveInfoComponent,
     AddRuleComponent,
     AssetModelControlPropertiesComponent,
+    AddwidgetComponent,
+    HistoricalwidgetComponent,
+    LivewidgetComponent,
+    WidgetComponent,
+    LinechartComponent,
+
+
   ],
   imports: [
     CommonModule,
@@ -70,7 +83,9 @@ import { AssetModelControlPropertiesComponent } from './asset-model-control-pane
     NgSelectModule,
     TooltipModule,
     UiSwitchModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   exports: [AddRuleComponent],
 })
-export class AssetModelModule {}
+export class AssetModelModule { }

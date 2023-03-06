@@ -62,6 +62,9 @@ export class AppUrls {
   public static GET_LAYOUT = 'layouts';
   public static GET_ASSETS_MODELS = 'apps/{0}/asset_models';
   public static GET_ASSETS_MODEL_DETAILS = 'apps/{0}/asset_models/{1}';
+  public static CREATE_ASSETS_WIDGET = 'asset_models/{0}/widget';
+  public static GET_ASSETS_WIDGET = 'asset_models/{0}/widgets';
+  public static GET_ASSETS_WIDGET_BY_CHARTID = 'asset_models/{0}/widgets';
   public static CREATE_ASSETS_MODEL = 'apps/{0}/asset_models';
   public static UPDATE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}';
   public static FREEZE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}/freeze';
@@ -207,27 +210,27 @@ export class AppUrls {
   public static UPLOAD_ASSET_MODEL_FILE = 'apps/{0}/asset_models/template/{1}';
 
   public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
- public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';
+  public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';
 
- public static GET_EXPORTED_HIERARCHY = 'export_hierarchy';
- public static UPLOAD_HIERARCHY = 'import_hierarchy';
- public static GET_HIERARCHIES = 'hierarchy'
- public static GET_HIERARCHY_BY_ID = 'hierarchy/{0}'
- public static HIERARCHIES = 'hierarchy'
- public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/levels';
- public static DELETE_HIERARCHIES = 'hierarchy/{0}'
- public static UPDATE_HIERARCHIES = 'hierarchy/{0}'
- public static POST_MAINTENANCE = 'maintenance';
- public static REFRESH_TOKEN = 'refresh-token'
- public static Get_DBSCHEMA = 'apps/{0}/dbschema'
+  public static GET_EXPORTED_HIERARCHY = 'export_hierarchy';
+  public static UPLOAD_HIERARCHY = 'import_hierarchy';
+  public static GET_HIERARCHIES = 'hierarchy'
+  public static GET_HIERARCHY_BY_ID = 'hierarchy/{0}'
+  public static HIERARCHIES = 'hierarchy'
+  public static UPDATE_HIERARCHY_LEVELS = 'apps/{0}/levels';
+  public static DELETE_HIERARCHIES = 'hierarchy/{0}'
+  public static UPDATE_HIERARCHIES = 'hierarchy/{0}'
+  public static POST_MAINTENANCE = 'maintenance';
+  public static REFRESH_TOKEN = 'refresh-token'
+  public static Get_DBSCHEMA = 'apps/{0}/dbschema'
 
- public static GET_MAIN = 'maintenance'
- public static GET_MAINTENANCE = 'maintenance/'
- public static GET_MAINTENANCEDATA = 'maintenance/{0}';
- public static PUT_MAINTENANCE = 'maintenance/{0}'
- public static GET_MAINTENANCE_NOTIFICATION = 'maintenancenotification/'
- public static GET_ACK_MAINTENANCE = 'acknowledgemaintenance'
- public static GET_VIEW_ACK_MAINTENANCE = 'acknowledgemaintenance/'
+  public static GET_MAIN = 'maintenance'
+  public static GET_MAINTENANCE = 'maintenance/'
+  public static GET_MAINTENANCEDATA = 'maintenance/{0}';
+  public static PUT_MAINTENANCE = 'maintenance/{0}'
+  public static GET_MAINTENANCE_NOTIFICATION = 'maintenancenotification/'
+  public static GET_ACK_MAINTENANCE = 'acknowledgemaintenance'
+  public static GET_VIEW_ACK_MAINTENANCE = 'acknowledgemaintenance/'
 
- public static ASSET_UPTIME = 'assetuptime/'
+  public static ASSET_UPTIME = 'assetuptime/'
 }

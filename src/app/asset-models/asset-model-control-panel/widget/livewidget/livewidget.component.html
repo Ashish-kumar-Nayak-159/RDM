@@ -1,0 +1,471 @@
+<div class="tab-bar">
+    <div class="">
+        <form class="form-inline">
+            <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0"> No Live {{widgetStringFromMenu}}
+                added.&nbsp;
+            </ng-container>
+            <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length !== 0">Following Live
+                {{widgetStringFromMenu}}
+                are already
+                added.&nbsp;</ng-container>
+            <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                <button class="btn btn-sm searchBtn btn-primary" [disabled]="assetModel.freezed"
+                    (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live {{widgetStringFromMenu}}"><em
+                        class="fa fa-plus fa-sm"></em></button>
+            </div>
+            <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                <button class="btn btn-sm searchBtn btn-success" [disabled]="assetModel.freezed"
+                    (click)="onOpenConfigureDashboardModal()" placement="bottom"
+                    tooltip="Configure Dashboard {{widgetStringFromMenu}}"><em
+                        class="fa fa-cog fa-sm text-white"></em></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive app-asset-model-live-layout-box">
+
+    <!-- for the small widget -->
+    <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+        <!-- <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em> -->
+        <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+            <div class="grid-card-container">
+                <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+
+                    <div *ngIf="widget?.widgetType === 'SmallNumber'"
+                        class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+                  || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                  'margin-left':'0', 'margin-top': '2%' }">
+
+                        <!-- {{telemetryObj.temperature.value| json}}
+                  {{telemetryObj.pressure1.value | json}} -->
+
+                        <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+                            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                            [apiTelemetryObj]="telemetryObj">
+                        </app-small-number-widget>
+                    </div>
+                </ng-container>
+            </div>
+
+        </ng-container>
+    </div>
+
+    <!-- for the other widget -->
+    <div class="clearfix">
+        <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+        <div class="row col-md-12 mb-5">
+            <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+                <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+              || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+              'margin-left':'2%', 'margin-top': '2%' }">
+                    <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+                        (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                        [apiTelemetryObj]="telemetryObj">
+
+                    </app-conditional-widget>
+                    <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+              || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'"
+                        [chartConfig]="widget" (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                        [apiTelemetryObj]="telemetryObj">
+                    </app-only-number-widget>
+                    <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+                        (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+                    </app-gauge-chart>
+                    <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+                        (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+                    </app-rectangle-widget>
+                    <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+                        (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+                    </app-cylinder-widget>
+                    <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+                        (removeWidget)="removeWidget($event)"
+                        *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+                    </app-live-line-chart>
+                </div>
+            </ng-container>
+
+
+
+        </div>
+        <!-- <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
+      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+         <div class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12'}}">
+          <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+          
+            <div   *ngIf="widget?.widgetType === 'SmallNumber'" class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}"  [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+            'margin-left':'0', 'margin-top': '2%' }">
+            <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+          </app-small-number-widget>
+            </div>
+            
+            <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+        || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+        'margin-left':'2%', 'margin-top': '2%' }">
+              <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+                    || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'"
+                [chartConfig]="widget" (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                [apiTelemetryObj]="telemetryObj">
+              </app-only-number-widget>
+              <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+              </app-gauge-chart>
+              <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+              </app-rectangle-widget>
+              <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+              </app-cylinder-widget>
+              <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+                (removeWidget)="removeWidget($event)"
+                *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+              </app-live-line-chart>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+  
+    </div> -->
+    </div>
+</div>
+
+
+
+<div class="modal right fade" id="addWidgetsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" *ngIf="widgetObj">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add {{widgetStringFromMenu}}</h5>
+                <button type="button" class="close" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onCloseAddWidgetModal()" aria-label="Close">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #form="ngForm">
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}}
+                            Title:</label>
+                        <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="name"
+                            name="name" [(ngModel)]="widgetObj.widgetTitle"
+                            placeholder="Enter {{widgetStringFromMenu}} Name">
+                        <div *ngIf="name.errors?.whitespace && name.touched" class="alert-danger">
+                            Please enter valid name.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label required">{{widgetStringFromMenu}} Type:</label>
+                        <select class="form-control form-control-sm" id="template" name="model_type"
+                            [(ngModel)]="widgetObj.widgetType" (change)="onWidgetTypeChange()">
+                            <option [ngValue]="undefined">Select {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'SmallNumber'">Small Number {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'ConditionalNumber'">Conditional {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'OnlyNumber'">Only Number {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'NumberWithTrend'">Number with Trend {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'NumberWithImage'">Number with Image {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'StringWidget'">String {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'GaugeChart'">Gauge Chart</option>
+                            <option [ngValue]="'LineChart'">Line Chart</option>
+                            <option [ngValue]="'AreaChart'">Area Chart</option>
+                            <option [ngValue]="'RectangleWidget'">Rectangle {{widgetStringFromMenu}}</option>
+                            <option [ngValue]="'CylinderWidget'">Cylinder {{widgetStringFromMenu}}</option>
+                            <!-- <option [ngValue]="'ColumnChart'" >Column Chart</option>
+              <option [ngValue]="'BarChart'" >Bar Chart</option> -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="visible" class="col-form-label mr-2">Dashboard Visibility:</label>
+                        <input type="checkbox" name="visible" id="visible"
+                            [(ngModel)]="widgetObj.dashboardVisibility" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label ">Slave Name</label>
+                        <ng-select [items]="slaveList" class="custom-dropdown w-12 sm" [searchable]="true"
+                            placeholder="Select Slave" clearSearchOnAdd="true" [closeOnSelect]="true"
+                            [clearable]="false" bindLabel="slave_name" dropdownPosition="bottom" name="slave-dropdown1"
+                            [(ngModel)]="selectedSlave" (change)="onSlaveSelection(selectedSlave)">
+                            <ng-template ng-option-tmp let-item="item">
+                                <span [tooltip]="item.name">
+                                    {{item.slave_name}}</span>
+                            </ng-template>
+                        </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithTrend' || widgetObj.widgetType === 'LineChart' || widgetObj.widgetType === 'AreaChart'
+          ">
+                        <label for="message-text" class="col-form-label">Data points in Chart:</label>
+                        <input type="number" class="form-control form-control-sm" id="data_points" name="data_points"
+                            [(ngModel)]="widgetObj.noOfDataPointsForTrend" placeholder="Enter No of data points">
+                    </div>
+                    <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
+                        <label for="message-text" class="col-form-label">Gauge Start Angle:</label>
+                        <input type="number" class="form-control form-control-sm" id="start_angle" name="start_angle"
+                            [(ngModel)]="widgetObj.startAngle" placeholder="Gauge Start Angle">
+                    </div>
+                    <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
+                        <label for="message-text" class="col-form-label">Gauge End Angle:</label>
+                        <input type="number" class="form-control form-control-sm" id="end_angle" name="end_angle"
+                            [(ngModel)]="widgetObj.endAngle" placeholder="Gauge End Angle">
+                    </div>
+                    <!-- <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
+            [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
+          </app-add-only-number-widget> -->
+                    <div *ngIf="widgetObj.widgetType != 'ConditionalNumber'">
+                        <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj"
+                            [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
+                        </app-add-only-number-widget>
+                    </div>
+
+                    <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label required">Conditions: </label>
+                            <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer"
+                                (click)="addPropertyToCondtion()" [disabled]="isDisabled"><em
+                                    class="fas fa fa-plus"></em>
+                            </button>
+                            <div class="bg-light p-3">
+                                <ng-container
+                                    *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
+                                    <div class="form-group row">
+                                        <div class="col-4">
+                                            <ng-select [items]="filteredPropList" class="custom-dropdown sm"
+                                                bindLabel="name" [clearable]="false" [searchable]="true"
+                                                [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
+                                                dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
+                                                [(ngModel)]="propObj.property" [disabled]="isDisabled">
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <span [tooltip]="item.name"> <em
+                                                            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                                                        {{item.name}}</span>
+                                                </ng-template>
+                                            </ng-select>
+                                        </div>
+                                        <div class="col-4 justify-center">
+                                            <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                                                name="operator{{propIndex}}" [(ngModel)]="propObj.operator"
+                                                [disabled]="isDisabled">
+                                                <option [ngValue]="undefined">Select Operator</option>
+                                                <option [ngValue]="'>='">>=</option>
+                                                <option [ngValue]="'<='">
+                                                    <=< /option>
+                                                <option [ngValue]="'<'">
+                                                    << /option>
+                                                <option [ngValue]="'>'">></option>
+                                                <option [ngValue]="'=='">==</option>
+                                                <option [ngValue]="'!='">!=</option>
+
+
+                                            </select>
+                                            <!-- <label for="operator" class="h4 col-form-label ">OR</label> -->
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number" [disabled]="isDisabled"
+                                                class="form-control form-control-sm" id="constant{{propIndex}}"
+                                                name="constant{{propIndex}}" placeholder="Enter Value"
+                                                [(ngModel)]="propObj.value">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" *ngIf="!isLast">
+                                        <!-- <div class="col-3">
+                      </div> -->
+                                        <div class="col-4 offset-4">
+                                            <select class="form-control form-control-sm" id="operator1{{propIndex}}"
+                                                name="operator1{{propIndex}}" [(ngModel)]="propObj.operator1"
+                                                [disabled]="isDisabled">
+                                                <option [ngValue]="undefined">Select Operator</option>
+                                                <option [ngValue]="'&&'">&&</option>
+                                                <option [ngValue]="'||'">||</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-2" *ngIf="propIndex >= 0 && !isDisabled ">
+                                            <a href="javascript:void(0)"
+                                                (click)="deletePropertyCondtion(propIndex,propObj)">
+                                                <em class="fa fa-fw fa-trash"></em>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <!-- <div class="bg-light p-3">
+                 
+                 
+                  <ng-container
+                    *ngFor="let propObj of  propertyObj.metadata.properties; let propIndex = index; last as isLast">
+                    <div class="form-group row">
+                      <div class="col-5">
+  
+                        <ng-select [items]="filteredPropList"   class="custom-dropdown sm" bindLabel="name"
+                          [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
+                          groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
+                          [(ngModel)]="propObj.property" >
+                          <ng-template ng-option-tmp let-item="item">
+                            <span [tooltip]="item.name"  > <em
+                                [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
+                              {{item.name}}</span>
+                          </ng-template>
+                        </ng-select>
+                      </div>
+                      <div class="col-2 justify-center">
+                        <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                        name="operator{{propIndex}}" [(ngModel)]="propObj.operator"  >
+                        <option [ngValue]="undefined">Select Operator</option>
+                        <option [ngValue]="'+'">Add</option>
+                        <option [ngValue]="'-'">Minus</option>
+                        <option [ngValue]="'*'">Multiply</option>
+                        <option [ngValue]="'/'">Divide</option>
+                      </select>
+                      </div>
+                      <div class="col-5">
+                        <input type="number"class="form-control form-control-sm" id="constant{{propIndex}}"
+                          name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
+                      </div>
+                    </div>
+                    <div class="form-group row" *ngIf="!isLast">
+                      <div class="col-3">
+                      </div>
+                      <div class="col-2" *ngIf="propIndex > 0">
+                        <a href="javascript:void(0)" (click)="deletePropertyCondtion(propIndex)">
+                          <em class="fa fa-fw fa-trash"></em>
+                        </a>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div> -->
+
+                            <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-3 col-md-2">
+                                            <label for="true" class="mt-1">True:</label>&nbsp;
+                                        </div>
+                                        <div class="col-sm-3 col-md-10">
+                                            <input type="text" id="true" autocomplete="off" #trueConditional="ngModel"
+                                                class="form-control form-control-sm shadow-none" name="fortrue"
+                                                [(ngModel)]="trueConditionalNumber" [disabled]="isDisabled">
+                                            <span
+                                                *ngIf="trueConditionalNumber?.length > 5  && trueConditionalNumber!='ON'"
+                                                class="text-danger">only 5 characters allowed.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-3 col-md-2">
+                                            <label for="false" class="mt-1">False:</label>&nbsp;
+                                        </div>
+                                        <div class="col-sm-3 col-md-10">
+                                            <input type="text" id="false" autocomplete="off" #falseConditional="ngModel"
+                                                class="form-control form-control-sm shadow-none" name="forfalse"
+                                                [(ngModel)]="falseConditionalNumber" [disabled]="isDisabled">
+                                            <span
+                                                *ngIf="falseConditionalNumber?.length > 5  && falseConditionalNumber!='OFF'"
+                                                class="text-danger">only 5 characters allowed.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </ng-container>
+                    <div *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+                        <button type="button" class="btn btn-success lockclass" *ngIf="isDisabled == false"
+                            (click)="ValidateallInputField()">Lock</button>
+                        <button type="button" class="btn unlockclass" *ngIf="isDisabled == true"
+                            (click)="clearInputField()">Unlock</button>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label required">Formula :</label>
+                            <input #name="ngModel" validateText type="text" class="form-control form-control-sm"
+                                id="formula" name="formula" [(ngModel)]="formula" placeholder="Enter Key Name">
+                        </div>
+                    </div>
+
+
+                    <div *ngIf="widgetObj.widgetType === 'ConditionalNumber'"
+                        class="modal-footer fixed-bottom bg-white">
+                        <button type="button" class="btn btn-primary add-row"
+                            [disabled]="!form.valid || isCreateWidgetAPILoading || !isDisabled"
+                            (click)="onSaveWidgetObj()">Save</button>
+                        <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+                            (click)="onCloseAddWidgetModal()">Cancel</button>
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+                    </div>
+
+                    <div *ngIf="widgetObj.widgetType !== 'ConditionalNumber'"
+                        class="modal-footer fixed-bottom bg-white">
+                        <button type="button" class="btn btn-primary add-row"
+                            [disabled]="!form.valid || isCreateWidgetAPILoading"
+                            (click)="onSaveWidgetObj()">Save</button>
+                        <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+                            (click)="onCloseAddWidgetModal()">Cancel</button>
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal right fade" id="configureDashboardWidgetsModal" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard {{widgetStringFromMenu}}</h5>
+                <button type="button" class="close" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onCloseConfigureDashboardModal()" aria-label="Close">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+
+                    <table class="table table-bordered table-striped" cellspacing="0" id="myFavTable">
+                        <thead>
+                            <tr class="bg-secondary text-white">
+                                <th scope="col">Index</th>
+                                <th scope="col" style="width: 60%">{{widgetStringFromMenu}} Name</th>
+                                <th scope="col">
+                                    <input type="checkbox" name="visibleall" id="visibleall"
+                                        (change)="onClickOfCheckbox()" [(ngModel)]="isAllWidgestSelectedForDashboard"
+                                        placement="bottom"
+                                        [tooltip]="isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'" />
+                                    <label for="visibleall" class="ml-2 mb-0">Visibility</label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
+                                <!-- <tr [ngClass]="{'handle': item.dashboardVisibility}"> -->
+                                <tr class=" cursor-move" id="{{item.dashboardVisibility ? item.chartId : ''}}"
+                                    [ngClass]="{'favoriteOrderId': item.dashboardVisibility}">
+                                    <td class="index">{{item.index}}
+                                        <!-- <input type="hidden" class="favoriteOrderId" value="{{item.chartId}}" *ngIf="item.dashboardVisibility"
+                              #favOrder="ngModel" name="{{item.chartId}}" [(ngModel)]="item.chartId"> -->
+                                    </td>
+                                    <td>{{item.widgetTitle}}</td>
+                                    <td><input type="checkbox" name="visible{{index}}" id="visible{{index}}"
+                                            [(ngModel)]="item.dashboardVisibility"
+                                            (change)="checkForAllWidgetVisibility()" /></td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onSaveConfigureDashboardWidgets()">Save</button>
+                <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onCloseConfigureDashboardModal()">Cancel</button>
+                <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+            </div>
+        </div>
+    </div>
+</div>

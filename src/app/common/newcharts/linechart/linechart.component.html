@@ -23,8 +23,8 @@
                     <i class='fas fa-ellipsis-v'></i>
                 </button>
                 <mat-menu class="micon" #menu="matMenu">
-                    <button mat-menu-item><i class="fa fa-edit"></i> Edit</button>
-                    <button mat-menu-item (click)="onEdit(chartId)"><i class="fa fa-clone" aria-hidden="true"></i>
+                    <button mat-menu-item (click)="onMenu(0)"><i class="fa fa-edit"></i> Edit</button>
+                    <button mat-menu-item (click)="onMenu(1)"><i class="fa fa-clone" aria-hidden="true"></i>
                         Clone</button>
                     <button mat-menu-item (click)="openConfirmRemoveWidgetModal()"
                         *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1">

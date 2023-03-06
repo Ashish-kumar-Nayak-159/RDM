@@ -56,7 +56,8 @@ export class LinechartComponent implements OnInit, OnDestroy {
   // @Input() chartId: any;
   @Input() decodedToken: any;
   @Input() widgetStringFromMenu: any;
-  @Output() chart_Id = new EventEmitter<string>();
+  @Output() chart_Id = new EventEmitter<any>();
+  widgetId: any;
 
 
   constructor(private commonService: CommonService,
@@ -72,6 +73,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
       this.chartType = this.chartConfig.chartType;
       this.chartTitle = this.chartConfig.title;
       this.chartId = this.chartConfig.chart_Id;
+      this.widgetId = this.chartConfig.id;
     }
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -100,6 +102,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
       );
     }
   }
+
 
   plotChart() {
     // am4core.options.onlyShowOnViewport = true;
@@ -263,8 +266,122 @@ export class LinechartComponent implements OnInit, OnDestroy {
     });
   }
 
+  createThresholdSeries(valueAxis, propObj) {
+    propObj.threshold = propObj.threshold ? propObj.threshold : {};
+
+    if (propObj.threshold.l1 && propObj.threshold.h1) {
+      const rangeL1H1 = valueAxis.axisRanges.create();
+      rangeL1H1.value = propObj.threshold.l1;
+      rangeL1H1.endValue = propObj.threshold.h1;
+      rangeL1H1.axisFill.fill = am4core.color('#229954');
+      rangeL1H1.axisFill.fillOpacity = 0.2;
+      rangeL1H1.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.l1 && propObj.threshold.l2) {
+      const rangeL1L2 = valueAxis.axisRanges.create();
+      rangeL1L2.value = propObj.threshold.l2;
+      rangeL1L2.endValue = propObj.threshold.l1;
+      rangeL1L2.axisFill.fill = am4core.color('#f6c23e');
+      rangeL1L2.axisFill.fillOpacity = 0.2;
+      rangeL1L2.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.h1 && propObj.threshold.h2) {
+      const rangeH1H2 = valueAxis.axisRanges.create();
+      rangeH1H2.value = propObj.threshold.h1;
+      rangeH1H2.endValue = propObj.threshold.h2;
+      rangeH1H2.axisFill.fill = am4core.color('#f6c23e');
+      rangeH1H2.axisFill.fillOpacity = 0.2;
+      rangeH1H2.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.l2 && propObj.threshold.l3) {
+      const rangeL2L3 = valueAxis.axisRanges.create();
+      rangeL2L3.value = propObj.threshold.l3;
+      rangeL2L3.endValue = propObj.threshold.l2;
+      rangeL2L3.axisFill.fill = am4core.color('#fb5515');
+      rangeL2L3.axisFill.fillOpacity = 0.2;
+      rangeL2L3.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.h2 && propObj.threshold.h3) {
+      const rangeH2H3 = valueAxis.axisRanges.create();
+      rangeH2H3.value = propObj.threshold.h2;
+      rangeH2H3.endValue = propObj.threshold.h3;
+      rangeH2H3.axisFill.fill = am4core.color('#fb5515');
+      rangeH2H3.axisFill.fillOpacity = 0.2;
+      rangeH2H3.grid.strokeOpacity = 0;
+    }
+  }
+
+  createValueAxis(chart, axis) {
+    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    if (chart.yAxes.indexOf(valueYAxis) !== 0) {
+      valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
+    }
+    const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
+    arr.forEach((prop, index) => {
+      const series = chart.series.push(new am4charts.LineSeries());
+      // series.dataFields.dateX = 'message_date';
+      this.propertyList.forEach((propObj) => {
+        if (propObj.json_key === prop.json_key) {
+          series.units = propObj.json_model[propObj.json_key].units;
+        }
+      });
+      series.name = this.getPropertyName(prop.json_key);
+      const proptype = this.getPropertyType(prop.json_key);
+      series.propType =
+        proptype === 'Edge Derived Properties'
+          ? 'ED'
+          : proptype === 'Cloud Derived Properties'
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+              ? 'DK'
+              : 'M';
+      series.propKey = prop.json_key;
+      // series.stroke = this.commonService.getRandomColor();
+      series.yAxis = valueYAxis;
+      series.dataFields.dateX = 'message_date_obj';
+      series.dataFields.valueY = prop.json_key;
+      series.groupFields.valueY = 'value';
+      series.compareText = true;
+      series.strokeWidth = 2;
+      // series.connect = false;
+      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
+      // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
+      // series.tensionX = 0.77;
+      series.strokeOpacity = 1;
+      if (series.units) {
+        series.legendSettings.labelText = '({propType}) {name} ({units})';
+      } else {
+        series.legendSettings.labelText = '({propType}) {name}';
+      }
+
+      series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+      if (series.units) {
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+      } else {
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+      }
+
+      const bullet = series.bullets.push(new am4charts.CircleBullet());
+      bullet.strokeWidth = 2;
+      bullet.circle.radius = 1.5;
+      // chart.cursor.snapToSeries = series;
+      this.seriesArr.push(series);
+    });
+
+    valueYAxis.tooltip.disabled = true;
+    // valueYAxis.renderer.labels.template.fillOpacity = this.chartType.includes('Area') ? 0.2 : 0;
+    valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+    valueYAxis.renderer.opposite = axis === 1;
+    valueYAxis.renderer.minWidth = 35;
+    // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
+    //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
+    //   this.createThresholdSeries(valueYAxis, propObj);
+    // }
+  }
+
 
   toggleProperty(prop) {
+    // alert('here  ' + prop);
     this.seriesArr.forEach((item, index) => {
       const seriesColumn = this.chart.series.getIndex(index);
       if (prop === item.propKey) {
@@ -315,101 +432,6 @@ export class LinechartComponent implements OnInit, OnDestroy {
     }
   }
 
-  createValueAxis(chart, axis) {
-    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    // if (chart.yAxes.indexOf(valueYAxis) !== 0){
-    //   valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
-    // }
-    const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
-    arr.forEach((prop, index) => {
-      const series = chart.series.push(new am4charts.ColumnSeries());
-      series.dataFields.valueY = prop.json_key;
-      series.dataFields.dateX = 'message_date_obj';
-      this.propertyList.forEach((propObj) => {
-        if (propObj.json_key === prop.json_key) {
-          series.units = propObj.json_model[propObj.json_key].units;
-        }
-      });
-      series.name = this.getPropertyName(prop.json_key);
-      const proptype = this.getPropertyType(prop.json_key);
-      series.propType =
-        proptype === 'Edge Derived Properties'
-          ? 'ED'
-          : proptype === 'Cloud Derived Properties'
-            ? 'CD'
-            : proptype === 'Derived KPIs'
-              ? 'DK'
-              : 'M';
-      series.propKey = prop.json_key;
-      series.columns.template.fillOpacity = 0.8;
-      series.compareText = true;
-      if (series.units) {
-        series.legendSettings.labelText = '({propType}) {name} ({units})';
-      } else {
-        series.legendSettings.labelText = '({propType}) {name}';
-      }
-      if (series.units) {
-        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
-      } else {
-        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
-      }
-      const columnTemplate = series.columns.template;
-      columnTemplate.strokeWidth = 2;
-      columnTemplate.strokeOpacity = 1;
-
-      this.seriesArr.push(series);
-    });
-    // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
-    //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
-    //   this.createThresholdSeries(valueYAxis, propObj);
-    // }
-  }
-
-  createThresholdSeries(valueAxis, propObj) {
-    propObj.threshold = propObj.threshold ? propObj.threshold : {};
-
-    if (propObj.threshold.l1 && propObj.threshold.h1) {
-      const rangeL1H1 = valueAxis.axisRanges.create();
-      rangeL1H1.value = propObj.threshold.l1;
-      rangeL1H1.endValue = propObj.threshold.h1;
-      rangeL1H1.axisFill.fill = am4core.color('#229954');
-      rangeL1H1.axisFill.fillOpacity = 0.2;
-      rangeL1H1.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.l1 && propObj.threshold.l2) {
-      const rangeL1L2 = valueAxis.axisRanges.create();
-      rangeL1L2.value = propObj.threshold.l2;
-      rangeL1L2.endValue = propObj.threshold.l1;
-      rangeL1L2.axisFill.fill = am4core.color('#f6c23e');
-      rangeL1L2.axisFill.fillOpacity = 0.2;
-      rangeL1L2.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.h1 && propObj.threshold.h2) {
-      const rangeH1H2 = valueAxis.axisRanges.create();
-      rangeH1H2.value = propObj.threshold.h1;
-      rangeH1H2.endValue = propObj.threshold.h2;
-      rangeH1H2.axisFill.fill = am4core.color('#f6c23e');
-      rangeH1H2.axisFill.fillOpacity = 0.2;
-      rangeH1H2.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.l2 && propObj.threshold.l3) {
-      const rangeL2L3 = valueAxis.axisRanges.create();
-      rangeL2L3.value = propObj.threshold.l3;
-      rangeL2L3.endValue = propObj.threshold.l2;
-      rangeL2L3.axisFill.fill = am4core.color('#fb5515');
-      rangeL2L3.axisFill.fillOpacity = 0.2;
-      rangeL2L3.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.h2 && propObj.threshold.h3) {
-      const rangeH2H3 = valueAxis.axisRanges.create();
-      rangeH2H3.value = propObj.threshold.h2;
-      rangeH2H3.endValue = propObj.threshold.h3;
-      rangeH2H3.axisFill.fill = am4core.color('#fb5515');
-      rangeH2H3.axisFill.fillOpacity = 0.2;
-      rangeH2H3.grid.strokeOpacity = 0;
-    }
-  }
-
   openConfirmRemoveWidgetModal() {
     this.modalConfig = {
       stringDisplay: true,
@@ -441,8 +463,13 @@ export class LinechartComponent implements OnInit, OnDestroy {
 
   removeWidget(chartId) { }
 
-  onEdit(value: string) {
-    this.chart_Id.emit(this.chartId);
+  onMenu(type) {
+    if (type == 0) {
+      this.chart_Id.emit({ widgetId: this.widgetId, type: "Edit" });
+    }
+    else {
+      this.chart_Id.emit({ widgetId: this.widgetId, type: "Clone" });
+    }
   }
 
   ngOnDestroy(): void {

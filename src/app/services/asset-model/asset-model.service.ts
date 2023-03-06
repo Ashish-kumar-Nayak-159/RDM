@@ -191,12 +191,19 @@ export class AssetModelService {
     }
   }
 
-  getAssetWidget(name: string): Observable<any> {
-    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET, encodeURIComponent(name)))
+  getAssetWidget(name: string, widgetType: string): Observable<any> {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET, encodeURIComponent(name)), {
+      params: new HttpParams()
+        .set('type', widgetType)
+    })
   }
 
   getAssetWidgetById(name: string, chartId: string): Observable<any> {
-    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET_BY_CHARTID, encodeURIComponent(name)) + "?chart_id=" + chartId)
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET_BY_CHARTID, encodeURIComponent(name), encodeURIComponent(chartId)))
+  }
+
+  updateAssetWidget(name: string, chartId: string, body: any): Observable<any> {
+    return this.http.put(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET_BY_CHARTID, encodeURIComponent(name), encodeURIComponent(chartId)), body)
   }
 
   getAssetsModelLayout(filterObj) {

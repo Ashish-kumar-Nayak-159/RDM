@@ -64,7 +64,7 @@ export class AppUrls {
   public static GET_ASSETS_MODEL_DETAILS = 'apps/{0}/asset_models/{1}';
   public static CREATE_ASSETS_WIDGET = 'asset_models/{0}/widget';
   public static GET_ASSETS_WIDGET = 'asset_models/{0}/widgets';
-  public static GET_ASSETS_WIDGET_BY_CHARTID = 'asset_models/{0}/widgets';
+  public static GET_ASSETS_WIDGET_BY_CHARTID = 'asset_models/{0}/widget/{1}';
   public static CREATE_ASSETS_MODEL = 'apps/{0}/asset_models';
   public static UPDATE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}';
   public static FREEZE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}/freeze';

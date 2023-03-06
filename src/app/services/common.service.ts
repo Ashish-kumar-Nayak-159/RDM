@@ -18,6 +18,7 @@ export class CommonService {
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   resetPassword: EventEmitter<any> = new EventEmitter<any>();
+  widgetId: EventEmitter<any> = new EventEmitter();
   flag = false;
   browsername: any = '';
   privateEncryptionString = environment.storgageSecretKey;
@@ -451,11 +452,11 @@ export class CommonService {
     return this.http.post(this.url + AppUrls.REFRESH_TOKEN, obj)
   }
 
-  upTime(asset_id:any,obj:any){
-    return this.http.patch(this.url + AppUrls.ASSET_UPTIME + asset_id , obj)
+  upTime(asset_id: any, obj: any) {
+    return this.http.patch(this.url + AppUrls.ASSET_UPTIME + asset_id, obj)
   }
 
-  getAssetUpTime(asset_id:any){
+  getAssetUpTime(asset_id: any) {
     return this.http.get(this.url + AppUrls.ASSET_UPTIME + asset_id)
   }
 }

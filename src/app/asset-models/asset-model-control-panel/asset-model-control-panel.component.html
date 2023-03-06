@@ -52,15 +52,18 @@
               <div class="main-heading">
                 {{assetModel?.name}}
                 <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                  <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-                    *ngIf="assetModel.freezed"><em class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></em></a>
-                  <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-                    *ngIf="!assetModel.freezed"><em class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
+                  <a href="javascript:void(0)" (click)="openUnfreezeModal()"
+                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="assetModel.freezed"><em
+                      class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></em></a>
+                  <a href="javascript:void(0)" (click)="freezeModel()"
+                    [class.disabled]="isModelFreezeUnfreezeAPILoading" *ngIf="!assetModel.freezed"><em
+                      class="fa fa-fw fa-unlock" placement="bottom" tooltip="Not Freezed"
                       *ngIf="!assetModel.freezed"></em></a>
                 </ng-container>
                 <ng-container>
-                  <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit" (click)="openImportFile()"
-                    class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Upload Template "[disabled]="!uploadfilemodalbutton">Upload</button>
+                  <button *ngIf="uploadfilemodal === true && checkinguserrole === 'App Admin'" type="submit"
+                    (click)="openImportFile()" class="btn btn-sm searchBtn btn-primary" placement="bottom"
+                    tooltip="Upload Template " [disabled]="!uploadfilemodalbutton">Upload</button>
                 </ng-container>
               </div>
             </div>
@@ -82,7 +85,7 @@
             <app-asset-model-settings *ngIf="activeTab === 'settings'  && assetModel" [assetModel]="assetModel">
             </app-asset-model-settings>
           </div>
-          
+
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel"
             id="asset_model_properties">
             <app-asset-model-properties *ngIf="activeTab.includes('properties') && assetModel" [type]="activeTab"
@@ -100,7 +103,8 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel"
             id="asset_model_rules">
-            <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel" [menuDetail]="getMenuDetail('rules')">
+            <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel"
+              [menuDetail]="getMenuDetail('rules')">
             </app-asset-model-rules>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel"
@@ -111,15 +115,18 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
             id="asset_model_alert_conditioning">
             <app-asset-model-alert-conditions *ngIf="activeTab === 'alert_conditioning' && assetModel"
-              [assetModel]="assetModel" [menuDetail]="getMenuDetail('alert_conditioning')"></app-asset-model-alert-conditions>
+              [assetModel]="assetModel"
+              [menuDetail]="getMenuDetail('alert_conditioning')"></app-asset-model-alert-conditions>
           </div>
 
 
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_property'}" role="tabpanel" id="asset_model_control_properties">
-              <app-asset-model-control-properties [assetModel]="assetModel" *ngIf="activeTab === 'control_property'" ></app-asset-model-control-properties>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_property'}" role="tabpanel"
+            id="asset_model_control_properties">
+            <app-asset-model-control-properties [assetModel]="assetModel"
+              *ngIf="activeTab === 'control_property'"></app-asset-model-control-properties>
           </div>
 
-          
+
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
             id="asset_model_control_widgets">
             <app-asset-model-control-widgets *ngIf="activeTab === 'control_widgets' && assetModel"
@@ -133,6 +140,11 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="asset_model_layout">
             <app-asset-model-layout *ngIf="activeTab === 'layout' && assetModel" [assetModel]="assetModel">
             </app-asset-model-layout>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'newlayout'}" role="tabpanel"
+            id="asset_model_newlayout1">
+            <app-widget *ngIf="activeTab === 'newlayout' && assetModel" [assetModel]="assetModel">
+            </app-widget>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel"
             id="asset_model_reference_material">
@@ -206,42 +218,41 @@
 
 <div class="modal right fade" id="addModelAsset" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{uploadfileModaltext}}</h5>
-              <button type="button" class="close" [disabled]="isCreatePackageAPILoading"
-                  (click)="onCloseModal('addModelAsset')" aria-label="Close">
-                  <span aria-hidden="true" tooltip="Close">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form>
-                  <div class="form-group">
-                      <label for="recipient-name" class="col-form-label required">Upload:</label>
-                      <div class="form-group input-group row m-0">
-                          <div class="file-input form-control form-control-sm p-0 col-8">
-                              <input type="file" accept=".xls,.xlsx" id="file" class="file"
-                                  onclick="this.value = null" (change)="onFileSelected($event)">
-                              <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label>
-                          </div>
-                          <div class="file-input form-control form-control-sm p-0 col-4"
-                              style="background-color:#ccc !important">
-                              <input type="file" accept=".xls,.xlsx" id="file" class="file">
-                              <label for="file" class="bg-secondary text-white">Browse</label>
-                          </div>
-                        </div>
-                        <br/><br/><a id="downloadFile" style="display: none;">click</a>
-                  </div>
-              </form>
-            
-          </div>
-          
-          <div class="modal-footer">
-              <button type="button" class="btn btn-primary add-row" (click)="onUploadModelFile()"
-                  [disabled]="isCreatePackageAPILoading || !isCanUploadFile">Save</button>
-              <button type="button" class="btn btn-secondary" (click)="onCloseModal('addModelAsset')" >Cancel</button>
-              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></em>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{uploadfileModaltext}}</h5>
+        <button type="button" class="close" [disabled]="isCreatePackageAPILoading"
+          (click)="onCloseModal('addModelAsset')" aria-label="Close">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Upload:</label>
+            <div class="form-group input-group row m-0">
+              <div class="file-input form-control form-control-sm p-0 col-8">
+                <input type="file" accept=".xls,.xlsx" id="file" class="file" onclick="this.value = null"
+                  (change)="onFileSelected($event)">
+                <label for="file" class="overflow-text" title="{{fileName}}">{{fileName}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file" accept=".xls,.xlsx" id="file" class="file">
+                <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
+            </div>
+            <br /><br /><a id="downloadFile" style="display: none;">click</a>
+          </div>
+        </form>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" (click)="onUploadModelFile()"
+          [disabled]="isCreatePackageAPILoading || !isCanUploadFile">Save</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal('addModelAsset')">Cancel</button>
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></em>
+      </div>
+    </div>
   </div>
 </div>

@@ -40,7 +40,9 @@ import { SmallNumberWidgetComponent } from './live-widgets/only-number-widget/sm
 import { ConditionalWidgetComponent } from './live-widgets/only-number-widget/conditional-widget/conditional-widget.component';
 import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HistoricalLivechartComponent } from './charts/historical-livechart/historical-livechart.component';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { LinechartComponent } from './newcharts/linechart/linechart.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +75,7 @@ import { HistoricalLivechartComponent } from './charts/historical-livechart/hist
     FormValidatorDirective,
     SmallNumberWidgetComponent,
     ConditionalWidgetComponent,
-    HistoricalLivechartComponent
+    HistoricalLivechartComponent,
   ],
   imports: [
     CommonModule,
@@ -89,7 +91,10 @@ import { HistoricalLivechartComponent } from './charts/historical-livechart/hist
     ReactiveFormsModule,
     Daterangepicker,
     NgJsonEditorModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    MatIconModule,
+    MatMenuModule,
+
 
   ],
   exports: [
@@ -119,9 +124,10 @@ import { HistoricalLivechartComponent } from './charts/historical-livechart/hist
     CylinderWidgetComponent,
     FormValidatorDirective,
     BsDatepickerModule,
-    HistoricalLivechartComponent
+    HistoricalLivechartComponent,
+
 
   ],
-  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },BsDatepickerConfig],
+  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],
 })
-export class CommonCustomModule {}
+export class CommonCustomModule { }

@@ -2,7 +2,7 @@
 
     <ul class="nav">
         <li class="nav-item">
-            <button class="btn btn-sm btn-primary mt-1" (click)="onAdd(0)"><span class="fa fa-plus fa-sm"></span>
+            <button class="btn btn-sm btn-primary mt-1" (click)="onAdd()"><span class="fa fa-plus fa-sm"></span>
                 Add</button>
         </li>
         <li class="nav-item">
@@ -24,7 +24,7 @@
                 <app-linechart *ngIf="telemetryData" [chartConfig]="chart" [widgetStringFromMenu]="widgetStringFromMenu"
                     [decodedToken]="decodedToken" [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
                     [telemetryData]="telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
-                    [isOverlayVisible]="true" (chart_Id)="getChartId($event)" [propertyList]="propertyList"
+                    [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
                     [asset]="asset"></app-linechart>
             </div>
         </div>

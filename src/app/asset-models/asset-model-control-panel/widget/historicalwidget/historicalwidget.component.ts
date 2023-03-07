@@ -143,10 +143,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService
   ) {
-    this.commonService.widgetId.subscribe(($event: any) => {
-      this.onAdd($event);
-      console.log($event)
-    })
+
   }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -157,14 +154,15 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties();
     this.isHistoryAPILoading = true;
-    this.getLayout();
+    // this.getLayout();
     this.getAssetWidget();
 
     this.historicalWidgetForm = new FormGroup({
       chartTitle: new FormControl('', [Validators.required, SpaceValidator.noWhitespaceValidator]),
       selectedChartType: new FormControl(this.selectedChartType, Validators.required),
       y1AxisProps: new FormControl('', Validators.required),
-      y2AxisProps: new FormControl('', Validators.required)
+      y2AxisProps: new FormControl('', Validators.required),
+      wid: new FormControl('')
     });
 
   }
@@ -554,6 +552,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       this.assetModelService.getAssetsModelLayout(params).subscribe(
         async (response: any) => {
           if (response?.historical_widgets?.length > 0) {
+            console.log(response.historical_widgets);
             this.layoutJson = response.historical_widgets;
             this.storedLayout = response.historical_widgets;
             this.layoutJson.forEach((item) => {
@@ -609,16 +608,33 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onAdd(id) {
+  onAdd() {
     this.showPopup = true;
-    if (id != 0) {
-      this.assetModelService.getAssetWidgetById(this.assetModel.name, id).subscribe(res => {
-        console.log(res);
-      })
-    }
     setTimeout(() => {
       $('#addHWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }, 100);
+  }
+
+  onMenu(event) {
+    this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
+      console.log(res);
+      let data = res.properties[0];
+      this.historicalWidgetForm.controls.chartTitle.setValue(data.title);
+      this.historicalWidgetForm.controls.selectedChartType.setValue(data.chartType);
+      this.historicalWidgetForm.controls.y1AxisProps.setValue(data.y1axis);
+      this.historicalWidgetForm.controls.y2AxisProps.setValue(data.y2axis);
+      this.onPopupWidgetTypeChange();
+      if (event.type == "Edit") {
+        this.historicalWidgetForm.controls.wid.setValue(event.widgetId);
+      } else {
+        this.historicalWidgetForm.controls.wid.setValue(0);
+      }
+      this.showPopup = true;
+      setTimeout(() => {
+        $('#addHWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }, 100);
+    })
+
   }
 
   onCloseAddWidgetModal() {
@@ -762,9 +778,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       "widget_type": chartType,
       "widget_title": this.historicalWidgetForm.controls.chartTitle.value,
       "properties": [
-        [
-          obj
-        ]
+        obj
       ],
       "index": 0,
       "derived_kpis": true,
@@ -787,35 +801,90 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
 
     console.log(this.assetModel);
     console.log(reqObj);
-
-    const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
-    if (index === -1) {
-      this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(res => {
+    let id = this.historicalWidgetForm.controls.wid.value;
+    if (id > 0) {
+      this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj,).subscribe(res => {
         this.toasterService.showSuccess(res["message"], 'Save Layout');
         this.onCloseAddWidgetModal();
-        this.getLayout();
+        this.getAssetWidget();
       })
     }
     else {
-      this.toasterService.showError(
-        this.widgetStringFromMenu + ' with same title is already exist.',
-        'Add ' + this.widgetStringFromMenu
-      );
+      const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
+      if (index === -1) {
+        this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(res => {
+          this.toasterService.showSuccess(res["message"], 'Save Layout');
+          this.onCloseAddWidgetModal();
+          this.getAssetWidget();
+        })
+      }
+      else {
+        this.toasterService.showError(
+          this.widgetStringFromMenu + ' with same title is already exist.',
+          'Add ' + this.widgetStringFromMenu
+        );
+      }
     }
+
 
     // this.saveLayout();
   }
 
   getAssetWidget() {
-    this.assetModelService.getAssetWidget(this.assetModel.name).subscribe(res => {
-      debugger
-      console.log(res);
+    const params = {
+      app: this.contextApp.app,
+      name: this.assetModel.name,
+    };
+    this.dropdownWidgetList = [];
+    this.selectedWidgets = [];
+    this.layoutJson = [];
+    this.storedLayout = [];
+    this.assetModelService.getAssetWidget(this.assetModel.name, "HistoricalWidget").subscribe(response => {
+      if (response?.data?.length > 0) {
+        response.data.forEach((dataElement, index) => {
+          if (dataElement?.properties?.length > 0) {
+            dataElement.properties[0].id = dataElement.id;
+            this.layoutJson.push(dataElement.properties[0]);
+            this.storedLayout.push(dataElement.properties[0]);
+          }
+        });
+        console.log(this.layoutJson);
+        this.layoutJson.forEach((item) => {
+          this.dropdownWidgetList.push({
+            id: item.title,
+            value: item,
+          });
+          item.edge_derived_props = false;
+          item.measured_props = false;
+          item.cloud_derived_props = false;
+          item.y1axis.forEach((prop) => {
+            const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+            if (type === 'Edge Derived Properties') {
+              item.edge_derived_props = true;
+            } else if (type === 'Cloud Derived Properties') {
+              item.cloud_derived_props = true;
+            } else {
+              item.measured_props = true;
+            }
+          });
+          item.y2axis.forEach((prop) => {
+            const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+            if (type === 'Edge Derived Properties') {
+              item.edge_derived_props = true;
+            } else if (type === 'Cloud Derived Properties') {
+              item.cloud_derived_props = true;
+            } else {
+              item.measured_props = true;
+            }
+          });
+        });
+        this.renderLayout();
+
+      }
+      this.isHistoryAPILoading = false;
+    }, error => {
+      this.isHistoryAPILoading = false;
     })
-
-  }
-
-  getChartId(cId) {
-    console.log(cId);
   }
 
   // checkValidation() {

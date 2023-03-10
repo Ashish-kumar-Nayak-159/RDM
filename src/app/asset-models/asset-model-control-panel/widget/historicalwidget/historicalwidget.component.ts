@@ -133,6 +133,14 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   chartWidth: string;
   chartHeight: string;
   chartId: any;
+  configureDashboardWidgets: any[];
+  isAllWidgestSelectedForHistorical: any;
+  isAllWidgestSelectedForDeleteHistorical: any;
+  isAllWidgestSelectedForDashboard: any;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
+  bodyMessage: string;
+  headerMessage: string;
+  deleteBtn: boolean;
 
   constructor(
     private commonService: CommonService,
@@ -161,7 +169,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       chartTitle: new FormControl('', [Validators.required, SpaceValidator.noWhitespaceValidator]),
       selectedChartType: new FormControl(this.selectedChartType, Validators.required),
       y1AxisProps: new FormControl('', Validators.required),
-      y2AxisProps: new FormControl('', Validators.required),
+      y2AxisProps: new FormControl(''),
       wid: new FormControl('')
     });
 
@@ -375,7 +383,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
     if (index === -1) {
       debugger;
-      await this.plotChart(obj);
+      await this.plotChart(obj, 0);
       this.clear();
       this.layoutJson.push(obj)
     } else {
@@ -386,7 +394,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  plotChart(layoutJson) {
+  plotChart(layoutJson, index) {
     return new Promise<void>((resolve) => {
       $('.overlay').show();
       this.chartCount++;
@@ -442,15 +450,15 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         data.splice(0, 0, obj);
       }
 
-      debugger
-      if (layoutJson.chartType === 'Table') {
-        this.telemetryData = data.reverse();
+      if (layoutJson.chartType === 'Data Table') {
+        this.layoutJson[index].telemetryData = data.reverse();
       }
       else {
-        this.telemetryData = data;
+        this.layoutJson[index].telemetryData = data;
         this.chartHeight = "23rem";
         this.chartWidth = "100%";
       }
+      console.log(this.layoutJson);
       // let componentRef;
       // if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
       //   componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -500,23 +508,55 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     let widgetsToLoad = [];
     widgetsToLoad = this.layoutJson;
     if (this.layoutJson) {
-      widgetsToLoad.forEach(async (currentChart) => {
+      widgetsToLoad.forEach(async (currentChart, index) => {
         this.renderCount++;
         currentChart['chartCount'] = this.renderCount;
-        await this.plotChart(currentChart);
+        await this.plotChart(currentChart, index);
       });
     } else {
       this.toasterService.showError('Layout not defined', 'Layout');
     }
   }
 
-  removeWidget(chartId) {
-    for (let i = 0; i < this.layoutJson.length; i++) {
-      if (this.layoutJson[i].chart_Id === chartId) {
-        this.layoutJson.splice(i, 1);
-        $('#' + chartId + '_' + chartId).remove();
+  removeWidget(id) {
+    debugger
+    if (id == 0) {
+      let deleteReq = [];
+      for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
+        if (this.configureDashboardWidgets[i].isDelete) {
+          // this.configureDashboardWidgets.splice(i, 1);
+          let obj = {
+            "action": "Delete",
+            "id": 0,
+            "chartId": "string",
+            "dashboardVisibility": true,
+            "index": 0,
+            "isDelete": true
+          }
+          obj.id = this.configureDashboardWidgets[i].id;
+          obj.chartId = this.configureDashboardWidgets[i].chart_Id;
+          deleteReq.push(obj);
+        }
+      }
+      if (deleteReq.length > 0) {
+        debugger
+        this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, deleteReq).subscribe(res => {
+          this.toasterService.showSuccess(res["message"], 'Save Layout');
+          this.getAssetWidget();
+          this.onCloseConfigureDashboardModal();
+
+        })
       }
     }
+    else {
+      this.assetModelService.deleteAssetWidget(this.assetModel.name, id).subscribe(res => {
+        this.toasterService.showSuccess(res["message"], 'Save Layout');
+        this.getAssetWidget();
+        this.onCloseConfigureDashboardModal();
+
+      })
+    }
+    console.log(this.configureDashboardWidgets);
   }
 
   saveLayout() {
@@ -608,6 +648,130 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  onOpenConfigureDashboardModal() {
+    this.configureDashboardWidgets = this.layoutJson.map(o => ({ ...o }));
+    this.configureDashboardWidgets.forEach((widget, index) => {
+      widget.index = index + 1;
+      widget.dashboardVisibility = false;
+      widget.isDelete = false;
+    });
+    this.checkForAllWidgetVisibility(0);
+    this.checkForAllWidgetVisibility(1);
+    $('#configureHDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.getTableSortable();
+  }
+  onCloseConfigureDashboardModal() {
+    $('#configureHDashboardWidgetsModal').modal('hide');
+    this.configureDashboardWidgets = [];
+  }
+  onClickOfCheckbox(type) {
+    if (type == 0) {
+      if (this.isAllWidgestSelectedForHistorical) {
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
+      } else {
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
+      }
+    }
+    else if (type == 1) {
+      if (this.isAllWidgestSelectedForDeleteHistorical) {
+        this.configureDashboardWidgets.forEach((widget) => (widget.isDelete = true));
+      } else {
+        this.configureDashboardWidgets.forEach((widget) => (widget.isDelete = false));
+      }
+
+      this.deleteBtn = this.isAllWidgestSelectedForDeleteHistorical ? true : false;
+
+    }
+
+  }
+  checkForAllWidgetVisibility(type) {
+    let count = 0;
+    if (type == 0) {
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        if (widget.dashboardVisibility) {
+          count++;
+        }
+      });
+      if (count === this.configureDashboardWidgets.length) {
+        this.isAllWidgestSelectedForHistorical = true;
+      } else {
+        this.isAllWidgestSelectedForHistorical = false;
+      }
+    }
+    else if (type == 1) {
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        if (widget.isDelete) {
+          count++;
+        }
+      });
+      if (count === this.configureDashboardWidgets.length) {
+        this.isAllWidgestSelectedForDeleteHistorical = true;
+      } else {
+        this.isAllWidgestSelectedForDeleteHistorical = false;
+      }
+
+      this.deleteBtn = count > 0 ? true : false;
+
+    }
+  }
+  onSaveConfigureDashboardWidgets() {
+    debugger
+    this.isCreateWidgetAPILoading = true;
+    this.sortListBasedOnIndex();
+    let req = [];
+    for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
+      if (!this.configureDashboardWidgets[i].isDelete) {
+        // this.configureDashboardWidgets.splice(i, 1);
+        let obj = {
+          "action": "ReArrange",
+          "id": this.configureDashboardWidgets[i].id,
+          "chartId": this.configureDashboardWidgets[i].chart_Id,
+          "dashboardVisibility": this.configureDashboardWidgets[i].dashboardVisibility,
+          "index": this.configureDashboardWidgets[i].index,
+          "isDelete": false
+        }
+        req.push(obj);
+      }
+    }
+    if (req.length > 0) {
+      debugger
+      this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, req).subscribe(res => {
+        this.toasterService.showSuccess(res["message"], 'Save Layout');
+        this.getAssetWidget();
+        this.onCloseConfigureDashboardModal();
+      })
+    }
+    // this.updateAssetModel(this.configureDashboardWidgets, 'Dashboard configured successfully');
+  }
+  sortListBasedOnIndex() {
+    debugger
+    this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
+    console.log(this.configureDashboardWidgets);
+    this.isCreateWidgetAPILoading = false;
+
+  }
+  openConfirmRemoveWidgetModal() {
+    debugger;
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
+    $('#confirmRemoveWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      $('#confirmRemoveWidgetModal').modal('hide');
+    } else if (eventType === 'save') {
+      this.removeWidget(0);
+      $('#confirmRemoveWidgetModal').modal('hide');
+    }
+  }
+
+
   onAdd() {
     this.showPopup = true;
     setTimeout(() => {
@@ -616,25 +780,33 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onMenu(event) {
-    this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
-      console.log(res);
-      let data = res.properties[0];
-      this.historicalWidgetForm.controls.chartTitle.setValue(data.title);
-      this.historicalWidgetForm.controls.selectedChartType.setValue(data.chartType);
-      this.historicalWidgetForm.controls.y1AxisProps.setValue(data.y1axis);
-      this.historicalWidgetForm.controls.y2AxisProps.setValue(data.y2axis);
-      this.onPopupWidgetTypeChange();
-      if (event.type == "Edit") {
-        this.historicalWidgetForm.controls.wid.setValue(event.widgetId);
-      } else {
-        this.historicalWidgetForm.controls.wid.setValue(0);
-      }
-      this.showPopup = true;
-      setTimeout(() => {
-        $('#addHWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-      }, 100);
-    })
+    if (event.type == "Delete") {
+      this.removeWidget(event.widgetId);
+    }
+    else {
+      this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
+        console.log(res);
+        let data = res.properties[0];
+        data.title = res.widget_title;
+        data.chartType = res.widget_type;
+        data.chart_Id = res.chart_id;
 
+        this.historicalWidgetForm.controls.chartTitle.setValue(data.title);
+        this.historicalWidgetForm.controls.selectedChartType.setValue(data.chartType);
+        this.historicalWidgetForm.controls.y1AxisProps.setValue(data.y1axis);
+        this.historicalWidgetForm.controls.y2AxisProps.setValue(data.y2axis);
+        this.onPopupWidgetTypeChange();
+        if (event.type == "Edit") {
+          this.historicalWidgetForm.controls.wid.setValue(event.widgetId);
+        } else if (event.type == "Clone") {
+          this.historicalWidgetForm.controls.wid.setValue(0);
+        }
+        this.showPopup = true;
+        setTimeout(() => {
+          $('#addHWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        }, 100);
+      })
+    }
   }
 
   onCloseAddWidgetModal() {
@@ -735,10 +907,10 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     const obj = {
-      title: this.historicalWidgetForm.controls.chartTitle.value,
-      chartType: chartType,
-      chartCount: this.chartCount,
-      chart_Id: 'chart_' + datefns.getUnixTime(new Date()),
+      // title: this.historicalWidgetForm.controls.chartTitle.value,
+      // chartType: chartType,
+      // chartCount: this.chartCount,
+      // chart_Id: 'chart_' + datefns.getUnixTime(new Date()),
       showDataTable: this.showDataTable,
       y1axis: y1axis,
       y2axis: y2axis,
@@ -774,7 +946,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
 
     let reqObj = {
       "type": "HistoricalWidget",
-      "chart_id": "string",
+      "chart_id": 'chart_' + datefns.getUnixTime(new Date()),
       "widget_type": chartType,
       "widget_title": this.historicalWidgetForm.controls.chartTitle.value,
       "properties": [
@@ -810,7 +982,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       })
     }
     else {
-      const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
+      const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === reqObj.widget_title.toLowerCase());
       if (index === -1) {
         this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(res => {
           this.toasterService.showSuccess(res["message"], 'Save Layout');
@@ -844,6 +1016,10 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties?.length > 0) {
             dataElement.properties[0].id = dataElement.id;
+            dataElement.properties[0].title = dataElement.widget_title;
+            dataElement.properties[0].chartType = dataElement.widget_type;
+            dataElement.properties[0].chart_Id = dataElement.chart_id;
+            console.log(dataElement.properties[0]);
             this.layoutJson.push(dataElement.properties[0]);
             this.storedLayout.push(dataElement.properties[0]);
           }
@@ -885,6 +1061,47 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }, error => {
       this.isHistoryAPILoading = false;
     })
+  }
+
+  getTableSortable() {
+    const that = this;
+    setTimeout(() => {
+      const fixHelperModified = (e, tr) => {
+        const $originals = tr.children();
+        const $helper = tr.clone();
+        $helper.children().each(function (index) {
+          $(this).width($originals.eq(index).width());
+        });
+        return $helper;
+      };
+      const updateIndex = (e, ui) => {
+        $('td.index', ui.item.parent()).each(function (i) {
+          $(this).html(i + 1 + '');
+        });
+        $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
+            if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_Id) {
+              that.configureDashboardWidgets[j].index = i + 1;
+            }
+          }
+        });
+      };
+
+      $('#myFavTable tbody')
+        .sortable({
+          helper: fixHelperModified,
+          stop: updateIndex,
+        })
+        .disableSelection();
+
+      $('#myFavTable tbody').sortable({
+        distance: 5,
+        delay: 100,
+        opacity: 0.6,
+        cursor: 'move'
+      });
+    }, 1000);
   }
 
   // checkValidation() {

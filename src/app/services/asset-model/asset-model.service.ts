@@ -206,6 +206,14 @@ export class AssetModelService {
     return this.http.put(this.url + String.Format(AppUrls.GET_ASSETS_WIDGET_BY_CHARTID, encodeURIComponent(name), encodeURIComponent(chartId)), body)
   }
 
+  deleteAssetWidget(name: string, id: any): Observable<any> {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ASSETS_WIDGET, encodeURIComponent(name), encodeURIComponent(id)))
+  }
+
+  bulkDeleteAssetWidget(name: string, body: any): Observable<any> {
+    return this.http.put(this.url + String.Format(AppUrls.BULK_DELETE_ASSETS_WIDGET, encodeURIComponent(name)), body)
+  }
+
   getAssetsModelLayout(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {

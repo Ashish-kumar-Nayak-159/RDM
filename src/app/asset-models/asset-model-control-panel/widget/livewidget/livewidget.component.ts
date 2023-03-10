@@ -56,6 +56,11 @@ export class LivewidgetComponent implements OnInit {
   properties: any = {};
   trueConditionalNumber: string = 'ON';
   falseConditionalNumber: string = 'OFF';
+  isAllWidgestSelectedForDeleteHistorical: boolean;
+  deleteBtn: boolean;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
+  bodyMessage: string;
+  headerMessage: string;
 
   constructor(
     private commonService: CommonService,
@@ -71,8 +76,9 @@ export class LivewidgetComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties({});
-    await this.getLiveWidgets();
+    // await this.getLiveWidgets();
     this.getModelSlaveDetails();
+    this.getAssetWidget();
   }
 
   getModelSlaveDetails() {
@@ -199,7 +205,7 @@ export class LivewidgetComponent implements OnInit {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
-            if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
+            if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_id) {
               that.configureDashboardWidgets[j].index = i + 1;
             }
           }
@@ -240,11 +246,12 @@ export class LivewidgetComponent implements OnInit {
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;
+            console.log(this.liveWidgets);
             // let count = 1;
             this.liveWidgets.forEach((widget) => {
-              this.checkingsmallwidget = widget.widgetType;
+              this.checkingsmallwidget = widget.widget_type;
 
-              if (widget.widgetType === 'SmallNumber') {
+              if (widget.widget_type === 'SmallNumber') {
                 this.checkwidgettype = true;
               }
               widget.freezed = this.assetModel.freezed;
@@ -252,7 +259,7 @@ export class LivewidgetComponent implements OnInit {
               widget.cloud_derived_props = false;
               widget.measured_props = false;
               widget.derived_kpis = false;
-              if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+              if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart') {
                 widget?.properties.forEach((prop) => {
                   if (prop.property) {
                     prop.json_key = prop.property.json_key;
@@ -320,25 +327,28 @@ export class LivewidgetComponent implements OnInit {
   onWidgetTypeChange() {
     this.widgetObj.properties = [{}];
     if (
-      this.widgetObj.widgetType === 'NumberWithTrend' ||
-      this.widgetObj.widgetType === 'LineChart' ||
-      this.widgetObj.widgetType === 'AreaChart'
+      this.widgetObj.widget_type === 'NumberWithTrend' ||
+      this.widgetObj.widget_type === 'LineChart' ||
+      this.widgetObj.widget_type === 'AreaChart'
     ) {
       this.widgetObj.noOfDataPointsForTrend = 15;
     }
     this.filteredPropList = [];
+
     this.propertyList.forEach((prop) => {
       if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-        if (this.widgetObj?.widgetType !== "StringWidget" && prop.data_type === "Number") {
+        if (this.widgetObj?.widget_type !== "StringWidget" && prop.data_type === "Number") {
           this.filteredPropList.push(prop);
         }
-        else if (this.widgetObj?.widgetType === "StringWidget") {
+        else if (this.widgetObj?.widget_type === "StringWidget") {
           this.filteredPropList.push(prop);
         }
 
       }
     });
-    if (this.widgetObj?.widgetType === "ConditionalNumber") {
+    console.log(this.widgetObj);
+
+    if (this.widgetObj?.widget_type === "ConditionalNumber") {
       this.isDisabled = false;
       this.formula = '';
       this.propertyObj.metadata = {
@@ -372,7 +382,7 @@ export class LivewidgetComponent implements OnInit {
 
   ValidateallInputField() {
 
-    if (this.widgetObj.widgetType === 'ConditionalNumber') {
+    if (this.widgetObj.widget_type === 'ConditionalNumber') {
       let flag = false;
       this.propertyObj.id = this.commonService.generateUUID();
 
@@ -459,7 +469,34 @@ export class LivewidgetComponent implements OnInit {
   onSaveConfigureDashboardWidgets() {
     this.isCreateWidgetAPILoading = true;
     this.sortListBasedOnIndex();
-    this.updateAssetModel(this.configureDashboardWidgets, 'Dashboard configured successfully');
+    let req = [];
+    for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
+      if (!this.configureDashboardWidgets[i].isDelete) {
+        // this.configureDashboardWidgets.splice(i, 1);
+        let obj = {
+          "action": "ReArrange",
+          "id": this.configureDashboardWidgets[i].id,
+          "chartId": this.configureDashboardWidgets[i].chart_id,
+          "dashboardVisibility": this.configureDashboardWidgets[i].dashboardVisibility,
+          "index": this.configureDashboardWidgets[i].index,
+          "isDelete": false
+        }
+        req.push(obj);
+      }
+    }
+    if (req.length > 0) {
+      debugger
+      this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, req).subscribe(async res => {
+        this.toasterService.showSuccess(res["message"], 'Save Layout');
+        await this.getAssetModelsderivedKPIs();
+        await this.getAssetsModelProperties({});
+        await this.getAssetWidget();
+        await this.onCloseAddWidgetModal();
+        await this.onCloseConfigureDashboardModal();
+        this.isCreateWidgetAPILoading = false;
+      })
+    }
+    //this.updateAssetModel(this.configureDashboardWidgets, 'Dashboard configured successfully');
   }
 
   sortListBasedOnIndex() {
@@ -467,7 +504,7 @@ export class LivewidgetComponent implements OnInit {
   }
 
   onCloseAddWidgetModal() {
-    $('#addWidgetsModal').modal('hide');
+    $('#addLWidgetsModal').modal('hide');
     this.widgetObj = undefined;
   }
 
@@ -485,47 +522,51 @@ export class LivewidgetComponent implements OnInit {
       json_model: {},
       threshold: {},
     };
-    $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  checkForAllWidgetVisibility() {
-    let count = 0;
-    this.configureDashboardWidgets.forEach((widget, index) => {
-      if (widget.dashboardVisibility) {
-        count++;
-      }
-    });
-    if (count === this.configureDashboardWidgets.length) {
-      this.isAllWidgestSelectedForDashboard = true;
-    } else {
-      this.isAllWidgestSelectedForDashboard = false;
-    }
-  }
+  // checkForAllWidgetVisibility() {
+  //   let count = 0;
+  //   this.configureDashboardWidgets.forEach((widget, index) => {
+  //     if (widget.dashboardVisibility) {
+  //       count++;
+  //     }
+  //   });
+  //   if (count === this.configureDashboardWidgets.length) {
+  //     this.isAllWidgestSelectedForDashboard = true;
+  //   } else {
+  //     this.isAllWidgestSelectedForDashboard = false;
+  //   }
+  // }
 
   onOpenConfigureDashboardModal() {
-    this.configureDashboardWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
+    this.isAllWidgestSelectedForDashboard = false;
+    this.isAllWidgestSelectedForDeleteHistorical = false;
+    this.configureDashboardWidgets = this.liveWidgets;
     this.configureDashboardWidgets.forEach((widget, index) => {
       widget.index = index + 1;
+      widget.isDelete = false;
     });
-    this.checkForAllWidgetVisibility();
+    this.checkForAllWidgetVisibility(0);
+    this.checkForAllWidgetVisibility(1);
     $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.getTableSortable();
   }
 
-  removeWidget(chartId) {
-    const arr = JSON.parse(JSON.stringify(this.liveWidgets));
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].chartId === chartId) {
-        arr.splice(i, 1);
-      }
-    }
-    this.liveWidgets = JSON.parse(JSON.stringify(arr));
-    this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
-  }
+  // removeWidget(chartId) {
+  //   const arr = JSON.parse(JSON.stringify(this.liveWidgets));
+  //   for (let i = 0; i < arr.length; i++) {
+  //     if (arr[i].chartId === chartId) {
+  //       arr.splice(i, 1);
+  //     }
+  //   }
+  //   this.liveWidgets = JSON.parse(JSON.stringify(arr));
+  //   this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
+  // }
 
   async updateAssetModel(arr, message) {
     arr.forEach((widget) => {
-      if (widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart') {
+      if (widget.widget_type === 'LineChart' || widget.widget_type === 'AreaChart') {
         widget.y1AxisProps.forEach((prop) => {
           delete prop.property;
         });
@@ -540,8 +581,7 @@ export class LivewidgetComponent implements OnInit {
     });
     this.assetModel.live_widgets = arr;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    console.log(this.assetModel);
-    return
+
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
         async (response: any) => {
@@ -562,7 +602,7 @@ export class LivewidgetComponent implements OnInit {
   }
 
   async onSaveWidgetObj() {
-    if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
+    if (!this.widgetObj.widget_title || !this.widgetObj.widget_type) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
@@ -573,26 +613,26 @@ export class LivewidgetComponent implements OnInit {
 
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
-      if (!prop.property || (this.widgetObj.widgetType == "NumberWithImage" && !prop?.image)) {
+      if (!prop.property || (this.widgetObj.widget_type == "NumberWithImage" && !prop?.image)) {
         found = false;
 
-      } else if (prop.property && this.widgetObj.widgetType != "NumberWithImage") {
+      } else if (prop.property && this.widgetObj.widget_type != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
         delete prop.property;
       }
     });
-    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage" && this.widgetObj.widgetType !== 'ConditionalNumber') {
+    if (!found && this.widgetObj.widget_type !== 'LineChart' && this.widgetObj.widget_type !== 'AreaChart' && this.widgetObj.widget_type != "NumberWithImage" && this.widgetObj.widget_type !== 'ConditionalNumber') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
-    if (!found && this.widgetObj.widgetType == "NumberWithImage") {
+    if (!found && this.widgetObj.widget_type == "NumberWithImage") {
       this.toasterService.showError('Please select image.', 'Add Widget');
       return;
     }
 
 
-    if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
+    if (this.widgetObj.widget_type === 'LineChart' || this.widgetObj.widget_type === 'AreaChart') {
       if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
         this.toasterService.showError(
           'Please select at least one property in y1 axis property.',
@@ -626,7 +666,7 @@ export class LivewidgetComponent implements OnInit {
         });
         this.widgetObj.y2AxisProps = JSON.parse(JSON.stringify(arr));
       }
-    } else if (this.widgetObj.widgetType == "ConditionalNumber") {
+    } else if (this.widgetObj.widget_type == "ConditionalNumber") {
       // const arr = [];
       let arr = [{
         formula: this.formula,
@@ -646,7 +686,7 @@ export class LivewidgetComponent implements OnInit {
       this.widgetObj.properties = JSON.parse(JSON.stringify(arr));;
     }
 
-    else if (this.widgetObj.widgetType == "NumberWithImage") {
+    else if (this.widgetObj.widget_type == "NumberWithImage") {
       let imgUploadError = false;
       await Promise.all(this.widgetObj.properties.map(async (element, index) => {
         const data = await this.commonService.uploadImageToBlob(
@@ -663,11 +703,11 @@ export class LivewidgetComponent implements OnInit {
       if (imgUploadError) this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     // this.isCreateWidgetAPILoading = true;
-    this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
+    this.widgetObj.chart_id = 'chart_' + datefns.getUnixTime(new Date());
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    console.log(this.widgetObj);
+    // console.log(this.widgetObj);
     this.addWidget();
     // this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
     console.log("before clear this.selectedSlave", this.selectedSlave)
@@ -676,22 +716,29 @@ export class LivewidgetComponent implements OnInit {
     this.selectedSlave = { slave_name: 'Select Slave' }
   }
 
-  onClickOfCheckbox() {
-    if (this.isAllWidgestSelectedForDashboard) {
-      this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
-    } else {
-      this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
-    }
-  }
+  // onClickOfCheckbox() {
+  //   if (this.isAllWidgestSelectedForDashboard) {
+  //     this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
+  //   } else {
+  //     this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
+  //   }
+  // }
 
   addWidget() {
+    let properties = {
+      y1AxisProps: this.widgetObj.y1AxisProps,
+      y2AxisProps: this.widgetObj.y2AxisProps,
+      slave_id: this.widgetObj.slave_id,
+      dashboardVisibility: this.widgetObj.dashboardVisibility,
+      noOfDataPointsForTrend: this.widgetObj.noOfDataPointsForTrend,
+    }
     let reqObj = {
       "type": "LiveWidget",
-      "chart_id": "string",
-      "widget_type": this.widgetObj.widgetType,
-      "widget_title": this.widgetObj.widgetTitle,
+      "chart_id": this.widgetObj.chart_id,
+      "widget_type": this.widgetObj.widget_type,
+      "widget_title": this.widgetObj.widget_title,
       "properties": [
-        this.widgetObj
+        properties
       ],
       "index": 0,
       "derived_kpis": true,
@@ -711,19 +758,281 @@ export class LivewidgetComponent implements OnInit {
         ]
       }
     }
-
-    this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(async res => {
-      this.toasterService.showSuccess(res["message"], 'Live ' + this.widgetStringFromMenu);
-      await this.getAssetModelsderivedKPIs();
-      await this.getAssetsModelProperties({});
-      await this.getLiveWidgets();
-      await this.onCloseAddWidgetModal();
-      await this.onCloseConfigureDashboardModal();
-      this.isCreateWidgetAPILoading = false;
-    },
-      (err) => {
+    console.log(reqObj);
+    let id = this.widgetObj.id;
+    if (id > 0) {
+      this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj,).subscribe(async res => {
+        this.toasterService.showSuccess(res["message"], 'Live ' + this.widgetStringFromMenu);
+        await this.getAssetModelsderivedKPIs();
+        await this.getAssetsModelProperties({});
+        await this.getAssetWidget();
+        await this.onCloseAddWidgetModal();
+        await this.onCloseConfigureDashboardModal();
         this.isCreateWidgetAPILoading = false;
-        this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
       })
+    }
+    else {
+      this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(async res => {
+        this.toasterService.showSuccess(res["message"], 'Live ' + this.widgetStringFromMenu);
+        await this.getAssetModelsderivedKPIs();
+        await this.getAssetsModelProperties({});
+        await this.getAssetWidget();
+        await this.onCloseAddWidgetModal();
+        await this.onCloseConfigureDashboardModal();
+        this.isCreateWidgetAPILoading = false;
+      },
+        (err) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
+        })
+    }
+
   }
+
+  getAssetWidget() {
+    const params = {
+      app: this.contextApp.app,
+      name: this.assetModel.name,
+    };
+    this.liveWidgets = [];
+    this.isGetWidgetsAPILoading = true;
+    this.assetModelService.getAssetWidget(this.assetModel.name, "LiveWidget").subscribe(response => {
+      console.log(response);
+      if (response?.data?.length > 0) {
+        response.data.forEach((dataElement, index) => {
+          if (dataElement?.properties?.length > 0) {
+            // dataElement.properties[0].id = dataElement.id;
+            // dataElement.properties[0].title = dataElement.widget_title;
+            // dataElement.properties[0].chartType = dataElement.widget_type;
+            // dataElement.properties[0].chart_Id = dataElement.chart_id;
+            dataElement.y1AxisProps = dataElement.properties[0].y1AxisProps;
+            dataElement.y2AxisProps = dataElement.properties[0].y2AxisProps;
+            dataElement.noOfDataPointsForTrend = dataElement.properties[0].noOfDataPointsForTrend;
+            dataElement.slave_id = dataElement.properties[0].slave_id;
+            dataElement.dashboardVisibility = dataElement.properties[0].dashboardVisibility;
+            console.log(dataElement);
+            this.liveWidgets.push(dataElement);
+          }
+        });
+        this.liveWidgets.forEach((widget) => {
+          this.checkingsmallwidget = widget.widget_type;
+
+          if (widget.widget_type === 'SmallNumber') {
+            this.checkwidgettype = true;
+          }
+          widget.freezed = this.assetModel.freezed;
+          widget.edge_derived_props = false;
+          widget.cloud_derived_props = false;
+          widget.measured_props = false;
+          widget.derived_kpis = false;
+          if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart') {
+            widget?.properties.forEach((prop) => {
+              if (prop.property) {
+                prop.json_key = prop.property.json_key;
+              }
+              prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              prop.type = prop.property?.type;
+
+              if (prop?.type === 'Derived KPIs') {
+                widget.derived_kpis = true;
+              } else if (prop?.type === 'Edge Derived Properties') {
+                widget.edge_derived_props = true;
+              } else if (prop?.type === 'Cloud Derived Properties') {
+                widget.cloud_derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
+          } else {
+            widget?.y1AxisProps.forEach((prop) => {
+              if (prop.id) {
+                prop.json_key = prop.id;
+              }
+              prop.property = this.propertyList.find(
+                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+              );
+              if (prop?.type === 'Derived KPIs') {
+                widget.derived_kpis = true;
+              } else if (prop?.type === 'Edge Derived Properties') {
+                widget.edge_derived_props = true;
+              } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                widget.cloud_derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
+            widget?.y2AxisProps?.forEach((prop) => {
+              if (prop.id) {
+                prop.json_key = prop.id;
+              }
+              prop.property = this.propertyList.find(
+                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+              );
+              if (prop?.type === 'Derived KPIs') {
+                widget.derived_kpis = true;
+              } else if (prop?.type === 'Edge Derived Properties') {
+                widget.edge_derived_props = true;
+              } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                widget.cloud_derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
+          }
+        });
+        this.getTelemetryData();
+        setInterval(() => this.getTelemetryData(), 10000);
+      }
+      this.isGetWidgetsAPILoading = false;
+
+
+    },
+      () => (this.isGetWidgetsAPILoading = false)
+    )
+  }
+
+  onMenu(event) {
+    debugger
+    if (event.type == "Delete") {
+      this.removeWidget(event.widgetId);
+    }
+    else {
+      this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
+        console.log(res);
+        let data = res;
+        data.y1AxisProps = data.properties[0].y1AxisProps;
+        data.y2AxisProps = data.properties[0].y2AxisProps;
+        data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
+        data.slave_id = data.properties[0].slave_id;
+        this.selectedSlave = data.properties[0].slave_id;
+        data.dashboardVisibility = data.properties[0].dashboardVisibility;
+        this.widgetObj = data;
+        this.onWidgetTypeChange();
+
+        if (event.type == "Edit") {
+          this.widgetObj.id = event.widgetId;
+        } else if (event.type == "Clone") {
+          this.widgetObj.id = 0;
+        }
+        $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      })
+    }
+  }
+
+  removeWidget(id) {
+    debugger
+    if (id == 0) {
+      let deleteReq = [];
+      for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
+        if (this.configureDashboardWidgets[i].isDelete) {
+          // this.configureDashboardWidgets.splice(i, 1);
+          let obj = {
+            "action": "Delete",
+            "id": 0,
+            "chartId": "string",
+            "dashboardVisibility": true,
+            "index": 0,
+            "isDelete": true
+          }
+          obj.id = this.configureDashboardWidgets[i].id;
+          obj.chartId = this.configureDashboardWidgets[i].chart_id;
+          deleteReq.push(obj);
+        }
+      }
+      if (deleteReq.length > 0) {
+        debugger
+        this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, deleteReq).subscribe(res => {
+          this.toasterService.showSuccess(res["message"], 'Save Layout');
+          this.getAssetWidget();
+          this.onCloseConfigureDashboardModal();
+
+        })
+      }
+    }
+    else {
+      this.assetModelService.deleteAssetWidget(this.assetModel.name, id).subscribe(res => {
+        this.toasterService.showSuccess(res["message"], 'Save Layout');
+        this.getAssetWidget();
+        this.onCloseConfigureDashboardModal();
+
+      })
+    }
+    console.log(this.configureDashboardWidgets);
+  }
+
+
+  checkForAllWidgetVisibility(type) {
+    let count = 0;
+    if (type == 0) {
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        if (widget.dashboardVisibility) {
+          count++;
+        }
+      });
+      if (count === this.configureDashboardWidgets.length) {
+        this.isAllWidgestSelectedForDashboard = true;
+      } else {
+        this.isAllWidgestSelectedForDashboard = false;
+      }
+    }
+    else if (type == 1) {
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        if (widget.isDelete) {
+          count++;
+        }
+      });
+      if (count === this.configureDashboardWidgets.length) {
+        this.isAllWidgestSelectedForDeleteHistorical = true;
+      } else {
+        this.isAllWidgestSelectedForDeleteHistorical = false;
+      }
+
+      this.deleteBtn = count > 0 ? true : false;
+
+    }
+  }
+
+  onClickOfCheckbox(type) {
+    if (type == 0) {
+      if (this.isAllWidgestSelectedForDashboard) {
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
+      } else {
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
+      }
+    }
+    else if (type == 1) {
+      if (this.isAllWidgestSelectedForDeleteHistorical) {
+        this.configureDashboardWidgets.forEach((widget) => (widget.isDelete = true));
+      } else {
+        this.configureDashboardWidgets.forEach((widget) => (widget.isDelete = false));
+      }
+
+      this.deleteBtn = this.isAllWidgestSelectedForDeleteHistorical ? true : false;
+
+    }
+
+  }
+
+  openConfirmRemoveWidgetModal() {
+    debugger;
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
+    this.bodyMessage =
+      'Are you sure you want to remove this ' + this.widgetStringFromMenu + '?';
+    this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
+    $('#confirmRemoveWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      $('#confirmRemoveWidgetModal').modal('hide');
+    } else if (eventType === 'save') {
+      this.removeWidget(0);
+      $('#confirmRemoveWidgetModal').modal('hide');
+    }
+  }
+
 }

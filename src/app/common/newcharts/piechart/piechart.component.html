@@ -1,0 +1,60 @@
+<accordion class="mb-2" id="{{chartId}}_{{chartId}}">
+    <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
+        <ng-container accordion-heading>
+            <a class="btn" type="button">
+                {{chartTitle}}
+            </a>
+            <div class="float-right pull-right mt-1">
+                <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+                <div class="round-badge badge-darkblue" tooltip="Edge Derived Property"
+                    *ngIf="chartConfig.edge_derived_props">
+                    ED</div>
+                <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+                    *ngIf="chartConfig.cloud_derived_props">CD</div>
+
+                <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M
+                </div>
+
+                <button (click)="$event.stopPropagation()" class="border-0 btnStyle"
+                    style="background-color: transparent;" mat-icon-button [matMenuTriggerFor]="menu"
+                    aria-label="Example icon button with a horizontal three dot icon">
+                    <i class='fas fa-ellipsis-v'></i>
+                </button>
+                <mat-menu class="micon" #menu="matMenu">
+                    <button mat-menu-item (click)="onMenu(0)"><i class="fa fa-edit"></i> Edit</button>
+                    <button mat-menu-item (click)="onMenu(1)"><i class="fa fa-clone" aria-hidden="true"></i>
+                        Clone</button>
+                    <button mat-menu-item (click)="openConfirmRemoveWidgetModal()"
+                        *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1">
+                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                    </button>
+                </mat-menu>
+
+            </div>
+        </ng-container>
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow h-100">
+                    <div class="card-body1" style="max-height: 25rem; overflow-y: auto;"
+                        *ngIf="telemetryData.length > 0 else noData;">
+                        <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
+                        <div class="overlay" *ngIf="isOverlayVisible">
+                            <div style="font-family:'Arial Black',sans-serif; font-size: 40px;">Sample Chart</div>
+                        </div>
+                    </div>
+                    <ng-template #noData>
+                        <p>No data found for selected time interval.</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </accordion-group>
+</accordion>
+
+<div class="modal fade" id="confirmRemoveWidgetPieModal{{chartId}}" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+            (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+    </div>
+</div>

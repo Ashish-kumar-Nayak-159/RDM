@@ -42,8 +42,7 @@ import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker
 import { HistoricalLivechartComponent } from './charts/historical-livechart/historical-livechart.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { LinechartComponent } from './newcharts/linechart/linechart.component';
-
+import { NumberonlywidgetComponent } from './newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -76,6 +75,8 @@ import { LinechartComponent } from './newcharts/linechart/linechart.component';
     SmallNumberWidgetComponent,
     ConditionalWidgetComponent,
     HistoricalLivechartComponent,
+    NumberonlywidgetComponent,
+
   ],
   imports: [
     CommonModule,
@@ -125,7 +126,7 @@ import { LinechartComponent } from './newcharts/linechart/linechart.component';
     FormValidatorDirective,
     BsDatepickerModule,
     HistoricalLivechartComponent,
-
+    NumberonlywidgetComponent
 
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],

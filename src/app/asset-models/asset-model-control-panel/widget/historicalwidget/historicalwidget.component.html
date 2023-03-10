@@ -6,7 +6,8 @@
                 Add</button>
         </li>
         <li class="nav-item">
-            <button class="btn btn-sm btn-success ml-2 mt-1"><span class="fa fa-cog fa-sm text-white"></span>
+            <button class="btn btn-sm btn-success ml-2 mt-1" (click)="onOpenConfigureDashboardModal()"><span
+                    class="fa fa-cog fa-sm text-white"></span>
                 Setting</button>
         </li>
     </ul>
@@ -21,11 +22,47 @@
         </div> -->
         <div style="overflow: scroll;height: 100%;">
             <div *ngFor="let chart of layoutJson">
-                <app-linechart *ngIf="telemetryData" [chartConfig]="chart" [widgetStringFromMenu]="widgetStringFromMenu"
-                    [decodedToken]="decodedToken" [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
-                    [telemetryData]="telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
-                    [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
-                    [asset]="asset"></app-linechart>
+                <div
+                    *ngIf="chart.chartType=='Line Chart' || chart.chartType=='Area Chart' || chart.chartType=='Column Chart'">
+                    <app-linechart *ngIf="chart?.telemetryData" [chartConfig]="chart"
+                        [widgetStringFromMenu]="widgetStringFromMenu" [decodedToken]="decodedToken"
+                        [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                        [telemetryData]="chart?.telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                        [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
+                        [asset]="asset" [assetModel]="assetModel"></app-linechart>
+                </div>
+                <div *ngIf="chart.chartType=='Bar Chart'">
+                    <app-barchart *ngIf="chart?.telemetryData" [chartConfig]="chart"
+                        [widgetStringFromMenu]="widgetStringFromMenu" [decodedToken]="decodedToken"
+                        [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                        [telemetryData]="chart?.telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                        [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
+                        [asset]="asset" [assetModel]="assetModel"></app-barchart>
+                </div>
+                <div *ngIf="chart.chartType=='Pie Chart'">
+                    <app-piechart *ngIf="chart?.telemetryData" [chartConfig]="chart"
+                        [widgetStringFromMenu]="widgetStringFromMenu" [decodedToken]="decodedToken"
+                        [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                        [telemetryData]="chart?.telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                        [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
+                        [asset]="asset" [assetModel]="assetModel"></app-piechart>
+                </div>
+                <div *ngIf="chart.chartType=='Vibration Damage Plot'">
+                    <app-damageplotchart *ngIf="chart?.telemetryData" [chartConfig]="chart"
+                        [widgetStringFromMenu]="widgetStringFromMenu" [decodedToken]="decodedToken"
+                        [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                        [telemetryData]="chart?.telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                        [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
+                        [asset]="asset" [assetModel]="assetModel"></app-damageplotchart>
+                </div>
+                <div *ngIf="chart.chartType=='Data Table'">
+                    <app-datatablechart *ngIf="chart?.telemetryData" [chartConfig]="chart"
+                        [widgetStringFromMenu]="widgetStringFromMenu" [decodedToken]="decodedToken"
+                        [chartTitle]="chartTitle" [hideCancelButton]="!assetModel.freezed"
+                        [telemetryData]="chart?.telemetryData" [chartWidth]="chartWidth" [chartHeight]="chartHeight"
+                        [isOverlayVisible]="true" (chart_Id)="onMenu($event)" [propertyList]="propertyList"
+                        [asset]="asset" [assetModel]="assetModel"></app-datatablechart>
+                </div>
             </div>
         </div>
     </div>
@@ -149,5 +186,85 @@
                 </form>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal right fade" id="configureHDashboardWidgetsModal" tabindex="-1" role="dialog"
+    aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard {{widgetStringFromMenu}}</h5>
+                <button type="button" class="close" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onCloseConfigureDashboardModal()" aria-label="Close">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+
+                    <table class="table table-bordered table-striped" cellspacing="0" id="myFavTable">
+                        <thead>
+                            <tr class="bg-secondary text-white">
+                                <th scope="col">Index</th>
+                                <th scope="col" style="width: 45%">{{widgetStringFromMenu}} Name</th>
+                                <th scope="col">
+                                    <input type="checkbox" name="visibleall" id="visibleall"
+                                        (change)="onClickOfCheckbox(0)" [(ngModel)]="isAllWidgestSelectedForHistorical"
+                                        placement="bottom"
+                                        [tooltip]="isAllWidgestSelectedForHistorical ? 'Deselect All' : 'Select All'" />
+                                    <label for="visibleall" class="ml-2 mb-0">Visibility</label>
+                                </th>
+                                <th scope="col">
+                                    <input type="checkbox" name="deleteall" id="deleteall"
+                                        (change)="onClickOfCheckbox(1)"
+                                        [(ngModel)]="isAllWidgestSelectedForDeleteHistorical" placement="bottom"
+                                        [tooltip]="isAllWidgestSelectedForDeleteHistorical ? 'Deselect All' : 'Select All'" />
+                                    <label for="deleteall" class="ml-2 mb-0">Delete</label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
+
+                                <tr class=" cursor-move" id="{{item.dashboardVisibility ? item.chart_Id : ''}}"
+                                    [ngClass]="{'favoriteOrderId': item.dashboardVisibility}">
+                                    <td class="index">{{item.index}}</td>
+                                    <td>{{item.title}}</td>
+                                    <td><input type="checkbox" name="visible{{index}}" id="visible{{index}}"
+                                            [(ngModel)]="item.dashboardVisibility"
+                                            (change)="checkForAllWidgetVisibility(0)" /></td>
+                                    <td><input type="checkbox" name="delete{{index}}" id="delete{{index}}"
+                                            [(ngModel)]="item.isDelete" (change)="checkForAllWidgetVisibility(1)" />
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div style="width: 52%;">
+                    <button type="button" class="btn btn-primary add-row mr-1" [disabled]="isCreateWidgetAPILoading"
+                        (click)="onSaveConfigureDashboardWidgets()">Save</button>
+                    <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+                        (click)="onCloseConfigureDashboardModal()">Cancel</button>
+                    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
+                </div>
+                <div style="width: 40%;text-align: right;">
+                    <button type="button" class="btn btn-danger add-row"
+                        [disabled]="isCreateWidgetAPILoading || !deleteBtn"
+                        (click)="openConfirmRemoveWidgetModal()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmRemoveWidgetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+            [modalConfig]="modalConfig" (modalEvents)="onModalEvents($event)"></app-confirm-modal>
     </div>
 </div>

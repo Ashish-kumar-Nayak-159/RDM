@@ -39,6 +39,12 @@ import { WidgetComponent } from './asset-model-control-panel/widget/widget.compo
 import { LinechartComponent } from '../common/newcharts/linechart/linechart.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { BarchartComponent } from '../common/newcharts/barchart/barchart.component';
+import { PiechartComponent } from '../common/newcharts/piechart/piechart.component';
+import { DamageplotchartComponent } from '../common/newcharts/damageplotchart/damageplotchart.component';
+import { DatatablechartComponent } from '../common/newcharts/datatablechart/datatablechart.component';
+import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
+import { NumberonlywidgetComponent } from '../common/newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
 @NgModule({
   declarations: [
     AssetModelListComponent,
@@ -68,7 +74,11 @@ import { MatMenuModule } from '@angular/material/menu';
     LivewidgetComponent,
     WidgetComponent,
     LinechartComponent,
-
+    BarchartComponent,
+    PiechartComponent,
+    DamageplotchartComponent,
+    DatatablechartComponent,
+    LivelinechartComponent,
 
   ],
   imports: [

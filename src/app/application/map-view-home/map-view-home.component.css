@@ -1,3 +1,5 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+
 agm-map {
   height: calc(100vh - 8rem);
 }
@@ -15,4 +17,62 @@ agm-map {
   position: absolute;
   right: 8px !important;
   top: 8px !important;
+}
+
+.unity-modal-card{
+  position: absolute;
+  top: 54px;
+  right: 0;
+  bottom: 0;
+  left: 192px;
+  /* left: 0; */
+  z-index: 9999;
+
+}
+.unity-modal-card card-body{
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+}
+
+
+.unity-modal-card .card-header{
+  background-color: #F2F0F3;
+  border-bottom: transparent;
+}
+
+.unity-backdrop{
+  position: fixed;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.2;
+  z-index: 9998;
+}
+
+.pswp__button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  border-radius: 9999999px;
+  background: rgba(0,0,0,0.9);
+  place-items: center;
+  color: #fff;
+  border: none;
+}
+
+.pswp__button--close {
+  margin-right: 6px;
+}
+
+.pswp__button:hover, 
+.pswp__button:active, 
+.pswp__button:focus, 
+.pswp__button:focus-within {
+  /* background: #fff; */
+  border: none;
+  outline: none;
 }

@@ -1,4 +1,3 @@
-import { CommonService } from './../../../services/common.service';
 import {
   Component,
   Input,
@@ -15,14 +14,15 @@ import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 
 @Component({
-  selector: 'app-rectangle-widget',
-  templateUrl: './rectangle-widget.component.html',
-  styleUrls: ['./rectangle-widget.component.css'],
+  selector: 'app-rectanglewidget',
+  templateUrl: './rectanglewidget.component.html',
+  styleUrls: ['./rectanglewidget.component.css']
 })
-export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   private chart: am4charts.XYChart3D[] = [];
   @Input() id: string;
   @Input() value: string;
@@ -30,22 +30,36 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
   @Input() asset: any;
-  @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   bodyMessage: string;
   headerMessage: string;
   decodedToken: any;
   isOverlayVisible = false;
-  chartId: any = 'XYChart3D';
   telemetryData: any;
   subscriptions: Subscription[] = [];
   widgetStringFromMenu: any;
+  @Output() chart_Id = new EventEmitter<any>();
+  widgetId: any;
+  chartId: any;
+  telmetryDivAddonClass: any;
+  innerClass: any;
+  overlayLeft: any = '60px';
 
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
   ngOnInit(): void {
-    console.log(this.chartConfig);
+    debugger
+    if (this.chartConfig) {
+      this.chartId = this.chartConfig.chart_Id;
+      this.widgetId = this.chartConfig.id;
+      this.chartConfig.properties = this.chartConfig.properties[0].properties;
 
+      this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
+      this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
+
+
+    }
+    console.log(this.chartConfig.properties);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
@@ -75,10 +89,9 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   generateChart() {
-    debugger
     this.chartConfig.properties.forEach((prop, index) => {
       am4core.options.autoDispose = true;
-      const chart = am4core.create(this.chartConfig.chartId + '_chart_' + index, am4charts.XYChart3D);
+      const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.XYChart3D);
       chart.hiddenState.properties.opacity = 0;
       chart.logo.disabled = true;
       chart.angle = 50;
@@ -142,9 +155,9 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       isDisplayCancel: true,
     };
     this.bodyMessage =
-      'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' ' + this.widgetStringFromMenu + '?';
+      'Are you sure you want to remove this ' + this.chartConfig.widget_title + ' ' + this.widgetStringFromMenu + '?';
     this.headerMessage = 'Remove ' + this.widgetStringFromMenu;
-    $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({
+    $('#confirmRemoveWidgetModal' + this.chartConfig.chart_id).modal({
       backdrop: 'static',
       keyboard: false,
       show: true,
@@ -153,15 +166,27 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chart_id).modal('hide');
     } else if (eventType === 'save') {
-      this.removeChart(this.chartConfig.chartId);
-      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
+      this.removeWidget();
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chart_id).modal('hide');
     }
   }
 
-  removeChart(chartId) {
-    this.removeWidget.emit(chartId);
+  removeWidget() {
+    this.onMenu(2);
+  }
+
+  onMenu(type) {
+    if (type == 0) {
+      this.chart_Id.emit({ widgetId: this.widgetId, type: "Edit" });
+    }
+    else if (type == 1) {
+      this.chart_Id.emit({ widgetId: this.widgetId, type: "Clone" });
+    }
+    else {
+      this.chart_Id.emit({ widgetId: this.widgetId, type: "Delete" });
+    }
   }
 
   ngOnDestroy(): void {

@@ -19,9 +19,16 @@ export class NumberonlywidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
-
+    if (this.widgetObj?.widget_type !== 'SmallNumber') {
+      this.widgetObj.properties = this.widgetObj.properties
+      this.widgetObj.properties.forEach(element => {
+        debugger;
+        element.property = element;
+        // this.onPropertySelection(element);
+      });
+    }
   }
+
   addProperty() {
     this.widgetObj.properties.push({});
   }

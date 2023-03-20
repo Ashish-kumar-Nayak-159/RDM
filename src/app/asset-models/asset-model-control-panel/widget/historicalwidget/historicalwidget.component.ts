@@ -170,7 +170,8 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       selectedChartType: new FormControl(this.selectedChartType, Validators.required),
       y1AxisProps: new FormControl('', Validators.required),
       y2AxisProps: new FormControl(''),
-      wid: new FormControl('')
+      wid: new FormControl(''),
+      dashboardVisibility: new FormControl(''),
     });
 
   }
@@ -382,7 +383,6 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     });
     const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
     if (index === -1) {
-      debugger;
       await this.plotChart(obj, 0);
       this.clear();
       this.layoutJson.push(obj)
@@ -403,7 +403,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       const data = [];
       for (let i = 0; i < 10; i++) {
         const obj = {
-          message_date: datefns.format(datefns.subMinutes(new Date(), i), "dd-MM-yyyy HH:mm:ss"),
+          message_date: datefns.format(datefns.subMinutes(new Date(), i), "yyyy-MM-dd HH:mm:ss"),
           message_date_obj: null,
         };
         obj.message_date_obj = new Date(obj.message_date);
@@ -652,11 +652,12 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     this.configureDashboardWidgets = this.layoutJson.map(o => ({ ...o }));
     this.configureDashboardWidgets.forEach((widget, index) => {
       widget.index = index + 1;
-      widget.dashboardVisibility = false;
       widget.isDelete = false;
+      widget.dashboardVisibility = widget.dashboard_visibility;
     });
     this.checkForAllWidgetVisibility(0);
     this.checkForAllWidgetVisibility(1);
+    console.log(this.configureDashboardWidgets);
     $('#configureHDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.getTableSortable();
   }
@@ -795,6 +796,8 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         this.historicalWidgetForm.controls.selectedChartType.setValue(data.chartType);
         this.historicalWidgetForm.controls.y1AxisProps.setValue(data.y1axis);
         this.historicalWidgetForm.controls.y2AxisProps.setValue(data.y2axis);
+        this.historicalWidgetForm.controls.dashboardVisibility.setValue(res.dashboard_visibility);
+
         this.onPopupWidgetTypeChange();
         if (event.type == "Edit") {
           this.historicalWidgetForm.controls.wid.setValue(event.widgetId);
@@ -957,7 +960,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       "measured_props": true,
       "edge_derived_props": true,
       "cloud_derived_props": true,
-      "dashboard_visibility": true,
+      "dashboard_visibility": this.historicalWidgetForm.controls.dashboardVisibility.value,
       "metadata": {
         "additionalProp1": [
           null
@@ -1019,6 +1022,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
             dataElement.properties[0].title = dataElement.widget_title;
             dataElement.properties[0].chartType = dataElement.widget_type;
             dataElement.properties[0].chart_Id = dataElement.chart_id;
+            dataElement.properties[0].dashboard_visibility = dataElement.dashboard_visibility;
             console.log(dataElement.properties[0]);
             this.layoutJson.push(dataElement.properties[0]);
             this.storedLayout.push(dataElement.properties[0]);

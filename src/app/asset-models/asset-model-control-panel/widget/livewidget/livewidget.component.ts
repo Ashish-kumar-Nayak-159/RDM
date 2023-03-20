@@ -205,6 +205,8 @@ export class LivewidgetComponent implements OnInit {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
+            console.log($(this).attr('id'));
+            console.log(that.configureDashboardWidgets[j].chart_id);
             if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_id) {
               that.configureDashboardWidgets[j].index = i + 1;
             }
@@ -325,7 +327,7 @@ export class LivewidgetComponent implements OnInit {
   }
 
   onWidgetTypeChange() {
-    this.widgetObj.properties = [{}];
+    // this.widgetObj.properties = [{}];
     if (
       this.widgetObj.widget_type === 'NumberWithTrend' ||
       this.widgetObj.widget_type === 'LineChart' ||
@@ -501,6 +503,7 @@ export class LivewidgetComponent implements OnInit {
 
   sortListBasedOnIndex() {
     this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
+    console.log(this.configureDashboardWidgets);
   }
 
   onCloseAddWidgetModal() {
@@ -522,6 +525,7 @@ export class LivewidgetComponent implements OnInit {
       json_model: {},
       threshold: {},
     };
+    this.selectedSlave = null;
     $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -707,10 +711,9 @@ export class LivewidgetComponent implements OnInit {
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    // console.log(this.widgetObj);
+    console.log(this.widgetObj);
     this.addWidget();
     // this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
-    console.log("before clear this.selectedSlave", this.selectedSlave)
     this.trueConditionalNumber = 'ON'
     this.falseConditionalNumber = 'OFF'
     this.selectedSlave = { slave_name: 'Select Slave' }
@@ -725,13 +728,44 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
-    let properties = {
-      y1AxisProps: this.widgetObj.y1AxisProps,
-      y2AxisProps: this.widgetObj.y2AxisProps,
-      slave_id: this.widgetObj.slave_id,
-      dashboardVisibility: this.widgetObj.dashboardVisibility,
-      noOfDataPointsForTrend: this.widgetObj.noOfDataPointsForTrend,
+    debugger;
+    let properties = this.widgetObj;
+    if (this.widgetObj.widget_type == "SmallNumber") {
+      properties = {};
+      properties = this.widgetObj.properties[0];
+      properties["slave_id"] = this.widgetObj.slave_id
     }
+    else if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
+      properties = {};
+      properties = {
+        y1AxisProps: this.widgetObj.y1AxisProps,
+        y2AxisProps: this.widgetObj.y2AxisProps,
+        slave_id: this.widgetObj.slave_id,
+        dashboardVisibility: this.widgetObj.dashboardVisibility,
+        noOfDataPointsForTrend: this.widgetObj.noOfDataPointsForTrend,
+      }
+
+    }
+    else if (this.widgetObj.widget_type == "ConditionalNumber") {
+      properties = {};
+      properties = {
+        slave_id: this.widgetObj.slave_id,
+        dashboardVisibility: this.widgetObj.dashboardVisibility,
+        property: this.propertyObj.metadata.properties,
+        getproperty: this.widgetObj.properties
+      }
+    }
+    else if (this.widgetObj.widget_type == "OnlyNumber" || this.widgetObj.widget_type === 'NumberWithTrend'
+      || this.widgetObj.widget_type === 'StringWidget') {
+      properties = {};
+      properties = {
+        slave_id: this.widgetObj.slave_id,
+        dashboardVisibility: this.widgetObj.dashboardVisibility,
+        properties: this.widgetObj.properties,
+      }
+    }
+
+    console.log(properties);
     let reqObj = {
       "type": "LiveWidget",
       "chart_id": this.widgetObj.chart_id,
@@ -745,7 +779,7 @@ export class LivewidgetComponent implements OnInit {
       "measured_props": true,
       "edge_derived_props": true,
       "cloud_derived_props": true,
-      "dashboard_visibility": true,
+      "dashboard_visibility": this.widgetObj.dashboardVisibility,
       "metadata": {
         "additionalProp1": [
           null
@@ -801,17 +835,29 @@ export class LivewidgetComponent implements OnInit {
       if (response?.data?.length > 0) {
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties?.length > 0) {
-            // dataElement.properties[0].id = dataElement.id;
-            // dataElement.properties[0].title = dataElement.widget_title;
-            // dataElement.properties[0].chartType = dataElement.widget_type;
-            // dataElement.properties[0].chart_Id = dataElement.chart_id;
-            dataElement.y1AxisProps = dataElement.properties[0].y1AxisProps;
-            dataElement.y2AxisProps = dataElement.properties[0].y2AxisProps;
-            dataElement.noOfDataPointsForTrend = dataElement.properties[0].noOfDataPointsForTrend;
-            dataElement.slave_id = dataElement.properties[0].slave_id;
-            dataElement.dashboardVisibility = dataElement.properties[0].dashboardVisibility;
-            console.log(dataElement);
+
             this.liveWidgets.push(dataElement);
+            if (dataElement.widget_type == "SmallNumber") {
+              dataElement.y1AxisProps = dataElement.properties;
+            }
+            else if (dataElement.widget_type == "LineChart" || dataElement.widget_type == "AreaChart") {
+              dataElement.y1AxisProps = dataElement.properties[0].y1AxisProps;
+              dataElement.y2AxisProps = dataElement.properties[0].y2AxisProps;
+              dataElement.noOfDataPointsForTrend = dataElement.properties[0].noOfDataPointsForTrend;
+              dataElement.slave_id = dataElement.properties[0].slave_id;
+              dataElement.dashboardVisibility = dataElement.properties[0].dashboardVisibility;
+            }
+            else if (dataElement.widget_type == "RectangleWidget") {
+              dataElement.properties[0].properties.forEach(element => {
+                let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+                element.name = getName?.name;
+                element.property = getName;
+              });
+            }
+            else {
+              console.log(dataElement.properties)
+            }
+            console.log(this.liveWidgets);
           }
         });
         this.liveWidgets.forEach((widget) => {
@@ -825,7 +871,7 @@ export class LivewidgetComponent implements OnInit {
           widget.cloud_derived_props = false;
           widget.measured_props = false;
           widget.derived_kpis = false;
-          if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart') {
+          if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart' && widget.widget_type !== 'ConditionalNumber') {
             widget?.properties.forEach((prop) => {
               if (prop.property) {
                 prop.json_key = prop.property.json_key;
@@ -843,7 +889,28 @@ export class LivewidgetComponent implements OnInit {
                 widget.measured_props = true;
               }
             });
-          } else {
+          }
+          else if (widget.widget_type == 'ConditionalNumber') {
+
+            widget?.properties[0]?.property.forEach((prop) => {
+              if (prop.property) {
+                prop.json_key = prop.property.json_key;
+              }
+              prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              prop.type = prop.property?.type;
+
+              if (prop?.type === 'Derived KPIs') {
+                widget.derived_kpis = true;
+              } else if (prop?.type === 'Edge Derived Properties') {
+                widget.edge_derived_props = true;
+              } else if (prop?.type === 'Cloud Derived Properties') {
+                widget.cloud_derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
+          }
+          else {
             widget?.y1AxisProps.forEach((prop) => {
               if (prop.id) {
                 prop.json_key = prop.id;
@@ -900,14 +967,96 @@ export class LivewidgetComponent implements OnInit {
       this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
         console.log(res);
         let data = res;
-        data.y1AxisProps = data.properties[0].y1AxisProps;
-        data.y2AxisProps = data.properties[0].y2AxisProps;
-        data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
-        data.slave_id = data.properties[0].slave_id;
-        this.selectedSlave = data.properties[0].slave_id;
-        data.dashboardVisibility = data.properties[0].dashboardVisibility;
-        this.widgetObj = data;
-        this.onWidgetTypeChange();
+        debugger
+        if (data.widget_type == "SmallNumber") {
+          data.y1AxisProps = data.properties.map(o => ({ ...o }));
+          data.properties[0].property = data.y1AxisProps[0];
+          let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
+          data.properties[0].property.name = getName?.name;
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+        }
+        else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
+          data.y1AxisProps = data.properties[0].y1AxisProps;
+          data.y2AxisProps = data.properties[0].y2AxisProps;
+          data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+        }
+        else if (data.widget_type == "ConditionalNumber") {
+          this.widgetObj = data;
+          this.propertyObj = {
+            json_model: {},
+            threshold: {},
+          };
+          this.onWidgetTypeChange();
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+          data.dashboardVisibility = data.dashboard_visibility;
+          this.propertyObj.metadata.properties = data.properties[0].property;
+          this.ValidateallInputField();
+        }
+        else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+          data.properties = data.properties[0].properties.map(o => ({ ...o }));
+          data.properties.forEach(element => {
+            let getName = this.propertyList.find(x => x.json_key == element.json_key);
+            element.name = getName?.name;
+            element.data_type = getName?.data_type;
+          });
+        }
+        else if (data.widget_type == "NumberWithImage") {
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+          data.properties = data.properties[0].properties.map(o => ({ ...o }));
+          data.properties.forEach(element => {
+            let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+            element.name = getName?.name;
+            element.data_type = getName?.data_type;
+          });
+        }
+        else if (data.widget_type == "GaugeChart") {
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+          this.widgetObj = data.properties[0];
+          this.widgetObj.properties.forEach(element => {
+            let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+            element.name = getName?.name;
+            element.data_type = getName?.data_type;
+          });
+          this.onWidgetTypeChange();
+        }
+        else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+
+          this.widgetObj = data.properties[0];
+          this.widgetObj.properties.forEach(element => {
+            let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+            element.name = getName?.name;
+            element.data_type = getName?.data_type;
+          });
+          this.onWidgetTypeChange();
+        }
+
+        if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
+          this.widgetObj = data;
+          this.onWidgetTypeChange();
+        }
 
         if (event.type == "Edit") {
           this.widgetObj.id = event.widgetId;
@@ -920,7 +1069,6 @@ export class LivewidgetComponent implements OnInit {
   }
 
   removeWidget(id) {
-    debugger
     if (id == 0) {
       let deleteReq = [];
       for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
@@ -940,7 +1088,6 @@ export class LivewidgetComponent implements OnInit {
         }
       }
       if (deleteReq.length > 0) {
-        debugger
         this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, deleteReq).subscribe(res => {
           this.toasterService.showSuccess(res["message"], 'Save Layout');
           this.getAssetWidget();
@@ -995,9 +1142,9 @@ export class LivewidgetComponent implements OnInit {
   onClickOfCheckbox(type) {
     if (type == 0) {
       if (this.isAllWidgestSelectedForDashboard) {
-        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboard_visibility = true));
       } else {
-        this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
+        this.configureDashboardWidgets.forEach((widget) => (widget.dashboard_visibility = false));
       }
     }
     else if (type == 1) {
@@ -1014,7 +1161,6 @@ export class LivewidgetComponent implements OnInit {
   }
 
   openConfirmRemoveWidgetModal() {
-    debugger;
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,

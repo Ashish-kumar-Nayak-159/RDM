@@ -31,19 +31,22 @@
         <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
             <div class="grid-card-container">
                 <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-
                     <div *ngIf="widget?.widget_type === 'SmallNumber'"
                         class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widget_type === 'OnlyNumber' || widget?.widget_type === 'NumberWithTrend'  
-                  || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+                  || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties?.length + (widget.properties?.length > 1 ? (2 * (widget.properties?.length - 1)) : 0) +'%') : '48%',
                   'margin-left':'0', 'margin-top': '2%' }">
 
                         <!-- {{telemetryObj.temperature.value| json}}
                   {{telemetryObj.pressure1.value | json}} -->
 
-                        <app-small-number-widget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
+                        <!-- <app-small-number-widget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
                             (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
                             [apiTelemetryObj]="telemetryObj">
-                        </app-small-number-widget>
+                        </app-small-number-widget> -->
+                        <app-smallnumberwidget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
+                            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                            [apiTelemetryObj]="telemetryObj" (chart_Id)="onMenu($event)">
+                        </app-smallnumberwidget>
                     </div>
                 </ng-container>
             </div>
@@ -54,30 +57,52 @@
     <!-- for the other widget -->
     <div class="clearfix">
         <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-        <div class="row col-md-12 mb-5">
+        <div class="row col-md-12 mb-5" *ngIf="liveWidgets">
             <ng-container *ngFor="let widget of liveWidgets; let i = index;">
                 <div *ngIf="widget?.widget_type !== 'SmallNumber'" [style]="{ 'width': widget?.widget_type === 'OnlyNumber' || widget?.widget_type === 'NumberWithTrend' 
               || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
               'margin-left':'2%', 'margin-top': '2%' }">
-                    <app-conditional-widget *ngIf="widget?.widget_type === 'ConditionalNumber'" [chartConfig]="widget"
+                    <!-- <app-conditional-widget *ngIf="widget?.widget_type === 'ConditionalNumber'" [chartConfig]="widget"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
                         [apiTelemetryObj]="telemetryObj">
 
-                    </app-conditional-widget>
-                    <app-only-number-widget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'
+                    </app-conditional-widget> -->
+                    <app-conditionalwidget *ngIf="widget?.widget_type === 'ConditionalNumber'" [chartConfig]="widget"
+                        (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
+                        [apiTelemetryObj]="telemetryObj" (chart_Id)="onMenu($event)">
+                    </app-conditionalwidget>
+
+                    <app-onlynumberwidget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'
+              || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'StringWidget'"
+                        [chartConfig]="widget" (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj"
+                        [apiTelemetryObj]="telemetryObj">
+                    </app-onlynumberwidget>
+
+                    <!-- <app-only-number-widget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'
               || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'StringWidget'"
                         [chartConfig]="widget" (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
                         [apiTelemetryObj]="telemetryObj">
-                    </app-only-number-widget>
-                    <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
+                    </app-only-number-widget> -->
+
+                    <app-gaugechart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
+                        (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
+                    </app-gaugechart>
+                    <!-- <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-                    </app-gauge-chart>
-                    <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widget_type === 'RectangleWidget'"
+                    </app-gauge-chart> -->
+                    <app-rectanglewidget [chartConfig]="widget" *ngIf="widget.widget_type === 'RectangleWidget'"
+                        (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
+                    </app-rectanglewidget>
+                    <app-cylinderwidget [chartConfig]="widget" *ngIf="widget.widget_type === 'CylinderWidget'"
+                        (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
+                    </app-cylinderwidget>
+
+                    <!-- <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widget_type === 'RectangleWidget'"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-                    </app-rectangle-widget>
-                    <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widget_type === 'CylinderWidget'"
+                    </app-rectangle-widget> -->
+                    <!-- <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widget_type === 'CylinderWidget'"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-                    </app-cylinder-widget>
+                    </app-cylinder-widget> -->
                     <!-- <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
                         (removeWidget)="removeWidget($event)"
                         *ngIf="widget.widget_type === 'LineChart' || widget.widget_type === 'AreaChart'">
@@ -210,9 +235,9 @@
                                                 <option [ngValue]="undefined">Select Operator</option>
                                                 <option [ngValue]="'>='">>=</option>
                                                 <option [ngValue]="'<='">
-                                                    <=< /option>
+                                                    <= </option>
                                                 <option [ngValue]="'<'">
-                                                    << /option>
+                                                    < </option>
                                                 <option [ngValue]="'>'">></option>
                                                 <option [ngValue]="'=='">==</option>
                                                 <option [ngValue]="'!='">!=</option>
@@ -372,7 +397,7 @@
                                     </td>
                                     <td>{{item.widget_title}}</td>
                                     <td><input type="checkbox" name="visible{{index}}" id="visible{{index}}"
-                                            [(ngModel)]="item.dashboardVisibility"
+                                            [(ngModel)]="item.dashboard_visibility"
                                             (change)="checkForAllWidgetVisibility(0)" /></td>
                                     <td><input type="checkbox" name="delete{{index}}" id="delete{{index}}"
                                             [(ngModel)]="item.isDelete" (change)="checkForAllWidgetVisibility(1)" />

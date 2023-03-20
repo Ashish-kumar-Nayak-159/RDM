@@ -43,6 +43,12 @@ import { HistoricalLivechartComponent } from './charts/historical-livechart/hist
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { NumberonlywidgetComponent } from './newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
+import { SmallnumberwidgetComponent } from './newcharts/livewidget/smallnumberwidget/smallnumberwidget.component';
+import { ConditionalwidgetComponent } from './newcharts/livewidget/conditionalwidget/conditionalwidget.component';
+import { OnlynumberwidgetComponent } from './newcharts/livewidget/onlynumberwidget/onlynumberwidget.component';
+import { GaugechartComponent } from './newcharts/livewidget/gaugechart/gaugechart.component';
+import { RectanglewidgetComponent } from './newcharts/livewidget/rectanglewidget/rectanglewidget.component';
+import { CylinderwidgetComponent } from './newcharts/livewidget/cylinderwidget/cylinderwidget.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -76,6 +82,12 @@ import { NumberonlywidgetComponent } from './newcharts/formcomponent/numberonlyw
     ConditionalWidgetComponent,
     HistoricalLivechartComponent,
     NumberonlywidgetComponent,
+    SmallnumberwidgetComponent,
+    ConditionalwidgetComponent,
+    OnlynumberwidgetComponent,
+    GaugechartComponent,
+    RectanglewidgetComponent,
+    CylinderwidgetComponent,
 
   ],
   imports: [
@@ -126,8 +138,13 @@ import { NumberonlywidgetComponent } from './newcharts/formcomponent/numberonlyw
     FormValidatorDirective,
     BsDatepickerModule,
     HistoricalLivechartComponent,
-    NumberonlywidgetComponent
-
+    NumberonlywidgetComponent,
+    SmallnumberwidgetComponent,
+    ConditionalwidgetComponent,
+    OnlynumberwidgetComponent,
+    GaugechartComponent,
+    RectanglewidgetComponent,
+    CylinderwidgetComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],
 })

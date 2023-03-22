@@ -14,27 +14,27 @@ import * as datefns from 'date-fns';
 })
 export class AssetModelControlPropertiesComponent implements OnInit {
   @Input() assetModel: any;
-  properties : any = [];
-  propertyTableConfig : any = {};
-  isPropertiesLoading : boolean = false;
-  assetModelData : any = [];
+  properties: any = [];
+  propertyTableConfig: any = {};
+  isPropertiesLoading: boolean = false;
+  assetModelData: any = [];
   assetSelectForm: FormGroup;
-  selectedAssets : any = {};
-  isAPILoading : boolean = false;
+  selectedAssets: any = {};
+  isAPILoading: boolean = false;
   contextApp: any;
-  asset : any = [];
+  asset: any = [];
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
     private assetService: AssetService,
     private assetModelService: AssetModelService,
-  ) { 
+  ) {
 
   }
 
   async ngOnInit(): Promise<void> {
 
-    
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.assetSelectForm = new FormGroup({
       selected_asset: new FormControl("", []),
@@ -49,28 +49,28 @@ export class AssetModelControlPropertiesComponent implements OnInit {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
       };
-        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-          if (response?.data) {
-            response.data.forEach((detail)=>{
-              if(detail.type == 'Legacy Asset' && detail.asset_model == this.assetModel.name) {
-                this.asset.push(detail);
-              }
-            })
-          }
-          resolve1();
-        })
+      this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data) {
+          response.data.forEach((detail) => {
+            if (detail.type == 'Legacy Asset' && detail.asset_model == this.assetModel.name) {
+              this.asset.push(detail);
+            }
+          })
+        }
+        resolve1();
+      })
     });
   }
 
   setUpPropertyData() {
     this.properties = [];
     this.propertyTableConfig = {
-      tableTypeForCustomValidation : true,
-      selectCheckBoxs : true,
+      tableTypeForCustomValidation: true,
+      selectCheckBoxs: true,
       type: 'Properties',
       tableHeight: 'calc(100vh - 11rem)',
       freezed: this.assetModel.freezed,
-      hideSerialNum : true,
+      hideSerialNum: true,
       data: [
         {
           name: 'checkbox',
@@ -139,20 +139,20 @@ export class AssetModelControlPropertiesComponent implements OnInit {
       app: this.assetModel.app,
       name: this.assetModel.name,
     };
-      this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-        // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
-        if(response?.properties['measured_properties'] && response?.properties['measured_properties'].length>0) {
-          this.properties = response?.properties?.['measured_properties']?.filter((detail)=>{ return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw')})
-          this.properties.map((detail:any)=>{ 
-            if(!("current_value" in detail)) {
-              detail.current_value = "-";
-            }
-            return detail;
-          });
-          console.log("this.properties.........",this.properties);
-        }
-        this.isPropertiesLoading = false;
-      })
+    this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+      // let localObject = [...response.properties['measured_properties'] , ...response.properties['controllable_properties']]
+      if (response?.properties['measured_properties'] && response?.properties['measured_properties'].length > 0) {
+        this.properties = response?.properties?.['measured_properties']?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+        this.properties.map((detail: any) => {
+          if (!("current_value" in detail)) {
+            detail.current_value = "-";
+          }
+          return detail;
+        });
+
+      }
+      this.isPropertiesLoading = false;
+    })
   }
   getAssetModelData(callFromMenu = false) {
     this.assetModelData = [];
@@ -161,52 +161,52 @@ export class AssetModelControlPropertiesComponent implements OnInit {
     };
     this.assetModelService.getAssetsModelsList(obj.app).subscribe((response: any) => {
       if (response) {
-        response.data.forEach((detail)=>{
-          if(detail.model_type == this.assetModel.model_type) {
+        response.data.forEach((detail) => {
+          if (detail.model_type == this.assetModel.model_type) {
             this.assetModelData.push(detail)
           }
         })
       }
     })
   }
-  singleSyncuoCall(event : any) {
-    if(event?.data?.hasOwnProperty('new_value') || event.length > 0) {
-      let setProperties : any = {};
-      
-      let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAssets.asset_id : this.selectedAssets.gateway_id) +'_' +this.commonService.generateUUID();
-  
+  singleSyncuoCall(event: any) {
+    if (event?.data?.hasOwnProperty('new_value') || event.length > 0) {
+      let setProperties: any = {};
+
+      let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.selectedAssets.asset_id : this.selectedAssets.gateway_id) + '_' + this.commonService.generateUUID();
+
       setProperties = {
-        "asset_id":this.selectedAssets.asset_id,
-        "message":{
-          "command":"write_data",
+        "asset_id": this.selectedAssets.asset_id,
+        "message": {
+          "command": "write_data",
           "asset_id": "TempAsset",
           "properties": {}
         },
-        "app":"Indygo",
-        "timestamp":datefns.getUnixTime(new Date()),
-        "acknowledge":"Full",
-        "expire_in_min":1,
+        "app": "Indygo",
+        "timestamp": datefns.getUnixTime(new Date()),
+        "acknowledge": "Full",
+        "expire_in_min": 1,
         "job_id": uniqueId,
         "request_type": 'Sync Control Properties',
-        "job_type":"Message",
+        "job_type": "Message",
         "sub_job_id": uniqueId + "_1",
       }
-  
-  
-      if(event.length > 0) {
-        event.forEach((detail)=>{
-          if(detail?.syncUp == true && detail?.new_value?.toString().length > 0){
-            if(detail?.metadata.d != 'd') {
-              if(detail.data_type == 'Number') {
+
+
+      if (event.length > 0) {
+        event.forEach((detail) => {
+          if (detail?.syncUp == true && detail?.new_value?.toString().length > 0) {
+            if (detail?.metadata.d != 'd') {
+              if (detail.data_type == 'Number') {
                 let newValue = detail?.new_value;
                 newValue = newValue.toString();
-                if(newValue.indexOf('.') > -1) {
+                if (newValue.indexOf('.') > -1) {
                   detail.new_value = parseFloat(detail.new_value);
                 } else {
                   detail.new_value = parseInt(detail.new_value);
                 }
               }
-              if(detail.data_type == 'Float') {
+              if (detail.data_type == 'Float') {
                 detail.new_value = parseFloat(detail.new_value);
               }
             }
@@ -214,28 +214,28 @@ export class AssetModelControlPropertiesComponent implements OnInit {
           }
         })
       } else {
-          if(event?.data?.new_value?.toString().length > 0){
-            if(event?.data?.metadata.d != 'd') {
-              if(event.data.data_type == 'Number') {
-                let newValue = event?.data?.new_value;
-                newValue = newValue.toString();
-                if(newValue.indexOf('.') > -1) {
-                  event.data.new_value = parseFloat(event.data.new_value);
-                } else {
-                  event.data.new_value = parseInt(event.data.new_value);
-                }
-              }
-            
-              if(event.data.data_type == 'Float') {
+        if (event?.data?.new_value?.toString().length > 0) {
+          if (event?.data?.metadata.d != 'd') {
+            if (event.data.data_type == 'Number') {
+              let newValue = event?.data?.new_value;
+              newValue = newValue.toString();
+              if (newValue.indexOf('.') > -1) {
                 event.data.new_value = parseFloat(event.data.new_value);
+              } else {
+                event.data.new_value = parseInt(event.data.new_value);
               }
             }
-            setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
+
+            if (event.data.data_type == 'Float') {
+              event.data.new_value = parseFloat(event.data.new_value);
+            }
           }
+          setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
+        }
       }
       const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
-      if(isEmpty) {
-        this.toasterService.showError('To Multi Sync Control Properties select checkbox','Check Box Selection');
+      if (isEmpty) {
+        this.toasterService.showError('To Multi Sync Control Properties select checkbox', 'Check Box Selection');
       } else {
         this.syncControlProperties(setProperties);
       }
@@ -244,7 +244,7 @@ export class AssetModelControlPropertiesComponent implements OnInit {
   }
   async assetSelectionChangeFun(selected_asset) {
     this.selectedAssets = selected_asset;
-    
+
     //await this.getAssets(this.contextApp.user.hierarchy);
   }
 

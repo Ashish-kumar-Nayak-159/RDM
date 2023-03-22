@@ -39,13 +39,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
   isAssetEditable = false;
   isWhiteLablePriviledge = false;
   whiteListedAssets: any[] = [];
-  whiteListedAssetsfilter:any[] =[];
+  whiteListedAssetsfilter: any[] = [];
   selectedWhitelistAsset: any;
   actualhierarchyArr = [];
   isHierarchyEditable = false;
-  selectedHierarchy:any = {};
-  showAssetAndGatewayId:boolean = false;
-  legacyassetId:any;
+  selectedHierarchy: any = {};
+  showAssetAndGatewayId: boolean = false;
+  legacyassetId: any;
 
   constructor(
     private commonService: CommonService,
@@ -146,7 +146,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
           (response: any) => {
             if (response && response.data) {
               this.whiteListedAssets = response.data;
-              this.whiteListedAssetsfilter = response.data;              
+              this.whiteListedAssetsfilter = response.data;
             }
             resolve1();
           },
@@ -188,9 +188,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
     let parentId = 0;
     Object.keys(this.addAssetConfigureHierarchy).forEach((key, index) => {
       if (this.addAssetConfigureHierarchy[key]) {
-        let parentData = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId) 
-        if(parentData){
-        parentId =parentData.id;
+        let parentData = this.actualhierarchyArr.find(r => r.level == index + 1 && r.key == this.addAssetConfigureHierarchy[key] && r.parent_id == parentId)
+        if (parentData) {
+          parentId = parentData.id;
         }
       }
     });
@@ -206,8 +206,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
       }
     });
-    Object.keys(hierarchyObj).forEach((key) =>{
-      this.whiteListedAssetsfilter = this.whiteListedAssets?.filter(f => f?.hierarchy_json == null || f?.hierarchy_json[key] ==  hierarchyObj[key])
+    Object.keys(hierarchyObj).forEach((key) => {
+      this.whiteListedAssetsfilter = this.whiteListedAssets?.filter(f => f?.hierarchy_json == null || f?.hierarchy_json[key] == hierarchyObj[key])
     })
     //let maxObject = hierarchyObj.fin
     if (Object.keys(hierarchyObj).length === 1) {
@@ -255,7 +255,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   updateAssetManagerWithHierarchy(hierarchyObj) {
     let lastObjKey = Object.keys(hierarchyObj).reverse()[0].trim();
     // let selectedObjValue = hierarchyObj[Object.keys(hierarchyObj).reverse()[0].trim()];
-    //console.log("this.appUsers......", this.appUsers)
+    //
     this.filteredUsers = this.appUsers.filter((user) => {
       if (user.role == 'App Admin') {
         return true;
@@ -301,7 +301,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       //if (user.hierarchy[lastObjKey] == hierarchyObj[lastObjKey] && Object.keys(user.hierarchy).length <= Object.keys(hierarchyObj).length)
       //return true;
     });
-    //console.log("this.filteredUsers.......", this.filteredUsers)
+    //
   }
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
@@ -433,11 +433,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
                 if (this.selectedWhitelistAsset?.hierarchy_json[level]) {
                   this.isHierarchyEditable = true;
                   this.onChangeOfAddAssetHierarchy(index);
-                  
+
                 }
               }
             }
-          
+
           });
 
         }
@@ -445,7 +445,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     })
   }
   onCreateAsset() {
-    if(!this.assetDetail.asset_id){
+    if (!this.assetDetail.asset_id) {
       this.assetDetail.asset_id = 'AssetID';
     }
     if (
@@ -541,25 +541,23 @@ export class AddAssetComponent implements OnInit, OnChanges {
         key = this.contextApp?.hierarchy?.levels[key]
         if (this.assetDetail.tags.hierarchy_json[key]) {
           let obj = this.actualhierarchyArr.find(r => r.level == index && r.key == this.assetDetail.tags.hierarchy_json[key] && r.parent_id == parentId);
-          if(obj)
-          {
+          if (obj) {
             parentId = obj.id;
             hierarchy_ids[index] = obj.id;
           }
         }
       }
     });
-    if(Object.keys(hierarchy_ids).length > 0)
-    {
+    if (Object.keys(hierarchy_ids).length > 0) {
       this.assetDetail.tags.hierarchy_ids = hierarchy_ids;
     }
-    const obj = JSON.parse(JSON.stringify(this.assetDetail));    
+    const obj = JSON.parse(JSON.stringify(this.assetDetail));
     const methodToCall = this.SetMethodCallOnCondition(obj);
     this.subscriptions.push(
       methodToCall.subscribe(
         (response: any) => {
           this.legacyassetId = response.assetId;
-          console.log("Checkingggg232323", this.legacyassetId)
+
           localStorage.removeItem(CONSTANTS.ALL_ASSETS_LIST);
           if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             this.updateGatewayTags(this.assetDetail);
@@ -593,12 +591,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
 
-  legacyAsset(obj:any){
+  legacyAsset(obj: any) {
     this.subscriptions.push(
-      this.assetService.createNonIPAsset(obj,this.contextApp.app).subscribe(
+      this.assetService.createNonIPAsset(obj, this.contextApp.app).subscribe(
         (response: any) => {
           let responsedata = response;
-          console.log("CheckingReponse", responsedata)
+
           this.isCreateAssetAPILoading = false;
           // this.toasterService.showSuccess(response.message, 'Create ' + this.componentState);
         },

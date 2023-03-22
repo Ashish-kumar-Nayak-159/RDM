@@ -370,7 +370,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
           message_date: datefns.format(datefns.subMinutes(new Date(), i), "dd-MM-yyyy HH:mm:ss"),
           message_date_obj: null,
         };
-        debugger
+
         obj.message_date_obj = new Date(obj.message_date);
         y1Axis.forEach((element) => {
           this.propertyList.forEach((prop) => {

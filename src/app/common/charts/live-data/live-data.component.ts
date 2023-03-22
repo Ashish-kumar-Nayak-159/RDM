@@ -45,10 +45,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   environmentApp = environment.app;
   decodedToken: any;
   widgetStringFromMenu: any;
-  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
+  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) { }
 
   ngOnInit(): void {
-    console.log('check',this.propertyList)
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryData.length > 0) {
@@ -105,7 +105,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       } else {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
         chart.data = this.telemetryData;
-        console.log('chart telemetry',this.telemetryData)
+
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
@@ -138,7 +138,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.scrollable = true;
       chart.legend.labels.template.maxWidth = 30;
       chart.legend.labels.template.truncate = true;
-      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
+      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
@@ -210,9 +210,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       pdf.font = am4fonts_notosans_jp;
       chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.getFormatOptions('pdfdata').addURL = false;
-      var pdfdata =chart.exporting.getFormatOptions("pdfdata");
-      chart.exporting.events.on("exportstarted", function(ev) {
-        chart.exporting.timeoutDelay= 20000;
+      var pdfdata = chart.exporting.getFormatOptions("pdfdata");
+      chart.exporting.events.on("exportstarted", function (ev) {
+        chart.exporting.timeoutDelay = 20000;
       })
       pdfdata.font = am4fonts_notosans_jp;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
@@ -304,10 +304,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         proptype === 'Edge Derived Properties'
           ? 'ED'
           : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+              ? 'DK'
+              : 'M';
       series.propKey = prop.json_key;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
@@ -433,7 +433,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

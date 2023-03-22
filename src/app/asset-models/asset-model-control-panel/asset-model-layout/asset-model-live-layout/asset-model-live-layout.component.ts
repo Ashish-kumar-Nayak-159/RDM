@@ -54,8 +54,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   propertyObj: any;
   formula: String;
   properties: any = {};
-  trueConditionalNumber:string = 'ON';
-  falseConditionalNumber:string = 'OFF';
+  trueConditionalNumber: string = 'ON';
+  falseConditionalNumber: string = 'OFF';
 
   constructor(
     private commonService: CommonService,
@@ -341,7 +341,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     });
     if (this.widgetObj?.widgetType === "ConditionalNumber") {
       this.isDisabled = false;
-      this.formula ='';
+      this.formula = '';
       this.propertyObj.metadata = {
         properties: [
           {
@@ -367,7 +367,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       index: this.propertyObj.metadata.properties.length + 1,
 
     });
-    this.formula ='';
+    this.formula = '';
 
   }
 
@@ -379,9 +379,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
       for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
         const prop = this.propertyObj.metadata.properties[i];
-        if(prop.property === null || prop.value === null || prop.operator === null ){
+        if (prop.property === null || prop.value === null || prop.operator === null) {
           this.toasterService.showError(
-            'Please select property or add value in condition', 
+            'Please select property or add value in condition',
             'Add Property'
           );
           flag = true;
@@ -403,7 +403,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             this.propertyObj.metadata.props.push(prop.property.json_key);
             this.propertyObj.metadata.condition +=
               '%' + (this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') + (prop.value ? prop.value : '') + ' ' + (prop.operator1 ? prop.operator1 + ' ' : ''));
-            } else {
+          } else {
 
 
             this.propertyObj.metadata.condition +=
@@ -425,17 +425,17 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.isDisabled = true;
 
   }
-  deletePropertyCondtion(propindex: number,propObj) {
+  deletePropertyCondtion(propindex: number, propObj) {
     const index = this.propertyObj.metadata.properties.indexOf(propindex);
-   this.propertyObj.metadata.properties.splice(index, 1);
+    this.propertyObj.metadata.properties.splice(index, 1);
     propObj.operator1 = ' ';
-    this.formula ='';
+    this.formula = '';
   }
   clearInputField() {
     this.isDisabled = false;
   }
 
- 
+
 
   async getTelemetryData() {
     try {
@@ -560,7 +560,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   async onSaveWidgetObj() {
-   if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
+    if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
@@ -580,7 +580,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         delete prop.property;
       }
     });
-    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage" &&  this.widgetObj.widgetType !== 'ConditionalNumber') {
+    if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage" && this.widgetObj.widgetType !== 'ConditionalNumber') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
@@ -629,14 +629,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       let arr = [{
         formula: this.formula,
         json_Data: [],
-        text:[this.trueConditionalNumber,this.falseConditionalNumber]
+        text: [this.trueConditionalNumber, this.falseConditionalNumber]
 
       }]
       this.propertyObj.metadata.properties.forEach((prop) => {
-        var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed':(prop?.property.type === 'Measured Properties' ? 'm':(prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
+        var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed' : (prop?.property.type === 'Measured Properties' ? 'm' : (prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
         const obj = {
           name: prop.property.name,
-          type:type,
+          type: type,
           json_key: prop.property.json_key
         };
         arr[0]['json_Data'].push(obj);
@@ -667,10 +667,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     arr.push(this.widgetObj);
 
     this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
-    console.log("before clear this.selectedSlave",this.selectedSlave)
+
     this.trueConditionalNumber = 'ON'
     this.falseConditionalNumber = 'OFF'
-    this.selectedSlave =  { slave_name: 'Select Slave' }
+    this.selectedSlave = { slave_name: 'Select Slave' }
   }
 
   onClickOfCheckbox() {

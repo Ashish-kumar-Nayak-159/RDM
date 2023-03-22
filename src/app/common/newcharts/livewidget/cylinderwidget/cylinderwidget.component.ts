@@ -63,7 +63,12 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   ngAfterViewInit() {
-    this.generateChart();
+    if (this.chartConfig.widget_type === 'RectangleWidget') {
+      this.generateChart();
+    }
+    else {
+      this.generateRecChart();
+    }
   }
 
   ngOnChanges(changes) {
@@ -145,6 +150,65 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
       series2.columns.template.stroke = am4core.color('#ccc');
       series2.columns.template.strokeOpacity = 0.2;
       series2.columns.template.strokeWidth = 2;
+
+      this.telemetryData = {};
+      if (
+        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
+        this.telemetryObj[prop.property?.json_key]?.value !== null
+      ) {
+        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+        this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+        this.telemetryData.category = '';
+      }
+      chart.data = [this.telemetryData];
+      this.chart.push(chart);
+    });
+  }
+
+  generateRecChart() {
+    this.chartConfig.properties.forEach((prop, index) => {
+      am4core.options.autoDispose = true;
+      const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.XYChart3D);
+      chart.hiddenState.properties.opacity = 0;
+      chart.logo.disabled = true;
+      chart.angle = 50;
+
+      const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = 'category';
+      categoryAxis.renderer.grid.template.location = 0;
+      categoryAxis.renderer.grid.template.strokeOpacity = 0;
+      categoryAxis.renderer.labels.template.disabled = true;
+
+      const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.min = (prop?.minCapacityValue === 0 ? 1 : prop?.minCapacityValue) || 1;
+      valueAxis.max = prop?.maxCapacityValue || 100;
+      valueAxis.strictMinMax = true;
+      valueAxis.logarithmic = true;
+      valueAxis.renderer.fontSize = '0.6em';
+      valueAxis.renderer.grid.template.strokeOpacity = 0;
+      valueAxis.renderer.minGridDistance = 50;
+      valueAxis.renderer.baseGrid.disabled = true;
+      // valueAxis.renderer.labels.template.disabled = true;
+
+      const series1 = chart.series.push(new am4charts.ColumnSeries3D());
+      series1.dataFields.valueY = 'fillCapacity';
+      series1.dataFields.categoryX = 'category';
+      series1.columns.template.column3D.width = am4core.percent(80);
+      series1.columns.template.column3D.fillOpacity = 0.9;
+      series1.columns.template.column3D.strokeOpacity = 1;
+      series1.columns.template.column3D.strokeWidth = 2;
+      // series1.columns.template.column3D.tooltipText = "{valueY}";
+
+      const series2 = chart.series.push(new am4charts.ColumnSeries3D());
+      series2.dataFields.valueY = 'empty';
+      series2.dataFields.categoryX = 'category';
+      series2.stacked = true;
+      series2.columns.template.column3D.width = am4core.percent(80);
+      series2.columns.template.column3D.fill = am4core.color('#000');
+      series2.columns.template.column3D.fillOpacity = 0.1;
+      series2.columns.template.column3D.stroke = am4core.color('#ccc');
+      series2.columns.template.column3D.strokeOpacity = 0.2;
+      series2.columns.template.column3D.strokeWidth = 2;
 
       this.telemetryData = {};
       if (

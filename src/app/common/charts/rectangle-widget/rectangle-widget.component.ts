@@ -44,7 +44,6 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
   ngOnInit(): void {
-    console.log(this.chartConfig);
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -75,7 +74,7 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   generateChart() {
-    debugger
+
     this.chartConfig.properties.forEach((prop, index) => {
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chartId + '_chart_' + index, am4charts.XYChart3D);
@@ -131,7 +130,7 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       }
       chart.data = [this.telemetryData];
       this.chart.push(chart);
-      console.log(this.chart);
+
     });
   }
 

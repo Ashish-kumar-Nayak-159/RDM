@@ -59,12 +59,12 @@ export class AssetAlertConditionsComponent implements OnInit {
   // docName: any;
   // groupName: any = {};
   selectedWidgets: any = [];
-  selectedDocuments : any = [];
-  selectedUserGroups : any = {
-    'email':[],
-    'sms':[],
-    'whatsapp':[],
-    'push_notification':[]
+  selectedDocuments: any = [];
+  selectedUserGroups: any = {
+    'email': [],
+    'sms': [],
+    'whatsapp': [],
+    'push_notification': []
   };
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
@@ -82,7 +82,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     private assetService: AssetService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUser = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -91,9 +91,9 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
-    if(!this.menuDetail?.accordion_value?.edge){
+    if (!this.menuDetail?.accordion_value?.edge) {
       this.onClickOfTab('Cloud');
-    }else{
+    } else {
       this.onClickOfTab('Edge');
     }
     this.getSlaveData();
@@ -103,7 +103,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onClickOfTab(type) {
-    console.log("tab",type)
+
     this.selectedTab = type;
     this.toggleRows = {};
     this.alertObj = {};
@@ -133,7 +133,7 @@ export class AssetAlertConditionsComponent implements OnInit {
         if (response && response.data) {
           this.userGroups = response.data;
           this.userGroups.push({
-            group_name : "Client Field Support"
+            group_name: "Client Field Support"
           })
         }
       })
@@ -323,24 +323,24 @@ export class AssetAlertConditionsComponent implements OnInit {
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
         this.alertObj.actions = {
-          email: { enabled: false,  recipients: [] },
-          whatsapp: { enabled: false,  recipients: [] },
-          sms: { enabled: false,  recipients: [] },
+          email: { enabled: false, recipients: [] },
+          whatsapp: { enabled: false, recipients: [] },
+          sms: { enabled: false, recipients: [] },
           push_notification: { enabled: false, recipients: [] },
 
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = { enabled: false,  recipients: [] };
+          this.alertObj.actions.email = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.email.recipients) {
           this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.email.enabled) {
-         this.alertObj.actions.email.recipients = [];
+          this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = { enabled: false,  recipients: [] };
+          this.alertObj.actions.whatsapp = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.whatsapp.recipients) {
           this.alertObj.actions.whatsapp.recipients = [];
@@ -550,20 +550,20 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onDeselectAll(e,type) {
+  onDeselectAll(e, type) {
     if (e === [] || e.length === 0) {
-      if(type=='document'){
+      if (type == 'document') {
         this.selectedDocuments = []
       }
-      if(type == 'widget'){
+      if (type == 'widget') {
         this.selectedWidgets = [];
       }
-      if(type == 'userGroups'){
+      if (type == 'userGroups') {
         this.selectedUserGroups = {
-          'email':[],
-          'sms':[],
-          'whatsapp':[],
-          'push_notification':[]
+          'email': [],
+          'sms': [],
+          'whatsapp': [],
+          'push_notification': []
         }
       }
     }

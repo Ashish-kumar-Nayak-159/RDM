@@ -458,7 +458,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         this.chartHeight = "23rem";
         this.chartWidth = "100%";
       }
-      console.log(this.layoutJson);
+
       // let componentRef;
       // if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
       //   componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -519,7 +519,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   removeWidget(id) {
-    debugger
+
     if (id == 0) {
       let deleteReq = [];
       for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
@@ -539,7 +539,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       if (deleteReq.length > 0) {
-        debugger
+
         this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, deleteReq).subscribe(res => {
           this.toasterService.showSuccess(res["message"], 'Save Layout');
           this.getAssetWidget();
@@ -556,7 +556,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
 
       })
     }
-    console.log(this.configureDashboardWidgets);
+
   }
 
   saveLayout() {
@@ -592,7 +592,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       this.assetModelService.getAssetsModelLayout(params).subscribe(
         async (response: any) => {
           if (response?.historical_widgets?.length > 0) {
-            console.log(response.historical_widgets);
+
             this.layoutJson = response.historical_widgets;
             this.storedLayout = response.historical_widgets;
             this.layoutJson.forEach((item) => {
@@ -657,7 +657,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.checkForAllWidgetVisibility(0);
     this.checkForAllWidgetVisibility(1);
-    console.log(this.configureDashboardWidgets);
+
     $('#configureHDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.getTableSortable();
   }
@@ -716,7 +716,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   onSaveConfigureDashboardWidgets() {
-    debugger
+
     this.isCreateWidgetAPILoading = true;
     this.sortListBasedOnIndex();
     let req = [];
@@ -735,7 +735,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     if (req.length > 0) {
-      debugger
+
       this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, req).subscribe(res => {
         this.toasterService.showSuccess(res["message"], 'Save Layout');
         this.getAssetWidget();
@@ -745,14 +745,14 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     // this.updateAssetModel(this.configureDashboardWidgets, 'Dashboard configured successfully');
   }
   sortListBasedOnIndex() {
-    debugger
+
     this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
-    console.log(this.configureDashboardWidgets);
+
     this.isCreateWidgetAPILoading = false;
 
   }
   openConfirmRemoveWidgetModal() {
-    debugger;
+    ;
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
@@ -786,7 +786,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }
     else {
       this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
-        console.log(res);
+
         let data = res.properties[0];
         data.title = res.widget_title;
         data.chartType = res.widget_type;
@@ -843,7 +843,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   submitHistorical() {
-    debugger
+
     this.submitted = true;
     if (this.historicalWidgetForm.invalid) {
       return
@@ -974,8 +974,8 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    console.log(this.assetModel);
-    console.log(reqObj);
+
+
     let id = this.historicalWidgetForm.controls.wid.value;
     if (id > 0) {
       this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj,).subscribe(res => {
@@ -1023,12 +1023,12 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
             dataElement.properties[0].chartType = dataElement.widget_type;
             dataElement.properties[0].chart_Id = dataElement.chart_id;
             dataElement.properties[0].dashboard_visibility = dataElement.dashboard_visibility;
-            console.log(dataElement.properties[0]);
+
             this.layoutJson.push(dataElement.properties[0]);
             this.storedLayout.push(dataElement.properties[0]);
           }
         });
-        console.log(this.layoutJson);
+
         this.layoutJson.forEach((item) => {
           this.dropdownWidgetList.push({
             id: item.title,

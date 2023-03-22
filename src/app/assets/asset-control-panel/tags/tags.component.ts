@@ -332,12 +332,12 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   checkKeyDuplicacy(tagObj, tagIndex, type) {
     CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
-    
+
       if (tagObj?.name?.includes(char)) {
         this.toasterService.showError('Tag key should not include `.`, ` `, `$`, `#`', 'Set Tags');
         // setTimeout(() => {
         //   this.toasterService.showclear();
-        //   console.log("tag", tagObj)
+        //   
         // }, 4000);
         tagObj.name = ''
         tagObj.value = ''

@@ -1,5 +1,4 @@
-import { Component, DoCheck, Input, OnInit } from '@angular/core';
-import { debug } from 'console';
+import { ChangeDetectorRef, Component, DoCheck, Input, OnInit } from '@angular/core';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -66,6 +65,7 @@ export class LivewidgetComponent implements OnInit {
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
+    private cdr: ChangeDetectorRef
 
   ) { }
 
@@ -81,6 +81,9 @@ export class LivewidgetComponent implements OnInit {
     this.getAssetWidget();
   }
 
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
+  }
   getModelSlaveDetails() {
     this.assetModelService.getModelSlaveDetails(this.contextApp.app, this.assetModel.name, {}).subscribe((res: any) => {
       this.slaveList = res?.data ?? [{
@@ -205,8 +208,6 @@ export class LivewidgetComponent implements OnInit {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
-            console.log($(this).attr('id'));
-            console.log(that.configureDashboardWidgets[j].chart_id);
             if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_id) {
               that.configureDashboardWidgets[j].index = i + 1;
             }
@@ -248,7 +249,6 @@ export class LivewidgetComponent implements OnInit {
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;
-            console.log(this.liveWidgets);
             // let count = 1;
             this.liveWidgets.forEach((widget) => {
               this.checkingsmallwidget = widget.widget_type;
@@ -348,7 +348,6 @@ export class LivewidgetComponent implements OnInit {
 
       }
     });
-    console.log(this.widgetObj);
 
     if (this.widgetObj?.widget_type === "ConditionalNumber") {
       this.isDisabled = false;
@@ -487,7 +486,7 @@ export class LivewidgetComponent implements OnInit {
       }
     }
     if (req.length > 0) {
-      debugger
+
       this.assetModelService.bulkDeleteAssetWidget(this.assetModel.name, req).subscribe(async res => {
         this.toasterService.showSuccess(res["message"], 'Save Layout');
         await this.getAssetModelsderivedKPIs();
@@ -503,7 +502,6 @@ export class LivewidgetComponent implements OnInit {
 
   sortListBasedOnIndex() {
     this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
-    console.log(this.configureDashboardWidgets);
   }
 
   onCloseAddWidgetModal() {
@@ -517,7 +515,7 @@ export class LivewidgetComponent implements OnInit {
   }
 
   onOpenAddWidgetModal() {
-    debugger;
+    ;
     this.widgetObj = {
       properties: [{}],
     };
@@ -711,7 +709,6 @@ export class LivewidgetComponent implements OnInit {
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
-    console.log(this.widgetObj);
     this.addWidget();
     // this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
     this.trueConditionalNumber = 'ON'
@@ -728,7 +725,6 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
-    debugger;
     let properties = this.widgetObj;
     if (this.widgetObj.widget_type == "SmallNumber") {
       properties = {};
@@ -765,7 +761,6 @@ export class LivewidgetComponent implements OnInit {
       }
     }
 
-    console.log(properties);
     let reqObj = {
       "type": "LiveWidget",
       "chart_id": this.widgetObj.chart_id,
@@ -792,7 +787,8 @@ export class LivewidgetComponent implements OnInit {
         ]
       }
     }
-    console.log(reqObj);
+
+
     let id = this.widgetObj.id;
     if (id > 0) {
       this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj,).subscribe(async res => {
@@ -831,7 +827,6 @@ export class LivewidgetComponent implements OnInit {
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
     this.assetModelService.getAssetWidget(this.assetModel.name, "LiveWidget").subscribe(response => {
-      console.log(response);
       if (response?.data?.length > 0) {
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties?.length > 0) {
@@ -854,10 +849,7 @@ export class LivewidgetComponent implements OnInit {
                 element.property = getName;
               });
             }
-            else {
-              console.log(dataElement.properties)
-            }
-            console.log(this.liveWidgets);
+
           }
         });
         this.liveWidgets.forEach((widget) => {
@@ -959,15 +951,14 @@ export class LivewidgetComponent implements OnInit {
   }
 
   onMenu(event) {
-    debugger
+
     if (event.type == "Delete") {
       this.removeWidget(event.widgetId);
     }
     else {
       this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
-        console.log(res);
         let data = res;
-        debugger
+
         if (data.widget_type == "SmallNumber") {
           data.y1AxisProps = data.properties.map(o => ({ ...o }));
           data.properties[0].property = data.y1AxisProps[0];
@@ -1063,8 +1054,9 @@ export class LivewidgetComponent implements OnInit {
         } else if (event.type == "Clone") {
           this.widgetObj.id = 0;
         }
+
         $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-      })
+      });
     }
   }
 
@@ -1104,7 +1096,6 @@ export class LivewidgetComponent implements OnInit {
 
       })
     }
-    console.log(this.configureDashboardWidgets);
   }
 
 

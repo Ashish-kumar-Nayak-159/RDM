@@ -67,7 +67,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log('new', this.telemetryData);
+
     if (this.chartConfig) {
       this.y1AxisProps = this.chartConfig.y1axis;
       this.y2AxisProps = this.chartConfig.y2axis;
@@ -139,7 +139,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
       } else {
         // this.telemetryData.forEach((item) => (item.message_date = new Date(item.message_date)));
         chart.data = this.telemetryData;
-        console.log('chart telemetry', this.telemetryData)
+
       }
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';

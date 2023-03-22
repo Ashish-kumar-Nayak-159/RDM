@@ -25,8 +25,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   isMetadataEditable = false;
   decodedToken: any;
   changeLocationOption: any;
-  latitude= 23.0225;
-  longitude= 72.5714;
+  latitude = 23.0225;
+  longitude = 72.5714;
   centerLatitude = 23.0225;
   centerLongitude = 72.5714;
   zoom = 8;
@@ -49,14 +49,14 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
 
-  async uploadFile(file,type){
+  async uploadFile(file, type) {
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(file, this.applicationData.app + '/app-images');
     if (data) {
-      if(type=="header_logo"){
+      if (type == "header_logo") {
         this.applicationData.metadata.header_logo = data;
       }
-      if(type == "icon"){
+      if (type == "icon") {
         this.applicationData.metadata.icon = data;
       }
     } else {
@@ -78,24 +78,24 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   //   // this.blobState.uploadItems(files);
   // }
 
-  onFileSelected(files: FileList, type){
+  onFileSelected(files: FileList, type) {
     if (type === "header_logo") {
-      debugger
+
       this.uploadedLogoFile = files?.item(0);
       if (!this.applicationData.metadata.header_logo) {
         this.applicationData.metadata.header_logo = {};
       }
       // this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
-      if (this.uploadedLogoFile.size > CONSTANTS.APP_LOGO_SIZE){
+      if (this.uploadedLogoFile.size > CONSTANTS.APP_LOGO_SIZE) {
         this.toasterService.showError('File size exceeded' + " " + CONSTANTS.APP_LOGO_SIZE / 1000000 + " " + 'MB', 'Upload file');
       }
       else {
         const image = new Image();
         image.src = URL.createObjectURL(this.uploadedLogoFile);
         image.onload = (e: any) => {
-          debugger
+
           const selectedImage = e?.currentTarget as HTMLImageElement;
-          if (selectedImage.width <= CONSTANTS.APP_LOGO_WIDTH && selectedImage.height <= CONSTANTS.APP_LOGO_HEIGHT){
+          if (selectedImage.width <= CONSTANTS.APP_LOGO_WIDTH && selectedImage.height <= CONSTANTS.APP_LOGO_HEIGHT) {
             this.applicationData.metadata.header_logo.name = this.uploadedLogoFile.name;
           } else {
             this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.APP_LOGO_WIDTH + " " + 'x' + " " + CONSTANTS.APP_LOGO_HEIGHT + " " + 'px', 'Upload file');
@@ -109,7 +109,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
         this.applicationData.metadata.icon = {};
       }
       // this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
-      if (this.uploadedIconFile.size > CONSTANTS.APP_ICON_SIZE){
+      if (this.uploadedIconFile.size > CONSTANTS.APP_ICON_SIZE) {
         this.toasterService.showError('File size exceeded' + " " + CONSTANTS.APP_ICON_SIZE / 1000000 + " " + 'MB', 'Upload file');
       }
       else {
@@ -117,10 +117,10 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
         image.src = URL.createObjectURL(this.uploadedIconFile);
         image.onload = (e: any) => {
           const selectedImage = e?.currentTarget as HTMLImageElement;
-          if (selectedImage.width <= CONSTANTS.APP_ICON_WIDTH && selectedImage.height <= CONSTANTS.APP_ICON_HEIGHT){
+          if (selectedImage.width <= CONSTANTS.APP_ICON_WIDTH && selectedImage.height <= CONSTANTS.APP_ICON_HEIGHT) {
             this.applicationData.metadata.icon.name = this.uploadedIconFile.name;
           } else {
-            this.toasterService.showError('Image size exceeded' + " " +  CONSTANTS.APP_ICON_WIDTH  + " " + 'x' + " " + CONSTANTS.APP_ICON_HEIGHT  + " " +  'px', 'Upload file');
+            this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.APP_ICON_WIDTH + " " + 'x' + " " + CONSTANTS.APP_ICON_HEIGHT + " " + 'px', 'Upload file');
           }
         };
       }
@@ -128,11 +128,11 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   async onSaveMetadata() {
-    if(this.uploadedLogoFile){
-      await this.uploadFile(this.uploadedLogoFile,"header_logo");
+    if (this.uploadedLogoFile) {
+      await this.uploadFile(this.uploadedLogoFile, "header_logo");
     }
-    if(this.uploadedIconFile){
-      await this.uploadFile(this.uploadedIconFile,"icon");
+    if (this.uploadedIconFile) {
+      await this.uploadFile(this.uploadedIconFile, "icon");
     }
 
     this.saveMetadataAPILoading = true;
@@ -188,9 +188,9 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     });
   }
 
-  showPosition = (position)=> {
-    
-    this.latitude =  position?.coords?.latitude || this.latitude;  
+  showPosition = (position) => {
+
+    this.latitude = position?.coords?.latitude || this.latitude;
     this.longitude = position.coords.longitude || this.longitude;
   }
 
@@ -201,7 +201,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
           types: ['geocode'],
         });
         autocomplete.addListener('place_changed', () => {
-          
+
           this.ngZone.run(() => {
             const place: google.maps.places.PlaceResult = autocomplete.getPlace();
             if (place.geometry === undefined || place.geometry === null) {
@@ -219,7 +219,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLocation() {
-    if(!this.latitude || !this.longitude || !(this.latitude.toString().trim()) || !(this.longitude.toString().trim()) || (this.latitude && !this.longitude) || (!this.latitude && this.longitude)){
+    if (!this.latitude || !this.longitude || !(this.latitude.toString().trim()) || !(this.longitude.toString().trim()) || (this.latitude && !this.longitude) || (!this.latitude && this.longitude)) {
       this.toasterService.showError("Select proper location", 'Save Menu Settings');
       return;
     }

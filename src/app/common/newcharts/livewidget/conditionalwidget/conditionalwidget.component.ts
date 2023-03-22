@@ -38,8 +38,8 @@ export class ConditionalwidgetComponent implements OnInit {
       this.widgetId = this.chartConfig.id;
       this.chartConfig.properties = this.chartConfig.properties[0].getproperty;
     }
-    console.log('con', this.chartConfig);
-    console.log('con', this.telemetryObj);
+
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {

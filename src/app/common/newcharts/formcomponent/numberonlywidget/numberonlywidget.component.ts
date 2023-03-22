@@ -22,7 +22,7 @@ export class NumberonlywidgetComponent implements OnInit {
     if (this.widgetObj?.widget_type !== 'SmallNumber') {
       this.widgetObj.properties = this.widgetObj.properties
       this.widgetObj.properties.forEach(element => {
-        debugger;
+        ;
         element.property = element;
         // this.onPropertySelection(element);
       });

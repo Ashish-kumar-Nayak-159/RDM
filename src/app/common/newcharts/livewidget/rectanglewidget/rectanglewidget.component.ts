@@ -48,7 +48,7 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
   ngOnInit(): void {
-    debugger
+
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
@@ -57,9 +57,7 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
       this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
 
-
     }
-    console.log(this.chartConfig.properties);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
@@ -144,7 +142,6 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
       }
       chart.data = [this.telemetryData];
       this.chart.push(chart);
-      console.log(this.chart);
     });
   }
 

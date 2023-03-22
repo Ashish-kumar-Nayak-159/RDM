@@ -127,7 +127,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     // this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response)=>{
     //   if(response && response?.data){
     //     this.telemetryData = response?.data;
-    //     console.log('telemetryData', this.telemetryData);
+    //     
     //   }
     // });
     // const params = {
@@ -136,8 +136,8 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
     // };
 
     // this.assetModelService.getAssetsModelLayout(params).subscribe((response)=>{
-    //   debugger
-    //   console.log('historical_widget',response)
+    //   
+    //   
     // })
     // setTimeout(()=>{
     //   this.lineChart();
@@ -150,18 +150,18 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       this.hideIndicator();
       this.showLoadingIndicator();
     }
-    else{
-    if(this.live_Date === true){
-      setTimeout(() => {
-        this.handleLiveTelemetry(this.newData);
-      }, 300);
-    }
     else {
-      setTimeout(() => {
-        this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
-      }, 300);
+      if (this.live_Date === true) {
+        setTimeout(() => {
+          this.handleLiveTelemetry(this.newData);
+        }, 300);
+      }
+      else {
+        setTimeout(() => {
+          this.handleLiveTelemetry(null, changes?.assetWiseTelemetryData?.currentValue);
+        }, 300);
+      }
     }
-  }
   }
 
   handleLiveTelemetry(newTelemetryObj: any = null, liveHistoricalData: any[] = null) {
@@ -489,9 +489,9 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
   }
 
   createThresholdSeries(valueAxis, propObj) {
-    //console.log("CheckingThreshold", + valueAxis)
+    //
     if (!this.isThresholdAdded) {
-      if(propObj){
+      if (propObj) {
         propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
       }
       if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
@@ -519,7 +519,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
 
   createThresholdSeries1(valueAxis, propObj) {
     if (!this.isThresholdAdded1) {
-      if(propObj){
+      if (propObj) {
         propObj.threshold = propObj?.threshold ? propObj?.threshold : {};
       }
       if (propObj?.threshold?.hasOwnProperty("l1") && propObj?.threshold?.hasOwnProperty("h1")) {
@@ -608,7 +608,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       dateAxis.keepSelection = true
       this.isSeriesHasDataInInit = false;
       this.createValueAxis(chart, 0);
-      this.createValueAxis(chart, 1);    
+      this.createValueAxis(chart, 1);
       chart.legend = new am4charts.Legend();
       chart.logo.disabled = true;
       chart.legend.maxHeight = 80;
@@ -699,7 +699,7 @@ export class HistoricalLivechartComponent implements OnInit, OnChanges {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.scrollbarY.parent = chart.leftAxesContainer;
       this.chart = chart;
-      if (this.isLoadingData){
+      if (this.isLoadingData) {
         this.hideIndicator();
         this.showLoadingIndicator();
       }

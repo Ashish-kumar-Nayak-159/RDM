@@ -90,10 +90,11 @@
                     <!-- <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
                     </app-gauge-chart> -->
-                    <app-rectanglewidget [chartConfig]="widget" *ngIf="widget.widget_type === 'RectangleWidget'"
+                    <!-- <app-rectanglewidget [chartConfig]="widget" *ngIf="widget.widget_type === 'RectangleWidget'"
                         (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
-                    </app-rectanglewidget>
-                    <app-cylinderwidget [chartConfig]="widget" *ngIf="widget.widget_type === 'CylinderWidget'"
+                    </app-rectanglewidget> -->
+                    <app-cylinderwidget [chartConfig]="widget"
+                        *ngIf="widget.widget_type === 'CylinderWidget' ||widget.widget_type === 'RectangleWidget'"
                         (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
                     </app-cylinderwidget>
 

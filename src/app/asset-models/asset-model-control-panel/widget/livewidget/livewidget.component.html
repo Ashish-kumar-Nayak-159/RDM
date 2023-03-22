@@ -9,15 +9,23 @@
                 are already
                 added.&nbsp;</ng-container>
             <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                <button class="btn btn-sm searchBtn btn-primary" [disabled]="assetModel.freezed"
+                <!-- <button class="btn btn-sm searchBtn btn-primary" [disabled]="assetModel.freezed"
                     (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live {{widgetStringFromMenu}}"><em
-                        class="fa fa-plus fa-sm"></em></button>
+                        class="fa fa-plus fa-sm"></em></button> -->
+                <button class="btn btn-sm btn-primary mt-1" [disabled]="assetModel.freezed"
+                    tooltip="Add Live {{widgetStringFromMenu}}" (click)="onOpenAddWidgetModal()"><span
+                        class="fa fa-plus fa-sm"></span>
+                    Add</button>
             </div>
             <div class="form-group" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                <button class="btn btn-sm searchBtn btn-success" [disabled]="assetModel.freezed"
+                <!-- <button class="btn btn-sm searchBtn btn-success" [disabled]="assetModel.freezed"
                     (click)="onOpenConfigureDashboardModal()" placement="bottom"
                     tooltip="Configure Dashboard {{widgetStringFromMenu}}"><em
-                        class="fa fa-cog fa-sm text-white"></em></button>
+                        class="fa fa-cog fa-sm text-white"></em></button> -->
+                <button class="btn btn-sm btn-success mt-1" tooltip="Configure Dashboard {{widgetStringFromMenu}}"
+                    [disabled]="assetModel.freezed" (click)="onOpenConfigureDashboardModal()"><span
+                        class="fa fa-cog fa-sm text-white"></span>
+                    Setting</button>
             </div>
         </form>
     </div>
@@ -60,7 +68,7 @@
         <div class="row col-md-12 mb-5" *ngIf="liveWidgets">
             <ng-container *ngFor="let widget of liveWidgets; let i = index;">
                 <div *ngIf="widget?.widget_type !== 'SmallNumber'" [style]="{ 'width': widget?.widget_type === 'OnlyNumber' || widget?.widget_type === 'NumberWithTrend' 
-              || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+              || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget?.properties?.length + (widget?.properties?.length > 1 ? (2 * (widget?.properties?.length - 1)) : 0) +'%') : '48%',
               'margin-left':'2%', 'margin-top': '2%' }">
                     <!-- <app-conditional-widget *ngIf="widget?.widget_type === 'ConditionalNumber'" [chartConfig]="widget"
                         (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"

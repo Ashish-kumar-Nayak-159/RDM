@@ -2,12 +2,13 @@
 
     <ul class="nav">
         <li class="nav-item">
-            <button class="btn btn-sm btn-primary mt-1" (click)="onAdd()"><span class="fa fa-plus fa-sm"></span>
+            <button class="btn btn-sm btn-primary mt-1" tooltip="Add Historical {{widgetStringFromMenu}}"
+                (click)="onAdd()"><span class="fa fa-plus fa-sm"></span>
                 Add</button>
         </li>
         <li class="nav-item">
-            <button class="btn btn-sm btn-success ml-2 mt-1" (click)="onOpenConfigureDashboardModal()"><span
-                    class="fa fa-cog fa-sm text-white"></span>
+            <button class="btn btn-sm btn-success ml-2 mt-1" tooltip="Configure Dashboard {{widgetStringFromMenu}}"
+                (click)="onOpenConfigureDashboardModal()"><span class="fa fa-cog fa-sm text-white"></span>
                 Setting</button>
         </li>
     </ul>

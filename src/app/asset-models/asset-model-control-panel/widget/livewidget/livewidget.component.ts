@@ -6,6 +6,7 @@ import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
+import { environment } from 'src/environments/environment';
 import { SignalRService } from './../../../../services/signalR/signal-r.service';
 import { ToasterService } from './../../../../services/toaster.service';
 
@@ -60,7 +61,9 @@ export class LivewidgetComponent implements OnInit {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;
-
+  fileArr: any = [];
+  blobToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -79,6 +82,7 @@ export class LivewidgetComponent implements OnInit {
     // await this.getLiveWidgets();
     this.getModelSlaveDetails();
     this.getAssetWidget();
+
   }
 
   ngAfterViewChecked() {
@@ -760,6 +764,24 @@ export class LivewidgetComponent implements OnInit {
         properties: this.widgetObj.properties,
       }
     }
+    else if (this.widgetObj.widget_type == "NumberWithImage") {
+      this.widgetObj.properties.forEach(element => {
+        debugger;
+        let getName: any;
+        if (!element?.json_key) {
+          getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+        }
+        else {
+          getName = this.propertyList.find(x => x.json_key == element?.json_key);
+        }
+
+        element.name = getName?.name;
+        element.data_type = getName?.data_type;
+        element.property = getName;
+
+      });
+
+    }
 
     let reqObj = {
       "type": "LiveWidget",
@@ -791,7 +813,7 @@ export class LivewidgetComponent implements OnInit {
 
     let id = this.widgetObj.id;
     if (id > 0) {
-      this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj,).subscribe(async res => {
+      this.assetModelService.updateAssetWidget(this.assetModel.name, id, reqObj).subscribe(async res => {
         this.toasterService.showSuccess(res["message"], 'Live ' + this.widgetStringFromMenu);
         await this.getAssetModelsderivedKPIs();
         await this.getAssetsModelProperties({});
@@ -1012,11 +1034,36 @@ export class LivewidgetComponent implements OnInit {
           this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
           data.properties = data.properties[0].properties.map(o => ({ ...o }));
-          data.properties.forEach(element => {
+
+          data.properties.forEach((element, index) => {
+            let url = this.blobStorageURL + element.image.url + this.blobToken;
+            const toDataURL = url => fetch(url)
+              .then(response => response.blob())
+              .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsDataURL(blob)
+              }));
+
+            toDataURL(url)
+              .then(dataUrl => {
+                var fileData = this.dataURLtoFile(dataUrl, element.image.name);
+                this.fileArr.push(fileData);
+                element.image = fileData;
+              });
             let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
             element.name = getName?.name;
             element.data_type = getName?.data_type;
+            element.json_key = getName?.json_key;
           });
+          // data.properties[0].image = {};
+
+          // data.properties.forEach(element => {
+          //   let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+          //   element.name = getName?.name;
+          //   element.data_type = getName?.data_type;
+          // });
         }
         else if (data.widget_type == "GaugeChart") {
           data.slave_id = data.properties[0].slave_id;
@@ -1171,5 +1218,15 @@ export class LivewidgetComponent implements OnInit {
       $('#confirmRemoveWidgetModal').modal('hide');
     }
   }
+
+  dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
+
 
 }

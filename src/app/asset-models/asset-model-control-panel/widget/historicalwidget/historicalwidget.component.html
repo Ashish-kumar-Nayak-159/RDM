@@ -126,10 +126,11 @@
                             <ng-template ng-header-tmp>
                                 <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                                     <li *ngIf="y1AxisProps.length !== filteredPropList.length"> <a
-                                            href="javascript:void(0)" (click)="y1AxisProps = filteredPropList">Select
+                                            href="javascript:void(0)" (click)="onSelectAxis(1,true)">Select
                                             All</a></li>
                                     <li *ngIf="y1AxisProps.length === filteredPropList.length"> <a
-                                            href="javascript:void(0)" (click)="y1AxisProps = []">Deselect All</a></li>
+                                            href="javascript:void(0)" (click)="onSelectAxis(1,false)">Deselect All</a>
+                                    </li>
                                 </ul>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">
@@ -157,10 +158,11 @@
                             <ng-template ng-header-tmp>
                                 <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                                     <li *ngIf="y2AxisProps.length !== filteredPropList.length"> <a
-                                            href="javascript:void(0)" (click)="y2AxisProps = filteredPropList">Select
+                                            href="javascript:void(0)" (click)="onSelectAxis(2,true)">Select
                                             All</a></li>
                                     <li *ngIf="y2AxisProps.length === filteredPropList.length"> <a
-                                            href="javascript:void(0)" (click)="y2AxisProps = []">Deselect All</a></li>
+                                            href="javascript:void(0)" (click)="onSelectAxis(2,false)">Deselect All</a>
+                                    </li>
                                 </ul>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">

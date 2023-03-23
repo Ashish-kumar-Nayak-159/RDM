@@ -1108,6 +1108,28 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     }, 1000);
   }
 
+  onSelectAxis(type, isSelect) {
+    if (type == 1) {
+      if (isSelect) {
+        this.y1AxisProps = this.filteredPropList;
+      }
+      else {
+        this.y1AxisProps = [];
+      }
+      this.historicalWidgetForm.controls.y1AxisProps.setValue(this.y1AxisProps);
+
+    }
+    else {
+      if (isSelect) {
+        this.y2AxisProps = this.filteredPropList;
+      }
+      else {
+        this.y2AxisProps = [];
+      }
+      this.historicalWidgetForm.controls.y2AxisProps.setValue(this.y2AxisProps);
+
+    }
+  }
   // checkValidation() {
   //   this.isFormValid = true;
   //   if (this.chartTitle == '') {

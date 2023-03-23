@@ -851,7 +851,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
 
     let chartType = this.historicalWidgetForm.controls.selectedChartType.value;
     let y1axis = this.historicalWidgetForm.controls.y1AxisProps.value;
-    let y2axis = this.historicalWidgetForm.controls.y2AxisProps.value;
+    let y2axis = this.historicalWidgetForm.controls.y2AxisProps.value ? this.historicalWidgetForm.controls.y2AxisProps.value : [];
 
     if (chartType === 'Vibration Damage Plot') {
       let flag = false;

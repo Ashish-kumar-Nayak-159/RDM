@@ -30,7 +30,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   isCreatePropertyLoading = false;
   selectedProperty: any;
   dependentProperty: any[] = [];
-  setupForm: FormGroup;
+  setupForm: FormGroup = undefined;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];

@@ -670,6 +670,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.assetModel['alert_type'] = undefined;
   }
 
   onDeselectAll(e,type) {

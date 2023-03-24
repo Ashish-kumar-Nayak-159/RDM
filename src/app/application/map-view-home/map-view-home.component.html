@@ -65,6 +65,14 @@
                           <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true" class="fa fa-chart-bar fa-fw me-4" title="{{tooltipmapicon}}" style="font-size: 15px;"></em>
                           <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw me-4" title="View Historic Data"  style="font-size: 15px;"></em>Live Data
                         </a>
+                        <div>
+                        <a *ngIf="contextApp.app==='CMS_Dev'" type="button" (click)="onSave(asset)" class="btn text-primary open-unity-card d-flex align-items-center" style="gap: 6px; font-size: 13px;" >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-unity" viewBox="0 0 16 16">
+                            <path d="M15 11.2V3.733L8.61 0v2.867l2.503 1.466c.099.067.099.2 0 .234L8.148 6.3c-.099.067-.197.033-.263 0L4.92 4.567c-.099-.034-.099-.2 0-.234l2.504-1.466V0L1 3.733V11.2v-.033.033l2.438-1.433V6.833c0-.1.131-.166.197-.133L6.6 8.433c.099.067.132.134.132.234v3.466c0 .1-.132.167-.198.134L4.031 10.8l-2.438 1.433L7.983 16l6.391-3.733-2.438-1.434L9.434 12.3c-.099.067-.198 0-.198-.133V8.7c0-.1.066-.2.132-.233l2.965-1.734c.099-.066.197 0 .197.134V9.8L15 11.2Z"/>
+                          </svg>
+                          3D Model
+                        </a>
+                      </div>
                       </div>
                     </div>
 
@@ -105,3 +113,22 @@
     </agm-map>
   </div>
 </div>
+<div class="card unity-modal-card  d-none">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+
+      <h2>{{displayNameUnityModal?.display_name ? displayNameUnityModal?.display_name: displayNameUnityModal?.asset_id}}</h2>
+      <button (click)="onClose()" class="pswp__button pswp__button--close animate__animated">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg close-unity-card" viewBox="0 0 16 16">
+        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+      </svg>
+    </button>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <canvas id="unity-canvas" width=960 height=600 style="width: 960px; height: 600px; background: #231F20; min-width: 100%; min-height: calc(100vh - 70px);"></canvas>
+
+  </div>
+</div>
+
+<div class="unity-backdrop d-none"></div>

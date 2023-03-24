@@ -6,6 +6,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
+declare var createUnityInstance: any;
 
 @Component({
   selector: 'app-map-view-home',
@@ -53,6 +54,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   ];
   tileData: any;
   configuredHierarchy: any = {};
+  gameInstance: any;
+  gameConfig: any;
+  displayNameUnityModal: any;
+  defaultAppName = environment.app;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) { }
 
@@ -370,6 +375,76 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     pagefilterObj['assets'] = asset;
     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     this.router.navigate(['applications', this.contextApp.app, 'dashboard']);
+  }
+  onSave(asset){
+    this.displayNameUnityModal = asset;
+      // Hide by defualt unity card
+      // $(".unity-modal-card").addClass("d-none");
+
+      // Show Card
+      // $(".open-unity-card").click(function () {
+        $(".unity-modal-card").removeClass("d-none");
+        $(".unity-modal-card").addClass("d-block");
+        $(".unity-backdrop").removeClass("d-none");
+        $(".unity-backdrop").addClass("d-block");
+
+        $(".unity-backdrop").click(() =>{
+          $(".pswp__button--close").css("background-color", "#ff0000");
+          $(".close-unity-card").css("fill", "#ffffff");
+          setTimeout(() => {
+            $(".pswp__button--close").css("background-color", "#000000");
+            $(".close-unity-card").css("fill", "#ffffff");
+           }, 1000);
+        });
+        var buildUrl = "assets/Build";
+        var loaderUrl = buildUrl + "/KemsysBuild.loader.js";
+    
+        this.gameConfig = {
+          dataUrl: buildUrl + "/KemsysBuild.data",
+          frameworkUrl: buildUrl + "/KemsysBuild.framework.js",
+          codeUrl: buildUrl + "/KemsysBuild.wasm",
+          // streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "API Data",
+          productVersion: "0.1",
+        };
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+          // Mobile device style: fill the whole browser client area with the game canvas:
+          var meta = document.createElement('meta');
+          meta.name = 'viewport';
+          meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+          document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+        var script = document.createElement("script");
+        var canvas = document.querySelector("#unity-canvas");   
+        createUnityInstance(document.querySelector("#unity-canvas"),this.gameConfig).then((unityInstance) => {  
+          this.gameInstance = unityInstance;
+        });
+  }
+  onClose(){
+    $(".unity-modal-card").addClass("d-none");
+    $(".unity-modal-card").removeClass("d-block");
+    $(".unity-backdrop").addClass("d-none");
+    $(".unity-backdrop").removeClass("d-block");
+    this.gameInstance.Quit();
+    this.gameInstance = null;
+  }
+
+  redirectToFirstMenu() {
+    const menu =
+      this.contextApp.menu_settings.main_menu.length > 0
+        ? this.contextApp.menu_settings.main_menu
+        : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+    let i = 0;
+    menu.forEach((menuObj) => {
+      if (i === 0 && menuObj.visible) {
+        i++;
+        if (menuObj.url?.includes(':appName')) {
+          menuObj.url = menuObj.url.replace(':appName', this.contextApp.app);
+          this.router.navigateByUrl(menuObj.url);
+        }
+      }
+    });
   }
 
   ngOnDestroy() {

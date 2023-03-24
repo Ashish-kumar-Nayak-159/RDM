@@ -367,7 +367,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       const data = [];
       for (let i = 0; i < 10; i++) {
         const obj = {
-          message_date: datefns.format(datefns.subMinutes(new Date(), i), "dd-MM-yyyy HH:mm:ss"),
+          message_date: datefns.format(datefns.subMinutes(new Date(), i), "yyyy-MM-dd HH:mm:ss"),
           message_date_obj: null,
         };
 

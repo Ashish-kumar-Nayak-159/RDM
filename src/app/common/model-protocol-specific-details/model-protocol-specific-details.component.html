@@ -3,7 +3,8 @@
     <label for="recipient-name" class="col-form-label required">Slave:</label>
     <div class="input-group">
       <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id">
-        <option value="">Select Slave</option>
+        <option value="" *ngIf="assetModel.alert_type !=='Asset'">Select Slave</option>
+        <option [ngValue]="null" *ngIf="assetModel.alert_type ==='Asset'">Select Slave</option>
         <option [ngValue]="slave?.slave_id" *ngFor="let slave of slaveData">{{slave?.slave_name}}</option>
       </select>
     </div>

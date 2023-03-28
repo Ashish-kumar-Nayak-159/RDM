@@ -49,6 +49,8 @@ import { OnlynumberwidgetComponent } from './newcharts/livewidget/onlynumberwidg
 import { GaugechartComponent } from './newcharts/livewidget/gaugechart/gaugechart.component';
 import { RectanglewidgetComponent } from './newcharts/livewidget/rectanglewidget/rectanglewidget.component';
 import { CylinderwidgetComponent } from './newcharts/livewidget/cylinderwidget/cylinderwidget.component';
+import { NewdataTypeFiedsComponent } from './newdata-type-fieds/newdata-type-fieds.component';
+import { NewmodelProtocolSpecificDetailsComponent } from './newmodel-protocol-specific-details/newmodel-protocol-specific-details.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -88,6 +90,8 @@ import { CylinderwidgetComponent } from './newcharts/livewidget/cylinderwidget/c
     GaugechartComponent,
     RectanglewidgetComponent,
     CylinderwidgetComponent,
+    NewdataTypeFiedsComponent,
+    NewmodelProtocolSpecificDetailsComponent,
 
   ],
   imports: [
@@ -145,6 +149,8 @@ import { CylinderwidgetComponent } from './newcharts/livewidget/cylinderwidget/c
     GaugechartComponent,
     RectanglewidgetComponent,
     CylinderwidgetComponent,
+    NewdataTypeFiedsComponent,
+    NewmodelProtocolSpecificDetailsComponent
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],
 })

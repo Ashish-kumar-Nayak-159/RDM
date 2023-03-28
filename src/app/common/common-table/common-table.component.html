@@ -1,106 +1,126 @@
-
 <div class="container-fluid pl-0" *ngIf="assetModelData?.length>0">
   <form [formGroup]="assetSelectForm">
     <div class="d-flex justify-content-between align-items-center w-100">
       <div class="left ml-3">
         <label for="recipient-name" class="col-form-label">Asset :&nbsp; </label>
         <div class="input-group assetList">
-          <select class="form-control form-control-sm" id="selected_asset"  (change)="changeAssetSelection()" name="selected_asset" formControlName="selected_asset">
+          <select class="form-control form-control-sm" id="selected_asset" (change)="changeAssetSelection()"
+            name="selected_asset" formControlName="selected_asset">
             <option value="">Select Asset</option>
             <option [ngValue]="asset" *ngFor="let asset of assetModelData">{{asset.display_name}}</option>
           </select>
         </div>
       </div>
       <div class="right" style="margin-right: 68px;">
-        <button [ngClass]="{'disabled' : saveDataFlag || (assetModelData?.length > 0 && isEnteredAnyValue == false) }" type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
+        <button [ngClass]="{'disabled' : saveDataFlag || (assetModelData?.length > 0 && isEnteredAnyValue == false) }"
+          type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
           Multi Sync
         </button>
       </div>
     </div>
   </form>
 </div>
-  <table  class="table table-hover v-align-middle" >
-    <thead>
-      <tr>
-        <th *ngIf="tableConfig?.hideSerialNum != true" scope="col">No</th>
-        <ng-container *ngFor="let item of tableConfig?.data;let i = index;">
+<table class="table table-hover v-align-middle">
+  <thead>
+    <tr>
+      <th *ngIf="tableConfig?.hideSerialNum != true" scope="col">No</th>
+      <ng-container *ngFor="let item of tableConfig?.data;let i = index;">
         <th *ngIf="item.name != 'checkbox'" scope="col" class="{{item.headerClass}}">
           {{item.name}}
         </th>
         <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
-          <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs" (change)="updateAllCheckBox(item.selectCheckBoxs)"/>
+          <input [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
+            type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs"
+            (change)="updateAllCheckBox(item.selectCheckBoxs)" />
         </th>
-        </ng-container>
-      </tr>
+      </ng-container>
+    </tr>
   </thead>
-    <tbody>
-      <ng-container *ngIf="tableData?.length > 0 && !isTableDataLoading && isTableFilterSelected">
-        <tr *ngFor="let data of tableData; let i = index;"
-        [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
+  <tbody>
+    <ng-container *ngIf="tableData?.length > 0 && !isTableDataLoading && isTableFilterSelected">
+      <tr *ngFor="let data of tableData; let i = index;" [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
         (tableConfig.type === 'alert'
         && data?.severity?.toLowerCase() === 'critical')}">
-          <td *ngIf="tableConfig?.hideSerialNum != true">{{i + 1}}</td>
-          <ng-container *ngFor="let header of tableConfig?.data">
+        <td *ngIf="tableConfig?.hideSerialNum != true">{{i + 1}}</td>
+        <ng-container *ngFor="let header of tableConfig?.data">
           <td *ngIf="!header.isColumnHidden" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'checkbox'">
-              <input [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp" id="syncUp"  (change)="updateSingleCheckBox(data.syncUp)" />
+              <input [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
+                class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp" name="syncUp"
+                id="syncUp" (change)="updateSingleCheckBox(data.syncUp)" />
             </ng-container>
             <ng-container *ngIf="header.key === 'new_value'">
-             <input *ngIf="data.data_type != 'Boolean' &&  data.metadata.d != 'd'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" maxlength="20"  class="new_value" type="text" placeholder="New Value" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)" />
-             <select  placeholder="Select" *ngIf="data.data_type == 'Boolean'  || data.metadata.d == 'd'" [disabled] = "assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id" class="new_value" id="selected_asset"  #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"  (change)="inputBoxValueChange(data,data.new_value)">
+              <input *ngIf="data.datatype != 'Boolean' &&  data.metadata.d != 'd'"
+                [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
+                maxlength="20" class="new_value" type="text" placeholder="New Value" #new_value="ngModel"
+                [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"
+                (change)="inputBoxValueChange(data,data.new_value)" />
+              <select placeholder="Select" *ngIf="data.datatype == 'Boolean'  || data.metadata.d == 'd'"
+                [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
+                class="new_value" id="selected_asset" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value"
+                id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)">
                 <option disabled [ngValue]="undefined">Select</option>
                 <option [ngValue]="false">False</option>
                 <option [ngValue]="true">True</option>
-            </select>
+              </select>
             </ng-container>
             <ng-container *ngIf="header.type === 'text'">
-             <span *ngIf="header.key">
-                <em class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
+              <span *ngIf="header.key">
+                <em class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'"
+                  [style.color]="
                   (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                   (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                   (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                   (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                   )
-                  )" placement="bottom" [tooltip]="data?.severity"></em>&nbsp;{{resolve(data, header.key)}}  </span>
+                  )" placement="bottom" [tooltip]="data?.severity"></em>&nbsp;{{resolve(data, header.key)}} </span>
             </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
                 <ng-container *ngIf="btnData.privilege_key; else normalBtns">
-                 &nbsp;<a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
-                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf(btnData.privilege_key) > -1 && resolve(data, 'source') !== 'Model'"
-                [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
-                  [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
+                  &nbsp;<a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}"
+                    (click)="onClickOfButton(data, btnData.id)"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf(btnData.privilege_key) > -1 && resolve(data, 'source') !== 'Model'"
+                    [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
+                    <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip" [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
                   && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
-                  {{btnData.text}}
-                </a>
-              </ng-container>
-              <ng-template #normalBtns>
-                 <a [ngClass]="{'disabled' :  saveDataFlag && data.syncUp || assetModelData?.length > 0 && data?.new_value?.length <= 0  }" href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id);data.clicked = true"
-                [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
-                  [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
+                    {{btnData.text}}
+                  </a>
+                </ng-container>
+                <ng-template #normalBtns>
+                  <a [ngClass]="{'disabled' :  saveDataFlag && data.syncUp || assetModelData?.length > 0 && data?.new_value?.length <= 0  }"
+                    href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}"
+                    (click)="onClickOfButton(data, btnData.id);data.clicked = true"
+                    [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
+                    <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip" [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
                   && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
-                  <span>{{btnData.text}}</span>
-                  <em *ngIf="saveDataFlag && data.clicked == true && data?.new_value?.toString().length > 0" class="fa fa-spinner fa-spin fa-fw"></em>
-                </a>
-              </ng-template>
+                    <span>{{btnData.text}}</span>
+                    <em *ngIf="saveDataFlag && data.clicked == true && data?.new_value?.toString().length > 0"
+                      class="fa fa-spinner fa-spin fa-fw"></em>
+                  </a>
+                </ng-template>
               </ng-container>
             </ng-container>
           </td>
         </ng-container>
-        </tr>
-      </ng-container>
+      </tr>
+    </ng-container>
     <ng-container *ngIf="tableData?.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
-        <td [attr.colspan]="tableConfig.data.length + 1">No {{tableConfig.type}} data found <span *ngIf="tableConfig.hasOwnProperty('dateRange')">for {{tableConfig.dateRange}}. <p *ngIf="tableConfig.dateRange !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></span></td>
-     </tr>
+        <td [attr.colspan]="tableConfig.data.length + 1">No {{tableConfig.type}} data found <span
+            *ngIf="tableConfig.hasOwnProperty('dateRange')">for {{tableConfig.dateRange}}. <p
+              *ngIf="tableConfig.dateRange !== 'this selected range'; else differentMsg" class="pt-2">You can choose
+              large time window.</p> <ng-template #differentMsg>
+              <p class="pt-2">You can choose different time window.</p>
+            </ng-template></span></td>
+      </tr>
     </ng-container>
     <ng-container *ngIf="tableData?.length === 0 && !isTableDataLoading && !isTableFilterSelected">
       <tr>
-        <td [attr.colspan]="tableConfig?.data.length + 1">Select filter and press search button to load the {{tableConfig.type}} data.</td>
+        <td [attr.colspan]="tableConfig?.data.length + 1">Select filter and press search button to load the
+          {{tableConfig.type}} data.</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="isTableDataLoading">
@@ -111,4 +131,4 @@
       </tr>
     </ng-container>
   </tbody>
-  </table>
+</table>

@@ -9,8 +9,24 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./numberonlywidget.component.css']
 })
 export class NumberonlywidgetComponent implements OnInit {
-  @Input() widgetObj: any;
-  @Input() propertyList: any[];
+  private _widgetObj: any;
+  public get widgetObj(): any {
+    return this._widgetObj;
+  }
+  @Input()
+  public set widgetObj(value: any) {
+    this._widgetObj = value;
+    console.log(value);
+  }
+  private _propertyList: any[];
+  public get propertyList(): any[] {
+    return this._propertyList;
+  }
+  @Input()
+  public set propertyList(value: any[]) {
+    this._propertyList = value;
+    console.log(value);
+  }
   @Input() assetModel: any;
   isFileUploading = false;
   dropdownProperties: any[] = [];
@@ -18,14 +34,17 @@ export class NumberonlywidgetComponent implements OnInit {
   constructor(private commonService: CommonService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
+    debugger
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.widgetObj?.widget_type !== 'SmallNumber') {
-      this.widgetObj.properties = this.widgetObj.properties
-      this.widgetObj.properties.forEach(element => {
-        ;
-        element.property = element;
-        // this.onPropertySelection(element);
-      });
+      this.widgetObj.properties = this.widgetObj.properties;
+      if (this.widgetObj.properties[0].property) {
+        this.widgetObj.properties.forEach(element => {
+          element.property = element;
+          // this.onPropertySelection(element);
+        });
+      }
     }
   }
 

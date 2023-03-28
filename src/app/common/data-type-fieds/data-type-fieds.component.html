@@ -19,9 +19,9 @@
     </div>
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Unit:</label>
-      <input type="text" maxlength="10" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.units"
-        placeholder="Unit">
-        <span *ngIf="obj?.units?.length > 10" class="text-danger">only 10 characters allowed.</span>
+      <input type="text" maxlength="10" class="form-control form-control-sm" id="unit" name="unit"
+        [(ngModel)]="obj.unit" placeholder="Unit">
+      <span *ngIf="obj?.unit?.length > 10" class="text-danger">only 10 characters allowed.</span>
     </div>
   </div>
   <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
@@ -53,7 +53,7 @@
     </div>
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Unit:</label>
-      <input type="text" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.units"
+      <input type="text" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.unit"
         placeholder="Units" [disabled]="disabled">
     </div>
   </div>
@@ -62,7 +62,8 @@
   <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
-      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [disabled]="disabled" [(ngModel)]="obj.defaultValue">
+      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [disabled]="disabled"
+        [(ngModel)]="obj.defaultValue">
         <option [ngValue]="null">Select Value</option>
         <option [ngValue]="true">True</option>
         <option [ngValue]="false">False</option>
@@ -79,7 +80,8 @@
     </div>
     <div class="form-group col-lg-4 pr-0">
       <label for="recipient-name" class="col-form-label">Type:</label>
-      <select class="form-control form-control-sm" id="template" name="model_type" [disabled]="disabled" [(ngModel)]="enumObj.data_type">
+      <select class="form-control form-control-sm" id="template" name="model_type" [disabled]="disabled"
+        [(ngModel)]="enumObj.data_type">
         <option [ngValue]="undefined">Select Type</option>
         <option [ngValue]="'number'">Number</option>
         <option [ngValue]="'string'">String</option>
@@ -88,17 +90,18 @@
     </div>
     <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'string'">
       <label for="recipient-name" class="col-form-label">Enum Value:</label>
-      <input type="text" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value" [disabled]="disabled"
-        placeholder="Enum Value">
+      <input type="text" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
+        [disabled]="disabled" placeholder="Enum Value">
     </div>
     <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'number'">
       <label for="recipient-name" class="col-form-label">Enum Value:</label>
-      <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value" [disabled]="disabled"
-        placeholder="Enum Value">
+      <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
+        [disabled]="disabled" placeholder="Enum Value">
     </div>
     <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'boolean'">
       <label for="recipient-name" class="col-form-label">Enum Value:</label>
-      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="enumObj.value" [disabled]="disabled">
+      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="enumObj.value"
+        [disabled]="disabled">
         <option [ngValue]="undefined">Select Value</option>
         <option [ngValue]="true">True</option>
         <option [ngValue]="false">False</option>
@@ -108,17 +111,17 @@
       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
       <em class="fa fa-plus fa-sm"></em> </a> -->
       <label for="recipient-name" class="col-form-label"> &nbsp;</label>
-      <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  [disabled]="disabled"
+      <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add" [disabled]="disabled"
         (click)="addEnumValue()">
         <em class="fa fa-plus fa-sm"></em></button>
     </div>
   </div>
-  <div class="row col-lg-12" >
-    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0" >
-      <ng-container *ngFor="let item of obj.enum; let index = index" >
-        <span class="tag" >
+  <div class="row col-lg-12">
+    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0">
+      <ng-container *ngFor="let item of obj.enum; let index = index">
+        <span class="tag">
           <span class="tag-text">{{item.label}} : {{item.value}}</span>
-          <button class="tag-remove" *ngIf="!disabled" (click)="removeEnumValue(index)" ></button>
+          <button class="tag-remove" *ngIf="!disabled" (click)="removeEnumValue(index)"></button>
         </span>
       </ng-container>
     </div>
@@ -126,7 +129,8 @@
   <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
     <div class="form-group col-lg-6">
       <label for="recipient-name" class="col-form-label">Default Value:</label>
-      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue" [disabled]="disabled">
+      <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [(ngModel)]="obj.defaultValue"
+        [disabled]="disabled">
         <option [ngValue]="null">Select Value</option>
         <option *ngFor="let item of obj.enum" [ngValue]="item.value">{{item.label}}</option>
       </select>
@@ -134,7 +138,6 @@
   </div>
 </ng-container>
 <div class="form-check">
-  <input type="checkbox" class="form-check-input" id="widgetrequired" name="widgetrequired"
-  [(ngModel)]="obj.required">
+  <input type="checkbox" class="form-check-input" id="widgetrequired" name="widgetrequired" [(ngModel)]="obj.required">
   <label class="form-check-label" for="contains-db-sp">Is Required?</label>
 </div>

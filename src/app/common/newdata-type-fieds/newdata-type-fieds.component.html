@@ -1,0 +1,210 @@
+<ng-container *ngIf="obj.type?.toLowerCase() === 'number'">
+    <div class="row col-lg-12 p-0">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Min Value:</label>
+            <input type="number" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="obj.minValue"
+                placeholder="Min Value">
+        </div>
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Max Value:</label>
+            <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="obj.maxValue"
+                placeholder="Max Value" (blur)="onKeyUp(obj)">
+        </div>
+    </div>
+    <div class="row col-lg-12 p-0">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Precision:</label>
+            <input type="number" class="form-control form-control-sm" min="0" id="precision" name="precision"
+                [(ngModel)]="obj.precision" placeholder="Precision">
+        </div>
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Unit:</label>
+            <input type="text" maxlength="10" class="form-control form-control-sm" id="unit" name="unit"
+                [(ngModel)]="obj.unit" placeholder="Unit">
+            <span *ngIf="obj?.unit?.length > 10" class="text-danger">only 10 characters allowed.</span>
+        </div>
+    </div>
+    <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Default Value:</label>
+            <input type="number" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="obj.defaultValue" placeholder="Default Value">
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="obj.type?.toLowerCase() === 'string'">
+    <div class="row col-lg-12 p-0">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Min Length:</label>
+            <input type="number" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="obj.minLength"
+                placeholder="Min Length" [disabled]="disabled">
+        </div>
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Max Length:</label>
+            <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="obj.maxLength"
+                placeholder="Max Length" (blur)="onKeyUp(obj)" [disabled]="disabled">
+        </div>
+    </div>
+    <div class="row col-lg-12 p-0">
+        <div class="form-group col-lg-6" *ngIf="type !== 'measured_properties'">
+            <label for="recipient-name" class="col-form-label">Default Value:</label>
+            <input type="text" class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="obj.defaultValue" placeholder="Default Value" [disabled]="disabled">
+        </div>
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Unit:</label>
+            <input type="text" class="form-control form-control-sm" id="unit" name="unit" [(ngModel)]="obj.unit"
+                placeholder="Units" [disabled]="disabled">
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="obj.type?.toLowerCase() === 'boolean'">
+    <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Default Value:</label>
+            <select class="form-control form-control-sm" id="defaultValue" name="defaultValue" [disabled]="disabled"
+                [(ngModel)]="obj.defaultValue">
+                <option [ngValue]="null">Select Value</option>
+                <option [ngValue]="true">True</option>
+                <option [ngValue]="false">False</option>
+            </select>
+        </div>
+    </div>
+</ng-container>
+<!-- <ng-container *ngIf="obj.type?.toLowerCase() === 'enum'">
+    <div class="row col-lg-12 p-0" *ngFor="let enumData of obj?.enum;last as isLast">
+        <div class="form-group col-lg-3 pr-0">
+            <label for="recipient-name" class="col-form-label">Enum Label:</label>
+            <input type="text" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="enumData.label"
+                placeholder="Enum Key" [disabled]="disabled">
+        </div>
+        <div class="form-group col-lg-4 pr-0">
+            <label for="recipient-name" class="col-form-label">Type:</label>
+            <select class="form-control form-control-sm" id="template" name="model_type" [disabled]="disabled"
+                [(ngModel)]="enumData.enum_type">
+                <option [ngValue]="undefined">Select Type</option>
+                <option [ngValue]="'number'">Number</option>
+                <option [ngValue]="'string'">String</option>
+                <option [ngValue]="'boolean'">Boolean</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumData.enum_type === 'string'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <input type="text" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumData.value"
+                [disabled]="disabled" placeholder="Enum Value">
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumData.enum_type === 'number'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumData.value"
+                [disabled]="disabled" placeholder="Enum Value">
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumData.enum_type === 'boolean'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <select class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="enumData.value" [disabled]="disabled">
+                <option [ngValue]="undefined">Select Value</option>
+                <option [ngValue]="true">True</option>
+                <option [ngValue]="false">False</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-1 pr-0" *ngIf="isLast">
+            <label for="recipient-name" class="col-form-label"> &nbsp;</label>
+            <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
+                [disabled]="disabled" (click)="addEnumValue()">
+                <em class="fa fa-plus fa-sm"></em></button>
+        </div>
+    </div>
+    <div class="row col-lg-12">
+        <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 1">
+            <ng-container *ngFor="let item of obj.enum; let index = index">
+                <span class="tag" *ngIf="index > 0">
+                    <span class="tag-text">{{item.label}} : {{item.value}}</span>
+                    <button class="tag-remove" *ngIf="!disabled" (click)="removeEnumValue(index)"></button>
+                </span>
+            </ng-container>
+        </div>
+    </div>
+    <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Default Value:</label>
+            <select class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="obj.defaultValue" [disabled]="disabled">
+                <option [ngValue]="null">Select Value</option>
+                <option *ngFor="let item of obj.enum" [ngValue]="item.value">{{item.label}}</option>
+            </select>
+        </div>
+    </div>
+</ng-container> -->
+
+<ng-container *ngIf="obj.type?.toLowerCase() === 'enum'">
+    <div class="row col-lg-12 p-0">
+        <div class="form-group col-lg-3 pr-0">
+            <label for="recipient-name" class="col-form-label">Enum Label:</label>
+            <input type="text" class="form-control form-control-sm" id="min" name="min" [(ngModel)]="enumObj.label"
+                placeholder="Enum Key" [disabled]="disabled">
+        </div>
+        <div class="form-group col-lg-4 pr-0">
+            <label for="recipient-name" class="col-form-label">Type:</label>
+            <select class="form-control form-control-sm" id="template" name="model_type" [disabled]="disabled"
+                [(ngModel)]="enumObj.data_type">
+                <option [ngValue]="undefined">Select Type</option>
+                <option [ngValue]="'number'">Number</option>
+                <option [ngValue]="'string'">String</option>
+                <option [ngValue]="'boolean'">Boolean</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'string'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <input type="text" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
+                [disabled]="disabled" placeholder="Enum Value">
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'number'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <input type="number" class="form-control form-control-sm" id="max" name="max" [(ngModel)]="enumObj.value"
+                [disabled]="disabled" placeholder="Enum Value">
+        </div>
+        <div class="form-group col-lg-4 pr-0" *ngIf="enumObj.data_type === 'boolean'">
+            <label for="recipient-name" class="col-form-label">Enum Value:</label>
+            <select class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="enumObj.value" [disabled]="disabled">
+                <option [ngValue]="undefined">Select Value</option>
+                <option [ngValue]="true">True</option>
+                <option [ngValue]="false">False</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-1 pr-0">
+            <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
+        <em class="fa fa-plus fa-sm"></em> </a> -->
+            <label for="recipient-name" class="col-form-label"> &nbsp;</label>
+            <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
+                [disabled]="disabled" (click)="addEnumValue()">
+                <em class="fa fa-plus fa-sm"></em></button>
+        </div>
+    </div>
+    <div class="row col-lg-12">
+        <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="obj.enum?.length > 0">
+            <ng-container *ngFor="let item of obj.enum; let index = index">
+                <span class="tag">
+                    <span class="tag-text">{{item.label}} : {{item.value}}</span>
+                    <button class="tag-remove" *ngIf="!disabled" (click)="removeEnumValue(index)"></button>
+                </span>
+            </ng-container>
+        </div>
+    </div>
+    <div class="row col-lg-12 p-0" *ngIf="type !== 'measured_properties'">
+        <div class="form-group col-lg-6">
+            <label for="recipient-name" class="col-form-label">Default Value:</label>
+            <select class="form-control form-control-sm" id="defaultValue" name="defaultValue"
+                [(ngModel)]="obj.defaultValue" [disabled]="disabled">
+                <option [ngValue]="null">Select Value</option>
+                <option *ngFor="let item of obj.enum" [ngValue]="item.value">{{item.label}}</option>
+            </select>
+        </div>
+    </div>
+</ng-container>
+
+<div class="form-check">
+    <input type="checkbox" class="form-check-input" id="widgetrequired" name="widgetrequired"
+        [(ngModel)]="obj.required">
+    <label class="form-check-label" for="contains-db-sp">Is Required?</label>
+</div>

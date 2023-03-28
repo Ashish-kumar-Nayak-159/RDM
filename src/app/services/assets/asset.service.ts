@@ -17,7 +17,7 @@ export class AssetService {
   composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   searchNotificationsEventEmitter: EventEmitter<any> = new EventEmitter<any>();
   refreshRecentJobs: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private http: HttpClient, private commonService: CommonService) {}
+  constructor(private http: HttpClient, private commonService: CommonService) { }
 
   getIPAndLegacyAssets(filterObj, app) {
     let params = new HttpParams();
@@ -115,7 +115,7 @@ export class AssetService {
     return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)), { params });
   }
 
-  getWhiteListedAsset(filterObj,app) {
+  getWhiteListedAsset(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
@@ -145,7 +145,7 @@ export class AssetService {
     return this.http.get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
- 
+
 
   getAssetList(filterObj) {
     let params = new HttpParams();
@@ -189,17 +189,17 @@ export class AssetService {
     this.RemoveLocalStorageOnAppUpdation();
     return this.http.post(this.url + AppUrls.CREATE_ASSET, assetObj, { params });
   }
-  createWhitelistedAsset(assetObj,assetId ,app) {
+  createWhitelistedAsset(assetObj, assetId, app) {
     let params = new HttpParams();
     params = params.set('app', app);
     this.RemoveLocalStorageOnAppUpdation();
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_ASSET, encodeURIComponent(app.app),assetId),assetObj);    
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_ASSET, encodeURIComponent(app.app), assetId), assetObj);
   }
-  createWhitelistedLegacyAsset(assetObj,assetId ,app) {
+  createWhitelistedLegacyAsset(assetObj, assetId, app) {
     let params = new HttpParams();
     params = params.set('app', app);
     this.RemoveLocalStorageOnAppUpdation();
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_LEGACY_ASSET, encodeURIComponent(app.app),assetId),assetObj);    
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_WHITELISTED_LEGACY_ASSET, encodeURIComponent(app.app), assetId), assetObj);
   }
 
   createNonIPAsset(assetObj, app) {
@@ -265,7 +265,7 @@ export class AssetService {
     localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
     return this.http.patch(
       this.url +
-        String.Format(AppUrls.UPDATE_ASSET_TAGS, encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)),
+      String.Format(AppUrls.UPDATE_ASSET_TAGS, encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)),
       assetObj
     );
   }
@@ -277,7 +277,7 @@ export class AssetService {
     localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
     return this.http.post(
       this.url +
-        String.Format(AppUrls.UPDATE_NON_IP_ASSET_TAGS, encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)),
+      String.Format(AppUrls.UPDATE_NON_IP_ASSET_TAGS, encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)),
       assetObj,
       { params }
     );
@@ -520,9 +520,9 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    
+
     return this.http.post(
-      this.url + String.Format(AppUrls.SYNC_ASSET_DATA),filterObj,{params} );
+      this.url + String.Format(AppUrls.SYNC_ASSET_DATA), filterObj, { params });
   }
   getNonIPAssetCount(filterObj) {
     let params = new HttpParams();
@@ -570,11 +570,11 @@ export class AssetService {
     });
     return this.http.get(
       this.url +
-        String.Format(
-          AppUrls.GET_NON_IP_ASSET_TAGS,
-          encodeURIComponent(filterObj.app),
-          encodeURIComponent(filterObj.asset_id)
-        ),
+      String.Format(
+        AppUrls.GET_NON_IP_ASSET_TAGS,
+        encodeURIComponent(filterObj.app),
+        encodeURIComponent(filterObj.asset_id)
+      ),
       { params }
     );
   }
@@ -756,7 +756,7 @@ export class AssetService {
 
     return this.http.get(
       this.url +
-        String.Format(AppUrls.GET_ASSET_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(assetId)),
+      String.Format(AppUrls.GET_ASSET_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(assetId)),
       { params }
     );
   }
@@ -764,7 +764,7 @@ export class AssetService {
   createAssetMaintenanceActivityData(app, assetId, obj) {
     return this.http.post(
       this.url +
-        String.Format(AppUrls.CREATE_ASSET_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(assetId)),
+      String.Format(AppUrls.CREATE_ASSET_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(assetId)),
       obj
     );
   }
@@ -772,24 +772,24 @@ export class AssetService {
   deleteAssetMaintenanceActivityData(app, assetId, maintenanceId) {
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_ASSET_MAINTENANCE_DATA,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(maintenanceId)
-        )
+      String.Format(
+        AppUrls.DELETE_ASSET_MAINTENANCE_DATA,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(maintenanceId)
+      )
     );
   }
 
   updateAssetMaintenanceActivityData(app, assetId, maintenanceId, obj) {
     return this.http.patch(
       this.url +
-        String.Format(
-          AppUrls.UPDATE_ASSET_MAINTENANCE_DATA,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(maintenanceId)
-        ),
+      String.Format(
+        AppUrls.UPDATE_ASSET_MAINTENANCE_DATA,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(maintenanceId)
+      ),
       obj
     );
   }
@@ -807,24 +807,24 @@ export class AssetService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
   }
 
-  getReportSubscription(app,filterObj?:any){
+  getReportSubscription(app, filterObj?: any) {
     let params = new HttpParams();
-    if(filterObj){
+    if (filterObj) {
       Object?.keys(filterObj)?.forEach((key) => {
         if (filterObj[key]) {
           params = params.set(key, filterObj[key]);
         }
       });
     }
-    return this.http.get(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), {params});
+    return this.http.get(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), { params });
   }
 
-  deleteReportRecord(app,id){
+  deleteReportRecord(app, id) {
     return this.http.delete(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`);
   }
 
-  updateReportRecord(app,id,obj){
-    return this.http.put(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`,obj);
+  updateReportRecord(app, id, obj) {
+    return this.http.put(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)) + `/${id}`, obj);
   }
 
   getPregeneratedReports(filterObj, app) {
@@ -839,8 +839,8 @@ export class AssetService {
     });
   }
 
-  eachPregeneratedReportsData(app){
-     return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS, encodeURIComponent(app)))
+  eachPregeneratedReportsData(app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS, encodeURIComponent(app)))
   }
 
   getAssetTwin(app, assetId) {
@@ -869,7 +869,7 @@ export class AssetService {
   attachLegacyAssetToGateway(app, gatewayId, obj) {
     return this.http.post(
       this.url +
-        String.Format(AppUrls.ATTACH_LEGACY_ASSET_TO_GATEWAY, encodeURIComponent(app), encodeURIComponent(gatewayId)),
+      String.Format(AppUrls.ATTACH_LEGACY_ASSET_TO_GATEWAY, encodeURIComponent(app), encodeURIComponent(gatewayId)),
       obj
     );
   }
@@ -921,7 +921,7 @@ export class AssetService {
   createAlertCondition(modelObj, app, assetModel) {
     return this.http.post(
       this.url +
-        String.Format(AppUrls.CREATE_ASSET_ALERT_CONDITION, encodeURIComponent(app), encodeURIComponent(assetModel)),
+      String.Format(AppUrls.CREATE_ASSET_ALERT_CONDITION, encodeURIComponent(app), encodeURIComponent(assetModel)),
       modelObj
     );
   }
@@ -929,12 +929,12 @@ export class AssetService {
   updateAlertCondition(modelObj, app, assetModel, alertConditionId) {
     return this.http.patch(
       this.url +
-        String.Format(
-          AppUrls.UPDATE_ASSET_ALERT_CONDITION,
-          encodeURIComponent(app),
-          encodeURIComponent(assetModel),
-          encodeURIComponent(alertConditionId)
-        ),
+      String.Format(
+        AppUrls.UPDATE_ASSET_ALERT_CONDITION,
+        encodeURIComponent(app),
+        encodeURIComponent(assetModel),
+        encodeURIComponent(alertConditionId)
+      ),
       modelObj
     );
   }
@@ -942,12 +942,12 @@ export class AssetService {
   deleteAlertCondition(app, assetModel, alertConditionId) {
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_ASSET_ALERT_CONDITION,
-          encodeURIComponent(app),
-          encodeURIComponent(assetModel),
-          encodeURIComponent(alertConditionId)
-        ),
+      String.Format(
+        AppUrls.DELETE_ASSET_ALERT_CONDITION,
+        encodeURIComponent(app),
+        encodeURIComponent(assetModel),
+        encodeURIComponent(alertConditionId)
+      ),
       {}
     );
   }
@@ -973,11 +973,11 @@ export class AssetService {
       return this.http
         .get(
           this.url +
-            String.Format(
-              AppUrls.GET_ASSETS_MODEL_LAYOUT,
-              encodeURIComponent(filterObj.app),
-              encodeURIComponent(filterObj.name)
-            )
+          String.Format(
+            AppUrls.GET_ASSETS_MODEL_LAYOUT,
+            encodeURIComponent(filterObj.app),
+            encodeURIComponent(filterObj.name)
+          )
         )
         .pipe(
           map((data: any) => {
@@ -1012,7 +1012,7 @@ export class AssetService {
     });
     return this.http.get(
       this.url +
-        String.Format(AppUrls.GET_MODEL_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetModel)),
+      String.Format(AppUrls.GET_MODEL_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetModel)),
       { params }
     );
   }
@@ -1038,11 +1038,11 @@ export class AssetService {
       return this.http
         .get(
           this.url +
-            String.Format(
-              AppUrls.GET_MODEL_REFERENCE_DOCUMENTS,
-              encodeURIComponent(filterObj.app),
-              encodeURIComponent(filterObj.asset_model)
-            )
+          String.Format(
+            AppUrls.GET_MODEL_REFERENCE_DOCUMENTS,
+            encodeURIComponent(filterObj.app),
+            encodeURIComponent(filterObj.asset_model)
+          )
         )
         .pipe(
           map((data: any) => {
@@ -1097,12 +1097,12 @@ export class AssetService {
   updateAssetMTTRData(app, assetId, mttrId, obj) {
     return this.http.patch(
       this.url +
-        String.Format(
-          AppUrls.UPDATE_MTTR_RECORD,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(mttrId)
-        ),
+      String.Format(
+        AppUrls.UPDATE_MTTR_RECORD,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(mttrId)
+      ),
       obj
     );
   }
@@ -1180,7 +1180,7 @@ export class AssetService {
     });
     return this.http.get(
       this.url +
-        String.Format(AppUrls.GET_DERIVED_KPI_LATEST_DATA, encodeURIComponent(app), encodeURIComponent(kpiCode)),
+      String.Format(AppUrls.GET_DERIVED_KPI_LATEST_DATA, encodeURIComponent(app), encodeURIComponent(kpiCode)),
       { params }
     );
   }
@@ -1194,7 +1194,7 @@ export class AssetService {
     });
     return this.http.get(
       this.url +
-        String.Format(AppUrls.GET_DERIVED_KPI_HISTORICAL_DATA, encodeURIComponent(app), encodeURIComponent(kpiCode)),
+      String.Format(AppUrls.GET_DERIVED_KPI_HISTORICAL_DATA, encodeURIComponent(app), encodeURIComponent(kpiCode)),
       { params }
     );
   }
@@ -1219,7 +1219,7 @@ export class AssetService {
       }
     });
     return this.http.get(
-      this.url 
+      this.url
       + String.Format(AppUrls.GET_ASSET_CELL_DETAILS),
       { params }
     );
@@ -1228,7 +1228,7 @@ export class AssetService {
   createAssetSlaveDetail(app, assetId, obj) {
     return this.http.post(
       this.url +
-        String.Format(AppUrls.CREATE_ASSET_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetId)),
+      String.Format(AppUrls.CREATE_ASSET_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetId)),
       obj
     );
   }
@@ -1236,12 +1236,12 @@ export class AssetService {
   updateAssetSlaveDetail(app, assetId, slaveId, obj) {
     return this.http.patch(
       this.url +
-        String.Format(
-          AppUrls.UPDATE_ASSET_SLAVE_DETAILS,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(slaveId)
-        ),
+      String.Format(
+        AppUrls.UPDATE_ASSET_SLAVE_DETAILS,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(slaveId)
+      ),
       obj
     );
   }
@@ -1249,12 +1249,12 @@ export class AssetService {
   deleteAssetSlaveDetail(app, assetId, slaveId) {
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_ASSET_SLAVE_DETAILS,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(slaveId)
-        ),
+      String.Format(
+        AppUrls.DELETE_ASSET_SLAVE_DETAILS,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(slaveId)
+      ),
       {}
     );
   }
@@ -1267,7 +1267,7 @@ export class AssetService {
   updateNonProvisionedAsset(app, assetId, obj) {
     return this.http.patch(
       this.url +
-        String.Format(AppUrls.UPDATE_NON_PROVISIONED_ASSETS, encodeURIComponent(app), encodeURIComponent(assetId)),
+      String.Format(AppUrls.UPDATE_NON_PROVISIONED_ASSETS, encodeURIComponent(app), encodeURIComponent(assetId)),
       obj
     );
   }
@@ -1296,14 +1296,14 @@ export class AssetService {
 
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_CLOUD_ASSET_RULE,
-          encodeURIComponent(app),
-          encodeURIComponent(id),
-          encodeURIComponent(rule_type),
-          encodeURIComponent(updated_by),
-          encodeURIComponent(rule_type_id)
-        ),
+      String.Format(
+        AppUrls.DELETE_CLOUD_ASSET_RULE,
+        encodeURIComponent(app),
+        encodeURIComponent(id),
+        encodeURIComponent(rule_type),
+        encodeURIComponent(updated_by),
+        encodeURIComponent(rule_type_id)
+      ),
       { params }
     );
   }
@@ -1313,7 +1313,7 @@ export class AssetService {
       ruleModel
     );
   }
-  
+
   updateEdgeAssetRule(app, modelName, ruleModel) {
     return this.http.put(
       this.url + String.Format(AppUrls.UPDATE_EDGE_ASSET_RULE, encodeURIComponent(app), encodeURIComponent(modelName)),
@@ -1331,14 +1331,14 @@ export class AssetService {
 
     return this.http.delete(
       this.url +
-        String.Format(
-          AppUrls.DELETE_EDGE_ASSET_RULE,
-          encodeURIComponent(app),
-          encodeURIComponent(id),
-          encodeURIComponent(rule_type),
-          encodeURIComponent(updated_by),
-          encodeURIComponent(rule_type_id)
-        ),
+      String.Format(
+        AppUrls.DELETE_EDGE_ASSET_RULE,
+        encodeURIComponent(app),
+        encodeURIComponent(id),
+        encodeURIComponent(rule_type),
+        encodeURIComponent(updated_by),
+        encodeURIComponent(rule_type_id)
+      ),
       { params }
     );
   }
@@ -1352,12 +1352,12 @@ export class AssetService {
     });
     return this.http.post(
       this.url +
-        String.Format(
-          AppUrls.DEPLOY_CLOUD_ASSET_RULE,
-          encodeURIComponent(app),
-          encodeURIComponent(modelName),
-          encodeURIComponent(ruleModelId)
-        ),
+      String.Format(
+        AppUrls.DEPLOY_CLOUD_ASSET_RULE,
+        encodeURIComponent(app),
+        encodeURIComponent(modelName),
+        encodeURIComponent(ruleModelId)
+      ),
       {},
       { params }
     );
@@ -1372,12 +1372,12 @@ export class AssetService {
     });
     return this.http.post(
       this.url +
-        String.Format(
-          AppUrls.DEPLOY_EDGE_RULE,
-          encodeURIComponent(app),
-          encodeURIComponent(assetId),
-          encodeURIComponent(ruleId)
-        ),
+      String.Format(
+        AppUrls.DEPLOY_EDGE_RULE,
+        encodeURIComponent(app),
+        encodeURIComponent(assetId),
+        encodeURIComponent(ruleId)
+      ),
       bodyObj,
       { params }
     );
@@ -1387,7 +1387,7 @@ export class AssetService {
   }
 
 
-  uploadAssetModelFile(app,assetModel, filterObj,formData) {
+  uploadAssetModelFile(app, assetModel, filterObj, formData) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
@@ -1396,20 +1396,27 @@ export class AssetService {
     });
     return this.http.post(
       this.url +
-        String.Format(
-          AppUrls.UPLOAD_ASSET_MODEL_FILE,
-          encodeURIComponent(app),
-          encodeURIComponent(assetModel)          
-        ),
+      String.Format(
+        AppUrls.UPLOAD_ASSET_MODEL_FILE,
+        encodeURIComponent(app),
+        encodeURIComponent(assetModel)
+      ),
       formData,
       { params }
     );
 
-}
+  }
 
-  
+  importAssetsModels(formData) {
+    return this.http.post(
+      this.url +
+      String.Format(AppUrls.IMPORT_ASSET_MODEL_Excel), formData
+    );
+  }
+
+
   deWhitelistedAsset(app, assetId) {
-    return this.http.delete(this.url + String.Format(AppUrls.DE_WHITELIST_ASSET, encodeURIComponent(app),assetId));
+    return this.http.delete(this.url + String.Format(AppUrls.DE_WHITELIST_ASSET, encodeURIComponent(app), assetId));
   }
 
   assetRuleMapping(ruleModel) {

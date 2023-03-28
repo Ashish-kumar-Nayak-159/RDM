@@ -11,11 +11,11 @@ import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
-  selector: 'app-asset-model-properties',
-  templateUrl: './asset-model-properties.component.html',
-  styleUrls: ['./asset-model-properties.component.css'],
+  selector: 'app-newasset-model-properties',
+  templateUrl: './newasset-model-properties.component.html',
+  styleUrls: ['./newasset-model-properties.component.css']
 })
-export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestroy {
+export class NewassetModelPropertiesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() assetModel: any;
   @Input() type: any;
   properties: any = {};
@@ -30,7 +30,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   isCreatePropertyLoading = false;
   selectedProperty: any;
   dependentProperty: any[] = [];
-  setupForm: FormGroup = undefined;
+  setupForm: FormGroup;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
@@ -46,13 +46,38 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   isDisabled = false;
   displaybutton = false;
   setBasedOnSelection: boolean = false;
+  viewModelData: any;
+  customeType: string;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) { }
-
+  ) {
+    this.setType();
+  }
+  setType() {
+    if (this.type == 'newmeasured') {
+      this.type = "measured_properties";
+    }
+    else if (this.type == 'edge_derived_measured') {
+      this.type = "edge_derived_properties";
+    }
+    else if (this.type == 'controllable_measured') {
+      this.type = "controllable_properties";
+      this.customeType = "measured_properties";
+      // setTimeout(() => {
+      //   if (this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
+      //     this.type = "controllable_properties";
+      //     this.getModelProperties();
+      //   }
+      // }, 1000);
+    }
+    else if (this.type == 'configurable_measured') {
+      this.type = "configurable_properties";
+    }
+  }
   ngOnInit(): void {
+    this.setType();
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -117,7 +142,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
 
         {
           name: 'Data Type',
-          key: 'data_type',
+          key: 'datatype',
           type: 'text',
           headerClass: 'w-15',
           valueclass: '',
@@ -193,11 +218,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       }
     }
 
-    this.getAssetsModelProperties();
+    this.getModelProperties();
+    // this.getAssetsModelProperties();
   }
 
-  getAssetsModelProperties() {
-    // this.properties = {};
+  getModelProperties() {
+    this.setType();
+
     this.dependentProperties = [];
     this.dependentProperty = [];
     this.isPropertiesLoading = true;
@@ -205,31 +232,34 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       app: this.assetModel.app,
       name: this.assetModel.name,
     };
+
+    let cType = (this.type == 'controllable_properties' ? 'measured_properties' : this.type);
     this.subscriptions.push(
-      this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-        this.properties = response.properties;
-        console.log(this.properties);
+      this.assetModelService.getModelProperties(this.assetModel.name, cType).subscribe((response: any) => {
+        // this.properties = response.data;
+        this.properties[cType] = response.data;
+
         if (this.type === 'measured_properties' || this.type == 'controllable_properties') {
-          response.properties?.measured_properties?.forEach(element => {
-            element.unit = element?.json_model[element.json_key]?.units;
+          response?.data?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
           });
         } else if (this.type === 'cloud_derived_properties') {
-          response.properties?.cloud_derived_properties?.forEach(element => {
-            element.unit = element?.json_model[element.json_key]?.units;
+          response?.data?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
           });
 
         } else if (this.type === 'edge_derived_properties') {
-          response.properties?.edge_derived_properties?.forEach(element => {
-            element.unit = element?.json_model[element.json_key]?.units;
+          response?.data?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
           });
 
         }
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         if (this.type.includes('edge_derived')) {
-          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
+          response?.data?.forEach((prop) => (prop.type = 'Measured Properties'));
           if (response.properties?.measured_properties) {
             response.properties?.measured_properties.forEach(element => {
-              if (element.data_type == "Number") {
+              if (element.datatype == "Number") {
                 this.dependentProperties.push(element)
               }
             });
@@ -252,19 +282,113 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                   detail.metadata = {};
                 }
                 detail.metadata.rw = 'r';
-                detail.read = true;
+                detail.is_read = true;
               } else {
                 if (detail.metadata.fc_r == "0" || detail.metadata.fc_r == 0) {
                   detail.metadata.fc_r = null;
                   detail.metadata.fc = null;
                 }
                 if (detail.metadata.rw == 'rw') {
-                  detail.read = true;
-                  detail.write = true;
+                  detail.is_read = true;
+                  detail.is_write = true;
                 } else if (detail.metadata.rw == 'r') {
-                  detail.read = true;
+                  detail.is_read = true;
                 } else if (detail.metadata.rw == 'w') {
-                  detail.write = true;
+                  detail.is_write = true;
+                }
+              }
+              if (!("fc_r" in detail.metadata)) {
+                if (("fc" in detail.metadata)) {
+                  detail.metadata.fc_r = detail.metadata.fc;
+                }
+              }
+              if (("fc_w" in detail.metadata) && typeof (detail.metadata.fc_w) == 'string') {
+                detail.metadata.fc_w = parseInt(detail.metadata.fc_w);
+              }
+              return detail;
+            })
+            //do not change the order of this two line.. because in this some case what it doest it will filter of r | rw and assined again to measured properties 
+            //and then we are again finding from meassured properties so here what happes, now it list we doent find the w | rw values  
+            this.properties['controllable_properties'] = this.properties['measured_properties'].filter((detail) => { return detail.metadata.rw == 'w' || detail.metadata.rw == 'rw' })
+            this.properties['measured_properties'] = this.properties['measured_properties'].filter((detail: any) => { return detail.metadata.rw == 'r' || detail.metadata.rw == 'rw' })
+
+          } else {
+            this.properties[this.type] = [];
+          }
+        }
+      })
+    );
+  }
+
+  getAssetsModelProperties() {
+    // this.properties = {};
+    this.dependentProperties = [];
+    this.dependentProperty = [];
+    this.isPropertiesLoading = true;
+    const obj = {
+      app: this.assetModel.app,
+      name: this.assetModel.name,
+    };
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+        this.properties = response.properties;
+
+        if (this.type === 'measured_properties' || this.type == 'controllable_properties') {
+          response.properties?.measured_properties?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
+          });
+        } else if (this.type === 'cloud_derived_properties') {
+          response.properties?.cloud_derived_properties?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
+          });
+
+        } else if (this.type === 'edge_derived_properties') {
+          response.properties?.edge_derived_properties?.forEach(element => {
+            element.unit = element?.json_model[element.json_key]?.unit;
+          });
+
+        }
+        this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
+        if (this.type.includes('edge_derived')) {
+          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
+          if (response.properties?.measured_properties) {
+            response.properties?.measured_properties.forEach(element => {
+              if (element.datatype == "Number") {
+                this.dependentProperties.push(element)
+              }
+            });
+          }
+          // this.dependentProperties = response.properties?.measured_properties
+          //   ? response.properties?.measured_properties
+          //   : [];
+        }
+        // if (this.type.includes('derived')) {
+        //   this.properties[this.type] = this.properties[this.type].filter(
+        //     (prop) => (prop.condition = '(' + prop.condition + ')')
+        //   );
+        // }
+        this.isPropertiesLoading = false;
+        if (this.type == 'measured_properties' || this.type == 'controllable_properties') {
+          if (this.properties['measured_properties'] && this.properties['measured_properties']?.length > 0) {
+            this.properties['measured_properties'] = this.properties['measured_properties'].map((detail: any) => {
+              if (!detail?.metadata?.rw) {
+                if (!("metadata" in detail)) {
+                  detail.metadata = {};
+                }
+                detail.metadata.rw = 'r';
+                detail.is_read = true;
+              } else {
+                if (detail.metadata.fc_r == "0" || detail.metadata.fc_r == 0) {
+                  detail.metadata.fc_r = null;
+                  detail.metadata.fc = null;
+                }
+                if (detail.metadata.rw == 'rw') {
+                  detail.is_read = true;
+                  detail.is_write = true;
+                } else if (detail.metadata.rw == 'r') {
+                  detail.is_read = true;
+                } else if (detail.metadata.rw == 'w') {
+                  detail.is_write = true;
                 }
               }
               if (!("fc_r" in detail.metadata)) {
@@ -305,23 +429,23 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.formula = '';
   }
   readWriteValue(type) {
-    if (this.propertyObj.write == true) {
+    if (this.propertyObj.is_write == true) {
       this.setupForm.controls["fc_w"].setValidators([Validators.required]);
       this.setupForm.get('fc_w').updateValueAndValidity();
-    } else if (this.propertyObj.write == false) {
+    } else if (this.propertyObj.is_write == false) {
       this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
       this.setupForm.get('fc_w').setValue(null); // or clear Values()
       this.setupForm.get('fc_w').updateValueAndValidity();
     }
-    if (this.propertyObj.read == true) {
+    if (this.propertyObj.is_read == true) {
       this.setupForm.controls["fc_r"].setValidators([Validators.required]);
       this.setupForm.get('fc_r').updateValueAndValidity();
-    } else if (this.propertyObj.read == false) {
+    } else if (this.propertyObj.is_read == false) {
       this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
       this.setupForm.get('fc_r').setValue(null);
       this.setupForm.get('fc_r').updateValueAndValidity();
     }
-    if (this.propertyObj.read == false && this.propertyObj.write == false) {
+    if (this.propertyObj.is_read == false && this.propertyObj.is_write == false) {
       this.setBasedOnSelection = true;
     } else {
       this.setBasedOnSelection = false;
@@ -334,12 +458,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj = {
       json_model: {},
       threshold: {},
-      read: true,
-      write: false,
+      is_read: true,
+      is_write: false,
     };
     if (this.type == 'controllable_properties') {
-      this.propertyObj.read = false;
-      this.propertyObj.write = true;
+      this.propertyObj.is_read = false;
+      this.propertyObj.is_write = true;
     }
     if (this.type === 'edge_derived_properties') {
       this.propertyObj.metadata = {
@@ -369,7 +493,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
           this.assetModel.tags.protocol === 'ModbusRTUMaster'
         ) {
-          if (this.propertyObj.read == true) {
+          if (this.propertyObj.is_read == true) {
             this.setupForm = new FormGroup({
               slave_id: new FormControl("", [Validators.required]),
               d: new FormControl(null, [Validators.required]),
@@ -431,7 +555,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       } else {
         this.propertyObj.json_model = {};
         obj[this.propertyObj.json_key] = {};
-        if (this.propertyObj.data_type) {
+        if (this.propertyObj.datatype) {
           this.onDataTypeChange();
         } else {
           this.propertyObj.json_model = obj;
@@ -445,8 +569,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
 
   onDataTypeChange() {
     const obj = {};
-    if (this.propertyObj.data_type && this.propertyObj.json_key) {
-      const validations = this.dataTypeList.find((type) => type.name === this.propertyObj.data_type).validations;
+    if (this.propertyObj.datatype && this.propertyObj.json_key) {
+      const validations = this.dataTypeList.find((type) => type.name === this.propertyObj.datatype).validations;
       validations.forEach((item) => {
         if (item === 'enum') {
           obj[item] = [];
@@ -460,7 +584,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       });
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] = obj;
-      this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
+      this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.datatype.toLowerCase();
 
 
 
@@ -477,7 +601,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.metadata = this.setupForm?.value;
     }
     this.propertyObj.id = this.commonService.generateUUID();
-    if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
+    if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.datatype) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
@@ -622,7 +746,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         this.propertyObj.metadata = this.setupForm?.value;
       }
       this.propertyObj.id = this.commonService.generateUUID();
-      if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
+      if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.datatype) {
         this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
         return;
       }
@@ -742,50 +866,81 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
         this.validateSetThreshold();
       }
+
       this.isCreatePropertyLoading = true;
       var obj = JSON.parse(JSON.stringify(this.assetModel));
       obj.properties = JSON.parse(JSON.stringify(this.properties));
-
       if (this.type == 'measured_properties' || this.type == 'controllable_properties') {
-        if (this.propertyObj.read == true && this.propertyObj.write == true) {
+        if (this.propertyObj.is_read == true && this.propertyObj.is_write == true) {
           this.propertyObj['metadata']['rw'] = 'rw'
-        } else if (this.propertyObj.read == true) {
+        } else if (this.propertyObj.is_read == true) {
           this.propertyObj['metadata']['rw'] = 'r'
-        } else if (this.propertyObj.write == true) {
+        } else if (this.propertyObj.is_write == true) {
           this.propertyObj['metadata']['rw'] = 'w'
         }
         this.propertyObj['metadata']['fc'] = this.propertyObj['metadata']['fc_r'];
-        let mergedObject = [...(obj?.properties?.measured_properties)]
-        if (obj?.properties?.controllable_properties) {
+        // let mergedObject = [...(obj?.properties?.measured_properties)]
+        // if (obj?.properties?.controllable_properties) {
 
-          mergedObject = [...mergedObject, ...(obj?.properties?.controllable_properties)];
-        }
+        //   mergedObject = [...mergedObject, ...(obj?.properties?.controllable_properties)];
+        // }
 
-        const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
+        // const unique = [...new Map(mergedObject.map(item => [item.json_key, item])).values()];
 
-        obj.properties['measured_properties'] = unique;
+        // obj.properties['measured_properties'] = unique;
 
-        obj.properties['measured_properties'].push(this.propertyObj);
+        // obj.properties['measured_properties'].push(this.propertyObj);
       } else {
-        obj.properties[this.type].push(this.propertyObj);
+        // obj.properties[this.type].push(this.propertyObj);
       }
 
       obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-      console.log(obj);
-      this.subscriptions.push(
-        this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-          (response: any) => {
-            this.isCreatePropertyLoading = false;
-            this.onCloseAssetsPropertyModal();
-            this.toasterService.showSuccess(response.message, 'Add Property');
-            this.getAssetsModelProperties();
-          },
-          (error) => {
-            this.isCreatePropertyLoading = false;
-            this.toasterService.showError(error.message, 'Add Property');
-          }
-        )
-      );
+
+      if (this.propertyObj.json_model && this.propertyObj?.datatype?.toLowerCase() == "enum") {
+        if (this.propertyObj.json_model[this.propertyObj.json_key].enum.length == 0) {
+          this.isCreatePropertyLoading = false;
+          this.toasterService.showError('please enter all enum property', 'Add Property');
+          return;
+        }
+        // if (this.propertyObj.json_model[this.propertyObj.json_key].enum.length > 0) {
+        //   let enumIsValid = true;
+        //   this.propertyObj.json_model[this.propertyObj.json_key].enum.forEach(element => {
+        //     if (!element.label || element.label == "") {
+        //       enumIsValid = false;
+        //     }
+        //     if (!element.data_type || element.data_type == "") {
+        //       enumIsValid = false;
+        //     }
+        //     if (!element.value || element.value == "") {
+        //       enumIsValid = false;
+        //     }
+        //   });
+        //   if (!enumIsValid) {
+        //     this.isCreatePropertyLoading = false;
+        //     this.toasterService.showError('please enter all enum property', 'Add Property');
+        //     return;
+        //   }
+        // }
+      }
+
+      let reqObj =
+      {
+        "type": this.type == 'controllable_properties' ? 'measured_properties' : this.type,
+        "name": this.propertyObj.name,
+        "json_key": this.propertyObj.json_key,
+        "datatype": this.propertyObj.datatype,
+        "metadata": this.propertyObj.metadata,
+        "unit": this.propertyObj.json_model[this.propertyObj.json_key].unit,
+        "group": this.type == "configurable_properties" ? "NA" : this.propertyObj.group,
+        "threshold": this.propertyObj.threshold,
+        "json_model": this.propertyObj.json_model,
+        "condition": this.propertyObj.condition,
+        "is_read": this.propertyObj.is_read,
+        "is_write": this.propertyObj.is_write
+      }
+
+
+      this.upsertModelProperty(reqObj, 0);
 
     } else {
       let condition = this.formula;
@@ -800,6 +955,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       obj.properties = JSON.parse(JSON.stringify(this.properties));
       obj.properties[this.type].push(this.propertyObj);
       obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+      return
       this.subscriptions.push(
         this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
           (response: any) => {
@@ -846,12 +1002,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
 
 
     this.subscriptions.push(
-      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+      this.assetModelService.deleteModelProperty(this.selectedProperty.id, this.assetModel.name).subscribe(
         (response: any) => {
           this.isCreatePropertyLoading = false;
           this.onCloseModal('confirmMessageModal');
           this.toasterService.showSuccess(response.message, 'Delete Property');
-          this.getAssetsModelProperties();
+          this.getModelProperties();
         },
         (error) => {
           this.isCreatePropertyLoading = false;
@@ -859,6 +1015,21 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       )
     );
+
+    // this.subscriptions.push(
+    //   this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+    //     (response: any) => {
+    //       this.isCreatePropertyLoading = false;
+    //       this.onCloseModal('confirmMessageModal');
+    //       this.toasterService.showSuccess(response.message, 'Delete Property');
+    //       this.getAssetsModelProperties();
+    //     },
+    //     (error) => {
+    //       this.isCreatePropertyLoading = false;
+    //       this.toasterService.showError(error.message, 'Delete Property');
+    //     }
+    //   )
+    // );
   }
 
   onModalEvents(eventType) {
@@ -890,7 +1061,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.metadata = this.setupForm?.value;
     }
     if (this.propertyObj.json_key.length <= 0 || this.propertyObj.name.length <= 0
-      || this.propertyObj.data_type.length <= 0 || this.propertyObj.data_type === 'undefined') {
+      || this.propertyObj.datatype.length <= 0 || this.propertyObj.datatype === 'undefined') {
       this.toasterService.showError(
         UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
         'Add ' + this.getPropertyNameToAddOrUpdate()
@@ -905,46 +1076,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         this.propertyObj.condition = condition;
       });
       this.propertyObj.metadata.condition = this.formula;
-      // let flag = false;
-      // for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
-      //   const prop = this.propertyObj.metadata.properties[i];
-      //   if (!prop.property && (prop.value === null || prop.value === undefined)) {
-      //     this.toasterService.showError(
-      //       'Please select property or add value in condition',
-      //       'Add Edge Derived Properity'
-      //     );
-      //     flag = true;
-      //     break;
-      //   }
-      //   if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
-      //     this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
-      //     flag = true;
-      //     break;
-      //   }
-      // }
-      // if (flag) {
-      //   return;
-      // }
-      // this.propertyObj.metadata.condition = '';
-      // this.propertyObj.metadata.props = [];
-      // this.propertyObj.condition = '';
-      // this.propertyObj.metadata.properties.forEach((prop) => {
-      //   if (prop.property) {
-      //     const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
-      //     if (index === -1) {
-      //       this.propertyObj.metadata.props.push(prop.property.json_key);
-      //       this.propertyObj.metadata.condition +=
-      //         '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '') ;
-      //     } else {
-      //       this.propertyObj.metadata.condition +=
-      //         '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
-      //     }
-      //     this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
-      //   } else if (prop.value !== null && prop.value !== undefined) {
-      //     this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
-      //     this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
-      //   }
-      // });
+
     }
     else if (this.type === 'measured_properties' && (!this.propertyObj.hasOwnProperty('group') || this.propertyObj.group === 'undefined')) {
       this.toasterService.showError(
@@ -994,11 +1126,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.type == 'measured_properties' || this.type == 'controllable_properties') {
       obj.properties['measured_properties'].map((detail) => {
         if (detail.json_key == this.selectedProperty.json_key) {
-          if (detail.read == true && detail.write == true) {
+          if (detail.is_read == true && detail.is_write == true) {
             detail['metadata']['rw'] = 'rw'
-          } else if (detail.read == true) {
+          } else if (detail.is_read == true) {
             detail['metadata']['rw'] = 'r'
-          } else if (detail.write == true) {
+          } else if (detail.is_write == true) {
             detail['metadata']['rw'] = 'w'
           }
           detail['metadata']['fc'] = detail['metadata']['fc_r'];
@@ -1006,24 +1138,50 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         } else {
           return detail;
         }
-      })
+      });
+      this.propertyObj = obj.properties['measured_properties'].find(x => x.id == this.propertyObj.id);
     }
 
-    this.subscriptions.push(
-      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-        (response: any) => {
+    if (this.propertyObj.json_model && this.propertyObj?.datatype?.toLowerCase() == "enum") {
+      if (this.propertyObj.json_model[this.propertyObj.json_key].enum.length > 0) {
+        let enumIsValid = true;
+        this.propertyObj.json_model[this.propertyObj.json_key].enum.forEach(element => {
+          if (!element.label || element.label == "") {
+            enumIsValid = false;
+          }
+          if (!element.enum_type || element.enum_type == "") {
+            enumIsValid = false;
+          }
+          if (!element.value || element.value == "") {
+            enumIsValid = false;
+          }
+        });
+        if (!enumIsValid) {
           this.isCreatePropertyLoading = false;
-          this.onCloseAssetsPropertyModal();
-          this.toasterService.showSuccess(response.message, 'Edit Property');
-          this.onCloseModal('configureDerivedPropModal');
-          this.getAssetsModelProperties();
-        },
-        (error) => {
-          this.isCreatePropertyLoading = false;
-          this.toasterService.showError(error.message, 'Edit Property');
+          this.toasterService.showError('please enter all enum property', 'Add Property');
+          return;
         }
-      )
-    );
+      }
+    }
+
+    let reqObj =
+    {
+      "type": this.type == 'controllable_properties' ? 'measured_properties' : this.type,
+      "name": this.propertyObj.name,
+      "json_key": this.propertyObj.json_key,
+      "datatype": this.propertyObj.datatype,
+      "metadata": this.propertyObj.metadata,
+      "unit": this.propertyObj.json_model[this.propertyObj.json_key].unit,
+      "group": this.type == "configurable_properties" ? "NA" : this.propertyObj.group,
+      "threshold": this.propertyObj.threshold,
+      "json_model": this.propertyObj.json_model,
+      // "condition": this.propertyObj.condition,
+      "is_read": this.propertyObj.is_read,
+      "is_write": this.propertyObj.is_write
+    }
+
+    this.upsertModelProperty(reqObj, this.propertyObj.id);
+
   }
   updatePropertyDataValidate() {
     if (this.type === 'edge_derived_properties') {
@@ -1095,6 +1253,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    return
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
         (response: any) => {
@@ -1115,6 +1274,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   onTableFunctionCall(obj) {
     this.selectedProperty = obj.data;
     if (obj.for === 'View JSON Model') {
+      this.getModelPropertybyId(obj.data.id);
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
@@ -1150,7 +1310,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
             this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
             this.assetModel.tags.protocol === 'ModbusRTUMaster'
           ) {
-            if (this.propertyObj.write == true && this.propertyObj.read == true) {
+            if (this.propertyObj.is_write == true && this.propertyObj.is_read == true) {
               this.setupForm = new FormGroup({
                 slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
                 d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
@@ -1163,7 +1323,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
                 fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
               });
-            } else if (this.propertyObj.read == true) {
+            } else if (this.propertyObj.is_read == true) {
               this.setupForm = new FormGroup({
                 slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
                 d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
@@ -1176,7 +1336,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
                 fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, []),
               });
-            } else if (this.propertyObj.write == true) {
+            } else if (this.propertyObj.is_write == true) {
               this.setupForm = new FormGroup({
                 slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
                 d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
@@ -1190,35 +1350,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
                 fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
               });
             }
-            // this.setupForm = new FormGroup({
-            //   slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-            //   d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
-            //   sa: new FormControl(this.propertyObj?.metadata?.sa, [
-            //     Validators.required,
-            //     Validators.min(0),
-            //     Validators.max(99999),
-            //   ]),
-            //   a: new FormControl(false),
-            //   fc_r: new FormControl(this.propertyObj?.metadata?.fc_r, [Validators.required]),
-            //   fc_w: new FormControl(this.propertyObj?.metadata?.fc_w, [Validators.required]),
-            // });
 
-            // if(this.propertyObj.write == true) {
-            //   this.setupForm.controls["fc_w"].setValidators([Validators.required]);
-            //   this.setupForm.get('fc_w').updateValueAndValidity();
-            // } else if(this.propertyObj.write == false) {
-            //   this.setupForm.get('fc_w').setValidators([]); // or clearValidators()
-            //   this.setupForm.get('fc_w').setValue(null); // or clear Values()
-            //   this.setupForm.get('fc_w').updateValueAndValidity();
-            // }
-            // if(this.propertyObj.read == true) {
-            //   this.setupForm.controls["fc_r"].setValidators([Validators.required]);
-            //   this.setupForm.get('fc_r').updateValueAndValidity();
-            // } else if(this.propertyObj.read == false) {
-            //   this.setupForm.get('fc_r').setValidators([]); // or clearValidators()
-            //   this.setupForm.get('fc_r').setValue(null);
-            //   this.setupForm.get('fc_r').updateValueAndValidity();
-            // }
           } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
             this.setupForm = new FormGroup({
               slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
@@ -1282,4 +1414,51 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       )
     ))
   }
+
+  upsertModelProperty(reqObj, id) {
+    if (id > 0) {
+      reqObj.id = id;
+      this.subscriptions.push(
+        this.assetModelService.updateModelProperty(reqObj, this.assetModel.name).subscribe(
+          (response: any) => {
+            this.isCreatePropertyLoading = false;
+            this.onCloseAssetsPropertyModal();
+            this.toasterService.showSuccess(response.message, 'Update Property');
+            this.getModelProperties();
+            // this.getAssetsModelProperties();
+          },
+          (error) => {
+            this.isCreatePropertyLoading = false;
+            this.toasterService.showError(error.message, 'Update Property');
+          }
+        )
+      );
+    }
+    else {
+      this.subscriptions.push(
+        this.assetModelService.createModelProperty(reqObj, this.assetModel.name).subscribe(
+          (response: any) => {
+            this.isCreatePropertyLoading = false;
+            this.onCloseAssetsPropertyModal();
+            this.toasterService.showSuccess(response.message, 'Add Property');
+            this.getModelProperties();
+            // this.getAssetsModelProperties();
+          },
+          (error) => {
+            this.isCreatePropertyLoading = false;
+            this.toasterService.showError(error.message, 'Add Property');
+          }
+        )
+      );
+    }
+
+  }
+
+  getModelPropertybyId(id) {
+    this.subscriptions.push(
+      this.assetModelService.getModelProperty(id, this.assetModel.name).subscribe((response: any) => {
+        this.viewModelData = response;
+      }))
+  }
 }
+

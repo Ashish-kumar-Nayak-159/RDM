@@ -45,6 +45,7 @@ import { DamageplotchartComponent } from '../common/newcharts/damageplotchart/da
 import { DatatablechartComponent } from '../common/newcharts/datatablechart/datatablechart.component';
 import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
 import { NumberonlywidgetComponent } from '../common/newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
+import { NewassetModelPropertiesComponent } from './asset-model-control-panel/newasset-model-properties/newasset-model-properties.component';
 @NgModule({
   declarations: [
     AssetModelListComponent,
@@ -79,6 +80,7 @@ import { NumberonlywidgetComponent } from '../common/newcharts/formcomponent/num
     DamageplotchartComponent,
     DatatablechartComponent,
     LivelinechartComponent,
+    NewassetModelPropertiesComponent,
 
   ],
   imports: [

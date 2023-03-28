@@ -724,7 +724,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.configureDashboardWidgets[i].isDelete) {
         // this.configureDashboardWidgets.splice(i, 1);
         let obj = {
-          "action": "ReArrange",
+          "action": "Index",
           "id": this.configureDashboardWidgets[i].id,
           "chartId": this.configureDashboardWidgets[i].chart_Id,
           "dashboardVisibility": this.configureDashboardWidgets[i].dashboardVisibility,
@@ -1085,10 +1085,13 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
+            console.log($(this).attr('id'));
+            console.log(that.configureDashboardWidgets[j].chart_Id);
             if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_Id) {
               that.configureDashboardWidgets[j].index = i + 1;
             }
           }
+          console.log(that.configureDashboardWidgets);
         });
       };
 

@@ -1,0 +1,33 @@
+.editor-container {
+    height: calc(100% - 60px);
+    margin: 15px;
+}
+
+.w-15 {
+    width: 15%;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.unlockclass {
+    background-color: orangered;
+    opacity: 0.6;
+    color: white;
+
+}
+
+.lockclass,
+.unlockclass {
+    width: 75px;
+    height: 38px;
+}

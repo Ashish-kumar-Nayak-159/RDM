@@ -1,0 +1,481 @@
+<form *ngIf="setupForm" [formGroup]="setupForm">
+    <div class="form-group" *ngIf="setupForm.get('slave_id')">
+        <label for="recipient-name" class="col-form-label required">Slave:</label>
+        <div class="input-group">
+            <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id">
+                <option value="" *ngIf="assetModel.alert_type !=='Asset'">Select Slave</option>
+                <option [ngValue]="null" *ngIf="assetModel.alert_type ==='Asset'">Select Slave</option>
+                <option [ngValue]="slave?.slave_id" *ngFor="let slave of slaveData">{{slave?.slave_name}}</option>
+            </select>
+        </div>
+        <div *ngIf="setupForm.get('slave_id').errors && setupForm.get('slave_id').touched" class="alert-danger">
+            <div *ngIf="setupForm.get('slave_id').errors.required">
+                Slave is required.
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="assetModel.tags.protocol === 'BlueNRG'">
+        <div class="form-group" *ngIf="setupForm.get('sa')">
+            <label for="message-text" class="col-form-label required">Register Address:</label>
+            <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                placeholder="Enter Register Address" min="0" max="99999">
+            <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('sa').errors.required">
+                    Register Address is required.
+                </div>
+                <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                    Register Address value must be between 1 and 99999.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('p')">
+            <label for="message-text" class="col-form-label required">Precision:</label>
+            <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                placeholder="Enter Precision" min="0" max="5">
+            <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('p').errors.required">
+                    Precision is required.
+                </div>
+                <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                    Precision value must be between 0 and 5.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('t')">
+            <label for="message-text" class="col-form-label required">Value Type:</label>
+            <select class="form-control form-control-sm" id="valueType" name="valueType" formControlName="t"
+                (change)="onChangeOfBlueNRGValueType()">
+                <option [ngValue]="null">Select Value Type</option>
+                <option [ngValue]="1">Sensor Reading</option>
+                <option [ngValue]="2">Vibration Plotting</option>
+            </select>
+            <div *ngIf="setupForm.get('t').errors && setupForm.get('t').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('t').errors.required">
+                    Value Type is required.
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('t') && setupForm.get('t').value === 2">
+            <label for="message-text" class="col-form-label required">Plot Type:</label>
+            <select class="form-control form-control-sm" id="plotType" name="plotType" formControlName="pt">
+                <option [ngValue]="null">Select Plot Type</option>
+                <option [ngValue]="1">Inner Body</option>
+                <option [ngValue]="2">Outer Body</option>
+                <option [ngValue]="3">Rolling Body</option>
+            </select>
+            <div *ngIf="setupForm.get('pt').errors && setupForm.get('pt').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('pt').errors.required">
+                    Plot Type is required.
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="assetModel.tags.protocol === 'AIoTInputs'">
+        <div class="form-group" *ngIf="setupForm.get('cn')">
+            <label for="message-text" class="col-form-label required">Channel Number:</label>
+            <input type="number" class="form-control form-control-sm" id="cn" name="cn" formControlName="cn"
+                placeholder="Enter Channel Number" min="0">
+            <div *ngIf="setupForm.get('cn').errors && setupForm.get('cn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('cn').errors.required">
+                    Channel Number is required.
+                </div>
+                <div *ngIf="setupForm.get('cn').errors.min || setupForm.get('cn').errors.max">
+                    Channel Number value must be greater than 0.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('d')">
+            <label for="recipient-name" class="col-form-label required">Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
+                    (change)="onAIoTTypeChange()">
+                    <option [ngValue]="null">Select Type</option>
+                    <option [ngValue]="'a'">Analog</option>
+                    <option [ngValue]="'d'">Digital</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('d').errors.required">
+                    Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('p') && setupForm.get('d') && setupForm.get('d').value === 'a'">
+            <label for="message-text" class="col-form-label required">Precision:</label>
+            <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                placeholder="Enter Precision" min="1" max="5">
+            <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('p').errors.required">
+                    Precision is required.
+                </div>
+                <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                    Precision value must be between 1 and 5.
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container
+        *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+        <div class="form-group" *ngIf="setupForm.get('d')">
+            <label for="recipient-name" class="col-form-label required">Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
+                    (change)="onChangeOfSetupType()">
+                    <option [ngValue]="null">Select Type</option>
+                    <option [ngValue]="'a'">Analog</option>
+                    <option [ngValue]="'d'">Digital</option>
+                    <option [ngValue]="'s'">String</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('d').errors.required">
+                    Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('d') && setupForm.get('d').value === 'a'">
+            <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
+                    (change)="onChangeOfSetupSecondaryType()">
+                    <option [ngValue]="null">Select Secondary Type</option>
+                    <option [ngValue]="1">SIGNED_16_INT</option>
+                    <option [ngValue]="2">UNSIGNED_16_INT</option>
+                    <option [ngValue]="7">SIGNED_64_INT </option>
+                    <option [ngValue]="8">UNSIGNED_64_INT </option>
+                    <option [ngValue]="3">LONG</option>
+                    <option [ngValue]="4">LONG_REVERSE</option>
+                    <option [ngValue]="5">FLOAT</option>
+                    <option [ngValue]="6">FLOAT_REVERSE</option>
+                    <option [ngValue]="9">BYTE</option>
+                    <option [ngValue]="10">DECIMAL_FLOAT</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('sd')?.errors && setupForm.get('sd')?.touched" class="alert-danger">
+                <div *ngIf="setupForm.get('sd')?.errors.required">
+                    Secondary Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sa')">
+            <label for="message-text" class="col-form-label required">Register Address:</label>
+            <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                placeholder="Enter Register Address" min="0" max="99999">
+            <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('sa').errors.required">
+                    Register Address is required.
+                </div>
+                <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                    Register Address value must be between 0 and 99999.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') &&  setupForm.get('d').value === 's'">
+            <label for="message-text" class="col-form-label required">String Length:</label>
+            <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
+                placeholder="Enter String Length" min="1" max="99999">
+            <div *ngIf="setupForm.get('la').errors && setupForm.get('la').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('la').errors.required">
+                    String Length is required.
+                </div>
+                <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
+                    String Length value must be between 1 and 99999.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
+    && setupForm.get('d').value === 'a'">
+            <label for="message-text" class="col-form-label required">Precision:</label>
+            <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                placeholder="Enter Precision" min="1" max="5">
+            <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('p').errors.required">
+                    Precision is required.
+                </div>
+                <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                    Precision value must be between 1 and 5.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
+    && setupForm.get('d').value === 'a'">
+            <label for="message-text" class="col-form-label required">Byte Number:</label>
+            <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn">
+                <option [ngValue]="null">Select Byte Number</option>
+                <option [ngValue]="0">LSB</option>
+                <option [ngValue]="1">MSB</option>
+            </select>
+            <div *ngIf="setupForm.get('bytn').errors && setupForm.get('bytn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('bytn').errors.required">
+                    Byte Number is required.
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group"
+            *ngIf="assetModel.alert_type !=='Asset' && propertyObj && propertyObj.is_read == true && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
+            <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="fc_r" name="fc_r" formControlName="fc_r"
+                    (change)="onChangeOfSetupFunctionCode()">
+                    <option [ngValue]="null">Select Read Function Code</option>
+                    <ng-container *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">
+                        <!-- <option [ngValue]="1" >Read Coil (DIGITAL)</option>
+            <option [ngValue]="2" >Read
+              Discrete Input (DIGITAL)</option> -->
+                        <option [ngValue]="3">Read
+                            Holding
+                            Registers (ANALOG)</option>
+                        <option [ngValue]="4">Read Input
+                            Registers (ANALOG)</option>
+                    </ng-container>
+                    <ng-container *ngIf="setupForm.get('d').value === 'd'">
+                        <option [ngValue]="1">Read Coil (DIGITAL)</option>
+                        <option [ngValue]="2">Read
+                            Discrete Input (DIGITAL)</option>
+                        <option [ngValue]="3">Read
+                            Holding
+                            Registers (ANALOG)</option>
+                        <option [ngValue]="4">Read Input
+                            Registers (ANALOG)</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div *ngIf="propertyObj && propertyObj.is_read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched"
+                class="alert-danger">
+                <div *ngIf="setupForm.get('fc_r').errors.required">
+                    Read Function Code is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group"
+            *ngIf="assetModel.alert_type ==='Asset' && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
+            <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
+                    (change)="onChangeOfSetupFunctionCode()">
+                    <option [ngValue]="null">Select Read Function Code</option>
+                    <ng-container *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">
+                        <!-- <option [ngValue]="1" >Read Coil (DIGITAL)</option>
+            <option [ngValue]="2" >Read
+              Discrete Input (DIGITAL)</option> -->
+                        <option [ngValue]="3">Read
+                            Holding
+                            Registers (ANALOG)</option>
+                        <option [ngValue]="4">Read Input
+                            Registers (ANALOG)</option>
+                    </ng-container>
+                    <ng-container *ngIf="setupForm.get('d').value === 'd'">
+                        <option [ngValue]="1">Read Coil (DIGITAL)</option>
+                        <option [ngValue]="2">Read
+                            Discrete Input (DIGITAL)</option>
+                        <option [ngValue]="3">Read
+                            Holding
+                            Registers (ANALOG)</option>
+                        <option [ngValue]="4">Read Input
+                            Registers (ANALOG)</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('fc').errors && setupForm.get('fc').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('fc').errors.required">
+                    Read Function Code is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="propertyObj && propertyObj.is_write == true">
+            <label for="recipient-name" class="col-form-label required">Write Function Code:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="fc_w" name="fc_w" formControlName="fc_w">
+                    <option [ngValue]="null">Select Write Function Code</option>
+                    <!-- <ng-container *ngIf="setupForm.get('d').value !== 's' && (setupForm.get('d').value === 'd' || setupForm.get('fc_r').value !== '4')">
+              <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+            </ng-container> -->
+                    <ng-container *ngIf="setupForm.get('d').value === 'a'">
+                        <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+                        <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="(setupForm.get('d').value === 'd' && (setupForm.get('fc_r').value === 3 || setupForm.get('fc_r').value === 4))">
+                        <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="(setupForm.get('d').value === 'd' && setupForm.get('fc_r').value !== 3 && setupForm.get('fc_r').value !== 4)">
+                        <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
+                        <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+                    </ng-container>
+                    <ng-container *ngIf="setupForm.get('d').value === 's'">
+                        <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div *ngIf="propertyObj.is_write == true && setupForm.get('fc_w').errors && setupForm.get('fc_w').touched"
+                class="alert-danger">
+                <div *ngIf="setupForm.get('fc_w').errors.required">
+                    Write Function Code is required.
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group"
+            *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc_r')?.value === 3 || setupForm.get('fc_r')?.value === 4)">
+            <label for="message-text" class="col-form-label required">Bit Number:</label>
+            <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
+                placeholder="Enter Bit Number" min="0" max="15">
+            <div *ngIf="setupForm.get('bn')?.errors && setupForm.get('bn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('bn').errors.required">
+                    Bit Number is required.
+                </div>
+                <div *ngIf="setupForm.get('bn')?.errors.min || setupForm.get('bn')?.errors.max">
+                    Bit Number value must be between 0 and 15.
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="assetModel.tags.protocol === 'SiemensTCPIP'">
+        <div class="form-group" *ngIf="setupForm.get('d')">
+            <label for="recipient-name" class="col-form-label required">Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
+                    (change)="onChangeOfSetupType()">
+                    <option [ngValue]="null">Select Type</option>
+                    <option [ngValue]="'a'">Analog</option>
+                    <option [ngValue]="'d'">Digital</option>
+                    <option [ngValue]="'s'">String</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('d').errors && setupForm.get('d').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('d').errors.required">
+                    Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('d') && setupForm.get('d').value === 'a'">
+            <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
+                    (change)="onChangeOfSetupSecondaryType()">
+                    <option [ngValue]="null">Select Secondary Type</option>
+                    <option [ngValue]="1">SIGNED_16_INT</option>
+                    <option [ngValue]="2">UNSIGNED_16_INT</option>
+                    <option [ngValue]="7">SIGNED_64_INT </option>
+                    <option [ngValue]="8">UNSIGNED_64_INT </option>
+                    <option [ngValue]="3">LONG</option>
+                    <option [ngValue]="4">LONG_REVERSE</option>
+                    <option [ngValue]="5">FLOAT</option>
+                    <option [ngValue]="6">FLOAT_REVERSE</option>
+                    <option [ngValue]="9">BYTE</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('sd')?.errors && setupForm.get('sd')?.touched" class="alert-danger">
+                <div *ngIf="setupForm.get('sd')?.errors.required">
+                    Secondary Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sa')">
+            <label for="message-text" class="col-form-label required">Register Address:</label>
+            <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                placeholder="Enter Register Address" min="0" max="99999">
+            <div *ngIf="setupForm.get('sa').errors && setupForm.get('sa').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('sa').errors.required">
+                    Register Address is required.
+                </div>
+                <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                    Register Address value must be between 0 and 99999.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') &&  setupForm.get('d').value === 's'">
+            <label for="message-text" class="col-form-label required">String Length:</label>
+            <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
+                placeholder="Enter String Length" min="1" max="99999">
+            <div *ngIf="setupForm.get('la').errors && setupForm.get('la').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('la').errors.required">
+                    String Length is required.
+                </div>
+                <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
+                    String Length value must be between 1 and 99999.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
+    && setupForm.get('d').value === 'a'">
+            <label for="message-text" class="col-form-label required">Precision:</label>
+            <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                placeholder="Enter Precision" min="1" max="5">
+            <div *ngIf="setupForm.get('p').errors && setupForm.get('p').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('p').errors.required">
+                    Precision is required.
+                </div>
+                <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                    Precision value must be between 1 and 5.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
+    && setupForm.get('d').value === 'a'">
+            <label for="message-text" class="col-form-label required">Byte Number:</label>
+            <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn">
+                <option [ngValue]="null">Select Byte Number</option>
+                <option [ngValue]="0">LSB</option>
+                <option [ngValue]="1">MSB</option>
+            </select>
+            <div *ngIf="setupForm.get('bytn').errors && setupForm.get('bytn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('bytn').errors.required">
+                    Byte Number is required.
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Memory Type:</label>
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="mt" name="mt" formControlName="mt"
+                    (change)="onChageOfMemoryType()">
+                    <option [ngValue]="null">Select Memory Type</option>
+                    <option [ngValue]="'DB'">DB</option>
+                    <option [ngValue]="'PE'">PE</option>
+                    <option [ngValue]="'PA'">PA</option>
+                    <option [ngValue]="'MK'">MK</option>
+                    <option [ngValue]="'CT'">CT</option>
+                    <option [ngValue]="'TM'">TM</option>
+                </select>
+            </div>
+            <div *ngIf="setupForm.get('mt').errors && setupForm.get('mt').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('mt').errors.required">
+                    Memory Type is required.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
+            <label for="message-text" class="col-form-label required">DB Number:</label>
+            <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
+                placeholder="Enter DB Number" min="0">
+            <div *ngIf="setupForm.get('dbn').errors && setupForm.get('dbn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('dbn').errors.required">
+                    DB Number is required.
+                </div>
+                <div *ngIf="setupForm.get('dbn').errors.min || setupForm.get('dbn').errors.max">
+                    DB Number value must be greater than 0.
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
+            <label for="message-text" class="col-form-label required">Bit Number:</label>
+            <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
+                placeholder="Enter Bit Number" min="0" max="15">
+            <div *ngIf="setupForm.get('bn').errors && setupForm.get('bn').touched" class="alert-danger">
+                <div *ngIf="setupForm.get('bn').errors.required">
+                    Bit Number is required.
+                </div>
+                <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
+                    Bit Number value must be between 0 and 15.
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</form>

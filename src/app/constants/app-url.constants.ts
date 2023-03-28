@@ -67,6 +67,11 @@ export class AppUrls {
   public static GET_ASSETS_WIDGET = 'asset_models/{0}/widgets';
   public static GET_ASSETS_WIDGET_BY_CHARTID = 'asset_models/{0}/widget/{1}';
   public static DELETE_ASSETS_WIDGET = 'asset_models/{0}/widget/{1}';
+  public static CREATE_MODEL_PROPERTY = 'asset_models/{0}/property';
+  public static UPDATE_MODEL_PROPERTY = 'asset_model/{0}/property/{1}';
+  public static GET_MODEL_PROPERTIES = 'asset_models/{0}/properties';
+  public static GET_MODEL_PROPERTY = 'asset_models/{0}/property/{1}';
+  public static DELETE_MODEL_PROPERTY = 'asset_model/{0}/property/{1}';
   public static CREATE_ASSETS_MODEL = 'apps/{0}/asset_models';
   public static UPDATE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}';
   public static FREEZE_ASSETS_MODEL = 'apps/{0}/asset_models/{1}/freeze';
@@ -210,6 +215,7 @@ export class AppUrls {
   public static GET_USERS_APPLICATION = 'user_apps';
   public static UPLOAD_WHITELISTED_ASSET = 'apps/{0}/whitelisted_assets';
   public static UPLOAD_ASSET_MODEL_FILE = 'apps/{0}/asset_models/template/{1}';
+  public static IMPORT_ASSET_MODEL_Excel = 'asset_models/propertiesFromExcel';
 
   public static UPDATE_APPADMIN_PRIVILEGE = 'apps/{0}/roles/{1}/privileges';
   public static DE_WHITELIST_ASSET = 'apps/{0}/whitelisted_assets/{1}';

@@ -76,10 +76,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add {{widgetStringFromMenu}}</h5>
-                <!-- <button type="button" class="close" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()"
-            aria-label="Close">
-            <span aria-hidden="true" tooltip="Close">&times;</span>
-          </button> -->
+                <button type="button" class="close" [disabled]="isCreateWidgetAPILoading"
+                    (click)="onCloseAddWidgetModal()" aria-label="Close">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form [formGroup]="historicalWidgetForm" (ngSubmit)="submitHistorical()">

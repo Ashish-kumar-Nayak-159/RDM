@@ -81,6 +81,31 @@ export class AssetModelService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_WIDGET, encodeURIComponent(name)), modelObj);
   }
 
+  createModelProperty(modelObj, modelName) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_PROPERTY, encodeURIComponent(modelName)), modelObj);
+  }
+
+  getModelProperties(modelName, type) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_PROPERTIES, encodeURIComponent(modelName)) + '?type=' + type);
+  }
+
+  getModelProperty(id, modelName) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_PROPERTY, encodeURIComponent(modelName), encodeURIComponent(id)));
+  }
+
+  updateModelProperty(modelObj, modelName) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_PROPERTY, encodeURIComponent(modelName), encodeURIComponent(modelObj.id)), modelObj);
+  }
+
+  deleteModelProperty(id, modelName) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_PROPERTY, encodeURIComponent(modelName), encodeURIComponent(id)));
+  }
+
   createAssetsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_MODEL, encodeURIComponent(app)), modelObj);

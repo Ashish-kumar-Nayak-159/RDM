@@ -98,6 +98,10 @@ export class LivewidgetComponent implements OnInit {
   }
 
   async onSlaveSelection(selectedSlave) {
+    debugger;
+    this.widgetObj.properties.forEach(element => {
+      element.property = [];
+    });
     await this.getAssetsModelProperties(selectedSlave);
   }
 
@@ -616,7 +620,14 @@ export class LivewidgetComponent implements OnInit {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
-
+    const index = this.liveWidgets.findIndex((widget) => widget.widget_title.toLowerCase() === this.widgetObj.widget_title.toLowerCase());
+    if (index !== -1) {
+      this.toasterService.showError(
+        this.widgetStringFromMenu + ' with same title is already exist.',
+        'Add ' + this.widgetStringFromMenu
+      );
+      return
+    }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widget_type == "NumberWithImage" && !prop?.image)) {
@@ -730,6 +741,7 @@ export class LivewidgetComponent implements OnInit {
 
   addWidget() {
     let properties = this.widgetObj;
+
     if (this.widgetObj.widget_type == "SmallNumber") {
       properties = {};
       properties = this.widgetObj.properties[0];
@@ -766,7 +778,6 @@ export class LivewidgetComponent implements OnInit {
     }
     else if (this.widgetObj.widget_type == "NumberWithImage") {
       this.widgetObj.properties.forEach(element => {
-        debugger;
         let getName: any;
         if (!element?.json_key) {
           getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
@@ -824,6 +835,7 @@ export class LivewidgetComponent implements OnInit {
       })
     }
     else {
+
       this.assetModelService.createAssetsWidget(reqObj, this.assetModel.name).subscribe(async res => {
         this.toasterService.showSuccess(res["message"], 'Live ' + this.widgetStringFromMenu);
         await this.getAssetModelsderivedKPIs();
@@ -837,6 +849,7 @@ export class LivewidgetComponent implements OnInit {
           this.isCreateWidgetAPILoading = false;
           this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
         })
+
     }
 
   }
@@ -980,127 +993,131 @@ export class LivewidgetComponent implements OnInit {
     else {
       this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
         let data = res;
+        this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+        this.onSlaveSelection(this.selectedSlave);
+        setTimeout(() => {
 
-        if (data.widget_type == "SmallNumber") {
-          data.y1AxisProps = data.properties.map(o => ({ ...o }));
-          data.properties[0].property = data.y1AxisProps[0];
-          let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
-          data.properties[0].property.name = getName?.name;
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+          if (data.widget_type == "SmallNumber") {
+            data.y1AxisProps = data.properties.map(o => ({ ...o }));
+            data.properties[0].property = data.y1AxisProps[0];
+            let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
+            data.properties[0].property.name = getName?.name;
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
 
-        }
-        else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
-          data.y1AxisProps = data.properties[0].y1AxisProps;
-          data.y2AxisProps = data.properties[0].y2AxisProps;
-          data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+          }
+          else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
+            data.y1AxisProps = data.properties[0].y1AxisProps;
+            data.y2AxisProps = data.properties[0].y2AxisProps;
+            data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-        }
-        else if (data.widget_type == "ConditionalNumber") {
-          this.widgetObj = data;
-          this.propertyObj = {
-            json_model: {},
-            threshold: {},
-          };
-          this.onWidgetTypeChange();
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+          }
+          else if (data.widget_type == "ConditionalNumber") {
+            this.widgetObj = data;
+            this.propertyObj = {
+              json_model: {},
+              threshold: {},
+            };
+            this.onWidgetTypeChange();
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-          data.dashboardVisibility = data.dashboard_visibility;
-          this.propertyObj.metadata.properties = data.properties[0].property;
-          this.ValidateallInputField();
-        }
-        else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            data.dashboardVisibility = data.dashboard_visibility;
+            this.propertyObj.metadata.properties = data.properties[0].property;
+            this.ValidateallInputField();
+          }
+          else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-          data.properties = data.properties[0].properties.map(o => ({ ...o }));
-          data.properties.forEach(element => {
-            let getName = this.propertyList.find(x => x.json_key == element.json_key);
-            element.name = getName?.name;
-            element.data_type = getName?.data_type;
-          });
-        }
-        else if (data.widget_type == "NumberWithImage") {
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            data.properties = data.properties[0].properties.map(o => ({ ...o }));
+            data.properties.forEach(element => {
+              let getName = this.propertyList.find(x => x.json_key == element.json_key);
+              element.name = getName?.name;
+              element.data_type = getName?.data_type;
+            });
+          }
+          else if (data.widget_type == "NumberWithImage") {
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-          data.properties = data.properties[0].properties.map(o => ({ ...o }));
+            data.properties = data.properties[0].properties.map(o => ({ ...o }));
 
-          data.properties.forEach((element, index) => {
-            let url = this.blobStorageURL + element.image.url + this.blobToken;
-            const toDataURL = url => fetch(url)
-              .then(response => response.blob())
-              .then(blob => new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result)
-                reader.onerror = reject
-                reader.readAsDataURL(blob)
-              }));
+            data.properties.forEach((element, index) => {
+              let url = this.blobStorageURL + element.image.url + this.blobToken;
+              const toDataURL = url => fetch(url)
+                .then(response => response.blob())
+                .then(blob => new Promise((resolve, reject) => {
+                  const reader = new FileReader()
+                  reader.onloadend = () => resolve(reader.result)
+                  reader.onerror = reject
+                  reader.readAsDataURL(blob)
+                }));
 
-            toDataURL(url)
-              .then(dataUrl => {
-                var fileData = this.dataURLtoFile(dataUrl, element.image.name);
-                this.fileArr.push(fileData);
-                element.image = fileData;
-              });
-            let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
-            element.name = getName?.name;
-            element.data_type = getName?.data_type;
-            element.json_key = getName?.json_key;
-          });
-          // data.properties[0].image = {};
+              toDataURL(url)
+                .then(dataUrl => {
+                  var fileData = this.dataURLtoFile(dataUrl, element.image.name);
+                  this.fileArr.push(fileData);
+                  element.image = fileData;
+                });
+              let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+              element.name = getName?.name;
+              element.data_type = getName?.data_type;
+              element.json_key = getName?.json_key;
+            });
+            // data.properties[0].image = {};
 
-          // data.properties.forEach(element => {
-          //   let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
-          //   element.name = getName?.name;
-          //   element.data_type = getName?.data_type;
-          // });
-        }
-        else if (data.widget_type == "GaugeChart") {
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            // data.properties.forEach(element => {
+            //   let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+            //   element.name = getName?.name;
+            //   element.data_type = getName?.data_type;
+            // });
+          }
+          else if (data.widget_type == "GaugeChart") {
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-          this.widgetObj = data.properties[0];
-          this.widgetObj.properties.forEach(element => {
-            let getName = this.propertyList.find(x => x.json_key == element?.json_key);
-            element.name = getName?.name;
-            element.data_type = getName?.data_type;
-          });
-          this.onWidgetTypeChange();
-        }
-        else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.widgetObj = data.properties[0];
+            this.widgetObj.properties.forEach(element => {
+              let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+              element.name = getName?.name;
+              element.data_type = getName?.data_type;
+            });
+            this.onWidgetTypeChange();
+          }
+          else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
+            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.slave_id = data.properties[0].slave_id;
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
 
-          this.widgetObj = data.properties[0];
-          this.widgetObj.properties.forEach(element => {
-            let getName = this.propertyList.find(x => x.json_key == element?.json_key);
-            element.name = getName?.name;
-            element.data_type = getName?.data_type;
-          });
-          this.onWidgetTypeChange();
-        }
+            this.widgetObj = data.properties[0];
+            this.widgetObj.properties.forEach(element => {
+              let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+              element.name = getName?.name;
+              element.data_type = getName?.data_type;
+            });
+            this.onWidgetTypeChange();
+          }
 
-        if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
-          this.widgetObj = data;
-          this.onWidgetTypeChange();
-        }
+          if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
+            this.widgetObj = data;
+            this.onWidgetTypeChange();
 
-        if (event.type == "Edit") {
-          this.widgetObj.id = event.widgetId;
-        } else if (event.type == "Clone") {
-          this.widgetObj.id = 0;
-        }
+          }
+
+          if (event.type == "Edit") {
+            this.widgetObj.id = event.widgetId;
+          } else if (event.type == "Clone") {
+            this.widgetObj.id = 0;
+          }
+        }, 1000);
 
         $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
       });

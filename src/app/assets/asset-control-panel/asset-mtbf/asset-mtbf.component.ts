@@ -208,8 +208,8 @@ export class AssetMtbfComponent implements OnInit, OnDestroy {
     // this.lifeCycleEvents.reverse();
     this.lifeCycleEvents.forEach((obj, i) => {
       const newObj = { ...obj };
-      const date = this.commonService.convertUTCDateToLocalDate(obj.start_time);
-      const endDate = this.commonService.convertUTCDateToLocalDate(obj.end_time);
+      const date = this.commonService.convertUTCDateToLocal(obj.start_time);
+      const endDate = this.commonService.convertUTCDateToLocal(obj.end_time);
       newObj.date = new Date(date);
       newObj.endDate = new Date(endDate);
       newObj.mtbfHr = obj.mtbf / 3600;

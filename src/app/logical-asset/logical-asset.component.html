@@ -1,0 +1,93 @@
+<div class="blue-nav-bar">
+    <div class="d-flex align-items-center">
+        <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
+        </div>
+        <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()"
+            placement="bottom" tooltip="Add {{(tileData && tileData[0] ? tileData[0]?.value : '')}}"><em
+                class="fas fa-plus fa-sm"></em></button>
+    </div>
+</div>
+
+<!-- <div class="tab-bar" *ngIf="!isAddCampaignModalOpen">
+    <form class="form-inline">
+        <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+            (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+        </app-date-range-picker>
+        <div class="form-group">
+            <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+                (click)="getCampaignsList()"><em class="fa fa-search fa-sm"></em></button>
+        </div>
+    </form>
+</div> -->
+
+<div class="table-responsive">
+    <div class="tableFixHead" id="table-top" style="max-height: calc(100vh - 10.5rem)">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Hierarchy</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="logicalAssest.length > 0">
+                    <tr *ngFor="let item of logicalAssest; let index = index">
+                        <td>{{index + 1}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.code}}</td>
+                        <td>{{item.level}}</td>
+                        <td>{{item.hierarchyString}}</td>
+                        <td>
+                            <em class="fas fa-eye fa-fw icon-gray" tooltip="View"
+                                (click)="singleRecordData(item,'view')"></em>
+                            <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1"
+                                class="fa fa-fw fa-trash icon-gray" tooltip="Delete"
+                                (click)="singleRecordData(item,'delete')"></em>
+
+                            <!-- <a  (click)="openAssetCreateModal(asset);" tooltip="Edit"
+                            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
+                            <em class="fas fa-fw fa-edit"></em>
+                          </a> -->
+                            <!-- <a (click)="openAssetCreateModal(item);" tooltip="Delete"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
+                                <em class="fas fa-fw fa-trash"></em>
+                            </a> -->
+                        </td>
+
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="logicalAssest.length === 0 && !isGetLogicalAPILoading">
+                    <tr>
+                        <td colspan="8">No Logical Assest available.</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="isGetLogicalAPILoading">
+                    <tr>
+                        <td colspan="8">
+                            <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+
+
+        <!-- <app-add-campaign (cancelEvent)="closeCampaignModal()" *ngIf="isAddCampaignModalOpen"></app-add-campaign> -->
+    </div>
+</div>
+
+<app-add-logical-asset *ngIf="isOpenAssetCreateModal" [filterObj]="filterObj" [assets]="assets"
+    [assetDetail]="assetDetail" [tileData]="tabData" (cancelModal)="onCreateAssetCancelModal()"></app-add-logical-asset>
+
+<!-- delete Modal -->
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <app-message-modal [bodyMessage]="confirmBodyMessage" [headerMessage]="confirmHeaderMessage"
+            (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig" [isAPILoading]="isAPILoading">
+        </app-message-modal>
+    </div>
+</div>

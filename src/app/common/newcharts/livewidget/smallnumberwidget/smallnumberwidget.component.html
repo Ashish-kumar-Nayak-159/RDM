@@ -8,7 +8,7 @@
                     {{chartConfig.widget_title}}
                 </h6>
             </div>
-            <div class="ml-auto">
+            <div class="ml-auto" *ngIf="chartConfig">
                 <div class="round-badge badge-navyblue" tooltip="Derived KPI"
                     *ngIf="chartConfig.derived_kpis && !asset && !chartConfig.freezed">DK</div>
                 <div class="round-badge badge-darkblue" tooltip="Edge Derived Property"

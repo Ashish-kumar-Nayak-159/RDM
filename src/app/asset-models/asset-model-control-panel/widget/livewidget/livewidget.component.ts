@@ -64,6 +64,7 @@ export class LivewidgetComponent implements OnInit {
   fileArr: any = [];
   blobToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
+  isDataFill: boolean = true;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -98,10 +99,12 @@ export class LivewidgetComponent implements OnInit {
   }
 
   async onSlaveSelection(selectedSlave) {
-    debugger;
     this.widgetObj.properties.forEach(element => {
       element.property = [];
     });
+
+    this.widgetObj.y1AxisProps = [];
+    this.widgetObj.y2AxisProps = [];
     await this.getAssetsModelProperties(selectedSlave);
   }
 
@@ -341,7 +344,7 @@ export class LivewidgetComponent implements OnInit {
       this.widgetObj.widget_type === 'LineChart' ||
       this.widgetObj.widget_type === 'AreaChart'
     ) {
-      this.widgetObj.noOfDataPointsForTrend = 15;
+      this.widgetObj.noOfDataPointsForTrend = this.widgetObj.noOfDataPointsForTrend ? this.widgetObj.noOfDataPointsForTrend : 15;
     }
     this.filteredPropList = [];
 
@@ -550,17 +553,22 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   onOpenConfigureDashboardModal() {
-    this.isAllWidgestSelectedForDashboard = false;
-    this.isAllWidgestSelectedForDeleteHistorical = false;
-    this.configureDashboardWidgets = this.liveWidgets;
-    this.configureDashboardWidgets.forEach((widget, index) => {
-      widget.index = index + 1;
-      widget.isDelete = false;
-    });
-    this.checkForAllWidgetVisibility(0);
-    this.checkForAllWidgetVisibility(1);
-    $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    this.getTableSortable();
+    if (this.liveWidgets.length > 0) {
+      this.isAllWidgestSelectedForDashboard = false;
+      this.isAllWidgestSelectedForDeleteHistorical = false;
+      this.configureDashboardWidgets = this.liveWidgets;
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        widget.index = index + 1;
+        widget.isDelete = false;
+      });
+      this.checkForAllWidgetVisibility(0);
+      this.checkForAllWidgetVisibility(1);
+      $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.getTableSortable();
+    }
+    else {
+      this.toasterService.showError("live chart data is not available", 'Configure Dashboard');
+    }
   }
 
   // removeWidget(chartId) {
@@ -620,13 +628,26 @@ export class LivewidgetComponent implements OnInit {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
     }
-    const index = this.liveWidgets.findIndex((widget) => widget.widget_title.toLowerCase() === this.widgetObj.widget_title.toLowerCase());
-    if (index !== -1) {
-      this.toasterService.showError(
-        this.widgetStringFromMenu + ' with same title is already exist.',
-        'Add ' + this.widgetStringFromMenu
-      );
-      return
+    let id = this.widgetObj.id;
+    if (id > 0) {
+      const index = this.liveWidgets.findIndex((widget) => widget.widget_title.toLowerCase() === this.widgetObj.widget_title.toLowerCase() && id != widget.id);
+      if (index !== -1) {
+        this.toasterService.showError(
+          this.widgetStringFromMenu + ' with same title is already exist.',
+          'Edit ' + this.widgetStringFromMenu
+        );
+        return
+      }
+    }
+    else {
+      const index = this.liveWidgets.findIndex((widget) => widget.widget_title.toLowerCase() === this.widgetObj.widget_title.toLowerCase());
+      if (index !== -1) {
+        this.toasterService.showError(
+          this.widgetStringFromMenu + ' with same title is already exist.',
+          'Add ' + this.widgetStringFromMenu
+        );
+        return
+      }
     }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
@@ -993,61 +1014,84 @@ export class LivewidgetComponent implements OnInit {
     else {
       this.assetModelService.getAssetWidgetById(this.assetModel.name, event.widgetId).subscribe(res => {
         let data = res;
-        this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
-        this.onSlaveSelection(this.selectedSlave);
-        setTimeout(() => {
+        this.isDataFill = false;
 
-          if (data.widget_type == "SmallNumber") {
+
+        if (data.widget_type == "SmallNumber") {
+          setTimeout(() => {
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
             data.y1AxisProps = data.properties.map(o => ({ ...o }));
             data.properties[0].property = data.y1AxisProps[0];
             let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
             data.properties[0].property.name = getName?.name;
-            data.dashboardVisibility = data.properties[0].dashboardVisibility;
+            data.dashboardVisibility = data.dashboard_visibility;
             data.slave_id = data.properties[0].slave_id;
+            this.isDataFill = true;
 
-          }
-          else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
+          }, 2000);
+        }
+        else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
+          setTimeout(() => {
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
             data.y1AxisProps = data.properties[0].y1AxisProps;
             data.y2AxisProps = data.properties[0].y2AxisProps;
             data.noOfDataPointsForTrend = data.properties[0].noOfDataPointsForTrend;
             data.dashboardVisibility = data.properties[0].dashboardVisibility;
             data.slave_id = data.properties[0].slave_id;
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.isDataFill = true;
 
-          }
-          else if (data.widget_type == "ConditionalNumber") {
-            this.widgetObj = data;
-            this.propertyObj = {
-              json_model: {},
-              threshold: {},
-            };
-            this.onWidgetTypeChange();
+          }, 2000);
+
+        }
+        else if (data.widget_type == "ConditionalNumber") {
+
+          this.widgetObj = data;
+          this.propertyObj = {
+            json_model: {},
+            threshold: {},
+            metadata: {
+              properties: []
+            },
+          };
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          data.dashboardVisibility = data.dashboard_visibility;
+          this.propertyObj.metadata.properties = data.properties[0].property.map(o => ({ ...o }));
+          this.ValidateallInputField();
+
+          setTimeout(() => {
             this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
+            this.isDataFill = true;
+          }, 2000);
+        }
+        else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
+          setTimeout(() => {
+
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
             data.dashboardVisibility = data.properties[0].dashboardVisibility;
             data.slave_id = data.properties[0].slave_id;
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
-
-            data.dashboardVisibility = data.dashboard_visibility;
-            this.propertyObj.metadata.properties = data.properties[0].property;
-            this.ValidateallInputField();
-          }
-          else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
-            data.dashboardVisibility = data.properties[0].dashboardVisibility;
-            data.slave_id = data.properties[0].slave_id;
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
-
             data.properties = data.properties[0].properties.map(o => ({ ...o }));
             data.properties.forEach(element => {
               let getName = this.propertyList.find(x => x.json_key == element.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
             });
-          }
-          else if (data.widget_type == "NumberWithImage") {
+            this.isDataFill = true;
+
+          }, 2000);
+
+        }
+        else if (data.widget_type == "NumberWithImage") {
+          setTimeout(() => {
+
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
             data.dashboardVisibility = data.properties[0].dashboardVisibility;
             data.slave_id = data.properties[0].slave_id;
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
-
             data.properties = data.properties[0].properties.map(o => ({ ...o }));
 
             data.properties.forEach((element, index) => {
@@ -1072,52 +1116,71 @@ export class LivewidgetComponent implements OnInit {
               element.data_type = getName?.data_type;
               element.json_key = getName?.json_key;
             });
-            // data.properties[0].image = {};
+            this.isDataFill = true;
 
-            // data.properties.forEach(element => {
-            //   let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
-            //   element.name = getName?.name;
-            //   element.data_type = getName?.data_type;
-            // });
-          }
-          else if (data.widget_type == "GaugeChart") {
-            data.slave_id = data.properties[0].slave_id;
+          }, 2000);
+
+          // data.properties[0].image = {};
+
+          // data.properties.forEach(element => {
+          //   let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+          //   element.name = getName?.name;
+          //   element.data_type = getName?.data_type;
+          // });
+        }
+        else if (data.widget_type == "GaugeChart") {
+          data.slave_id = data.properties[0].slave_id;
+          this.widgetObj = data.properties[0];
+          this.onWidgetTypeChange();
+
+          setTimeout(() => {
+
             this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
 
-            this.widgetObj = data.properties[0];
             this.widgetObj.properties.forEach(element => {
               let getName = this.propertyList.find(x => x.json_key == element?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
+              element.property = getName;
             });
-            this.onWidgetTypeChange();
-          }
-          else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
-            data.dashboardVisibility = data.properties[0].dashboardVisibility;
-            data.slave_id = data.properties[0].slave_id;
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.isDataFill = true;
 
-            this.widgetObj = data.properties[0];
+          }, 2000);
+
+        }
+        else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
+          data.dashboardVisibility = data.properties[0].dashboardVisibility;
+          data.slave_id = data.properties[0].slave_id;
+          this.widgetObj = data.properties[0];
+
+          this.onWidgetTypeChange();
+
+          setTimeout(() => {
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.onSlaveSelection(this.selectedSlave);
             this.widgetObj.properties.forEach(element => {
               let getName = this.propertyList.find(x => x.json_key == element?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
+              element.property = getName;
             });
-            this.onWidgetTypeChange();
-          }
+            this.isDataFill = true;
 
-          if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
-            this.widgetObj = data;
-            this.onWidgetTypeChange();
+          }, 2000);
 
-          }
+        }
 
-          if (event.type == "Edit") {
-            this.widgetObj.id = event.widgetId;
-          } else if (event.type == "Clone") {
-            this.widgetObj.id = 0;
-          }
-        }, 1000);
+        if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
+          this.widgetObj = data;
+          this.onWidgetTypeChange();
+        }
+
+        if (event.type == "Edit") {
+          this.widgetObj.id = event.widgetId;
+        } else if (event.type == "Clone") {
+          this.widgetObj.id = 0;
+        }
 
         $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
       });
@@ -1164,10 +1227,11 @@ export class LivewidgetComponent implements OnInit {
 
 
   checkForAllWidgetVisibility(type) {
+
     let count = 0;
     if (type == 0) {
       this.configureDashboardWidgets.forEach((widget, index) => {
-        if (widget.dashboardVisibility) {
+        if (widget.dashboard_visibility) {
           count++;
         }
       });

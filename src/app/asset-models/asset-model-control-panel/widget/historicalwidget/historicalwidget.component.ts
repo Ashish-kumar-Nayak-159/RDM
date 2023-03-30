@@ -649,17 +649,22 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onOpenConfigureDashboardModal() {
-    this.configureDashboardWidgets = this.layoutJson.map(o => ({ ...o }));
-    this.configureDashboardWidgets.forEach((widget, index) => {
-      widget.index = index + 1;
-      widget.isDelete = false;
-      widget.dashboardVisibility = widget.dashboard_visibility;
-    });
-    this.checkForAllWidgetVisibility(0);
-    this.checkForAllWidgetVisibility(1);
+    if (this.layoutJson.length > 0) {
+      this.configureDashboardWidgets = this.layoutJson.map(o => ({ ...o }));
+      this.configureDashboardWidgets.forEach((widget, index) => {
+        widget.index = index + 1;
+        widget.isDelete = false;
+        widget.dashboardVisibility = widget.dashboard_visibility;
+      });
+      this.checkForAllWidgetVisibility(0);
+      this.checkForAllWidgetVisibility(1);
 
-    $('#configureHDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    this.getTableSortable();
+      $('#configureHDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.getTableSortable();
+    }
+    else {
+      this.toasterService.showError("historical chart data is not available", 'Configure Dashboard');
+    }
   }
   onCloseConfigureDashboardModal() {
     $('#configureHDashboardWidgetsModal').modal('hide');
@@ -775,6 +780,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   onAdd() {
     this.showPopup = true;
+    this.filteredPropList = [];
     setTimeout(() => {
       $('#addHWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }, 100);

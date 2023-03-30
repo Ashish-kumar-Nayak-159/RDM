@@ -17,6 +17,11 @@ const routes: Routes = [
       import('./campaign-management/campaign-management.module').then((module) => module.CampaignManagementModule),
   },
   {
+    path: 'applications/:applicationId/logical-asset',
+    loadChildren: () =>
+      import('./logical-asset/logical-asset.module').then((module) => module.LogicalAssetModule),
+  },
+  {
     path: 'applications/:applicationId/maintenance',
     loadChildren: () =>
       import('./app-maintenance/app-maintenance.module').then((module) => module.AppMaintenanceModule),
@@ -33,7 +38,7 @@ const routes: Routes = [
     path: 'applications/:applicationId/dashboard',
     loadChildren: () => import('./app-dashboard/app-dashboard.module').then((module) => module.AppDashboardModule),
   },
-  
+
   {
     path: 'applications/:applicationId/reports',
     loadChildren: () => import('./reports/reports.module').then((module) => module.ReportsModule),
@@ -82,4 +87,4 @@ if (environmentObj.redirectToLogin) {
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

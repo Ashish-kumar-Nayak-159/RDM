@@ -617,7 +617,23 @@ export class CONSTANTS {
       showAccordion: [{ name: 'Title', value: 'Maintenance' }],
       priority: 1,
     },
-
+    {
+      page: 'Logical Asset',
+      system_name: 'Logical Asset',
+      url: 'applications/:appName/logical-asset',
+      display_name: 'Logical Asset',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Logical Asset',
+        },
+      ],
+      priority: 1,
+    },
 
   ];
 

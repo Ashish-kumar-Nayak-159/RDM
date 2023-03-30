@@ -1425,4 +1425,22 @@ export class AssetService {
       ruleModel
     );
   }
+
+  createLogicalView(obj) {
+    return this.http.post(
+      this.url + String.Format(AppUrls.LOGICAL_VIEW),
+      obj
+    );
+  }
+
+  getLogicalView() {
+    return this.http.get(
+      this.url + String.Format(AppUrls.LOGICAL_VIEW)
+    );
+  }
+
+  deleteLogicalView(id) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_LOGICAL_VIEW, encodeURIComponent(id)));
+  }
+
 }

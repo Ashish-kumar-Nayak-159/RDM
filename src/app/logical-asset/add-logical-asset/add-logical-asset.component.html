@@ -1,0 +1,94 @@
+<div class="modal right fade" id="createAssetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    {{isAssetEditable ? ('Edit ' + (tileData?.table_key || 'Logical Asset')) :
+                    ('Add ' + (tileData?.table_key || 'Logical Asset'))}}
+                </h5>
+                <button type="button" class="close" (click)="onCloseCreateAssetModal()" aria-label="Close"
+                    [disabled]="isCreateAssetAPILoading">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="assetDetail">
+                <form #form="ngForm">
+                    <ng-container>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">App:</label>
+                            <input type="text" class="form-control form-control-sm" id="app_name"
+                                [defaultValue]="contextApp.app" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label required">
+                                Name:</label>
+                            <input #asset_name="ngModel" validateText type="text" class="form-control form-control-sm"
+                                id="asset_name" name="asset_name" [(ngModel)]="assetDetail.name"
+                                placeholder="Enter Name" [disabled]="isViewLogicalAssest">
+                            <div *ngIf="asset_name.errors?.whitespace && asset_name.touched" class="alert-danger">
+                                Please enter valid name.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label required">
+                                Code:</label>
+                            <input #asset_code="ngModel" validateText type="text" class="form-control form-control-sm"
+                                id="asset_code" name="asset_code" [(ngModel)]="assetDetail.code"
+                                pattern="^[a-zA-Z0-9 ]+$" placeholder="Enter Code" maxlength="10" minlength="5"
+                                [disabled]="isViewLogicalAssest">
+                            <div *ngIf="asset_code.errors?.whitespace && asset_code.touched" class="alert-danger">
+                                Please enter valid name.
+                            </div>
+                        </div>
+                        <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index">
+                            <div class="form-group" *ngIf="hIndex !== 0">
+                                <label for="message-text" class="col-form-label">{{level}}:</label>
+                                <select class="form-control form-control-sm" id="hierarchy{{hIndex}}"
+                                    name="hierarchy{{hIndex}}" [(ngModel)]="addAssetConfigureHierarchy[hIndex]"
+                                    [disabled]="contextApp.user.hierarchy[level] ||  isHierarchyEditable"
+                                    (change)="onChangeOfAddAssetHierarchy(hIndex)" [disabled]="isViewLogicalAssest">
+                                    <option [ngValue]="undefined"> Select {{level}}</option>
+                                    <option [ngValue]="tag.key" *ngFor="let tag of addAssetHierarchyArr[hIndex]">
+                                        {{tag.name}}</option>
+
+                                </select>
+                            </div>
+                        </ng-container>
+
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Assest:</label>
+                            <ng-select [items]="assets" class="dropdown-open" bindLabel="display_name"
+                                placeholder="Select Asset" dropdownPosition="bottom" name="asset-dropdown"
+                                [(ngModel)]="selectedAsset" [searchable]="true" [closeOnSelect]="false"
+                                [multiple]="true" [disabled]="isViewLogicalAssest">
+                                <ng-template ng-option-tmp let-asset="item">
+                                    <span>
+                                        {{asset.display_name ?
+                                        asset.display_name: asset.asset_id}}</span>
+                                </ng-template>
+                            </ng-select>
+                        </div>
+
+
+                        <!-- End Whitelist Asset -->
+
+
+                    </ng-container>
+
+                    <div class="modal-footer fixed-bottom bg-white">
+                        <!-- <button *ngIf="componentState === constantData.NON_IP_ASSET" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateAssetAPILoading"
+            (click)="isAssetEditable ? onEditAsset() : onCreateAsset()">Save</button> -->
+                        <button type="button" class="btn btn-primary add-row"
+                            [disabled]="!form.valid || isCreateAssetAPILoading"
+                            (click)="isAssetEditable ? onUpdateAsset() : onCreateAsset()">Save</button>
+                        <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetAPILoading"
+                            (click)="onCloseCreateAssetModal()">
+                            Cancel
+                        </button>
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetAPILoading"></em>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -345,7 +345,7 @@
                     <div *ngIf="widgetObj.widget_type !== 'ConditionalNumber'"
                         class="modal-footer fixed-bottom bg-white">
                         <button type="button" class="btn btn-primary add-row"
-                            [disabled]="!form.valid || isCreateWidgetAPILoading"
+                            [disabled]="!form.valid || isCreateWidgetAPILoading || !isDataFill"
                             (click)="onSaveWidgetObj()">Save</button>
                         <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
                             (click)="onCloseAddWidgetModal()">Cancel</button>
@@ -420,7 +420,8 @@
             </div>
             <div class="modal-footer">
                 <div style="width: 52%;">
-                    <button type="button" class="btn btn-primary add-row mr-1" [disabled]="isCreateWidgetAPILoading"
+                    <button type="button" class="btn btn-primary add-row mr-1"
+                        [disabled]="isCreateWidgetAPILoading || deleteBtn"
                         (click)="onSaveConfigureDashboardWidgets()">Save</button>
                     <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
                         (click)="onCloseConfigureDashboardModal()">Cancel</button>

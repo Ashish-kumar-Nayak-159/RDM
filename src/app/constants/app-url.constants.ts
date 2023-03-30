@@ -203,6 +203,9 @@ export class AppUrls {
   public static ASSET_MODEL_RULE_MAPPING = 'model/rule'
   public static ASSET_RULE_MAPPING = 'asset/rule'
 
+  public static LOGICAL_VIEW = 'logicalView'
+  public static DELETE_LOGICAL_VIEW = 'id/{0}/logicalView'
+
 
   public static DEPLOY_EDGE_RULE = 'apps/{0}/sync_edge_rules/{1}/{2}';
 

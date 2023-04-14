@@ -38,7 +38,7 @@ export class NewdataTypeFiedsComponent implements OnInit {
   }
 
   addEnumValue() {
-    debugger;
+    ;
     let enumIsValid = true;
     if (!this.enumObj.label || this.enumObj.label == "") {
       enumIsValid = false;

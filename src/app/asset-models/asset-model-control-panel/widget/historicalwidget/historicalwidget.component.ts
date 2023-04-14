@@ -1091,13 +1091,10 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
         $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
           // tslint:disable-next-line: prefer-for-of
           for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
-            console.log($(this).attr('id'));
-            console.log(that.configureDashboardWidgets[j].chart_Id);
             if ($(this).attr('id') === that.configureDashboardWidgets[j].chart_Id) {
               that.configureDashboardWidgets[j].index = i + 1;
             }
           }
-          console.log(that.configureDashboardWidgets);
         });
       };
 

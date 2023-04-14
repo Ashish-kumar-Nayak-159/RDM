@@ -11,6 +11,8 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonCustomModule } from '../common/common.module';
 import { LogicalAssetComponent } from './logical-asset.component';
 import { AddLogicalAssetComponent } from './add-logical-asset/add-logical-asset.component';
+import { ConfigLogicalAssestComponent } from '../asset-models/asset-model-control-panel/widget/config-logical-assest/config-logical-assest.component';
+import { AssetModelModule } from '../asset-models/asset-model.module';
 
 @NgModule({
   declarations: [LogicalAssetComponent, AddLogicalAssetComponent],
@@ -24,7 +26,8 @@ import { AddLogicalAssetComponent } from './add-logical-asset/add-logical-asset.
     TooltipModule,
     Daterangepicker,
     NgSelectModule,
-    UiSwitchModule
+    UiSwitchModule,
+    AssetModelModule
   ],
 })
 export class LogicalAssetModule { }

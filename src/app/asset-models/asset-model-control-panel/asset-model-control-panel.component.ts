@@ -376,7 +376,6 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     formData.append('isOverride', 'false');
     this.subscriptions.push(
       this.assetService.importAssetsModels(formData).subscribe((res: any) => {
-        console.log(res);
         this.toasterService.showSuccess(res.message, 'Updated Successfully');
         this.isCreatePackageAPILoading = false;
         localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);

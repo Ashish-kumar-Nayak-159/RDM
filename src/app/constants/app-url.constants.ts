@@ -204,7 +204,7 @@ export class AppUrls {
   public static ASSET_RULE_MAPPING = 'asset/rule'
 
   public static LOGICAL_VIEW = 'logicalView'
-  public static DELETE_LOGICAL_VIEW = 'id/{0}/logicalView'
+  public static DELETE_LOGICAL_VIEW = 'logicalView/{0}'
 
 
   public static DEPLOY_EDGE_RULE = 'apps/{0}/sync_edge_rules/{1}/{2}';
@@ -244,4 +244,11 @@ export class AppUrls {
   public static GET_VIEW_ACK_MAINTENANCE = 'acknowledgemaintenance/'
 
   public static ASSET_UPTIME = 'assetuptime/'
+
+  public static PROPERTIES_BY_ASSET = 'assets/{0}/properties'
+  public static LOGICAL_VIEW_WIDGET = 'logicalViewWidget'
+  public static LOGICAL_VIEW_WIDGET_BY_ID = 'logicalView/Widgets/{0}'
+  public static DELETE_LOGICAL_VIEW_WIDGET = 'logicalViewWidget/{0}'
+  public static GET_LOGICAL_VIEW_WIDGET_BY_ID = 'logicalViewWidget/{0}'
+  public static UPDATE_LOGICAL_VIEW_WIDGET = 'logicalViewWidget/{0}'
 }

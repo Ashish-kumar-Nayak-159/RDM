@@ -42,11 +42,15 @@ export class LogicalAssetComponent implements OnInit {
   recordID: number;
   isAPILoading = false;
   assetDetail: { name: string; code: string; };
+  isShowConfig: boolean;
 
   constructor(private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService,
-  ) { }
+  ) {
+    this.assetDetail = { name: "", code: "" };
+
+  }
 
   async ngOnInit(): Promise<void> {
 
@@ -63,7 +67,7 @@ export class LogicalAssetComponent implements OnInit {
     return new Promise<void>((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+        type: CONSTANTS.NON_IP_ASSET,
       };
       this.subscriptions.push(
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
@@ -107,6 +111,7 @@ export class LogicalAssetComponent implements OnInit {
   }
 
   openAssetCreateModal() {
+    this.assetDetail = { name: "", code: "" };
     this.isOpenAssetCreateModal = true;
   }
 
@@ -143,12 +148,19 @@ export class LogicalAssetComponent implements OnInit {
   }
 
   async singleRecordData(data: any, type?: string) {
+
+    this.isShowConfig = false;
+    this.assetDetail = { name: "", code: "" };
     if (type === 'delete') {
       this.deleteModal(data?.id);
     }
     else if (type === 'view') {
       this.assetDetail = data;
-      this.openAssetCreateModal();
+      this.isOpenAssetCreateModal = true;
+    }
+    else if (type === 'config') {
+      this.isShowConfig = true;
+      this.assetDetail = data;
     }
   }
 
@@ -182,6 +194,10 @@ export class LogicalAssetComponent implements OnInit {
       this.getLogicalView()
       this.toasterService.showSuccess('Logical Asset deleted successfully !', 'Delete Logical Asset')
     })
+  }
+
+  onBackBtn() {
+    this.isShowConfig = false;
   }
 
 }

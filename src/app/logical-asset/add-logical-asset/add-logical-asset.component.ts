@@ -61,12 +61,11 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
   ) { }
 
   async ngOnInit(): Promise<void> {
-
+    console.log(this.assetDetail);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());
 
-    ;
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     // this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     // this.actualGateways = this.gateways;
@@ -105,23 +104,11 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
       });
       this.selectedAsset = selectAsset;
     }
+    else {
+      this.isViewLogicalAssest = false;
 
-    // this.contextApp.hierarchy.levels.forEach((level, index) => {
-    //   if (level == "Country") {
-    //     this.addAssetConfigureHierarchy[index] = "India";
-    //     this.onChangeOfAddAssetHierarchy(index);
+    }
 
-    //   }
-    //   if (level == "State") {
-    //     this.addAssetConfigureHierarchy[index] = "Gujarat";
-    //     this.onChangeOfAddAssetHierarchy(index);
-    //   }
-    //   if (level == "City") {
-    //     this.addAssetConfigureHierarchy[index] = "Ahmedabad";
-    //     this.onChangeOfAddAssetHierarchy(index);
-    //   }
-
-    // })
 
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

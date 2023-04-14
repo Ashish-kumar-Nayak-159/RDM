@@ -46,6 +46,7 @@ import { DatatablechartComponent } from '../common/newcharts/datatablechart/data
 import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
 import { NumberonlywidgetComponent } from '../common/newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
 import { NewassetModelPropertiesComponent } from './asset-model-control-panel/newasset-model-properties/newasset-model-properties.component';
+import { ConfigLogicalAssestComponent } from './asset-model-control-panel/widget/config-logical-assest/config-logical-assest.component';
 @NgModule({
   declarations: [
     AssetModelListComponent,
@@ -81,6 +82,7 @@ import { NewassetModelPropertiesComponent } from './asset-model-control-panel/ne
     DatatablechartComponent,
     LivelinechartComponent,
     NewassetModelPropertiesComponent,
+    ConfigLogicalAssestComponent,
 
   ],
   imports: [
@@ -98,6 +100,6 @@ import { NewassetModelPropertiesComponent } from './asset-model-control-panel/ne
     MatIconModule,
     MatMenuModule,
   ],
-  exports: [AddRuleComponent],
+  exports: [AddRuleComponent, ConfigLogicalAssestComponent],
 })
 export class AssetModelModule { }

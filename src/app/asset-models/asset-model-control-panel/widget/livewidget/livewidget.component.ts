@@ -762,11 +762,13 @@ export class LivewidgetComponent implements OnInit {
 
   addWidget() {
     let properties = this.widgetObj;
-
+    let metadata = {}
     if (this.widgetObj.widget_type == "SmallNumber") {
       properties = {};
-      properties = this.widgetObj.properties[0];
-      properties["slave_id"] = this.widgetObj.slave_id
+      properties = this.widgetObj.properties;
+      this.widgetObj.properties[0].type = this.getPropertieType(this.widgetObj.properties[0].type);
+      metadata["slave_id"] = this.widgetObj.properties[0].slave_id;
+
     }
     else if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
       properties = {};
@@ -780,13 +782,36 @@ export class LivewidgetComponent implements OnInit {
 
     }
     else if (this.widgetObj.widget_type == "ConditionalNumber") {
-      properties = {};
-      properties = {
-        slave_id: this.widgetObj.slave_id,
-        dashboardVisibility: this.widgetObj.dashboardVisibility,
-        property: this.propertyObj.metadata.properties,
-        getproperty: this.widgetObj.properties
-      }
+      let customProperties = [];
+      this.propertyObj.metadata.properties.forEach(element => {
+        element.property.type = this.getPropertieType(element.property.type);
+        let obj = {
+          "index": element.index,
+          "value": element.value,
+          "operator": element.operator,
+          "type": element.property.type,
+          "title": element.property.name,
+          "json_key": element.property.json_key,
+          "data_type": element.property.data_type,
+          "operator1": element.operator1
+
+        }
+        customProperties.push(obj);
+      });
+      properties = null;
+      properties = customProperties;
+
+      metadata["formula"] = this.widgetObj.properties[0].formula;
+      metadata["text"] = this.widgetObj.properties[0].text;
+      metadata["slave_id"] = this.widgetObj.slave_id;
+
+      // properties = {};
+      // properties = {
+      //   slave_id: this.widgetObj.slave_id,
+      //   dashboardVisibility: this.widgetObj.dashboardVisibility,
+      //   property: this.propertyObj.metadata.properties,
+      //   getproperty: this.widgetObj.properties
+      // }
     }
     else if (this.widgetObj.widget_type == "OnlyNumber" || this.widgetObj.widget_type === 'NumberWithTrend'
       || this.widgetObj.widget_type === 'StringWidget') {
@@ -814,32 +839,40 @@ export class LivewidgetComponent implements OnInit {
       });
 
     }
+    else if (this.widgetObj.widget_type == "CylinderWidget" || this.widgetObj.widget_type == "RectangleWidget") {
+      let customProperties = [];
+      this.widgetObj.properties.forEach(element => {
+        element.type = this.getPropertieType(element.type);
+        let obj = {
+          "type": element.type,
+          "title": element.title,
+          "json_key": element.json_key,
+          "maxCapacityValue": element.maxCapacityValue,
+          "minCapacityValue": element.minCapacityValue,
+          "digitsAfterDecimals": element.digitsAfterDecimals
+        }
+        customProperties.push(obj);
+      });
+      properties = null;
+      properties = customProperties;
+      metadata["slave_id"] = this.widgetObj.properties[0].slave_id;
+
+    }
+
 
     let reqObj = {
       "type": "LiveWidget",
       "chart_id": this.widgetObj.chart_id,
       "widget_type": this.widgetObj.widget_type,
       "widget_title": this.widgetObj.widget_title,
-      "properties": [
-        properties
-      ],
+      "properties": properties,
       "index": 0,
       "derived_kpis": true,
       "measured_props": true,
       "edge_derived_props": true,
       "cloud_derived_props": true,
       "dashboard_visibility": this.widgetObj.dashboardVisibility,
-      "metadata": {
-        "additionalProp1": [
-          null
-        ],
-        "additionalProp2": [
-          null
-        ],
-        "additionalProp3": [
-          null
-        ]
-      }
+      "metadata": metadata
     }
 
 
@@ -899,7 +932,7 @@ export class LivewidgetComponent implements OnInit {
               dataElement.dashboardVisibility = dataElement.properties[0].dashboardVisibility;
             }
             else if (dataElement.widget_type == "RectangleWidget") {
-              dataElement.properties[0].properties.forEach(element => {
+              dataElement.properties.forEach(element => {
                 let getName = this.propertyList.find(x => x.json_key == element?.json_key);
                 element.name = getName?.name;
                 element.property = getName;
@@ -940,12 +973,12 @@ export class LivewidgetComponent implements OnInit {
           }
           else if (widget.widget_type == 'ConditionalNumber') {
 
-            widget?.properties[0]?.property.forEach((prop) => {
-              if (prop.property) {
-                prop.json_key = prop.property.json_key;
+            widget?.properties.forEach((prop) => {
+              if (prop) {
+                prop.json_key = prop.json_key;
               }
-              prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-              prop.type = prop.property?.type;
+              prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              prop.type = prop?.type;
 
               if (prop?.type === 'Derived KPIs') {
                 widget.derived_kpis = true;
@@ -1019,14 +1052,14 @@ export class LivewidgetComponent implements OnInit {
 
         if (data.widget_type == "SmallNumber") {
           setTimeout(() => {
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
             data.y1AxisProps = data.properties.map(o => ({ ...o }));
             data.properties[0].property = data.y1AxisProps[0];
             let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
             data.properties[0].property.name = getName?.name;
             data.dashboardVisibility = data.dashboard_visibility;
-            data.slave_id = data.properties[0].slave_id;
+            data.slave_id = data.metadata.slave_id;
             this.isDataFill = true;
 
           }, 2000);
@@ -1046,7 +1079,6 @@ export class LivewidgetComponent implements OnInit {
 
         }
         else if (data.widget_type == "ConditionalNumber") {
-
           this.widgetObj = data;
           this.propertyObj = {
             json_model: {},
@@ -1055,14 +1087,23 @@ export class LivewidgetComponent implements OnInit {
               properties: []
             },
           };
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
           data.dashboardVisibility = data.dashboard_visibility;
-          this.propertyObj.metadata.properties = data.properties[0].property.map(o => ({ ...o }));
+          data.slave_id = data.metadata.slave_id;
+          this.propertyObj.metadata.properties = data.properties.map(o => ({ ...o }));
+
+          let pro = [];
+          this.propertyObj.metadata.properties.forEach(element => {
+            let data = this.propertyList.find(x => x.json_key == element.json_key);
+            if (data) {
+              pro.push(data);
+              element.property = data;
+            }
+          });
+
           this.ValidateallInputField();
 
           setTimeout(() => {
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
             this.isDataFill = true;
           }, 2000);
@@ -1070,10 +1111,10 @@ export class LivewidgetComponent implements OnInit {
         else if (data.widget_type == "OnlyNumber" || data.widget_type == "NumberWithTrend" || data.widget_type === "StringWidget") {
           setTimeout(() => {
 
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
-            data.dashboardVisibility = data.properties[0].dashboardVisibility;
-            data.slave_id = data.properties[0].slave_id;
+            data.dashboardVisibility = data.dashboardVisibility;
+            data.slave_id = data.metadata.slave_id;
             data.properties = data.properties[0].properties.map(o => ({ ...o }));
             data.properties.forEach(element => {
               let getName = this.propertyList.find(x => x.json_key == element.json_key);
@@ -1150,14 +1191,14 @@ export class LivewidgetComponent implements OnInit {
 
         }
         else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
-          data.dashboardVisibility = data.properties[0].dashboardVisibility;
-          data.slave_id = data.properties[0].slave_id;
-          this.widgetObj = data.properties[0];
+          data.dashboardVisibility = data.dashboard_visibility;
+          data.slave_id = data.metadata.slave_id;
+          this.widgetObj = data;
 
           this.onWidgetTypeChange();
 
           setTimeout(() => {
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
             this.widgetObj.properties.forEach(element => {
               let getName = this.propertyList.find(x => x.json_key == element?.json_key);
@@ -1307,6 +1348,25 @@ export class LivewidgetComponent implements OnInit {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], filename, { type: mime });
+  }
+
+  getPropertieType(type) {
+    switch (type) {
+      case "Measured Properties":
+        type = "m";
+        break;
+      case "Edge Derived Properties":
+        type = "ed";
+      case "Controllable Properties":
+        type = "m";
+        break;
+      case "Configurable Properties":
+        type = "cd";
+        break;
+      default:
+        type = type;
+    }
+    return type;
   }
 
 

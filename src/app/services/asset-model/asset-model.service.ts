@@ -81,6 +81,16 @@ export class AssetModelService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_WIDGET, encodeURIComponent(name)), modelObj);
   }
 
+  createLogicalViewWidget(modelObj) {
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    return this.http.post(this.url + String.Format(AppUrls.LOGICAL_VIEW_WIDGET), modelObj);
+  }
+
+  getLogicalViewWidgets(id) {
+    return this.http.get<any>(this.url + String.Format(AppUrls.LOGICAL_VIEW_WIDGET_BY_ID, encodeURIComponent(id)));
+  }
+
   createModelProperty(modelObj, modelName) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_PROPERTY, encodeURIComponent(modelName)), modelObj);
@@ -999,5 +1009,36 @@ export class AssetModelService {
       this.url + String.Format(AppUrls.ASSET_MODEL_RULE_MAPPING),
       ruleModel
     );
+  }
+
+  getModelPropertiesByAssets(aid) {
+    return this.http
+      .get(
+        this.url +
+        String.Format(
+          AppUrls.PROPERTIES_BY_ASSET,
+          encodeURIComponent(aid)
+        )
+      )
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+        catchError((error) => {
+          return throwError(error);
+        })
+      );
+  }
+
+  deleteLogicalViewWidget(id: any): Observable<any> {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_LOGICAL_VIEW_WIDGET, encodeURIComponent(id)))
+  }
+
+  getLogicalViewWidgetById(id: string): Observable<any> {
+    return this.http.get(this.url + String.Format(AppUrls.GET_LOGICAL_VIEW_WIDGET_BY_ID, encodeURIComponent(id)))
+  }
+
+  updateLogicalViewWidget(id: string, body: any): Observable<any> {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_LOGICAL_VIEW_WIDGET, encodeURIComponent(id)), body)
   }
 }

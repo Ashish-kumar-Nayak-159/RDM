@@ -16,7 +16,6 @@ export class NumberonlywidgetComponent implements OnInit {
   @Input()
   public set widgetObj(value: any) {
     this._widgetObj = value;
-    console.log(value);
   }
   private _propertyList: any[];
   public get propertyList(): any[] {
@@ -25,7 +24,6 @@ export class NumberonlywidgetComponent implements OnInit {
   @Input()
   public set propertyList(value: any[]) {
     this._propertyList = value;
-    console.log(value);
   }
   @Input() assetModel: any;
   isFileUploading = false;
@@ -34,12 +32,10 @@ export class NumberonlywidgetComponent implements OnInit {
   constructor(private commonService: CommonService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
-    debugger
-
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.widgetObj?.widget_type !== 'SmallNumber') {
       this.widgetObj.properties = this.widgetObj.properties;
-      if (this.widgetObj.properties[0].property) {
+      if (this.widgetObj.properties) {
         this.widgetObj.properties.forEach(element => {
           element.property = element;
           // this.onPropertySelection(element);

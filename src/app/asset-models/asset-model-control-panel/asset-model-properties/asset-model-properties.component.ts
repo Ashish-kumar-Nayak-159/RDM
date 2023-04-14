@@ -208,7 +208,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.subscriptions.push(
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
-        console.log(this.properties);
         if (this.type === 'measured_properties' || this.type == 'controllable_properties') {
           response.properties?.measured_properties?.forEach(element => {
             element.unit = element?.json_model[element.json_key]?.units;
@@ -771,7 +770,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       }
 
       obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-      console.log(obj);
       this.subscriptions.push(
         this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
           (response: any) => {

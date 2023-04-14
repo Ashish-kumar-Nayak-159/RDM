@@ -52,7 +52,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties[0].properties;
+      this.chartConfig.properties = this.chartConfig.properties;
 
       this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';

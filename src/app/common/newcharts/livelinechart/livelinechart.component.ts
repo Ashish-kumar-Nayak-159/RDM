@@ -124,8 +124,8 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
 
           this.chartConfig.y2AxisProps?.forEach((prop) => {
             if (
-              this.telemetryObj[prop.json_key].value !== undefined &&
-              this.telemetryObj[prop.json_key].value !== null
+              this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
+              this.telemetryObj[prop.json_key]?.value !== null
             ) {
               if (
                 !this.propertyBasedData[prop.json_key] ||

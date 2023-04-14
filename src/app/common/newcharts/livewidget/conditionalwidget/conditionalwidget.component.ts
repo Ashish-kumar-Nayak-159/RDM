@@ -33,10 +33,26 @@ export class ConditionalwidgetComponent implements OnInit {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
+
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties[0].getproperty;
+
+      let jsonArray = [];
+      this.chartConfig.properties.forEach(element => {
+        let jsonObj = {
+          name: element.title,
+          type: element.type,
+          json_key: element.json_key
+        };
+        jsonArray.push(jsonObj);
+      });
+      let obj = {
+        "text": this.chartConfig.text,
+        "formula": this.chartConfig.formula,
+        "json_Data": jsonArray
+      }
+      this.chartConfig.properties = [obj];
     }
 
 

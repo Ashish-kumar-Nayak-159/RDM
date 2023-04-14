@@ -1,4 +1,4 @@
-<div class="blue-nav-bar">
+<div class="blue-nav-bar" *ngIf="!isShowConfig">
     <div class="d-flex align-items-center">
         <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
         </div>
@@ -7,6 +7,15 @@
                 class="fas fa-plus fa-sm"></em></button>
     </div>
 </div>
+<div class="blue-nav-bar" *ngIf="isShowConfig">
+    <div class="d-flex align-items-center">
+        <div class="main-heading">Logical View Configuration&nbsp;
+        </div>
+        <button type="button" class="btn btn-sm btn-primary" (click)="onBackBtn()" placement="bottom"><em
+                class="fa fa-arrow-left fa-sm"></em> Back</button>
+    </div>
+</div>
+
 
 <!-- <div class="tab-bar" *ngIf="!isAddCampaignModalOpen">
     <form class="form-inline">
@@ -20,7 +29,7 @@
     </form>
 </div> -->
 
-<div class="table-responsive">
+<div class="table-responsive" *ngIf="!isShowConfig">
     <div class="tableFixHead" id="table-top" style="max-height: calc(100vh - 10.5rem)">
         <table class="table table-hover">
             <thead>
@@ -44,6 +53,8 @@
                         <td>
                             <em class="fas fa-eye fa-fw icon-gray" tooltip="View"
                                 (click)="singleRecordData(item,'view')"></em>
+                            <em class="fa fa-cog fa-fw icon-gray" tooltip="Configuration"
+                                (click)="singleRecordData(item,'config')"></em>
                             <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1"
                                 class="fa fa-fw fa-trash icon-gray" tooltip="Delete"
                                 (click)="singleRecordData(item,'delete')"></em>
@@ -82,6 +93,9 @@
 
 <app-add-logical-asset *ngIf="isOpenAssetCreateModal" [filterObj]="filterObj" [assets]="assets"
     [assetDetail]="assetDetail" [tileData]="tabData" (cancelModal)="onCreateAssetCancelModal()"></app-add-logical-asset>
+
+<app-config-logical-assest *ngIf="isShowConfig" [assetDetail]="assetDetail"
+    [assets]="assets"></app-config-logical-assest>
 
 <!-- delete Modal -->
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

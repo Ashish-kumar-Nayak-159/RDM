@@ -1,0 +1,73 @@
+.status-indicator-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.online-indicator {
+    background-color: #0fcc45;
+}
+
+.offline-indicator {
+    background-color: #c23934;
+}
+
+.online-indicator,
+.offline-indicator,
+.online-indicator .blink,
+.offline-indicator .blink {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.online-indicator,
+.offline-indicator {
+    margin-right: 10px;
+}
+
+.online-indicator .blink,
+.offline-indicator .blink {
+    display: block;
+    opacity: 0.7;
+}
+
+.online-indicator .blink {
+    background-color: #0fcc45;
+    animation: blink 1s linear infinite;
+}
+
+.offline-indicator .blink {
+    background-color: #cc0f0f;
+}
+
+.status-text {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+
+.sensor-card-container,
+.gateway-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+}
+
+.btn-gateway-status-toggle,
+.btn-sensor-status-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-gateway-status-toggle.focus,
+.btn-gateway-status-toggle:focus,
+.btn-sensor-status-toggle.focus,
+.btn-sensor-status-toggle:focus {
+    box-shadow: none;
+}
+
+.rotate-up {
+    transform: rotate(180deg);
+}

@@ -108,7 +108,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
   assestData() {
     let assestData = [];
     this.assetDetail?.assets.forEach(element => {
-      let assest = this.assets.find(x => x.asset_id == element.assetId);
+      let assest = this.assets.find(x => x.asset_id == element.asset_id);
       if (assest)
         assestData.push(assest);
     });
@@ -654,6 +654,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
     this.assetModelService.getLogicalViewWidgets(this.assetDetail.id).subscribe((response): any => {
       if (response.data?.length > 0) {
+        console.log(response.data);
+
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties) {
             dataElement.widget_title = dataElement?.chartname;

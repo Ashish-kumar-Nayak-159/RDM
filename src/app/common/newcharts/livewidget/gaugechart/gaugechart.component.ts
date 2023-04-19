@@ -15,6 +15,8 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
+  @Input() type: any;
+
   hand: any[] = [];
   chart: any[] = [];
   label: am4core.Label[] = [];
@@ -37,6 +39,8 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       this.chartConfig.properties = this.chartConfig.properties[0].properties;
     }
 
+    console.log(this.chartConfig);
+    console.log(this.telemetryObj);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }

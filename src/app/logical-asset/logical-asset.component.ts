@@ -43,6 +43,7 @@ export class LogicalAssetComponent implements OnInit {
   isAPILoading = false;
   assetDetail: { name: string; code: string; };
   isShowConfig: boolean;
+  type: string;
 
   constructor(private commonService: CommonService,
     private assetService: AssetService,
@@ -90,7 +91,7 @@ export class LogicalAssetComponent implements OnInit {
     let assetItem;
     let assetDataItem = {};
     this.contextApp.menu_settings.main_menu.forEach((item) => {
-      if (item.page === 'Logical Asset') {
+      if (item.page === 'Logical View') {
         selectedItem = item.showAccordion;
         assetItem = item.showAccordion;
       }
@@ -113,6 +114,7 @@ export class LogicalAssetComponent implements OnInit {
   openAssetCreateModal() {
     this.assetDetail = { name: "", code: "" };
     this.isOpenAssetCreateModal = true;
+    this.type = "add";
   }
 
   getLogicalView() {
@@ -151,6 +153,7 @@ export class LogicalAssetComponent implements OnInit {
 
     this.isShowConfig = false;
     this.assetDetail = { name: "", code: "" };
+    this.type = type;
     if (type === 'delete') {
       this.deleteModal(data?.id);
     }

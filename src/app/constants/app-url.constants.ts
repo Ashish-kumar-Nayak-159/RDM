@@ -204,6 +204,7 @@ export class AppUrls {
   public static ASSET_RULE_MAPPING = 'asset/rule'
 
   public static LOGICAL_VIEW = 'logicalView'
+  public static LOGICAL_VIEW_DETAIL = 'logicalviewdetail/{0}'
   public static DELETE_LOGICAL_VIEW = 'logicalView/{0}'
 
 

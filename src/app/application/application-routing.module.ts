@@ -8,16 +8,22 @@ import { ApplicationSelectionComponent } from './application-selection/applicati
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
 import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
+import { ApplicationLogicalViewComponent } from './application-logical-view/application-logical-view.component';
 
 const routes: Routes = [
   {
     path: 'selection',
     component: ApplicationSelectionComponent,
     canActivate: [AuthGuardService],
-  },  
+  },
   {
     path: ':appName/gateway-monitoring',
     component: ApplicationGatewayMonitoringComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: ':appName/logicalView',
+    component: ApplicationLogicalViewComponent,
     canActivate: [AuthGuardService],
   },
   {
@@ -51,4 +57,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ApplicationRoutingModule {}
+export class ApplicationRoutingModule { }

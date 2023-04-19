@@ -17,6 +17,10 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   configureHierarchy: any = {};
   hierarchyArr: any = {};
   @Input() assets: any[] = [];
+  @Input() logicalView: any[] = [];
+  @Input() type: any;
+  originalLogicalView: any[] = [];
+  actualLogicalView: any[] = [];
   originalAssets: any[] = [];
   actualAssets: any[] = [];
   @Input() showAsset = false;
@@ -31,9 +35,13 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.originalAssets = this.actualAssets;
+    this.originalLogicalView = this.actualLogicalView;
   }
 
   async ngOnInit(): Promise<void> {
+    console.log(this.logicalView);
+    console.log(this.type);
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
@@ -42,6 +50,8 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.displayHierarchyString = this.contextApp.app;
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
     this.actualAssets = this.originalAssets;
+    this.originalLogicalView = JSON.parse(JSON.stringify(this.logicalView));
+    this.actualAssets = this.originalLogicalView;
     await this.getUserHierarchy();
   }
 
@@ -67,14 +77,29 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     if (this.showAsset) {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       if (!this.closeOnSelection) {
-        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
-          this.saveHierarchyEvent.emit();
+        if (this.type != 'logicalView') {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
+            this.saveHierarchyEvent.emit();
+          }
+        }
+        else {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
+            this.saveHierarchyEvent.emit();
+          }
         }
       }
       else {
-        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
-          $("#liveDataSelectAssret").removeClass("show");
-          this.saveHierarchyEvent.emit();
+        if (this.type != 'logicalView') {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
+            $("#liveDataSelectAssret").removeClass("show");
+            this.saveHierarchyEvent.emit();
+          }
+        }
+        else {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
+            $("#liveDataSelectAssret").removeClass("show");
+            this.saveHierarchyEvent.emit();
+          }
         }
       }
     } else {
@@ -89,6 +114,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       this.saveHierarchyEvent.emit(this.configureHierarchy);
     }
   }
+
   getDisplayHierarchyString(index, hierarchyKey) {
     let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == (index + 1) && r.key == hierarchyKey);
     if (selectedHierarchy) {
@@ -108,6 +134,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.hierarchyArr = {};
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
+    this.filterObj.logicalview = undefined;
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
     }
@@ -119,6 +146,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         }
       } else {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+        this.logicalView = JSON.parse(JSON.stringify(this.originalLogicalView));
       }
     });
     if (this.showAsset) {
@@ -195,9 +223,9 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
     let parentId = 0;
-    Object.keys(this.configureHierarchy).forEach((key,index) => {
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[key]) {
-        parentId = this.actualhierarchyNewArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;        
+        parentId = this.actualhierarchyNewArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;
       }
     });
     let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.id == parentId);
@@ -211,34 +239,8 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
 
-    if (Object.keys(hierarchyObj).length === 1) {
-      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-    } else {
-      const arr = [];
-      this.assets = [];
-      this.originalAssets.forEach((asset) => {
-        let trueFlag = 0;
-        let flaseFlag = 0;
-        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            trueFlag++;
-          } else {
-            flaseFlag++;
-          }
-        });
-        if (trueFlag > 0 && flaseFlag === 0) {
-          arr.push(asset);
-        }
-      });
-      this.assets = JSON.parse(JSON.stringify(arr));
-    }
-    if (this.showAsset) {
-      if (this.assets?.length === 1) {
-        this.filterObj.asset = this.assets[0];
-      }
-      this.filterObj.assetArr = undefined;
-      this.filterObj.asset = undefined;
-    }
+    this.changeData(hierarchyObj);
+
     let count = 0;
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
@@ -255,5 +257,69 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     if (!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length)) {
       $("#liveDataSelectAssret").removeClass("show");
     }
+  }
+
+  changeData(hierarchyObj) {
+    if (this.type != 'logicalView') {
+      if (Object.keys(hierarchyObj).length === 1) {
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+      } else {
+        const arr = [];
+        this.assets = [];
+        this.originalAssets.forEach((asset) => {
+          let trueFlag = 0;
+          let flaseFlag = 0;
+          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+              trueFlag++;
+            } else {
+              flaseFlag++;
+            }
+          });
+          if (trueFlag > 0 && flaseFlag === 0) {
+            arr.push(asset);
+          }
+        });
+        this.assets = JSON.parse(JSON.stringify(arr));
+      }
+      if (this.showAsset) {
+        if (this.assets?.length === 1) {
+          this.filterObj.asset = this.assets[0];
+        }
+        this.filterObj.assetArr = undefined;
+        this.filterObj.asset = undefined;
+      }
+    }
+    else {
+      if (Object.keys(hierarchyObj).length === 1) {
+        this.logicalView = JSON.parse(JSON.stringify(this.originalLogicalView));
+      } else {
+        const arr = [];
+        this.assets = [];
+        this.originalLogicalView.forEach((asset) => {
+          let trueFlag = 0;
+          let flaseFlag = 0;
+          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+              trueFlag++;
+            } else {
+              flaseFlag++;
+            }
+          });
+          if (trueFlag > 0 && flaseFlag === 0) {
+            arr.push(asset);
+          }
+        });
+        this.logicalView = JSON.parse(JSON.stringify(arr));
+      }
+      if (this.showAsset) {
+        if (this.logicalView?.length === 1) {
+          this.filterObj.logicalview = this.logicalView[0];
+        }
+        this.filterObj.assetArr = undefined;
+        this.filterObj.logicalview = undefined;
+      }
+    }
+
   }
 }

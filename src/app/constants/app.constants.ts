@@ -410,6 +410,23 @@ export class CONSTANTS {
       priority: 1,
     },
     {
+      page: 'Logical View',
+      system_name: 'Logical View',
+      url: 'applications/:appName/logicalView',
+      display_name: 'Logical View',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Logical View',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Live Data',
       system_name: 'Live Data',
       url: 'applications/:appName/dashboard',

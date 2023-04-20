@@ -131,9 +131,10 @@ export class AssetUptimeComponent implements OnInit {
           var date1 = new Date(2022,2,5, +array1[0], +array1[1], +array1[2]);
           let utc_from_time:any = [this.padTo2Digits(date.getUTCHours()), this.padTo2Digits(date.getUTCMinutes()), this.padTo2Digits(date.getUTCSeconds())].join(':')
           let utc_to_time:any = [this.padTo2Digits(date1.getUTCHours()), this.padTo2Digits(date1.getUTCMinutes()), this.padTo2Digits(date1.getUTCSeconds())].join(':')
-          formGroup.value.from_time = utc_from_time
-          formGroup.value.to_time = utc_to_time
-          this.payloadUptimeArray.push(formGroup.value)
+          let tempFormGroupValue = Object.assign({},formGroup.value);
+          tempFormGroupValue.from_time = utc_from_time
+          tempFormGroupValue.to_time = utc_to_time
+          this.payloadUptimeArray.push(tempFormGroupValue)
         })
   
         if(!this.emptyUptime){

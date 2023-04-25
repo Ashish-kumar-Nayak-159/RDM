@@ -29,6 +29,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   displayHierarchyString: string;
   hierarchyNewArr = [];
   actualhierarchyNewArr = [];
+  @Output() searchLogicalViewEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() saveHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() clearHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
   constructor(private commonService: CommonService, private applicationService: ApplicationService) { }
@@ -39,9 +40,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   async ngOnInit(): Promise<void> {
-    console.log(this.logicalView);
-    console.log(this.type);
-
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
@@ -85,6 +83,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         else {
           if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
             this.saveHierarchyEvent.emit();
+            this.searchLogicalViewEvent.emit(this.originalFilterObj);
           }
         }
       }
@@ -99,6 +98,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
           if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
             $("#liveDataSelectAssret").removeClass("show");
             this.saveHierarchyEvent.emit();
+            this.searchLogicalViewEvent.emit(this.originalFilterObj);
           }
         }
       }

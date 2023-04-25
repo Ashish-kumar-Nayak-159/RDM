@@ -10,6 +10,7 @@
                     <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && logicalView" [showAsset]="true"
                         [closeOnSelection]="true" [filterObj]="filterObj" [logicalView]="logicalView"
                         [type]="'logicalView'" (saveHierarchyEvent)="onSaveHierachy()"
+                        (searchLogicalViewEvent)="searchLogicalViewEvent($event)"
                         (clearHierarchyEvent)="onClearHierarchy()">
                     </app-hierarchy-dropdown>
                     <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
@@ -99,9 +100,9 @@
                             [telemetryObj]="telemetryObj">
                         </app-cylinderwidget>
 
-                        <!-- <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
+                        <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
                             *ngIf="widget.widgettype === 'LineChart' || widget.widgettype === 'AreaChart'">
-                        </app-livelinechart> -->
+                        </app-livelinechart>
 
                     </div>
                 </ng-container>

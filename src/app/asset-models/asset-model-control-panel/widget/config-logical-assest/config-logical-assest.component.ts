@@ -300,7 +300,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   async onSaveWidgetObj() {
-
     if (!this.widgetObj.widget_title || !this.widgetObj.widget_type) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -654,7 +653,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
     this.assetModelService.getLogicalViewWidgets(this.assetDetail.id).subscribe((response): any => {
       if (response.data?.length > 0) {
-        console.log(response.data);
 
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties) {

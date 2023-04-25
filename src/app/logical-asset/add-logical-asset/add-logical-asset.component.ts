@@ -26,7 +26,6 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
   @Input()
   public set type(value: any) {
     this._type = value;
-    debugger
     if (this.type === 'view') {
       this.isAssetEditable = true;
     }

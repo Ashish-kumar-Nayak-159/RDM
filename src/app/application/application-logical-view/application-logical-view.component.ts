@@ -57,6 +57,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   logicalViewData: any;
   actualPropertyList: any;
   checkwidgettype: boolean;
+  logiclFilterObj: any;
 
 
 
@@ -96,11 +97,9 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   getAssets() {
-    debugger
     return new Promise<void>((resolve1) => {
       this.apiSubscriptions.push(this.assetService.getLogicalView().subscribe((res: any) => {
         this.logicalView = res.data;
-        console.log(this.logicalView)
         resolve1();
       }))
       return
@@ -158,7 +157,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.myPromise = new Promise((resolve, reject) => {
           this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
             this.logicalViewData = response;
-            console.log(this.logicalViewData);
 
             // this.logicalViewData?.assets.forEach(async (element) => {
             //   await this.getAssetsModelProperties(element.asset_id);
@@ -194,11 +192,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                     widget.measured_props = true;
                   }
 
-                  // this.actualPropertyList.push(prop);
+                  this.actualPropertyList.push(prop);
 
                 });
                 this.logicalViewData.charts[index].properties[0].properties = widget.properties;
-
               }
               else if (widget.widget_type == 'ConditionalNumber') {
 
@@ -319,6 +316,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
   }
 
+  searchLogicalViewEvent(e) {
+    this.logiclFilterObj = e;
+  }
+
   selectedDate(filterObj) {
     this.selectDateFlag = true;
     this.signalRService.disconnectFromSignalR('telemetry');
@@ -350,7 +351,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private SubscribeLiveTelemetryOnDateOption(endDate: any = null) {
+  private SubscribeLiveTelemetryOnDateOption(endDate: any = null, logiclFilterObj) {
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     let to_date = new Date(endDate * 1000);
@@ -359,12 +360,12 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       const obj1 = {
         hierarchy: this.contextApp.user.hierarchy,
         levels: this.contextApp.hierarchy.levels,
-        asset_id: this.filterObj?.asset?.asset_id,
-        type: 'telemetry',
+        code: logiclFilterObj?.code,
+        type: 'logicalview',
         app: this.contextApp.app,
       };
       this.signalRService.connectToSignalR(obj1);
-      this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+      this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
         (data) => {
           if (data) {
             let obj = JSON.parse(JSON.stringify(data));
@@ -424,37 +425,66 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   onDateFilterSelection() {
-    if (this.filterObj?.asset) {
+    if (this.logiclFilterObj) {
+      this.isFilterSelected = true;
 
-      this.isFilterSelected = true
+      this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date, this.logiclFilterObj?.logicalview);
+      const filterObj = {
+        epoch: true,
+        app: this.contextApp.app,
+        code: this.logiclFilterObj?.logicalview?.code,
+        // partition_key: this.filterObj?.asset?.partition_key,
+        from_date: this.historicalDateFilter?.from_date,
+        to_date: this.historicalDateFilter?.to_date,
+        order_dir: 'ASC',
+        measured_message_props: this.measuredMessageProps
+
+      }
+      this.isLoadingData = true;
+      this.isAssetWiseTelemetryData = true;
+      // this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+      //   if (response && response?.data) {
+      //     response?.data.forEach((item) => {
+      //       item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+      //       item.message_date_obj = new Date(item.message_date);
+      //     });
+      //     this.assetWiseTelemetryData = response?.data
+      //     this.selectDateFlag = false;
+      //     this.isLoadingData = false;
+      //     this.isAssetWiseTelemetryData = false;
+      //   }
+      // });
+
       const obj = {
         app: this.contextApp.app,
         name: this?.filterObj?.asset?.asset_model,
       };
       this.propertyList = [];
-      this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
-          this.propertyList = response.properties.measured_properties
-            ? response.properties.measured_properties
-            : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties
-            ? response.properties.edge_derived_properties
-            : [];
-          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-            ? response.properties.cloud_derived_properties
-            : [];
-          response.properties.edge_derived_properties.forEach((prop) => {
-            prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop);
-          });
-          response.properties.cloud_derived_properties.forEach((prop) => {
-            prop.type = 'Cloud Derived Properties';
-            this.propertyList.push(prop);
-          });
+      // this.assetModelService.getAssetsModelProperties(obj).subscribe(
+      //   (response: any) => {
+      //     this.propertyList = response.properties.measured_properties
+      //       ? response.properties.measured_properties
+      //       : [];
+      //     response.properties.edge_derived_properties = response.properties.edge_derived_properties
+      //       ? response.properties.edge_derived_properties
+      //       : [];
+      //     response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+      //       ? response.properties.cloud_derived_properties
+      //       : [];
+      //     response.properties.edge_derived_properties.forEach((prop) => {
+      //       prop.type = 'Edge Derived Properties';
+      //       this.propertyList.push(prop);
+      //     });
+      //     response.properties.cloud_derived_properties.forEach((prop) => {
+      //       prop.type = 'Cloud Derived Properties';
+      //       this.propertyList.push(prop);
+      //     });
 
-        },
-        (error) => (this.isTelemetryDataLoading = false)
-      )
+      //   },
+      //   (error) => (this.isTelemetryDataLoading = false)
+      // )
+
+
       // if (!callFromSelectedDate) {
       //   this.assetWiseTelemetryData = []
       //   this.historicalCombineWidgets = []
@@ -470,46 +500,21 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
       this.myPromise.then(() => {
         this.measuredMessageProps = [];
-        if (this.newHistoricalCombineWidets) {
-          this.newHistoricalCombineWidets?.forEach((widget) => {
-            widget?.y1axis?.forEach((item) => {
-              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                this.measuredMessageProps?.push(item?.json_key);
-              }
-            })
-            widget?.y2axis?.forEach((item) => {
-              if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-                this.measuredMessageProps?.push(item?.json_key);
-              }
-            })
-          })
-          this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date);
-          const filterObj = {
-            epoch: true,
-            app: this.contextApp.app,
-            asset_id: this.filterObj?.asset?.asset_id,
-            partition_key: this.filterObj?.asset?.partition_key,
-            from_date: this.historicalDateFilter?.from_date,
-            to_date: this.historicalDateFilter?.to_date,
-            order_dir: 'ASC',
-            measured_message_props: this.measuredMessageProps
+        // if (this.newHistoricalCombineWidets) {
+        //   this.newHistoricalCombineWidets?.forEach((widget) => {
+        //     widget?.y1axis?.forEach((item) => {
+        //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+        //         this.measuredMessageProps?.push(item?.json_key);
+        //       }
+        //     })
+        //     widget?.y2axis?.forEach((item) => {
+        //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+        //         this.measuredMessageProps?.push(item?.json_key);
+        //       }
+        //     })
+        //   })
 
-          }
-          this.isLoadingData = true;
-          this.isAssetWiseTelemetryData = true;
-          this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
-            if (response && response?.data) {
-              response?.data.forEach((item) => {
-                item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-                item.message_date_obj = new Date(item.message_date);
-              });
-              this.assetWiseTelemetryData = response?.data
-              this.selectDateFlag = false;
-              this.isLoadingData = false;
-              this.isAssetWiseTelemetryData = false;
-            }
-          });
-        }
+        //   }
       })
 
     }
@@ -595,7 +600,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           fPropList.push(prop);
         }
       });
-      console.log(this.propertyList);
 
     })
   }

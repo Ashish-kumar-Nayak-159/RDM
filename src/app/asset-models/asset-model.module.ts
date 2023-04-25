@@ -80,7 +80,6 @@ import { ConfigLogicalAssestComponent } from './asset-model-control-panel/widget
     PiechartComponent,
     DamageplotchartComponent,
     DatatablechartComponent,
-    LivelinechartComponent,
     NewassetModelPropertiesComponent,
     ConfigLogicalAssestComponent,
 

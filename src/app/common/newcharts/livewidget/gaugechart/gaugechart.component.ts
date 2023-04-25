@@ -39,8 +39,6 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       this.chartConfig.properties = this.chartConfig.properties[0].properties;
     }
 
-    console.log(this.chartConfig);
-    console.log(this.telemetryObj);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }

@@ -32,6 +32,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
 import { ApplicationLogicalViewComponent } from './application-logical-view/application-logical-view.component';
 import { GatewayComponent } from './application-logical-view/gateway/gateway.component';
+import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -72,7 +73,9 @@ import { GatewayComponent } from './application-logical-view/gateway/gateway.com
     NgxIntlTelInputModule,
     GoogleMapsModule,
     MatNativeDateModule,
-    MatSortModule
+    MatSortModule,
+
+
   ],
 })
-export class ApplicationModule {}
+export class ApplicationModule { }

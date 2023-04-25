@@ -1,0 +1,48 @@
+<div class="p-3">
+    <!-- Gateway Accordion Start -->
+    <div class="accordion mt-4" id="GatewayStatus">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button
+                        class="btn btn-link btn-block btn-gateway-status-toggle text-left text-dark font-weight-bold"
+                        type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                        aria-controls="collapseOne">
+                        <h5 class="mb-0">Gateway Status</h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-chevron-up  gateway-chevron-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                        </svg>
+                    </button>
+                </h2>
+            </div>
+
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#GatewayStatus">
+                <div class="card-body">
+                    <!-- Gateway Card Container Start -->
+                    <div class="gateway-card-container">
+                        <div class="card gateway-card" *ngFor="let gateway of gateways">
+                            <div class="card-body">
+                                <div class="status-indicator-wrapper">
+                                    <div
+                                        [ngClass]="{'online-indicator': gateway.status === 'Connected', 'offline-indicator' : gateway.status !== 'Connected' }">
+                                        <span class="blink"></span>
+                                    </div>
+                                    <p class="status-text">{{gateway.gateway_id}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- Gateway Card Container End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Gateway Accordion End -->
+
+
+</div>

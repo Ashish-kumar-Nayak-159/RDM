@@ -13,10 +13,12 @@ export class SignalRService {
   telemetryConnections: SignalR.HubConnection[] = [];
   alertConnections: SignalR.HubConnection[] = [];
   alertOverlayConnections: SignalR.HubConnection[] = [];
+  logicalViewConnections: SignalR.HubConnection[] = [];
   signalRTelemetryData: EventEmitter<any> = new EventEmitter<any>();
   signalRAlertData: EventEmitter<any> = new EventEmitter<any>();
   signalROverlayAlertData: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private http: HttpClient) {}
+  signalRLogicalViewData: EventEmitter<any> = new EventEmitter<any>();
+  constructor(private http: HttpClient) { }
 
   connectToSignalR(connectionObj, type = '') {
     let connection;
@@ -39,6 +41,8 @@ export class SignalRService {
             this.signalRAlertData.emit(JSON.parse(data));
           } else if (connectionObj.type === 'alert' && type === 'overlay') {
             this.signalROverlayAlertData.emit(JSON.parse(data));
+          } else if (connectionObj.type === 'logicalview') {
+            this.signalRLogicalViewData.emit(JSON.parse(data));
           }
         });
         if (connectionObj.type === 'telemetry') {
@@ -47,6 +51,8 @@ export class SignalRService {
           this.alertConnections.push(connection);
         } else if (connectionObj.type === 'alert' && type === 'overlay') {
           this.alertOverlayConnections.push(connection);
+        } else if (connectionObj.type === 'logicalview') {
+          this.logicalViewConnections.push(connection);
         }
       });
     });
@@ -80,6 +86,16 @@ export class SignalRService {
         if (connection.connectionState === 'Connected') {
           connection.stop();
           this.alertOverlayConnections.splice(i, 1);
+        }
+      });
+    }
+    if (type === 'logicalview' || type === 'all') {
+      let arr = [];
+      arr = [...this.logicalViewConnections];
+      arr.forEach((connection, i) => {
+        if (connection.connectionState === 'Connected') {
+          connection.stop();
+          this.logicalViewConnections.splice(i, 1);
         }
       });
     }

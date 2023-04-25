@@ -91,7 +91,7 @@
     </div>
 </div>
 
-<app-add-logical-asset *ngIf="isOpenAssetCreateModal" [filterObj]="filterObj" [assets]="assets"
+<app-add-logical-asset *ngIf="isOpenAssetCreateModal" [type]="type" [filterObj]="filterObj" [assets]="assets"
     [assetDetail]="assetDetail" [tileData]="tabData" (cancelModal)="onCreateAssetCancelModal()"></app-add-logical-asset>
 
 <app-config-logical-assest *ngIf="isShowConfig" [assetDetail]="assetDetail"

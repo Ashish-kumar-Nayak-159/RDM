@@ -18,6 +18,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() chartConfig: any;
   @Input() asset: any;
   @Input() telemetryObj: any;
+  @Input() type: any;
   // @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];
   selectedAlert: any;

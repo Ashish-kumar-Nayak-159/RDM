@@ -1,0 +1,116 @@
+<!-- <p>application-historical-live-data works!</p> -->
+<div class="blue-nav-bar">
+    <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="main-heading ">Logical View</div>
+        </div>
+        <div class="ml-auto">
+            <div class="">
+                <form class="form-inline">
+                    <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && logicalView" [showAsset]="true"
+                        [closeOnSelection]="true" [filterObj]="filterObj" [logicalView]="logicalView"
+                        [type]="'logicalView'" (saveHierarchyEvent)="onSaveHierachy()"
+                        (searchLogicalViewEvent)="searchLogicalViewEvent($event)"
+                        (clearHierarchyEvent)="onClearHierarchy()">
+                    </app-hierarchy-dropdown>
+                    <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+                            (click)="onFilterSelection(this.filterObj, true, true);"
+                            [disabled]="isTelemetryDataLoading"><em class="fas fa-search fa-sm"></em></button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tab-bar">
+    <ng-container>
+        <div class="" *ngIf="!isFilterSelected">
+            Please select an logical view and click on search to view the data.
+        </div>
+    </ng-container>
+    <div class="form-group mb-0">
+        <ng-template #filterTemplate>
+            <form class="form-inline">
+
+                <app-date-range-picker *ngIf="historicalDateFilter.from_date && historicalDateFilter.to_date"
+                    [filterObj]="historicalDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
+                    [selectedDateRange]="selectedDateRange" [disabled]="isAssetWiseTelemetryData">
+                </app-date-range-picker>
+
+            </form>
+        </ng-template>
+
+        <ng-container *ngIf="isFilterSelected">
+            <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+        </ng-container>
+
+    </div>
+</div>
+<!-- <app-historical-livechart></app-historical-livechart> -->
+<div class="historical-livechart-container" *ngIf="logicalViewData">
+    <div>
+        <app-gateway [gateways]="logicalViewData?.gateways"></app-gateway>
+    </div>
+
+    <div class="table-responsive app-asset-model-live-layout-box">
+
+        <!-- for the small widget -->
+        <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+            <ng-container *ngIf="logicalViewData?.charts?.length > 0">
+                <div class="grid-card-container">
+                    <ng-container *ngFor="let widget of logicalViewData?.charts; let i = index;">
+                        <div *ngIf="widget?.widget_type === 'SmallNumber'"
+                            class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widget_type === 'OnlyNumber' || widget?.widget_type === 'NumberWithTrend'  
+                          || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties?.length + (widget.properties?.length > 1 ? (2 * (widget.properties?.length - 1)) : 0) +'%') : '48%',
+                          'margin-left':'0', 'margin-top': '2%' }">
+
+                            <app-smallnumberwidget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
+                                [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+                            </app-smallnumberwidget>
+                        </div>
+                    </ng-container>
+                </div>
+
+            </ng-container>
+        </div>
+
+        <div class="clearfix">
+            <div class="row col-md-12 mb-5" *ngIf="logicalViewData?.charts">
+                <ng-container *ngFor="let widget of logicalViewData?.charts; let i = index;">
+                    <div *ngIf="widget?.widget_type !== 'SmallNumber'" [style]="{ 'width': widget?.widget_type === 'OnlyNumber' || widget?.widget_type === 'NumberWithTrend' 
+              || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget?.properties?.length + (widget?.properties?.length > 1 ? (2 * (widget?.properties?.length - 1)) : 0) +'%') : '48%',
+              'margin-left':'2%', 'margin-top': '2%' }">
+
+                        <app-onlynumberwidget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'
+              || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'StringWidget'"
+                            [chartConfig]="widget" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj"
+                            [type]="'LogicalView'">
+                        </app-onlynumberwidget>
+
+                        <app-conditionalwidget *ngIf="widget?.widget_type === 'ConditionalNumber'"
+                            [type]="'LogicalView'" [chartConfig]="widget" [telemetryObj]="telemetryObj"
+                            [apiTelemetryObj]="telemetryObj">
+                        </app-conditionalwidget>
+
+                        <app-gaugechart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
+                            [type]="'LogicalView'" [telemetryObj]="telemetryObj">
+                        </app-gaugechart>
+
+                        <app-cylinderwidget [chartConfig]="widget" [type]="'LogicalView'"
+                            *ngIf="widget.widget_type === 'CylinderWidget' || widget.widget_type === 'RectangleWidget'"
+                            [telemetryObj]="telemetryObj">
+                        </app-cylinderwidget>
+
+                        <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
+                            *ngIf="widget.widgettype === 'LineChart' || widget.widgettype === 'AreaChart'">
+                        </app-livelinechart>
+
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="(logicalViewData && logicalViewData?.charts?.length === 0) && isAssetSelected">
+    <p class="mt-3 ml-3">No Widget Found For Selected Asset .</p>
+</div>

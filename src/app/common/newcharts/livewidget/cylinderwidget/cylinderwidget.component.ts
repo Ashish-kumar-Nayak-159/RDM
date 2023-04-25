@@ -30,6 +30,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
   @Input() asset: any;
+  @Input() type: any;
   // @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   bodyMessage: string;

@@ -19,6 +19,21 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
   // @Output() getAssetEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() cancelModal: EventEmitter<any> = new EventEmitter<any>();
   @Input() assetDetail: any;
+  private _type: any;
+  public get type(): any {
+    return this._type;
+  }
+  @Input()
+  public set type(value: any) {
+    this._type = value;
+    if (this.type === 'view') {
+      this.isAssetEditable = true;
+    }
+    else {
+      this.isAssetEditable = false;
+
+    }
+  }
   isCreateAssetAPILoading = false;
   decodedToken: any;
   contextApp: any;
@@ -61,7 +76,7 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    console.log(this.assetDetail);
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(this.commonService.getToken());

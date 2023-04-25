@@ -15,6 +15,8 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
+  @Input() type: any;
+
   hand: any[] = [];
   chart: any[] = [];
   label: am4core.Label[] = [];

@@ -108,7 +108,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
   assestData() {
     let assestData = [];
     this.assetDetail?.assets.forEach(element => {
-      let assest = this.assets.find(x => x.asset_id == element.assetId);
+      let assest = this.assets.find(x => x.asset_id == element.asset_id);
       if (assest)
         assestData.push(assest);
     });
@@ -300,7 +300,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   async onSaveWidgetObj() {
-
     if (!this.widgetObj.widget_title || !this.widgetObj.widget_type) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -654,6 +653,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
     this.assetModelService.getLogicalViewWidgets(this.assetDetail.id).subscribe((response): any => {
       if (response.data?.length > 0) {
+
         response.data.forEach((dataElement, index) => {
           if (dataElement?.properties) {
             dataElement.widget_title = dataElement?.chartname;

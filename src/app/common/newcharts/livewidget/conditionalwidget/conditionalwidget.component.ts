@@ -15,6 +15,8 @@ export class ConditionalwidgetComponent implements OnInit {
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
+  @Input() type: any;
+
   // @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];
   blobToken = environment.blobKey;

@@ -21,7 +21,7 @@
                     href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
                     tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a> -->
 
-                <button (click)="$event.stopPropagation()" class="border-0 btnStyle"
+                <button (click)="$event.stopPropagation()" class="border-0 btnStyle" *ngIf="type != 'LogicalView'"
                     style="background-color: transparent;" mat-icon-button [matMenuTriggerFor]="menu"
                     aria-label="Example icon button with a horizontal three dot icon">
                     <i class='fas fa-ellipsis-v'></i>

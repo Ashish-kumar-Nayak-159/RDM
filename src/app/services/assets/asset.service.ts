@@ -1433,10 +1433,15 @@ export class AssetService {
     );
   }
 
-  getLogicalView() {
+  getLogicalView(hid?) {
     return this.http.get(
-      this.url + String.Format(AppUrls.LOGICAL_VIEW)
+      this.url + String.Format(AppUrls.LOGICAL_VIEW) + (hid ? "?hierarchyid=" + hid : "")
     );
+  }
+
+  getLogicalViewByCode(id) {
+    return this.http.get(
+      this.url + String.Format(AppUrls.LOGICAL_VIEW_DETAIL, encodeURIComponent(id)))
   }
 
   deleteLogicalView(id) {

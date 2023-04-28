@@ -109,7 +109,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
+      this.hierarchyArr[1] = this.actualhierarchyNewArr?.filter(r => r.level == 1);
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {

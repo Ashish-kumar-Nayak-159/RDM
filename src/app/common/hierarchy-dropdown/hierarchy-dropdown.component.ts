@@ -140,7 +140,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   updateHierarchyDetail(hierarchyObj) {
     if (this.contextApp) {
       if (hierarchyObj.hierarchy) {
-        if (this.actualhierarchyNewArr.length > 0) {
+        if (this.actualhierarchyNewArr?.length > 0) {
           this.contextApp.hierarchy.levels.forEach((level, index) => {
             if (index !== 0) {
               this.configureHierarchy[index] = hierarchyObj.hierarchy[level];
@@ -173,7 +173,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       this.hierarchyNewArr[0] = [{ key: 'App', name: 'App', level: 0 }];
       this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
       let allHierarchyData = [];
-      this.actualhierarchyNewArr.map((item) => {
+      this.actualhierarchyNewArr?.map((item) => {
         allHierarchyData.push({ key: item.key, name: item.name, level: item.level, id: item.id });
       });
       this.contextApp.hierarchy.levels.forEach((_, index) => {

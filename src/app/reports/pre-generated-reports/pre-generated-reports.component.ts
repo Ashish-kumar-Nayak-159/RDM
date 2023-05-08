@@ -190,7 +190,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   ngAfterViewInit() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
+      this.hierarchyArr[1] = this.actualhierarchyArr?.filter(r => r.level == 1);
     }
     if (item) {
       this.loadFromCache(item);
@@ -209,7 +209,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   loadFromCache(item) {
     this.hierarchyDropdown.updateHierarchyDetail(item);
     if (item.hierarchy) {
-      if (this.actualhierarchyArr.length > 0) {
+      if (this.actualhierarchyArr?.length > 0) {
         this.contextApp.hierarchy.levels.forEach((level, index) => {
           if (index !== 0) {
             this.configureHierarchy[index] = item.hierarchy[level];

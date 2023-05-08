@@ -137,8 +137,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.maxHeight = 80;
       chart.legend.scrollable = true;
       chart.legend.labels.template.maxWidth = 30;
-      chart.legend.labels.template.truncate = true;
-      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
+     // chart.legend.labels.template.truncate = true;
+    //  chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
@@ -236,6 +236,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       this.chart = chart;
+      
     });
   }
 

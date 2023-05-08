@@ -537,6 +537,20 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
           obj.chartId = this.configureDashboardWidgets[i].chart_Id;
           deleteReq.push(obj);
         }
+        if (this.configureDashboardWidgets[i].dashboard_visibility) {
+          // this.configureDashboardWidgets.splice(i, 1);
+          let obj = {
+            "action": "Index",
+            "id": 0,
+            "chartId": "string",
+            "dashboardVisibility": true,
+            "index": 0,
+            "isDelete": false
+          }
+          obj.id = this.configureDashboardWidgets[i].id;
+          obj.chartId = this.configureDashboardWidgets[i].chart_Id;
+          deleteReq.push(obj);
+        }
       }
       if (deleteReq.length > 0) {
 
@@ -1151,4 +1165,10 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   //     this.isFormValid = false;
   //   }
   // }
+
+  onY1Search(e) {
+    debugger
+    var search = new RegExp(e.term, 'i'); // prepare a regex object
+    // this.filteredPropList = this.propertyList.filter(item => search.test(item.name));
+  }
 }

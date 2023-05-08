@@ -17,10 +17,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   configureHierarchy: any = {};
   hierarchyArr: any = {};
   @Input() assets: any[] = [];
-  @Input() logicalView: any[] = [];
-  @Input() type: any;
-  originalLogicalView: any[] = [];
-  actualLogicalView: any[] = [];
   originalAssets: any[] = [];
   actualAssets: any[] = [];
   @Input() showAsset = false;
@@ -29,9 +25,13 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   displayHierarchyString: string;
   hierarchyNewArr = [];
   actualhierarchyNewArr = [];
-  @Output() searchLogicalViewEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() saveHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() clearHierarchyEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() searchLogicalViewEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Input() logicalView: any[] = [];
+  @Input() type: any;
+  originalLogicalView: any[] = [];
+  actualLogicalView: any[] = [];
   constructor(private commonService: CommonService, private applicationService: ApplicationService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -49,7 +49,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
     this.actualAssets = this.originalAssets;
     this.originalLogicalView = JSON.parse(JSON.stringify(this.logicalView));
-    this.actualAssets = this.originalLogicalView;
+    this.actualLogicalView = this.originalLogicalView;
     await this.getUserHierarchy();
   }
 
@@ -74,31 +74,34 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   onSaveHierachy() {
     if (this.showAsset) {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      if (!this.closeOnSelection) {
-        if (this.type != 'logicalView') {
+      if (this.type != 'logicalView') {
+        if (!this.closeOnSelection) {
           if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
             this.saveHierarchyEvent.emit();
           }
         }
         else {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
+            $("#liveDataSelectAssret").removeClass("show");
             this.saveHierarchyEvent.emit();
-            this.searchLogicalViewEvent.emit(this.originalFilterObj);
           }
         }
       }
       else {
-        if (this.type != 'logicalView') {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
-            $("#liveDataSelectAssret").removeClass("show");
+        debugger
+        if (!this.closeOnSelection) {
+          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
+            this.searchLogicalViewEvent.emit(this.originalFilterObj);
             this.saveHierarchyEvent.emit();
+
           }
         }
         else {
           if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
             $("#liveDataSelectAssret").removeClass("show");
-            this.saveHierarchyEvent.emit();
             this.searchLogicalViewEvent.emit(this.originalFilterObj);
+            this.saveHierarchyEvent.emit();
+
           }
         }
       }
@@ -114,7 +117,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       this.saveHierarchyEvent.emit(this.configureHierarchy);
     }
   }
-
   getDisplayHierarchyString(index, hierarchyKey) {
     let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.level == (index + 1) && r.key == hierarchyKey);
     if (selectedHierarchy) {
@@ -134,9 +136,8 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.hierarchyArr = {};
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
-    this.filterObj.logicalview = undefined;
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
+      this.hierarchyArr[1] = this.actualhierarchyNewArr?.filter(r => r.level == 1);
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
@@ -168,7 +169,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   updateHierarchyDetail(hierarchyObj) {
     if (this.contextApp) {
       if (hierarchyObj.hierarchy) {
-        if (this.actualhierarchyNewArr.length > 0) {
+        if (this.actualhierarchyNewArr?.length > 0) {
           this.contextApp.hierarchy.levels.forEach((level, index) => {
             if (index !== 0) {
               this.configureHierarchy[index] = hierarchyObj.hierarchy[level];
@@ -201,7 +202,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       this.hierarchyNewArr[0] = [{ key: 'App', name: 'App', level: 0 }];
       this.actualhierarchyNewArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
       let allHierarchyData = [];
-      this.actualhierarchyNewArr.map((item) => {
+      this.actualhierarchyNewArr?.map((item) => {
         allHierarchyData.push({ key: item.key, name: item.name, level: item.level, id: item.id });
       });
       this.contextApp.hierarchy.levels.forEach((_, index) => {
@@ -239,27 +240,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
     });
 
-    this.changeData(hierarchyObj);
-
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
-      }
-    });
-    if (count === 0) {
-      this.hierarchyNewArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyNewArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
-      }
-    }
-    this.onSaveHierachy();
-    if (!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length)) {
-      $("#liveDataSelectAssret").removeClass("show");
-    }
-  }
-
-  changeData(hierarchyObj) {
     if (this.type != 'logicalView') {
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
@@ -281,13 +261,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
           }
         });
         this.assets = JSON.parse(JSON.stringify(arr));
-      }
-      if (this.showAsset) {
-        if (this.assets?.length === 1) {
-          this.filterObj.asset = this.assets[0];
-        }
-        this.filterObj.assetArr = undefined;
-        this.filterObj.asset = undefined;
       }
     }
     else {
@@ -312,14 +285,30 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         });
         this.logicalView = JSON.parse(JSON.stringify(arr));
       }
-      if (this.showAsset) {
-        if (this.logicalView?.length === 1) {
-          this.filterObj.logicalview = this.logicalView[0];
-        }
-        this.filterObj.assetArr = undefined;
-        this.filterObj.logicalview = undefined;
-      }
     }
 
+    if (this.showAsset) {
+      if (this.assets?.length === 1) {
+        this.filterObj.asset = this.assets[0];
+      }
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset = undefined;
+    }
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        count++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyNewArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyNewArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
+      }
+    }
+    this.onSaveHierachy();
+    if (!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length)) {
+      $("#liveDataSelectAssret").removeClass("show");
+    }
   }
 }

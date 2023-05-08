@@ -36,8 +36,11 @@
                                 id="asset_code" name="asset_code" [(ngModel)]="assetDetail.code"
                                 pattern="^[a-zA-Z0-9 ]+$" placeholder="Enter Code" maxlength="10" minlength="5"
                                 [disabled]="isViewLogicalAssest">
-                            <div *ngIf="asset_code.errors?.whitespace && asset_code.touched" class="alert-danger">
+                            <!-- <div *ngIf="asset_code.errors?.whitespace && asset_code.touched" class="alert-danger">
                                 Please enter valid name.
+                            </div> -->
+                            <div *ngIf="!asset_code.valid && asset_code.touched" class="alert-danger">
+                                Please enter 5 latter alphabetic or numeric code.
                             </div>
                         </div>
                         <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index">

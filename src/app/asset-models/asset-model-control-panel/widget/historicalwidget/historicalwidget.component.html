@@ -1,5 +1,8 @@
 <div class="tab-bar" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-
+    <ng-container *ngIf="!isHistoryAPILoading && layoutJson.length !== 0">Following Historical
+        {{widgetStringFromMenu}}
+        are already
+        added.&nbsp;</ng-container>
     <ul class="nav">
         <li class="nav-item">
             <button class="btn btn-sm btn-primary mt-1" tooltip="Add Historical {{widgetStringFromMenu}}"
@@ -14,14 +17,18 @@
     </ul>
 </div>
 <div class="table-responsive">
-    <div class="tableFixHead modal-live-widget-container" id="mainChartDiv">
-        <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
-            No Historical {{widgetStringFromMenu}} found.
-        </p>
-        <em *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+
+    <em *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+
+    <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
+        No Historical {{widgetStringFromMenu}} found.
+    </p>
+    <div class="tableFixHead modal-live-widget-container" id="mainChartDiv"
+        *ngIf="layoutJson.length > 0  && !isHistoryAPILoading">
+
         <!-- <div id="layoutWidgetContainer" class="showLayout p-3">
         </div> -->
-        <div style="overflow: scroll;height: 100%;">
+        <div>
             <div *ngFor="let chart of layoutJson">
                 <div
                     *ngIf="chart.chartType=='Line Chart' || chart.chartType=='Area Chart' || chart.chartType=='Column Chart'">
@@ -118,7 +125,7 @@
                             (onDeSelectAll)="y1Deselect($event)" [searchable]="true" placeholder="Y1 Axis Props"
                             clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key" [closeOnSelect]="false"
                             groupBy="type" dropdownPosition="bottom" name="widget-dropdown1"
-                            formControlName="y1AxisProps"
+                            (search)="onY1Search($event)" formControlName="y1AxisProps"
                             [ngClass]="{ 'is-invalid': submitted && f.y1AxisProps.errors }">
                             <ng-template ng-multi-label-tmp let-items="items">
                                 {{items.length}} properties selected

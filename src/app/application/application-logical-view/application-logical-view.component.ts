@@ -427,7 +427,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   onDateFilterSelection() {
     if (this.logiclFilterObj) {
       this.isFilterSelected = true;
-
+      debugger
       this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date, this.logiclFilterObj?.logicalview);
       const filterObj = {
         epoch: true,
@@ -529,7 +529,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.signalRTelemetrySubscription?.unsubscribe();
-    this.signalRService.disconnectFromSignalR('telemetry');
+    this.signalRService.disconnectFromSignalR('all');
 
   }
 

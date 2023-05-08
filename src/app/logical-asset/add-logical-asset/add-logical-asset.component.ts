@@ -299,7 +299,7 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
     });
     let hierarchy_ids = {};
     let parentId = 0;
-
+    debugger
     Object.keys(this.contextApp?.hierarchy?.levels).forEach((key, index) => {
       if (index != 0) {
         key = this.contextApp?.hierarchy?.levels[key]
@@ -328,11 +328,12 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
     let reqObj = {
       "name": this.assetDetail.name,
       "code": this.assetDetail.code,
-      "level": this.selectedHierarchy.level,
-      "hierarchyid": this.selectedHierarchy.id,
+      "level": this.selectedHierarchy.level ? this.selectedHierarchy.level : 0,
+      "hierarchyid": this.selectedHierarchy.id ? this.selectedHierarchy.id : 0,
       "hierarchy": this.assetDetail.tags.hierarchy_json,
       "assets": assest
     }
+
     this.subscriptions.push(this.assetService.createLogicalView(reqObj).subscribe(res => {
       this.toasterService.showSuccess(res["message"], 'Logical Assest');
       this.onCloseCreateAssetModal();

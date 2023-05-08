@@ -685,6 +685,8 @@ export class LivewidgetComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            color: prop.color,
+
           };
           arr.push(obj);
         });
@@ -699,6 +701,8 @@ export class LivewidgetComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            color: prop.color,
+
           };
           arr.push(obj);
         });
@@ -717,7 +721,8 @@ export class LivewidgetComponent implements OnInit {
         const obj = {
           name: prop.property.name,
           type: type,
-          json_key: prop.property.json_key
+          json_key: prop.property.json_key,
+
         };
         arr[0]['json_Data'].push(obj);
       });
@@ -761,6 +766,7 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
+    debugger
     let properties = this.widgetObj;
     let metadata = {}
     if (this.widgetObj.widget_type == "SmallNumber") {
@@ -771,15 +777,16 @@ export class LivewidgetComponent implements OnInit {
 
     }
     else if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
-      properties = {};
-      properties = {
+      let customProperties = {};
+      customProperties = {
         y1AxisProps: this.widgetObj.y1AxisProps,
         y2AxisProps: this.widgetObj.y2AxisProps,
         slave_id: this.widgetObj.slave_id,
         dashboardVisibility: this.widgetObj.dashboardVisibility,
         noOfDataPointsForTrend: this.widgetObj.noOfDataPointsForTrend,
       }
-
+      properties = customProperties;
+      debugger
     }
     else if (this.widgetObj.widget_type == "ConditionalNumber") {
       let customProperties = [];
@@ -931,7 +938,7 @@ export class LivewidgetComponent implements OnInit {
               dataElement.slave_id = dataElement.properties[0].slave_id;
               dataElement.dashboardVisibility = dataElement.properties[0].dashboardVisibility;
             }
-            else if (dataElement.widget_type == "RectangleWidget") {
+            else if (dataElement.widget_type == "RectangleWidget" || dataElement.widget_type == "CylinderWidget") {
               dataElement.properties.forEach(element => {
                 let getName = this.propertyList.find(x => x.json_key == element?.json_key);
                 element.name = getName?.name;
@@ -1056,7 +1063,7 @@ export class LivewidgetComponent implements OnInit {
             this.onSlaveSelection(this.selectedSlave);
             data.y1AxisProps = data.properties.map(o => ({ ...o }));
             data.properties[0].property = data.y1AxisProps[0];
-            let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
+            let getName = this.actualPropertyList.find(x => x.json_key == data.properties[0].json_key);
             data.properties[0].property.name = getName?.name;
             data.dashboardVisibility = data.dashboard_visibility;
             data.slave_id = data.metadata.slave_id;
@@ -1093,7 +1100,7 @@ export class LivewidgetComponent implements OnInit {
 
           let pro = [];
           this.propertyObj.metadata.properties.forEach(element => {
-            let data = this.propertyList.find(x => x.json_key == element.json_key);
+            let data = this.actualPropertyList.find(x => x.json_key == element.json_key);
             if (data) {
               pro.push(data);
               element.property = data;
@@ -1117,7 +1124,7 @@ export class LivewidgetComponent implements OnInit {
             data.slave_id = data.metadata.slave_id;
             data.properties = data.properties[0].properties.map(o => ({ ...o }));
             data.properties.forEach(element => {
-              let getName = this.propertyList.find(x => x.json_key == element.json_key);
+              let getName = this.actualPropertyList.find(x => x.json_key == element.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
             });
@@ -1152,7 +1159,7 @@ export class LivewidgetComponent implements OnInit {
                   this.fileArr.push(fileData);
                   element.image = fileData;
                 });
-              let getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+              let getName = this.actualPropertyList.find(x => x.json_key == element.property?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
               element.json_key = getName?.json_key;
@@ -1180,7 +1187,7 @@ export class LivewidgetComponent implements OnInit {
             this.onSlaveSelection(this.selectedSlave);
 
             this.widgetObj.properties.forEach(element => {
-              let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+              let getName = this.actualPropertyList.find(x => x.json_key == element?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
               element.property = getName;
@@ -1198,10 +1205,11 @@ export class LivewidgetComponent implements OnInit {
           this.onWidgetTypeChange();
 
           setTimeout(() => {
+            debugger
             this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
             this.widgetObj.properties.forEach(element => {
-              let getName = this.propertyList.find(x => x.json_key == element?.json_key);
+              let getName = this.actualPropertyList.find(x => x.json_key == element?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
               element.property = getName;
@@ -1244,6 +1252,20 @@ export class LivewidgetComponent implements OnInit {
           }
           obj.id = this.configureDashboardWidgets[i].id;
           obj.chartId = this.configureDashboardWidgets[i].chart_id;
+          deleteReq.push(obj);
+        }
+        if (this.configureDashboardWidgets[i].dashboard_visibility) {
+          // this.configureDashboardWidgets.splice(i, 1);
+          let obj = {
+            "action": "Index",
+            "id": 0,
+            "chartId": "string",
+            "dashboardVisibility": true,
+            "index": 0,
+            "isDelete": false
+          }
+          obj.id = this.configureDashboardWidgets[i].id;
+          obj.chartId = this.configureDashboardWidgets[i].chart_Id;
           deleteReq.push(obj);
         }
       }

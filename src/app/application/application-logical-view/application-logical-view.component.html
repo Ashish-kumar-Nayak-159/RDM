@@ -21,13 +21,13 @@
         </div>
     </div>
 </div>
-<div class="tab-bar">
+<div class="tab-bar" *ngIf="!isFilterSelected">
     <ng-container>
-        <div class="" *ngIf="!isFilterSelected">
+        <div>
             Please select an logical view and click on search to view the data.
         </div>
     </ng-container>
-    <div class="form-group mb-0">
+    <!-- <div class="form-group mb-0">
         <ng-template #filterTemplate>
             <form class="form-inline">
 
@@ -43,7 +43,7 @@
             <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
         </ng-container>
 
-    </div>
+    </div> -->
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
 <div class="historical-livechart-container" *ngIf="logicalViewData">

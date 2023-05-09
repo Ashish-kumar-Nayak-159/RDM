@@ -33,6 +33,7 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
+    debugger
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;

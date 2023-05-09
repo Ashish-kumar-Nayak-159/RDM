@@ -137,8 +137,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.maxHeight = 80;
       chart.legend.scrollable = true;
       chart.legend.labels.template.maxWidth = 30;
-      chart.legend.labels.template.truncate = true;
-      chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
+     // chart.legend.labels.template.truncate = true;
+    //  chart.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;      
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
@@ -236,6 +236,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       this.chart = chart;
+      
     });
   }
 
@@ -283,74 +284,137 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       rangeH2H3.grid.strokeOpacity = 0;
     }
   }
-
   createValueAxis(chart, axis) {
-    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    if (chart.yAxes.indexOf(valueYAxis) !== 0) {
-      valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
-    }
     const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
     arr.forEach((prop, index) => {
-      const series = chart.series.push(new am4charts.LineSeries());
-      // series.dataFields.dateX = 'message_date';
-      this.propertyList.forEach((propObj) => {
-        if (propObj.json_key === prop.json_key) {
-          series.units = propObj.json_model[propObj.json_key].units;
+        // axes feature started
+       const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        if (chart.yAxes.indexOf(valueYAxis) !== 0) {
+            valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
         }
-      });
-      series.name = this.getPropertyName(prop.json_key);
-      const proptype = this.getPropertyType(prop.json_key);
-      series.propType =
-        proptype === 'Edge Derived Properties'
-          ? 'ED'
-          : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
-      series.propKey = prop.json_key;
-      // series.stroke = this.commonService.getRandomColor();
-      series.yAxis = valueYAxis;
-      series.dataFields.dateX = 'message_date_obj';
-      series.dataFields.valueY = prop.json_key;
-      series.groupFields.valueY = 'value';
-      series.compareText = true;
-      series.strokeWidth = 2;
-      // series.connect = false;
-      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
-      // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
-      // series.tensionX = 0.77;
-      series.strokeOpacity = 1;
-      if (series.units) {
-        series.legendSettings.labelText = '({propType}) {name} ({units})';
-      } else {
-        series.legendSettings.labelText = '({propType}) {name}';
-      }
-
-      series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
-      if (series.units) {
-        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
-      } else {
-        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
-      }
-
-      const bullet = series.bullets.push(new am4charts.CircleBullet());
-      bullet.strokeWidth = 2;
-      bullet.circle.radius = 1.5;
-      // chart.cursor.snapToSeries = series;
-      this.seriesArr.push(series);
+       const series = chart.series.push(new am4charts.LineSeries());
+       // series.dataFields.dateX = 'message_date';
+        this.propertyList.forEach((propObj) => {
+            if (propObj.json_key === prop.json_key) {
+                series.units = propObj.json_model[propObj.json_key].units;
+            }
+        });
+        series.name = this.getPropertyName(prop.json_key);
+        const proptype = this.getPropertyType(prop.json_key);
+        series.propType =
+            proptype === 'Edge Derived Properties'
+                ? 'ED'
+                : proptype === 'Cloud Derived Properties'
+                    ? 'CD'
+                    : proptype === 'Derived KPIs'
+                        ? 'DK'
+                        : 'M';
+        series.propKey = prop.json_key;
+        // series.stroke = this.commonService.getRandomColor();
+        series.yAxis = valueYAxis;
+        series.dataFields.dateX = 'message_date_obj';
+        series.dataFields.valueY = prop.json_key;
+        series.groupFields.valueY = 'value';
+        series.compareText = true;
+        series.strokeWidth = 2;
+        // series.connect = false;
+        // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
+        // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
+        // series.tensionX = 0.77;
+        series.strokeOpacity = 1;
+        if (series.units) {
+            series.legendSettings.labelText = '({propType}) {name} ({units})';
+        } else {
+            series.legendSettings.labelText = '({propType}) {name}';
+        }
+        series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+        if (series.units) {
+            series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+        } else {
+            series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        }
+        const bullet = series.bullets.push(new am4charts.CircleBullet());
+        bullet.strokeWidth = 2;
+        bullet.circle.radius = 1.5;
+       // chart.cursor.snapToSeries = series;
+        valueYAxis.renderer.line.strokeOpacity = 1;
+        valueYAxis.renderer.line.strokeWidth = 2;
+        valueYAxis.tooltip.disabled = true;
+        valueYAxis.renderer.opposite = axis === 1;
+        valueYAxis.renderer.line.stroke = series.stroke;
+        valueYAxis.renderer.minWidth = 35;
+        valueYAxis.renderer.labels.template.fill = series.stroke;
+        this.seriesArr.push(series);
     });
+}
 
-    valueYAxis.tooltip.disabled = true;
-    // valueYAxis.renderer.labels.template.fillOpacity = this.chartType.includes('Area') ? 0.2 : 0;
-    valueYAxis.renderer.labels.template.fill = am4core.color('gray');
-    valueYAxis.renderer.opposite = axis === 1;
-    valueYAxis.renderer.minWidth = 35;
-    // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
-    //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
-    //   this.createThresholdSeries(valueYAxis, propObj);
-    // }
-  }
+  // createValueAxis(chart, axis) {
+  //   const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+  //   if (chart.yAxes.indexOf(valueYAxis) !== 0) {
+  //     valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
+  //   }
+  //   const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
+  //   arr.forEach((prop, index) => {
+  //     const series = chart.series.push(new am4charts.LineSeries());
+  //     // series.dataFields.dateX = 'message_date';
+  //     this.propertyList.forEach((propObj) => {
+  //       if (propObj.json_key === prop.json_key) {
+  //         series.units = propObj.json_model[propObj.json_key].units;
+  //       }
+  //     });
+  //     series.name = this.getPropertyName(prop.json_key);
+  //     const proptype = this.getPropertyType(prop.json_key);
+  //     series.propType =
+  //       proptype === 'Edge Derived Properties'
+  //         ? 'ED'
+  //         : proptype === 'Cloud Derived Properties'
+  //         ? 'CD'
+  //         : proptype === 'Derived KPIs'
+  //         ? 'DK'
+  //         : 'M';
+  //     series.propKey = prop.json_key;
+  //     // series.stroke = this.commonService.getRandomColor();
+  //     series.yAxis = valueYAxis;
+  //     series.dataFields.dateX = 'message_date_obj';
+  //     series.dataFields.valueY = prop.json_key;
+  //     series.groupFields.valueY = 'value';
+  //     series.compareText = true;
+  //     series.strokeWidth = 2;
+  //     // series.connect = false;
+  //     // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
+  //     // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
+  //     // series.tensionX = 0.77;
+  //     series.strokeOpacity = 1;
+  //     if (series.units) {
+  //       series.legendSettings.labelText = '({propType}) {name} ({units})';
+  //     } else {
+  //       series.legendSettings.labelText = '({propType}) {name}';
+  //     }
+
+  //     series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+  //     if (series.units) {
+  //       series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+  //     } else {
+  //       series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+  //     }
+
+  //     const bullet = series.bullets.push(new am4charts.CircleBullet());
+  //     bullet.strokeWidth = 2;
+  //     bullet.circle.radius = 1.5;
+  //     // chart.cursor.snapToSeries = series;
+  //     this.seriesArr.push(series);
+  //   });
+
+  //   valueYAxis.tooltip.disabled = true;
+  //   // valueYAxis.renderer.labels.template.fillOpacity = this.chartType.includes('Area') ? 0.2 : 0;
+  //   valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+  //   valueYAxis.renderer.opposite = axis === 1;
+  //   valueYAxis.renderer.minWidth = 35;
+  //   // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
+  //   //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
+  //   //   this.createThresholdSeries(valueYAxis, propObj);
+  //   // }
+  // }
 
   getPropertyName(key) {
     return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;

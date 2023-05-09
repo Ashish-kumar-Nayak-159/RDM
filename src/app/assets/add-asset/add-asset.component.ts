@@ -68,7 +68,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.actualGateways = this.gateways;
     await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
-      this.addAssetHierarchyArr[1] = this.actualhierarchyArr.filter(r => r.level == 1);
+      this.addAssetHierarchyArr[1] = this.actualhierarchyArr?.filter(r => r.level == 1);
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {

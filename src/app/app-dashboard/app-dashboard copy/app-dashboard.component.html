@@ -3,10 +3,10 @@
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
       <div class="ml-2 pt-15"
-        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry'">
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         Turbo Mode:</div>
       <div class="ml-1 pt-15"
-        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry'">
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         <ui-switch size="small" class="mr-1" defaultBgColor="red" [disabled]="isC2dAPILoading"
           uncheckedTextColor="white" switchColor="#EFEFEF" checkedTextColor="white" checkedLabel="ON"
           uncheckedLabel="OFF" name="tpye" [(ngModel)]="signalRModeValue" (valueChange)="onSwitchValueChange($event)">
@@ -37,7 +37,7 @@
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
-    <ng-container >
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_live_widgets">
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
       </div>
@@ -154,10 +154,10 @@
       </form>
     </ng-template>
 
-    <!-- <ng-container *ngIf="isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
+    <ng-container *ngIf="isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
       <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
-    </ng-container> -->
-    <!-- <ng-container
+    </ng-container>
+    <ng-container
       *ngIf="!isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
         aria-expanded="false">
@@ -166,7 +166,7 @@
       <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
         <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
       </div>
-    </ng-container> -->
+    </ng-container>
   </div>
 </div>
 <ng-container>
@@ -174,17 +174,21 @@
     <div class="pl-3 pt-3" *ngIf="isTelemetryDataLoading">
       <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </div>
-    <!-- <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
       <div class="m-3" *ngIf="historicalWidgets.length === 0 && isFilterSelected
       ">
         No {{widgetStringFromMenu}} configured for this asset. Please contact administrator.
       </div>
-    </ng-container> -->
+      <!-- <div class="m-3" *ngIf="historicalWidgets.length > 0 && !isTelemetryDataLoading && telemetryData.length === 0 && isFilterSelected
+      ">
+        No telemetry data found for selected interval.
+      </div> -->
+    </ng-container>
     <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.dashboard_config) && isFilterSelected">
       <div class="ml-1">No dashboard configuration added for this application.</div>
     </ng-container>
     <div class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12 mt-n2'}}"
-      *ngIf="telemetryObj && liveWidgets.length > 0  && originalFilter?.asset">
+      *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets && originalFilter?.asset">
       <!-- for the small widget -->
       <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
         <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
@@ -346,12 +350,13 @@
         </div>
       </ng-container>
     </div>
-    <!-- <div class="row col-md-12"
+    <div class="row col-md-12"
       *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets" id="mainChartDiv">
       <div id="historic_charts" class="pl-3 pt-3 w-100">
 
       </div>
-    </div> -->
+      <!-- <div class="pl-3" *ngIf="telemetryData.length === 0 && !isTelemetryDataLoading">No Data available.</div> -->
+    </div>
   </div>
 </ng-container>
 

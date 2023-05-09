@@ -38,13 +38,13 @@
                                 <div class="col-sm-12 col-md-3">
                                     <div class="form-group">
                                         <label for="from1" *ngIf="i===0">Start From</label>
-                                        <input type="time" class="form-control" id="from1" step="1"(change)="startFormChange($event)" formControlName="from_time">
+                                        <input type="time" class="form-control" id="from1" (change)="startFormChange($event)" formControlName="from_time">
                                     </div>
                                 </div><br/>
                                 <div class="col-sm-12 col-md-3">
                                     <div class="form-group">
                                         <label for="to" *ngIf="i===0">To</label>
-                                        <input type="time" class="form-control" id="to" step="1" (change)="EndToChange($event,i)" formControlName="to_time">
+                                        <input type="time" class="form-control" id="to" (change)="EndToChange($event,i)" formControlName="to_time">
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-3" *ngIf="i === 0">

@@ -33,6 +33,10 @@ const routes: Routes = [
     path: 'applications/:applicationId/dashboard',
     loadChildren: () => import('./app-dashboard/app-dashboard.module').then((module) => module.AppDashboardModule),
   },
+  {
+    path: 'applications/:applicationId/historical-trend',
+    loadChildren: () => import('./app-dashboard/app-dashboard.module').then((module) => module.AppDashboardModule),
+  },
   
   {
     path: 'applications/:applicationId/reports',

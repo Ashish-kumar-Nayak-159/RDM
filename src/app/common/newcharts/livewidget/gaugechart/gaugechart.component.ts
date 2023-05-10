@@ -50,7 +50,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
       //  this.label.text = changes.value.currentValue;
-      this.chartConfig.properties.forEach((prop, index) => {
+      this.chartConfig?.properties?.forEach((prop, index) => {
         if (this.hand[index] && this.chart[index]) {
           this.hand[index].value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
         }
@@ -70,7 +70,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadChart() {
-    this.chartConfig.properties.forEach((prop, index) => {
+    this.chartConfig?.properties?.forEach((prop, index) => {
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.GaugeChart);
       chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect

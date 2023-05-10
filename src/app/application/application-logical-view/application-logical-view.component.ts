@@ -270,7 +270,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
             });
 
             this.cdr.markForCheck();
-            this.isAssetSelected = true
+            this.isAssetSelected = true;
+
+            this.signalRService.disconnectFromSignalR('logicalview');
+            this.getLiveData(this.sameAsset);
 
             this.getTelemetryData();
             setInterval(() => this.getTelemetryData(), 10000);
@@ -320,70 +323,70 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     this.logiclFilterObj = e;
   }
 
-  selectedDate(filterObj) {
-    this.selectDateFlag = true;
-    this.signalRService.disconnectFromSignalR('telemetry');
-    this.signalRTelemetrySubscription?.unsubscribe()
-    this.historical_livedata = []
-    this.live_Date = false;
-    // this.historicalCombineWidgets = [];
-    this.assetWiseTelemetryData = [];
-    this.propertyList = [];
-    // this.measuredMessageProps = [];
-    this.historicalDateFilter.from_date = filterObj.from_date;
-    this.historicalDateFilter.to_date = filterObj.to_date;
-    this.historicalDateFilter.dateOption = filterObj.dateOption;
-    // this.onFilterSelection('', true, false, true, 'callFromSelectedDate');
-    this.onDateFilterSelection();
+  // selectedDate(filterObj) {
+  //   this.selectDateFlag = true;
+  //   this.signalRService.disconnectFromSignalR('logicalview');
+  //   this.signalRTelemetrySubscription?.unsubscribe()
+  //   this.historical_livedata = []
+  //   this.live_Date = false;
+  //   // this.historicalCombineWidgets = [];
+  //   this.assetWiseTelemetryData = [];
+  //   this.propertyList = [];
+  //   // this.measuredMessageProps = [];
+  //   this.historicalDateFilter.from_date = filterObj.from_date;
+  //   this.historicalDateFilter.to_date = filterObj.to_date;
+  //   this.historicalDateFilter.dateOption = filterObj.dateOption;
+  //   // this.onFilterSelection('', true, false, true, 'callFromSelectedDate');
+  //   this.onDateFilterSelection();
 
-    // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
-    if (this.filterObj.asset) {
-      const records = this.commonService.calculateEstimatedRecords(
-        this.frequency,
-        this.historicalDateFilter.from_date,
-        this.historicalDateFilter.to_date
-      );
-      if (records > this.noOfRecords) {
-        this.historicalDateFilter.isTypeEditable = true;
-      } else {
-        this.historicalDateFilter.isTypeEditable = false;
-      }
-    }
-  }
+  //   // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
+  //   if (this.filterObj.asset) {
+  //     const records = this.commonService.calculateEstimatedRecords(
+  //       this.frequency,
+  //       this.historicalDateFilter.from_date,
+  //       this.historicalDateFilter.to_date
+  //     );
+  //     if (records > this.noOfRecords) {
+  //       this.historicalDateFilter.isTypeEditable = true;
+  //     } else {
+  //       this.historicalDateFilter.isTypeEditable = false;
+  //     }
+  //   }
+  // }
 
-  private SubscribeLiveTelemetryOnDateOption(endDate: any = null, logiclFilterObj) {
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let to_date = new Date(endDate * 1000);
-    to_date.setHours(0, 0, 0, 0);
-    if (currentDate <= to_date) {
-      const obj1 = {
-        hierarchy: this.contextApp.user.hierarchy,
-        levels: this.contextApp.hierarchy.levels,
-        code: logiclFilterObj?.code,
-        type: 'logicalview',
-        app: this.contextApp.app,
-      };
-      this.signalRService.connectToSignalR(obj1);
-      this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
-        (data) => {
-          if (data) {
-            let obj = JSON.parse(JSON.stringify(data));
-            delete obj.m;
-            delete obj.ed;
-            delete obj.cd;
-            delete obj.dkpi;
-            obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
-            data = JSON.parse(JSON.stringify(obj));
-            this.getLatestHistoricalTelemetry(data);
-          }
-        });
-    }
-    else {
-      this.historical_livedata = [];
-      this.live_Date = false;
-    }
-  }
+  // private SubscribeLiveTelemetryOnDateOption(endDate: any = null, logiclFilterObj) {
+  //   let currentDate = new Date();
+  //   currentDate.setHours(0, 0, 0, 0);
+  //   let to_date = new Date(endDate * 1000);
+  //   to_date.setHours(0, 0, 0, 0);
+  //   if (currentDate <= to_date) {
+  //     const obj1 = {
+  //       hierarchy: this.contextApp.user.hierarchy,
+  //       levels: this.contextApp.hierarchy.levels,
+  //       code: logiclFilterObj?.code,
+  //       type: 'logicalview',
+  //       app: this.contextApp.app,
+  //     };
+  //     this.signalRService.connectToSignalR(obj1);
+  //     this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
+  //       (data) => {
+  //         if (data) {
+  //           let obj = JSON.parse(JSON.stringify(data));
+  //           delete obj.m;
+  //           delete obj.ed;
+  //           delete obj.cd;
+  //           delete obj.dkpi;
+  //           obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+  //           data = JSON.parse(JSON.stringify(obj));
+  //           this.getLatestHistoricalTelemetry(data);
+  //         }
+  //       });
+  //   }
+  //   else {
+  //     this.historical_livedata = [];
+  //     this.live_Date = false;
+  //   }
+  // }
 
   getLatestHistoricalTelemetry(data) {
     this.historical_livedata = data;
@@ -424,113 +427,112 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDateFilterSelection() {
-    if (this.logiclFilterObj) {
-      this.isFilterSelected = true;
-      debugger
-      this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date, this.logiclFilterObj?.logicalview);
-      const filterObj = {
-        epoch: true,
-        app: this.contextApp.app,
-        code: this.logiclFilterObj?.logicalview?.code,
-        // partition_key: this.filterObj?.asset?.partition_key,
-        from_date: this.historicalDateFilter?.from_date,
-        to_date: this.historicalDateFilter?.to_date,
-        order_dir: 'ASC',
-        measured_message_props: this.measuredMessageProps
+  // onDateFilterSelection() {
+  //   if (this.logiclFilterObj) {
+  //     this.isFilterSelected = true;
+  //     debugger
+  //     this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date, this.logiclFilterObj?.logicalview);
+  //     const filterObj = {
+  //       epoch: true,
+  //       app: this.contextApp.app,
+  //       code: this.logiclFilterObj?.logicalview?.code,
+  //       // partition_key: this.filterObj?.asset?.partition_key,
+  //       from_date: this.historicalDateFilter?.from_date,
+  //       to_date: this.historicalDateFilter?.to_date,
+  //       order_dir: 'ASC',
+  //       measured_message_props: this.measuredMessageProps
 
-      }
-      this.isLoadingData = true;
-      this.isAssetWiseTelemetryData = true;
-      // this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
-      //   if (response && response?.data) {
-      //     response?.data.forEach((item) => {
-      //       item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-      //       item.message_date_obj = new Date(item.message_date);
-      //     });
-      //     this.assetWiseTelemetryData = response?.data
-      //     this.selectDateFlag = false;
-      //     this.isLoadingData = false;
-      //     this.isAssetWiseTelemetryData = false;
-      //   }
-      // });
+  //     }
+  //     this.isLoadingData = true;
+  //     this.isAssetWiseTelemetryData = true;
+  //     // this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app).subscribe((response) => {
+  //     //   if (response && response?.data) {
+  //     //     response?.data.forEach((item) => {
+  //     //       item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+  //     //       item.message_date_obj = new Date(item.message_date);
+  //     //     });
+  //     //     this.assetWiseTelemetryData = response?.data
+  //     //     this.selectDateFlag = false;
+  //     //     this.isLoadingData = false;
+  //     //     this.isAssetWiseTelemetryData = false;
+  //     //   }
+  //     // });
 
-      const obj = {
-        app: this.contextApp.app,
-        name: this?.filterObj?.asset?.asset_model,
-      };
-      this.propertyList = [];
-      // this.assetModelService.getAssetsModelProperties(obj).subscribe(
-      //   (response: any) => {
-      //     this.propertyList = response.properties.measured_properties
-      //       ? response.properties.measured_properties
-      //       : [];
-      //     response.properties.edge_derived_properties = response.properties.edge_derived_properties
-      //       ? response.properties.edge_derived_properties
-      //       : [];
-      //     response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
-      //       ? response.properties.cloud_derived_properties
-      //       : [];
-      //     response.properties.edge_derived_properties.forEach((prop) => {
-      //       prop.type = 'Edge Derived Properties';
-      //       this.propertyList.push(prop);
-      //     });
-      //     response.properties.cloud_derived_properties.forEach((prop) => {
-      //       prop.type = 'Cloud Derived Properties';
-      //       this.propertyList.push(prop);
-      //     });
+  //     const obj = {
+  //       app: this.contextApp.app,
+  //       name: this?.filterObj?.asset?.asset_model,
+  //     };
+  //     this.propertyList = [];
+  //     // this.assetModelService.getAssetsModelProperties(obj).subscribe(
+  //     //   (response: any) => {
+  //     //     this.propertyList = response.properties.measured_properties
+  //     //       ? response.properties.measured_properties
+  //     //       : [];
+  //     //     response.properties.edge_derived_properties = response.properties.edge_derived_properties
+  //     //       ? response.properties.edge_derived_properties
+  //     //       : [];
+  //     //     response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+  //     //       ? response.properties.cloud_derived_properties
+  //     //       : [];
+  //     //     response.properties.edge_derived_properties.forEach((prop) => {
+  //     //       prop.type = 'Edge Derived Properties';
+  //     //       this.propertyList.push(prop);
+  //     //     });
+  //     //     response.properties.cloud_derived_properties.forEach((prop) => {
+  //     //       prop.type = 'Cloud Derived Properties';
+  //     //       this.propertyList.push(prop);
+  //     //     });
 
-      //   },
-      //   (error) => (this.isTelemetryDataLoading = false)
-      // )
+  //     //   },
+  //     //   (error) => (this.isTelemetryDataLoading = false)
+  //     // )
 
 
-      // if (!callFromSelectedDate) {
-      //   this.assetWiseTelemetryData = []
-      //   this.historicalCombineWidgets = []
+  //     // if (!callFromSelectedDate) {
+  //     //   this.assetWiseTelemetryData = []
+  //     //   this.historicalCombineWidgets = []
 
-      //   this.myPromise = new Promise((resolve, reject) => {
-      //     this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
-      //       this.newHistoricalCombineWidets = response?.historical_widgets;
-      //       this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
-      //       resolve('');
-      //     })
-      //   });
-      // }
+  //     //   this.myPromise = new Promise((resolve, reject) => {
+  //     //     this.assetModelService.getAssetsModelLayout(obj).subscribe((response: any) => {
+  //     //       this.newHistoricalCombineWidets = response?.historical_widgets;
+  //     //       this.historicalCombineWidgets = this.newHistoricalCombineWidets.slice(0, 2)
+  //     //       resolve('');
+  //     //     })
+  //     //   });
+  //     // }
 
-      this.myPromise.then(() => {
-        this.measuredMessageProps = [];
-        // if (this.newHistoricalCombineWidets) {
-        //   this.newHistoricalCombineWidets?.forEach((widget) => {
-        //     widget?.y1axis?.forEach((item) => {
-        //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-        //         this.measuredMessageProps?.push(item?.json_key);
-        //       }
-        //     })
-        //     widget?.y2axis?.forEach((item) => {
-        //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
-        //         this.measuredMessageProps?.push(item?.json_key);
-        //       }
-        //     })
-        //   })
+  //     this.myPromise.then(() => {
+  //       this.measuredMessageProps = [];
+  //       // if (this.newHistoricalCombineWidets) {
+  //       //   this.newHistoricalCombineWidets?.forEach((widget) => {
+  //       //     widget?.y1axis?.forEach((item) => {
+  //       //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+  //       //         this.measuredMessageProps?.push(item?.json_key);
+  //       //       }
+  //       //     })
+  //       //     widget?.y2axis?.forEach((item) => {
+  //       //       if (item?.json_key && !this.measuredMessageProps?.includes(item?.json_key)) {
+  //       //         this.measuredMessageProps?.push(item?.json_key);
+  //       //       }
+  //       //     })
+  //       //   })
 
-        //   }
-      })
+  //       //   }
+  //     })
 
-    }
-    else {
-      this.historicalCombineWidgets = [];
-      this.assetWiseTelemetryData = [];
-      this.propertyList = [];
-      this.measuredMessageProps = [];
-      this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
-    }
-  }
+  //   }
+  //   else {
+  //     this.historicalCombineWidgets = [];
+  //     this.assetWiseTelemetryData = [];
+  //     this.propertyList = [];
+  //     this.measuredMessageProps = [];
+  //     this.toasterService.showError('Asset selection is required', 'Historical & Live Telemetry');
+  //   }
+  // }
 
   ngOnDestroy(): void {
     this.signalRTelemetrySubscription?.unsubscribe();
-    this.signalRService.disconnectFromSignalR('all');
-
+    this.signalRService.disconnectFromSignalR('logicalview');
   }
 
   async getTelemetryData() {
@@ -604,5 +606,35 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     })
   }
 
+  getLiveData(code, endDate: any = null) {
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let to_date = new Date(endDate * 1000);
+    to_date.setHours(0, 0, 0, 0);
+    // if (currentDate <= to_date) {
+    const obj1 = {
+      hierarchy: this.contextApp.user.hierarchy,
+      levels: this.contextApp.hierarchy.levels,
+      code: code,
+      type: 'logicalview',
+      app: this.contextApp.app,
+    };
+    this.signalRService.connectToSignalR(obj1);
+    this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
+      (data) => {
+        if (data) {
+          let obj = JSON.parse(JSON.stringify(data));
+          delete obj.m;
+          delete obj.ed;
+          delete obj.cd;
+          delete obj.dkpi;
+          obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+          data = JSON.parse(JSON.stringify(obj));
+          console.log(data);
+          // this.getLatestHistoricalTelemetry(data);
+        }
+      });
+    // }
+  }
 }
 

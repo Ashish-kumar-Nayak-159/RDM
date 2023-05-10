@@ -773,18 +773,19 @@ export class LivewidgetComponent implements OnInit {
       properties = {};
       properties = this.widgetObj.properties;
       this.widgetObj.properties[0].type = this.getPropertieType(this.widgetObj.properties[0].type);
-      metadata["slave_id"] = this.widgetObj.properties[0].slave_id;
+      metadata["slave_id"] = this.widgetObj.slave_id;
 
     }
     else if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
-      let customProperties = {};
-      customProperties = {
+      let customProperties = [];
+      let obj = {
         y1AxisProps: this.widgetObj.y1AxisProps,
         y2AxisProps: this.widgetObj.y2AxisProps,
         slave_id: this.widgetObj.slave_id,
         dashboardVisibility: this.widgetObj.dashboardVisibility,
         noOfDataPointsForTrend: this.widgetObj.noOfDataPointsForTrend,
       }
+      customProperties.push(obj);
       properties = customProperties;
       debugger
     }
@@ -822,28 +823,52 @@ export class LivewidgetComponent implements OnInit {
     }
     else if (this.widgetObj.widget_type == "OnlyNumber" || this.widgetObj.widget_type === 'NumberWithTrend'
       || this.widgetObj.widget_type === 'StringWidget') {
-      properties = {};
-      properties = {
-        slave_id: this.widgetObj.slave_id,
-        dashboardVisibility: this.widgetObj.dashboardVisibility,
-        properties: this.widgetObj.properties,
-      }
+
+      properties = this.widgetObj.properties;
+      metadata["slave_id"] = this.widgetObj.slave_id;
+
+      // properties = {
+      //   slave_id: this.widgetObj.slave_id,
+      //   dashboardVisibility: this.widgetObj.dashboardVisibility,
+      //   properties: this.widgetObj.properties,
+      // }
     }
+    // else if (this.widgetObj.widget_type == "NumberWithImage") {
+    //   this.widgetObj.properties.forEach(element => {
+    //     let getName: any;
+    //     if (!element?.json_key) {
+    //       getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
+    //     }
+    //     else {
+    //       getName = this.propertyList.find(x => x.json_key == element?.json_key);
+    //     }
+
+    //     element.name = getName?.name;
+    //     element.data_type = getName?.data_type;
+    //     element.property = getName;
+
+    //   });
+
+    // }
     else if (this.widgetObj.widget_type == "NumberWithImage") {
+      let customProperties = [];
+      metadata["slave_id"] = this.widgetObj.slave_id;
+
       this.widgetObj.properties.forEach(element => {
-        let getName: any;
-        if (!element?.json_key) {
-          getName = this.propertyList.find(x => x.json_key == element.property?.json_key);
-        }
-        else {
-          getName = this.propertyList.find(x => x.json_key == element?.json_key);
-        }
 
-        element.name = getName?.name;
-        element.data_type = getName?.data_type;
-        element.property = getName;
-
+        element.property.type = this.getPropertieType(element.property.type);
+        let obj = {
+          "image": element.image,
+          "title": element.title,
+          "type": element.property.type,
+          "json_key": element.property.json_key,
+          "asset_id": element.asset_id
+        }
+        customProperties.push(obj);
       });
+
+      properties = null;
+      properties = customProperties;
 
     }
     else if (this.widgetObj.widget_type == "CylinderWidget" || this.widgetObj.widget_type == "RectangleWidget") {
@@ -862,7 +887,41 @@ export class LivewidgetComponent implements OnInit {
       });
       properties = null;
       properties = customProperties;
-      metadata["slave_id"] = this.widgetObj.properties[0].slave_id;
+      metadata["slave_id"] = this.widgetObj.slave_id;
+
+    }
+    else if (this.widgetObj.widget_type === 'GaugeChart') {
+      let customProperties = [];
+
+      this.widgetObj.properties.forEach(element => {
+        element.type = this.getPropertieType(element.type);
+        let obj = {
+          "asset_id": element.asset_id,
+          "type": element.type,
+          "title": element.title,
+          "json_key": element.json_key,
+          "minRangeValue": element.minRangeValue,
+          "maxRangeValue": element.maxRangeValue,
+          "low_max": element.low_max,
+          "low_min": element.low_min,
+          "high_max": element.high_max,
+          "high_min": element.high_min,
+          "low_color": element.low_color,
+          "high_color": element.high_color,
+          "normal_max": element.normal_max,
+          "normal_min": element.normal_min,
+          "normal_color": element.normal_color,
+          "digitsAfterDecimals": element.digitsAfterDecimals
+        }
+        customProperties.push(obj);
+
+      });
+      metadata["startAngle"] = this.widgetObj.startAngle;
+      metadata["endAngle"] = this.widgetObj.endAngle;
+      metadata["slave_id"] = this.widgetObj.slave_id;
+
+      properties = null;
+      properties = customProperties;
 
     }
 
@@ -948,7 +1007,7 @@ export class LivewidgetComponent implements OnInit {
 
           }
         });
-        this.liveWidgets.forEach((widget) => {
+        this.liveWidgets.forEach((widget, index) => {
           this.checkingsmallwidget = widget.widget_type;
 
           if (widget.widget_type === 'SmallNumber') {
@@ -977,6 +1036,9 @@ export class LivewidgetComponent implements OnInit {
                 widget.measured_props = true;
               }
             });
+
+            this.liveWidgets[index].properties[0].properties = widget.properties;
+
           }
           else if (widget.widget_type == 'ConditionalNumber') {
 
@@ -1122,7 +1184,7 @@ export class LivewidgetComponent implements OnInit {
             this.onSlaveSelection(this.selectedSlave);
             data.dashboardVisibility = data.dashboardVisibility;
             data.slave_id = data.metadata.slave_id;
-            data.properties = data.properties[0].properties.map(o => ({ ...o }));
+            data.properties = data.properties.map(o => ({ ...o }));
             data.properties.forEach(element => {
               let getName = this.actualPropertyList.find(x => x.json_key == element.json_key);
               element.name = getName?.name;
@@ -1135,12 +1197,12 @@ export class LivewidgetComponent implements OnInit {
         }
         else if (data.widget_type == "NumberWithImage") {
           setTimeout(() => {
+            data.properties = data.properties.map(o => ({ ...o }));
 
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
-            data.dashboardVisibility = data.properties[0].dashboardVisibility;
-            data.slave_id = data.properties[0].slave_id;
-            data.properties = data.properties[0].properties.map(o => ({ ...o }));
+            data.dashboardVisibility = data.dashboardVisibility;
+            data.slave_id = data.metadata.slave_id;
 
             data.properties.forEach((element, index) => {
               let url = this.blobStorageURL + element.image.url + this.blobToken;
@@ -1159,7 +1221,7 @@ export class LivewidgetComponent implements OnInit {
                   this.fileArr.push(fileData);
                   element.image = fileData;
                 });
-              let getName = this.actualPropertyList.find(x => x.json_key == element.property?.json_key);
+              let getName = this.actualPropertyList.find(x => x.json_key == element?.json_key);
               element.name = getName?.name;
               element.data_type = getName?.data_type;
               element.json_key = getName?.json_key;
@@ -1176,14 +1238,18 @@ export class LivewidgetComponent implements OnInit {
           //   element.data_type = getName?.data_type;
           // });
         }
+
         else if (data.widget_type == "GaugeChart") {
-          data.slave_id = data.properties[0].slave_id;
-          this.widgetObj = data.properties[0];
+          data.slave_id = data.metadata.slave_id;
+          data.startAngle = data.metadata.startAngle;
+          data.endAngle = data.metadata.endAngle;
+          this.widgetObj = data;
+
           this.onWidgetTypeChange();
 
           setTimeout(() => {
 
-            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.properties[0].slave_id);
+            this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
 
             this.widgetObj.properties.forEach(element => {
@@ -1197,6 +1263,7 @@ export class LivewidgetComponent implements OnInit {
           }, 2000);
 
         }
+
         else if (data.widget_type == "CylinderWidget" || data.widget_type == "RectangleWidget") {
           data.dashboardVisibility = data.dashboard_visibility;
           data.slave_id = data.metadata.slave_id;

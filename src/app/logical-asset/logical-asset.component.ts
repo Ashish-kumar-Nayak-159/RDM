@@ -106,9 +106,10 @@ export class LogicalAssetComponent implements OnInit {
 
   }
 
-  onCreateAssetCancelModal() {
+  onCreateAssetCancelModal(isCreate) {
     this.isOpenAssetCreateModal = false;
-    this.getLogicalView();
+    if (isCreate)
+      this.getLogicalView();
   }
 
   openAssetCreateModal() {

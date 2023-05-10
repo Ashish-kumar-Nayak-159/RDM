@@ -336,7 +336,8 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
 
     this.subscriptions.push(this.assetService.createLogicalView(reqObj).subscribe(res => {
       this.toasterService.showSuccess(res["message"], 'Logical Assest');
-      this.onCloseCreateAssetModal();
+      $('#createAssetModal').modal('hide');
+      this.cancelModal.emit(true);
     }, error => {
       this.toasterService.showError(error["message"], 'Logical Assest');
     }));
@@ -346,7 +347,7 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
 
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
-    this.cancelModal.emit();
+    this.cancelModal.emit(false);
   }
 
 

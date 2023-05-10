@@ -252,4 +252,7 @@ export class AppUrls {
   public static DELETE_LOGICAL_VIEW_WIDGET = 'logicalViewWidget/{0}'
   public static GET_LOGICAL_VIEW_WIDGET_BY_ID = 'logicalViewWidget/{0}'
   public static UPDATE_LOGICAL_VIEW_WIDGET = 'logicalViewWidget/{0}'
+
+  public static PROPERTIES_BY_ASSET_ID = 'propertiesbyasset/{0}'
+
 }

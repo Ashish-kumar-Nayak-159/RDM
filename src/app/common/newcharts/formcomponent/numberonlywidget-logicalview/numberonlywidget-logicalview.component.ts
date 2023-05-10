@@ -17,6 +17,7 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
   Y1PropertyList: any[];
   Y2PropertyList: any[];
   private _drpassets: any;
+  properties: any;
   public get drpassets(): any {
     return this._drpassets;
   }
@@ -30,7 +31,8 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
   @Input()
   public set widgetObj(value: any) {
     this._widgetObj = value;
-    this.valueSet();
+    if (value)
+      this.valueSet();
   }
   private _propertyList: any[];
   public get propertyList(): any[] {
@@ -55,14 +57,13 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.widgetObj?.widget_type !== 'SmallNumber') {
-      this.widgetObj.properties = this.widgetObj.properties;
+      this.properties = this.widgetObj.properties.map(o => ({ ...o }));
       if (this.widgetObj.properties[0].property) {
         this.widgetObj.properties.forEach(element => {
           element.property = element;
         });
       }
     }
-
   }
 
   addProperty() {
@@ -115,12 +116,13 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
     return new Promise<void>((resolve) => {
 
       this.subscriptions.push(
-        this.assetModelService.getModelPropertiesByAssets(selectedAssest).subscribe((response: any) => {
-          if (response?.data) {
-            response["measured_properties"] = response.data.filter(x => x.type == "m");
-            response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
-            response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
-          }
+        this.assetModelService.getModelPropertiesByAssetsId(selectedAssest).subscribe((response: any) => {
+          // if (response?.data) {
+          //   response["measured_properties"] = response.data.filter(x => x.type == "m");
+          //   response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
+          //   response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
+          // }
+          response = response[0];
           response.measured_properties = response.measured_properties
             ? response.measured_properties
             : [];
@@ -171,9 +173,8 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
           else {
             this.widgetObj.properties[index].propertyList = this.filteredPropList;
             this.widgetObj.properties[index].property = null;
-            this.widgetObj.properties[index].title = null;
-
-            this.widgetObj.properties.forEach(element => {
+            // this.widgetObj.properties[index].title = this.properties[index]?.title;
+            this.widgetObj.properties.forEach((element, index) => {
               let getName = this.filteredPropList.find(x => x.json_key == element?.json_key);
               if (getName) {
                 element.name = getName?.name;
@@ -181,6 +182,7 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
                 element.property = getName;
               }
             });
+            this.widgetObj.properties = this.widgetObj.properties.map(o => ({ ...o }));
           }
           resolve();
         })
@@ -200,7 +202,8 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
     else if (this.widgetObj.widget_type !== "LineChart" || this.widgetObj.widget_type !== "AreaChart" || this.widgetObj.widget_type !== "ConditionalNumber") {
 
       this.widgetObj.properties.forEach((element, index) => {
-        this.getAssetsModelProperties(element.asset_id, 2, index);
+        if (element.asset_id)
+          this.getAssetsModelProperties(element.asset_id, 2, index);
       });
     }
 

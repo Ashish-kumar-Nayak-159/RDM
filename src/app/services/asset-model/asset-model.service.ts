@@ -1030,6 +1030,25 @@ export class AssetModelService {
       );
   }
 
+  getModelPropertiesByAssetsId(aid) {
+    return this.http
+      .get(
+        this.url +
+        String.Format(
+          AppUrls.PROPERTIES_BY_ASSET_ID,
+          encodeURIComponent(aid)
+        )
+      )
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+        catchError((error) => {
+          return throwError(error);
+        })
+      );
+  }
+
   deleteLogicalViewWidget(id: any): Observable<any> {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_LOGICAL_VIEW_WIDGET, encodeURIComponent(id)))
   }

@@ -113,14 +113,16 @@ export class ConfigLogicalAssestComponent implements OnInit {
         assestData.push(assest);
     });
     this.drpassets = assestData;
-    this.drpassets.forEach(async (element, index) => {
-      await this.getAssetsModelProperties(element.asset_id, 0, 0);
-      if (index + 1 == this.drpassets.length) {
-        if (this.propertyList.length > 0) {
-          this.getLogicalViewWidget();
-        }
-      }
-    });
+    this.getLogicalViewWidget();
+
+    // this.drpassets.forEach(async (element, index) => {
+    //   await this.getAssetsModelProperties(element.asset_id, 0, 0);
+    //   if (index + 1 == this.drpassets.length) {
+    //     if (this.propertyList.length > 0) {
+    //       this.getLogicalViewWidget();
+    //     }
+    //   }
+    // });
   }
 
   ngAfterViewChecked() {
@@ -694,7 +696,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
               if (prop) {
                 prop.json_key = prop.json_key;
               }
-              prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
               prop.type = prop?.type;
 
               if (prop?.type === 'Derived KPIs') {
@@ -716,7 +718,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
               if (prop) {
                 prop.json_key = prop.json_key;
               }
-              prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
               prop.type = prop?.type;
 
               if (prop?.type === 'Derived KPIs') {
@@ -740,9 +742,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
               if (prop.id) {
                 prop.json_key = prop.id;
               }
-              prop.property = this.propertyList.find(
-                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-              );
+              prop.property = prop;
+              // this.propertyList.find(
+              //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+              // );
               if (prop?.type === 'Derived KPIs') {
                 widget.derived_kpis = true;
               } else if (prop?.type === 'Edge Derived Properties') {
@@ -759,9 +762,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
               if (prop.id) {
                 prop.json_key = prop.id;
               }
-              prop.property = this.propertyList.find(
-                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-              );
+              prop.property = prop;
+              // this.propertyList.find(
+              //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+              // );
               if (prop?.type === 'Derived KPIs') {
                 widget.derived_kpis = true;
               } else if (prop?.type === 'Edge Derived Properties') {
@@ -980,17 +984,17 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   async getAssetsModelProperties(selectedAssest, type, index) {
-
     let fPropList = []
     this.propertyList = []
 
 
-    await this.assetModelService.getModelPropertiesByAssets(selectedAssest).toPromise().then((response: any) => {
-      if (response?.data) {
-        response["measured_properties"] = response.data.filter(x => x.type == "m");
-        response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
-        response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
-      }
+    await this.assetModelService.getModelPropertiesByAssetsId(selectedAssest).toPromise().then((response: any) => {
+      // if (response?.data) {
+      //   response["measured_properties"] = response.data.filter(x => x.type == "m");
+      //   response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
+      //   response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
+      // }
+      response = response[0];
       response.measured_properties = response.measured_properties
         ? response.measured_properties
         : [];

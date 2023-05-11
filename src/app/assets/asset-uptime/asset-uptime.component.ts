@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, DoCheck } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
@@ -35,7 +36,10 @@ export class AssetUptimeComponent implements OnInit {
   isAPILoading = false;
   deleteIndex: number;
   emptyUptime:boolean = false;
-  constructor(private commonService: CommonService, private toasterService: ToasterService) {
+  constructor(private commonService: CommonService, private toasterService: ToasterService,private router:Router) {
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+
   }
 
   // calling API while initialization of component
@@ -124,13 +128,13 @@ export class AssetUptimeComponent implements OnInit {
         
    })
         array.controls.forEach((formGroup, index) => {
-          formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
+          //formGroup.value.asset_uptime_registry_id = this.asset_uptime_registry_id[index] ? this.asset_uptime_registry_id[index] : 0
           let array = formGroup.value.from_time.split(':')
           let array1 = formGroup.value.to_time.split(':')
-          var date = new Date(2022,2,5, +array[0], +array[1], +array[2]);
-          var date1 = new Date(2022,2,5, +array1[0], +array1[1], +array1[2]);
-          let utc_from_time:any = [this.padTo2Digits(date.getUTCHours()), this.padTo2Digits(date.getUTCMinutes()), this.padTo2Digits(date.getUTCSeconds())].join(':')
-          let utc_to_time:any = [this.padTo2Digits(date1.getUTCHours()), this.padTo2Digits(date1.getUTCMinutes()), this.padTo2Digits(date1.getUTCSeconds())].join(':')
+          var date = new Date(2022,2,5, +array[0], +array[1]);
+          var date1 = new Date(2022,2,5, +array1[0], +array1[1]);
+          let utc_from_time:any = [this.padTo2Digits(date.getUTCHours()), this.padTo2Digits(date.getUTCMinutes())].join(':')
+          let utc_to_time:any = [this.padTo2Digits(date1.getUTCHours()), this.padTo2Digits(date1.getUTCMinutes())].join(':')
           let tempFormGroupValue = Object.assign({},formGroup.value);
           tempFormGroupValue.from_time = utc_from_time
           tempFormGroupValue.to_time = utc_to_time
@@ -146,13 +150,20 @@ export class AssetUptimeComponent implements OnInit {
    
         this.commonService.upTime(this.asset.asset_id, payload).subscribe((response) => {
           this.toasterService.showSuccess('Asset uptime updated successfully', 'Asset Uptime')
+          this.reloadCurrentRoute()
+
         }, (err) => {
           this.toasterService.showError(err.message, 'Asset Uptime')
         })
       }
-    }
-    
-    
+    } 
+  }
+
+  reloadCurrentRoute(){
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+      return this.router.navigateByUrl(currentUrl);
+    });
   }
 
   // add new input time field when click on (+) icon
@@ -202,49 +213,49 @@ export class AssetUptimeComponent implements OnInit {
     let startFrom = event.target.value
     if (startFrom) {
       const control = this.timeForm.get('times') as FormArray
-      control?.controls?.forEach((formGroup) => {
-        if (startFrom > (formGroup?.get('from_time')?.value) && startFrom < (formGroup?.get('to_time')?.value)) {
-          this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
-          event.target.value = ''
-        } 
-      })
+      // control?.controls?.forEach((formGroup) => {
+      //   if (startFrom > (formGroup?.get('from_time')?.value) && startFrom < (formGroup?.get('to_time')?.value)) {
+      //     this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
+      //     event.target.value = ''
+      //   } 
+      // })
     }
   }
 
   // when someone select to time
   EndToChange(event: any, index?: number) {
     let endTo = event.target.value
-    if (endTo) {
-      const control = this.timeForm.get('times') as FormArray
-      if (endTo <= control?.controls[index]?.get('from_time')?.value) {
-        this.toasterService.showError('To time must be greater than from time', 'Asset Uptime')
-        event.target.value = ''
-        return
-      }
+    // if (endTo) {
+    //   const control = this.timeForm.get('times') as FormArray
+    //   if (endTo <= control?.controls[index]?.get('from_time')?.value) {
+    //     this.toasterService.showError('To time must be greater than from time', 'Asset Uptime')
+    //     event.target.value = ''
+    //     return
+    //   }
 
-      try {
-        control?.controls?.forEach((formGroup) => {
-          if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
-            this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
-            event.target.value = ''
-            throw 'break';
-          }
-          if (control.controls[index].get('from_time').value < (formGroup?.get('from_time')?.value) && control.controls[index].get('to_time').value > (formGroup?.get('to_time')?.value)) {
-            this.toasterService.showError('Please select time which should not overlap above time range', 'Asset Uptime')
-            // event.target.value = ''
-            control.controls[index].get('to_time').setValue('')
-            throw 'break';
-          }
+    //   try {
+    //     control?.controls?.forEach((formGroup) => {
+    //       if (endTo > (formGroup?.get('from_time')?.value) && endTo < (formGroup?.get('to_time')?.value)) {
+    //         this.toasterService.showError('Please select time which should not fall in above time range.', 'Asset Uptime')
+    //         event.target.value = ''
+    //         throw 'break';
+    //       }
+    //       if (control.controls[index].get('from_time').value < (formGroup?.get('from_time')?.value) && control.controls[index].get('to_time').value > (formGroup?.get('to_time')?.value)) {
+    //         this.toasterService.showError('Please select time which should not overlap above time range', 'Asset Uptime')
+    //         // event.target.value = ''
+    //         control.controls[index].get('to_time').setValue('')
+    //         throw 'break';
+    //       }
 
-        })
-      }
-      catch {
+    //     })
+    //   }
+    //   catch {
 
-      }
+    //   }
 
 
 
-    }
+    // }
   }
 
   onModalEvents(eventType) {

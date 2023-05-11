@@ -444,6 +444,23 @@ export class CONSTANTS {
       priority: 1,
     },
     {
+      page: 'Historical Trend',
+      system_name: 'Historical Trend',
+      url: 'applications/:appName/historical-trend',
+      display_name: 'Historical Trend',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Historical Trend',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Historical & Live Data',
       system_name: 'Historical & Live Data',
       url: 'applications/:appName/historical-live',

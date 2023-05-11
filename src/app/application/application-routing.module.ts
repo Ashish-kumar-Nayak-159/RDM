@@ -9,6 +9,7 @@ import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationGatewayMonitoringComponent } from './application-gateway-monitoring/application-gateway-monitoring.component';
 import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
 import { ApplicationLogicalViewComponent } from './application-logical-view/application-logical-view.component';
+import { AppDashboardHistoricalComponent } from '../app-dashboard/app-dashboard-historical/app-dashboard-historical.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,13 @@ const routes: Routes = [
     component: ApplicationLogicalViewComponent,
     canActivate: [AuthGuardService],
   },
+  
+   {
+    path: ':appName/historical-trend',
+    component: AppDashboardHistoricalComponent,
+    canActivate: [AuthGuardService],
+  },
+
   {
     path: ':appName/historical-live',
     component: ApplicationHistoricalLiveDataComponent,

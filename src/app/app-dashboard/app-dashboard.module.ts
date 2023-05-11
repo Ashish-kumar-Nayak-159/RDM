@@ -10,9 +10,10 @@ import { AppDashboardRoutingModule } from './app-dashboard-routing.module';
 import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { AppDashboardHistoricalComponent } from './app-dashboard-historical/app-dashboard-historical.component';
 
 @NgModule({
-  declarations: [AppDashboardComponent],
+  declarations: [AppDashboardComponent, AppDashboardHistoricalComponent],
   imports: [
     CommonModule,
     AppDashboardRoutingModule,

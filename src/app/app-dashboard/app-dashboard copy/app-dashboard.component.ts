@@ -116,28 +116,28 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
-    // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-    //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    //   this.historicalDateFilter.dateOption = item.dateOption;
-    //   if (item.dateOption !== 'Custom Range') {
-    //     const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-    //     this.historicalDateFilter.from_date = dateObj.from_date;
-    //     this.historicalDateFilter.to_date = dateObj.to_date;
-    //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   } else {
-    //     this.historicalDateFilter.from_date = item.from_date;
-    //     this.historicalDateFilter.to_date = item.to_date;
-    //     // this.historicalDateFilter.last_n_secs = undefined;
-    //   }
-    //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-    //   // this.historicalDateFilter.to_date = moment().utc().unix();
-    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   this.historicalDateFilter.widgets = [];
-    //   this.selectedDateRange = this.historicalDateFilter.dateOption;
-    //   this.historicalDateFilter.type = true;
-    //   this.historicalDateFilter.sampling_format = 'minute';
-    //   this.historicalDateFilter.sampling_time = 1;
-    // }
+    if (this.contextApp?.dashboard_config?.show_historical_widgets) {
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      this.historicalDateFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historicalDateFilter.from_date = dateObj.from_date;
+        this.historicalDateFilter.to_date = dateObj.to_date;
+        // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      } else {
+        this.historicalDateFilter.from_date = item.from_date;
+        this.historicalDateFilter.to_date = item.to_date;
+        // this.historicalDateFilter.last_n_secs = undefined;
+      }
+      // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      // this.historicalDateFilter.to_date = moment().utc().unix();
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      this.historicalDateFilter.widgets = [];
+      this.selectedDateRange = this.historicalDateFilter.dateOption;
+      this.historicalDateFilter.type = true;
+      this.historicalDateFilter.sampling_format = 'minute';
+      this.historicalDateFilter.sampling_time = 1;
+    }
     await this.getAssets(this.contextApp.user.hierarchy);
     this.onTabChange();
     if ($(window).width() < 992) {
@@ -178,28 +178,28 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSaveHierachy() {
      
-    // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-    //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    //   this.historicalDateFilter.dateOption = item.dateOption;
-    //   if (item.dateOption !== 'Custom Range') {
-    //     const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-    //     this.historicalDateFilter.from_date = dateObj.from_date;
-    //     this.historicalDateFilter.to_date = dateObj.to_date;
-    //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   } else {
-    //     this.historicalDateFilter.from_date = item.from_date;
-    //     this.historicalDateFilter.to_date = item.to_date;
-    //     // this.historicalDateFilter.last_n_secs = undefined;
-    //   }
-    //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-    //   // this.historicalDateFilter.to_date = moment().utc().unix();
-    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   this.historicalDateFilter.widgets = [];
-    //   this.selectedDateRange = this.historicalDateFilter.dateOption;
-    //   this.historicalDateFilter.type = true;
-    //   this.historicalDateFilter.sampling_format = 'minute';
-    //   this.historicalDateFilter.sampling_time = 1;
-    // }
+    if (this.contextApp?.dashboard_config?.show_historical_widgets) {
+      const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      this.historicalDateFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historicalDateFilter.from_date = dateObj.from_date;
+        this.historicalDateFilter.to_date = dateObj.to_date;
+        // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      } else {
+        this.historicalDateFilter.from_date = item.from_date;
+        this.historicalDateFilter.to_date = item.to_date;
+        // this.historicalDateFilter.last_n_secs = undefined;
+      }
+      // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      // this.historicalDateFilter.to_date = moment().utc().unix();
+      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      this.historicalDateFilter.widgets = [];
+      this.selectedDateRange = this.historicalDateFilter.dateOption;
+      this.historicalDateFilter.type = true;
+      this.historicalDateFilter.sampling_format = 'minute';
+      this.historicalDateFilter.sampling_time = 1;
+    }
 
 
     this.originalFilter = {};
@@ -636,33 +636,45 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isFilterSelected = false;
       return;
     }
-    // if (
-    //   !this.contextApp?.dashboard_config &&
-    //   !this.contextApp?.dashboard_config?.show_live_widgets &&
-    //   !this.contextApp?.dashboard_config?.show_historical_widgets
-    // ) {
-    //   this.contextApp.dashboard_config = {
-    //     show_live_widgets: true,
-    //   };
-    // }
+    if (
+      !this.contextApp?.dashboard_config &&
+      !this.contextApp?.dashboard_config?.show_live_widgets &&
+      !this.contextApp?.dashboard_config?.show_historical_widgets
+    ) {
+      this.contextApp.dashboard_config = {
+        show_live_widgets: true,
+      };
+    }
+    if (updateFilterObj && this.contextApp?.dashboard_config?.show_live_widgets) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
       pagefilterObj['assets'] = filterObj.asset;
       //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    
+    }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
     if (asset_model) {
-      this.getTelemetryMode(this.filterObj.asset.asset_id);
+      if (this.contextApp?.dashboard_config?.show_live_widgets) {
+        this.getTelemetryMode(this.filterObj.asset.asset_id);
+      }
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
-      await this.getLiveWidgets(asset_model);
-      this.getLiveWidgetTelemetryDetails(obj);
-
-
+      if (this.contextApp?.dashboard_config?.show_live_widgets) {
+        await this.getLiveWidgets(asset_model);
+        this.getLiveWidgetTelemetryDetails(obj);
+      } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
+        await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
+        await this.getHistoricalWidgetsDrivedKPIDetails();
+        if (!isFromMainSearch) {
+          this.getHistoricalWidgetTelemetryDetails();
+        } else {
+          this.isTelemetryDataLoading = false;
+          this.isFilterSelected = true;
+        }
+      }
     }
   }
 

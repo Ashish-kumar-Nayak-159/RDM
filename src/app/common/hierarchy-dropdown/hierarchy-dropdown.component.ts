@@ -88,7 +88,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
         }
       }
       else {
-        debugger
         if (!this.closeOnSelection) {
           if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
             this.searchLogicalViewEvent.emit(this.originalFilterObj);

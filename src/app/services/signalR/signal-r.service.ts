@@ -21,7 +21,6 @@ export class SignalRService {
   constructor(private http: HttpClient) { }
 
   connectToSignalR(connectionObj, type = '') {
-    debugger
     let connection;
     console.log(connectionObj);
     this.http.post<any>(this.signalRURL, connectionObj).subscribe((con) => {

@@ -19,12 +19,12 @@
                 (click)="setActiveTab('database-configuration')">
                 Database Config</a>
             </li>
-            <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_dashboard_config === true">
+            <!-- <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_dashboard_config === true">
               <a class="nav-item nav-link border-0"  data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'dashboard-configuration'}" href="#app-dashboard-configuration"
                 (click)="setActiveTab('dashboard-configuration')">
                 Dashboard Config</a>
-            </li>
+            </li> -->
             <li class="nav-item" *ngIf="!this.applicationData?.metadata?.settings?.hide_menu_setting === true">
               <a class="nav-item nav-link border-0"  data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'menu-settings'}" href="#app-menu-settings" 
@@ -83,11 +83,11 @@
       <app-application-metadata *ngIf="activeTab === 'meta-data' && applicationData"
         [applicationData]="applicationData"></app-application-metadata>
     </div>
-    <div class="tab-pane" id="app-dashboard-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
+    <!-- <div class="tab-pane" id="app-dashboard-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
       [ngClass]="{'active': activeTab === 'dashboard-configuration'}">
       <app-application-dashboard-configuration *ngIf="activeTab === 'dashboard-configuration' && applicationData"
         [applicationData]="applicationData"></app-application-dashboard-configuration>
-    </div>
+    </div> -->
     <div class="tab-pane" id="app-database-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
       [ngClass]="{'active': activeTab === 'database-configuration'}">
       <app-application-database-configuration *ngIf="activeTab === 'database-configuration' && applicationData"

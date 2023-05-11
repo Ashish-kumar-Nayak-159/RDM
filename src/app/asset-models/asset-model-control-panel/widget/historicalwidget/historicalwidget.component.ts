@@ -1167,7 +1167,6 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
   // }
 
   onY1Search(e) {
-    debugger
     var search = new RegExp(e.term, 'i'); // prepare a regex object
     // this.filteredPropList = this.propertyList.filter(item => search.test(item.name));
   }

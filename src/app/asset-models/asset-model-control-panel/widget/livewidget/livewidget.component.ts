@@ -766,7 +766,6 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
-    debugger
     let properties = this.widgetObj;
     let metadata = {}
     if (this.widgetObj.widget_type == "SmallNumber") {
@@ -787,7 +786,6 @@ export class LivewidgetComponent implements OnInit {
       }
       customProperties.push(obj);
       properties = customProperties;
-      debugger
     }
     else if (this.widgetObj.widget_type == "ConditionalNumber") {
       let customProperties = [];
@@ -1272,7 +1270,6 @@ export class LivewidgetComponent implements OnInit {
           this.onWidgetTypeChange();
 
           setTimeout(() => {
-            debugger
             this.selectedSlave = this.slaveList.find(x => x.slave_id == data.metadata.slave_id);
             this.onSlaveSelection(this.selectedSlave);
             this.widgetObj.properties.forEach(element => {

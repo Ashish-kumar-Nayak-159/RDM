@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   appServerURL: 'https://api-dev.kempaas.io/api/',
   blobAccountName: 'storageaccountkemsy96a3',
   blobContainerName: 'rdm-images',
@@ -10,7 +10,7 @@ export const environment = {
   app: undefined,
   environment: 'DEV',
   version: '16.0.1',
-  storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages',
+  storgageSecretKey: 'kEm$Y$*RdM',
   redirectToLogin: false,
 };

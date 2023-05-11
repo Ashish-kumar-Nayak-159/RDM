@@ -93,7 +93,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   generateChart() {
-    this.chartConfig.properties.forEach((prop, index) => {
+    this.chartConfig?.properties.forEach((prop, index) => {
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.XYChart3D);
       chart.hiddenState.properties.opacity = 0;
@@ -153,13 +153,15 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
       series2.columns.template.strokeWidth = 2;
 
       this.telemetryData = {};
-      if (
-        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop.property?.json_key]?.value !== null
-      ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
-        this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = '';
+      if (this.telemetryObj) {
+        if (
+          this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
+          this.telemetryObj[prop.property?.json_key]?.value !== null
+        ) {
+          this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+          this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+          this.telemetryData.category = '';
+        }
       }
       chart.data = [this.telemetryData];
       this.chart.push(chart);

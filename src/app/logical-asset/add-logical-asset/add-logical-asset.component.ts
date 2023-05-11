@@ -299,7 +299,6 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
     });
     let hierarchy_ids = {};
     let parentId = 0;
-    debugger
     Object.keys(this.contextApp?.hierarchy?.levels).forEach((key, index) => {
       if (index != 0) {
         key = this.contextApp?.hierarchy?.levels[key]

@@ -21,7 +21,6 @@ export class SignalRService {
   constructor(private http: HttpClient) { }
 
   connectToSignalR(connectionObj, type = '') {
-    debugger
     let connection;
     console.log(connectionObj);
     this.http.post<any>(this.signalRURL, connectionObj).subscribe((con) => {
@@ -45,7 +44,7 @@ export class SignalRService {
           } else if (connectionObj.type === 'alert' && type === 'overlay') {
             this.signalROverlayAlertData.emit(JSON.parse(data));
           } else if (connectionObj.type === 'logicalview') {
-            this.signalRLogicalViewData.emit(JSON.parse(data));
+            this.signalRLogicalViewData.emit((data));
           }
         });
         if (connectionObj.type === 'telemetry') {

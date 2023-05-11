@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  appServerURL: 'https://api-qa.kempaas.io/api/',
+  appServerURL: 'https://api-dev.kempaas.io/api/',
   blobAccountName: 'storageaccountkemsy96a3',
   blobContainerName: 'rdm-images',
   blobKey:
@@ -8,7 +8,7 @@ export const environment = {
   blobURL: 'https://storageaccountkemsy96a3.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: undefined,
-  environment: 'TEST',
+  environment: 'DEV',
   version: '16.0.1',
   storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages',

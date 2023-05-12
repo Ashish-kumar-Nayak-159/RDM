@@ -139,6 +139,8 @@ export class LogicalAssetComponent implements OnInit {
         }
         element.hierarchyString = hierarchyString;
       });
+    }, error => {
+      this.isGetLogicalAPILoading = false;
     }));
   }
 

@@ -90,10 +90,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   latestRunningMinutes: any = 0;
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   widgetStringFromMenu: string;
-  checkwidgettype:boolean =false;
-  checkconditionaltype:boolean=false;
-  checkingsmallwidget:'';
-  checkconditionalwidget:''
+  checkwidgettype: boolean = false;
+  checkconditionaltype: boolean = false;
+  checkingsmallwidget: '';
+  checkconditionalwidget: ''
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -208,15 +208,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.onChangeOfAsset();
     }
 
-    this.selectedDateRange =''
-    this.historicalDateFilter.dateOption =''
+    this.selectedDateRange = ''
+    this.historicalDateFilter.dateOption = ''
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.historicalDateFilter.dateOption = item.dateOption
-      setTimeout(() => {
-        this.selectedDateRange =  this.historicalDateFilter.dateOption
-      }, 200);
+    setTimeout(() => {
+      this.selectedDateRange = this.historicalDateFilter.dateOption
+    }, 200);
 
-      this.historicalWidgets = [];
+    this.historicalWidgets = [];
   }
 
   onClearHierarchy() {
@@ -454,11 +454,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             if (response?.live_widgets?.length > 0) {
               response.live_widgets.forEach((widget) => {
                 this.checkingsmallwidget = widget.widgetType;
-                this.checkconditionalwidget =widget.widgetType;
-                if(widget.widgetType === 'SmallNumber'){
+                this.checkconditionalwidget = widget.widgetType;
+                if (widget.widgetType === 'SmallNumber') {
                   this.checkwidgettype = true;
                 }
-                if(widget.widgetType === 'ConditionalNumber'){
+                if (widget.widgetType === 'ConditionalNumber') {
                   this.checkconditionaltype = true;
                 }
                 widget.edge_derived_props = false;
@@ -467,7 +467,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 widget.measured_props = false;
                 if (widget.widgetType === 'ConditionalNumber') {
                   let propertiesData = [];
-                  widget['formula']= widget?.properties[0]?.formula;
+                  widget['formula'] = widget?.properties[0]?.formula;
                   widget['text'] = widget?.properties[0]?.text;
                   widget?.properties[0]?.json_Data.forEach((prop) => {
                     let newProp = {};
@@ -476,7 +476,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     newProp["type"] = filteredProp?.type;
                     newProp["json_key"] = prop?.json_key;
                     newProp["title"] = filteredProp?.name;
-                    if(filteredProp){
+                    if (filteredProp) {
                       this.addPropertyInList(filteredProp);
                     }
                     propertiesData.push(newProp);

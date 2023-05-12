@@ -176,13 +176,15 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryObj['TMS'] = undefined;
         }
       }
-      this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
-      this.chartConfig.y1AxisProps?.forEach((prop) => {
-        this.SetPropsTelemetryData(prop);
-      });
-      this.chartConfig.y2AxisProps?.forEach((prop) => {
-        this.SetPropsTelemetryData(prop);
-      });
+      if (this.telemetryObj) {
+        this.telemetryObj.message_date = new Date(this.telemetryObj?.message_date);
+        this.chartConfig.y1AxisProps?.forEach((prop) => {
+          this.SetPropsTelemetryData(prop);
+        });
+        this.chartConfig.y2AxisProps?.forEach((prop) => {
+          this.SetPropsTelemetryData(prop);
+        });
+      }
 
       // this.telemetryData.push(this.telemetryObj);
       chart.data = this.telemetryData;
@@ -285,8 +287,9 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     }
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
+      // prop.property = this.propertyList.find(x => x.json_key == prop.json_key);
       const series = chart.series.push(new am4charts.LineSeries());
-      series.units = prop.property?.json_model[prop.json_key]?.units;
+      series.units = prop.property?.json_model ? prop.property?.json_model[prop.json_key]?.units : "";
       series.name = prop.name;
       const proptype = this.getPropertyType(prop);
       series.propType =

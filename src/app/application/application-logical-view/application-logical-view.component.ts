@@ -9,6 +9,7 @@ import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { environment } from 'src/environments/environment';
 import * as datefns from 'date-fns';
+import { ChartService } from 'src/app/services/chart/chart.service';
 
 @Component({
   selector: 'app-application-logical-view',
@@ -58,6 +59,26 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   actualPropertyList: any;
   checkwidgettype: boolean;
   logiclFilterObj: any;
+  latestRunningHours: any;
+  latestRunningMinutes: any;
+  midNightHour: any;
+  midNightMinute: any;
+  currentHour: number;
+  currentMinute: number;
+  telemetryInterval: number;
+  widgetPropertyList: any;
+  previousProperties: any;
+  lastReportedTelemetryValues: any;
+  telemetryData: any;
+  derivedKPIs: any;
+  sampleCountInterval: NodeJS.Timeout;
+  sampleCountArr: any;
+  signalRModeValue: boolean;
+  isC2dAPILoading: boolean;
+  isTelemetryModeAPICalled: boolean;
+  c2dLoadingMessage: any;
+  c2dResponseMessage: any[];
+  c2dResponseInterval: any;
 
 
 
@@ -67,7 +88,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private chartService: ChartService,
 
 
   ) { }
@@ -145,6 +167,11 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    // clearInterval(this.c2dResponseInterval);
+    this.signalRService.disconnectFromSignalR('all');
+    this.signalRTelemetrySubscription?.unsubscribe();
+    clearInterval(this.sampleCountInterval);
+
     if (this.sameAsset != this?.filterObj?.logicalview?.code) {
       if (this.filterObj?.logicalview) {
         this.isFilterSelected = true
@@ -153,11 +180,13 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           name: this?.filterObj?.logicalview?.code,
         };
         this.sameAsset = this.filterObj?.logicalview?.code
+        this.getTelemetryMode(this.filterObj?.logicalview?.assets[0]?.asset_id);
 
         this.myPromise = new Promise((resolve, reject) => {
           this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
             this.logicalViewData = response;
 
+            // this.getLiveWidgetTelemetryDetails(obj);
             // this.logicalViewData?.assets.forEach(async (element) => {
             //   await this.getAssetsModelProperties(element.asset_id);
             // });
@@ -271,12 +300,12 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
             this.cdr.markForCheck();
             this.isAssetSelected = true;
+            this.sampleCountArr = Array(60).fill(0);
+            // this.signalRService.disconnectFromSignalR('all');
+            this.getLiveData(this.sameAsset, filterObj);
 
-            this.signalRService.disconnectFromSignalR('logicalview');
-            this.getLiveData(this.sameAsset);
-
-            this.getTelemetryData();
-            setInterval(() => this.getTelemetryData(), 10000);
+            // this.getTelemetryData();
+            // setInterval(() => this.getTelemetryData(), 10000);
 
           }, error => {
             this.toasterService.showError(error.message, "Logical View Telemetry")
@@ -297,17 +326,23 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   onClearHierarchy() {
-    this.isAssetSelected = false;
+    // this.isAssetSelected = false;
+    // this.isFilterSelected = false;
+    // this.historicalCombineWidgets = [];
+    // this.logicalViewData = [];
+    // this.measuredMessageProps = [];
+    // this.propertyList = [];
+    // this.assetWiseTelemetryData = [];
+    // this.selectDateFlag = false;
+    // this.widgetBySplice = [];
+
     this.isFilterSelected = false;
-    this.historicalCombineWidgets = [];
-    this.historical_livedata = [];
-    this.measuredMessageProps = [];
-    this.propertyList = [];
-    this.assetWiseTelemetryData = [];
-    this.selectDateFlag = false;
-    this.widgetBySplice = [];
     this.sameAsset = '';
     this.getDefaultFilters();
+    this.logicalViewData = [];
+
+    this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
+    this.frequency = undefined;
   }
 
   onSaveHierachy() {
@@ -606,12 +641,27 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     })
   }
 
-  getLiveData(code, endDate: any = null) {
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let to_date = new Date(endDate * 1000);
-    to_date.setHours(0, 0, 0, 0);
-    // if (currentDate <= to_date) {
+  getLiveData(code, fobj) {
+
+    this.telemetryObj = undefined;
+    this.apiTelemetryObj = undefined;
+    this.telemetryInterval = undefined;
+    this.lastReportedTelemetryValues = undefined;
+    this.telemetryData = JSON.parse(JSON.stringify([]));
+    fobj.count = 1;
+    const midnight = datefns.getUnixTime(datefns.startOfDay(new Date()));
+    const now = datefns.getUnixTime(new Date());
+    fobj.from_date = midnight;
+    fobj.to_date = now;
+    // obj.last_n_secs = obj.to_date - obj.from_date;
+    fobj.app = this.contextApp.app;
+    fobj.partition_key = this.filterObj?.logicalview?.assets[0]?.asset_id;
+    fobj.asset_id = this.filterObj?.logicalview?.assets[0]?.asset_id;
+    delete fobj.assetArr;
+    this.isFilterSelected = true;
+    // if (environment.app === 'SopanCMS') {
+    //   await this.getMidNightHours(fobj);
+    // }
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
@@ -631,10 +681,161 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
           console.log(data);
-          // this.getLatestHistoricalTelemetry(data);
+          this.processTelemetryData(data);
         }
       });
     // }
+
+    this.apiSubscriptions.push(
+      this.assetService.getLastTelmetry(this.contextApp.app, fobj).subscribe(
+        (response: any) => {
+          if (response?.message) {
+            response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+            response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+            const obj = {};
+            if (environment.app === 'SopanCMS') {
+              this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
+              this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
+            }
+            this.actualPropertyList.forEach((prop) => {
+              if (prop.type !== 'Derived KPIs') {
+                obj[prop?.json_key] = {
+                  value: response.message[prop?.json_key],
+                  date: response.message.message_date,
+                };
+              } else {
+                const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+                obj[prop?.json_key] = {
+                  value: kpiObj.kpi_result,
+                  date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+                };
+              }
+            });
+            this.previousProperties = [];
+            obj['previous_properties'] = [];
+            this.telemetryObj = obj;
+            this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
+            // this.telemetryObj = response.message;
+            // const hours = this.telemetryObj['Running Hours'].split(':');
+            // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+            // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
+            if (environment.app === 'SopanCMS') {
+              this.getTimeDifference(
+                Math.floor(Number(this.latestRunningHours)),
+                Math.floor(Number(this.latestRunningMinutes))
+              );
+            }
+            this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
+            this.telemetryData = [];
+            this.telemetryData.push(this.telemetryObj);
+            this.isTelemetryDataLoading = false;
+          } else {
+            this.isTelemetryDataLoading = false;
+          }
+          this.sampleCountInterval = setInterval(() => {
+            this.sampleCountArr?.pop();
+            this.sampleCountArr?.unshift(0);
+            this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
+          }, 1000);
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+    );
   }
+
+  processTelemetryData(telemetryObj) {
+    telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    // this.sampleCountArr[0] = this.sampleCountArr[0] + 1;
+    if (environment.app === 'SopanCMS') {
+      if (environment.app === 'SopanCMS') {
+        this.latestRunningHours = telemetryObj[this.getPropertyKey('Running Hours')];
+        this.latestRunningMinutes = telemetryObj[this.getPropertyKey('Running Minutes')];
+      }
+      this.getTimeDifference(
+        Math.floor(Number(this.latestRunningHours)),
+        Math.floor(Number(this.latestRunningMinutes))
+      );
+    }
+    if (this.telemetryObj) {
+      const interval = datefns.differenceInMilliseconds(new Date(telemetryObj.message_date), new Date(this.telemetryObj.message_date)) / 1000;
+      this.telemetryInterval = interval;
+    }
+    const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
+    this.actualPropertyList.forEach((prop) => {
+      if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
+        obj[prop?.json_key] = {
+          value: telemetryObj[prop?.json_key],
+          date: telemetryObj.date,
+        };
+      }
+    });
+    obj['previous_properties'] = this.previousProperties;
+    this.telemetryObj = obj;
+    this.previousProperties = [];
+    Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
+    this.lastReportedTelemetryValues = obj;
+    if (this.telemetryData.length >= 15) {
+      this.telemetryData.splice(0, 1);
+    }
+    this.telemetryData.push(this.telemetryObj);
+    this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
+    console.log(this.telemetryData);
+  }
+
+  getPropertyKey(name) {
+    return this.propertyList.filter((prop) => prop.name === name)[0]?.json_key || name;
+  }
+
+  getTimeDifference(hour, minute) {
+    if (
+      this.midNightHour !== undefined &&
+      this.midNightHour !== null &&
+      this.midNightMinute !== undefined &&
+      this.midNightMinute !== null &&
+      hour !== undefined &&
+      hour !== null &&
+      minute !== undefined &&
+      minute !== null
+    ) {
+      const midNightTime = this.midNightHour * 60 + this.midNightMinute;
+      const currentTime = Number(hour) * 60 + Number(minute);
+      const diff = currentTime - midNightTime;
+      this.currentHour = Math.floor(diff / 60);
+      this.currentMinute = diff - this.currentHour * 60;
+    }
+  }
+
+  getTelemetryMode(assetId) {
+    // this.signalRModeValue = true;
+    this.apiSubscriptions.push(
+      this.assetService.getTelemetryMode(this.contextApp.app, assetId).subscribe(
+        (response: any) => {
+          const newMode =
+            response?.mode?.toLowerCase() === 'normal'
+              ? false
+              : response?.mode?.toLowerCase() === 'turbo'
+                ? true
+                : false;
+          if (this.signalRModeValue === newMode) {
+            // $('#overlay').hide();
+            this.isC2dAPILoading = false;
+            this.c2dResponseMessage = [];
+            this.c2dLoadingMessage = undefined;
+            clearInterval(this.c2dResponseInterval);
+          } else {
+            const arr = [];
+            this.telemetryData = JSON.parse(JSON.stringify([]));
+            this.chartService.clearDashboardTelemetryList.emit([]);
+            this.telemetryData = JSON.parse(JSON.stringify(arr));
+          }
+          this.signalRModeValue = newMode;
+          this.isTelemetryModeAPICalled = false;
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+    );
+  }
+
 }
 

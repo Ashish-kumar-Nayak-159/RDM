@@ -452,6 +452,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
     let properties = this.widgetObj;
     let metadata = {};
     let customProperties = [];
+    metadata["dashboardVisibility"] = this.widgetObj.dashboardVisibility;
 
     if (this.widgetObj.widget_type == "SmallNumber") {
       this.widgetObj.properties.forEach(element => {
@@ -684,6 +685,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
           if (widget.widget_type === 'SmallNumber') {
             this.checkwidgettype = true;
+            this.actualPropertyList.push(widget.properties);
           }
           widget.freezed = false;
           widget.edge_derived_props = false;
@@ -809,6 +811,20 @@ export class ConfigLogicalAssestComponent implements OnInit {
         data.widget_title = data?.chartname;
         data.widget_type = data?.widgettype;
         data.chart_id = data?.id;
+        data.dashboardVisibility = data?.metadata.dashboardVisibility;
+
+
+        // if (data.widget_type != "ConditionalNumber" && data.widget_type != "LineChart" && data.widget_type != "AreaChart") {
+        //   let pro = [];
+        //   data.properties.forEach(async (element, index) => {
+        //     await this.getAssetsModelProperties(element.asset_id, 0, index);
+        //     let data = this.propertyList.find(x => x.json_key == element.json_key);
+        //     if (data) {
+        //       pro.push(data);
+        //       element.property = data;
+        //     }
+        //   });
+        // }
 
         if (data.widget_type == "SmallNumber") {
           setTimeout(() => {

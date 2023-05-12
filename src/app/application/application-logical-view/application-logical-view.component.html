@@ -46,7 +46,7 @@
     </div> -->
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-<div class="historical-livechart-container" *ngIf="logicalViewData">
+<div class="historical-livechart-container" *ngIf="logicalViewData?.gateways">
     <div>
         <app-gateway [gateways]="logicalViewData?.gateways"></app-gateway>
     </div>

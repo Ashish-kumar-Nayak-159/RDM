@@ -135,6 +135,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.hierarchyArr = {};
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
+    this.filterObj.logicalview = undefined;
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = this.actualhierarchyNewArr?.filter(r => r.level == 1);
     }

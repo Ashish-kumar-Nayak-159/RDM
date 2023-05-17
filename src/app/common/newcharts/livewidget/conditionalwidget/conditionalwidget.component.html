@@ -40,7 +40,7 @@
         </div>
         <div class="card-body1 card-height">
             <div class="row text-center " *ngIf="telemetryObj">
-                <div *ngIf="!asset">
+                <div *ngIf="type != 'LogicalView'">
                     <div class="col-md-12" *ngFor="let prop of chartConfig.properties; let i = index">
                         {{evaluatePropConditionwithoutasset(telemetryObj,prop)}}
 
@@ -48,17 +48,16 @@
 
 
                         <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widget_type === 'NumberWithTrend'">
-                            <app-line-chart-without-axis [asset]="asset"
-                                [chartId]="chartConfig.chart_id + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
-                                [chartConfig]="chartConfig" [telemetryObj]="telemetryObj"
-                                [property]="prop.property?.json_key">
-                            </app-line-chart-without-axis>
+                            <app-newline-chart-without-axis [type]="type"
+                                [chartId]="chartConfig.chart_id + '_' + (prop?.json_key || prop.title) + '_' + i"
+                                [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop?.json_key">
+                            </app-newline-chart-without-axis>
                         </div>
                         <div class="text-center" *ngIf="chartConfig.widget_type === 'NumberWithImage'">
                             <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
                   }}" alt="" />
                         </div>
-                        <div *ngIf="(chartConfig.widget_type === 'ConditionalNumber' || chartConfig.widget_type === 'StringWidget') && !asset"
+                        <div *ngIf="(chartConfig.widget_type === 'ConditionalNumber' || chartConfig.widget_type === 'StringWidget') && type != 'LogicalView'"
                             style="height:7rem;">
                             <div class="ConditionalNumber"></div>
                         </div>
@@ -66,15 +65,15 @@
 
 
                         <div [ngClass]="{'mt-4': chartConfig.widget_type === 'ConditionalNumber' || chartConfig.widget_type === 'StringWidget'}"
-                            [ngStyle]="{'margin-top': chartConfig.widget_type === 'NumberWithTrend' && !asset ? '1rem' : '' }">
+                            [ngStyle]="{'margin-top': chartConfig.widget_type === 'NumberWithTrend' && type != 'LogicalView' ? '1rem' : '' }">
                             <span class="text-grey">
                                 <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
-                                    {{telemetryObj[prop.json_Data[0]?.json_key]?.date ||
-                                    telemetryObj[prop.json_Data[0]?.json_key]?.message_date}}
+                                    {{telemetryObj[prop.json_key]?.date ||
+                                    telemetryObj[prop.json_key]?.message_date}}
                                 </ng-container>
                                 <ng-template #APIPropDateTemplate>
-                                    {{apiTelemetryObj[prop.json_Data?.json_key]?.date ||
-                                    apiTelemetryObj[prop.json_Data?.json_key]?.message_date}}
+                                    {{apiTelemetryObj[prop.json_key]?.date ||
+                                    apiTelemetryObj[prop.json_key]?.message_date}}
                                 </ng-template>
                             </span>
                         </div>
@@ -84,12 +83,13 @@
 
             <!-- New Code -->
 
-            <div *ngIf="asset" class="d-flex flex-column justify-content-center align-items-center card-height2">
+            <div *ngIf="type == 'LogicalView'"
+                class="d-flex flex-column justify-content-center align-items-center card-height2">
                 <span class="status mb-4">
                     {{evaluatePropCondition(telemetryObj)}}
                 </span>
                 <span class="text-grey">
-                    {{telemetryObj[chartConfig?.properties[0]?.json_key]?.date }}
+                    {{telemetryObj[chartConfig?.properties[0]?.json_Data[0]?.json_key]?.date }}
 
                 </span>
             </div>

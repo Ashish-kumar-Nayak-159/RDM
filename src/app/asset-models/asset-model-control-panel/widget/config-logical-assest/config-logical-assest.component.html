@@ -94,7 +94,7 @@
                         (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
                     </app-rectanglewidget> -->
                     <app-cylinderwidget [chartConfig]="widget"
-                        *ngIf="widget.widget_type === 'CylinderWidget' ||widget.widget_type === 'RectangleWidget'"
+                        *ngIf="telemetryObj && (widget.widget_type === 'CylinderWidget' ||widget.widget_type === 'RectangleWidget')"
                         (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj">
                     </app-cylinderwidget>
 
@@ -207,7 +207,7 @@
                                     <div class="form-group row">
                                         <div class="col-12 mb-2">
                                             <ng-select [items]="drpassets" class="custom-dropdown w-12 sm"
-                                                [searchable]="true" placeholder="Select Assest" clearSearchOnAdd="true"
+                                                [searchable]="true" placeholder="Select Assets" clearSearchOnAdd="true"
                                                 [closeOnSelect]="true" [clearable]="false" bindLabel="display_name"
                                                 dropdownPosition="bottom" name="slave-dropdown1"
                                                 [(ngModel)]="propObj.asset_id" bindValue="asset_id"

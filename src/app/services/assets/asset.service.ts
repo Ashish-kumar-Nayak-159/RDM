@@ -26,6 +26,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
+    debugger
     const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     if (assets) {
       return new Observable((observer) => {
@@ -47,6 +48,27 @@ export class AssetService {
         );
     }
   }
+
+  getLegacyAsset(filterObj, app) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http
+      .get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
+      .pipe(
+        map((data: any) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, data.data);
+          return data;
+        }),
+        catchError((error) => {
+          return throwError(error);
+        })
+      );
+  }
+
   getAndSetAllAssets(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

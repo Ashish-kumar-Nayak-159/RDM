@@ -65,24 +65,23 @@ export class LogicalAssetComponent implements OnInit {
   }
 
   getAssets(hierarchy) {
-    return new Promise<void>((resolve1) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.NON_IP_ASSET,
-      };
-      this.subscriptions.push(
-        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-          if (response?.data) {
-            this.assets = response.data;
-            if (this.assets?.length === 1) {
-              this.filterObj.asset = this.assets[0];
-              // this.onChangeOfAsset();
-            }
+    debugger;
+    const obj = {
+      hierarchy: JSON.stringify(hierarchy),
+      type: CONSTANTS.NON_IP_ASSET,
+    };
+    this.subscriptions.push(
+      this.assetService.getLegacyAsset(obj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data) {
+          this.assets = response.data;
+          if (this.assets?.length === 1) {
+            this.filterObj.asset = this.assets[0];
+            // this.onChangeOfAsset();
           }
-          resolve1();
-        })
-      );
-    });
+        }
+      })
+    );
+
   }
 
 

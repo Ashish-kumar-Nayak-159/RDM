@@ -53,6 +53,7 @@ import { NewdataTypeFiedsComponent } from './newdata-type-fieds/newdata-type-fie
 import { NewmodelProtocolSpecificDetailsComponent } from './newmodel-protocol-specific-details/newmodel-protocol-specific-details.component';
 import { NumberonlywidgetLogicalviewComponent } from './newcharts/formcomponent/numberonlywidget-logicalview/numberonlywidget-logicalview.component';
 import { LivelinechartComponent } from './newcharts/livelinechart/livelinechart.component';
+import { NewLineChartWithoutAxisComponent } from './charts/newline-chart-without-axis/newline-chart-without-axis.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -66,6 +67,7 @@ import { LivelinechartComponent } from './newcharts/livelinechart/livelinechart.
     ConfirmModalComponent,
     GaugeChartComponent,
     LineChartWithoutAxisComponent,
+    NewLineChartWithoutAxisComponent,
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
     LiveLineChartComponent,

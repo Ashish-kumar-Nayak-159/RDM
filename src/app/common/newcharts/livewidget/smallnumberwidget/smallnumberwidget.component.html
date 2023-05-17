@@ -56,28 +56,28 @@
                             [ngStyle]="{'font-size': chartConfig.widget_type === 'SmallNumber' || chartConfig.widget_type === 'StringWidget' ? '1.3rem' : '' }">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (telemetryObj[prop.property?.json_key] &&
-                                (telemetryObj[prop.property?.json_key]?.value !==
+                                {{ (telemetryObj[prop?.json_key] &&
+                                (telemetryObj[prop?.json_key]?.value !==
                                 undefined
-                                && telemetryObj[prop.property?.json_key]?.value !== null)) ?
-                                (prop.property?.data_type === 'Number' ?
-                                (convertToNumber(telemetryObj[prop.property?.json_key]?.value)) :
-                                (telemetryObj[prop.property?.json_key].value))
+                                && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                (prop?.data_type === 'Number' ?
+                                (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
+                                (telemetryObj[prop?.json_key].value))
                                 : 'NA'}}
                                 <sub class="text-xs live-widget-title mb-0">
-                                    {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
-                                    prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
+                                    {{prop?.units ? ('(' +
+                                    prop?.units + ')') : ''}}
                                 </sub>
 
                             </ng-container>
 
                             <ng-template #APIPropValTemplate>
-                                {{ (apiTelemetryObj[prop.property?.json_key] &&
-                                (apiTelemetryObj[prop.property?.json_key]?.value !==
-                                undefined && apiTelemetryObj[prop.property?.json_key]?.value !== null)) ?
-                                (prop.property?.data_type === 'Number' ?
-                                (apiTelemetryObj[prop.property?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
-                                (apiTelemetryObj[prop.property?.json_key].value))
+                                {{ (apiTelemetryObj[prop?.json_key] &&
+                                (apiTelemetryObj[prop?.json_key]?.value !==
+                                undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
+                                (prop?.data_type === 'Number' ?
+                                (apiTelemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
+                                (apiTelemetryObj[prop?.json_key].value))
                                 : 'NA'}} {{prop.unit}}
                             </ng-template>
                         </span>
@@ -88,28 +88,28 @@
                             [ngStyle]="{'font-size': chartConfig.widget_type === 'SmallNumber' || chartConfig.widget_type === 'StringWidget' ? '1.3rem' : '' }">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (telemetryObj[prop.property?.json_key] &&
-                                (telemetryObj[prop.property?.json_key]?.value !==
+                                {{ (telemetryObj[prop?.json_key] &&
+                                (telemetryObj[prop?.json_key]?.value !==
                                 undefined
-                                && telemetryObj[prop.property?.json_key]?.value !== null)) ?
-                                (prop.property?.data_type === 'Number' ?
-                                (telemetryObj[prop.property?.json_key]?.value) :
-                                (telemetryObj[prop.property?.json_key].value))
+                                && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                (prop?.data_type === 'Number' ?
+                                (telemetryObj[prop?.json_key]?.value) :
+                                (telemetryObj[prop?.json_key].value))
                                 : 'NA'}}
                                 <sub class="text-xs live-widget-title mb-0">
-                                    {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
-                                    prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
+                                    {{prop?.units ? ('(' +
+                                    prop?.units + ')') : ''}}
                                 </sub>
 
                             </ng-container>
 
                             <ng-template #APIPropValTemplate>
-                                {{ (apiTelemetryObj[prop.property?.json_key] &&
-                                (apiTelemetryObj[prop.property?.json_key]?.value !==
-                                undefined && apiTelemetryObj[prop.property?.json_key]?.value !== null)) ?
-                                (prop.property?.data_type === 'Number' ?
-                                (apiTelemetryObj[prop.property?.json_key]?.value) :
-                                (apiTelemetryObj[prop.property?.json_key].value))
+                                {{ (apiTelemetryObj[prop?.json_key] &&
+                                (apiTelemetryObj[prop?.json_key]?.value !==
+                                undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
+                                (prop?.data_type === 'Number' ?
+                                (apiTelemetryObj[prop?.json_key]?.value) :
+                                (apiTelemetryObj[prop?.json_key].value))
                                 : 'NA'}} {{prop.unit}}
                             </ng-template>
                         </span>

@@ -25,7 +25,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   decodedToken: any;
   widgetStringFromMenu: any;
-  constructor(private chartService: ChartService, private commonService: CommonService) {}
+  constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));

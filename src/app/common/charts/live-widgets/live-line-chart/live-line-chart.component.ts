@@ -43,11 +43,12 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   decodedToken: any;
   propertyBasedData: any = {};
   widgetStringFromMenu: any;
-  constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) {}
+  constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+
     if (!this.chartConfig.y1AxisProps) {
       this.chartConfig.y1AxisProps = [];
     }
@@ -65,6 +66,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       })
     );
+    console.log("chart", JSON.stringify(this.chartConfig));
+    console.log("asset", JSON.stringify(this.asset));
+    console.log("tempdata", JSON.stringify(this.telemetryObj));
   }
 
   ngOnChanges(changes) {
@@ -84,15 +88,20 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           }
           const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
           this.telemetryData = [];
+          console.log(this.chartConfig.y1AxisProps);
+          console.log(this.chartConfig.y2AxisProps);
           this.chartConfig.y1AxisProps?.forEach((prop) => {
             if (
               this.telemetryObj[prop.json_key].value !== undefined &&
               this.telemetryObj[prop.json_key].value !== null
             ) {
+              console.log(!this.propertyBasedData[prop.json_key]);
+              console.log(this.propertyBasedData[prop.json_key].latest_message_date.getTime());
+              console.log(new Date(this.telemetryObj[prop.json_key].date).getTime());
               if (
                 !this.propertyBasedData[prop.json_key] ||
                 this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-                  new Date(this.telemetryObj[prop.json_key].date).getTime()
+                new Date(this.telemetryObj[prop.json_key].date).getTime()
               ) {
                 const obj = {};
                 obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
@@ -109,36 +118,39 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
                 }
               }
               this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+              console.log(this.telemetryData);
+
             }
           });
 
-          this.chartConfig.y2AxisProps?.forEach((prop) => {
-            if (
-              this.telemetryObj[prop.json_key].value !== undefined &&
-              this.telemetryObj[prop.json_key].value !== null
-            ) {
-              if (
-                !this.propertyBasedData[prop.json_key] ||
-                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-                  new Date(this.telemetryObj[prop.json_key].date).getTime()
-              ) {
-                const obj = {};
-                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-                if (!this.propertyBasedData[prop.json_key]) {
-                  this.propertyBasedData[prop.json_key] = {
-                    data: [],
-                  };
-                }
-                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-                this.propertyBasedData[prop.json_key]['data'].push(obj);
-                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-                }
-              }
-              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-            }
-          });
+          // this.chartConfig.y2AxisProps?.forEach((prop) => {
+          //   if (
+          //     this.telemetryObj[prop.json_key].value !== undefined &&
+          //     this.telemetryObj[prop.json_key].value !== null
+          //   ) {
+          //     if (
+          //       !this.propertyBasedData[prop.json_key] ||
+          //       this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+          //       new Date(this.telemetryObj[prop.json_key].date).getTime()
+          //     ) {
+          //       const obj = {};
+          //       obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+          //       obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+          //       if (!this.propertyBasedData[prop.json_key]) {
+          //         this.propertyBasedData[prop.json_key] = {
+          //           data: [],
+          //         };
+          //       }
+          //       this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+          //       this.propertyBasedData[prop.json_key]['data'].push(obj);
+          //       if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+          //         this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+          //       }
+          //     }
+          //     this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+
+          //   }
+          // });
         }
         // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
         //   this.telemetryData.splice(0, 1);
@@ -146,6 +158,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.chart.data = this.telemetryData;
       this.chart.validateData();
+
     }
   }
 
@@ -165,8 +178,10 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryObj['TMS'] = undefined;
         }
       }
+
       this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
-      this.chartConfig.y1AxisProps?.forEach((prop) => {        
+
+      this.chartConfig.y1AxisProps?.forEach((prop) => {
         this.SetPropsTelemetryData(prop);
       });
       this.chartConfig.y2AxisProps?.forEach((prop) => {
@@ -282,10 +297,10 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         proptype === 'Edge Derived Properties'
           ? 'ED'
           : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+              ? 'DK'
+              : 'M';
       series.propKey = prop.json_key;
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';

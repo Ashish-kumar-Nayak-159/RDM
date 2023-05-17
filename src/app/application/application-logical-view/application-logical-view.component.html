@@ -64,7 +64,7 @@
                           'margin-left':'0', 'margin-top': '2%' }">
 
                             <app-smallnumberwidget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
-                                [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+                                [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj" [type]="'LogicalView'">
                             </app-smallnumberwidget>
                         </div>
                     </ng-container>
@@ -86,22 +86,28 @@
                             [type]="'LogicalView'">
                         </app-onlynumberwidget>
 
-                        <app-conditionalwidget *ngIf="widget?.widget_type === 'ConditionalNumber'"
+                        <app-conditionalwidget *ngIf="telemetryObj && widget?.widget_type === 'ConditionalNumber'"
                             [type]="'LogicalView'" [chartConfig]="widget" [telemetryObj]="telemetryObj"
                             [apiTelemetryObj]="telemetryObj">
                         </app-conditionalwidget>
 
-                        <app-gaugechart [chartConfig]="widget" *ngIf="widget.widget_type === 'GaugeChart'"
-                            [type]="'LogicalView'" [telemetryObj]="telemetryObj">
+                        <app-gaugechart [chartConfig]="widget"
+                            *ngIf="telemetryObj && (widget.widget_type === 'GaugeChart')" [type]="'LogicalView'"
+                            [telemetryObj]="telemetryObj">
                         </app-gaugechart>
 
                         <app-cylinderwidget [chartConfig]="widget" [type]="'LogicalView'"
-                            *ngIf="widget.widget_type === 'CylinderWidget' || widget.widget_type === 'RectangleWidget'"
+                            *ngIf="telemetryObj && (widget.widget_type === 'CylinderWidget')"
                             [telemetryObj]="telemetryObj">
                         </app-cylinderwidget>
 
+                        <app-rectanglewidget [chartConfig]="widget" [type]="'LogicalView'"
+                            *ngIf="telemetryObj && (widget.widget_type === 'RectangleWidget')"
+                            [telemetryObj]="telemetryObj">
+                        </app-rectanglewidget>
+
                         <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
-                            *ngIf="widget.widgettype === 'LineChart' || widget.widgettype === 'AreaChart'">
+                            *ngIf="telemetryObj && (widget.widgettype === 'LineChart' || widget.widgettype === 'AreaChart')">
                         </app-livelinechart>
 
                     </div>

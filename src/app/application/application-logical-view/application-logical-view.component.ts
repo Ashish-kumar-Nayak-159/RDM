@@ -10,6 +10,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { environment } from 'src/environments/environment';
 import * as datefns from 'date-fns';
 import { ChartService } from 'src/app/services/chart/chart.service';
+import { object } from '@amcharts/amcharts4/core';
 
 @Component({
   selector: 'app-application-logical-view',
@@ -56,6 +57,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   isAssetSelected: boolean = false;
   logicalView: any;
   logicalViewData: any;
+  logicalViewDatarender: any;
+
   actualPropertyList: any;
   checkwidgettype: boolean;
   logiclFilterObj: any;
@@ -66,7 +69,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   currentHour: number;
   currentMinute: number;
   telemetryInterval: number;
-  widgetPropertyList: any;
+  widgetPropertyList: any = [];
   previousProperties: any;
   lastReportedTelemetryValues: any;
   telemetryData: any;
@@ -168,6 +171,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     // clearInterval(this.c2dResponseInterval);
+    console.log("PropertyList", JSON.stringify(this.propertyList))
     this.signalRService.disconnectFromSignalR('all');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
@@ -185,6 +189,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.myPromise = new Promise((resolve, reject) => {
           this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
             this.logicalViewData = response;
+            this.logicalViewDatarender = this.logicalViewData?.charts
 
             // this.getLiveWidgetTelemetryDetails(obj);
             // this.logicalViewData?.assets.forEach(async (element) => {
@@ -234,6 +239,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                   }
                   // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                   prop.type = prop?.type;
+                  this.addPropertyInList(prop);
 
                   if (prop?.type === 'Derived KPIs') {
                     widget.derived_kpis = true;
@@ -256,6 +262,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                   if (prop.id) {
                     prop.json_key = prop.id;
                   }
+                  this.addPropertyInList(prop);
+
                   // prop.property = this.propertyList.find(
                   //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
                   // );
@@ -287,7 +295,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                   } else {
                     widget.measured_props = true;
                   }
-
+                  console.log("propertyList", JSON.stringify(this.propertyList))
                   this.actualPropertyList.push(prop);
 
                 });
@@ -642,7 +650,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   getLiveData(code, fobj) {
-
     this.telemetryObj = undefined;
     this.apiTelemetryObj = undefined;
     this.telemetryInterval = undefined;
@@ -673,16 +680,22 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
       (data) => {
         if (data) {
-          let obj = JSON.parse(JSON.stringify(data));
+          let obj = JSON.parse(JSON.stringify(data?.data));
           delete obj.m;
           delete obj.ed;
           delete obj.cd;
           delete obj.dkpi;
-          obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+          obj = { ...obj, ...data?.data.m, ...data?.data.ed, ...data?.data.cd, ...data?.data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
-          console.log(data);
-          this.processTelemetryData(data);
+          console.log("dataaaaa", JSON.stringify(data))
         }
+        // let newData = data;
+        // this.telemetryObj = newData;
+        // this.telemetryData.push(this.telemetryObj)
+        // this.telemetryObj = [...this.telemetryObj, ...newData?.data];
+        //this. (data);
+        this.processTelemetryData(data)
+
       });
     // }
 
@@ -762,6 +775,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       this.telemetryInterval = interval;
     }
     const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
+    // this.widgetPropertyList = [{ "name": "Battery Voltage", "type": "Measured Properties", "json_key": "BV", "property": { "name": "Battery Voltage", "read": true, "type": "Measured Properties", "unit": "V", "group": "G1", "slave": "Falgun_Legacy_Slave_1", "syncUp": false, "clicked": false, "json_key": "BV", "metadata": { "d": "a", "p": 2, "bn": -1, "fc": 3, "rw": "r", "sa": 6, "sd": 5, "bytn": 0, "fc_r": 3, "slave_id": "Falgun_Legacy_Slave_1" }, "data_type": "Number", "threshold": "{}", "byteNumber": null, "json_model": { "BV": { "type": "Number", "units": "V", "maxValue": "", "minValue": "", "precision": "", "defaultValue": "" } } } }]
     this.actualPropertyList.forEach((prop) => {
       if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
         obj[prop?.json_key] = {
@@ -771,16 +785,18 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       }
     });
     obj['previous_properties'] = this.previousProperties;
-    this.telemetryObj = obj;
-    this.previousProperties = [];
-    Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
-    this.lastReportedTelemetryValues = obj;
-    if (this.telemetryData.length >= 15) {
-      this.telemetryData.splice(0, 1);
-    }
-    this.telemetryData.push(this.telemetryObj);
-    this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
-    console.log(this.telemetryData);
+    this.telemetryObj = Object.assign({}, obj);
+    console.log(this.telemetryObj);
+    // this.previousProperties = [];
+    // Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
+    // this.lastReportedTelemetryValues = obj;
+    // if (this.telemetryData.length >= 15) {
+    //   this.telemetryData.splice(0, 1);
+    // }
+    // this.telemetryData.push(obj);
+    // this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
+    // this.telemetryObj = Object.assign({}, this.telemetryData);
+
   }
 
   getPropertyKey(name) {
@@ -835,6 +851,17 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         (error) => (this.isTelemetryDataLoading = false)
       )
     );
+  }
+
+  addPropertyInList(prop) {
+    if (this.widgetPropertyList.length === 0) {
+      this.widgetPropertyList.push(prop);
+    } else {
+      const index = this.widgetPropertyList.findIndex((propObj) => propObj.json_key === prop.json_key);
+      if (index === -1) {
+        this.widgetPropertyList.push(prop);
+      }
+    }
   }
 
 }

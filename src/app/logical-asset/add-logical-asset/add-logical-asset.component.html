@@ -3,8 +3,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
-                    {{isAssetEditable ? ('View ' + (tileData?.table_key || 'Logical View')) :
-                    ('Add ' + (tileData?.table_key || 'Logical View'))}}
+                    {{isAssetEditable ? ('View ' + (tileData?.table_key || 'Logical Assets')) :
+                    ('Add ' + (tileData?.table_key || 'Logical Assets'))}}
                 </h5>
                 <button type="button" class="close" (click)="onCloseCreateAssetModal()" aria-label="Close"
                     [disabled]="isCreateAssetAPILoading">
@@ -56,7 +56,7 @@
                         </ng-container>
 
                         <div class="form-group">
-                            <label for="message-text" class="col-form-label">Assest:</label>
+                            <label for="message-text" class="col-form-label">Assets:</label>
                             <ng-select [items]="assets" class="dropdown-open" bindLabel="display_name"
                                 placeholder="Select Asset" dropdownPosition="bottom" name="asset-dropdown"
                                 [(ngModel)]="selectedAsset" [searchable]="true" [closeOnSelect]="false"
@@ -78,7 +78,7 @@
                     <div class="modal-footer fixed-bottom bg-white">
                         <!-- <button *ngIf="componentState === constantData.NON_IP_ASSET" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateAssetAPILoading"
             (click)="isAssetEditable ? onEditAsset() : onCreateAsset()">Save</button> -->
-                        <button type="button" class="btn btn-primary add-row"
+                        <button *ngIf="!isAssetEditable" type="button" class="btn btn-primary add-row"
                             [disabled]="!form.valid || isCreateAssetAPILoading"
                             (click)="isAssetEditable ? onUpdateAsset() : onCreateAsset()">Save</button>
                         <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetAPILoading"

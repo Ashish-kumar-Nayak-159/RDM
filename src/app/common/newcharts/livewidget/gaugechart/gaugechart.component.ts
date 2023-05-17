@@ -49,20 +49,21 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
+
       //  this.label.text = changes.value.currentValue;
       this.chartConfig?.properties?.forEach((prop, index) => {
         if (this.hand[index] && this.chart[index]) {
-          this.hand[index].value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+          this.hand[index].value = Number(this.telemetryObj[prop.json_key]?.value || '0');
         }
         if (
           this.chart[index] &&
           !this.hand[index] &&
-          this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-          this.telemetryObj[prop.property?.json_key]?.value !== null
+          this.telemetryObj[prop.json_key]?.value !== undefined &&
+          this.telemetryObj[prop.json_key]?.value !== null
         ) {
           const hand = this.chart[index].hands.push(new am4charts.ClockHand());
           hand.radius = am4core.percent(97);
-          hand.value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+          hand.value = Number(this.telemetryObj[prop.json_key]?.value || '0');
           this.hand.splice(index, 0, hand);
         }
       });
@@ -71,14 +72,15 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
   loadChart() {
     this.chartConfig?.properties?.forEach((prop, index) => {
+      debugger
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.GaugeChart);
       chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-      if (this.chartConfig.startAngle !== undefined && this.chartConfig.startAngle !== null) {
-        chart.startAngle = -(this.chartConfig.startAngle + 180) % 360;
+      if (this.chartConfig.metadata.startAngle !== undefined && this.chartConfig.metadata.startAngle !== null) {
+        chart.startAngle = -(this.chartConfig.metadata.startAngle + 180) % 360;
       }
-      if (this.chartConfig.endAngle !== undefined && this.chartConfig.endAngle !== null) {
-        chart.endAngle = -(this.chartConfig.endAngle + 180) % 360;
+      if (this.chartConfig.metadata.endAngle !== undefined && this.chartConfig.metadata.endAngle !== null) {
+        chart.endAngle = -(this.chartConfig.metadata.endAngle + 180) % 360;
       }
       chart.innerRadius = am4core.percent(70);
       chart.logo.disabled = true;
@@ -114,12 +116,12 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
       if (this.telemetryObj) {
         if (
-          this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-          this.telemetryObj[prop.property?.json_key]?.value !== null
+          this.telemetryObj[prop.json_key]?.value !== undefined &&
+          this.telemetryObj[prop.json_key]?.value !== null
         ) {
           const hand = chart.hands.push(new am4charts.ClockHand());
           hand.radius = am4core.percent(97);
-          hand.value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+          hand.value = Number(this.telemetryObj[prop.json_key]?.value || '0');
           this.hand.splice(index, 0, hand);
         }
       }

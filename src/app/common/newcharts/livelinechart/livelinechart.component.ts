@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -46,9 +46,11 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   widgetStringFromMenu: any;
   @Output() chart_Id = new EventEmitter<any>();
   widgetId: any;
+  @ViewChild('chartConfig.chart_id', { static: false }) chartElement: ElementRef;
   constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) { }
 
   ngOnInit(): void {
+    console.log("ngonit")
     if (this.chartConfig) {
       this.y1AxisProps = this.chartConfig.y1axis;
       this.y2AxisProps = this.chartConfig.y2axis;
@@ -65,7 +67,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.chartConfig.y2AxisProps) {
       this.chartConfig.y2AxisProps = [];
     }
-    setTimeout(() => this.plotChart(), 200);
+    setTimeout(() => this.plotChart(), 1000);
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
         this.telemetryData = [];
@@ -78,92 +80,95 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  ngOnChanges(changes) {
-    if (changes.telemetryObj && this.chart) {
-      if (this.chartConfig.noOfDataPointsForTrend > 0) {
-        if (changes.telemetryObj) {
-          //  this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
-          if (this.environmentApp === 'SopanCMS') {
-            this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
-            this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
-            if (this.telemetryObj['TMD'] < 1) {
-              this.telemetryObj['TMD'] = undefined;
-            }
-            if (this.telemetryObj['TMS'] < 1) {
-              this.telemetryObj['TMS'] = undefined;
-            }
-          }
-          const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
-          this.telemetryData = [];
-          this.chartConfig.y1AxisProps?.forEach((prop) => {
-            if (
-              this.telemetryObj[prop.json_key].value !== undefined &&
-              this.telemetryObj[prop.json_key].value !== null
-            ) {
-              if (
-                !this.propertyBasedData[prop.json_key] ||
-                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-                new Date(this.telemetryObj[prop.json_key].date).getTime()
-              ) {
-                const obj = {};
-                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-                if (!this.propertyBasedData[prop.json_key]) {
-                  this.propertyBasedData[prop.json_key] = {
-                    data: [],
-                  };
-                }
-                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-                this.propertyBasedData[prop.json_key]['data'].push(obj);
-                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-                }
-              }
-              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-            }
-          });
+  ngOnChanges(changes: SimpleChanges) {
 
-          this.chartConfig.y2AxisProps?.forEach((prop) => {
-            if (
-              this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
-              this.telemetryObj[prop.json_key]?.value !== null
-            ) {
-              if (
-                !this.propertyBasedData[prop.json_key] ||
-                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-                new Date(this.telemetryObj[prop.json_key].date).getTime()
-              ) {
-                const obj = {};
-                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-                if (!this.propertyBasedData[prop.json_key]) {
-                  this.propertyBasedData[prop.json_key] = {
-                    data: [],
-                  };
-                }
-                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-                this.propertyBasedData[prop.json_key]['data'].push(obj);
-                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-                }
-              }
-              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-            }
-          });
+    if (changes.telemetryObj && this.chart) {
+      // if (this.chartConfig.noOfDataPointsForTrend > 0) {
+      if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
+
+        this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
+        if (this.environmentApp === 'SopanCMS') {
+          this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
+          this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
+          if (this.telemetryObj['TMD'] < 1) {
+            this.telemetryObj['TMD'] = undefined;
+          }
+          if (this.telemetryObj['TMS'] < 1) {
+            this.telemetryObj['TMS'] = undefined;
+          }
         }
-        // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-        //   this.telemetryData.splice(0, 1);
-        // }
+
+        const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
+        this.telemetryData = [];
+        this.chartConfig.y1AxisProps?.forEach((prop) => {
+          if (
+            this.telemetryObj[prop.json_key].value !== undefined &&
+            this.telemetryObj[prop.json_key].value !== null
+          ) {
+            if (
+              !this.propertyBasedData[prop.json_key] ||
+              this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+              new Date(this.telemetryObj[prop.json_key].date).getTime()
+            ) {
+              const obj = {};
+              obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+              obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+              if (!this.propertyBasedData[prop.json_key]) {
+                this.propertyBasedData[prop.json_key] = {
+                  data: [],
+                };
+              }
+              this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+              this.propertyBasedData[prop.json_key]['data'].push(obj);
+              if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+                this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+              }
+            }
+            this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+          }
+        });
+
+        this.chartConfig.y2AxisProps?.forEach((prop) => {
+          if (
+            this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
+            this.telemetryObj[prop.json_key]?.value !== null
+          ) {
+            if (
+              !this.propertyBasedData[prop.json_key] ||
+              this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+              new Date(this.telemetryObj[prop.json_key].date).getTime()
+            ) {
+              const obj = {};
+              obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+              obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+              if (!this.propertyBasedData[prop.json_key]) {
+                this.propertyBasedData[prop.json_key] = {
+                  data: [],
+                };
+              }
+              this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+              this.propertyBasedData[prop.json_key]['data'].push(obj);
+              if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+                this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+              }
+            }
+            this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+          }
+        });
       }
+      // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+      //   this.telemetryData.splice(0, 1);
+      // }
+      // }
+
       this.chart.data = this.telemetryData;
-      this.chart.validateData();
     }
   }
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
       am4core.options.autoDispose = true;
-      const chart = am4core.create(this.chartConfig.chart_id, am4charts.XYChart);
+      const chart = am4core.create(this.chartElement?.nativeElement, am4charts.XYChart)
       chart.paddingRight = 20;
       this.telemetryData = [];
       if (this.environmentApp === 'SopanCMS') {
@@ -176,15 +181,32 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryObj['TMS'] = undefined;
         }
       }
-      if (this.telemetryObj) {
-        this.telemetryObj.message_date = new Date(this.telemetryObj?.message_date);
-        this.chartConfig.y1AxisProps?.forEach((prop) => {
-          this.SetPropsTelemetryData(prop);
-        });
-        this.chartConfig.y2AxisProps?.forEach((prop) => {
-          this.SetPropsTelemetryData(prop);
-        });
+      let obj = new Date(this.telemetryObj?.message_date)
+
+      this.telemetryObj["message_date"] = obj;
+      // this.telemetryObj['message_date'] = new Date(this.telemetryObj?.message_date);
+      this.chartConfig.y1AxisProps?.forEach((prop) => {
+        this.SetPropsTelemetryData(prop);
+      });
+
+      this.chartConfig.y2AxisProps?.forEach((prop) => {
+        this.SetPropsTelemetryData(prop);
+      });
+
+      if (this.telemetryData) {
+
+        chart.data = this.telemetryData;
+
       }
+      // if (this.telemetryObj) {
+      //   this.telemetryObj.message_date = new Date(this.telemetryObj?.message_date);
+      //   this.chartConfig.y1AxisProps?.forEach((prop) => {
+      //     this.SetPropsTelemetryData(prop);
+      //   });
+      //   this.chartConfig.y2AxisProps?.forEach((prop) => {
+      //     this.SetPropsTelemetryData(prop);
+      //   });
+      // }
 
       // this.telemetryData.push(this.telemetryObj);
       chart.data = this.telemetryData;
@@ -289,7 +311,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     arr.forEach((prop) => {
       // prop.property = this.propertyList.find(x => x.json_key == prop.json_key);
       const series = chart.series.push(new am4charts.LineSeries());
-      series.units = prop.property?.json_model ? prop.property?.json_model[prop.json_key]?.units : "";
+      series.units = prop.property?.json_model ? prop.property?.json_model[prop.json_key]?.units : "V";
       series.name = prop.name;
       const proptype = this.getPropertyType(prop);
       series.propType =

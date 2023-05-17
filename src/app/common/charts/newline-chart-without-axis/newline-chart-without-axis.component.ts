@@ -6,16 +6,17 @@ import * as am4charts from '@amcharts/amcharts4/charts';
 
 declare var $: any;
 @Component({
-  selector: 'app-line-chart-without-axis',
-  templateUrl: './line-chart-without-axis.component.html',
-  styleUrls: ['./line-chart-without-axis.component.css'],
+  selector: 'app-newline-chart-without-axis',
+  templateUrl: './newline-chart-without-axis.component.html',
+  styleUrls: ['./newline-chart-without-axis.component.css'],
 })
-export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() chartId: string;
   @Input() property: string;
   @Input() asset: any;
   @Input() telemetryObj;
   @Input() chartConfig: any;
+  @Input() type: any;
   private chart: am4charts.XYChart;
   min = 0;
   max = 100;

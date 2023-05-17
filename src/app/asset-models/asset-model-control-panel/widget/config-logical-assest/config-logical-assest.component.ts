@@ -339,6 +339,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
       } else if (prop.property && this.widgetObj.widget_type != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
+        prop.unit = prop.property?.unit;
         delete prop.property;
       }
     });
@@ -361,7 +362,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
         return;
       } else {
         const arr = [];
-
+        debugger
         this.widgetObj.y1AxisProps.forEach((prop) => {
           prop.type = this.getPropertieType(prop.type);
 
@@ -369,6 +370,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            units: prop.unit,
             // slave_id: prop?.metadata?.slave_id,
             assetid: this.widgetObj.Y1Assest,
             // asset_model: this.widgetObj.Y1Assest?.asset_model,
@@ -390,6 +392,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            units: prop.unit,
             // slave_id: prop?.metadata?.slave_id,
             assetid: this.widgetObj.Y2Assest,
             // asset_model: this.widgetObj.Y2Assest?.asset_model,
@@ -461,6 +464,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "type": element.type,
           "title": element.title,
           "json_key": element.json_key,
+          "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id
         }
@@ -526,6 +530,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "type": element.type,
           "title": element.title,
           "json_key": element.json_key,
+          "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id
         }
@@ -541,7 +546,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
     }
 
     else if (this.widgetObj.widget_type == "NumberWithImage") {
-      ;
 
       this.widgetObj.properties.forEach(element => {
         // let getName: any;
@@ -562,6 +566,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "title": element.title,
           "type": element.property.type,
           "json_key": element.property.json_key,
+          "units": element.property.unit,
           "asset_id": element.asset_id
         }
         customProperties.push(obj);
@@ -834,7 +839,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
             data.properties[0].property.name = getName?.name;
             data.properties[0].property.datatype = getName?.datatype;
-            data.dashboardVisibility = data.dashboard_visibility;
+            data.dashboardVisibility = data.metadata.dashboardVisibility;
             this.isDataFill = true;
 
           }, 2000);

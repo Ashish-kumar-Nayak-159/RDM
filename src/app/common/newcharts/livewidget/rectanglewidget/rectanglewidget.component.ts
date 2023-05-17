@@ -30,6 +30,8 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
   @Input() asset: any;
+  @Input() type: any;
+  // @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   bodyMessage: string;
   headerMessage: string;
@@ -48,35 +50,39 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
   ngOnInit(): void {
-
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties[0].properties;
+      this.chartConfig.properties = this.chartConfig.properties;
 
       this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
 
     }
+    console.log(this.telemetryObj);
+    debugger
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
     this.generateChart();
+
   }
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
+
       this.chartConfig.properties.forEach((prop, index) => {
         const chart = this.chart[index];
         if (chart) {
           this.telemetryData = {};
           if (
-            this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-            this.telemetryObj[prop.property?.json_key]?.value !== null
+            this.telemetryObj[prop?.json_key]?.value !== undefined &&
+            this.telemetryObj[prop?.json_key]?.value !== null
           ) {
-            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
             this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
             this.telemetryData.category = '';
             chart.data = [this.telemetryData];
@@ -87,9 +93,10 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   generateChart() {
+
     this.chartConfig.properties.forEach((prop, index) => {
       am4core.options.autoDispose = true;
-      const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.XYChart3D);
+      const chart = am4core.create(this.chartConfig.chart_id + 'd_chart_' + index, am4charts.XYChart3D);
       chart.hiddenState.properties.opacity = 0;
       chart.logo.disabled = true;
       chart.angle = 50;
@@ -133,15 +140,16 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.telemetryData = {};
       if (
-        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop.property?.json_key]?.value !== null
+        this.telemetryObj[prop?.json_key]?.value !== undefined &&
+        this.telemetryObj[prop?.json_key]?.value !== null
       ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
         this.telemetryData.category = '';
       }
       chart.data = [this.telemetryData];
       this.chart.push(chart);
+
     });
   }
 
@@ -193,3 +201,4 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
+

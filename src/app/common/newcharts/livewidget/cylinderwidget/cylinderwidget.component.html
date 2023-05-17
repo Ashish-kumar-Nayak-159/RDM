@@ -38,29 +38,29 @@
             </div>
         </div>
         <div class="card-body1 card-height">
-            <div class="row text-center " *ngIf="telemetryObj && asset">
+            <div class="row text-center " *ngIf="telemetryObj && type == 'LogicalView'">
                 <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
                     *ngFor="let prop of chartConfig.properties; let i = index"
                     [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
                     <p class="text-xs live-widget-title mb-0" placement="bottom"
-                        [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
+                        [tooltip]="prop.title + ' ' + (prop?.units ? ('(' + prop?.units + ')') : '')"
                         [ngClass]="{'border-top' : i > 3}">
                         ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
                         (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
                         prop?.type === 'Derived KPIs' ? 'DK' : 'M'
                         )))}}) {{prop.title}}
-                        {{prop.property?.json_model[prop.json_key].units ? ('(' +
-                        prop.property?.json_model[prop.json_key].units + ')') : ''}}
+                        {{prop?.units ? ('(' +
+                        prop?.units + ')') : ''}}
                     </p>
                     <div>
-                        <div id="{{chartConfig.chart_id}}_chart_{{i}}"
+                        <div id="{{chartConfig.chart_id}}C_chart_{{i}}"
                             [ngClass]="innerClass.length > 0 ? innerClass : 'mt-n4'"
                             [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
                         <div class="text-darkblue display-5 font-weight-bold"
                             [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
                             {{ (telemetryObj[prop?.json_key] && (telemetryObj[prop?.json_key]?.value !== undefined
                             && telemetryObj[prop?.json_key]?.value !== null)) ?
-                            (prop.property?.data_type === 'Number' ?
+                            (prop?.data_type === 'Number' ?
                             telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals) :
                             telemetryObj[prop?.json_key]?.value) : 'NA'}}
                         </div>
@@ -73,24 +73,24 @@
                 </div>
             </div>
 
-            <div class="row text-center " *ngIf="telemetryObj && !asset">
+            <div class="row text-center " *ngIf="telemetryObj && type != 'LogicalView'">
                 <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
                     *ngFor="let prop of chartConfig.properties; let i = index"
                     [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
                     <p class="text-xs live-widget-title mb-0" placement="bottom"
-                        [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
+                        [tooltip]="prop.title + ' ' + (prop?.units ? ('(' + prop?.units + ')') : '')"
                         [ngClass]="{'border-top' : i > 3}">
                         ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
                         (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
                         prop?.type === 'Derived KPIs' ? 'DK' : 'M'
                         )))}}) {{prop.title}}
-                        {{prop.property?.json_model[prop.json_key].units ? ('(' +
-                        prop.property?.json_model[prop.json_key].units + ')') : ''}}
+                        {{prop?.units ? ('(' +
+                        prop?.units + ')') : ''}}
                     </p>
 
                     <div class="text-center">
                         <div style="height: 6.25rem;" *ngIf="chartConfig.widget_type === 'RectangleWidget'">
-                            <div class="rectangle-widget"></div>
+                            <div class="rectangle-widget" id="re"></div>
                         </div>
                         <div style="height:6rem;" *ngIf="chartConfig.widget_type === 'CylinderWidget'">
                             <div class="cylinder-widget"></div>
@@ -98,7 +98,10 @@
                     </div>
 
                     <div style="margin-top: 50px;">
-                        <span class="text-grey">
+                        <span class="text-grey" *ngIf="chartConfig.widget_type === 'RectangleWidget'">
+                            {{telemetryObj[prop.json_key]?.date}}
+                        </span>
+                        <span class="text-grey" *ngIf="chartConfig.widget_type === 'CylinderWidget'">
                             {{telemetryObj[prop.json_key]?.date}}
                         </span>
                     </div>

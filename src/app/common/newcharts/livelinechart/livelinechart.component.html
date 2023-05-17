@@ -39,10 +39,12 @@
             </div>
         </div>
         <div class="card-body1" style="height: 14rem;">
-            <div class="row text-center " *ngIf="telemetryObj && asset">
-                <div id="{{ chartConfig.chart_id }}" [ngStyle]="{'width': '95%', 'height': '11.5rem'}"></div>
+            <div class="row text-center " *ngIf="telemetryObj && type == 'LogicalView'">
+                <div #chartConfig.chart_id id="{{chartConfig.chart_id}}"
+                    [ngStyle]="{'width': '95%', 'height': '11.5rem'}"></div>
+                <!-- <div id="{{ chartConfig.chart_id }}" [ngStyle]="{'width': '95%', 'height': '11.5rem'}"></div> -->
             </div>
-            <div class="row text-center " *ngIf="telemetryObj && !asset">
+            <div class="row text-center " *ngIf="telemetryObj && type != 'LogicalView'">
                 <div class="text-center">
                     <div *ngIf="chartConfig.widget_type === 'LineChart'">
                         <div class="line-chart"></div>

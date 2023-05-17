@@ -48,6 +48,7 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+    // this.asset = { "asset_id": "c135f97" }
   }
 
   convertToNumber(value) {
@@ -56,21 +57,21 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
 
   // ngOnChanges(changes) {
   //   if (changes.telemetryObj) {
-  //     if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
+  //     if (this.chartConfig.widget_type === 'NumberWithTrend' && this.chartConfig.metadata.noOfDataPointsForTrend > 0) {
   //       if (this.telemetryObj) {
   //         this.telemetryData.push(this.telemetryObj);
   //       }
-  //       if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+  //       if (this.telemetryData.length > this.chartConfig.metadata.noOfDataPointsForTrend) {
   //         this.telemetryData.splice(0, 1);
   //       }
   //     }
   //   }
   //   if (changes.apiTelemetryObj) {
-  //     if (this.chartConfig.widgetType === 'NumberWithTrend' && this.chartConfig.noOfDataPointsForTrend > 0) {
+  //     if (this.chartConfig.widget_type === 'NumberWithTrend' && this.chartConfig.metadata.noOfDataPointsForTrend > 0) {
   //       if (this.apiTelemetryObj) {
   //         this.telemetryData.push(this.apiTelemetryObj);
   //       }
-  //       if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+  //       if (this.telemetryData.length > this.chartConfig.metadata.noOfDataPointsForTrend) {
   //         this.telemetryData.splice(0, 1);
   //       }
   //     }

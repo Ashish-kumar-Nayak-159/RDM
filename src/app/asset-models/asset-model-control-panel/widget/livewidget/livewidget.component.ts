@@ -657,6 +657,7 @@ export class LivewidgetComponent implements OnInit {
       } else if (prop.property && this.widgetObj.widget_type != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
+        prop.unit = prop.property?.unit;
         delete prop.property;
       }
     });
@@ -686,6 +687,7 @@ export class LivewidgetComponent implements OnInit {
             type: prop.type,
             json_key: prop.json_key,
             color: prop.color,
+            units: prop.unit,
 
           };
           arr.push(obj);
@@ -702,6 +704,7 @@ export class LivewidgetComponent implements OnInit {
             type: prop.type,
             json_key: prop.json_key,
             color: prop.color,
+            units: prop.unit,
 
           };
           arr.push(obj);
@@ -766,6 +769,7 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
+    debugger
     let properties = this.widgetObj;
     let metadata = {}
     if (this.widgetObj.widget_type == "SmallNumber") {

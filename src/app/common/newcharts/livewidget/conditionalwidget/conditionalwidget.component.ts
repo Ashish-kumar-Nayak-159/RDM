@@ -56,7 +56,7 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       this.chartConfig.properties = [obj];
     }
-
+    debugger
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -119,15 +119,16 @@ export class ConditionalwidgetComponent implements OnInit {
   }
 
   evaluatePropCondition(telemetryObj) {
-    let condition = this.chartConfig?.formula;
+    debugger
+    let condition = this.chartConfig?.metadata?.formula;
     try {
-      this.chartConfig?.properties?.forEach((jd, i) => {
+      this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
         condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
       });
       var actualVal = eval(condition);
-      if (this.chartConfig?.text && this.chartConfig?.text.length > 0) {
-        if (actualVal) { return this.chartConfig?.text[0]; }
-        return this.chartConfig?.text[1];
+      if (this.chartConfig?.metadata?.text && this.chartConfig?.metadata?.text.length > 0) {
+        if (actualVal) { return this.chartConfig?.metadata?.text[0]; }
+        return this.chartConfig?.metadata?.text[1];
       }
       return actualVal
       // return actualVal;

@@ -59,9 +59,6 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
 
     }
-    console.log(this.telemetryObj);
-    debugger
-
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }

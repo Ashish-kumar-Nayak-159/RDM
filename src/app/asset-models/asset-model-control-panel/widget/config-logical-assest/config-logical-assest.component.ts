@@ -362,7 +362,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
         return;
       } else {
         const arr = [];
-        debugger
         this.widgetObj.y1AxisProps.forEach((prop) => {
           prop.type = this.getPropertieType(prop.type);
 

@@ -60,8 +60,6 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
 
     }
     console.log(this.telemetryObj);
-    debugger
-
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
@@ -158,7 +156,6 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
 
       this.telemetryData = {};
       if (this.telemetryObj) {
-        debugger
         if (
           this.telemetryObj[prop?.json_key]?.value !== undefined &&
           this.telemetryObj[prop?.json_key]?.value !== null

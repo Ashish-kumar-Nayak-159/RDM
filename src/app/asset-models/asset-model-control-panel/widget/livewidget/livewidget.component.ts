@@ -769,7 +769,6 @@ export class LivewidgetComponent implements OnInit {
   // }
 
   addWidget() {
-    debugger
     let properties = this.widgetObj;
     let metadata = {}
     if (this.widgetObj.widget_type == "SmallNumber") {

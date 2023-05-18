@@ -537,20 +537,20 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
           obj.chartId = this.configureDashboardWidgets[i].chart_Id;
           deleteReq.push(obj);
         }
-        if (this.configureDashboardWidgets[i].dashboard_visibility) {
-          // this.configureDashboardWidgets.splice(i, 1);
-          let obj = {
-            "action": "Index",
-            "id": 0,
-            "chartId": "string",
-            "dashboardVisibility": true,
-            "index": 0,
-            "isDelete": false
-          }
-          obj.id = this.configureDashboardWidgets[i].id;
-          obj.chartId = this.configureDashboardWidgets[i].chart_Id;
-          deleteReq.push(obj);
-        }
+        // if (this.configureDashboardWidgets[i].dashboard_visibility) {
+        //   // this.configureDashboardWidgets.splice(i, 1);
+        //   let obj = {
+        //     "action": "Index",
+        //     "id": 0,
+        //     "chartId": "string",
+        //     "dashboardVisibility": true,
+        //     "index": 0,
+        //     "isDelete": false
+        //   }
+        //   obj.id = this.configureDashboardWidgets[i].id;
+        //   obj.chartId = this.configureDashboardWidgets[i].chart_Id;
+        //   deleteReq.push(obj);
+        // }
       }
       if (deleteReq.length > 0) {
 
@@ -739,6 +739,8 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
     this.isCreateWidgetAPILoading = true;
     this.sortListBasedOnIndex();
     let req = [];
+    let deleteReq = [];
+
     for (let i = 0; i < this.configureDashboardWidgets.length; i++) {
       if (!this.configureDashboardWidgets[i].isDelete) {
         // this.configureDashboardWidgets.splice(i, 1);
@@ -750,7 +752,16 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
           "index": this.configureDashboardWidgets[i].index,
           "isDelete": false
         }
+        let uobj = {
+          "action": "Visibility",
+          "id": this.configureDashboardWidgets[i].id,
+          "chartId": this.configureDashboardWidgets[i].chart_Id,
+          "dashboardVisibility": this.configureDashboardWidgets[i].dashboardVisibility,
+          "index": this.configureDashboardWidgets[i].index,
+          "isDelete": false
+        }
         req.push(obj);
+        req.push(uobj);
       }
     }
     if (req.length > 0) {
@@ -1043,6 +1054,7 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
             dataElement.properties[0].chartType = dataElement.widget_type;
             dataElement.properties[0].chart_Id = dataElement.chart_id;
             dataElement.properties[0].dashboard_visibility = dataElement.dashboard_visibility;
+            dataElement.properties[0].index = dataElement.index;
 
             this.layoutJson.push(dataElement.properties[0]);
             this.storedLayout.push(dataElement.properties[0]);
@@ -1078,6 +1090,8 @@ export class HistoricalwidgetComponent implements OnInit, OnChanges, OnDestroy {
             }
           });
         });
+
+        this.layoutJson.sort((a, b) => a.index - b.index);
         this.renderLayout();
 
       }

@@ -22,7 +22,7 @@ export class SignalRService {
 
   connectToSignalR(connectionObj, type = '') {
     let connection;
-    console.log(connectionObj);
+
     this.http.post<any>(this.signalRURL, connectionObj).subscribe((con) => {
       // con object have access token and url
       const options: signalR.IHttpConnectionOptions = {
@@ -36,7 +36,7 @@ export class SignalRService {
       // connection start
       connection.start().then(() => {
         connection.on('notify', (data) => {
-          console.log(data);
+
           if (connectionObj.type === 'telemetry') {
             this.signalRTelemetryData.emit(JSON.parse(data));
           } else if (connectionObj.type === 'alert' && type === '') {

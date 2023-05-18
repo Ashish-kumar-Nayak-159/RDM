@@ -2,14 +2,14 @@
 <div class="blue-nav-bar">
     <div class="d-flex align-items-center">
         <div class="d-flex align-items-center">
-            <div class="main-heading ">Logical View</div>
+            <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
         </div>
         <div class="ml-auto">
             <div class="">
                 <form class="form-inline">
                     <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && logicalView" [showAsset]="true"
-                        [closeOnSelection]="true" [filterObj]="filterObj" [logicalView]="logicalView"
-                        [type]="'logicalView'" (saveHierarchyEvent)="onSaveHierachy()"
+                        [showLogicalView]="true" [closeOnSelection]="true" [filterObj]="filterObj"
+                        [logicalView]="logicalView" [type]="'logicalView'" (saveHierarchyEvent)="onSaveHierachy()"
                         (searchLogicalViewEvent)="searchLogicalViewEvent($event)"
                         (clearHierarchyEvent)="onClearHierarchy()">
                     </app-hierarchy-dropdown>
@@ -46,8 +46,19 @@
     </div> -->
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->
-<div class="historical-livechart-container" *ngIf="logicalViewData?.gateways">
-    <div>
+<div class="historical-livechart-container">
+    <div class="pl-3 pt-3" *ngIf="isLogicalView || isLogicalViewData">
+        <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+    </div>
+    <ng-container>
+        <div class="m-3" *ngIf="logicalViewData?.charts?.length === 0 && isFilterSelected
+        ">
+            No {{widgetStringFromMenu}} configured for this logical view. Please contact administrator.
+        </div>
+
+    </ng-container>
+
+    <div *ngIf="logicalViewData?.gateways">
         <app-gateway [gateways]="logicalViewData?.gateways"></app-gateway>
     </div>
 

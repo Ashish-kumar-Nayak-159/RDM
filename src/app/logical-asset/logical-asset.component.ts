@@ -65,7 +65,7 @@ export class LogicalAssetComponent implements OnInit {
   }
 
   getAssets(hierarchy) {
-    debugger;
+    ;
     const obj = {
       hierarchy: JSON.stringify(hierarchy),
       type: CONSTANTS.NON_IP_ASSET,
@@ -90,7 +90,7 @@ export class LogicalAssetComponent implements OnInit {
     let assetItem;
     let assetDataItem = {};
     this.contextApp.menu_settings.main_menu.forEach((item) => {
-      if (item.page === 'Logical View') {
+      if (item.page === 'Logical Asset') {
         selectedItem = item.showAccordion;
         assetItem = item.showAccordion;
       }

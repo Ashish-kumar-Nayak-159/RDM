@@ -20,6 +20,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   originalAssets: any[] = [];
   actualAssets: any[] = [];
   @Input() showAsset = false;
+  @Input() showLogicalView = false;
   hierarchyString: string;
   contextAppUserHierarchyLength = 0;
   displayHierarchyString: string;
@@ -293,6 +294,14 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
       }
       this.filterObj.assetArr = undefined;
       this.filterObj.asset = undefined;
+    }
+
+    if (this.showLogicalView) {
+      if (this.logicalView?.length === 1) {
+        this.filterObj.logicalview = this.logicalView[0];
+      }
+      this.filterObj.logicalviewArr = undefined;
+      this.filterObj.logicalview = undefined;
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach((key) => {

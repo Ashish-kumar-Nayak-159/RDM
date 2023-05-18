@@ -56,7 +56,7 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       this.chartConfig.properties = [obj];
     }
-    debugger
+
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -119,7 +119,6 @@ export class ConditionalwidgetComponent implements OnInit {
   }
 
   evaluatePropCondition(telemetryObj) {
-    debugger
     let condition = this.chartConfig?.metadata?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {

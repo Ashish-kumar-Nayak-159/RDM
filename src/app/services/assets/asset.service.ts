@@ -26,7 +26,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    debugger
+
     const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     if (assets) {
       return new Observable((observer) => {

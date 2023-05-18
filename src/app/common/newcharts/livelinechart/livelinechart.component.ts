@@ -50,7 +50,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) { }
 
   ngOnInit(): void {
-    console.log("ngonit")
+
     if (this.chartConfig) {
       this.y1AxisProps = this.chartConfig.y1axis;
       this.y2AxisProps = this.chartConfig.y2axis;

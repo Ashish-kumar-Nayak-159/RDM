@@ -72,7 +72,6 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
   loadChart() {
     this.chartConfig?.properties?.forEach((prop, index) => {
-      debugger
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.GaugeChart);
       chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect

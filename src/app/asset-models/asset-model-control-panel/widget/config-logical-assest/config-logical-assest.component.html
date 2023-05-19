@@ -209,8 +209,9 @@
                                             <ng-select [items]="drpassets" class="custom-dropdown w-12 sm"
                                                 [searchable]="true" placeholder="Select Assets" clearSearchOnAdd="true"
                                                 [closeOnSelect]="true" [clearable]="false" bindLabel="display_name"
-                                                dropdownPosition="bottom" name="slave-dropdown1"
-                                                [(ngModel)]="propObj.asset_id" bindValue="asset_id"
+                                                dropdownPosition="bottom" [(ngModel)]="propObj.asset_id"
+                                                bindValue="asset_id" [disabled]="isDisabled" id="asset{{propIndex}}"
+                                                name="asset{{propIndex}}"
                                                 (change)="getAssetsModelProperties(propObj.asset_id,2,propIndex)">
                                                 <ng-template ng-option-tmp let-item="item">
                                                     <span [tooltip]="item.display_name">

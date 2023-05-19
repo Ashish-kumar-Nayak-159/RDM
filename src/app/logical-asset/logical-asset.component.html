@@ -1,6 +1,6 @@
 <div class="blue-nav-bar" *ngIf="!isShowConfig">
     <div class="d-flex align-items-center">
-        <div class="main-heading">Logical Assets&nbsp;
+        <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
         </div>
         <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()"
             placement="bottom" tooltip="Add {{(tileData && tileData[0] ? tileData[0]?.value : '')}}"><em
@@ -92,7 +92,7 @@
 </div>
 
 <app-add-logical-asset *ngIf="isOpenAssetCreateModal" [type]="type" [filterObj]="filterObj" [assets]="assets"
-    [assetDetail]="assetDetail" [tileData]="tabData"
+    [assetDetail]="assetDetail" [tileData]="tileData"
     (cancelModal)="onCreateAssetCancelModal($event)"></app-add-logical-asset>
 
 <app-config-logical-assest *ngIf="isShowConfig" [assetDetail]="assetDetail"

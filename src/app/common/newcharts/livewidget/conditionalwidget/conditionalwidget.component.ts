@@ -57,6 +57,7 @@ export class ConditionalwidgetComponent implements OnInit {
       this.chartConfig.properties = [obj];
     }
 
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {

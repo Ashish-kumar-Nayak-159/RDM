@@ -91,9 +91,9 @@
             <app-asset-model-properties *ngIf="activeTab.includes('properties') && assetModel" [type]="activeTab"
               [assetModel]="assetModel"></app-asset-model-properties>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab.includes('measured')}" role="tabpanel"
+          <div class="tab-pane" [ngClass]="{'active': activeTab.includes('newmeasured')}" role="tabpanel"
             id="newasset_model_properties">
-            <app-newasset-model-properties *ngIf="activeTab.includes('measured') && assetModel" [type]="activeTab"
+            <app-newasset-model-properties *ngIf="activeTab.includes('newmeasured') && assetModel" [type]="activeTab"
               [assetModel]="assetModel"></app-newasset-model-properties>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab.includes('direct_methods')}" role="tabpanel"

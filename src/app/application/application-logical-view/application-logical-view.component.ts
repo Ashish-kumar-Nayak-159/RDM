@@ -82,6 +82,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   c2dLoadingMessage: any;
   c2dResponseMessage: any[];
   c2dResponseInterval: any;
+  isLogicalViewData: boolean;
+  isLogicalView: boolean;
 
 
 
@@ -114,7 +116,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.menu_settings.main_menu.forEach((item) => {
-      if (item.page === 'Live Data') {
+      if (item.page === 'Logical View') {
         selectedItem = item.showAccordion;
       }
     });
@@ -123,9 +125,15 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
   getAssets() {
     return new Promise<void>((resolve1) => {
+      this.isLogicalView = true;
+
       this.apiSubscriptions.push(this.assetService.getLogicalView().subscribe((res: any) => {
+        this.isLogicalView = false;
         this.logicalView = res.data;
         resolve1();
+      }, error => {
+        this.isLogicalView = false;
+
       }))
       return
       const obj = {
@@ -170,9 +178,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    this.isLogicalViewData = true;
     // clearInterval(this.c2dResponseInterval);
-    console.log("PropertyList", JSON.stringify(this.propertyList))
-    this.signalRService.disconnectFromSignalR('all');
+
+    this.signalRService.disconnectFromSignalR('logicalview');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
 
@@ -190,6 +199,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
             this.logicalViewData = response;
             this.logicalViewDatarender = this.logicalViewData?.charts
+            this.isLogicalViewData = false;
 
             // this.getLiveWidgetTelemetryDetails(obj);
             // this.logicalViewData?.assets.forEach(async (element) => {
@@ -200,7 +210,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
             this.logicalViewData?.charts?.forEach((widget, index) => {
               widget.widget_title = widget?.chartname;
               widget.widget_type = widget?.widgettype;
-              widget.chart_id = this.logicalViewData?.id;
+              widget.chart_id = Math.floor(1000 + Math.random() * 9000);//this.logicalViewData?.id;
               widget.id = this.logicalViewData?.id;
 
               if (widget.widget_type === 'SmallNumber') {
@@ -295,7 +305,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                   } else {
                     widget.measured_props = true;
                   }
-                  console.log("propertyList", JSON.stringify(this.propertyList))
+
                   this.actualPropertyList.push(prop);
 
                 });
@@ -316,12 +326,16 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
             // setInterval(() => this.getTelemetryData(), 10000);
 
           }, error => {
+            this.isLogicalViewData = false;
+
             this.toasterService.showError(error.message, "Logical View Telemetry")
           })
         });
 
       }
       else {
+        this.isLogicalViewData = false;
+
         this.isAssetSelected = false;
         this.historicalCombineWidgets = [];
         this.assetWiseTelemetryData = [];
@@ -351,6 +365,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
     this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
     this.frequency = undefined;
+    this.signalRService.disconnectFromSignalR('logicalview');
+
   }
 
   onSaveHierachy() {
@@ -473,7 +489,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   // onDateFilterSelection() {
   //   if (this.logiclFilterObj) {
   //     this.isFilterSelected = true;
-  //     debugger
+  //     
   //     this.SubscribeLiveTelemetryOnDateOption(this.historicalDateFilter?.to_date, this.logiclFilterObj?.logicalview);
   //     const filterObj = {
   //       epoch: true,
@@ -687,7 +703,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           delete obj.dkpi;
           obj = { ...obj, ...data?.data.m, ...data?.data.ed, ...data?.data.cd, ...data?.data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
-          console.log("dataaaaa", JSON.stringify(data))
+
         }
         // let newData = data;
         // this.telemetryObj = newData;
@@ -786,7 +802,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     });
     obj['previous_properties'] = this.previousProperties;
     this.telemetryObj = Object.assign({}, obj);
-    console.log(this.telemetryObj);
+
     // this.previousProperties = [];
     // Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
     // this.lastReportedTelemetryValues = obj;

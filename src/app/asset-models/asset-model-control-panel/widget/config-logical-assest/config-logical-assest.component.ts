@@ -18,6 +18,7 @@ declare var $: any;
 })
 export class ConfigLogicalAssestComponent implements OnInit {
   private _assetDetail: any;
+  telemetryPropertyList: any;
   public get assetDetail(): any {
     return this._assetDetail;
   }
@@ -113,16 +114,15 @@ export class ConfigLogicalAssestComponent implements OnInit {
         assestData.push(assest);
     });
     this.drpassets = assestData;
-    this.getLogicalViewWidget();
+    let filterAsset = this.removeDuplicates(this.drpassets, "asset_id")
 
-    // this.drpassets.forEach(async (element, index) => {
-    //   await this.getAssetsModelProperties(element.asset_id, 0, 0);
-    //   if (index + 1 == this.drpassets.length) {
-    //     if (this.propertyList.length > 0) {
-    //       this.getLogicalViewWidget();
-    //     }
-    //   }
-    // });
+    filterAsset.forEach(async (element, index) => {
+      if (element.asset_id)
+        await this.getTelemetryPropertyList(element.asset_id);
+      if ((index + 1) == filterAsset.length) {
+        this.getLogicalViewWidget();
+      }
+    });
   }
 
   ngAfterViewChecked() {
@@ -163,8 +163,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           {
             property: null,
             value: null,
-            operator: null,
-            operator1: null,
+            operator: undefined,
+            operator1: undefined,
             index: 1,
           },
         ],
@@ -179,8 +179,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
       asset_id: null,
       property: null,
       value: null,
-      operator: null,
-      operator1: null,
+      operator: undefined,
+      operator1: undefined,
       index: this.propertyObj.metadata.properties.length + 1,
 
     };
@@ -260,7 +260,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
     try {
       this.telemetryObj = {};
       this.telemetryObj.message_date = datefns.format(new Date(), "dd-MM-yyyy HH:mm:ss").toString();
-      this.actualPropertyList?.forEach((prop) => {
+      this.telemetryPropertyList?.forEach((prop) => {
         if (prop.json_key) {
           this.telemetryObj[prop.json_key] = {
             value: this.commonService.randomIntFromInterval(
@@ -332,10 +332,13 @@ export class ConfigLogicalAssestComponent implements OnInit {
       }
     }
     let found = true;
+    let foundimg = true;
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widget_type == "NumberWithImage" && !prop?.image)) {
         found = false;
-
+        if (!prop?.image) {
+          foundimg = false;
+        }
       } else if (prop.property && this.widgetObj.widget_type != "NumberWithImage") {
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
@@ -347,8 +350,12 @@ export class ConfigLogicalAssestComponent implements OnInit {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
-    if (!found && this.widgetObj.widget_type == "NumberWithImage") {
+    if (!found && !foundimg && this.widgetObj.widget_type == "NumberWithImage") {
       this.toasterService.showError('Please select image.', 'Add Widget');
+      return;
+    }
+    else if (!found && foundimg && this.widgetObj.widget_type == "NumberWithImage") {
+      this.toasterService.showError('Please select property.', 'Add Widget');
       return;
     }
 
@@ -661,8 +668,11 @@ export class ConfigLogicalAssestComponent implements OnInit {
     this.assetModelService.getLogicalViewWidgets(this.assetDetail.id).subscribe((response): any => {
       if (response.data?.length > 0) {
 
-        response.data.forEach((dataElement, index) => {
+        response.data.forEach(async (dataElement, index) => {
+
+
           if (dataElement?.properties) {
+
             dataElement.widget_title = dataElement?.chartname;
             dataElement.widget_type = dataElement?.widgettype;
             dataElement.chart_id = dataElement?.id;
@@ -835,9 +845,9 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
             data.y1AxisProps = data.properties.map(o => ({ ...o }));
             data.properties[0].property = data.y1AxisProps[0];
-            let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
-            data.properties[0].property.name = getName?.name;
-            data.properties[0].property.datatype = getName?.datatype;
+            // let getName = this.propertyList.find(x => x.json_key == data.properties[0].json_key);
+            // data.properties[0].property.name = getName?.name;
+            // data.properties[0].property.datatype = getName?.datatype;
             data.dashboardVisibility = data.metadata.dashboardVisibility;
             this.isDataFill = true;
 
@@ -1089,6 +1099,60 @@ export class ConfigLogicalAssestComponent implements OnInit {
         type = type;
     }
     return type;
+  }
+
+  async getTelemetryPropertyList(id) {
+    this.telemetryPropertyList = [];
+    let fPropList = [];
+
+    await this.assetModelService.getModelPropertiesByAssetsId(id).
+      toPromise().then((response: any) => {
+        response = response[0];
+        response.measured_properties = response.measured_properties
+          ? response.measured_properties
+          : [];
+        response.measured_properties?.forEach((prop) => {
+          prop.type = 'Measured Properties'
+          this.telemetryPropertyList.push(prop);
+        });
+
+        response.edge_derived_properties = response.edge_derived_properties
+          ? response.edge_derived_properties
+          : [];
+        response.cloud_derived_properties = response.cloud_derived_properties
+          ? response.cloud_derived_properties
+          : [];
+        response.edge_derived_properties?.forEach((prop) => {
+          prop.type = 'Edge Derived Properties';
+          let matchCount = 0
+          prop.metadata?.properties?.forEach((actualProp) => {
+            matchCount++
+          })
+          if (matchCount > 0) {
+            this.telemetryPropertyList.push(prop)
+          }
+
+        });
+        response?.cloud_derived_properties?.forEach((prop) => {
+          prop.type = 'Cloud Derived Properties';
+          this.telemetryPropertyList.push(prop);
+        });
+
+        // this.telemetryPropertyList.forEach((prop) => {
+        //   if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+        //     fPropList.push(prop);
+        //   }
+        // });
+
+        // this.telemetryPropertyList = fPropList;
+
+      })
+  }
+
+  removeDuplicates(myArray, Prop) {
+    return myArray.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[Prop]).indexOf(obj[Prop]) === pos;
+    });
   }
 
 }

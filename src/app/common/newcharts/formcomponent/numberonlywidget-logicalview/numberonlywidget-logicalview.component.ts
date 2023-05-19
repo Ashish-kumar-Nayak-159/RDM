@@ -107,73 +107,76 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
     }
   }
 
-  async getAssetsModelProperties(selectedAssest, type, index) {
-
-    this.filteredPropList = []
-    this.propertyList = []
-    this.actualPropertyList = []
+  async getAssetsModelProperties(selectedAssest, type, index, isEdit = false) {
     // this.properties = {};
-    return new Promise<void>((resolve) => {
 
-      this.subscriptions.push(
-        this.assetModelService.getModelPropertiesByAssetsId(selectedAssest).subscribe((response: any) => {
-          // if (response?.data) {
-          //   response["measured_properties"] = response.data.filter(x => x.type == "m");
-          //   response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
-          //   response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
-          // }
-          response = response[0];
-          response.measured_properties = response.measured_properties
-            ? response.measured_properties
-            : [];
-          response.measured_properties?.forEach((prop) => {
-            prop.type = 'Measured Properties'
-            this.actualPropertyList.push(prop);
-            this.propertyList.push(prop);
-          });
+    await this.assetModelService.getModelPropertiesByAssetsId(selectedAssest).
+      toPromise().then((response: any) => {
+        // if (response?.data) {
+        //   response["measured_properties"] = response.data.filter(x => x.type == "m");
+        //   response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
+        //   response["cloud_derived_properties"] = response.data.filter(x => x.type == "cd");
+        // }
 
-          response.edge_derived_properties = response.edge_derived_properties
-            ? response.edge_derived_properties
-            : [];
-          response.cloud_derived_properties = response.cloud_derived_properties
-            ? response.cloud_derived_properties
-            : [];
-          response.edge_derived_properties?.forEach((prop) => {
-            prop.type = 'Edge Derived Properties';
-            let matchCount = 0
-            prop.metadata?.properties?.forEach((actualProp) => {
-              matchCount++
-            })
-            if (matchCount > 0) {
-              this.propertyList.push(prop)
+        this.filteredPropList = []
+        this.propertyList = []
+        this.actualPropertyList = []
 
-            }
-            this.actualPropertyList.push(prop);
-          });
-          response?.cloud_derived_properties?.forEach((prop) => {
-            prop.type = 'Cloud Derived Properties';
-            this.propertyList.push(prop);
-            this.actualPropertyList.push(prop);
-          });
+        response = response[0];
+        response.measured_properties = response.measured_properties
+          ? response.measured_properties
+          : [];
+        response.measured_properties?.forEach((prop) => {
+          prop.type = 'Measured Properties'
+          this.actualPropertyList.push(prop);
+          this.propertyList.push(prop);
+        });
 
-          this.propertyList.forEach((prop) => {
-            if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-              this.filteredPropList.push(prop);
-            }
-          });
+        response.edge_derived_properties = response.edge_derived_properties
+          ? response.edge_derived_properties
+          : [];
+        response.cloud_derived_properties = response.cloud_derived_properties
+          ? response.cloud_derived_properties
+          : [];
+        response.edge_derived_properties?.forEach((prop) => {
+          prop.type = 'Edge Derived Properties';
+          let matchCount = 0
+          prop.metadata?.properties?.forEach((actualProp) => {
+            matchCount++
+          })
+          if (matchCount > 0) {
+            this.propertyList.push(prop)
 
-          if (type == 0) {
-            this.Y1PropertyList = this.filteredPropList;
-            this.widgetObj["Y1Assest"] = selectedAssest;
           }
-          else if (type == 1) {
-            this.Y2PropertyList = this.filteredPropList;
-            this.widgetObj["Y2Assest"] = selectedAssest;
+          this.actualPropertyList.push(prop);
+        });
+        response?.cloud_derived_properties?.forEach((prop) => {
+          prop.type = 'Cloud Derived Properties';
+          this.propertyList.push(prop);
+          this.actualPropertyList.push(prop);
+        });
+
+        this.propertyList.forEach((prop) => {
+          if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+            this.filteredPropList.push(prop);
           }
-          else {
-            this.widgetObj.properties[index].propertyList = this.filteredPropList;
-            this.widgetObj.properties[index].property = null;
-            // this.widgetObj.properties[index].title = this.properties[index]?.title;
+        });
+
+        if (type == 0) {
+          this.Y1PropertyList = this.filteredPropList;
+          this.widgetObj["Y1Assest"] = selectedAssest;
+          this.widgetObj["y1AxisProps"] = [];
+        }
+        else if (type == 1) {
+          this.Y2PropertyList = this.filteredPropList;
+          this.widgetObj["Y2Assest"] = selectedAssest;
+          this.widgetObj["y2AxisProps"] = [];
+        }
+        else {
+          this.widgetObj.properties[index].propertyList = this.filteredPropList;
+          this.widgetObj.properties[index].property = null;
+          // this.widgetObj.properties[index].title = this.properties[index]?.title;
+          if (isEdit) {
             this.widgetObj.properties.forEach((element, index) => {
               let getName = this.filteredPropList.find(x => x.json_key == element?.json_key);
               if (getName) {
@@ -182,28 +185,30 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
                 element.property = getName;
               }
             });
-            this.widgetObj.properties = this.widgetObj.properties.map(o => ({ ...o }));
           }
-          resolve();
-        })
-      );
-    });
+          this.widgetObj.properties = this.widgetObj.properties.map(o => ({ ...o }));
+        }
+      })
   }
 
-  valueSet() {
+  async valueSet() {
     if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
 
       this.selectedY1Assest = this.widgetObj.properties[0].y1AxisProps[0].assetid;
       this.selectedY2Assest = this.widgetObj.properties[0].y2AxisProps[0]?.assetid;
-      this.getAssetsModelProperties(this.selectedY1Assest, 0, 0);
-      if (this.selectedY2Assest)
-        this.getAssetsModelProperties(this.selectedY2Assest, 1, 0);
+      await this.getAssetsModelProperties(this.selectedY1Assest, 0, 0);
+
+      if (this.selectedY2Assest) {
+        await this.getAssetsModelProperties(this.selectedY2Assest, 1, 0);
+      }
     }
     else if (this.widgetObj.widget_type !== "LineChart" || this.widgetObj.widget_type !== "AreaChart" || this.widgetObj.widget_type !== "ConditionalNumber") {
 
-      this.widgetObj.properties.forEach((element, index) => {
-        if (element.asset_id)
-          this.getAssetsModelProperties(element.asset_id, 2, index);
+      this.widgetObj.properties.forEach(async (element, index) => {
+        if (element.asset_id) {
+          await this.getAssetsModelProperties(element.asset_id, 2, index, true);
+
+        }
       });
     }
 

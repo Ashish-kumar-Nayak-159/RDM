@@ -66,9 +66,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       })
     );
-    console.log("chart", JSON.stringify(this.chartConfig));
-    console.log("asset", JSON.stringify(this.asset));
-    console.log("tempdata", JSON.stringify(this.telemetryObj));
+
+
+
   }
 
   ngOnChanges(changes) {
@@ -88,16 +88,16 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           }
           const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
           this.telemetryData = [];
-          console.log(this.chartConfig.y1AxisProps);
-          console.log(this.chartConfig.y2AxisProps);
+
+
           this.chartConfig.y1AxisProps?.forEach((prop) => {
             if (
               this.telemetryObj[prop.json_key].value !== undefined &&
               this.telemetryObj[prop.json_key].value !== null
             ) {
-              console.log(!this.propertyBasedData[prop.json_key]);
-              console.log(this.propertyBasedData[prop.json_key].latest_message_date.getTime());
-              console.log(new Date(this.telemetryObj[prop.json_key].date).getTime());
+
+
+
               if (
                 !this.propertyBasedData[prop.json_key] ||
                 this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
@@ -118,7 +118,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
                 }
               }
               this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-              console.log(this.telemetryData);
+
 
             }
           });

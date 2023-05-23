@@ -195,142 +195,134 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.sameAsset = this.filterObj?.logicalview?.code
         this.getTelemetryMode(this.filterObj?.logicalview?.assets[0]?.asset_id);
 
-        this.myPromise = new Promise((resolve, reject) => {
-          this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
-            this.logicalViewData = response;
-            this.logicalViewDatarender = this.logicalViewData?.charts
-            this.isLogicalViewData = false;
+        this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
+          this.logicalViewData = response;
+          this.logicalViewDatarender = this.logicalViewData?.charts
+          this.isLogicalViewData = false;
 
-            // this.getLiveWidgetTelemetryDetails(obj);
-            // this.logicalViewData?.assets.forEach(async (element) => {
-            //   await this.getAssetsModelProperties(element.asset_id);
-            // });
 
-            this.actualPropertyList = [];
-            this.logicalViewData?.charts?.forEach((widget, index) => {
-              widget.widget_title = widget?.chartname;
-              widget.widget_type = widget?.widgettype;
-              widget.chart_id = Math.floor(1000 + Math.random() * 9000);//this.logicalViewData?.id;
-              widget.id = this.logicalViewData?.id;
+          this.actualPropertyList = [];
+          this.logicalViewData?.charts?.forEach((widget, index) => {
+            widget.widget_title = widget?.chartname;
+            widget.widget_type = widget?.widgettype;
+            widget.chart_id = Math.floor(1000 + Math.random() * 9000);//this.logicalViewData?.id;
+            widget.id = this.logicalViewData?.id;
 
-              if (widget.widget_type === 'SmallNumber') {
-                this.checkwidgettype = true;
-              }
+            if (widget.widget_type === 'SmallNumber') {
+              this.checkwidgettype = true;
+            }
 
-              if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart' && widget.widget_type !== 'ConditionalNumber') {
+            if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart' && widget.widget_type !== 'ConditionalNumber') {
 
-                widget?.properties.forEach((prop) => {
-                  if (prop) {
-                    prop.json_key = prop.json_key;
-                  }
-                  // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                  prop.type = prop?.type;
-
-                  if (prop?.type === 'Derived KPIs') {
-                    widget.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-
-                  this.actualPropertyList.push(prop);
-
-                });
-                this.logicalViewData.charts[index].properties[0].properties = widget.properties;
-              }
-              else if (widget.widget_type == 'ConditionalNumber') {
-
-                widget?.properties.forEach((prop) => {
-                  if (prop) {
-                    prop.json_key = prop.json_key;
-                  }
-                  // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                  prop.type = prop?.type;
-                  this.addPropertyInList(prop);
-
-                  if (prop?.type === 'Derived KPIs') {
-                    widget.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
-              }
-              else {
-
-                if (widget.widget_type == 'LineChart' || widget.widget_type == 'AreaChart') {
-                  widget.y1AxisProps = widget?.properties[0].y1AxisProps
-                  widget.y2AxisProps = widget?.properties[0].y2AxisProps
+              widget?.properties.forEach((prop) => {
+                if (prop) {
+                  prop.json_key = prop.json_key;
                 }
-                widget?.y1AxisProps.forEach((prop) => {
-                  if (prop.id) {
-                    prop.json_key = prop.id;
-                  }
-                  this.addPropertyInList(prop);
+                // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                prop.type = prop?.type;
 
-                  // prop.property = this.propertyList.find(
-                  //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  // );
-                  if (prop?.type === 'Derived KPIs') {
-                    widget.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                  this.actualPropertyList.push(prop);
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
 
-                });
-                widget?.y2AxisProps?.forEach((prop) => {
-                  if (prop.id) {
-                    prop.json_key = prop.id;
-                  }
-                  // prop.property = this.propertyList.find(
-                  //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  // );
-                  if (prop?.type === 'Derived KPIs') {
-                    widget.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
+                this.actualPropertyList.push(prop);
 
-                  this.actualPropertyList.push(prop);
+              });
+              this.logicalViewData.charts[index].properties[0].properties = widget.properties;
+            }
+            else if (widget.widget_type == 'ConditionalNumber') {
 
-                });
+              widget?.properties.forEach((prop) => {
+                if (prop) {
+                  prop.json_key = prop.json_key;
+                }
+                // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                prop.type = prop?.type;
+                this.addPropertyInList(prop);
 
-                this.logicalViewData.charts[index].y1AxisProps = widget?.properties[0].y1AxisProps;
-                this.logicalViewData.charts[index].y2AxisProps = widget?.properties[0].y2AxisProps;
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
+            }
+            else {
 
+              if (widget.widget_type == 'LineChart' || widget.widget_type == 'AreaChart') {
+                widget.y1AxisProps = widget?.properties[0].y1AxisProps
+                widget.y2AxisProps = widget?.properties[0].y2AxisProps
               }
-            });
+              widget?.y1AxisProps.forEach((prop) => {
+                if (prop.id) {
+                  prop.json_key = prop.id;
+                }
+                this.addPropertyInList(prop);
 
-            this.cdr.markForCheck();
-            this.isAssetSelected = true;
-            this.sampleCountArr = Array(60).fill(0);
-            // this.signalRService.disconnectFromSignalR('all');
-            this.getLiveData(this.sameAsset, filterObj);
+                // prop.property = this.propertyList.find(
+                //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                // );
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+                this.actualPropertyList.push(prop);
 
-            // this.getTelemetryData();
-            // setInterval(() => this.getTelemetryData(), 10000);
+              });
+              widget?.y2AxisProps?.forEach((prop) => {
+                if (prop.id) {
+                  prop.json_key = prop.id;
+                }
+                // prop.property = this.propertyList.find(
+                //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                // );
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
 
-          }, error => {
-            this.isLogicalViewData = false;
+                this.actualPropertyList.push(prop);
 
-            this.toasterService.showError(error.message, "Logical View Telemetry")
-          })
-        });
+              });
+
+              this.logicalViewData.charts[index].y1AxisProps = widget?.properties[0].y1AxisProps;
+              this.logicalViewData.charts[index].y2AxisProps = widget?.properties[0].y2AxisProps;
+
+            }
+          });
+
+          this.cdr.markForCheck();
+          this.isAssetSelected = true;
+          this.sampleCountArr = Array(60).fill(0);
+          // this.signalRService.disconnectFromSignalR('all');
+          this.getLiveData(this.sameAsset, filterObj);
+
+
+        }, error => {
+          this.isLogicalViewData = false;
+
+          this.toasterService.showError(error.message, "Logical View Telemetry")
+        })
 
       }
       else {
@@ -344,7 +336,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Logical View selection is required', 'Logical View Telemetry');
       }
     }
+    else {
+      this.isLogicalViewData = false;
 
+    }
   }
 
   onClearHierarchy() {
@@ -453,23 +448,23 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   }
 
   getDefaultFilters() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    this.historicalDateFilter.dateOption = item.dateOption;
-    if (item.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-      this.historicalDateFilter.from_date = dateObj.from_date;
-      this.historicalDateFilter.to_date = dateObj.to_date;
-      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    } else {
-      this.historicalDateFilter.from_date = item.from_date;
-      this.historicalDateFilter.to_date = item.to_date;
-      // this.historicalDateFilter.last_n_secs = undefined;
-    }
-    this.historicalDateFilter.widgets = [];
-    this.selectedDateRange = this.historicalDateFilter.dateOption;
-    this.historicalDateFilter.type = true;
-    this.historicalDateFilter.sampling_format = 'minute';
-    this.historicalDateFilter.sampling_time = 1;
+    // const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    // this.historicalDateFilter.dateOption = item.dateOption;
+    // if (item.dateOption !== 'Custom Range') {
+    //   const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+    //   this.historicalDateFilter.from_date = dateObj.from_date;
+    //   this.historicalDateFilter.to_date = dateObj.to_date;
+    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+    // } else {
+    //   this.historicalDateFilter.from_date = item.from_date;
+    //   this.historicalDateFilter.to_date = item.to_date;
+    //   // this.historicalDateFilter.last_n_secs = undefined;
+    // }
+    // this.historicalDateFilter.widgets = [];
+    // this.selectedDateRange = this.historicalDateFilter.dateOption;
+    // this.historicalDateFilter.type = true;
+    // this.historicalDateFilter.sampling_format = 'minute';
+    // this.historicalDateFilter.sampling_time = 1;
   }
 
   onScroll(event: any) {
@@ -696,14 +691,29 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     this.signalRTelemetrySubscription = this.signalRService.signalRLogicalViewData.subscribe(
       (data) => {
         if (data) {
-          let obj = JSON.parse(JSON.stringify(data?.data));
-          delete obj.m;
-          delete obj.ed;
-          delete obj.cd;
-          delete obj.dkpi;
-          obj = { ...obj, ...data?.data.m, ...data?.data.ed, ...data?.data.cd, ...data?.data.dkpi };
-          data = JSON.parse(JSON.stringify(obj));
+          let mainObj = JSON.parse(JSON.stringify(data));
+          if (mainObj.type == "logicalview") {
+            let obj = JSON.parse(JSON.stringify(data?.data));
+            delete obj.m;
+            delete obj.ed;
+            delete obj.cd;
+            delete obj.dkpi;
+            obj = { ...obj, ...data?.data.m, ...data?.data.ed, ...data?.data.cd, ...data?.data.dkpi };
+            data = JSON.parse(JSON.stringify(obj));
+          }
+          else {
+            let obj = JSON.parse(JSON.stringify(data?.data));
 
+            let getwayId = Object.keys(obj);
+            let gateway = this.logicalViewData?.gateways.find(x => x.gateway_id == getwayId[0]);
+            if (gateway) {
+              let index = this.logicalViewData?.gateways.findIndex(x => x.gateway_id == getwayId[0]);
+              gateway.status = obj[gateway.gateway_id];
+              this.logicalViewData.gateways[index] = gateway;
+            }
+
+
+          }
         }
         // let newData = data;
         // this.telemetryObj = newData;
@@ -715,6 +725,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       });
     // }
 
+    delete fobj.logicalview;
     this.apiSubscriptions.push(
       this.assetService.getLastTelmetry(this.contextApp.app, fobj).subscribe(
         (response: any) => {
@@ -731,12 +742,14 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 obj[prop?.json_key] = {
                   value: response.message[prop?.json_key],
                   date: response.message.message_date,
+                  asset_id: prop.asset_id,
                 };
               } else {
                 const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
                 obj[prop?.json_key] = {
                   value: kpiObj.kpi_result,
                   date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+                  asset_id: prop.asset_id,
                 };
               }
             });
@@ -801,8 +814,9 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       }
     });
     obj['previous_properties'] = this.previousProperties;
-    this.telemetryObj = Object.assign({}, obj);
+    obj["asset_id"] = telemetryObj.asset_id;
 
+    this.telemetryObj = Object.assign({}, obj);
     // this.previousProperties = [];
     // Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
     // this.lastReportedTelemetryValues = obj;
@@ -864,7 +878,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           this.signalRModeValue = newMode;
           this.isTelemetryModeAPICalled = false;
         },
-        (error) => (this.isTelemetryDataLoading = false)
+        (error) => (this.isLogicalViewData = false)
       )
     );
   }

@@ -30,7 +30,7 @@
                                         [ngClass]="{'online-indicator': gateway.status === 'Connected', 'offline-indicator' : gateway.status !== 'Connected' }">
                                         <span class="blink"></span>
                                     </div>
-                                    <p class="status-text">{{gateway.gateway_id}}</p>
+                                    <p class="status-text">{{gateway.display_name}}</p>
                                 </div>
                             </div>
                         </div>

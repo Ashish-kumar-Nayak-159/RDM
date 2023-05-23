@@ -58,7 +58,8 @@
                             [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
                         <div class="text-darkblue display-5 font-weight-bold"
                             [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
-                            {{ (telemetryObj[prop?.json_key] && (telemetryObj[prop?.json_key]?.value !== undefined
+                            {{ (prop?.asset_id == telemetryObj?.asset_id && telemetryObj[prop?.json_key] &&
+                            (telemetryObj[prop?.json_key]?.value !== undefined
                             && telemetryObj[prop?.json_key]?.value !== null)) ?
                             (prop?.data_type === 'Number' ?
                             telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals) :

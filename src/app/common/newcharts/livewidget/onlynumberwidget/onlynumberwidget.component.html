@@ -79,6 +79,8 @@
                             <!-- {{prop.property?.json_key}} == {{telemetryObj[prop.property?.json_key]?.value}} ===
                     {{prop.property?.data_type}} -->
                             <!-- {{telemetryObj[prop.property?.json_key]}} -->
+                            <!-- <ng-container *ngIf="prop?.asset_id == telemetryObj?.asset_id"> -->
+
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
                                 {{ (telemetryObj[prop?.json_key] &&
@@ -92,7 +94,7 @@
                                 : 'NA'}} {{prop.unit}}
                             </ng-container>
                             <ng-template #APIPropValTemplate>
-                                {{ (apiTelemetryObj[prop?.json_key] &&
+                                {{ (prop?.asset_id == telemetryObj?.asset_id && apiTelemetryObj[prop?.json_key] &&
                                 (apiTelemetryObj[prop?.json_key]?.value !==
                                 undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
@@ -100,6 +102,7 @@
                                 (apiTelemetryObj[prop?.json_key].value))
                                 : 'NA'}} {{prop.unit}}
                             </ng-template>
+                            <!-- </ng-container> -->
 
                         </span>
                     </div>

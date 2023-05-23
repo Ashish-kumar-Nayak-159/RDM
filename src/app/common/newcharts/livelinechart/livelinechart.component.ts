@@ -81,7 +81,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
     if (changes.telemetryObj && this.chart) {
       // if (this.chartConfig.noOfDataPointsForTrend > 0) {
       if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
@@ -101,7 +100,8 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
         const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
         this.telemetryData = [];
         this.chartConfig.y1AxisProps?.forEach((prop) => {
-          if (
+
+          if (prop?.assetid == this.telemetryObj?.asset_id &&
             this.telemetryObj[prop.json_key].value !== undefined &&
             this.telemetryObj[prop.json_key].value !== null
           ) {
@@ -129,7 +129,9 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
         });
 
         this.chartConfig.y2AxisProps?.forEach((prop) => {
-          if (
+
+
+          if (prop?.assetid == this.telemetryObj?.asset_id &&
             this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
             this.telemetryObj[prop.json_key]?.value !== null
           ) {

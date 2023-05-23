@@ -59,7 +59,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
           this.chart[index] &&
           !this.hand[index] &&
           this.telemetryObj[prop.json_key]?.value !== undefined &&
-          this.telemetryObj[prop.json_key]?.value !== null
+          this.telemetryObj[prop.json_key]?.value !== null && prop.asset_id == this.telemetryObj.asset_id
         ) {
           const hand = this.chart[index].hands.push(new am4charts.ClockHand());
           hand.radius = am4core.percent(97);
@@ -67,6 +67,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
           this.hand.splice(index, 0, hand);
         }
       });
+      this.loadChart();
     }
   }
 

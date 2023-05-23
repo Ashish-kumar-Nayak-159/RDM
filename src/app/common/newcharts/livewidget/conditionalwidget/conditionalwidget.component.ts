@@ -45,7 +45,8 @@ export class ConditionalwidgetComponent implements OnInit {
         let jsonObj = {
           name: element.title,
           type: element.type,
-          json_key: element.json_key
+          json_key: element.json_key,
+          asset_id: element.asset_id,
         };
         jsonArray.push(jsonObj);
       });
@@ -122,7 +123,7 @@ export class ConditionalwidgetComponent implements OnInit {
     let condition = this.chartConfig?.metadata?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
-        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
+        condition = condition?.replaceAll(`%${i + 1}%`, (jd.asset_id == telemetryObj.asset_id) ? telemetryObj[jd?.json_key]?.value : "");
       });
       var actualVal = eval(condition);
       if (this.chartConfig?.metadata?.text && this.chartConfig?.metadata?.text.length > 0) {

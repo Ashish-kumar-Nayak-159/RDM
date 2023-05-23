@@ -19,6 +19,7 @@ declare var $: any;
 export class ConfigLogicalAssestComponent implements OnInit {
   private _assetDetail: any;
   telemetryPropertyList: any;
+  labalName: any = "Add";
   public get assetDetail(): any {
     return this._assetDetail;
   }
@@ -297,6 +298,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
       threshold: {},
     };
     this.selectedSlave = null;
+    this.labalName = "Add";
     $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -359,6 +361,21 @@ export class ConfigLogicalAssestComponent implements OnInit {
       return;
     }
 
+    if (this.widgetObj.widget_type == "NumberWithImage") {
+      let isvalid = false;
+      this.widgetObj.properties.forEach(element => {
+        var extension = element.image.name.substr(element.image.name.lastIndexOf('.'));
+        let ext = [".jpeg", ".jpg", ".png", ".gif"];
+
+        if (extension == ".jpeg" || extension == ".jpg" || extension == ".png" || extension == ".gif") {
+          isvalid = true;
+        }
+      });
+      if (!isvalid) {
+        this.toasterService.showError('Could not allow to upload  jpeg, jpg, png & GIF files', 'Upload file');
+        return
+      }
+    }
 
     if (this.widgetObj.widget_type === 'LineChart' || this.widgetObj.widget_type === 'AreaChart') {
       if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
@@ -429,8 +446,12 @@ export class ConfigLogicalAssestComponent implements OnInit {
     }
 
     else if (this.widgetObj.widget_type == "NumberWithImage") {
+
+
+
       let imgUploadError = false;
       await Promise.all(this.widgetObj.properties.map(async (element, index) => {
+
         const data = await this.commonService.uploadImageToBlob(
           element.image,
           this.contextApp.app + '/models/' + 'this.assetModel.name' + '/live-widgets'
@@ -958,7 +979,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
         } else if (event.type == "Clone") {
           this.widgetObj.id = 0;
         }
-
+        this.labalName = event.type;
         $('#addLWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
       })

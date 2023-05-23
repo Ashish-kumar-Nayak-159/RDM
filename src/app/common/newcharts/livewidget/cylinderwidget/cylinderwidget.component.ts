@@ -82,7 +82,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
         const chart = this.chart[index];
         if (chart) {
           this.telemetryData = {};
-          if (
+          if (prop.asset_id == this.telemetryObj.asset_id &&
             this.telemetryObj[prop?.json_key]?.value !== undefined &&
             this.telemetryObj[prop?.json_key]?.value !== null
           ) {

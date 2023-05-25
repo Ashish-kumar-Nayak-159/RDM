@@ -4,11 +4,11 @@ import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
 import * as datefns from 'date-fns';
 @Component({
-  selector: 'app-date-range-picker',
-  templateUrl: './date-range-picker.component.html',
-  styleUrls: ['./date-range-picker.component.css'],
+  selector: 'app-newdate-range-picker',
+  templateUrl: './newdate-range-picker.component.html',
+  styleUrls: ['./newdate-range-picker.component.css'],
 })
-export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChanges {
+export class NewDateRangePickerComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() filterObj: any;
   @Input() disabled: any = false;
   @Input() options: any = {
@@ -17,7 +17,7 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
     autoUpdateInput: false,
     maxDate: new Date(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
+    ranges: CONSTANTS.DATE_OPTIONS_FOR_UPTIME,
   };
   @Input() selectedDateRange: any;
   @Output() selectedDateApplyEmitter: EventEmitter<any> = new EventEmitter<any>();

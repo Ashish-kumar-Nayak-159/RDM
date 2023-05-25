@@ -255,4 +255,10 @@ export class AppUrls {
 
   public static PROPERTIES_BY_ASSET_ID = 'propertiesbyasset/{0}'
 
+  public static GET_UPTIME = 'uptime_history'
+  public static GET_UPTIME_HISTORY = 'uptime_history_grouping'
+  public static GET_UPTIME_HISTORY_ID = 'uptime_history/{0}'
+
+
+
 }

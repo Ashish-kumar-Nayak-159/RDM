@@ -16,6 +16,7 @@ declare var $: any;
 })
 export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   assetModel: any;
+  dateFilter: any;
   isAssetModelDataLoading = false;
   activeTab: string;
   menuItems: any[] = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;

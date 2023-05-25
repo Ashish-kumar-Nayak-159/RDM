@@ -372,7 +372,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
         }
       });
       if (!isvalid) {
-        this.toasterService.showError('Could not allow to upload  jpeg, jpg, png & GIF files', 'Upload file');
+        this.toasterService.showError('Only allow to upload  jpeg, jpg, png & GIF files', 'Upload file');
         return
       }
     }

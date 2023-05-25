@@ -1,0 +1,42 @@
+::ng-deep.mat-calendar-body-active:focus {
+    outline: 0 !important;
+}
+
+::ng-deep.mat-focus-indicator {
+    outline: 0 !important;
+
+}
+
+.w-15 {
+    width: 15rem !important;
+}
+
+a.mr-1 {
+    display: flex;
+    justify-content: center;
+    color: blue;
+    float: none;
+}
+
+.pull-right {
+    float: none;
+}
+
+.table.table-hover tr td a:not([href]),
+.tab-content a.load-more {
+    color: #676c6e;
+}
+
+.table.table-hover tr td a:not([href]):hover,
+.tab-content a.load-more:hover {
+    color: #224abe;
+    cursor: pointer;
+}
+
+.tab-content a.load-more:hover {
+    text-decoration: underline;
+}
+
+.table.table-hover tr td a+a {
+    margin-left: 0.3rem !important;
+}

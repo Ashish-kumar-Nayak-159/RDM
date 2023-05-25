@@ -41,7 +41,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   newHistoricalCombineWidets: any[] = [];
   widgetBySplice: any[] = [];
   assetWiseTelemetryData = [];
-  isAssetWiseTelemetryData:boolean = false;
+  isAssetWiseTelemetryData: boolean = false;
   allTelemetryData: any[] = [];
   propertyList: any[] = [];
   measuredMessageProps: any[] = [];
@@ -53,7 +53,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   isLoadingData: boolean = false;
   @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
   sameAsset: string;
-  isAssetSelected:boolean = false;
+  isAssetSelected: boolean = false;
 
 
 
@@ -347,6 +347,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   getDefaultFilters() {
+    debugger
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.historicalDateFilter.dateOption = item.dateOption;
     if (item.dateOption !== 'Custom Range') {

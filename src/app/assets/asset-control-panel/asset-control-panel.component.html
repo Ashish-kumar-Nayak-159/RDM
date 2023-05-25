@@ -80,7 +80,8 @@
             </app-telemetry>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="asset_alerts">
-            <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset" [menuDetail]="getMenuDetail('alerts')">
+            <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset"
+              [menuDetail]="getMenuDetail('alerts')">
             </app-alerts>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
@@ -96,8 +97,9 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel"
             id="asset_progress">
-             <app-app-maintenance-list *ngIf="activeTab === 'maintenance_schedule' && asset" 
-             [componentState]="componentState" [isControl]="true" [assetFromControlPanel]="asset"></app-app-maintenance-list>
+            <app-app-maintenance-list *ngIf="activeTab === 'maintenance_schedule' && asset"
+              [componentState]="componentState" [isControl]="true"
+              [assetFromControlPanel]="asset"></app-app-maintenance-list>
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel"
             id="asset_properties">
@@ -109,7 +111,8 @@
             <app-derived-kpis *ngIf="activeTab === 'derived_kpis' && asset" [asset]="asset"></app-derived-kpis>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'rules'}" role="tabpanel" id="asset_rules">
-            <app-rules *ngIf="activeTab === 'rules' && asset" [asset]="asset" [menuDetail]="getMenuDetail('rules')"></app-rules>
+            <app-rules *ngIf="activeTab === 'rules' && asset" [asset]="asset"
+              [menuDetail]="getMenuDetail('rules')"></app-rules>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel"
             id="asset_trend_analysis">
@@ -141,9 +144,8 @@
             </app-gateway-settings>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'uptime'}" role="tabpanel" id="asset_uptime">
-            <app-asset-uptime *ngIf="activeTab === 'uptime'  && asset" [tileData]="tileData" [asset]="asset" 
-             [componentState]="componentState"
-            >
+            <app-asset-uptime *ngIf="activeTab === 'uptime'  && asset" [tileData]="tileData" [asset]="asset"
+              [componentState]="componentState">
             </app-asset-uptime>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel"
@@ -162,13 +164,18 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
             id="asset_alert_conditioning">
-            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset" [menuDetail]="getMenuDetail('alert_conditioning')">
+            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset"
+              [menuDetail]="getMenuDetail('alert_conditioning')">
             </app-asset-alert-conditions>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
             id="asset_cached_telemetry">
             <app-gateway-cached-telemetry *ngIf="activeTab === 'cached_telemetry' && asset" [asset]="asset">
             </app-gateway-cached-telemetry>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'asset_uptime'}" role="tabpanel"
+            id="asset_model_uptime">
+            <app-asset-model-uptime [asset]="asset" *ngIf="activeTab === 'asset_uptime'"></app-asset-model-uptime>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
             id="asset_config_history">

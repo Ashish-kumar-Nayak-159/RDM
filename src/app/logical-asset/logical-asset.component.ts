@@ -65,7 +65,6 @@ export class LogicalAssetComponent implements OnInit {
   }
 
   getAssets(hierarchy) {
-    ;
     const obj = {
       hierarchy: JSON.stringify(hierarchy),
       type: CONSTANTS.NON_IP_ASSET,

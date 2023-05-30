@@ -33,6 +33,9 @@ export class AssetModelUpTimeComponent implements OnInit {
   loader: boolean;
   upTimeHistory: any = [];
   loadMoreVisibility: boolean;
+  upTimeData: any;
+  downTimeData: any;
+  count: number = 0;
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
@@ -46,14 +49,7 @@ export class AssetModelUpTimeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.getDefaultFilters();
 
-    this.assetService.upTimeFilterData.subscribe((data) => {
-      this.uptimeDateFilter = data;
-      this.selectedDateRange = this.uptimeDateFilter.dateOption;
-      this.changeDetector.markForCheck();
-      console.log(JSON.stringify(this.uptimeDateFilter));
 
-    })
-    this.getUptime();
 
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
@@ -66,6 +62,21 @@ export class AssetModelUpTimeComponent implements OnInit {
     // await this.getAssets(this.contextApp.user.hierarchy);
   }
 
+  ngAfterViewInit() {
+    this.assetService.upTimeFilterData.subscribe((data) => {
+
+      this.uptimeDateFilter = data;
+      this.selectedDateRange = this.uptimeDateFilter.dateOption;
+      this.changeDetector.markForCheck();
+
+      this.getUptime();
+
+    }, error => {
+
+
+    })
+  }
+
   getTileName() {
     let selectedItem;
     let assetItem;
@@ -74,7 +85,6 @@ export class AssetModelUpTimeComponent implements OnInit {
       selectedItem = item.showAccordion;
       assetItem = item.showAccordion;
     });
-    debugger
     this.tileData = selectedItem;
     selectedItem.forEach((item) => {
       this.tileData[item.name] = item.value;
@@ -161,14 +171,15 @@ export class AssetModelUpTimeComponent implements OnInit {
       todate: this.uptimeDateFilter.to_date,
     }
     this.loader = true;
-    console.log(custObj);
+
     this.upTimeService.getUpTime(custObj).subscribe((res: any) => {
-      console.log(res);
+
       this.loadMoreVisibility = true;
 
       this.upTimeHistory = res?.data;
       this.loader = false;
-      if (res?.data?.length < this.currentLimit) {
+      this.count += 10;
+      if (this.count >= res.totalcount) {
         this.loadMoreVisibility = false
       }
 
@@ -178,9 +189,32 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   onPopup(e) {
-    debugger
-    this.upTimeService.getUpTimeById(e.id, this.asset.asset_id).subscribe((res: any) => {
-      console.log(res);
+
+    this.getAssetUptime();
+    this.getAssetDowntime();
+  }
+
+  getAssetUptime() {
+    this.upTimeService.getAssetUptime(this.asset.asset_id).subscribe((res: any) => {
+
+      this.upTimeData = res.data;
+
+    })
+  }
+
+  getAssetDowntime() {
+    const custObj = {
+      offset: this.currentOffset,
+      count: this.currentLimit,
+      assetId: this.asset.asset_id,
+      fromdate: this.uptimeDateFilter.from_date,
+      todate: this.uptimeDateFilter.to_date,
+      app: this.contextApp.app,
+    }
+    this.upTimeService.getAssetDowntime(custObj).subscribe((res: any) => {
+
+      this.downTimeData = res.data;
+
     })
   }
 }

@@ -45,6 +45,7 @@ export class ListUptimeComponent implements OnInit {
   loader: boolean;
   upTimeHistory: any = [];
   insideScrollFunFlag = false;
+  count: number = 0;
   // @Output() filterData = new EventEmitter<any>();
 
   constructor(private commonService: CommonService,
@@ -190,7 +191,7 @@ export class ListUptimeComponent implements OnInit {
   }
 
   filteredHiearchyObj() {
-    debugger;
+    ;
     // if (!this.startDate) {
     //   this.toasterService.showError('please select from date', '');
     //   return
@@ -226,8 +227,8 @@ export class ListUptimeComponent implements OnInit {
       this.assetId = this.filterObj?.asset.asset_id
     }
 
-    console.log(this.hierarchy);
-    console.log(this.assetId);
+
+
 
     this.getUptime();
     // this.assetStatic();
@@ -249,14 +250,18 @@ export class ListUptimeComponent implements OnInit {
       todate: this.uptimeDateFilter.to_date,
     }
     this.loader = true;
-    console.log(custObj);
+
     this.upTimeService.getUpTimeHistory(custObj).subscribe((res: any) => {
-      console.log(res);
+
       this.upTimeHistory = res?.data;
       this.loader = false;
-      if (res?.data?.length < this.currentLimit) {
+      ;
+      this.count += 10;
+
+      if (this.count >= res.totalcount) {
         this.loadMoreVisibility = false
       }
+
 
     }, error => {
       this.loader = false;
@@ -310,6 +315,6 @@ export class ListUptimeComponent implements OnInit {
   onTableFunctionCall(obj) { }
   redirectAsset(e) {
     this.assetService.upTimeFilterData.emit((this.uptimeDateFilter));
-    this.router.navigate([`applications/${this.contextApp.app}/assets/${e.assetId}/control-panel#asset_uptime`]);
+    this.router.navigate([`applications/${this.contextApp.app}/assets/${e.assetId}/control-panel`], { fragment: 'asset_uptime' })
   }
 }

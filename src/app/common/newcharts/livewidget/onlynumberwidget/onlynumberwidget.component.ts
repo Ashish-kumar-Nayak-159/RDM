@@ -38,6 +38,11 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
       this.widgetId = this.chartConfig.id;
       this.chartConfig.properties = this.chartConfig.properties[0].properties;
     }
+
+    if (!this.chartConfig?.noOfDataPointsForTrend) {
+      this.chartConfig.noOfDataPointsForTrend = this.chartConfig.metadata?.noOfDataPointsForTrend;
+    }
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     if (this.telemetryObj) {
@@ -48,6 +53,7 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
     // this.asset = { "asset_id": "c135f97" }
   }
 

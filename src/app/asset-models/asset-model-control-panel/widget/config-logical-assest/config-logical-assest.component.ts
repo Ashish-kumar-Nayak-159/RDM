@@ -613,6 +613,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "type": element.type,
           "title": element.title,
           "json_key": element.json_key,
+          "units": element.unit,
           "minRangeValue": element.minRangeValue,
           "maxRangeValue": element.maxRangeValue,
           "low_max": element.low_max,
@@ -640,7 +641,9 @@ export class ConfigLogicalAssestComponent implements OnInit {
     else if (this.widgetObj.widget_type == "RectangleWidget" || this.widgetObj.widget_type == "CylinderWidget") {
       this.widgetObj.properties.forEach(element => {
         element.type = this.getPropertieType(element.type);
-        delete element['propertyList'];
+        element.units = element.unit,
+
+          delete element['propertyList'];
       });
       properties = this.widgetObj.properties;
     }
@@ -1111,6 +1114,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
         break;
       case "Edge Derived Properties":
         type = "ed";
+        break;
       case "Controllable Properties":
         type = "m";
         break;

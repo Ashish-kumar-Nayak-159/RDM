@@ -258,6 +258,8 @@ export class AppUrls {
   public static GET_UPTIME = 'uptime_history'
   public static GET_UPTIME_HISTORY = 'uptime_history_grouping'
   public static GET_UPTIME_HISTORY_ID = 'uptime_history/{0}'
+  public static ASSET_UPTIME_ID = 'assetuptime/{0}'
+  public static ASSET_DOWNTIME_ID = 'apps/{0}/assets/{1}/mttr_events'
 
 
 

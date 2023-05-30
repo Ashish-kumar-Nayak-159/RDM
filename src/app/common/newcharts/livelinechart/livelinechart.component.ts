@@ -67,6 +67,11 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.chartConfig.y2AxisProps) {
       this.chartConfig.y2AxisProps = [];
     }
+
+    if (!this.chartConfig?.noOfDataPointsForTrend) {
+      this.chartConfig.noOfDataPointsForTrend = this.chartConfig.metadata?.noOfDataPointsForTrend;
+    }
+
     setTimeout(() => this.plotChart(), 1000);
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
@@ -82,6 +87,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.telemetryObj && this.chart) {
+
       // if (this.chartConfig.noOfDataPointsForTrend > 0) {
       if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
 

@@ -215,12 +215,13 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
             if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart' && widget.widget_type !== 'ConditionalNumber') {
 
               widget?.properties.forEach((prop) => {
+                prop.type = this.getPropertieType(prop?.type);
+
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }
                 // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop?.type;
-
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
                 } else if (prop?.type === 'Edge Derived Properties') {
@@ -239,6 +240,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
             else if (widget.widget_type == 'ConditionalNumber') {
 
               widget?.properties.forEach((prop) => {
+                prop.type = this.getPropertieType(prop?.type);
+
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }
@@ -264,6 +267,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 widget.y2AxisProps = widget?.properties[0].y2AxisProps
               }
               widget?.y1AxisProps.forEach((prop) => {
+                prop.type = this.getPropertieType(prop?.type);
+
                 if (prop.id) {
                   prop.json_key = prop.id;
                 }
@@ -738,6 +743,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
               this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
             }
             this.actualPropertyList.forEach((prop) => {
+              prop.type = this.getPropertieType(prop?.type);
+
               if (prop.type !== 'Derived KPIs') {
                 obj[prop?.json_key] = {
                   value: response.message[prop?.json_key],
@@ -894,5 +901,24 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  getPropertieType(type) {
+    switch (type) {
+      case "m":
+        type = "Measured Properties";
+        break;
+      case "ed":
+        type = "Edge Derived Properties";
+        break;
+      case "m":
+        type = "Controllable Properties";
+        break;
+      case "cd":
+        type = "Cloud Derived Properties";
+        break;
+      default:
+        type = type;
+    }
+    return type;
+  }
 }
 

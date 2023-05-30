@@ -31,8 +31,8 @@ export class UpTimeService {
 
   getUpTimeHistory(obj: any) {
     let params = new HttpParams().set('epoch', true);
-    if (obj.asset_id)
-      params = params.set('asset_id', obj.asset_id);
+    if (obj.assetId)
+      params = params.set('asset_id', obj.assetId);
 
     params = params.set('hierarchy', obj.hierarchy);
     params = params.set('from_date', obj.fromdate);
@@ -46,5 +46,19 @@ export class UpTimeService {
   getUpTimeById(id: any, asset_id: any) {
     let params = new HttpParams().set('asset_id', asset_id);
     return this.http.get(this.url + String.Format(AppUrls.GET_UPTIME_HISTORY_ID, encodeURIComponent(id)), { params })
+  }
+
+  getAssetUptime(asset_id: any) {
+    return this.http.get(this.url + String.Format(AppUrls.ASSET_UPTIME_ID, encodeURIComponent(asset_id)))
+  }
+
+  getAssetDowntime(obj: any) {
+    let params = new HttpParams().set('epoch', true);
+
+    params = params.set('from_date', obj.fromdate);
+    params = params.set('to_date', obj.todate);
+    params = params.set('count', 100);
+
+    return this.http.get(this.url + String.Format(AppUrls.ASSET_DOWNTIME_ID, encodeURIComponent(obj.app), encodeURIComponent(obj.assetId)), { params });
   }
 }

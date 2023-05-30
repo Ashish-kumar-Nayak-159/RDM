@@ -73,7 +73,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
 
   onSaveHierachy() {
-    debugger
+
     if (this.showAsset) {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       if (this.type != 'logicalView') {

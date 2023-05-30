@@ -347,7 +347,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
 
   getDefaultFilters() {
-    debugger
+
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.historicalDateFilter.dateOption = item.dateOption;
     if (item.dateOption !== 'Custom Range') {

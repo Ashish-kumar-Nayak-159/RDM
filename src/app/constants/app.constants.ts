@@ -668,7 +668,23 @@ export class CONSTANTS {
       ],
       priority: 1,
     },
-
+    {
+      page: 'UpTime History',
+      system_name: 'UpTime History',
+      url: 'applications/:appName/uptime',
+      display_name: 'UpTime History',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'UpTime History',
+        },
+      ],
+      priority: 1,
+    },
   ];
 
   public static ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -932,6 +948,15 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [],
       accordion_value: {},
+    },
+    {
+      page: 'asset_uptime',
+      system_name: 'UpTimeM',
+      url: '#asset_model_uptime',
+      display_name: 'UpTimeM',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false,
     },
     // {
     //   page: 'other',
@@ -1331,12 +1356,11 @@ export class CONSTANTS {
       isTitle: false,
     },
     {
-      page: 'cached_alerts',
-      system_name: 'Cached Alerts',
-      url: '#asset_cached_alerts',
-      display_name: 'Cached Alerts',
-      icon: 'fa fa-fw fa-bolt',
-      privileges_required: [],
+      page: 'asset_uptime',
+      system_name: 'UpTimeM',
+      url: '#asset_model_uptime',
+      display_name: 'UpTimeM',
+      icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,
     },
@@ -1876,6 +1900,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
     },
+
     {
       page: 'c2d',
       system_name: 'Control',
@@ -2132,6 +2157,15 @@ export class CONSTANTS {
     'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
     'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
     'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
+    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.endOfDay(datefns.subDays(new Date(), 1))],
+    'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
+    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],
+    'Last 30 Days': [datefns.subDays(new Date(), 29), datefns.subSeconds(new Date(), 0)],
+    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
+    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.subMonths(datefns.endOfMonth(new Date()), 1)]
+  };
+
+  public static DATE_OPTIONS_FOR_UPTIME = {
     'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.endOfDay(datefns.subDays(new Date(), 1))],
     'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
     'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],

@@ -73,6 +73,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
 
   onSaveHierachy() {
+
     if (this.showAsset) {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       if (this.type != 'logicalView') {
@@ -137,6 +138,12 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
     this.filterObj.logicalview = undefined;
+
+    this.hierarchyNewArr = [];
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyNewArr[1] = this.actualhierarchyNewArr.filter(r => r.level == 1);
+    }
+
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = this.actualhierarchyNewArr?.filter(r => r.level == 1);
     }
@@ -234,6 +241,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     if (selectedHierarchy) {
       this.hierarchyNewArr[i + 1] = this.actualhierarchyNewArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }
+
     const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {

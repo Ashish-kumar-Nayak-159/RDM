@@ -1,0 +1,85 @@
+<div class="blue-nav-bar">
+    <div class="d-flex align-items-center">
+        <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 pl-4 mt-3" *ngIf="filterObj">
+        <div class="d-flex">
+            <app-hierarchy-dropdown #hierarchyDropdown [filterObj]="filterObj" [showAsset]="true" [assets]="assets"
+                (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy()"
+                [closeOnSelection]="true">
+            </app-hierarchy-dropdown>
+
+            <app-newdate-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange"
+                [filterObj]="uptimeDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
+                [selectedDateRange]="selectedDateRange">
+            </app-newdate-range-picker>
+
+
+            <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
+                    (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!loader">
+    <div *ngIf="upTimeHistory.length==0">
+        <p class="ml-2">please click on search to view the data. </p>
+    </div>
+    <div class="table-responsive" *ngIf="upTimeHistory.length>0">
+
+        <div class="tableFixHead" style="height: 60vh; max-height: calc(100vh - 10.5rem)">
+            <table class="table table-hover">
+                <thead>
+                    <!-- <th scope="col"><input type="checkbox" name="visibleall"
+                    id="visibleall" (change)="onClickOfAssetAllCheckbox()" [(ngModel)]="isAllAssetSelected"
+                    placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th> -->
+                    <th scope="col">No</th>
+                    <th scope="col">Asset Id</th>
+                    <th scope="col">Actual Work Time in hours</th>
+                    <th scope="col">Planned Work Time in hours</th>
+                    <th scope="col">Uptime Percentage</th>
+                    <th scope="col">Action</th>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="upTimeHistory.length > 0">
+                        <tr *ngFor="let asset of upTimeHistory; let i = index">
+                            <td>{{i + 1}}</td>
+                            <td>{{asset.assetId}}</td>
+                            <td>{{asset.actualwotktimeinhours}}</td>
+                            <td>{{asset.plannedworktimeinhours}}</td>
+                            <td>{{asset.uptimePercentage}}</td>
+                            <td>
+                                <a (click)="redirectAsset(asset);" tooltip="More Details">
+                                    <!-- <em class="fas fa-fw fa-edit"></em> -->
+                                    <span style="color: blue;">More Details</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <!-- <span class="pull-right mt-1 mr-1" *ngIf="upTimeHistory.length > 0">
+            <a class="mr-1 load-more" (click)="currentOffset = currentOffset + currentLimit;getUptime();"
+                placement="bottom" tooltip="Load More Records...">Load More...</a>
+        </span> -->
+        <!-- <span class="pull-right mt-1 mr-1" *ngIf="upTimeHistory.length > 0">
+            <a class="mr-1 load-more" (click)="currentOffset = currentOffset + currentLimit;getUptime();"
+                placement="bottom" tooltip="Load More Records...">Load More...</a>
+        </span> -->
+    </div>
+    <span class="d-flex justify-content-center w-100" style="margin-top: 10px;margin-right:10px;"
+        *ngIf="upTimeHistory.length > 0 && loadMoreVisibility">
+        <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
+            (click)="currentOffset = currentOffset + currentLimit;getUptime()" placement="bottom">{{'Load
+            More...'}}</a>
+    </span>
+
+</div><br />
+<div class="text-center">
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
+</div>

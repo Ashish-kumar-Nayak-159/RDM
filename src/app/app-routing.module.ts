@@ -22,6 +22,11 @@ const routes: Routes = [
       import('./logical-asset/logical-asset.module').then((module) => module.LogicalAssetModule),
   },
   {
+    path: 'applications/:applicationId/uptime',
+    loadChildren: () =>
+      import('./uptime/list-uptime/uptime.module').then((module) => module.UpTimeModule),
+  },
+  {
     path: 'applications/:applicationId/maintenance',
     loadChildren: () =>
       import('./app-maintenance/app-maintenance.module').then((module) => module.AppMaintenanceModule),

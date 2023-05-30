@@ -17,6 +17,8 @@ export class AssetService {
   composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   searchNotificationsEventEmitter: EventEmitter<any> = new EventEmitter<any>();
   refreshRecentJobs: EventEmitter<any> = new EventEmitter<any>();
+  upTimeFilterData: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(private http: HttpClient, private commonService: CommonService) { }
 
   getIPAndLegacyAssets(filterObj, app) {

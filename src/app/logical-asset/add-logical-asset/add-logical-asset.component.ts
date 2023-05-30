@@ -327,8 +327,8 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
     let reqObj = {
       "name": this.assetDetail.name,
       // "code": this.assetDetail.code,
-      "level": this.selectedHierarchy.level ? this.selectedHierarchy.level : 0,
-      "hierarchyid": this.selectedHierarchy.id ? this.selectedHierarchy.id : 0,
+      "level": this.selectedHierarchy?.level ? this.selectedHierarchy.level : 0,
+      "hierarchyid": this.selectedHierarchy?.id ? this.selectedHierarchy.id : 0,
       "hierarchy": this.assetDetail.tags.hierarchy_json,
       "assets": assest
     }

@@ -76,6 +76,7 @@ import { WhiteListAssetComponent } from './white-list-asset/white-list-asset.com
 import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset-list/white-list-asset-list.component';
 import { AssetUptimeComponent } from './asset-uptime/asset-uptime.component';
 import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module';
+import { AssetModelUpTimeComponent } from './asset-control-panel/asset-model-uptime/asset-model-uptime.component';
 
 @NgModule({
   declarations: [
@@ -135,6 +136,8 @@ import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module'
     WhiteListAssetComponent,
     WhiteListAssetListComponent,
     AssetUptimeComponent,
+    AssetModelUpTimeComponent,
+
   ],
   imports: [
     CommonModule,
@@ -163,4 +166,4 @@ import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module'
   ],
   exports: [FilterComponent, TableComponent],
 })
-export class AssetsModule {}
+export class AssetsModule { }

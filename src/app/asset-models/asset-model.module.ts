@@ -47,6 +47,7 @@ import { LivelinechartComponent } from '../common/newcharts/livelinechart/liveli
 import { NumberonlywidgetComponent } from '../common/newcharts/formcomponent/numberonlywidget/numberonlywidget.component';
 import { NewassetModelPropertiesComponent } from './asset-model-control-panel/newasset-model-properties/newasset-model-properties.component';
 import { ConfigLogicalAssestComponent } from './asset-model-control-panel/widget/config-logical-assest/config-logical-assest.component';
+
 @NgModule({
   declarations: [
     AssetModelListComponent,

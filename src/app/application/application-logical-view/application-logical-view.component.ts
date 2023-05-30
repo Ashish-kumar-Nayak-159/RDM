@@ -184,7 +184,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     this.signalRService.disconnectFromSignalR('logicalview');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
-
     if (this.sameAsset != this?.filterObj?.logicalview?.code) {
       if (this.filterObj?.logicalview) {
         this.isFilterSelected = true
@@ -200,6 +199,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           this.logicalViewDatarender = this.logicalViewData?.charts
           this.isLogicalViewData = false;
 
+          this.logicalViewData.charts = this.logicalViewData?.charts.filter(x => x.metadata?.dashboardVisibility);
 
           this.actualPropertyList = [];
           this.logicalViewData?.charts?.forEach((widget, index) => {
@@ -343,6 +343,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     }
     else {
       this.isLogicalViewData = false;
+      this.toasterService.showError('Logical View selection is required', 'Logical View Telemetry');
 
     }
   }

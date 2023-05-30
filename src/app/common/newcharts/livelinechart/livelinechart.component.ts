@@ -88,86 +88,86 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.telemetryObj && this.chart) {
 
-      // if (this.chartConfig.noOfDataPointsForTrend > 0) {
-      if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
+      if (this.chartConfig.noOfDataPointsForTrend > 0) {
+        if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
 
-        this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
-        if (this.environmentApp === 'SopanCMS') {
-          this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
-          this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
-          if (this.telemetryObj['TMD'] < 1) {
-            this.telemetryObj['TMD'] = undefined;
+          this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
+          if (this.environmentApp === 'SopanCMS') {
+            this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
+            this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
+            if (this.telemetryObj['TMD'] < 1) {
+              this.telemetryObj['TMD'] = undefined;
+            }
+            if (this.telemetryObj['TMS'] < 1) {
+              this.telemetryObj['TMS'] = undefined;
+            }
           }
-          if (this.telemetryObj['TMS'] < 1) {
-            this.telemetryObj['TMS'] = undefined;
-          }
+
+          const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
+          this.telemetryData = [];
+          this.chartConfig.y1AxisProps?.forEach((prop) => {
+
+            if (prop?.assetid == this.telemetryObj?.asset_id &&
+              this.telemetryObj[prop.json_key].value !== undefined &&
+              this.telemetryObj[prop.json_key].value !== null
+            ) {
+              if (
+                !this.propertyBasedData[prop.json_key] ||
+                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+                new Date(this.telemetryObj[prop.json_key].date).getTime()
+              ) {
+                const obj = {};
+                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+                if (!this.propertyBasedData[prop.json_key]) {
+                  this.propertyBasedData[prop.json_key] = {
+                    data: [],
+                  };
+                }
+                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+                this.propertyBasedData[prop.json_key]['data'].push(obj);
+                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+                }
+              }
+              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+            }
+          });
+
+          this.chartConfig.y2AxisProps?.forEach((prop) => {
+
+
+            if (prop?.assetid == this.telemetryObj?.asset_id &&
+              this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
+              this.telemetryObj[prop.json_key]?.value !== null
+            ) {
+              if (
+                !this.propertyBasedData[prop.json_key] ||
+                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+                new Date(this.telemetryObj[prop.json_key].date).getTime()
+              ) {
+                const obj = {};
+                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+                if (!this.propertyBasedData[prop.json_key]) {
+                  this.propertyBasedData[prop.json_key] = {
+                    data: [],
+                  };
+                }
+                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+                this.propertyBasedData[prop.json_key]['data'].push(obj);
+                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+                }
+              }
+              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+            }
+          });
         }
-
-        const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
-        this.telemetryData = [];
-        this.chartConfig.y1AxisProps?.forEach((prop) => {
-
-          if (prop?.assetid == this.telemetryObj?.asset_id &&
-            this.telemetryObj[prop.json_key].value !== undefined &&
-            this.telemetryObj[prop.json_key].value !== null
-          ) {
-            if (
-              !this.propertyBasedData[prop.json_key] ||
-              this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-            ) {
-              const obj = {};
-              obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-              obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-              if (!this.propertyBasedData[prop.json_key]) {
-                this.propertyBasedData[prop.json_key] = {
-                  data: [],
-                };
-              }
-              this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-              this.propertyBasedData[prop.json_key]['data'].push(obj);
-              if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-                this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-              }
-            }
-            this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-          }
-        });
-
-        this.chartConfig.y2AxisProps?.forEach((prop) => {
-
-
-          if (prop?.assetid == this.telemetryObj?.asset_id &&
-            this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
-            this.telemetryObj[prop.json_key]?.value !== null
-          ) {
-            if (
-              !this.propertyBasedData[prop.json_key] ||
-              this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-              new Date(this.telemetryObj[prop.json_key].date).getTime()
-            ) {
-              const obj = {};
-              obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-              obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-              if (!this.propertyBasedData[prop.json_key]) {
-                this.propertyBasedData[prop.json_key] = {
-                  data: [],
-                };
-              }
-              this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-              this.propertyBasedData[prop.json_key]['data'].push(obj);
-              if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-                this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-              }
-            }
-            this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
-          }
-        });
+        if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+          this.telemetryData.splice(0, 1);
+        }
       }
-      // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-      //   this.telemetryData.splice(0, 1);
-      // }
-      // }
 
       this.chart.data = this.telemetryData;
     }

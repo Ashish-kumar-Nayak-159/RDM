@@ -51,7 +51,7 @@
         <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     </div>
     <ng-container>
-        <div class="m-3" *ngIf="logicalViewData?.charts?.length === 0 && isFilterSelected
+        <div class="m-3" *ngIf="(!logicalViewData?.charts || logicalViewData?.charts?.length === 0) && isFilterSelected
         ">
             No {{widgetStringFromMenu}} configured for this logical view. Please contact administrator.
         </div>

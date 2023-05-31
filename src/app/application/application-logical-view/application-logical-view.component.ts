@@ -180,6 +180,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     this.isLogicalViewData = true;
     // clearInterval(this.c2dResponseInterval);
+    (this.filterObj.logicalview);
 
     this.signalRService.disconnectFromSignalR('logicalview');
     this.signalRTelemetrySubscription?.unsubscribe();
@@ -338,12 +339,12 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.assetWiseTelemetryData = [];
         this.propertyList = [];
         this.measuredMessageProps = [];
-        this.toasterService.showError('Logical View selection is required', 'Logical View Telemetry');
+        this.toasterService.showError('Logical Asset selection is required', 'Logical View Telemetry');
       }
     }
     else {
       this.isLogicalViewData = false;
-      this.toasterService.showError('Logical View selection is required', 'Logical View Telemetry');
+      this.toasterService.showError('Logical Asset selection is required', 'Logical View Telemetry');
 
     }
   }
@@ -732,65 +733,64 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     // }
 
     delete fobj.logicalview;
-    this.apiSubscriptions.push(
-      this.assetService.getLastTelmetry(this.contextApp.app, fobj).subscribe(
-        (response: any) => {
-          if (response?.message) {
-            response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
-            response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
-            const obj = {};
-            if (environment.app === 'SopanCMS') {
-              this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
-              this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
-            }
-            this.actualPropertyList.forEach((prop) => {
-              prop.type = this.getPropertieType(prop?.type);
 
-              if (prop.type !== 'Derived KPIs') {
-                obj[prop?.json_key] = {
-                  value: response.message[prop?.json_key],
-                  date: response.message.message_date,
-                  asset_id: prop.asset_id,
-                };
-              } else {
-                const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
-                obj[prop?.json_key] = {
-                  value: kpiObj.kpi_result,
-                  date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
-                  asset_id: prop.asset_id,
-                };
-              }
-            });
-            this.previousProperties = [];
-            obj['previous_properties'] = [];
-            this.telemetryObj = obj;
-            this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
-            // this.telemetryObj = response.message;
-            // const hours = this.telemetryObj['Running Hours'].split(':');
-            // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
-            // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-            if (environment.app === 'SopanCMS') {
-              this.getTimeDifference(
-                Math.floor(Number(this.latestRunningHours)),
-                Math.floor(Number(this.latestRunningMinutes))
-              );
-            }
-            this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
-            this.telemetryData = [];
-            this.telemetryData.push(this.telemetryObj);
-            this.isTelemetryDataLoading = false;
-          } else {
-            this.isTelemetryDataLoading = false;
+    this.assetService.getLastTelmetry(this.contextApp.app, fobj).subscribe(
+      (response: any) => {
+        if (response?.message) {
+          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+          response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+          const obj = {};
+          if (environment.app === 'SopanCMS') {
+            this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
+            this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
           }
-          this.sampleCountInterval = setInterval(() => {
-            this.sampleCountArr?.pop();
-            this.sampleCountArr?.unshift(0);
-            this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
-          }, 1000);
-        },
-        (error) => (this.isTelemetryDataLoading = false)
-      )
-    );
+          this.actualPropertyList.forEach((prop) => {
+            prop.type = this.getPropertieType(prop?.type);
+
+            if (prop.type !== 'Derived KPIs') {
+              obj[prop?.json_key] = {
+                value: response.message[prop?.json_key],
+                date: response.message.message_date,
+                asset_id: prop.asset_id,
+              };
+            } else {
+              const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+              obj[prop?.json_key] = {
+                value: kpiObj.kpi_result,
+                date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+                asset_id: prop.asset_id,
+              };
+            }
+          });
+          this.previousProperties = [];
+          obj['previous_properties'] = [];
+          this.telemetryObj = obj;
+          this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
+          // this.telemetryObj = response.message;
+          // const hours = this.telemetryObj['Running Hours'].split(':');
+          // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+          // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
+          if (environment.app === 'SopanCMS') {
+            this.getTimeDifference(
+              Math.floor(Number(this.latestRunningHours)),
+              Math.floor(Number(this.latestRunningMinutes))
+            );
+          }
+          this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
+          this.telemetryData = [];
+          this.telemetryData.push(this.telemetryObj);
+          this.isTelemetryDataLoading = false;
+        } else {
+          this.isTelemetryDataLoading = false;
+        }
+        this.sampleCountInterval = setInterval(() => {
+          this.sampleCountArr?.pop();
+          this.sampleCountArr?.unshift(0);
+          this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
+        }, 1000);
+      },
+      (error) => (this.isTelemetryDataLoading = false)
+    )
   }
 
   processTelemetryData(telemetryObj) {

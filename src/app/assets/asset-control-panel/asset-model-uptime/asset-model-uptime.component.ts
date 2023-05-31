@@ -47,10 +47,16 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.getDefaultFilters();
+    // this.getDefaultFilters();
+    let filterValue = sessionStorage.getItem("filterData");
+    if (filterValue) {
+      this.uptimeDateFilter = JSON.parse(filterValue);
+      this.selectedDateRange = this.uptimeDateFilter.dateOption;
+      this.changeDetector.markForCheck();
 
-
-
+      this.getUptime();
+      sessionStorage.removeItem("filterData");
+    }
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
 
@@ -63,18 +69,18 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.assetService.upTimeFilterData.subscribe((data) => {
+    // this.assetService.upTimeFilterData.subscribe((data) => {
 
-      this.uptimeDateFilter = data;
-      this.selectedDateRange = this.uptimeDateFilter.dateOption;
-      this.changeDetector.markForCheck();
+    //   this.uptimeDateFilter = data;
+    //   this.selectedDateRange = this.uptimeDateFilter.dateOption;
+    //   this.changeDetector.markForCheck();
 
-      this.getUptime();
+    //   this.getUptime();
 
-    }, error => {
+    // }, error => {
 
 
-    })
+    // })
   }
 
   getTileName() {

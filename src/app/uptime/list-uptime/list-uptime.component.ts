@@ -314,6 +314,7 @@ export class ListUptimeComponent implements OnInit {
 
   onTableFunctionCall(obj) { }
   redirectAsset(e) {
+    sessionStorage.setItem("filterData",JSON.stringify(this.uptimeDateFilter));
     this.assetService.upTimeFilterData.emit((this.uptimeDateFilter));
     this.router.navigate([`applications/${this.contextApp.app}/assets/${e.assetId}/control-panel`], { fragment: 'asset_uptime' })
   }

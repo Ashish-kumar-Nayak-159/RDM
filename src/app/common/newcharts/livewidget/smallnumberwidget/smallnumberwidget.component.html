@@ -56,14 +56,14 @@
                             [ngStyle]="{'font-size': chartConfig.widget_type === 'SmallNumber' || chartConfig.widget_type === 'StringWidget' ? '1.3rem' : '' }">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (prop?.asset_id == telemetryObj?.asset_id && telemetryObj[prop?.json_key] &&
+                                {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
                                 (telemetryObj[prop?.json_key]?.value !==
                                 undefined
                                 && telemetryObj[prop?.json_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
                                 (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
                                 (telemetryObj[prop?.json_key].value))
-                                : 'NA'}}
+                                : 'NA':prop?.lastValue}}
                                 <sub class="text-xs live-widget-title mb-0">
                                     {{prop?.units ? ('(' +
                                     prop?.units + ')') : ''}}

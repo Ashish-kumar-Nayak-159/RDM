@@ -732,8 +732,9 @@ export class ConfigLogicalAssestComponent implements OnInit {
           widget.measured_props = false;
           widget.derived_kpis = false;
           if (widget.widget_type !== 'LineChart' && widget.widget_type !== 'AreaChart' && widget.widget_type !== 'ConditionalNumber') {
-
             widget?.properties.forEach((prop) => {
+              prop.type = this.getPropertieFullTypeName(prop?.type);
+
               if (prop) {
                 prop.json_key = prop.json_key;
               }
@@ -1179,6 +1180,26 @@ export class ConfigLogicalAssestComponent implements OnInit {
     return myArray.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj[Prop]).indexOf(obj[Prop]) === pos;
     });
+  }
+
+  getPropertieFullTypeName(type) {
+    switch (type) {
+      case "m":
+        type = "Measured Properties";
+        break;
+      case "ed":
+        type = "Edge Derived Properties";
+        break;
+      case "m":
+        type = "Controllable Properties";
+        break;
+      case "cd":
+        type = "Cloud Derived Properties";
+        break;
+      default:
+        type = type;
+    }
+    return type;
   }
 
 }

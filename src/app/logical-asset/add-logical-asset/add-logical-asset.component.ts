@@ -333,13 +333,13 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
       "assets": assest
     }
 
-    this.subscriptions.push(this.assetService.createLogicalView(reqObj).subscribe(res => {
+    this.assetService.createLogicalView(reqObj).subscribe(res => {
       this.toasterService.showSuccess(res["message"], 'Logical Assest');
       $('#createAssetModal').modal('hide');
       this.cancelModal.emit(true);
     }, error => {
       this.toasterService.showError(error["message"], 'Logical Assest');
-    }));
+    });
 
 
   }

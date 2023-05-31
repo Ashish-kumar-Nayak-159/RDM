@@ -59,8 +59,23 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
 
     }
-
-
+    if (this.telemetryObj && this.type == 'LogicalView') {
+      this.chartConfig.properties.forEach(prop => {
+        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
+          (this.telemetryObj[prop?.json_key]?.value !== undefined
+            && this.telemetryObj[prop?.json_key]?.value !== null)) {
+          if (prop?.data_type === 'Number') {
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+          }
+          else {
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+          }
+        }
+        else {
+          prop.lastValue = "NA"
+        }
+      });
+    }
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -92,6 +107,19 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
             chart.data = [this.telemetryData];
           }
         }
+
+        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
+          (this.telemetryObj[prop?.json_key]?.value !== undefined
+            && this.telemetryObj[prop?.json_key]?.value !== null)) {
+          if (prop?.data_type === 'Number') {
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+          }
+          else {
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+          }
+        }
+
+
       });
     }
   }

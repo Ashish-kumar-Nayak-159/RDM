@@ -10,7 +10,15 @@ declare var $: any;
   styleUrls: ['./hierarchy-dropdown.component.css'],
 })
 export class HierarchyDropdownComponent implements OnInit, OnChanges {
-  @Input() filterObj: any = {};
+  private _filterObj: any = {};
+  logicalAsset: any;
+  public get filterObj(): any {
+    return this._filterObj;
+  }
+  @Input()
+  public set filterObj(value: any) {
+    this._filterObj = value;
+  }
   @Input() closeOnSelection: boolean = false;
   originalFilterObj: any = {};
   contextApp: any;
@@ -52,6 +60,10 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.originalLogicalView = JSON.parse(JSON.stringify(this.logicalView));
     this.actualLogicalView = this.originalLogicalView;
     await this.getUserHierarchy();
+
+    if (this.type == 'logicalView') {
+      this.logicalAsset = this.filterObj.logicalview;
+    }
   }
 
   onHierarchyDropdownClick() {
@@ -75,6 +87,9 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   onSaveHierachy() {
 
     if (this.showAsset) {
+      if (this.type == 'logicalView')
+        this.filterObj.logicalview = this.logicalAsset
+
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       if (this.type != 'logicalView') {
         if (!this.closeOnSelection) {
@@ -138,6 +153,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     this.configureHierarchy = {};
     this.filterObj.asset = undefined;
     this.filterObj.logicalview = undefined;
+    this.logicalAsset = undefined;
 
     this.hierarchyNewArr = [];
     if (this.contextApp.hierarchy.levels.length > 1) {

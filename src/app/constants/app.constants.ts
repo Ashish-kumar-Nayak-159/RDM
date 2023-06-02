@@ -415,7 +415,7 @@ export class CONSTANTS {
       url: 'applications/:appName/logicalView',
       display_name: 'Logical View',
       icon: 'fa fa-fw fa-chart-bar',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
@@ -657,7 +657,7 @@ export class CONSTANTS {
       url: 'applications/:appName/logical-asset',
       display_name: 'Logical Asset',
       icon: 'fa fa-fw fa-chart-bar',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
@@ -674,7 +674,7 @@ export class CONSTANTS {
       url: 'applications/:appName/uptime',
       display_name: 'UpTime History',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
@@ -955,7 +955,7 @@ export class CONSTANTS {
       url: '#asset_model_uptime',
       display_name: 'UpTimeM',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       isTitle: false,
     },
     // {
@@ -1813,7 +1813,7 @@ export class CONSTANTS {
       url: '#newasset_model',
       display_name: 'NewMeasured',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       isTitle: false,
     },
     {
@@ -1822,7 +1822,7 @@ export class CONSTANTS {
       url: '#newasset_model',
       display_name: 'NewEdge Derived',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       isTitle: false,
     },
     {
@@ -1831,7 +1831,7 @@ export class CONSTANTS {
       url: '#newasset_model',
       display_name: 'New Controllable Properties',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       isTitle: false,
     },
     {
@@ -1840,7 +1840,7 @@ export class CONSTANTS {
       url: '#newasset_model',
       display_name: 'New Configurable Properties',
       icon: 'fa fa-fw fa-history',
-      visible: true,
+      visible: false,
       isTitle: false,
     },
     {
@@ -2009,7 +2009,7 @@ export class CONSTANTS {
       url: '#asset_model_newlayout1',
       display_name: 'New Visualization Widgets',
       icon: 'fa fa-fw fa-bar-chart',
-      visible: true,
+      visible: false,
       isTitle: false,
       showAccordion: [{ name: 'Widget', key: 'widget', type: 'text' }],
       accordion_value: { widget: 'Widget' },

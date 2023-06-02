@@ -210,8 +210,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
       chart.logo.disabled = true;
       chart.cursor = new am4charts.XYCursor();
+      chart.tooltip.pointerOrientation = "horizontal";
       dateAxis.dateFormatter = new am4core.DateFormatter();
-      chart.cursor.maxTooltipDistance = 5;
+      chart.cursor.maxTooltipDistance = -1;
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       chart.zoomOutButton.disabled = true;
       chart.preloader.disabled = false;
@@ -320,7 +321,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       if (series.units) {
-        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} : [bold]{valueY}[/] ({units})';
       } else {
         bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       }

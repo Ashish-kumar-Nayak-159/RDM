@@ -363,6 +363,68 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
 
   }
 
+  //////////////This function will use when we are working new upload properties and new API///////////////// 
+  // onUploadModelFile() {
+
+  //   this.isCreatePackageAPILoading = true;
+  //   if (this.uploadedFile.length <= 0)
+  //     this.toasterService.showError("Please select file to upload", 'Whitelist Asset');
+  //   const formData = new FormData();
+  //   const obj = {
+  //     model_type: this.assetModel.model_type,
+  //   };
+  //   formData.append('properties', this.uploadedFile);
+  //   formData.append('protocol', 'ModbusRTUMaster');
+  //   formData.append('isOverride', 'false');
+  //   this.subscriptions.push(
+  //     this.assetService.importAssetsModels(formData).subscribe((res: any) => {
+  //       this.toasterService.showSuccess(res.message, 'Updated Successfully');
+  //       this.isCreatePackageAPILoading = false;
+  //       localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+  //       this.getAssetModelData(this.assetModel.name);
+  //       this.onCloseModal('addModelAsset');
+  //     })
+  //   )
+  //   // const method = this.assetService.uploadAssetModelFile(this.contextApp.app, this.assetModel.protocol, obj, formData);
+  //   // this.subscriptions.push(
+  //   //   method.subscribe(
+  //   //     (response: any) => {
+
+  //   //       if (response?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
+  //   //         let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(response?.data[this.assetModel?.name]?.invalid_properties))
+  //   //         let eleRef = document.getElementById("downloadFile");
+  //   //         eleRef.setAttribute('href', jsonData)
+  //   //         eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
+  //   //         eleRef.click();
+  //   //       }
+
+  //   //       this.toasterService.showSuccess(response.message, 'Updated Successfully');
+  //   //       this.isCreatePackageAPILoading = false;
+  //   //       localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+  //   //       this.getAssetModelData(this.assetModel.name);
+  //   //       this.onCloseModal('addModelAsset');
+  //   //     },
+  //   //     (error) => {
+
+  //   //       if (error?.data) {
+  //   //         if (error?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
+  //   //           let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(error?.data[this.assetModel?.name]?.invalid_properties))
+  //   //           let eleRef = document.getElementById("downloadFile");
+  //   //           eleRef.setAttribute('href', jsonData)
+  //   //           eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
+  //   //           eleRef.click();
+  //   //         }
+  //   //       }
+
+  //   //       this.toasterService.showError(error.message, "");
+  //   //       this.isCreatePackageAPILoading = false;
+  //   //     }
+  //   //   )
+  //   // );
+  // }
+
+
+  ///////////////////////////////////Old One Which is currently Working///////////////
   onUploadModelFile() {
 
     this.isCreatePackageAPILoading = true;
@@ -372,54 +434,43 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     const obj = {
       model_type: this.assetModel.model_type,
     };
-    formData.append('properties', this.uploadedFile);
-    formData.append('protocol', 'ModbusRTUMaster');
-    formData.append('isOverride', 'false');
+    formData.append('file', this.uploadedFile);
+    const method = this.assetService.uploadAssetModelFile(this.contextApp.app, this.assetModel.protocol, obj, formData);
     this.subscriptions.push(
-      this.assetService.importAssetsModels(formData).subscribe((res: any) => {
-        this.toasterService.showSuccess(res.message, 'Updated Successfully');
-        this.isCreatePackageAPILoading = false;
-        localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-        this.getAssetModelData(this.assetModel.name);
-        this.onCloseModal('addModelAsset');
-      })
-    )
-    // const method = this.assetService.uploadAssetModelFile(this.contextApp.app, this.assetModel.protocol, obj, formData);
-    // this.subscriptions.push(
-    //   method.subscribe(
-    //     (response: any) => {
+      method.subscribe(
+        (response: any) => {
 
-    //       if (response?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
-    //         let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(response?.data[this.assetModel?.name]?.invalid_properties))
-    //         let eleRef = document.getElementById("downloadFile");
-    //         eleRef.setAttribute('href', jsonData)
-    //         eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
-    //         eleRef.click();
-    //       }
+          if (response?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
+            let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(response?.data[this.assetModel?.name]?.invalid_properties))
+            let eleRef = document.getElementById("downloadFile");
+            eleRef.setAttribute('href', jsonData)
+            eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
+            eleRef.click();
+          }
 
-    //       this.toasterService.showSuccess(response.message, 'Updated Successfully');
-    //       this.isCreatePackageAPILoading = false;
-    //       localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    //       this.getAssetModelData(this.assetModel.name);
-    //       this.onCloseModal('addModelAsset');
-    //     },
-    //     (error) => {
+          this.toasterService.showSuccess(response.message, 'Updated Successfully');
+          this.isCreatePackageAPILoading = false;
+          localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+          this.getAssetModelData(this.assetModel.name);
+          this.onCloseModal('addModelAsset');
+        },
+        (error) => {
 
-    //       if (error?.data) {
-    //         if (error?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
-    //           let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(error?.data[this.assetModel?.name]?.invalid_properties))
-    //           let eleRef = document.getElementById("downloadFile");
-    //           eleRef.setAttribute('href', jsonData)
-    //           eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
-    //           eleRef.click();
-    //         }
-    //       }
+          if (error?.data) {
+            if (error?.data[this.assetModel?.name]?.invalid_properties?.length > 0) {
+              let jsonData = "data:text/json," + encodeURIComponent(JSON.stringify(error?.data[this.assetModel?.name]?.invalid_properties))
+              let eleRef = document.getElementById("downloadFile");
+              eleRef.setAttribute('href', jsonData)
+              eleRef.setAttribute('download', `${this.assetModel?.name}-error.json`)
+              eleRef.click();
+            }
+          }
 
-    //       this.toasterService.showError(error.message, "");
-    //       this.isCreatePackageAPILoading = false;
-    //     }
-    //   )
-    // );
+          this.toasterService.showError(error.message, "");
+          this.isCreatePackageAPILoading = false;
+        }
+      )
+    );
   }
 
 }

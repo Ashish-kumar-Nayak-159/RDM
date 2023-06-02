@@ -74,6 +74,10 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
         else {
           prop.lastValue = "NA"
         }
+
+        if (prop?.asset_id == this.telemetryObj?.asset_id) {
+          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+        }
       });
     }
 
@@ -119,6 +123,9 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
           }
         }
 
+        if (prop?.asset_id == this.telemetryObj?.asset_id) {
+          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+        }
 
       });
     }
@@ -186,7 +193,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
 
       this.telemetryData = {};
       if (this.telemetryObj) {
-        debugger
+
         if (
           this.telemetryObj[prop?.json_key]?.value !== undefined &&
           this.telemetryObj[prop?.json_key]?.value !== null
@@ -219,7 +226,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
       // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 40)) || 200;
       valueAxis.min = (prop?.minCapacityValue < 10 ? 10 : prop?.minCapacityValue) || 10;
       // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 100)) || 300;
-      valueAxis.max = prop?.maxCapacityValue * 2 || 300;
+      valueAxis.max = 300;// prop?.maxCapacityValue * 2 || 300;
       valueAxis.paddingBottom = 10;
       // valueAxis.marginTop = 10;
       // valueAxis.paddingTop = 25;
@@ -266,8 +273,8 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
         this.telemetryObj[prop?.json_key]?.value !== undefined &&
         this.telemetryObj[prop?.json_key]?.value !== null
       ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
-        this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+        this.telemetryData.fillCapacity = 300;// Number(this.telemetryObj[prop?.json_key]?.value || '0');
+        this.telemetryData.empty = 0; //Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
         this.telemetryData.category = '';
       }
       chart.data = [this.telemetryData];

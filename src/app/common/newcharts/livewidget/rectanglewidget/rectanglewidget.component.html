@@ -67,7 +67,8 @@
                         </div>
                         <div>
                             <span class="text-grey">
-                                {{telemetryObj[prop.json_key]?.date}}
+                                {{ prop?.asset_id == this.telemetryObj?.asset_id ?(telemetryObj[prop?.json_key]?.date ||
+                                telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
                             </span>
                         </div>
                     </div>

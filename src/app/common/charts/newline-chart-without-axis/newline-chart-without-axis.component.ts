@@ -26,6 +26,7 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
   range2: any;
   valueAxis: any;
   subscriptions: Subscription[] = [];
+  startPoint: any = {};
 
   constructor(private chartService: ChartService, private zone: NgZone) { }
 
@@ -38,6 +39,12 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
         }
       })
     );
+
+    if (!this.chartConfig?.noOfDataPointsForTrend) {
+      this.chartConfig.noOfDataPointsForTrend = this.chartConfig.metadata?.noOfDataPointsForTrend;
+    }
+
+
   }
 
   ngAfterViewInit() {
@@ -48,11 +55,22 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
     if (changes.telemetryObj && this.chart) {
       // const data = JSON.parse(JSON.stringify(this.chart.data));
       let valueArr = [];
-      const newObj = {
-        message_date: new Date(this.telemetryObj[this.property]?.date),
-      };
-      newObj[this.property] = this.telemetryObj[this.property]?.value;
-      this.chart.data.push(newObj);
+
+      if (this.asset == this.telemetryObj?.asset_id) {
+        const newObj = {
+          message_date: new Date(this.telemetryObj[this.property]?.date),
+        };
+        newObj[this.property] = this.telemetryObj[this.property]?.value;
+
+        if (newObj['message_date'] > this.startPoint[this.property]) {
+          this.chart.data.push(newObj);
+          // this.telemetryData.push(element);
+          this.startPoint[this.property] = newObj['message_date'];
+
+        }
+
+      }
+
       valueArr = this.chart.data.map((a) => a[this.property]);
       if (valueArr.length > 0) {
         this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
@@ -74,7 +92,7 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
         this.range1.grid.disabled = this.min === this.max;
         this.range2.grid.disabled = this.min + this.max === this.average * 2;
       }
-      if (this.chart.data.length >= this.chartConfig.noOfDataPointsForTrend) {
+      if (this.chart.data.length > this.chartConfig.noOfDataPointsForTrend) {
         this.chart.data.splice(0, 1);
       }
       this.chart.validateData();
@@ -86,14 +104,16 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
-      if (this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
+      if (this.asset == this.telemetryObj?.asset_id && this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
         const newObj = {
           message_date: new Date(this.telemetryObj[this.property]?.date),
         };
         newObj[this.property] = this.telemetryObj[this.property]?.value;
+
+
         data.push(newObj);
       }
-      if (this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
+      if (this.asset == this.telemetryObj?.asset_id && this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
         this.max = Number(this.telemetryObj[this.property]?.value);
         this.min = Number(this.telemetryObj[this.property]?.value);
         if (this.min === this.max) {
@@ -103,6 +123,8 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
       }
       chart.data = data;
+      this.startPoint[this.property] = new Date(this.telemetryObj[this.property]?.date);
+
       chart.logo.disabled = true;
       chart.marginLeft = -100;
       chart.dateFormatter.inputDateFormat = 'x';

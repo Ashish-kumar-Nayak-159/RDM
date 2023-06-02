@@ -247,9 +247,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
   deletePropertyCondtion(propindex: number, propObj) {
     const index = this.propertyObj.metadata.properties.indexOf(propindex);
-    this.propertyObj.metadata.properties.splice(index, 1);
-    propObj.operator1 = ' ';
+    this.propertyObj.metadata.properties.splice(propindex + 1, 1);
+    propObj.operator1 = undefined;
     this.formula = '';
+
   }
   clearInputField() {
     this.isDisabled = false;
@@ -756,6 +757,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           else if (widget.widget_type == 'ConditionalNumber') {
 
             widget?.properties.forEach((prop) => {
+              prop.type = this.getPropertieFullTypeName(prop?.type);
+
               if (prop) {
                 prop.json_key = prop.json_key;
               }
@@ -780,6 +783,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
               widget.y2AxisProps = widget?.properties[0].y2AxisProps
             }
             widget?.y1AxisProps.forEach((prop) => {
+              prop.type = this.getPropertieFullTypeName(prop?.type);
+
               if (prop.id) {
                 prop.json_key = prop.id;
               }
@@ -800,6 +805,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
             });
             widget?.y2AxisProps?.forEach((prop) => {
+              prop.type = this.getPropertieFullTypeName(prop?.type);
+
               if (prop.id) {
                 prop.json_key = prop.id;
               }
@@ -837,7 +844,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
     )
   }
 
-  onMenu(event) {
+  async onMenu(event) {
 
     if (event.type == "Delete") {
       this.removeWidget(event.widgetId);
@@ -911,13 +918,15 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
           let pro = [];
           this.propertyObj.metadata.properties.forEach(async (element, index) => {
-            await this.getAssetsModelProperties(element.asset_id, 2, index);
+            await this.getAssetsModelProperties(element.asset_id, 2, index, true);
 
-            let data = this.propertyList.find(x => x.json_key == element.json_key);
+            let data = this.filteredPropList.find(x => x.json_key == element.json_key);
             if (data) {
               pro.push(data);
               element.property = data;
             }
+
+
           });
 
           this.ValidateallInputField();
@@ -1038,12 +1047,14 @@ export class ConfigLogicalAssestComponent implements OnInit {
   }
 
 
-  async getAssetsModelProperties(selectedAssest, type, index) {
+  async getAssetsModelProperties(selectedAssest, type, index, isEdit = false) {
     let fPropList = []
-    this.propertyList = []
+
 
 
     await this.assetModelService.getModelPropertiesByAssetsId(selectedAssest).toPromise().then((response: any) => {
+      this.propertyList = []
+      this.filteredPropList = []
       // if (response?.data) {
       //   response["measured_properties"] = response.data.filter(x => x.type == "m");
       //   response["edge_derived_properties"] = response.data.filter(x => x.type == "ed");
@@ -1096,13 +1107,15 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
       this.propertyList.forEach((prop) => {
         if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-          fPropList.push(prop);
+          this.filteredPropList.push(prop);
         }
       });
 
       if (type == 2) {
-        this.propertyObj.metadata.properties[index].filteredPropList = fPropList;
+        this.propertyObj.metadata.properties[index].filteredPropList = this.filteredPropList;
         this.propertyObj.metadata.properties[index].property = null;
+
+
       }
     })
   }

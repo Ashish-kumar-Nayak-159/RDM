@@ -47,7 +47,6 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    // this.getDefaultFilters();
     let filterValue = sessionStorage.getItem("filterData");
     if (filterValue) {
       this.uptimeDateFilter = JSON.parse(filterValue);
@@ -56,6 +55,11 @@ export class AssetModelUpTimeComponent implements OnInit {
 
       this.getUptime();
       sessionStorage.removeItem("filterData");
+    }
+    else {
+      this.getDefaultFilters();
+      this.getUptime();
+
     }
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
@@ -165,10 +169,13 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   filteredHiearchyObj() {
+    this.currentOffset = 0;
+    this.count = 0;
     this.getUptime();
   }
 
   getUptime() {
+
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
@@ -195,7 +202,8 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   onPopup(e) {
-
+    this.upTimeData = null;
+    this.downTimeData = null;
     this.getAssetUptime();
     this.getAssetDowntime();
   }

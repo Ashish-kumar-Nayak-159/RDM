@@ -116,7 +116,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
     }
     if (this.setupForm.value.d === 'a' && this.setupForm.value.sd === 9) {
       this.setupForm.removeControl('bytn');
-      this.bindbytnvalue = obj?.bytn ? obj?.bytn : null;
+      this.bindbytnvalue = obj?.bytn;
       this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
     } else {
       this.setupForm.removeControl('bytn');

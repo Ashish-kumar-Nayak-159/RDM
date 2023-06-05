@@ -177,7 +177,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSaveHierachy() {
-     
+
     // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
     //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     //   this.historicalDateFilter.dateOption = item.dateOption;
@@ -645,11 +645,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //     show_live_widgets: true,
     //   };
     // }
-      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
-      pagefilterObj['assets'] = filterObj.asset;
-      //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    
+    const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+    pagefilterObj['assets'] = filterObj.asset;
+    //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
@@ -1106,6 +1106,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     obj['previous_properties'] = this.previousProperties;
+    obj['message_date'] = telemetryObj.message_date;
     this.telemetryObj = obj;
     this.previousProperties = [];
     Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));

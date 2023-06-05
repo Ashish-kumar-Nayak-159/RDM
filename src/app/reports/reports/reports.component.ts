@@ -66,12 +66,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if(this.contextApp.metadata?.filter_settings?.record_count){
+    if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
@@ -93,10 +93,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // this.getLatestAlerts();
         await this.getAssets(this.contextApp.user.hierarchy);
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-        if(!this.preGeneratedTab?.visibility){
+        if (!this.preGeneratedTab?.visibility) {
           this.onTabSelect('custom');
-        } else{
-         this.onTabSelect('pre-generated');
+        } else {
+          this.onTabSelect('pre-generated');
         }
       })
     );
@@ -193,7 +193,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     reportItem.forEach((item) => {
       reportDataItem[item.name] = item.value;
     });
-    this.preGeneratedTab  = {
+    this.preGeneratedTab = {
       visibility: reportDataItem['Pre-Generated Reports'],
       name: reportDataItem['Pre-Generated Reports'],
     };
@@ -698,53 +698,61 @@ export class ReportsComponent implements OnInit, OnDestroy {
   async savePDF(): Promise<void> {
     if (this.originalFilterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
-    }
-    $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    if (this.originalFilterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
-      this.currentOffset += this.currentLimit;
-      await this.getTelemetryData(this.newFilterObj, 'all');
-      this.insideScrollFunFlag = true;
-    } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
-      this.currentOffset += this.currentLimit;
-      await this.getAlertData(this.newFilterObj, 'all');
-      this.insideScrollFunFlag = true;
-    }
-    this.loadingMessage = 'Preparing Report.';
-    this.isFileDownloading = true;
-    setTimeout(() => {
-      const pdf = new jsPDF('L', 'pt', 'A3');
-      pdf.text(
-        this.originalFilterObj.report_type +
-        ' for ' +
-        (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
-        ' for ' +
-        this.commonService.convertEpochToDate(this.newFilterObj.from_date) +
-        ' to ' +
-        this.commonService.convertEpochToDate(this.newFilterObj.to_date),
-        20,
-        50
-      );
-      var elem = document.getElementById("dataTable1");
+      alert('1')
+      $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      setTimeout(() => {
+        $('#downloadReportModal').modal('hide');
+      }, 3000);
+
+    } else {
+      if (this.originalFilterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
+        $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
+
+        this.currentOffset += this.currentLimit;
+        await this.getTelemetryData(this.newFilterObj, 'all');
+        this.insideScrollFunFlag = true;
+      } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
+        this.currentOffset += this.currentLimit;
+        await this.getAlertData(this.newFilterObj, 'all');
+        this.insideScrollFunFlag = true;
+      }
+      this.loadingMessage = 'Preparing Report.';
+      this.isFileDownloading = true;
+      setTimeout(() => {
+        const pdf = new jsPDF('L', 'pt', 'A3');
+        pdf.text(
+          this.originalFilterObj.report_type +
+          ' for ' +
+          (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
+          ' for ' +
+          this.commonService.convertEpochToDate(this.newFilterObj.from_date) +
+          ' to ' +
+          this.commonService.convertEpochToDate(this.newFilterObj.to_date),
+          20,
+          50
+        );
+        var elem = document.getElementById("dataTable1");
         var res = pdf.autoTableHtmlToJson(elem);
-        pdf.autoTable(res.columns, res.data,{
+        pdf.autoTable(res.columns, res.data, {
           styles: {
             overflow: 'linebreak'
           },
-          margin: {top: 70},
-      });
-      const now = datefns.getUnixTime(new Date());
-      pdf.save(
-        (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
-        '_' +
-        this.originalFilterObj.report_type +
-        '_' +
-        now +
-        '.pdf'
-      );
-      this.isFileDownloading = false;
-      this.loadingMessage = undefined;
-      $('#downloadReportModal').modal('hide');
-    }, 1000);
+          margin: { top: 70 },
+        });
+        const now = datefns.getUnixTime(new Date());
+        pdf.save(
+          (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
+          '_' +
+          this.originalFilterObj.report_type +
+          '_' +
+          now +
+          '.pdf'
+        );
+        this.isFileDownloading = false;
+        this.loadingMessage = undefined;
+        $('#downloadReportModal').modal('hide');
+      }, 1000);
+    }
   }
 
   async saveExcel() {

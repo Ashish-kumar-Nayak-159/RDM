@@ -10,10 +10,11 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
   @Input() setupForm: FormGroup;
   @Input() slaveData: any[] = [];
   @Input() assetModel: any;
-  @Input() propertyObj : any;
+  @Input() propertyObj: any;
   @Input() pageType = 'add'; // add or edit
   @Input() dataObj: any;
-  constructor() {}
+  bindbytnvalue: any;
+  constructor() { }
 
   ngOnInit(): void {
     if (this.pageType === 'edit') {
@@ -115,6 +116,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
     }
     if (this.setupForm.value.d === 'a' && this.setupForm.value.sd === 9) {
       this.setupForm.removeControl('bytn');
+      this.bindbytnvalue = obj?.bytn ? obj?.bytn : null;
       this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
     } else {
       this.setupForm.removeControl('bytn');
@@ -152,5 +154,5 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.get('bn').updateValueAndValidity();
     }
   }
-  onChangeOfWriteSetupFunctionCode(obj = undefined) {}
+  onChangeOfWriteSetupFunctionCode(obj = undefined) { }
 }

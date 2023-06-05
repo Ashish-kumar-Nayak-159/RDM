@@ -113,6 +113,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
                 this.propertyBasedData[prop.json_key]['data'].push(obj);
+                this.propertyBasedData[prop.json_key]['data'].sort((a: any, b: any) => a.message_date - b.message_date);
                 if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
                 }
@@ -123,34 +124,35 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
             }
           });
 
-          // this.chartConfig.y2AxisProps?.forEach((prop) => {
-          //   if (
-          //     this.telemetryObj[prop.json_key].value !== undefined &&
-          //     this.telemetryObj[prop.json_key].value !== null
-          //   ) {
-          //     if (
-          //       !this.propertyBasedData[prop.json_key] ||
-          //       this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
-          //       new Date(this.telemetryObj[prop.json_key].date).getTime()
-          //     ) {
-          //       const obj = {};
-          //       obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
-          //       obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
-          //       if (!this.propertyBasedData[prop.json_key]) {
-          //         this.propertyBasedData[prop.json_key] = {
-          //           data: [],
-          //         };
-          //       }
-          //       this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
-          //       this.propertyBasedData[prop.json_key]['data'].push(obj);
-          //       if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
-          //         this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
-          //       }
-          //     }
-          //     this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
+          this.chartConfig.y2AxisProps?.forEach((prop) => {
+            if (
+              this.telemetryObj[prop.json_key].value !== undefined &&
+              this.telemetryObj[prop.json_key].value !== null
+            ) {
+              if (
+                !this.propertyBasedData[prop.json_key] ||
+                this.propertyBasedData[prop.json_key].latest_message_date.getTime() !==
+                new Date(this.telemetryObj[prop.json_key].date).getTime()
+              ) {
+                const obj = {};
+                obj[prop.json_key] = this.telemetryObj[prop.json_key].value;
+                obj['message_date'] = new Date(this.telemetryObj[prop.json_key].date);
+                if (!this.propertyBasedData[prop.json_key]) {
+                  this.propertyBasedData[prop.json_key] = {
+                    data: [],
+                  };
+                }
+                this.propertyBasedData[prop.json_key]['latest_message_date'] = obj['message_date'];
+                this.propertyBasedData[prop.json_key]['data'].push(obj);
+                this.propertyBasedData[prop.json_key]['data'].sort((a: any, b: any) => a.message_date - b.message_date);
+                if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
+                  this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
+                }
+              }
+              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
 
-          //   }
-          // });
+            }
+          });
         }
         // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
         //   this.telemetryData.splice(0, 1);

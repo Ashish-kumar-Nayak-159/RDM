@@ -822,6 +822,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       }
     });
     obj['previous_properties'] = this.previousProperties;
+    obj['message_date'] = telemetryObj.message_date;
     obj["asset_id"] = telemetryObj.asset_id;
 
     this.telemetryObj = Object.assign({}, obj);

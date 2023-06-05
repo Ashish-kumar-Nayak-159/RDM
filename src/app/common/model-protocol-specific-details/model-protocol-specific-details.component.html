@@ -202,7 +202,8 @@
     <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
   && setupForm.get('d').value === 'a'">
       <label for="message-text" class="col-form-label required">Byte Number:</label>
-      <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn">
+      <select class="form-control form-control-sm" [(ngModel)]="bindbytnvalue" id="bytn" name="bytn"
+        formControlName="bytn">
         <option [ngValue]="null">Select Byte Number</option>
         <option [ngValue]="0">LSB</option>
         <option [ngValue]="1">MSB</option>
@@ -214,7 +215,8 @@
 
       </div>
     </div>
-    <div class="form-group" *ngIf="assetModel.alert_type !=='Asset' && propertyObj && propertyObj.read == true && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
+    <div class="form-group"
+      *ngIf="assetModel.alert_type !=='Asset' && propertyObj && propertyObj.read == true && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
       <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc_r" name="fc_r" formControlName="fc_r"
@@ -242,13 +244,16 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="propertyObj && propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched" class="alert-danger">
+      <div
+        *ngIf="propertyObj && propertyObj.read == true && setupForm.get('fc_r').errors && setupForm.get('fc_r').touched"
+        class="alert-danger">
         <div *ngIf="setupForm.get('fc_r').errors.required">
           Read Function Code is required.
         </div>
       </div>
     </div>
-    <div class="form-group" *ngIf="assetModel.alert_type ==='Asset' && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
+    <div class="form-group"
+      *ngIf="assetModel.alert_type ==='Asset' && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster')">
       <label for="recipient-name" class="col-form-label required">Read Function Code:</label>
       <div class="input-group">
         <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
@@ -294,10 +299,12 @@
             <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
             <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
           </ng-container>
-          <ng-container *ngIf="(setupForm.get('d').value === 'd' && (setupForm.get('fc_r').value === 3 || setupForm.get('fc_r').value === 4))">
+          <ng-container
+            *ngIf="(setupForm.get('d').value === 'd' && (setupForm.get('fc_r').value === 3 || setupForm.get('fc_r').value === 4))">
             <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
           </ng-container>
-          <ng-container *ngIf="(setupForm.get('d').value === 'd' && setupForm.get('fc_r').value !== 3 && setupForm.get('fc_r').value !== 4)">
+          <ng-container
+            *ngIf="(setupForm.get('d').value === 'd' && setupForm.get('fc_r').value !== 3 && setupForm.get('fc_r').value !== 4)">
             <option [ngValue]="5">Write Single Coil (DIGITAL)</option>
             <option [ngValue]="16">Write Multiple Register (ANALOG)</option>
           </ng-container>
@@ -306,7 +313,8 @@
           </ng-container>
         </select>
       </div>
-      <div *ngIf="propertyObj.write == true && setupForm.get('fc_w').errors && setupForm.get('fc_w').touched" class="alert-danger">
+      <div *ngIf="propertyObj.write == true && setupForm.get('fc_w').errors && setupForm.get('fc_w').touched"
+        class="alert-danger">
         <div *ngIf="setupForm.get('fc_w').errors.required">
           Write Function Code is required.
         </div>

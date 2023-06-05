@@ -1111,7 +1111,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   onTableFunctionCall(obj) {
-    console.log("objectt", obj)
     this.selectedProperty = obj.data;
     if (obj.for === 'View JSON Model') {
       this.modalConfig = {

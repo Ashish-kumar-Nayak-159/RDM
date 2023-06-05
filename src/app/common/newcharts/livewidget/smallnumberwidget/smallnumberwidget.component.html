@@ -56,18 +56,35 @@
                             [ngStyle]="{'font-size': chartConfig.widget_type === 'SmallNumber' || chartConfig.widget_type === 'StringWidget' ? '1.3rem' : '' }">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
-                                (telemetryObj[prop?.json_key]?.value !==
-                                undefined
-                                && telemetryObj[prop?.json_key]?.value !== null)) ?
-                                (prop?.data_type === 'Number' ?
-                                (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
-                                (telemetryObj[prop?.json_key].value))
-                                : 'NA':prop?.lastValue}}
-                                <sub class="text-xs live-widget-title mb-0">
-                                    {{prop?.units ? ('(' +
-                                    prop?.units + ')') : ''}}
-                                </sub>
+                                <ng-container *ngIf="type != 'LogicalView'">
+                                    {{ (telemetryObj[prop?.json_key] &&
+                                    (telemetryObj[prop?.json_key]?.value !==
+                                    undefined
+                                    && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                    (prop?.data_type === 'Number' ?
+                                    (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
+                                    (telemetryObj[prop?.json_key].value))
+                                    : 'NA'}}
+                                    <sub class="text-xs live-widget-title mb-0">
+                                        {{prop?.units ? ('(' +
+                                        prop?.units + ')') : ''}}
+                                    </sub>
+                                </ng-container>
+                                <ng-container *ngIf="type == 'LogicalView'">
+                                    {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
+                                    (telemetryObj[prop?.json_key]?.value !==
+                                    undefined
+                                    && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                    (prop?.data_type === 'Number' ?
+                                    (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
+                                    (telemetryObj[prop?.json_key].value))
+                                    : 'NA':prop?.lastValue}}
+                                    <sub class="text-xs live-widget-title mb-0">
+                                        {{prop?.units ? ('(' +
+                                        prop?.units + ')') : ''}}
+                                    </sub>
+                                </ng-container>
+
 
                             </ng-container>
 
@@ -82,8 +99,8 @@
                             </ng-template>
                         </span>
                         <p class="mb-0" style="font-size: 10px;">
-                            {{(telemetryObj[prop?.json_key]?.date) ? (telemetryObj[prop?.json_key]?.date) :
-                            ''}}
+                            {{ prop?.asset_id == this.telemetryObj?.asset_id ?(telemetryObj[prop?.json_key]?.date ||
+                            telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
                         </p>
                     </div>
                     <div *ngIf="contextApp.app=='Kirloskar'"

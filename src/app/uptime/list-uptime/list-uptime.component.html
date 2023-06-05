@@ -37,21 +37,21 @@
                     <!-- <th scope="col"><input type="checkbox" name="visibleall"
                     id="visibleall" (change)="onClickOfAssetAllCheckbox()" [(ngModel)]="isAllAssetSelected"
                     placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th> -->
-                    <th scope="col">No</th>
-                    <th scope="col">Asset Id</th>
-                    <th scope="col">Actual Work Time in hours</th>
-                    <th scope="col">Planned Work Time in hours</th>
-                    <th scope="col">Uptime Percentage</th>
+                    <!-- <th scope="col">No</th> -->
+                    <th scope="col">Asset</th>
+                    <th scope="col">Planned Working Hours</th>
+                    <th scope="col">Actual Working Hours</th>
+                    <th scope="col">Up Time</th>
                     <th scope="col">Action</th>
                 </thead>
                 <tbody>
                     <ng-container *ngIf="upTimeHistory.length > 0">
                         <tr *ngFor="let asset of upTimeHistory; let i = index">
-                            <td>{{i + 1}}</td>
-                            <td>{{asset.assetId}}</td>
-                            <td>{{asset.actualwotktimeinhours}}</td>
+                            <!-- <td>{{i + 1}}</td> -->
+                            <td>{{asset.assetName}}</td>
                             <td>{{asset.plannedworktimeinhours}}</td>
-                            <td>{{asset.uptimePercentage}}</td>
+                            <td>{{asset.actualwotktimeinhours}}</td>
+                            <td>{{asset.uptimePercentage}}%</td>
                             <td>
                                 <a (click)="redirectAsset(asset);" tooltip="More Details">
                                     <!-- <em class="fas fa-fw fa-edit"></em> -->

@@ -64,6 +64,10 @@ export class SmallnumberwidgetComponent implements OnInit {
           else {
             prop.lastValue = "NA"
           }
+
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          }
         });
       }
 
@@ -91,6 +95,10 @@ export class SmallnumberwidgetComponent implements OnInit {
         // else {
         //   prop.lastValue = "NA"
         // }
+
+        if (prop?.asset_id == this.telemetryObj?.asset_id) {
+          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+        }
       });
     }
   }

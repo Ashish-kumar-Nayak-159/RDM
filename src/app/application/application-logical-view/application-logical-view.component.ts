@@ -765,6 +765,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           this.previousProperties = [];
           obj['previous_properties'] = [];
           this.telemetryObj = obj;
+
           this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
           // this.telemetryObj = response.message;
           // const hours = this.telemetryObj['Running Hours'].split(':');

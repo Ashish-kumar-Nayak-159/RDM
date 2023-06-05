@@ -737,9 +737,9 @@ export class AssetService {
           }
           return data;
         }),
-        catchError((error) => {
-          return throwError(error);
-        })
+        // catchError((error) => {
+        //   return throwError(error);
+        // })
       );
   }
 

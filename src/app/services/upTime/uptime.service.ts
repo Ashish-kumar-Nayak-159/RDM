@@ -18,8 +18,8 @@ export class UpTimeService {
 
   getUpTime(obj: any) {
     let params = new HttpParams().set('epoch', true);
-    if (obj.asset_id)
-      params = params.set('asset_id', obj.asset_id);
+    if (obj.assetId)
+      params = params.set('asset_id', obj.assetId);
 
     params = params.set('from_date', obj.fromdate);
     params = params.set('to_date', obj.todate);

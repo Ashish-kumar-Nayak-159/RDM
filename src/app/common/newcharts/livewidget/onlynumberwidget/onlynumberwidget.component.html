@@ -61,7 +61,8 @@
                     <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widget_type === 'NumberWithTrend'">
                         <app-newline-chart-without-axis [type]="type"
                             [chartId]="chartConfig.chart_id + '_' + (prop?.json_key || prop.title) + '_' + i"
-                            [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.json_key">
+                            [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.json_key"
+                            [asset]="prop?.asset_id">
                         </app-newline-chart-without-axis>
                     </div>
                     <div class="text-center" *ngIf="chartConfig.widget_type === 'NumberWithImage'">
@@ -83,7 +84,7 @@
 
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (telemetryObj[prop?.json_key] &&
+                                {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
                                 (telemetryObj[prop?.json_key]?.value !==
                                 undefined
                                 && telemetryObj[prop?.json_key]?.value !== null)) ?
@@ -91,16 +92,16 @@
                                 (convertToNumber(telemetryObj[prop?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals))
                                 :
                                 (telemetryObj[prop?.json_key].value))
-                                : 'NA'}} {{prop.unit}}
+                                : 'NA':prop?.lastValue}} {{prop.unit}}
                             </ng-container>
                             <ng-template #APIPropValTemplate>
-                                {{ (prop?.asset_id == telemetryObj?.asset_id && apiTelemetryObj[prop?.json_key] &&
+                                {{ (prop?.asset_id == telemetryObj?.asset_id) ? (apiTelemetryObj[prop?.json_key] &&
                                 (apiTelemetryObj[prop?.json_key]?.value !==
                                 undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
                                 (apiTelemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
                                 (apiTelemetryObj[prop?.json_key].value))
-                                : 'NA'}} {{prop.unit}}
+                                : 'NA':prop?.lastValue}} {{prop.unit}}
                             </ng-template>
                             <!-- </ng-container> -->
 
@@ -110,8 +111,8 @@
                         [ngStyle]="{'margin-top': chartConfig.widget_type === 'NumberWithTrend' && type != 'LogicalView' ? '1rem' : '' }">
                         <span class="text-grey">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
-                                {{telemetryObj[prop?.json_key]?.date ||
-                                telemetryObj[prop?.json_key]?.message_date}}
+                                {{ prop?.asset_id == this.telemetryObj?.asset_id ?(telemetryObj[prop?.json_key]?.date ||
+                                telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
                             </ng-container>
                             <ng-template #APIPropDateTemplate>
                                 {{apiTelemetryObj[prop?.json_key]?.date ||

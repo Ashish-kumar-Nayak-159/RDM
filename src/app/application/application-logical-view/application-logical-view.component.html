@@ -74,8 +74,9 @@
                           || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'RectangleWidget' || widget.widget_type === 'CylinderWidget' || widget.widget_type === 'GaugeChart' || widget.widget_type === 'StringWidget'? (23 * widget.properties?.length + (widget.properties?.length > 1 ? (2 * (widget.properties?.length - 1)) : 0) +'%') : '48%',
                           'margin-left':'0', 'margin-top': '2%' }">
 
-                            <app-smallnumberwidget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
-                                [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj" [type]="'LogicalView'">
+                            <app-smallnumberwidget *ngIf="telemetryObj && widget?.widget_type === 'SmallNumber'"
+                                [chartConfig]="widget" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj"
+                                [type]="'LogicalView'">
                             </app-smallnumberwidget>
                         </div>
                     </ng-container>

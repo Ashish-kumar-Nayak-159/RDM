@@ -188,10 +188,11 @@ export class ListUptimeComponent implements OnInit {
   }
   onClearHierarchy() {
     this.hierarchy = { App: this.selectedApp };
+    this.assetId = null;
   }
 
   filteredHiearchyObj() {
-    ;
+
     // if (!this.startDate) {
     //   this.toasterService.showError('please select from date', '');
     //   return
@@ -207,6 +208,8 @@ export class ListUptimeComponent implements OnInit {
 
     this.applications = [];
     this.currentOffset = 0;
+    this.count = 0;
+
     this.loadMoreVisibility = true;
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     object.keys(configuredHierarchy).length === 0;
@@ -314,7 +317,7 @@ export class ListUptimeComponent implements OnInit {
 
   onTableFunctionCall(obj) { }
   redirectAsset(e) {
-    sessionStorage.setItem("filterData",JSON.stringify(this.uptimeDateFilter));
+    sessionStorage.setItem("filterData", JSON.stringify(this.uptimeDateFilter));
     this.assetService.upTimeFilterData.emit((this.uptimeDateFilter));
     this.router.navigate([`applications/${this.contextApp.app}/assets/${e.assetId}/control-panel`], { fragment: 'asset_uptime' })
   }

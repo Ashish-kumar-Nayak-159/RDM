@@ -43,6 +43,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   decodedToken: any;
   propertyBasedData: any = {};
   widgetStringFromMenu: any;
+  telemetryDataTimestamps: number[] = [];
   constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -72,7 +73,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
-    if (changes.telemetryObj && this.chart) {
+    if (changes.telemetryObj && this.chart && this.telemetryData) {
       if (this.chartConfig.noOfDataPointsForTrend > 0) {
         if (changes.telemetryObj) {
           //  this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
@@ -89,6 +90,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
           this.telemetryData = [];
 
+          if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+            this.telemetryData.splice(0, 1)
+          }
 
           this.chartConfig.y1AxisProps?.forEach((prop) => {
             if (
@@ -117,12 +121,20 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
                 }
+                if (!this.telemetryDataTimestamps.includes(obj['message_date'].getTime()))
+                  this.telemetryDataTimestamps.push(obj['message_date'].getTime());
               }
               this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
 
 
             }
           });
+          this.telemetryDataTimestamps.sort((a, b) => a - b);
+          if (this.telemetryDataTimestamps.length > this.chartConfig.noOfDataPointsForTrend) {
+            this.telemetryDataTimestamps = this.telemetryDataTimestamps.slice(-this.chartConfig.noOfDataPointsForTrend)
+          }
+          this.telemetryData = this.telemetryData.filter(t => t.message_date.getTime() >= this.telemetryDataTimestamps[0]);
+          this.telemetryData.sort((a, b) => a.message_date - b.message_date);
 
           this.chartConfig.y2AxisProps?.forEach((prop) => {
             if (
@@ -148,15 +160,22 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
                 }
+                if (!this.telemetryDataTimestamps.includes(obj['message_date'].getTime()))
+                  this.telemetryDataTimestamps.push(obj['message_date'].getTime());
               }
               this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
 
             }
           });
+          this.telemetryDataTimestamps.sort((a, b) => a - b);
+
+          if (this.telemetryDataTimestamps.length > this.chartConfig.noOfDataPointsForTrend) {
+            this.telemetryDataTimestamps = this.telemetryDataTimestamps.slice(-this.chartConfig.noOfDataPointsForTrend);
+          }
+          this.telemetryData = this.telemetryData.filter(t => t.message_date.getTime() >= this.telemetryDataTimestamps[0]);
+          this.telemetryData.sort((a, b) => a.message_date - b.message_date);
         }
-        // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-        //   this.telemetryData.splice(0, 1);
-        // }
+
       }
       this.chart.data = this.telemetryData;
       this.chart.validateData();
@@ -320,7 +339,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       series.legendSettings.labelText = '({propType}) {name} ({units})';
       series.fillOpacity = this.chartConfig.widgetType.includes('Area') ? 0.3 : 0;
       // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
-
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       if (series.units) {
         bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} : [bold]{valueY}[/] ({units})';

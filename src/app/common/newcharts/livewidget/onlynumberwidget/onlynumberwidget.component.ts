@@ -30,6 +30,7 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
   @Output() chart_Id = new EventEmitter<any>();
   widgetId: any;
   chartId: any;
+  startPoint: any = {};
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -56,16 +57,6 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
       })
     );
 
-
-
-    // this.asset = { "asset_id": "c135f97" }
-  }
-
-  convertToNumber(value) {
-    return Number(value);
-  }
-
-  ngAfterViewInit() {
     if (this.type == 'LogicalView') {
       this.chartConfig.properties.forEach(prop => {
         if (this.telemetryObj) {
@@ -89,25 +80,50 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
           prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
         }
+        if (this.telemetryObj) {
+          if (this.telemetryObj[prop?.json_key]?.date)
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date
+            );
+        }
+
+
       });
     }
+
+    // this.asset = { "asset_id": "c135f97" }
+  }
+
+  convertToNumber(value) {
+    return Number(value);
+  }
+
+  ngAfterViewInit() {
+
   }
 
   ngOnChanges(changes) {
     if (changes.telemetryObj && this.type == 'LogicalView') {
       this.chartConfig.properties.forEach(prop => {
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-          (this.telemetryObj[prop?.json_key]?.value !== undefined
-            && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
+        if (this.telemetryObj) {
+          if (this.telemetryObj[prop?.json_key]?.date) {
+            if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+              if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
+                (this.telemetryObj[prop?.json_key]?.value !== undefined
+                  && this.telemetryObj[prop?.json_key]?.value !== null)) {
+                if (prop?.data_type === 'Number') {
+                  prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
+                }
+                else {
+                  prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+                }
+              }
+              if (prop?.asset_id == this.telemetryObj?.asset_id) {
+                prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+                this.startPoint[prop.asset_id] = prop.lastDate;
+              }
+            }
           }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-          }
-        }
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
         }
       });
     }

@@ -951,9 +951,9 @@ export class CONSTANTS {
     },
     {
       page: 'asset_uptime',
-      system_name: 'UpTimeM',
+      system_name: 'UpTime',
       url: '#asset_model_uptime',
-      display_name: 'UpTimeM',
+      display_name: 'UpTime',
       icon: 'fa fa-fw fa-history',
       visible: false,
       isTitle: false,
@@ -1357,9 +1357,9 @@ export class CONSTANTS {
     },
     {
       page: 'asset_uptime',
-      system_name: 'UpTimeM',
+      system_name: 'UpTime',
       url: '#asset_model_uptime',
-      display_name: 'UpTimeM',
+      display_name: 'UpTime',
       icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,

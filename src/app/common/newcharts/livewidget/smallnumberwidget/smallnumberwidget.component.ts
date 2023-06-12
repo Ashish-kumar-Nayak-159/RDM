@@ -32,6 +32,7 @@ export class SmallnumberwidgetComponent implements OnInit {
   @Output() chart_Id = new EventEmitter<any>();
   widgetId: any;
   chartId: any;
+  startPoint: any = {};
 
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
@@ -66,6 +67,9 @@ export class SmallnumberwidgetComponent implements OnInit {
           }
 
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            );
             prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
           }
         });
@@ -85,11 +89,13 @@ export class SmallnumberwidgetComponent implements OnInit {
         if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
           (this.telemetryObj[prop?.json_key]?.value !== undefined
             && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
-          }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+          if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+            if (prop?.data_type === 'Number') {
+              prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
+            }
+            else {
+              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+            }
           }
         }
         // else {
@@ -97,7 +103,10 @@ export class SmallnumberwidgetComponent implements OnInit {
         // }
 
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+            this.startPoint[prop.asset_id] = prop.lastDate;
+          }
         }
       });
     }

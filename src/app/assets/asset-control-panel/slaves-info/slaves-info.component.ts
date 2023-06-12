@@ -81,7 +81,7 @@ export class SlavesInfoComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp)
       this.defaultAppName = this.contextApp.app;
-    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta'|| this.defaultAppName == 'KemsysCoolingTower')
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' || this.defaultAppName == 'KemsysCoolingTower')
       this.getCellData();
     this.getAssetTwinData();
     this.getModelSlaveData();
@@ -410,20 +410,19 @@ export class SlavesInfoComponent implements OnInit {
         this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
         return;
       }
-    }    
+    }
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     // const macID = this.slaveObj.metadata.mac_id;    
     this.slaveObj.metadata = this.addSetupForm?.value || {};
 
-    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' || this.defaultAppName == 'KemsysCoolingTower'  && Object.keys(this.slaveObj.metadata).length > 0 && this.slaveObj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
+    if (this.defaultAppName == 'Indygo' || this.defaultAppName == 'IndygoBeta' || this.defaultAppName == 'KemsysCoolingTower' && Object.keys(this.slaveObj.metadata).length > 0 && this.slaveObj?.metadata?.hasOwnProperty("hierarchy_cell_id")) {
       if (this.slaveObj?.metadata?.hierarchy_cell_id == null || this.slaveObj?.metadata?.hierarchy_cell_id == undefined) {
         this.toasterService.showError('Cell ID is required', 'Add Slave');
         return;
       }
     }
-    else if(this.slaveObj?.metadata?.hierarchy_cell_id)
-    {
+    else if (this.slaveObj?.metadata?.hierarchy_cell_id) {
       delete this.slaveObj?.metadata?.hierarchy_cell_id;
     }
 
@@ -473,9 +472,8 @@ export class SlavesInfoComponent implements OnInit {
         this.toasterService.showError('Cell ID is required', 'Add Slave');
         return;
       }
-    }    
-    else if(obj?.metadata?.hierarchy_cell_id)
-    {
+    }
+    else if (obj?.metadata?.hierarchy_cell_id) {
       delete obj?.metadata?.hierarchy_cell_id;
     }
     // const macID = obj.mac_id;

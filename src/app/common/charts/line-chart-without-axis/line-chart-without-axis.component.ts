@@ -25,6 +25,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   range2: any;
   valueAxis: any;
   subscriptions: Subscription[] = [];
+  startPoint: any = {};
 
   constructor(private chartService: ChartService, private zone: NgZone) { }
 
@@ -51,7 +52,13 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         message_date: new Date(this.telemetryObj[this.property]?.date),
       };
       newObj[this.property] = this.telemetryObj[this.property]?.value;
-      this.chart.data.push(newObj);
+      if (newObj['message_date'] > this.startPoint[this.property]) {
+        this.chart.data.push(newObj);
+        // this.telemetryData.push(element);
+        this.startPoint[this.property] = newObj['message_date'];
+
+      }
+
       valueArr = this.chart.data.map((a) => a[this.property]);
       if (valueArr.length > 0) {
         this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
@@ -102,6 +109,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
       }
       chart.data = data;
+      this.startPoint[this.property] = new Date(this.telemetryObj[this.property]?.date);
       chart.logo.disabled = true;
       chart.marginLeft = -100;
       chart.dateFormatter.inputDateFormat = 'x';

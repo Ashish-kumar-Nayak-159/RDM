@@ -53,12 +53,12 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   documents: any[] = [];
   // widgetName: string;
   selectedWidgets: any = [];
-  selectedDocuments : any = [];
-  selectedUserGroups : any = {
-    'email':[],
-    'sms':[],
-    'whatsapp':[],
-    'push_notification':[]
+  selectedDocuments: any = [];
+  selectedUserGroups: any = {
+    'email': [],
+    'sms': [],
+    'whatsapp': [],
+    'push_notification': []
 
   };
   recommendationObj: any;
@@ -75,17 +75,17 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
 
-  @ViewChild('addVisulizationWidgetDiv', {static: false}) addVisulizationWidgetDiv;
-  @ViewChild('addUserGroupDiv', {static: false}) addUserGroupDiv;
-  @ViewChild('documentSelectionDiv', {static: false}) documentSelectionDiv;
+  @ViewChild('addVisulizationWidgetDiv', { static: false }) addVisulizationWidgetDiv;
+  @ViewChild('addUserGroupDiv', { static: false }) addUserGroupDiv;
+  @ViewChild('documentSelectionDiv', { static: false }) documentSelectionDiv;
 
-  
+
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.assetModel['alert_type'] = this.selectedTab;
@@ -101,8 +101,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.getApplicationUserGroups();
     }
 
-    $('.custom-dropdown').on('shown.bs.collapse', function(e) {
-        alert("Close");
+    $('.custom-dropdown').on('shown.bs.collapse', function (e) {
+      alert("Close");
     });
   }
 
@@ -125,7 +125,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.selectedTab = type;
     this.toggleRows = {};
     this.getAlertConditions();
-    this.alertObj = {};    
+    this.alertObj = {};
     this.alertObj.alert_type = this.selectedTab;
   }
 
@@ -135,7 +135,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.userGroups = response.data;
           this.userGroups.push({
-            group_name : "Client Field Support"
+            group_name: "Client Field Support"
           })
         }
       })
@@ -231,29 +231,29 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.onClickOfViewActionIcon('Visualization', i);
     }
   }
- 
+
   addVisualizationWidget() {
-      // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-      this.selectedWidgets.forEach(element => {
-        const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === element.title);
-        if (index > -1) {
-          this.toasterService.showError(
-            'Same ' + this.widgetStringFromMenu + ' is already added.',
-            'Add ' + this.widgetStringFromMenu
-          );
-          return;
-        } else if (!element.title) {
-          this.toasterService.showError(
-            'Please select ' + this.widgetStringFromMenu + ' to add',
-            'Add ' + this.widgetStringFromMenu
-          );
-          return;
-        }
-        if (element.title && index === -1) {
-          this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
-        }
-      });
-      this.selectedWidgets = []
+    // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
+    this.selectedWidgets.forEach(element => {
+      const index = this.alertObj.visualization_widgets.findIndex((widget) => widget === element.title);
+      if (index > -1) {
+        this.toasterService.showError(
+          'Same ' + this.widgetStringFromMenu + ' is already added.',
+          'Add ' + this.widgetStringFromMenu
+        );
+        return;
+      } else if (!element.title) {
+        this.toasterService.showError(
+          'Please select ' + this.widgetStringFromMenu + ' to add',
+          'Add ' + this.widgetStringFromMenu
+        );
+        return;
+      }
+      if (element.title && index === -1) {
+        this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
+      }
+    });
+    this.selectedWidgets = []
   }
 
   removeVisualizationWidget(index) {
@@ -274,7 +274,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   addReferenceDocument() {
-    this.selectedDocuments.forEach((element)=>{
+    this.selectedDocuments.forEach((element) => {
       const index = this.alertObj.reference_documents.findIndex((doc) => doc === element.name);
       if (index > -1) {
         this.toasterService.showError('Same Document is already added.', 'Add Document');
@@ -291,7 +291,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   addUserGroup(key) {
-    
+
     this.selectedUserGroups[key].forEach(element => {
       const index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
       if (index > -1) {
@@ -344,33 +344,33 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       if (!this.alertObj.actions) {
 
         this.alertObj.actions = {
-          email: { enabled: false,  recipients: [] },
-          whatsapp: { enabled: false,  recipients: [] },
-          sms: { enabled: false,  recipients: [] },
+          email: { enabled: false, recipients: [] },
+          whatsapp: { enabled: false, recipients: [] },
+          sms: { enabled: false, recipients: [] },
           push_notification: { enabled: false, recipients: [] },
 
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = { enabled: false,  recipients: [] };
+          this.alertObj.actions.email = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.email.recipients) {
           this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = { enabled: false,  recipients: [] };
+          this.alertObj.actions.whatsapp = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.whatsapp.recipients) {
           this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.sms) {
-          this.alertObj.actions.sms = { enabled: false,  recipients: [] };
+          this.alertObj.actions.sms = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.sms.recipients) {
           this.alertObj.actions.sms.recipients = [];
         }
         if (!this.alertObj.actions.push_notification) {
-          this.alertObj.actions.push_notification = { enabled: false,recipients: [] };
+          this.alertObj.actions.push_notification = { enabled: false, recipients: [] };
         }
         if (!this.alertObj.actions.push_notification.recipients) {
           this.alertObj.actions.push_notification.recipients = [];
@@ -381,7 +381,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   // tslint:disable-next-line: no-unnecessary-initializer
   openAddAlertConditionModal(alertObj = undefined) {
-    this.setupForm.reset();
+    this.setupForm?.reset();
     if (alertObj) {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
       if (this.alertObj.alert_type === 'Asset') {
@@ -660,10 +660,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.editRecommendationStep = {};
     this.editDocuments = {};
     this.selectedUserGroups = {
-      'email':[],
-      'sms':[],
-      'whatsapp':[],
-      'push_notification':[]
+      'email': [],
+      'sms': [],
+      'whatsapp': [],
+      'push_notification': []
 
     }
   }
@@ -673,20 +673,20 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.assetModel['alert_type'] = undefined;
   }
 
-  onDeselectAll(e,type) {
+  onDeselectAll(e, type) {
     if (e === [] || e.length === 0) {
-      if(type=='document'){
+      if (type == 'document') {
         this.selectedDocuments = []
       }
-      if(type == 'widget'){
+      if (type == 'widget') {
         this.selectedWidgets = [];
       }
-      if(type == 'userGroups'){
+      if (type == 'userGroups') {
         this.selectedUserGroups = {
-          'email':[],
-          'sms':[],
-          'whatsapp':[],
-          'push_notification':[]
+          'email': [],
+          'sms': [],
+          'whatsapp': [],
+          'push_notification': []
 
         }
       }

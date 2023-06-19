@@ -97,7 +97,10 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.chartConfig.properties.forEach((prop, index) => {
         const chart = this.chart[index];
-        if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+        if (!this.startPoint[prop.asset_id]) {
+          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+        }
+        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
           if (chart) {
             this.telemetryData = {};
 

@@ -218,12 +218,13 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   getAssetDowntime(e) {
+    console.log((Math.round(new Date(e.toDate).getTime()) / 1000));
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
-      fromdate: new Date(e.fromDate).getTime(),
-      todate: new Date(e.toDate).getTime(),
+      fromdate: (Math.round(new Date(e.fromDate).getTime()) / 1000),
+      todate: (Math.round(new Date(e.toDate).getTime()) / 1000),
       app: this.contextApp.app,
     }
     this.upTimeService.getAssetDowntime(custObj).subscribe((res: any) => {

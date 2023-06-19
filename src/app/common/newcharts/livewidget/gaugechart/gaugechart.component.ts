@@ -75,7 +75,10 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
       //  this.label.text = changes.value.currentValue;
       this.chartConfig?.properties?.forEach((prop, index) => {
-        if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+        if (!this.startPoint[prop.asset_id]) {
+          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+        }
+        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
           if (this.hand[index] && this.chart[index]) {
             this.hand[index].value = Number(this.telemetryObj[prop.json_key]?.value || '0');
           }

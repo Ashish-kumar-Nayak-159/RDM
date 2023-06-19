@@ -86,10 +86,15 @@ export class SmallnumberwidgetComponent implements OnInit {
   ngOnChanges(changes) {
     if (changes.telemetryObj && this.type == 'LogicalView') {
       this.chartConfig.properties.forEach(prop => {
+
+        if (!this.startPoint[prop.asset_id]) {
+          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+        }
+
         if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
           (this.telemetryObj[prop?.json_key]?.value !== undefined
             && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+          if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
             if (prop?.data_type === 'Number') {
               prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
             }
@@ -103,7 +108,7 @@ export class SmallnumberwidgetComponent implements OnInit {
         // }
 
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+          if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
             prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
             this.startPoint[prop.asset_id] = prop.lastDate;
           }

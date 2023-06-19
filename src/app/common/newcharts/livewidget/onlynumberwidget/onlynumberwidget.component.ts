@@ -107,7 +107,11 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
       this.chartConfig.properties.forEach(prop => {
         if (this.telemetryObj) {
           if (this.telemetryObj[prop?.json_key]?.date) {
-            if (new Date(this.telemetryObj[prop?.json_key]?.date) > this.startPoint[prop.asset_id]) {
+
+            if (!this.startPoint[prop.asset_id]) {
+              this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+            }
+            if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
               if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
                 (this.telemetryObj[prop?.json_key]?.value !== undefined
                   && this.telemetryObj[prop?.json_key]?.value !== null)) {

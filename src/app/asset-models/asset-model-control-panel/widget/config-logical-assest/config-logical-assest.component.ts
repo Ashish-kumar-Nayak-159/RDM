@@ -336,6 +336,20 @@ export class ConfigLogicalAssestComponent implements OnInit {
     }
     let found = true;
     let foundimg = true;
+    let isInValid = this.widgetObj.properties.find(x => !x.property);
+    if (isInValid) {
+      this.toasterService.showError('Please select properties details.', 'Add Widget');
+      return;
+    }
+    if (this.widgetObj.widget_type == "NumberWithImage") {
+      let isInValid = this.widgetObj.properties.find(x => !x?.image);
+      if (isInValid) {
+        found = false;
+      }
+      this.toasterService.showError('Please select properties details.', 'Add Widget');
+      return;
+    }
+
     this.widgetObj.properties.forEach((prop) => {
       if (!prop.property || (this.widgetObj.widget_type == "NumberWithImage" && !prop?.image)) {
         found = false;
@@ -349,6 +363,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
         delete prop.property;
       }
     });
+
     if (!found && this.widgetObj.widget_type !== 'LineChart' && this.widgetObj.widget_type !== 'AreaChart' && this.widgetObj.widget_type != "NumberWithImage" && this.widgetObj.widget_type !== 'ConditionalNumber') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
@@ -666,6 +681,11 @@ export class ConfigLogicalAssestComponent implements OnInit {
         await this.onCloseAddWidgetModal();
         await this.onCloseConfigureDashboardModal();
         this.isCreateWidgetAPILoading = false;
+      }, async (error) => {
+        await this.getLogicalViewWidget();
+        await this.onCloseAddWidgetModal();
+        await this.onCloseConfigureDashboardModal();
+        this.isCreateWidgetAPILoading = false;
       })
     }
     else {
@@ -677,7 +697,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
         await this.onCloseConfigureDashboardModal();
         this.isCreateWidgetAPILoading = false;
       },
-        (err) => {
+        async (err) => {
+          await this.getLogicalViewWidget();
+          await this.onCloseAddWidgetModal();
+          await this.onCloseConfigureDashboardModal();
           this.isCreateWidgetAPILoading = false;
           this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
         })

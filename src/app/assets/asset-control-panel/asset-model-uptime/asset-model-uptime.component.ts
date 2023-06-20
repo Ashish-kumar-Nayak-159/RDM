@@ -36,6 +36,7 @@ export class AssetModelUpTimeComponent implements OnInit {
   upTimeData: any;
   downTimeData: any;
   count: number = 0;
+  offset = new Date().getTimezoneOffset();
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
@@ -205,7 +206,7 @@ export class AssetModelUpTimeComponent implements OnInit {
     this.upTimeData = null;
     this.downTimeData = null;
     this.getAssetUptime();
-    this.getAssetDowntime();
+    this.getAssetDowntime(e);
   }
 
   getAssetUptime() {
@@ -216,19 +217,19 @@ export class AssetModelUpTimeComponent implements OnInit {
     })
   }
 
-  getAssetDowntime() {
+  getAssetDowntime(e) {
+    console.log((Math.round(new Date(e.toDate).getTime()) / 1000));
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
-      fromdate: this.uptimeDateFilter.from_date,
-      todate: this.uptimeDateFilter.to_date,
+      fromdate: (Math.round(new Date(e.fromDate).getTime()) / 1000),
+      todate: (Math.round(new Date(e.toDate).getTime()) / 1000),
       app: this.contextApp.app,
     }
     this.upTimeService.getAssetDowntime(custObj).subscribe((res: any) => {
-
+      this.downTimeData = [];
       this.downTimeData = res.data;
-
     })
   }
 }

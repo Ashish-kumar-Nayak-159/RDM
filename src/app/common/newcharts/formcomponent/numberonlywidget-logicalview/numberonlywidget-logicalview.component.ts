@@ -186,7 +186,7 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
               }
             });
           }
-          this.widgetObj.properties = this.widgetObj.properties.map(o => ({ ...o }));
+          // this.widgetObj.properties = this.widgetObj.properties.map(o => ({ ...o }));
         }
       })
   }

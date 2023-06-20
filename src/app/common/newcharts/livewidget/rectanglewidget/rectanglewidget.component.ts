@@ -46,6 +46,7 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   telmetryDivAddonClass: any;
   innerClass: any;
   overlayLeft: any = '60px';
+  startPoint: any = {};
 
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
@@ -96,32 +97,39 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.chartConfig.properties.forEach((prop, index) => {
         const chart = this.chart[index];
-        if (chart) {
-          this.telemetryData = {};
-          if (prop.asset_id == this.telemetryObj.asset_id &&
-            this.telemetryObj[prop?.json_key]?.value !== undefined &&
-            this.telemetryObj[prop?.json_key]?.value !== null
-          ) {
-            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
-            this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-            this.telemetryData.category = '';
-            chart.data = [this.telemetryData];
-          }
+        if (!this.startPoint[prop.asset_id]) {
+          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
         }
+        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
+          if (chart) {
+            this.telemetryData = {};
 
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-          (this.telemetryObj[prop?.json_key]?.value !== undefined
-            && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+            if (prop.asset_id == this.telemetryObj.asset_id &&
+              this.telemetryObj[prop?.json_key]?.value !== undefined &&
+              this.telemetryObj[prop?.json_key]?.value !== null
+            ) {
+              this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
+              this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+              this.telemetryData.category = '';
+              this.startPoint[prop.asset_id] = prop.lastDate;
+              chart.data = [this.telemetryData];
+            }
           }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-          }
-        }
 
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
+            (this.telemetryObj[prop?.json_key]?.value !== undefined
+              && this.telemetryObj[prop?.json_key]?.value !== null)) {
+            if (prop?.data_type === 'Number') {
+              prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+            }
+            else {
+              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+            }
+          }
+
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          }
         }
       });
     }
@@ -183,6 +191,9 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
         this.telemetryData.category = '';
       }
       chart.data = [this.telemetryData];
+      this.startPoint[prop.asset_id] = new Date(
+        this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+      );
       this.chart.push(chart);
 
     });

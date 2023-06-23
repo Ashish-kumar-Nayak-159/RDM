@@ -218,7 +218,6 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   getAssetDowntime(e) {
-    console.log((Math.round(new Date(e.toDate).getTime()) / 1000));
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,

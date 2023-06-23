@@ -93,7 +93,7 @@
                     <td>{{upTime.to_time}}</td>
                   </tr>
                   <tr>
-                    <td colspan="3" *ngIf="upTimeData?.is_alltime_working">-</td>
+                    <td colspan="3" *ngIf="upTimeData?.is_alltime_working">All Time Working</td>
                   </tr>
                 </tbody>
               </table>
@@ -111,8 +111,8 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let downTime of downTimeData">
-                    <td>{{downTime.event_start_time | date:'HH:mm:ss'}}</td>
-                    <td>{{downTime.event_end_time | date:'HH:mm:ss'}}</td>
+                    <td>{{downTime.event_start_time | date:'HH:mm:ss' : 'offset'}}</td>
+                    <td>{{downTime.event_end_time | date:'HH:mm:ss' : 'offset'}}</td>
                   </tr>
                   <tr>
                     <td colspan="3" *ngIf="downTimeData?.length ==0">-</td>

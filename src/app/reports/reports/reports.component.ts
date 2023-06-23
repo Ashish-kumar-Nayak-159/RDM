@@ -810,7 +810,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             Time: telemetryObj.local_created_date,
           };
           this.selectedProps.forEach((prop) => {
-            obj[prop.id] = telemetryObj[prop.value.json_key];
+            obj[prop.id] = telemetryObj[prop.value.json_key] ?? 'NA';
           });
           data.push(obj);
         });

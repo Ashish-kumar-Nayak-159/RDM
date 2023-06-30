@@ -55,8 +55,8 @@ export class UpTimeService {
   getAssetDowntime(obj: any) {
     let params = new HttpParams().set('epoch', true);
 
-    params = params.set('from_date', obj.fromdate);
-    params = params.set('to_date', obj.todate);
+    params = params.set('event_start_date', obj.fromdate);
+    params = params.set('event_end_date', obj.todate);
     params = params.set('count', 100);
 
     return this.http.get(this.url + String.Format(AppUrls.ASSET_DOWNTIME_ID, encodeURIComponent(obj.app), encodeURIComponent(obj.assetId)), { params });

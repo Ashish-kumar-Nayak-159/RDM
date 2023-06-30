@@ -9,6 +9,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { UpTimeService } from 'src/app/services/upTime/uptime.service';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-list-uptime',
@@ -232,7 +233,7 @@ export class ListUptimeComponent implements OnInit {
 
 
 
-
+    this.currentLimit = 10
     this.getUptime();
     // this.assetStatic();
   }
@@ -245,7 +246,7 @@ export class ListUptimeComponent implements OnInit {
 
   getUptime() {
     const custObj = {
-      offset: this.currentOffset,
+      offset: 0,
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy),
       assetId: this.assetId,
@@ -260,6 +261,7 @@ export class ListUptimeComponent implements OnInit {
       this.loader = false;
       ;
       this.count += 10;
+      this.currentLimit += 10;
 
       if (this.count >= res.totalcount) {
         this.loadMoreVisibility = false
@@ -273,18 +275,46 @@ export class ListUptimeComponent implements OnInit {
 
   getDefaultFilters() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    item.dateOption = "This Month";
-    this.uptimeDateFilter.dateOption = item.dateOption;
-    if (item.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-      this.uptimeDateFilter.from_date = dateObj.from_date;
-      this.uptimeDateFilter.to_date = dateObj.to_date;
-      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    } else {
-      this.uptimeDateFilter.from_date = item.from_date;
-      this.uptimeDateFilter.to_date = item.to_date;
-      // this.historicalDateFilter.last_n_secs = undefined;
+    if (item) {
+      if (item.dateOption) {
+        this.uptimeDateFilter.dateOption = item.dateOption;
+        if (item.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+          this.uptimeDateFilter.from_date = dateObj.from_date;
+          this.uptimeDateFilter.to_date = dateObj.to_date;
+          // this.uptimeDateFilter.last_n_secs = dateObj.to_date - dateObj.from_date;
+        } else {
+          this.uptimeDateFilter.from_date = item.from_date;
+          this.uptimeDateFilter.to_date = item.to_date;
+        }
+        if (this.uptimeDateFilter.dateOption !== 'Custom Range') {
+          this.selectedDateRange = this.uptimeDateFilter.dateOption;
+        } else {
+          this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.uptimeDateFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.uptimeDateFilter.to_date), "dd-MM-yyyy HH:mm");
+        }
+
+      }
     }
+
+    // const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    // item.dateOption = "This Month";
+    // this.uptimeDateFilter.dateOption = item.dateOption;
+    // if (item.dateOption !== 'Custom Range') {
+    //   const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+    //   this.uptimeDateFilter.from_date = dateObj.from_date;
+    //   this.uptimeDateFilter.to_date = dateObj.to_date;
+    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+    // } else {
+    //   this.uptimeDateFilter.from_date = item.from_date;
+    //   this.uptimeDateFilter.to_date = item.to_date;
+    //   // this.historicalDateFilter.last_n_secs = undefined;
+    // }
+    // if (this.filterObj.dateOption !== 'Custom Range') {
+    //   this.selectedDateRange = this.filterObj.dateOption;
+    // } else {
+    //   this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
+    // }
+
     this.uptimeDateFilter.widgets = [];
     this.selectedDateRange = this.uptimeDateFilter.dateOption;
     this.uptimeDateFilter.type = true;

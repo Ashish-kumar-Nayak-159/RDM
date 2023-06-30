@@ -6,6 +6,8 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { UpTimeService } from 'src/app/services/upTime/uptime.service';
+import * as moment from 'moment';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-asset-model-uptime',
@@ -37,6 +39,8 @@ export class AssetModelUpTimeComponent implements OnInit {
   downTimeData: any;
   count: number = 0;
   offset = new Date().getTimezoneOffset();
+  selectedAssetDate: any;
+  selectedAssetName: any;
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
@@ -127,18 +131,27 @@ export class AssetModelUpTimeComponent implements OnInit {
   getDefaultFilters() {
 
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    item.dateOption = "This Month";
-    this.uptimeDateFilter.dateOption = item.dateOption;
-    if (item.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-      this.uptimeDateFilter.from_date = dateObj.from_date;
-      this.uptimeDateFilter.to_date = dateObj.to_date;
-      // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    } else {
-      this.uptimeDateFilter.from_date = item.from_date;
-      this.uptimeDateFilter.to_date = item.to_date;
-      // this.historicalDateFilter.last_n_secs = undefined;
+    if (item) {
+      if (item.dateOption) {
+        this.uptimeDateFilter.dateOption = item.dateOption;
+        if (item.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+          this.uptimeDateFilter.from_date = dateObj.from_date;
+          this.uptimeDateFilter.to_date = dateObj.to_date;
+          // this.filterObj.last_n_secs = dateObj.to_date - dateObj.from_date;
+        } else {
+          this.uptimeDateFilter.from_date = item.from_date;
+          this.uptimeDateFilter.to_date = item.to_date;
+        }
+        if (this.uptimeDateFilter.dateOption !== 'Custom Range') {
+          this.selectedDateRange = this.uptimeDateFilter.dateOption;
+        } else {
+          this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.uptimeDateFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.uptimeDateFilter.to_date), "dd-MM-yyyy HH:mm");
+        }
+
+      }
     }
+
     this.uptimeDateFilter.widgets = [];
     this.selectedDateRange = this.uptimeDateFilter.dateOption;
     this.uptimeDateFilter.type = true;
@@ -178,7 +191,7 @@ export class AssetModelUpTimeComponent implements OnInit {
   getUptime() {
 
     const custObj = {
-      offset: this.currentOffset,
+      offset: 0,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
       fromdate: this.uptimeDateFilter.from_date,
@@ -190,9 +203,14 @@ export class AssetModelUpTimeComponent implements OnInit {
 
       this.loadMoreVisibility = true;
 
+
       this.upTimeHistory = res?.data;
+      this.upTimeHistory.forEach(element => {
+        element.fromDateDisplay = this.commonService.convertUTCDateToLocal(element.fromDate);
+      });
       this.loader = false;
       this.count += 10;
+      this.currentLimit += 10;
       if (this.count >= res.totalcount) {
         this.loadMoreVisibility = false
       }
@@ -218,17 +236,23 @@ export class AssetModelUpTimeComponent implements OnInit {
   }
 
   getAssetDowntime(e) {
+    this.selectedAssetDate = e.fromDateDisplay;
+    this.selectedAssetName = e.assetName;
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
-      fromdate: (Math.round(new Date(e.fromDate).getTime()) / 1000),
-      todate: (Math.round(new Date(e.toDate).getTime()) / 1000),
+      fromdate: this.commonService.convertDateToEpoch(e.fromDate),
+      todate: this.commonService.convertDateToEpoch(e.toDate),
       app: this.contextApp.app,
     }
     this.upTimeService.getAssetDowntime(custObj).subscribe((res: any) => {
       this.downTimeData = [];
       this.downTimeData = res.data;
+      this.downTimeData.forEach(element => {
+        element.event_start_time = this.commonService.convertUTCDateToLocal(element.event_start_time);
+        element.event_end_time = this.commonService.convertUTCDateToLocal(element.event_end_time);
+      });
     })
   }
 }

@@ -40,7 +40,7 @@
           <ng-container *ngIf="upTimeHistory.length > 0">
             <tr *ngFor="let asset of upTimeHistory; let i = index">
               <!-- <td>{{i + 1}}</td> -->
-              <td>{{asset.fromDate | date:'dd-MMM-YY' : 'offset'}}</td>
+              <td>{{asset.fromDateDisplay | date:'dd-MMM-YY'}}</td>
               <td>{{asset.plannedworktimeinhours}}</td>
               <td>{{asset.actualwotktimeinhours}}</td>
               <td>{{asset.uptimePercentage}}%</td>
@@ -73,6 +73,15 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <div class="row" style="width: 100%;">
+          <div class="col-md-6">
+            <h5>Asset : {{selectedAssetName}}</h5>
+          </div>
+          <div class="col-md-6">
+            <h5>Date : {{selectedAssetDate | date:'dd-MMM-YY'}}</h5>
+          </div>
+        </div>
+
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body" style="height: 400px;overflow-y: scroll;">
@@ -111,8 +120,8 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let downTime of downTimeData">
-                    <td>{{downTime.event_start_time | date:'HH:mm:ss' : 'offset'}}</td>
-                    <td>{{downTime.event_end_time | date:'HH:mm:ss' : 'offset'}}</td>
+                    <td>{{downTime.event_start_time | date:'HH:mm:ss'}}</td>
+                    <td>{{downTime.event_end_time | date:'HH:mm:ss'}}</td>
                   </tr>
                   <tr>
                     <td colspan="3" *ngIf="downTimeData?.length ==0">-</td>

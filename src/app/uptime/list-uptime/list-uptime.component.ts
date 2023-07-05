@@ -276,6 +276,7 @@ export class ListUptimeComponent implements OnInit {
   getDefaultFilters() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
+      item.dateOption = "This Month";
       if (item.dateOption) {
         this.uptimeDateFilter.dateOption = item.dateOption;
         if (item.dateOption !== 'Custom Range') {

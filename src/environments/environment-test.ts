@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
   appServerURL: 'https://api-qa.kempaas.io/api/',
-  blobAccountName: 'storageaccountkemsy96a3',
+  blobAccountName: 'kpixdevqastoragecold',
   blobContainerName: 'rdm-images',
   blobKey:
-    '?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D',
-  blobURL: 'https://storageaccountkemsy96a3.blob.core.windows.net/',
+    '?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2049-12-31T12:52:37Z&st=2023-07-07T04:52:37Z&spr=https,http&sig=S%2FtCW6fOS08xZXnHyx0pHUeAs6AIelX7W2xUlx%2BbcrQ%3D',
+  blobURL: 'https://kpixdevqastoragecold.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: undefined,
   environment: 'TEST',

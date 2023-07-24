@@ -50,7 +50,7 @@
                             <!-- <td>{{i + 1}}</td> -->
                             <td>{{asset.assetName}}</td>
                             <td>{{asset.plannedworktimeinhours}}</td>
-                            <td>{{asset.actualwotktimeinhours}}</td>
+                            <td>{{asset.actualwotktimeinhours ?asset.actualwotktimeinhours:'-'}}</td>
                             <td>{{asset.uptimePercentage}}%</td>
                             <td>
                                 <a (click)="redirectAsset(asset);" tooltip="More Details">

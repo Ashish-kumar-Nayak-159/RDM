@@ -120,8 +120,8 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let downTime of downTimeData">
-                    <td>{{downTime.event_start_time | date:'HH:mm:ss'}}</td>
-                    <td>{{downTime.event_end_time | date:'HH:mm:ss'}}</td>
+                    <td>{{downTime.event_start_time | date:'hh:mm a'}}</td>
+                    <td>{{downTime.event_end_time | date:'hh:mm a'}}</td>
                   </tr>
                   <tr>
                     <td colspan="3" *ngIf="downTimeData?.length ==0">-</td>

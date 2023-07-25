@@ -41,6 +41,9 @@ export class AssetModelUpTimeComponent implements OnInit {
   offset = new Date().getTimezoneOffset();
   selectedAssetDate: any;
   selectedAssetName: any;
+  PlannetstartTime: any;
+  PlannetendTime: any;
+
   constructor(
     private toasterService: ToasterService,
     private commonService: CommonService,
@@ -229,9 +232,15 @@ export class AssetModelUpTimeComponent implements OnInit {
 
   getAssetUptime() {
     this.upTimeService.getAssetUptime(this.asset.asset_id).subscribe((res: any) => {
-
       this.upTimeData = res.data;
-
+      res?.data?.asset_uptime_registry.forEach((item) => {
+        let dummyLocalFromtime = '2022-01-15T' + item?.from_time
+        let dummyLocalTotime = '2022-01-15T' + item?.to_time
+        let localFromDate = this.commonService.convertUTCDateToLocal(dummyLocalFromtime)
+        let localToDate = this.commonService.convertUTCDateToLocal(dummyLocalTotime)
+        this.PlannetstartTime = localFromDate
+        this.PlannetendTime = localToDate
+      })
     })
   }
 

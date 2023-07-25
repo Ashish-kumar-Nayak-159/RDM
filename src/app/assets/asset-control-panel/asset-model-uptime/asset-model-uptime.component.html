@@ -98,8 +98,8 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let upTime of upTimeData?.asset_uptime_registry">
-                    <td>{{upTime.from_time}}</td>
-                    <td>{{upTime.to_time}}</td>
+                    <td>{{PlannetstartTime | date:'hh:mm a'}}</td>
+                    <td>{{PlannetendTime | date:'hh:mm a'}}</td>
                   </tr>
                   <tr>
                     <td colspan="3" *ngIf="upTimeData?.is_alltime_working">All Time Working</td>

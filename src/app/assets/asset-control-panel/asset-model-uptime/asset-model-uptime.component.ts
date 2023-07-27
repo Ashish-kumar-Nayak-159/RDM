@@ -6,7 +6,6 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { UpTimeService } from 'src/app/services/upTime/uptime.service';
-import * as moment from 'moment';
 import * as datefns from 'date-fns';
 
 @Component({
@@ -43,6 +42,14 @@ export class AssetModelUpTimeComponent implements OnInit {
   selectedAssetName: any;
   PlannetstartTime: any;
   PlannetendTime: any;
+  datePickerOptions: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: new Date(),
+    timePicker: true,
+    ranges: CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS,
+  }
 
   constructor(
     private toasterService: ToasterService,

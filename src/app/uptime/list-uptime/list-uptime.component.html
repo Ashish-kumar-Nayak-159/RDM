@@ -13,11 +13,10 @@
                 [closeOnSelection]="true">
             </app-hierarchy-dropdown>
 
-            <app-newdate-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange"
+            <app-date-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange"
                 [filterObj]="uptimeDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
-                [selectedDateRange]="selectedDateRange">
-            </app-newdate-range-picker>
-
+                [selectedDateRange]="selectedDateRange" [options]="datePickerOptions">
+            </app-date-range-picker>
 
             <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
                     (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>

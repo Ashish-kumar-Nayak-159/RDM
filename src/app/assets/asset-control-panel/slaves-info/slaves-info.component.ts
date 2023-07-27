@@ -156,7 +156,7 @@ export class SlavesInfoComponent implements OnInit {
     this.isGetSlaveAPILoading = true;
     const obj = {};
     this.subscriptions.push(
-      this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+      this.assetService.getAssetSlaveDetails(obj, this.asset.asset_id).subscribe(
         (response: any) => {
           if (response.data) {
             this.slaveData = response.data;

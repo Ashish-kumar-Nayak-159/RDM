@@ -325,7 +325,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       this.slaveData = [];
       const obj = {};
       this.subscriptions.push(
-        this.assetService.getAssetSlaveDetails(this.contextApp.app, asset.asset_id, obj).subscribe(
+        this.assetService.getAssetSlaveDetails(obj, asset.asset_id).subscribe(
           (response: any) => {
             if (response.data) {
               this.slaveData = response.data;

@@ -54,7 +54,6 @@ import { NewmodelProtocolSpecificDetailsComponent } from './newmodel-protocol-sp
 import { NumberonlywidgetLogicalviewComponent } from './newcharts/formcomponent/numberonlywidget-logicalview/numberonlywidget-logicalview.component';
 import { LivelinechartComponent } from './newcharts/livelinechart/livelinechart.component';
 import { NewLineChartWithoutAxisComponent } from './charts/newline-chart-without-axis/newline-chart-without-axis.component';
-import { NewDateRangePickerComponent } from './newdate-range-picker/newdate-range-picker.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -78,7 +77,6 @@ import { NewDateRangePickerComponent } from './newdate-range-picker/newdate-rang
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
-    NewDateRangePickerComponent,
     MessageModalComponent,
     HierarchyDropdownComponent,
     RectangleWidgetComponent,
@@ -142,7 +140,6 @@ import { NewDateRangePickerComponent } from './newdate-range-picker/newdate-rang
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
-    NewDateRangePickerComponent,
     MessageModalComponent,
     HierarchyDropdownComponent,
     RectangleWidgetComponent,

@@ -5,20 +5,20 @@
       <div class="asset-nav-tabs">
         <nav>
           <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
-              id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
-              aria-controls="nav-pre-generated" aria-selected="true" (click)="onTabSelect('pre-generated')"
-              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1 && preGeneratedTab?.visibility">
-              <em class="fas fa-chart-line mr-2"></em>
-              <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value :
-                ''}}</span>
-            </a>
-            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'custom','active ': preGeneratedTab?.visibility === false}" id="nav-custom-tab"
-              data-toggle="tab" href="#custom" role="tab" aria-controls="nav-custom" aria-selected="false"
+            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'custom'}" id="nav-custom-tab"
+              data-toggle="tab" href="#custom" role="tab" aria-controls="nav-custom" aria-selected="true"
               (click)="onTabSelect('custom')"
               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
               <em class="fa fa-chart-pie mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
+            </a>
+            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
+              id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
+              aria-controls="nav-pre-generated" aria-selected="false" (click)="onTabSelect('pre-generated')"
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RV') > -1 && preGeneratedTab?.visibility">
+              <em class="fas fa-chart-line mr-2"></em>
+              <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value :
+                ''}}</span>
             </a>
           </div>
         </nav>
@@ -39,7 +39,7 @@
       <app-pre-generated-reports *ngIf="tabType === 'pre-generated'"></app-pre-generated-reports>
     </div>
     <div id="custom" role="tabpanel" aria-labelledby="custom-tab" class="tab-pane fade show"
-      [ngClass]="{'active': tabType === 'custom','active ': preGeneratedTab?.visibility === false}">
+      [ngClass]="{'active': tabType === 'custom'}">
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
         <div class="tab-bar">
           <form class="form-inline">
@@ -53,7 +53,7 @@
                 {{filterObj?.asset ?
                 (filterObj.asset.display_name ? filterObj.asset.display_name :
                 filterObj.asset.asset_id) : 'Select Asset'}}</button>
-              <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+              <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAsset">
                 <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
                           let index = index
@@ -74,7 +74,7 @@
                   </div>
                 </ng-container>
                 <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
-                  [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+                  [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAsset" placeholder="Select Asset"
                   dropdownPosition="bottom" name="report-asset-dropdown" [(ngModel)]="filterObj.asset"
                   (change)="onChangeOfAsset($event)">
                   <ng-template ng-option-tmp let-asset="item">
@@ -109,7 +109,7 @@
             <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
               <div class="form-group">
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
+                  [searchable]="true" [multiple]="true" bindLabel="id"
                   [ngClass]="{'active': props.length > 0}" [closeOnSelect]="false" placeholder="Select Properties"
                   groupBy="type" dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props"
                   (onDeSelectAll)="y1Deselect($event)">

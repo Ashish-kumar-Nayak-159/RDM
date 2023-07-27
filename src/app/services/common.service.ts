@@ -250,76 +250,66 @@ export class CommonService {
     // localStorage.setItem(key, JSON.stringify(value));
   }
 
-  getMomentStartEndDate(label) {
-    const obj: any = {};
-    if (label === 'Last 5 Mins') {
-      obj.from_date = datefns.getUnixTime(datefns.subMinutes(new Date(), 5));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 30 Mins') {
-      obj.from_date = datefns.getUnixTime(datefns.subMinutes(new Date(), 30));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 1 Hour') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 1));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 3 Hours') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 3));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 6 Hours') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 6));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 12 Hours') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 12));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 24 Hours') {
-      obj.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 24));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 7 Days') {
-      obj.from_date = datefns.getUnixTime(datefns.subDays(new Date(), 6));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'This Week') {
-      obj.from_date = datefns.getUnixTime(datefns.startOfISOWeek(new Date()));
-      obj.to_date = datefns.getUnixTime(new Date());
-    } else if (label === 'Last 4 Weeks') {
-      obj.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfISOWeek(new Date()), 4));
-      obj.to_date = datefns.getUnixTime(datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1));
+  getMomentStartEndDate(dateOption: string, dateRange: any = {}) {
+    if (dateOption === 'Last 5 Mins') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMinutes(new Date(), 5));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 30 Mins') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMinutes(new Date(), 30));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 1 Hour') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 1));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 3 Hours') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 3));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 6 Hours') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 6));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 12 Hours') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 12));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 24 Hours') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subHours(new Date(), 24));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 7 Days') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subDays(new Date(), 7));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'This Week') {
+      dateRange.from_date = datefns.getUnixTime(datefns.startOfISOWeek(new Date()));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 4 Weeks') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfISOWeek(new Date()), 4));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfISOWeek(new Date()));
+    } else if (dateOption === 'This Month') {
+      dateRange.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last 30 Days') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subDays(new Date(), 30));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Last Month') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 1));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+    } else if (dateOption === 'Last 3 Months') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 3));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+    } else if (dateOption === 'Last 6 Months') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 6));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+    } else if (dateOption === 'Last 12 Months') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 12));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
+    } else if (dateOption === 'Today') {
+      dateRange.from_date = datefns.getUnixTime(datefns.startOfDay(new Date()));
+      dateRange.to_date = datefns.getUnixTime(new Date());
+    } else if (dateOption === 'Yesterday') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subDays(datefns.startOfDay(new Date()), 1));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfDay(new Date()));
+    } else if (dateOption === 'Last Week') {
+      dateRange.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1));
+      dateRange.to_date = datefns.getUnixTime(datefns.startOfISOWeek(new Date()));
     }
-    else if (label === 'This Month') {
-      obj.from_date = datefns.getUnixTime(datefns.startOfMonth(new Date()));
-      obj.to_date = datefns.getUnixTime(new Date());
-    }
-    else if (label === 'Last 30 Days') {
-      obj.from_date = datefns.getUnixTime(datefns.subDays(new Date(), 29));
-      obj.to_date = datefns.getUnixTime(new Date());
-    }
-    else if (label === 'Last Month') {
-      obj.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 1));
-      obj.to_date = datefns.getUnixTime(datefns.subMonths(datefns.endOfMonth(new Date()), 1));
-    }
-    else if (label === 'Last 3 Months') {
-      obj.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 3));
-      obj.to_date = datefns.getUnixTime(datefns.subMonths(datefns.endOfMonth(new Date()), 1));
-    }
-    else if (label === 'Last 6 Months') {
-      obj.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 6));
-      obj.to_date = datefns.getUnixTime(datefns.subMonths(datefns.endOfMonth(new Date()), 1));
-    }
-    else if (label === 'Last 12 Months') {
-      obj.from_date = datefns.getUnixTime(datefns.subMonths(datefns.startOfMonth(new Date()), 12));
-      obj.to_date = datefns.getUnixTime(datefns.subMonths(datefns.endOfMonth(new Date()), 1));
-    }
-    else if (label === 'Today') {
-      obj.from_date = datefns.getUnixTime(datefns.startOfDay(new Date()));
-      obj.to_date = datefns.getUnixTime(new Date());
-    }
-    else if (label === 'Yesterday') {
-      obj.from_date = datefns.getUnixTime(datefns.subDays(datefns.startOfDay(new Date()), 1));
-      obj.to_date = datefns.getUnixTime(datefns.subDays(datefns.endOfDay(new Date()), 1));
-    }
-    else if (label === 'Last Week') {
-      obj.from_date = datefns.getUnixTime(datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1));
-      obj.to_date = datefns.getUnixTime(datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1));
-    }
-    return obj;
+    return dateRange;
   }
 
   getValueFromModelMenuSetting(page, key) {

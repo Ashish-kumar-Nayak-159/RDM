@@ -81,7 +81,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
   getSlaveData() {
     this.slaves = [];
-    this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, {}).subscribe((response: any) => {
+    this.assetService.getAssetSlaveDetails({}, this.asset.asset_id).subscribe((response: any) => {
       this.slaves = response.data;
     });
   }

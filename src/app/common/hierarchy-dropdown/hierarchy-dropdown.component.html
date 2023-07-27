@@ -1,15 +1,10 @@
 <div class="form-group" id="dd-open">
   <button href="#" *ngIf="showAsset" role="button" class="dropdown-btn" data-toggle="dropdown"
     [ngClass]="{'active' : filterObj?.asset}" placement="bottom"
-    [tooltip]="type !='logicalView' ? originalFilterObj?.asset ?
-    (originalFilterObj?.asset.display_name ? originalFilterObj?.asset.display_name :
-    originalFilterObj?.asset.asset_id) : 'Select Asset' : originalFilterObj?.logicalview ? originalFilterObj?.logicalview.name : 'Logical View'"
+    [tooltip]="getDropdownName()"
     (click)="onHierarchyDropdownClick()" aria-haspopup="true" aria-expanded="false">
     <span class="fas fa-fw fa-filter fa-sm button-divider"></span>
-    {{type !='logicalView' ? originalFilterObj?.asset ?
-    (originalFilterObj?.asset.display_name ? originalFilterObj?.asset.display_name :
-    originalFilterObj?.asset.asset_id) : 'Select Asset' : originalFilterObj?.logicalview ?
-    originalFilterObj?.logicalview.name : 'Logical View'}}
+    {{getDropdownName()}}
   </button>
   <button href="#" *ngIf="!showAsset" role="button" class="dropdown-btn" data-toggle="dropdown"
     [ngClass]="{'active': hierarchyString}" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
@@ -17,7 +12,7 @@
     <span class="fas fa-fw fa-filter fa-sm button-divider"></span> {{hierarchyString ?
     displayHierarchyString :
     'Select Hierarchy'}}</button>
-  <!-- <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+  <!-- <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAsset">
     <ng-container *ngFor="
                 let level of contextApp?.hierarchy?.levels;
                 let index = index
@@ -38,7 +33,7 @@
       </div>
     </ng-container>
     <ng-select [items]="assets" class="custom dropdown-open" bindLabel="display_name" [clearable]="false"
-      [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+      [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAsset" placeholder="Select Asset"
       dropdownPosition="bottom" name="asset-dropdown" (change)="onSaveHierachy()" [(ngModel)]="filterObj.asset"
       *ngIf="showAsset">
       <ng-template ng-option-tmp let-asset="item">
@@ -54,7 +49,7 @@
     </div>
   </div> -->
 
-  <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret" style="width:200px">
+  <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAsset" style="width:200px">
     <ng-container *ngFor="
                 let level of contextApp?.hierarchy?.levels;
                 let index = index
@@ -75,8 +70,8 @@
       </div>
     </ng-container>
     <ng-select *ngIf="type !='logicalView' && showAsset" [items]="assets" class="custom dropdown-open"
-      bindLabel="display_name" [clearable]="false" [searchable]="false" [closeOnSelect]="false"
-      appendTo="#liveDataSelectAssret" placeholder="Select Asset" dropdownPosition="bottom" name="asset-dropdown"
+      bindLabel="display_name" [clearable]="false" [searchable]="true" [closeOnSelect]="true"
+      appendTo="#liveDataSelectAsset" placeholder="Select Asset" dropdownPosition="bottom" name="asset-dropdown"
       (change)="onSaveHierachy()" [(ngModel)]="filterObj.asset">
       <ng-template ng-option-tmp let-asset="item">
         <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
@@ -84,11 +79,20 @@
       </ng-template>
     </ng-select>
     <ng-select *ngIf="type == 'logicalView' && showAsset" [items]="logicalView" class="custom dropdown-open"
-      bindLabel="name" [clearable]="false" [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAssret"
+      bindLabel="name" [clearable]="false" [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAsset"
       placeholder="Select Logical Asset" dropdownPosition="bottom" name="asset-dropdown" (change)="onSaveHierachy()"
       [(ngModel)]="logicalAsset">
       <ng-template ng-option-tmp let-asset="item">
         <span [tooltip]="asset.name"> {{asset.name}}</span>
+      </ng-template>
+    </ng-select>
+    <ng-select *ngIf="type !='logicalView' && showAsset && showSlave" [items]="slavesForSelectedAsset"
+      class="custom dropdown-open" bindLabel="slave_name" [clearable]="false" [searchable]="true" [closeOnSelect]="true"
+      placeholder="Select Slave" dropdownPosition="bottom" name="slave-dropdown" (change)="onSaveHierachy()"
+      [(ngModel)]="filterObj.slave">
+      <ng-template ng-option-tmp let-slave="item">
+        <span [tooltip]="slave.slave_name ? slave.slave_name: slave.slave_id"> {{slave.slave_name ?
+          slave.slave_name: slave.asset_id}}</span>
       </ng-template>
     </ng-select>
     <div class="form-group w-10" *ngIf="showAsset ||

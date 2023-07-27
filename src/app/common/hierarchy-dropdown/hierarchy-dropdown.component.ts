@@ -25,9 +25,12 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   configureHierarchy: any = {};
   hierarchyArr: any = {};
   @Input() assets: any[] = [];
+  @Input() slaves: any[] = [];
+  slavesForSelectedAsset: any[] = [];
   originalAssets: any[] = [];
   actualAssets: any[] = [];
   @Input() showAsset = false;
+  @Input() showSlave = false;
   @Input() showLogicalView = false;
   hierarchyString: string;
   contextAppUserHierarchyLength = 0;
@@ -85,40 +88,30 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
 
   onSaveHierachy() {
+    let lastHierarchySelection = undefined;
+    if (this.type == 'logicalView') lastHierarchySelection = 'logicalview';
+    else if (this.showSlave) lastHierarchySelection = 'slave';
+    else if (this.showAsset) lastHierarchySelection = 'asset';
 
-    if (this.showAsset) {
-      if (this.type == 'logicalView')
-        this.filterObj.logicalview = this.logicalAsset
+    if (this.showSlave && this.filterObj?.asset?.asset_id) {
+      this.slavesForSelectedAsset = this.slaves.filter(s => s.asset_id === this.filterObj.asset.asset_id);
+    }
 
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      if (this.type != 'logicalView') {
-        if (!this.closeOnSelection) {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
-            this.saveHierarchyEvent.emit();
-          }
-        }
-        else {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('asset')) {
-            $("#liveDataSelectAssret").removeClass("show");
-            this.saveHierarchyEvent.emit();
-          }
+    if (this.type == 'logicalView')
+      this.filterObj.logicalview = this.logicalAsset
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    if (lastHierarchySelection) {
+      if (!this.closeOnSelection) {
+        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty(lastHierarchySelection)) {
+          if (this.type == 'logicalView') this.searchLogicalViewEvent.emit(this.originalFilterObj);
+          this.saveHierarchyEvent.emit();
         }
       }
       else {
-        if (!this.closeOnSelection) {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
-            this.searchLogicalViewEvent.emit(this.originalFilterObj);
-            this.saveHierarchyEvent.emit();
-
-          }
-        }
-        else {
-          if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty('logicalview')) {
-            $("#liveDataSelectAssret").removeClass("show");
-            this.searchLogicalViewEvent.emit(this.originalFilterObj);
-            this.saveHierarchyEvent.emit();
-
-          }
+        if (Object.keys(this.originalFilterObj).length > 0 && this.originalFilterObj.hasOwnProperty(lastHierarchySelection)) {
+          $("#liveDataSelectAsset").removeClass("show");
+          if (this.type == 'logicalView') this.searchLogicalViewEvent.emit(this.originalFilterObj);
+          this.saveHierarchyEvent.emit();
         }
       }
     } else {
@@ -138,6 +131,23 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     if (selectedHierarchy) {
       return selectedHierarchy.name;
     }
+  }
+
+  getDropdownName() {
+    if (this.type == 'logicalView') {
+      return this.originalFilterObj?.logicalview ? this.originalFilterObj?.logicalview.name : 'Select Logical View'
+    }
+    if (this.showSlave && (this.originalFilterObj?.slave?.slave_name || this.originalFilterObj?.slave?.slave_id)) {
+      let slaveName = this.originalFilterObj?.slave?.slave_name || this.originalFilterObj?.slave?.slave_id;
+      if (this.originalFilterObj?.asset?.display_name || this.originalFilterObj?.asset?.asset_id) {
+        slaveName += " (" + (this.originalFilterObj?.asset?.display_name || this.originalFilterObj?.asset?.asset_id) + ") ";
+      }
+      return slaveName;
+    }
+    if (this.originalFilterObj?.asset?.display_name || this.originalFilterObj?.asset?.asset_id) {
+      return this.originalFilterObj?.asset?.display_name || this.originalFilterObj?.asset?.asset_id;
+    }
+    return this.showAsset ? 'Select Asset' : 'Select Hierarchy';
   }
 
   getConfiguredHierarchy() {
@@ -341,7 +351,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     }
     this.onSaveHierachy();
     if (!this.showAsset && this.closeOnSelection || (!this.closeOnSelection && this.contextApp.hierarchy.levels.length == Object.keys(this.hierarchyArr).length)) {
-      $("#liveDataSelectAssret").removeClass("show");
+      $("#liveDataSelectAsset").removeClass("show");
     }
   }
 }

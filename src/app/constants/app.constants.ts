@@ -2148,32 +2148,30 @@ export class CONSTANTS {
     },
   ];
 
+  public static DATE_OPTIONS_WITHIN_24_HOURS = {
+    'Last 5 Mins': [datefns.subMinutes(new Date(), 5), new Date()],
+    'Last 30 Mins': [datefns.subMinutes(new Date(), 30), new Date()],
+    'Last 1 Hour': [datefns.subHours(new Date(), 1), new Date()],
+    'Last 3 Hours': [datefns.subHours(new Date(), 3), new Date()],
+    'Last 6 Hours': [datefns.subHours(new Date(), 6), new Date()],
+    'Last 12 Hours': [datefns.subHours(new Date(), 12), new Date()],
+    'Last 24 Hours': [datefns.subHours(new Date(), 24), new Date()]
+  }
+
+  public static DATE_OPTIONS_MORE_THAN_24_HOURS = {
+    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.startOfDay(new Date())],
+    'This Week': [datefns.startOfISOWeek(new Date()), new Date()],
+    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.startOfISOWeek(new Date())],
+    'Last 30 Days': [datefns.subDays(new Date(), 30), new Date()],
+    'This Month': [datefns.startOfMonth(new Date()), new Date()],
+    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.startOfMonth(new Date())]
+  };
+
   public static DATE_OPTIONS = {
-    'Last 5 Mins': [datefns.subMinutes(new Date(), 5), datefns.subSeconds(new Date(), 0)],
-    'Last 30 Mins': [datefns.subMinutes(new Date(), 30), datefns.subSeconds(new Date(), 0)],
-    'Last 1 Hour': [datefns.subHours(new Date(), 1), datefns.subSeconds(new Date(), 0)],
-    'Last 3 Hours': [datefns.subHours(new Date(), 3), datefns.subSeconds(new Date(), 0)],
-    'Last 6 Hours': [datefns.subHours(new Date(), 6), datefns.subSeconds(new Date(), 0)],
-    'Last 12 Hours': [datefns.subHours(new Date(), 12), datefns.subSeconds(new Date(), 0)],
-    'Last 24 Hours': [datefns.subHours(new Date(), 24), datefns.subSeconds(new Date(), 0)],
-    'Today': [datefns.startOfDay(new Date()), datefns.subSeconds(new Date(), 0)],
-    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.endOfDay(datefns.subDays(new Date(), 1))],
-    'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
-    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],
-    'Last 30 Days': [datefns.subDays(new Date(), 29), datefns.subSeconds(new Date(), 0)],
-    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
-    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.subMonths(datefns.endOfMonth(new Date()), 1)]
+    ...CONSTANTS.DATE_OPTIONS_WITHIN_24_HOURS,
+    'Today': [datefns.startOfDay(new Date()), new Date()],
+    ...CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS
   };
-
-  public static DATE_OPTIONS_FOR_UPTIME = {
-    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.endOfDay(datefns.subDays(new Date(), 1))],
-    'This Week': [datefns.startOfWeek(new Date(), { weekStartsOn: 1 }), datefns.subSeconds(new Date(), 0)],
-    'Last Week': [datefns.subWeeks(datefns.startOfISOWeek(new Date()), 1), datefns.subWeeks(datefns.endOfISOWeek(new Date()), 1)],
-    'Last 30 Days': [datefns.subDays(new Date(), 29), datefns.subSeconds(new Date(), 0)],
-    'This Month': [datefns.startOfMonth(new Date()), datefns.subSeconds(new Date(), 0)],
-    'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.subMonths(datefns.endOfMonth(new Date()), 1)]
-  };
-
 
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';

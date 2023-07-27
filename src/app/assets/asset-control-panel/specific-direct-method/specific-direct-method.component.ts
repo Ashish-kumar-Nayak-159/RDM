@@ -101,7 +101,7 @@ export class SpecificDirectMethodComponent implements OnInit {
 
   getSlaveData() {
     this.slaves = [];
-    this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, {}).subscribe((response: any) => {
+    this.assetService.getAssetSlaveDetails({}, this.asset.asset_id).subscribe((response: any) => {
       this.slaves = response.data;
     });
   }

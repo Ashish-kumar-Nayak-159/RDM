@@ -1,7 +1,6 @@
 import { object } from '@amcharts/amcharts4/core';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -47,6 +46,14 @@ export class ListUptimeComponent implements OnInit {
   upTimeHistory: any = [];
   insideScrollFunFlag = false;
   count: number = 0;
+  datePickerOptions: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: new Date(),
+    timePicker: true,
+    ranges: CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS,
+  }
   // @Output() filterData = new EventEmitter<any>();
 
   constructor(private commonService: CommonService,

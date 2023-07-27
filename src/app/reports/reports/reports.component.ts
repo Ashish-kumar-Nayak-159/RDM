@@ -74,7 +74,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.contextApp.metadata?.filter_settings?.record_count) {
       this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
     }
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.subscriptions.push(
@@ -93,18 +92,21 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // this.getLatestAlerts();
         await this.getAssets(this.contextApp.user.hierarchy);
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-        if (!this.preGeneratedTab?.visibility) {
-          this.onTabSelect('custom');
-        } else {
-          this.onTabSelect('pre-generated');
-        }
       })
     );
-    if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
-      this.onTabSelect('pre-generated');
-    } else if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
+    if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
       this.onTabSelect('custom');
+    } else if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
+      this.onTabSelect('pre-generated');
     }
+  }
+
+  async ngAfterViewInit(): Promise<void> {
+    setTimeout(() => {
+      if(this.tabType === 'custom'){
+        this.loadFromCache();
+      }
+    }, 0);
   }
 
   onTabSelect(type) {
@@ -122,7 +124,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.latestAlerts = [];
       this.isFilterOpen = true;
       this.isFilterSelected = false;
-      this.loadFromCache();
     } else {
       this.isFilterSelected = false;
     }

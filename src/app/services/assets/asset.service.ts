@@ -1223,15 +1223,16 @@ export class AssetService {
     );
   }
 
-  getAssetSlaveDetails(app, assetId, filterObj) {
+  getAssetSlaveDetails(filterObj, assetId = undefined) {
     let params = new HttpParams();
+    if (assetId) params = params.set('asset_id', assetId);
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
     return this.http.get(
-      this.url + String.Format(AppUrls.GET_ASSET_SLAVE_DETAILS, encodeURIComponent(app), encodeURIComponent(assetId)),
+      this.url + String.Format(AppUrls.GET_ASSET_SLAVE_DETAILS),
       { params }
     );
   }

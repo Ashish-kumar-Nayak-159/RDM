@@ -53,7 +53,11 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     total_telemetry: 0,
     day_telemetry: 0
   }
+  state:string;
   loader = false;
+
+  assetCount=0;
+  assetTotalcount=0;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private commonService: CommonService, private applicationService: ApplicationService,
     private route: ActivatedRoute, private changeDetector: ChangeDetectorRef) { }
@@ -62,6 +66,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     const userData = localStorage.getItem(CONSTANTS.USER_DETAILS);
     const selectedAppData = localStorage.getItem(CONSTANTS.SELECTED_APP_DATA);
     this.userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
+    // this.assets = this.hierarchyDropdown.getAssets();
     const obj = {
       environment: environment.environment,
       provisioned: this.isProvisioned
@@ -140,8 +145,17 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'ingestion_status',
-          data_tooltip: 'last_ingestion_on',
+          // data_tooltip: 'last_ingestion_on',
           data_cellclass: 'ingestionCss'
+        },
+        {
+          header_name: 'Last Ingestion On',
+          value_type: 'string',
+          // is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'last_ingestion_on',
+          // is_sort: true
         },
         {
           header_name: 'CreatedOn',
@@ -244,8 +258,11 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
   }
   assetStatic() {
+    const custObj = {
+      hierarchy: JSON.stringify(this.hierarchy)
+    }
     this.loader = true;
-    this.applicationService.getAssetStatistics(this.selectedApp).subscribe((response: any) => {
+    this.applicationService.getAssetStatistics(this.selectedApp,custObj).subscribe((response: any) => {
       this.countData = {
         iot_assets: response?.iot_assets ?? 0,
         online: response?.online ?? 0,
@@ -257,20 +274,25 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }, (err) => { this.loader = false })
   }
 
-  assetMonitor() {
+  assetMonitor(changeState?) {
     const custObj = {
       offset: this.currentOffset,
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy)
     }
     this.loader = true;
-    this.applicationService.getAssetMonitoring(this.selectedApp, custObj).subscribe((response: any) => {
+    this.applicationService.getAssetMonitoring(this.selectedApp, custObj,changeState).subscribe((response: any) => {
+      this.assetCount=response.count;
+      this.assetTotalcount=response.totalcount;
       response?.data?.forEach((item) => {
         item.created_date_time = item.created_date
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
-        if (item.last_ingestion_on)
-          item.last_ingestion_on = 'Last Ingestion On: ' + this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
-        if (item.ingestion_status === "Stopped") {
+        if (item.last_ingestion_on!==null){
+          item.last_ingestion_on =this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
+        }else{
+          item.last_ingestion_on ="-";
+        }
+          if (item.ingestion_status === "Stopped") {
           item.ingestionCss = "offline"
         }
         else {
@@ -295,10 +317,10 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       if (response?.data?.length < this.currentLimit) {
         this.loadMoreVisibility = false
       }
-
+      
       let mergedObject = [...this.applications, ...response.data];
       const unique = [...new Map(mergedObject.map(item => [item.asset_id, item])).values()];
-
+      
       this.applications = unique;
       
       //Note: Searching on same function it will push the same data again and again of searched list
@@ -331,12 +353,9 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
   onSaveHierachy(configuredHierarchy) {
     this.originalFilter = {};
     this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
-    if (this.filterObj.asset) {
-      this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-      this.onChangeOfAsset();
-    }
   }
-  onClearHierarchy() {
+  onClearHierarchy(configuredHierarchy1) {
+    this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy1));
     this.hierarchy = { App: this.selectedApp };
   }
 
@@ -360,13 +379,13 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       }
     }
   }
-  filteredHiearchyObj() {
+  filteredHiearchyObj(updateFilterObj = true) {
     this.applications = [];
     this.currentOffset = 0;
     this.loadMoreVisibility = true;
     const configuredHierarchy = this.hierarchyDropdown.getConfiguredHierarchy();
     object.keys(configuredHierarchy).length === 0;
-    this.onClearHierarchy();
+    this.onClearHierarchy(configuredHierarchy);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp) {
       Object.keys(configuredHierarchy).forEach((key) => {
@@ -377,5 +396,24 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     }
     this.assetMonitor();
     this.assetStatic();
+
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+      Object.keys(this.configuredHierarchy).forEach((key) => {
+        if (this.configuredHierarchy[key]) {
+          pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+        }
+      });
+      delete pagefilterObj.assets;
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    }
+  }
+  fetchGateways(state: string){
+    this.applications = [];
+    this.currentOffset = 0;
+    this.loadMoreVisibility=true;
+    this.state=state;
+    this.assetMonitor(this.state);
   }
 }

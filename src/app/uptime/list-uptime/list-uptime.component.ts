@@ -144,24 +144,21 @@ export class ListUptimeComponent implements OnInit {
   }
 
   getAssets(hierarchy) {
-    return new Promise<void>((resolve1) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-      };
-      this.apiSubscriptions.push(
-        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-          if (response?.data) {
-            this.assets = response.data;
-            if (this.assets?.length === 1) {
-              // this.filterObj.asset = this.assets[0];
-              this.onChangeOfAsset();
-            }
+    const obj = {
+      hierarchy: JSON.stringify(hierarchy),
+      type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+    };
+    this.apiSubscriptions.push(
+      this.assetService.getLegacyAsset(obj, this.contextApp.app).subscribe((response: any) => {
+        if (response?.data) {
+          this.assets = response.data;
+          if (this.assets?.length === 1) {
+            this.filterObj.asset = this.assets[0];
+            // this.onChangeOfAsset();
           }
-          resolve1();
-        })
-      );
-    });
+        }
+      })
+    );
   }
 
   onChangeOfAsset() {
@@ -240,7 +237,9 @@ export class ListUptimeComponent implements OnInit {
 
 
 
-    this.currentLimit = 10
+    this.currentOffset = 0;
+    this.currentLimit = 10;
+    this.upTimeHistory = [];
     this.getUptime();
     // this.assetStatic();
   }
@@ -253,7 +252,7 @@ export class ListUptimeComponent implements OnInit {
 
   getUptime() {
     const custObj = {
-      offset: 0,
+      offset: this.currentOffset,
       count: this.currentLimit,
       hierarchy: JSON.stringify(this.hierarchy),
       assetId: this.assetId,
@@ -263,16 +262,22 @@ export class ListUptimeComponent implements OnInit {
     this.loader = true;
 
     this.upTimeService.getUpTimeHistory(custObj).subscribe((res: any) => {
-
-      this.upTimeHistory = res?.data;
       this.loader = false;
-      ;
-      this.count += 10;
-      this.currentLimit += 10;
 
-      if (this.count >= res.totalcount) {
-        this.loadMoreVisibility = false
+      // this.upTimeHistory = res?.data;
+      // this.count += 10;
+      // this.currentLimit += 10;
+
+      // if (this.count >= res.totalcount) {
+      //   this.loadMoreVisibility = false
+      // }
+
+      if (res.data.length < this.currentLimit) {
+        this.loadMoreVisibility = false;
+      } else {
+        this.loadMoreVisibility = true;
       }
+      this.upTimeHistory = [...this.upTimeHistory, ...res.data]
 
 
     }, error => {

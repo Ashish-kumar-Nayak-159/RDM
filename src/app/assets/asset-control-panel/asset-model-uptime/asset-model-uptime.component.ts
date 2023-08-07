@@ -194,14 +194,16 @@ export class AssetModelUpTimeComponent implements OnInit {
 
   filteredHiearchyObj() {
     this.currentOffset = 0;
+    this.currentLimit = 10;
     this.count = 0;
     this.getUptime();
+    this.upTimeHistory = [];
   }
 
   getUptime() {
 
     const custObj = {
-      offset: 0,
+      offset: this.currentOffset,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
       fromdate: this.uptimeDateFilter.from_date,
@@ -214,16 +216,24 @@ export class AssetModelUpTimeComponent implements OnInit {
       this.loadMoreVisibility = true;
 
 
-      this.upTimeHistory = res?.data;
-      this.upTimeHistory.forEach(element => {
+      // this.upTimeHistory = res?.data;
+      res.data.forEach(element => {
         element.fromDateDisplay = this.commonService.convertUTCDateToLocal(element.fromDate);
       });
       this.loader = false;
-      this.count += 10;
-      this.currentLimit += 10;
-      if (this.count >= res.totalcount) {
-        this.loadMoreVisibility = false
+
+      if (res.data.length < this.currentLimit) {
+        this.loadMoreVisibility = false;
+      } else {
+        this.loadMoreVisibility = true;
       }
+      this.upTimeHistory = [...this.upTimeHistory, ...res.data]
+
+      // this.count += 10;
+      // this.currentLimit += 10;
+      // if (this.count >= res.totalcount) {
+      //   this.loadMoreVisibility = false
+      // }
 
     }, error => {
       this.loader = false;
@@ -247,6 +257,8 @@ export class AssetModelUpTimeComponent implements OnInit {
         let localToDate = this.commonService.convertUTCDateToLocal(dummyLocalTotime)
         this.PlannetstartTime = localFromDate
         this.PlannetendTime = localToDate
+        item.from_time = this.PlannetstartTime;
+        item.to_time = this.PlannetendTime;
       })
     })
   }

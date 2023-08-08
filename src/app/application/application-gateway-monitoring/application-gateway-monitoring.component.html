@@ -1,7 +1,7 @@
 <div class="container" style="margin-top: 80px;">
     <div class="row text-center">
         <div class="col">
-            <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100);">
+            <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100);" (click)="fetchGateways('')">
                 <div class="card-body">
                     <h2 class="card-title">Total Gateway</h2>
                     <h1 class="font-weight-bold">{{countData.iot_assets}}</h1>
@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card rounded-top online" style="border-bottom: 9px solid green;">
+            <div class="card rounded-top online" style="border-bottom: 9px solid green;" (click)="fetchGateways('connected')">
                 <div class="card-body">
                     <h2 class="card-title">Online</h2>
                     <h1 class="font-weight-bold">{{countData.online}}</h1>
@@ -18,7 +18,7 @@
         </div>
         <div class="col">
             <div class="card rounded-top offline">
-                <div class="card-body" style="border-bottom: 9px solid #c10606f7;">
+                <div class="card-body" style="border-bottom: 9px solid #c10606f7;" (click)="fetchGateways('disconnected')">
                     <h2 class="card-title">Offline</h2>
                     <h1 class="font-weight-bold">{{countData.offline}}</h1>
                 </div>
@@ -70,7 +70,7 @@
     <div class="col-sm-4 pl-4" *ngIf="isSelectedAppData">
         <div class="d-flex" >
             <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
-                (clearHierarchyEvent)="onClearHierarchy()" [closeOnSelection]="false">
+                (clearHierarchyEvent)="onClearHierarchy($event)" [closeOnSelection]="false" [filterObj]="filterObj" [assets]="assets">
             </app-hierarchy-dropdown>
             <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
                     (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
@@ -88,10 +88,10 @@
     <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
         (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
-    <span class="d-flex justify-content-center w-100" style="margin-top: -25px;margin-right:10px;"
-        *ngIf="!insideScrollFunFlag && applications.length > 0 && loadMoreVisibility">
+    <span class="d-flex justify-content-center w-100" style="margin-top: -20px;margin-right:10px;"
+        *ngIf="!insideScrollFunFlag && applications.length > 0 && loadMoreVisibility && assetTotalcount!=currentOffset+currentLimit">
         <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
-            (click)="currentOffset = currentOffset + currentLimit;assetMonitor()" placement="bottom">{{'Load More...'}}</a>
+            (click)="currentOffset = currentOffset + currentLimit ; assetMonitor(state)" placement="bottom">{{'Load More...'}}</a>
     </span>
 </div><br />
 <div class="text-center">

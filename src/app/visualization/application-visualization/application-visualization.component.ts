@@ -1263,12 +1263,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   y1Deselect(e) {
-    if (e === [] || e.length === 0) {
+    if (e.length === 0) {
       this.y1AxisProps = [];
     }
   }
   y2Deselect(e) {
-    if (e === [] || e.length === 0) {
+    if (e.length === 0) {
       this.y2AxisProps = [];
     }
   }

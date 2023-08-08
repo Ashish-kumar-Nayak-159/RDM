@@ -315,11 +315,7 @@ export class ApplicationService {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_HIERARCHIES,id), { params });
   }
 
-  getAssetStatistics(app){
-    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)))
-  }
-
-  getAssetMonitoring(app,filterObj?){
+  getAssetStatistics(app,filterObj?){
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
@@ -327,7 +323,20 @@ export class ApplicationService {
       }
     });
 
-    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)),{params})
+    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)),{params})
+  }
+
+  getAssetMonitoring(app,filterObj?,changeState?){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    if(changeState==='connected' || changeState==='disconnected'){
+      params=params.set('state',changeState);
+      }
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)),{params})
     
   }
 

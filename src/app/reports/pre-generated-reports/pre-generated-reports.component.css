@@ -37,3 +37,7 @@ a.mr-1{
   top: 0;
   z-index: 2;
 }
+
+.assetsHeader{
+  padding: 0.5rem 1rem !important;
+}

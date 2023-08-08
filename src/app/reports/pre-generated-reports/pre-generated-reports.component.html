@@ -1,7 +1,7 @@
 <div class="tab-bar">
   <form class="form-inline">
-    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj" [closeOnSelection]="false"
-      [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
+    <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [showAsset]="false" [filterObj]="filterObj"
+      [closeOnSelection]="false" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
       (clearHierarchyEvent)="onClearHierarchy($event)">
     </app-hierarchy-dropdown>
     <!-- <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
@@ -9,27 +9,29 @@
     </app-date-range-picker> -->
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-        (click)="reportsData = [];prOffset = 0;getReportSubscriptionData()"><em class="fa fa-search fa-sm"></em></button>
+        (click)="reportsData = [];prOffset = 0;getReportSubscriptionData()"><em
+          class="fa fa-search fa-sm"></em></button>
     </div>
     <div class="form-group" *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1">
-      <button class="btn btn-sm searchBtn btn-success" *ngIf="showPlus" (click)="onOpenConfigurePGRModal()" placement="bottom"
-        tooltip="Configure New PreGenerated Report"><em class="fas fa-plus fa-sm text-white"></em></button>
+      <button class="btn btn-sm searchBtn btn-success" *ngIf="showPlus" (click)="onOpenConfigurePGRModal()"
+        placement="bottom" tooltip="Configure New PreGenerated Report"><em
+          class="fas fa-plus fa-sm text-white"></em></button>
     </div>
   </form>
 </div>
 <h6 class="p-3" *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
 <div class="overlap-wrapper">
-<div class="over-lap">
-  <br />
-  <div class="d-flex">
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
-      class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
-      <path fill-rule="evenodd"
-        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-    </svg>
-    <p class="p-2 rounded mb-0 ml-3">{{reportName}}</p>
-  </div>
-  <div class="custom-table">
+  <div class="over-lap">
+    <br />
+    <div class="d-flex">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" fill="currentColor" (click)="backToMain()"
+        class="bi bi-arrow-left pl-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+      </svg>
+      <p class="p-2 rounded mb-0 ml-3">{{reportName}}</p>
+    </div>
+    <div class="custom-table">
       <div class="table-responsive">
         <div class="tableFixHead" id="table-top-2">
           <table class="table table-hover">
@@ -37,7 +39,8 @@
               <tr>
                 <th scope="col">No</th>
                 <!-- <th scope="col">Name</th> -->
-                <th scope="col">Asset Name</th>
+                <th scope="col">Date</th>
+                <!-- <th scope="col">Asset Name</th> -->
                 <!-- <th scope="col">Date</th> -->
                 <th scope="col">Category</th>
                 <th scope="col">Report Type</th>
@@ -45,6 +48,7 @@
                 <!-- <th scope="col">Size</th> -->
                 <!-- <th scope="col">Type</th>
             <th scope="col">Frequency</th> -->
+                <th scope="col">Assets</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -53,33 +57,45 @@
                 <tr *ngFor="let reportObj of pgrData; let index = index">
                   <td>{{index + 1}}</td>
                   <!-- <td>{{reportObj?.report_name}}</td> -->
-                  <td>
+                  <!-- <td>
                     <ng-container *ngFor="let assetId of reportObj.assets">
                       {{ getAssetNameById(assetId)}}
                     </ng-container>
-                  </td>
+                  </td> -->
+                  <td>{{reportObj?.created_date | date: 'MMM dd, yyyy'}} </td>
                   <!-- <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
                     (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td> -->
                   <!-- <td>{{ reportObj.local_end_date }}</td> -->
-    
+
                   <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' :
                     (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
-    
-                    <td>{{reportObj?.report_type}}</td>
+
+                  <td>{{reportObj?.report_type}}</td>
                   <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
               <td>{{reportObj.report_frequency | titlecase}}</td> -->
                   <!-- <td>{{reportObj.metadata?.file_size}}</td> -->
                   <td>{{reportObj?.report_frequency}}</td>
+                  <td>
+                    <em class="" tooltip="Assets" (click)="popupModel(reportObj.assets,'view')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-info-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path
+                          d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                      </svg>
+                    </em>
+                  </td>
                   <td class="d-flex align-items-center" style="gap:5px;">
                     <!-- <em class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj,'view')"></em>
                     <em class="fa fa-fw fa-edit icon-gray" tooltip="Edit" (click)="singleRecordData(reportObj,'edit')"></em>
                     <em class="fa fa-fw fa-trash icon-gray" tooltip="Delete" (click)="singleRecordData(reportObj,'delete')"></em>
                     <em class="fa fa-fw fa-table icon-gray" tooltip="Trigger" (click)="singleRecordData(reportObj,'trigger')"></em> -->
-                
+
                     <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
                       (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
                         class="fa fa-sm fa-download"></em></a>
-                    <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
+                    <ng-container
+                      *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
                     </ng-container>
                   </td>
                 </tr>
@@ -107,7 +123,7 @@
                   </td>
                 </tr>
               </ng-container>
-    
+
             </tbody>
           </table>
         </div>
@@ -117,17 +133,66 @@
           (click)="singleOffset = singleOffset + singleLimit;dataOfEachReport();" placement="bottom"
           tooltip="Load More Records...">Load More...</a>
       </span>
-    
-    
-    <!-- <span class="d-flex justify-content-center w-100"
+
+
+      <!-- <span class="d-flex justify-content-center w-100"
       *ngIf="pgrData?.length > 0 && singleLoadMoreVisibility && !insideScrollFunFlag">
       <a href="javascript:void(0)" style="text-decoration: none;color:blue;" class="mr-1"
         (click)="singleOffset = singleOffset + singleLimit;;dataOfEachReport();" placement="bottom"
         tooltip="Load More Records...">Load More...</a>
     </span> -->
+    </div>
   </div>
 </div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header assetsHeader d-flex justify-content-end">
+        <button type="button" class="btn btn-transparent btn-close p-0" data-bs-dismiss="modal" aria-label="Close"
+          (click)="popupModelClose()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg"
+            viewBox="0 0 16 16">
+            <path
+              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <div class="tableFixHead" id="table-top-2">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col" class="text-nowrap">Asset Id</th>
+                  <th scope="col">Assets Name</th>
+                  <th scope="col">Hierarchy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let selectedAssetId of selectedAssetsRow;let i=index">
+                  <ng-container *ngFor="let asset of allAssets">
+                    <tr *ngIf="selectedAssetId === asset.asset_id">
+                      <td>{{i+1}}</td>
+                      <ng-container></ng-container>
+                      <td>{{asset.asset_id}}</td>
+                      <td>{{asset.display_name}}</td>
+                      <td>{{ asset.hierarchyString}}</td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
+
 <ng-container *ngIf="isFilterSelected">
   <!-- <h5  >Pre-generated</h5> -->
   <div class="table-responsive">
@@ -165,17 +230,20 @@
               <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' :
                 (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
 
-                <td>{{reportObj?.report_type}}</td>
+              <td>{{reportObj?.report_type}}</td>
               <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
               <!-- <td>{{reportObj.metadata?.file_size}}</td> -->
               <td>{{reportObj?.report_frequency}}</td>
               <td class="d-flex align-items-center" style="gap:5px;">
-                <em   class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj,'view')"></em>
-                <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1" class="fa fa-fw fa-edit icon-gray" tooltip="Edit" (click)="singleRecordData(reportObj,'edit')"></em>
-                <em  *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1" class="fa fa-fw fa-trash icon-gray" tooltip="Delete" (click)="singleRecordData(reportObj,'delete')"></em>
-                <em  *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1" class="fa fa-fw fa-table icon-gray" tooltip="View Reports" (click)="singleRecordData(reportObj,'trigger')"></em>
-            
+                <em class="fas fa-eye fa-fw icon-gray" tooltip="View" (click)="singleRecordData(reportObj,'view')"></em>
+                <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1" class="fa fa-fw fa-edit icon-gray"
+                  tooltip="Edit" (click)="singleRecordData(reportObj,'edit')"></em>
+                <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1" class="fa fa-fw fa-trash icon-gray"
+                  tooltip="Delete" (click)="singleRecordData(reportObj,'delete')"></em>
+                <em *ngIf=" decodedToken?.privileges?.indexOf('RSMV') > -1" class="fa fa-fw fa-table icon-gray"
+                  tooltip="View Reports" (click)="singleRecordData(reportObj,'trigger')"></em>
+
                 <!-- <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
                   (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Report"><em
                     class="fa fa-sm fa-download"></em></a>
@@ -213,9 +281,8 @@
     </div>
   </div>
   <span class="pull-right mt-1 mr-1" *ngIf="loadMoreVisibility && reportsData?.length > 0">
-    <a href="javascript:void(0)" class="mr-1"
-      (click)="prOffset = prOffset + prLimit;getReportSubscriptionData();" placement="bottom"
-      tooltip="Load More Records...">Load More...</a>
+    <a href="javascript:void(0)" class="mr-1" (click)="prOffset = prOffset + prLimit;getReportSubscriptionData();"
+      placement="bottom" tooltip="Load More Records...">Load More...</a>
   </span>
   <!-- <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
     <a href="javascript:void(0)" class="mr-1"
@@ -267,11 +334,12 @@
           <form class="" #form="ngForm">
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Name:</label>
-              <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm" id="report_name" name="report_name"
-                [(ngModel)]="reportsObj.report_name" placeholder="Enter Report Name">
-                <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
-                  Please enter valid name.
-                </div>
+              <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm"
+                id="report_name" name="report_name" [(ngModel)]="reportsObj.report_name"
+                placeholder="Enter Report Name">
+              <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
             </div>
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Asset Model:</label>
@@ -372,20 +440,20 @@
                 <option [ngValue]="undefined">Select Report Frequency</option>
                 <option [ngValue]="'Daily'">Daily</option>
                 <option [ngValue]="'Weekly'">Weekly</option>
-                <option [ngValue]="'Monthly'"  *ngIf="reportsObj.report_category === 'alert'">Monthly</option>               
+                <option [ngValue]="'Monthly'" *ngIf="reportsObj.report_category === 'alert'">Monthly</option>
               </select>
             </div>
-         
-      <div class="modal-footer fixed-bottom bg-white">
-        <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
-          (click)="onCreateNewPGReports()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
-          (click)="onCloseConfigurePGRModal()">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
+
+            <div class="modal-footer fixed-bottom bg-white">
+              <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
+                (click)="onCreateNewPGReports()">Save</button>
+              <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
+                (click)="onCloseConfigurePGRModal()">Cancel</button>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-  </div>
-</div>
     </div>
   </div>
 </div>
@@ -415,11 +483,12 @@
           <form class="" #form="ngForm">
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Name:</label>
-              <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm" id="report_name" name="u_report_name"
-                [(ngModel)]="updatePGR.report_name" placeholder="Enter Report Name" [disabled]="isViewReport">
-                <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
-                  Please enter valid name.
-                </div>
+              <input #report_name="ngModel" validateText type="text" class="form-control form-control-sm"
+                id="report_name" name="u_report_name" [(ngModel)]="updatePGR.report_name"
+                placeholder="Enter Report Name" [disabled]="isViewReport">
+              <div *ngIf="report_name.errors?.whitespace && report_name.touched" class="alert-danger">
+                Please enter valid name.
+              </div>
             </div>
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Asset Model:</label>
@@ -437,7 +506,8 @@
                   <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
                   <select *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}"
                     name="{{level}}_{{index}}" [(ngModel)]="updatePGR?.hierarchy[index]"
-                    [disabled]="contextApp.user.hierarchy[level] || isViewReport" (change)="onChangeOfHierarchy(index, 'RS')">
+                    [disabled]="contextApp.user.hierarchy[level] || isViewReport"
+                    (change)="onChangeOfHierarchy(index, 'RS')">
                     <option [ngValue]="undefined"> Select {{level}}</option>
                     <option [ngValue]="tag.key" *ngFor="let tag of hierarchyArr[index]">{{tag.name}}</option>
                   </select>
@@ -445,10 +515,10 @@
                     defaultValue="{{ contextApp.app }}" disabled />
                 </div>
               </ng-container>
-              <ng-select [disabled]="isViewReport" [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
-                [multiple]="true" bindLabel="display_name" bindValue="asset_id" [closeOnSelect]="false"
-                placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
-                [(ngModel)]="updatePGR.assets">
+              <ng-select [disabled]="isViewReport" [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false"
+                [searchable]="true" [multiple]="true" bindLabel="display_name" bindValue="asset_id"
+                [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
+                name="report-asset-dropdown" [(ngModel)]="updatePGR.assets">
                 <ng-template ng-header-tmp>
                   <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                     <li *ngIf="updatePGR?.assets?.length !== assets?.length"> <a href="javascript:void(0)"
@@ -479,8 +549,8 @@
             <ng-container *ngIf="updatePGR.report_category === 'telemetry'">
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
-                <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
+                <ng-select [disabled]="isViewReport" [items]="dropdownPropList" class="custom-dropdown w-12 sm"
+                  [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="json_key"
                   [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
                   name="asset-dropdown" [(ngModel)]="updatePGR.properties" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>
@@ -520,20 +590,20 @@
                 <option [ngValue]="undefined">Select Report Frequency</option>
                 <option [ngValue]="'Daily'">Daily</option>
                 <option [ngValue]="'Weekly'">Weekly</option>
-                <option [ngValue]="'Monthly'"  *ngIf="updatePGR.report_category === 'alert'">Monthly</option>               
+                <option [ngValue]="'Monthly'" *ngIf="updatePGR.report_category === 'alert'">Monthly</option>
               </select>
             </div>
-         
-      <div class="modal-footer fixed-bottom bg-white">
-        <button type="button" *ngIf="!isViewReport" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateReportAPILoading"
-          (click)="UpdatePGReports()">Save</button>
-        <button type="button" *ngIf="!isViewReport" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
-          (click)="UpdatePGRModal()">Cancel</button>
-        <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
+
+            <div class="modal-footer fixed-bottom bg-white">
+              <button type="button" *ngIf="!isViewReport" class="btn btn-primary add-row"
+                [disabled]="!form.valid || isCreateReportAPILoading" (click)="UpdatePGReports()">Save</button>
+              <button type="button" *ngIf="!isViewReport" class="btn btn-secondary"
+                [disabled]="isCreateReportAPILoading" (click)="UpdatePGRModal()">Cancel</button>
+              <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></em>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-  </div>
-</div>
     </div>
   </div>
 </div>

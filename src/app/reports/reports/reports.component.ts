@@ -686,7 +686,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   y1Deselect(e) {
-    if (e === [] || e.length === 0) {
+    if (e.length === 0) {
       this.props = [];
     }
   }

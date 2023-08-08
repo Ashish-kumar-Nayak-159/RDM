@@ -517,9 +517,13 @@
               <select class="form-control form-control-sm" id="template_{{i}}" name="model_type_{{i}}"
                 [(ngModel)]="file.type">
                 <option [ngValue]="undefined">Select Document Type</option>
+                <option [ngValue]="'Text'">Text</option>
                 <option [ngValue]="'PDF'">PDF</option>
                 <option [ngValue]="'Image'">Image</option>
                 <option [ngValue]="'Video'">Video</option>
+                <option [ngValue]="'Compress'">Compressed</option>
+                <option [ngValue]="'Word'">Word</option>
+                <option [ngValue]="'Excel'">Excel</option>
               </select>
             </div>
             <div class="form-group">
@@ -529,11 +533,7 @@
                 <div class="file-input form-control form-control-sm p-0 col-8">
                   <input type="file" id="file_{{i}}" class="file"
                     (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
-                    accept="{{(file.type === 'PDF' ? '.pdf' : (
-              file.type === 'Image' ? '.jpeg,.png,.svg' : (
-                file.type === 'Video' ? '.mp4,' : '*'
-              )
-            ))}}">
+                    accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpeg,.png,.svg': (file.type === 'Video'? '.mp4,.wpeg,.webm': (file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar': (file.type ==='Word'? '.doc,.docx': (file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
 
                   <label for="file_{{i}}" class="overflow-text"
                     [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : ''">
@@ -541,11 +541,7 @@
                     : 'Choose File'}}</label>
                 </div>
                 <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-                  <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
-              file.type === 'Image' ? '.jpeg,.png,.svg' : (
-                file.type === 'Video' ? '.mp4,' : '*'
-              )
-            ))}}">
+                  <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file" accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpeg,.png,.svg': (file.type === 'Video'? '.mp4,.wpeg,.webm': (file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar': (file.type ==='Word'? '.doc,.docx': (file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
                   <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
                 </div>
               </div>

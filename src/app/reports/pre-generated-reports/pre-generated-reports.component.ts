@@ -11,6 +11,7 @@ import { AssetModelService } from './../../services/asset-model/asset-model.serv
 import { AssetService } from './../../services/assets/asset.service';
 import { ToasterService } from './../../services/toaster.service';
 declare var $: any;
+declare var window:any;
 @Component({
   selector: 'app-pre-generated-reports',
   templateUrl: './pre-generated-reports.component.html',
@@ -86,7 +87,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isPGRDataLoading:boolean = false;
   showPlus:boolean = true;
   report_id:number;
-
+  assetInfoPopup:any;
+  allAssets:any;
+  allAssetsList:any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -96,12 +99,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     private fileSaverService: FileSaverService,
     private cdr: ChangeDetectorRef
   ) {}
-
+parentid=0;
   ngOnInit(): void {
+    this.allAssets=this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
     }
@@ -138,6 +141,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
       })
     );
+    this.assetInfoPopup =new window.bootstrap.Modal(document.getElementById("staticBackdrop"));
   }
 
   getReportSubscriptionData(){
@@ -447,13 +451,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   y1Deselect(e) {
-    if (e === [] || e.length === 0) {
+    if ( e.length === 0) {
       this.props = [];
     }
   }
 
   Deselect(e) {
-    if (e === [] || e.length === 0) {
+    if ( e.length === 0) {
       this.reportsObj.assets = [];
       this.updatePGR.assets = []
     }
@@ -518,7 +522,34 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
+  getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
+    let selectedHierarchy = this.actualhierarchyArr.find(r => r.level == index && r.key == hierarchyKey && r.parent_id == parentid);
+    if (selectedHierarchy) {
+      this.parentid = selectedHierarchy.id;
+      return selectedHierarchy.name;
+    }
+  }
+
   getAssets(hierarchy) {
+    if(this.allAssets.length > 0){
+      this.allAssets.forEach((asset) => {
+          // this.serializeHierarchy(asset.hierarchy);
+
+          if(asset.hierarchy){
+            asset.hierarchyString='';
+            let keys=Object.keys(asset.hierarchy);
+            this.parentid=0;
+            this.contextApp.hierarchy.levels.forEach((key, index)=>{
+              if(index != 0){
+                asset.hierarchyString+=asset.hierarchy[key] ? this.getDisplayHierarchyString(index,asset.hierarchy[key],this.parentid)+(keys[index+1] ? ' / ' : '') : '';
+              }else{
+                asset.hierarchyString+=asset.hierarchy[key] ? asset.hierarchy[key] + (keys[index+1] ? '/' : '') : '';
+              }
+            });
+                }
+      });
+    }
+    
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
@@ -919,6 +950,17 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
         $('#updatePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }
+   }
+   selectedAssetsRow=[];
+
+   popupModel(data:any,type?:string){
+    this.assetInfoPopup.show();
+    if(data){
+      this.selectedAssetsRow=data;
+    }
+   }
+   popupModelClose(){
+    this.assetInfoPopup.hide();
    }
 
    backToMain() {

@@ -8,9 +8,9 @@
 <div class="row">
     <div class="col-sm-4 pl-4 mt-3" *ngIf="filterObj">
         <div class="d-flex">
-            <app-hierarchy-dropdown #hierarchyDropdown [filterObj]="filterObj" [showAsset]="true" [assets]="assets"
-                (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy()"
-                [closeOnSelection]="true">
+            <app-hierarchy-dropdown *ngIf="assets" #hierarchyDropdown [filterObj]="filterObj" [showAsset]="true"
+                [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
+                (clearHierarchyEvent)="onClearHierarchy()" [closeOnSelection]="true">
             </app-hierarchy-dropdown>
 
             <app-date-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange"

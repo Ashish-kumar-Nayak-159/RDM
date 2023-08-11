@@ -94,12 +94,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let upTime of upTimeData?.asset_uptime_registry">
+                  <tr *ngFor="let upTime of upTimeData">
                     <td>{{upTime.from_time | date:'hh:mm a'}}</td>
                     <td>{{upTime.to_time | date:'hh:mm a'}}</td>
                   </tr>
                   <tr>
-                    <td colspan="3" *ngIf="upTimeData?.is_alltime_working">All Time Working</td>
+                    <td colspan="3" *ngIf="isWorkingAllTime">All Time Working</td>
                   </tr>
                 </tbody>
               </table>

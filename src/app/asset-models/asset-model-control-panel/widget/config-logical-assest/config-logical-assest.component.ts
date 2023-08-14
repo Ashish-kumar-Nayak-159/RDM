@@ -337,7 +337,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
     let found = true;
     let foundimg = true;
     let isInValid = this.widgetObj.properties.find(x => !x.property);
-    if (isInValid) {
+    if (isInValid && this.widgetObj.widget_type !== 'LineChart' && this.widgetObj.widget_type !== 'AreaChart' && this.widgetObj.widget_type != "NumberWithImage" && this.widgetObj.widget_type !== 'ConditionalNumber') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }

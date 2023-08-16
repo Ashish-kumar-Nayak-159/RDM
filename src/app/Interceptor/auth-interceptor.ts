@@ -57,8 +57,7 @@ export class AuthInterceptor implements HttpInterceptor {
                         if (localStorage.getItem(CONSTANTS.SELECTED_APP_DATA) !== null) {
                             let selectedApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
                             let filteredAppToken = resp.apps.filter(r => r.app === selectedApp["app"]);
-                            if(!filteredAppToken)
-                            {
+                            if (!filteredAppToken) {
                                 location.reload();
                             }
                             localStorage.setItem(CONSTANTS.APP_TOKEN, filteredAppToken[0].token);
@@ -114,7 +113,10 @@ export class AuthInterceptor implements HttpInterceptor {
                 'Contact Administrator'
             );
         }
-        else if (request.method === 'GET') {
+        else if (request.method === 'GET' && request.urlWithParams.includes('LogicalView')) {
+
+        }
+        else if (request.method === 'GET' && !request.urlWithParams.includes('LogicalView')) {
             this.toasterService.showError(error?.error?.message || error.message, '');
         }
 

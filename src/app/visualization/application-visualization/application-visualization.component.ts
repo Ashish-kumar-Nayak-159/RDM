@@ -30,7 +30,7 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   ruleCode:any;
-  docType:boolean=false;
+  docType:boolean;
   @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
@@ -886,7 +886,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    // filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
     let method;
     // this.onChangeOfAsset(filterObj.asset_id);
     const record = this.commonService.calculateEstimatedRecords(
@@ -1136,6 +1135,46 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
     //   return;
     // }
+    const fileName=files?.item(0).name;
+    let extractedFileExtension='';
+    console.log("6=",fileName.split('.').pop()?.toLowerCase());
+    if(fileName.split('.').pop()?.toLowerCase()=='webm'|| fileName.split('.').pop()?.toLowerCase()=='mp4'){
+      extractedFileExtension='Video';
+    }
+    else{
+      if(fileName.split('.').pop()?.toLowerCase()=='jpg'|| fileName.split('.').pop()?.toLowerCase()=='jpeg'|| fileName.split('.').pop()?.toLowerCase()=='png'|| fileName.split('.').pop()?.toLowerCase()=='svg'){
+        extractedFileExtension='Image';
+      }
+     else{
+        if(fileName.split('.').pop()?.toLowerCase()=='pdf'){
+          extractedFileExtension='Pdf';
+        }
+        else{
+          if(fileName.split('.').pop()?.toLowerCase()=='doc'|| fileName.split('.').pop()?.toLowerCase()=='docx'){
+            extractedFileExtension='Word';
+          }
+          else{
+            if(fileName.split('.').pop()?.toLowerCase()=='xls'|| fileName.split('.').pop()?.toLowerCase()=='xlsx'|| fileName.split('.').pop()?.toLowerCase()=='csv'){
+              extractedFileExtension='Excel';
+            }
+            else{
+              if(fileName.split('.').pop()?.toLowerCase()=='zip'|| fileName.split('.').pop()?.toLowerCase()=='rar'){
+                extractedFileExtension='Compressed';
+                }
+                else{
+                  if(fileName.split('.').pop()?.toLowerCase()=='txt'){
+                    extractedFileExtension='Text';
+                  }
+                }
+            }
+          }
+        }
+      }
+    }
+    if (extractedFileExtension?.toLowerCase() !== this.acknowledgedAlert.metadata.files[index].type?.toLowerCase()) {
+      this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+      return;
+    }
     // if file name contains single comma then 
     if(files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")){
       this.toasterService.showError("file name should not contain ' '",'Select File');
@@ -1152,7 +1191,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
     this.uploadFileType=undefined;
   } 
-  selectionChange(selectedType:any,index):void{
+  selectionChange(selectedType:any,index){
     this.selectFileType=selectedType; //dropdown file type 
     this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
     if(this.disableAckBtn===true){
@@ -1181,15 +1220,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async acknowledgeAlert() {
     this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
-        //  if(!file?.filetype?.includes(file?.type?.toLowerCase()))
-        //  {
-        //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
-        //   this.docType = true
-        //   return;
-        //  }
-        //  else{
-        //   this.docType = false
-        //  }
+         if(!file?.filetype?.includes(file?.type?.toLowerCase()))
+         {
+          this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+          this.docType = true
+          return;
+         }
+         else{
+          this.docType = false
+         }
     })
     if(!this.docType){
       await this.uploadFile();

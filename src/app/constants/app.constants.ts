@@ -2305,5 +2305,6 @@ export class CONSTANTS {
     { "label": "Auckland, Wellington (Pacific/Auckland)", "value": "+12:00" },
     { "label": "Fiji, Kamchatka, Marshall Is. (Pacific/Fiji)", "value": "+12:00" },
     { "label": "Nuku'alofa (Pacific/Tongatapu)", "value": "+13:00" }
-  ]
+  ];
+  public static DEFAULT_DATETIME_STR_FORMAT = "MMM dd, yyyy, hh:mm:ss a";
 }

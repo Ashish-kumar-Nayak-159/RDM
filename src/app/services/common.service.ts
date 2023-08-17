@@ -329,7 +329,7 @@ export class CommonService {
     return guid
   }
 
-  async uploadImageToBlob(file, folderName, containerName = undefined) {
+  async uploadImageToBlob(file, folderName,iconsize?, containerName = undefined) {
     if (!containerName) {
       containerName = environment.blobContainerName;
     }
@@ -358,10 +358,19 @@ export class CommonService {
       blobHTTPHeaders: { blobContentType: file.type },
     });
     if (response._response.status === 201) {
-      return {
-        url: containerName + '/' + encodedBlobUrl,
-        name: file.name,
-      };
+      if(iconsize && iconsize.modelOpenFlag==='mapPinIcon'){
+        return {
+          url: containerName + '/' + encodedBlobUrl,
+          name: file.name,
+          height:iconsize.height,
+          width:iconsize.width
+        };
+      }else{
+        return {
+          url: containerName + '/' + encodedBlobUrl,
+          name: file.name,
+        };
+      }
     }
     return null;
   }

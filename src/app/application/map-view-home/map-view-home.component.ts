@@ -58,6 +58,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   gameConfig: any;
   displayNameUnityModal: any;
   defaultAppName = environment.app;
+  assetModelsList:any;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) { }
 
@@ -65,6 +66,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.assetModelsList=this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Live Data' && item.visible === true) {
         this.displayicon = true;
@@ -145,6 +147,13 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         })
       );
     });
+  }
+  modifyIcon(asset:any,assetModelsList?: any[]){
+    if(asset && assetModelsList){
+      const assetModel=asset.asset_model;
+      let pinIconUrl=assetModelsList.find(modelData=>modelData.name===assetModel).mapPinIcon;
+    return pinIconUrl;
+    }
   }
 
   loadFromCache(item) {
@@ -239,15 +248,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     },
                   };
                 } else if (asset.type === this.constantData.NON_IP_ASSET) {
+                    let pinData=this.modifyIcon(asset,this.assetModelsList);
                   asset.icon = {
                     url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
                       ? this.blobURL +
                       this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
                       this.blobToken
-                      : './assets/img/legacy-assets.svg',
+                      :this.assetModelsList && pinData && pinData.url? this.blobURL +pinData.url+this.blobToken : './assets/img/legacy-assets.svg',
                     scaledSize: {
-                      width: 20,
-                      height: 20,
+                      width:this.assetModelsList && pinData && pinData.width ? pinData.width : 20,
+                      height:this.assetModelsList && pinData && pinData.height ? pinData.height : 20,
                     },
                   };
                 }

@@ -1,6 +1,6 @@
 import {
   ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector,
-  Input, OnDestroy, OnInit, ViewChild
+  Input, OnDestroy,OnChanges, OnInit, ViewChild
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as datefns from 'date-fns';
@@ -30,7 +30,7 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   ruleCode:any;
-  docType:boolean;
+  docType:boolean=false;
   @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
@@ -102,6 +102,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   headerMessage
   bodyMessage
   modalConfig
+  disableAckBtn=true;
+  selectFileType=undefined;
+  uploadFileType=undefined;
+  ackAlertType=undefined;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -1127,12 +1131,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       data: {},
     });
   }
-
   onDocumentFileSelected(files: FileList, index) {
-    if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
-      this.toasterService.showError('This file is not valid for selected document type', 'Select File');
-      return;
-    }
+    // if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+    //   return;
+    // }
     // if file name contains single comma then 
     if(files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")){
       this.toasterService.showError("file name should not contain ' '",'Select File');
@@ -1143,10 +1146,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       'file': files?.item(0),
       'index': index
     })
+    this.uploadFileType=this.acknowledgedAlert.metadata.files[index].type; // uploaded file type
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
     this.acknowledgedAlert.metadata.files[index].filetype = files?.item(0).type;
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    this.uploadFileType=undefined;
+  } 
+  selectionChange(selectedType:any,index):void{
+    this.selectFileType=selectedType; //dropdown file type 
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    if(this.disableAckBtn===true){
+      this.acknowledgedAlert.metadata.files[index].data.name='';
+    }
   }
-
   async uploadFile() {
     this.isFileUploading = true;
 
@@ -1169,15 +1181,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async acknowledgeAlert() {
     this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
-         if(!file?.filetype?.includes(file?.type?.toLowerCase()))
-         {
-          this.toasterService.showError('This file is not valid for selected document type', 'Select File');
-          this.docType = true
-          return;
-         }
-         else{
-          this.docType = false
-         }
+        //  if(!file?.filetype?.includes(file?.type?.toLowerCase()))
+        //  {
+        //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+        //   this.docType = true
+        //   return;
+        //  }
+        //  else{
+        //   this.docType = false
+        //  }
     })
     if(!this.docType){
       await this.uploadFile();
@@ -1213,7 +1225,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
               this.getLatestAlerts();
               this.closeAcknowledgementModal();
-              this.acknowledgedAlert = undefined
+              this.acknowledgedAlert = undefined;
+              this.disableAckBtn = true;
+              this.uploadFileType=undefined;
+              this.selectFileType=undefined;
     
               //this.acknowledgedAlertIndex = -1
               // this.getAlarms();
@@ -1250,6 +1265,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.latestAlerts.forEach((alert) => {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};
+          this.disableAckBtn = true;
+          this.uploadFileType=undefined;
+          this.selectFileType=undefined;
         }
       });
     }

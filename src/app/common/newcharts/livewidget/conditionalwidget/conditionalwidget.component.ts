@@ -35,7 +35,6 @@ export class ConditionalwidgetComponent implements OnInit {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
-
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
@@ -123,7 +122,7 @@ export class ConditionalwidgetComponent implements OnInit {
     let condition = this.chartConfig?.metadata?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
-        condition = condition?.replaceAll(`%${i + 1}%`, (jd.asset_id == telemetryObj.asset_id) ? telemetryObj[jd?.json_key]?.value : "");
+        condition = condition?.replaceAll(`%${i + 1}%`, (jd.asset_id == telemetryObj[jd?.json_key]?.asset_id) ? telemetryObj[jd?.json_key]?.value : "");
       });
       var actualVal = eval(condition);
       if (this.chartConfig?.metadata?.text && this.chartConfig?.metadata?.text.length > 0) {
@@ -137,7 +136,7 @@ export class ConditionalwidgetComponent implements OnInit {
       //  { return 'ON';}
       //   return 'OFF'
     } catch (err) {
-      return 'NA';
+      return this.chartConfig?.metadata?.text[1];
     }
   }
 

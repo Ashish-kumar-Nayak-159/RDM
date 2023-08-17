@@ -8,9 +8,9 @@
 <div class="row">
   <div class="col-sm-4 pl-4 mt-3">
     <div class="d-flex">
-      <app-date-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange"
-        [filterObj]="uptimeDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
-        [selectedDateRange]="selectedDateRange" [options]="datePickerOptions">
+      <app-date-range-picker class="ml-2" *ngIf="uptimeDateFilter && selectedDateRange" [filterObj]="uptimeDateFilter"
+        (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange"
+        [options]="datePickerOptions">
       </app-date-range-picker>
       <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
           (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>
@@ -94,12 +94,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let upTime of upTimeData?.asset_uptime_registry">
-                    <td>{{PlannetstartTime | date:'hh:mm a'}}</td>
-                    <td>{{PlannetendTime | date:'hh:mm a'}}</td>
+                  <tr *ngFor="let upTime of upTimeData">
+                    <td>{{upTime.from_time | date:'hh:mm a'}}</td>
+                    <td>{{upTime.to_time | date:'hh:mm a'}}</td>
                   </tr>
                   <tr>
-                    <td colspan="3" *ngIf="upTimeData?.is_alltime_working">All Time Working</td>
+                    <td colspan="3" *ngIf="isWorkingAllTime">All Time Working</td>
                   </tr>
                 </tbody>
               </table>

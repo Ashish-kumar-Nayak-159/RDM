@@ -682,6 +682,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
     fobj.app = this.contextApp.app;
     fobj.partition_key = this.filterObj?.logicalview?.assets[0]?.asset_id;
     fobj.asset_id = this.filterObj?.logicalview?.assets[0]?.asset_id;
+    fobj.type = 'LogicalView';
+
     delete fobj.assetArr;
     this.isFilterSelected = true;
     // if (environment.app === 'SopanCMS') {
@@ -790,7 +792,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
         }, 1000);
       },
-      (error) => (this.isTelemetryDataLoading = false)
+      (error) => {
+        this.isTelemetryDataLoading = false
+      }
+      // (error) => (this.isTelemetryDataLoading = false)
     )
   }
 

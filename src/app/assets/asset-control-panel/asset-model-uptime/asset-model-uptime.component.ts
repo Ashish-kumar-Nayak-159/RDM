@@ -50,6 +50,7 @@ export class AssetModelUpTimeComponent implements OnInit {
     timePicker: true,
     ranges: CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS,
   }
+  isWorkingAllTime: any;
 
   constructor(
     private toasterService: ToasterService,
@@ -194,14 +195,16 @@ export class AssetModelUpTimeComponent implements OnInit {
 
   filteredHiearchyObj() {
     this.currentOffset = 0;
+    this.currentLimit = 10;
     this.count = 0;
     this.getUptime();
+    this.upTimeHistory = [];
   }
 
   getUptime() {
 
     const custObj = {
-      offset: 0,
+      offset: this.currentOffset,
       count: this.currentLimit,
       assetId: this.asset.asset_id,
       fromdate: this.uptimeDateFilter.from_date,
@@ -214,16 +217,24 @@ export class AssetModelUpTimeComponent implements OnInit {
       this.loadMoreVisibility = true;
 
 
-      this.upTimeHistory = res?.data;
-      this.upTimeHistory.forEach(element => {
+      // this.upTimeHistory = res?.data;
+      res.data.forEach(element => {
         element.fromDateDisplay = this.commonService.convertUTCDateToLocal(element.fromDate);
       });
       this.loader = false;
-      this.count += 10;
-      this.currentLimit += 10;
-      if (this.count >= res.totalcount) {
-        this.loadMoreVisibility = false
+
+      if (res.data.length < this.currentLimit) {
+        this.loadMoreVisibility = false;
+      } else {
+        this.loadMoreVisibility = true;
       }
+      this.upTimeHistory = [...this.upTimeHistory, ...res.data]
+
+      // this.count += 10;
+      // this.currentLimit += 10;
+      // if (this.count >= res.totalcount) {
+      //   this.loadMoreVisibility = false
+      // }
 
     }, error => {
       this.loader = false;
@@ -233,22 +244,45 @@ export class AssetModelUpTimeComponent implements OnInit {
   onPopup(e) {
     this.upTimeData = null;
     this.downTimeData = null;
-    this.getAssetUptime();
+    this.getAssetUptime(e);
     this.getAssetDowntime(e);
   }
 
-  getAssetUptime() {
-    this.upTimeService.getAssetUptime(this.asset.asset_id).subscribe((res: any) => {
-      this.upTimeData = res.data;
-      res?.data?.asset_uptime_registry.forEach((item) => {
-        let dummyLocalFromtime = '2022-01-15T' + item?.from_time
-        let dummyLocalTotime = '2022-01-15T' + item?.to_time
-        let localFromDate = this.commonService.convertUTCDateToLocal(dummyLocalFromtime)
-        let localToDate = this.commonService.convertUTCDateToLocal(dummyLocalTotime)
-        this.PlannetstartTime = localFromDate
-        this.PlannetendTime = localToDate
-      })
-    })
+  getAssetUptime(e) {
+    let upTimeData = e.metaData;
+    this.upTimeData = [];
+    this.isWorkingAllTime = upTimeData.is_all_time_working;
+    console.log(e.metaData)
+    upTimeData.working_hours = upTimeData?.working_hours.map(o => ({ ...o }));
+    upTimeData?.working_hours?.forEach((item) => {
+      let dummyLocalFromtime = '2022-01-15T' + item?.from_time;
+      let dummyLocalTotime = '2022-01-15T' + item?.to_time;
+      let localFromDate = this.commonService.convertUTCDateToLocal(dummyLocalFromtime)
+      let localToDate = this.commonService.convertUTCDateToLocal(dummyLocalTotime)
+      // item.from_time = localFromDate;
+      // item.to_time = localToDate;
+      let obj = {
+        from_time: localFromDate,
+        to_time: localToDate
+      }
+      this.upTimeData.push(obj);
+    });
+
+
+
+    // this.upTimeService.getAssetUptime(this.asset.asset_id).subscribe((res: any) => {
+    //   this.upTimeData = res.data;
+    //   res?.data?.asset_uptime_registry.forEach((item) => {
+    //     let dummyLocalFromtime = '2022-01-15T' + item?.from_time
+    //     let dummyLocalTotime = '2022-01-15T' + item?.to_time
+    //     let localFromDate = this.commonService.convertUTCDateToLocal(dummyLocalFromtime)
+    //     let localToDate = this.commonService.convertUTCDateToLocal(dummyLocalTotime)
+    //     this.PlannetstartTime = localFromDate
+    //     this.PlannetendTime = localToDate
+    //     item.from_time = this.PlannetstartTime;
+    //     item.to_time = this.PlannetendTime;
+    //   })
+    // })
   }
 
   getAssetDowntime(e) {

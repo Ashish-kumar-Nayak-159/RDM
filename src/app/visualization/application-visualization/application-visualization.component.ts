@@ -1137,7 +1137,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // }
     const fileName=files?.item(0).name;
     let extractedFileExtension='';
-    console.log("6=",fileName.split('.').pop()?.toLowerCase());
     if(fileName.split('.').pop()?.toLowerCase()=='webm'|| fileName.split('.').pop()?.toLowerCase()=='mp4'){
       extractedFileExtension='Video';
     }

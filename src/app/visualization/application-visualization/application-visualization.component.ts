@@ -1158,7 +1158,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
             else{
               if(fileName.split('.').pop()?.toLowerCase()=='zip'|| fileName.split('.').pop()?.toLowerCase()=='rar'){
-                extractedFileExtension='Compressed';
+                extractedFileExtension='Compress';
                 }
                 else{
                   if(fileName.split('.').pop()?.toLowerCase()=='txt'){

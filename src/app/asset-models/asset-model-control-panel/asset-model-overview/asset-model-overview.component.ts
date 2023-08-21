@@ -7,6 +7,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-overview',
@@ -32,10 +33,14 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   updatedAssetModel: any;
   decodedToken: any;
   overviewFile: any;
+  invalid_width:boolean=false;
+  invalid_height:boolean=false;
+  scaled_image_size: FormGroup;
+  modelOpenFlag='';
   constructor(
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
-    private commonService: CommonService
+    private commonService: CommonService,private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +53,18 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
         url: CONSTANTS.DEFAULT_MODEL_IMAGE,
       };
     }
+    if (!this.assetModel.metadata?.mapPinIcon) {
+      this.assetModel.metadata.mapPinIcon = {
+        url: CONSTANTS.DEFAULT_MAP_PIN_ICON
+      };
+    }
+    this.scaled_image_size = this.fb.group({
+      file:this.fb.control (null, [Validators.required]),
+      width:this.fb.control (null, [Validators.required,Validators.min(20), Validators.max(150), Validators.pattern('[0-9]+$')]),
+      height:this.fb.control (null, [Validators.required,Validators.min(20), Validators.max(75), Validators.pattern('[0-9]+$')])
+    });
+    this.invalid_width=false;
+    this.invalid_height=false;
   }
 
   openUnfreezeModal() {
@@ -63,8 +80,9 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
 
-  openCreateAssetModelModal() {
-    this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
+  openCreateAssetModelModal(modelFlag:string) {
+      this.modelOpenFlag=modelFlag;
+      this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
     $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -89,24 +107,45 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       image.src = URL.createObjectURL(this.overviewFile);
 
       image.onload = (e: any) => {
-        const selectedImage = e.path[0] as HTMLImageElement;
+        const selectedImage = e.target as HTMLImageElement;
         if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
-          this.updatedAssetModel.metadata.image = this.overviewFile;
+          if(this.modelOpenFlag==='assetModelFlag'){
+            this.updatedAssetModel.metadata.image = this.overviewFile;
+          }else{
+            this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
+          }
         } else {
           this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
         }
       };
     }
   }
+  
+  validWidth(){  
+        this.scaled_image_size.controls['width'].value > CONSTANTS.SCALED_SIZE_IMAGE_WIDTH || this.scaled_image_size.controls['width'].value<20 ? this.invalid_width=true :this.invalid_width=false;
+  }
+  
+  validHeight(){  
+    this.scaled_image_size.controls['height'].value > CONSTANTS.SCALED_SIZE_IMAGE_HEIGHT || this.scaled_image_size.controls['height'].value<20 ? this.invalid_height=true :this.invalid_height=false;
+  }
 
   async uploadFile(): Promise<void>{
     this.isFileUploading = true;
+    const icon_size={
+      width:this.scaled_image_size.controls['width'].value,
+      height:this.scaled_image_size.controls['height'].value,
+      modelOpenFlag:this.modelOpenFlag
+    }
+
     const data = await this.commonService.uploadImageToBlob(
-      this.overviewFile,
-      this.contextApp.app + '/models/' + this.assetModel.name
+      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name,icon_size
     );
     if (data) {
-      this.updatedAssetModel.metadata.image = data;
+      if(this.modelOpenFlag==='assetModelFlag'){
+        this.updatedAssetModel.metadata.image = data;
+      }else{
+        this.updatedAssetModel.metadata.mapPinIcon = data;
+      }
       
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
@@ -125,7 +164,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Asset Model');
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model' : 'Update Map Pin Icon');
       return;
     }
     if (this.assetModel.id) {
@@ -141,18 +180,25 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
           this.isUpdateAssetsModelAPILoading = false;
           this.onCloseAssetsModelModal();
           this.assetModelService.assetModelRefreshData.emit(this.assetModel.name);
-          this.toasterService.showSuccess(response.message, 'Update Asset Model');
+            this.toasterService.showSuccess(response.message,this.modelOpenFlag==='assetModelFlag'? 'Update Asset Model' : 'Update Map Pin Icon');
+            this.overviewFile=undefined;
         },
         (error) => {
           this.isUpdateAssetsModelAPILoading = false;
-          this.toasterService.showError(error.message, 'Update Asset Model');
+            this.toasterService.showError(error.message,this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model':'Update Map Pin Icon');
         }
       )
     );
+    this.modelOpenFlag=undefined;
   }
 
   onCloseAssetsModelModal() {
     $('#createAssetModelModal').modal('hide');
+    this.modelOpenFlag=undefined;
+    this.invalid_height=false;
+    this.invalid_width=false;
+    this.scaled_image_size.reset();
+    this.overviewFile = undefined;
     // this.assetModel = undefined;
     // this.updatedAssetModel = undefined;
   }

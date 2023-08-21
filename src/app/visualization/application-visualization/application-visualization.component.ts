@@ -1,6 +1,6 @@
 import {
   ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector,
-  Input, OnDestroy, OnInit, ViewChild
+  Input, OnDestroy,OnChanges, OnInit, ViewChild
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as datefns from 'date-fns';
@@ -102,6 +102,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   headerMessage
   bodyMessage
   modalConfig
+  disableAckBtn=true;
+  selectFileType=undefined;
+  uploadFileType=undefined;
+  ackAlertType=undefined;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -882,7 +886,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    // filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
     let method;
     // this.onChangeOfAsset(filterObj.asset_id);
     const record = this.commonService.calculateEstimatedRecords(
@@ -1127,9 +1130,47 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       data: {},
     });
   }
-
   onDocumentFileSelected(files: FileList, index) {
-    if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    // if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+    //   return;
+    // }
+    const fileName=files?.item(0).name;
+    let extractedFileExtension='';
+    if(fileName.split('.').pop()?.toLowerCase()=='webm'|| fileName.split('.').pop()?.toLowerCase()=='mp4'){
+      extractedFileExtension='Video';
+    }
+    else{
+      if(fileName.split('.').pop()?.toLowerCase()=='jpg'|| fileName.split('.').pop()?.toLowerCase()=='jpeg'|| fileName.split('.').pop()?.toLowerCase()=='png'|| fileName.split('.').pop()?.toLowerCase()=='svg'){
+        extractedFileExtension='Image';
+      }
+     else{
+        if(fileName.split('.').pop()?.toLowerCase()=='pdf'){
+          extractedFileExtension='Pdf';
+        }
+        else{
+          if(fileName.split('.').pop()?.toLowerCase()=='doc'|| fileName.split('.').pop()?.toLowerCase()=='docx'){
+            extractedFileExtension='Word';
+          }
+          else{
+            if(fileName.split('.').pop()?.toLowerCase()=='xls'|| fileName.split('.').pop()?.toLowerCase()=='xlsx'|| fileName.split('.').pop()?.toLowerCase()=='csv'){
+              extractedFileExtension='Excel';
+            }
+            else{
+              if(fileName.split('.').pop()?.toLowerCase()=='zip'|| fileName.split('.').pop()?.toLowerCase()=='rar'){
+                extractedFileExtension='Compressed';
+                }
+                else{
+                  if(fileName.split('.').pop()?.toLowerCase()=='txt'){
+                    extractedFileExtension='Text';
+                  }
+                }
+            }
+          }
+        }
+      }
+    }
+    if (extractedFileExtension?.toLowerCase() !== this.acknowledgedAlert.metadata.files[index].type?.toLowerCase()) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
@@ -1143,10 +1184,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       'file': files?.item(0),
       'index': index
     })
+    this.uploadFileType=this.acknowledgedAlert.metadata.files[index].type; // uploaded file type
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
     this.acknowledgedAlert.metadata.files[index].filetype = files?.item(0).type;
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    this.uploadFileType=undefined;
+  } 
+  selectionChange(selectedType:any,index){
+    this.selectFileType=selectedType; //dropdown file type 
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    if(this.disableAckBtn===true){
+      this.acknowledgedAlert.metadata.files[index].data.name='';
+    }
   }
-
   async uploadFile() {
     this.isFileUploading = true;
 
@@ -1213,7 +1263,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
               this.getLatestAlerts();
               this.closeAcknowledgementModal();
-              this.acknowledgedAlert = undefined
+              this.acknowledgedAlert = undefined;
+              this.disableAckBtn = true;
+              this.uploadFileType=undefined;
+              this.selectFileType=undefined;
     
               //this.acknowledgedAlertIndex = -1
               // this.getAlarms();
@@ -1250,6 +1303,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.latestAlerts.forEach((alert) => {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};
+          this.disableAckBtn = true;
+          this.uploadFileType=undefined;
+          this.selectFileType=undefined;
         }
       });
     }

@@ -1130,39 +1130,36 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       data: {},
     });
   }
-  onDocumentFileSelected(files: FileList, index) {
-    // if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
-    //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
-    //   return;
-    // }
-    const fileName=files?.item(0).name;
+  extensisonValidator(fileName:any){
+    const name=fileName.split('.').pop()?.toLowerCase();
+
     let extractedFileExtension='';
-    if(fileName.split('.').pop()?.toLowerCase()=='webm'|| fileName.split('.').pop()?.toLowerCase()=='mp4'){
-      extractedFileExtension='Video';
+    if(name=='webm'|| name=='mp4'){
+      return extractedFileExtension='Video';
     }
     else{
-      if(fileName.split('.').pop()?.toLowerCase()=='jpg'|| fileName.split('.').pop()?.toLowerCase()=='jpeg'|| fileName.split('.').pop()?.toLowerCase()=='png'|| fileName.split('.').pop()?.toLowerCase()=='svg'){
-        extractedFileExtension='Image';
+      if(name=='jpg'|| name=='jpeg'|| name=='png'|| name=='svg'){
+        return extractedFileExtension='Image';
       }
      else{
-        if(fileName.split('.').pop()?.toLowerCase()=='pdf'){
-          extractedFileExtension='Pdf';
+        if(name=='pdf'){
+          return extractedFileExtension='Pdf';
         }
         else{
-          if(fileName.split('.').pop()?.toLowerCase()=='doc'|| fileName.split('.').pop()?.toLowerCase()=='docx'){
-            extractedFileExtension='Word';
+          if(name=='doc'|| name=='docx'){
+            return extractedFileExtension='Word';
           }
           else{
-            if(fileName.split('.').pop()?.toLowerCase()=='xls'|| fileName.split('.').pop()?.toLowerCase()=='xlsx'|| fileName.split('.').pop()?.toLowerCase()=='csv'){
-              extractedFileExtension='Excel';
+            if(name=='xls'|| name=='xlsx'|| name=='csv'){
+              return extractedFileExtension='Excel';
             }
             else{
-              if(fileName.split('.').pop()?.toLowerCase()=='zip'|| fileName.split('.').pop()?.toLowerCase()=='rar'){
-                extractedFileExtension='Compress';
+              if(name=='zip'|| name=='rar'){
+                return extractedFileExtension='Compress';
                 }
                 else{
-                  if(fileName.split('.').pop()?.toLowerCase()=='txt'){
-                    extractedFileExtension='Text';
+                  if(name=='txt'){
+                    return extractedFileExtension='Text';
                   }
                 }
             }
@@ -1170,6 +1167,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+  onDocumentFileSelected(files: FileList, index) {
+    // if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+    //   return;
+    // }
+    const fileName=files?.item(0).name;
+    let extractedFileExtension=this.extensisonValidator(fileName);
     if (extractedFileExtension?.toLowerCase() !== this.acknowledgedAlert.metadata.files[index].type?.toLowerCase()) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
@@ -1219,7 +1224,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async acknowledgeAlert() {
     this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
-         if(!file?.filetype?.includes(file?.type?.toLowerCase()))
+         if(!this.extensisonValidator(file.data.name)?.toLowerCase()?.includes(file?.type?.toLowerCase()))
          {
           this.toasterService.showError('This file is not valid for selected document type', 'Select File');
           this.docType = true

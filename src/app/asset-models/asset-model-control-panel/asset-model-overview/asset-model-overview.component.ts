@@ -37,6 +37,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   invalid_height:boolean=false;
   scaled_image_size: FormGroup;
   modelOpenFlag='';
+  default_pin_icon=CONSTANTS.DEFAULT_MAP_PIN_ICON;
   constructor(
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
@@ -55,7 +56,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     }
     if (!this.assetModel.metadata?.mapPinIcon) {
       this.assetModel.metadata.mapPinIcon = {
-        url: CONSTANTS.DEFAULT_MAP_PIN_ICON
+        url:CONSTANTS.DEFAULT_MAP_PIN_ICON,
       };
     }
     this.scaled_image_size = this.fb.group({
@@ -83,9 +84,13 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   openCreateAssetModelModal(modelFlag:string) {
       this.modelOpenFlag=modelFlag;
       this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
-    $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      if(this.modelOpenFlag!=='removePinIcon'){
+        $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      }else{
+        this.updatedAssetModel.metadata.mapPinIcon=undefined;
+        this.updateAssetsModel();
+      }
   }
-
   getConnectivityData() {
     this.assetModel.tags.cloud_connectivity = undefined;
     if (this.assetModel && this.assetModel.tags && this.assetModel.tags.protocol) {
@@ -101,6 +106,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
     if (this.overviewFile.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
       this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
+      this.overviewFile = undefined;
     }
     else {
       const image = new Image();
@@ -156,7 +162,9 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async updateAssetsModel() {
     //upload file
-    await this.uploadFile();
+    if(this.modelOpenFlag!=='removePinIcon'){
+      await this.uploadFile();
+    }
     this.assetModel = JSON.parse(JSON.stringify(this.updatedAssetModel));
     if (
       !this.assetModel.name ||
@@ -164,7 +172,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model' : 'Update Map Pin Icon');
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model' : 'Map Pin Icon Updated');
       return;
     }
     if (this.assetModel.id) {
@@ -180,12 +188,12 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
           this.isUpdateAssetsModelAPILoading = false;
           this.onCloseAssetsModelModal();
           this.assetModelService.assetModelRefreshData.emit(this.assetModel.name);
-            this.toasterService.showSuccess(response.message,this.modelOpenFlag==='assetModelFlag'? 'Update Asset Model' : 'Update Map Pin Icon');
+            this.toasterService.showSuccess(response.message,this.modelOpenFlag==='assetModelFlag'? 'Update Asset Model' : 'Map Pin Icon Updated');
             this.overviewFile=undefined;
         },
         (error) => {
           this.isUpdateAssetsModelAPILoading = false;
-            this.toasterService.showError(error.message,this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model':'Update Map Pin Icon');
+            this.toasterService.showError(error.message,this.modelOpenFlag==='assetModelFlag' ? 'Update Asset Model':'Map Pin Icon Updated');
         }
       )
     );

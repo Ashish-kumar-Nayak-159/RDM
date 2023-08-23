@@ -674,7 +674,7 @@ export class CONSTANTS {
       url: 'applications/:appName/uptime',
       display_name: 'UpTime History',
       icon: 'fa fa-fw fa-history',
-      visible: false,
+      visible: true,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [

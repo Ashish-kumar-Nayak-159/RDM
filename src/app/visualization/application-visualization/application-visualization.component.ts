@@ -441,10 +441,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             method.subscribe(
               (response: any) => {
                 if (response?.data) {
-                  this.alertCondition = response.data[0];
-                  if (this.alertCondition && !this.alertCondition.visualization_widgets) {
-                    this.alertCondition.visualization_widgets = [];
+                  this.alertCondition = {
+                    visualization_widgets: [],
+                    ...response.data[0],
+                    metadata: {
+                      beforeIntervalForVisualizationWidgets: 10,
+                      afterIntervalForVisualizationWidgets: 10,
+                      ...response.data[0].metadata
+                    }
                   }
+                  this.beforeInterval = this.alertCondition.metadata.beforeIntervalForVisualizationWidgets;
+                  this.afterInterval = this.alertCondition.metadata.afterIntervalForVisualizationWidgets;
                   resolve();
                 }
                 if (response.data.length === 0) {

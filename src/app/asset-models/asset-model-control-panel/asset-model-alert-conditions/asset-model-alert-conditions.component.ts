@@ -42,6 +42,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     reference_documents?: any[];
     actions?: any;
   };
+  defaultBeforeIntervalForVisualizationWidgets = 10;
+  defaultAfterIntervalForVisualizationWidgets = 10;
+  minIntervalValueForVisualizationWidgets=1;
+  maxIntervalValueForVisualizationWidgets=1440;
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
@@ -108,15 +112,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   public onClick(e) {
-    let clickedInside = this.addVisulizationWidgetDiv?.nativeElement?.contains(e.target);
-    if (!clickedInside) {
-      this.addVisualizationWidget();
-    }
-    // clickedInside = this.addUserGroupDiv?.nativeElement?.contains(e.target);
-    // if (!clickedInside) {
-    //   this.addUserGroup('push_notification');
-    // }
-    clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
+    let clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
     if (!clickedInside) {
       this.addReferenceDocument();
     }
@@ -253,11 +249,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
       }
     });
-    this.selectedWidgets = []
   }
 
-  removeVisualizationWidget(index) {
-    this.alertObj.visualization_widgets.splice(index, 1);
+  removeVisualizationWidget(item) {
+    this.selectedWidgets = this.selectedWidgets.filter((widget) => widget.title !== item);
   }
 
   addRecommendationStep() {
@@ -335,12 +330,21 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.viewType = type;
     this.toggleRows[this.selectedTab + '_' + index] = true;
     this.alertObj = this.alertConditions[index];
-    // if (type === 'Visualization') {
-    //   this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, null);
-    if (type === 'Recommendations') {
+    if (type === 'Visualization') {
+      this.alertObj = {
+        ...this.alertObj,
+        metadata: {
+          ...this.alertObj.metadata,
+          beforeIntervalForVisualizationWidgets: this.alertObj?.metadata?.beforeIntervalForVisualizationWidgets || this.defaultBeforeIntervalForVisualizationWidgets,
+          afterIntervalForVisualizationWidgets: this.alertObj?.metadata?.afterIntervalForVisualizationWidgets || this.defaultAfterIntervalForVisualizationWidgets
+        }
+      }
+      this.selectedWidgets = this.widgets.filter((widget) => this.alertObj.visualization_widgets.includes(widget.title));
+    }
+    else if (type === 'Recommendations') {
       this.recommendationObj = {};
     }
-    if (type === 'Actions') {
+    else if (type === 'Actions') {
       if (!this.alertObj.actions) {
 
         this.alertObj.actions = {
@@ -540,7 +544,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onUpdateAlertConditions() {
-    this.alertObj.metadata = this.setupForm?.value;
+    this.alertObj.metadata = {
+      ...this.alertObj?.metadata,
+      ...this.setupForm?.value
+    };
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -548,12 +555,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.alertObj.recommendations.splice(i, 1);
       }
     });
-    arr = this.alertObj.visualization_widgets;
-    arr.forEach((widget, index) => {
-      if (!widget) {
-        this.alertObj.visualization_widgets.splice(index, 1);
-      }
-    });
+    this.alertObj.visualization_widgets = this.selectedWidgets.map((widget) => widget.title);
     arr = this.alertObj.reference_documents;
     this.alertObj.reference_documents = [];
     this.documents.forEach((doc) => {

@@ -42,10 +42,11 @@
 
           <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
             <h6 class="pl-3">Map Pin Icon:
-              <img class="img-fluid"
-          src="{{blobStorageURL + (assetModel?.metadata?.mapPinIcon?.url + blobSASToken)}}" alt="" style="width:3rem;">
+              <img class="img-fluid" *ngIf="assetModel.metadata.mapPinIcon?.url  && assetModel.metadata.mapPinIcon?.url !== default_pin_icon"
+          src="{{(blobStorageURL + (assetModel?.metadata?.mapPinIcon?.url + blobSASToken))}}" alt="" style="width:3rem;">
               <a href="javascript:void(0)" (click)="openCreateAssetModelModal('mapPinIcon')"
                 class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed"><em class="fa fa-edit" ></em></a>
+              <a href="javascript:void(0)" tooltip="Remove Map Pin Icon" (click)="openCreateAssetModelModal('removePinIcon')" class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed ||assetModel.metadata.mapPinIcon?.url === default_pin_icon"><em class="fa fa-trash" ></em></a>
             </h6>
           </div>
         </div>
@@ -109,7 +110,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ modelOpenFlag==='assetModel' ? 'Change Model Image': 'Change Map Pin Icon'}} </h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{ modelOpenFlag==='assetModelFlag'   ? 'Change Model Image':'Change Map Pin Icon'}} </h5>
         <button type="button" class="close" (click)="onCloseAssetsModelModal()" aria-label="Close"
           [disabled]="isUpdateAssetsModelAPILoading">
           <span aria-hidden="true" tooltip="Close">&times;</span>
@@ -177,13 +178,13 @@
                 <div class="col-4">
                   <div class="mb-3">
                   <label for="height" class="form-label">Height:</label>
-                  <input type="number" class="form-control opacity-25"  pattern="[0-9]*" id="height" min="20" max="75" style="::placeholder { opacity: 0.7; }" placeholder="Height" tooltip="Less than equal to 75" formControlName="height" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" [class.is-invalid]=" scaled_image_size.get('height')?.invalid && scaled_image_size.get('height')?.touched || scaled_image_size.get('height')?.max || invalid_height===true" (change)="validHeight()">
+                  <input type="number" class="form-control" pattern="[0-9]*" id="height" min="20" max="75"  placeholder="Height" tooltip="Height must be between 20 to 75" formControlName="height" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" [class.is-invalid]=" scaled_image_size.get('height')?.invalid && scaled_image_size.get('height')?.touched || scaled_image_size.get('height')?.max || invalid_height===true" (change)="validHeight()">
                 </div>
                </div>
                 <div class="col-4">
                   <div class="mb-3">
                   <label for="width" class="form-label">Width:</label>
-                  <input type="number" class="form-control opacity-25" id="width" tooltip="Less than equal to 150" formControlName="width"  min="20" max="150" [class.is-invalid]="scaled_image_size.get('width')?.invalid && scaled_image_size.get('width')?.touched || scaled_image_size.get('width')?.max ||invalid_width===true" placeholder="Width" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" (change)="validWidth()">
+                  <input type="number" class="form-control " id="width" tooltip="Width must be between 20 to 150" formControlName="width"  min="20" max="150" [class.is-invalid]="scaled_image_size.get('width')?.invalid && scaled_image_size.get('width')?.touched || scaled_image_size.get('width')?.max ||invalid_width===true" placeholder="Width" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" (change)="validWidth()">
                   </div>
                 </div>
               </div>

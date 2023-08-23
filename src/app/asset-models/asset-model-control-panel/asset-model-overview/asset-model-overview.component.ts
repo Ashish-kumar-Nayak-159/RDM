@@ -91,13 +91,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
         this.updateAssetsModel();
       }
   }
-  // removeMapPinIcon(removePinIcon:string){
-    // this.modelOpenFlag=removePinIcon;
-    // this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
-    // this.updatedAssetModel.metadata.mapPinIcon='undefined';
-    // this.updateAssetsModel(); 
-  // }
-
   getConnectivityData() {
     this.assetModel.tags.cloud_connectivity = undefined;
     if (this.assetModel && this.assetModel.tags && this.assetModel.tags.protocol) {

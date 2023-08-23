@@ -112,17 +112,6 @@
                   Following {{widgetStringFromMenu}} have been defined so far.
                   You can define more.
 
-                  <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
-                    placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><em class="fa fa-plus fa-sm"></em></button> -->
-                  <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
-                    [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
-                    (click)="editWidgets()"><em class="fa fa-edit fa-sm"></em></button> -->
-                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
-                    [disabled]="isCreateAlertConditionLoading || assetModel.freezed" placement="bottom" tooltip="Save"
-                    (click)="onUpdateAlertConditions()"
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><em
-                      class="fa fa-save fa-sm"></em></button>
-                  <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></em>
 
                 </div>
 
@@ -131,6 +120,18 @@
                   <div class="form-inline">
                     <ng-container>
                         <div class="form-group" #addVisulizationWidgetDiv>
+                          <div class="form-group input-group">
+                            <input type="number" step="1" [min]=minIntervalValueForVisualizationWidgets [max]=maxIntervalValueForVisualizationWidgets id="beforeIntervalForVisualizationWidgets" name="beforeIntervalForVisualizationWidgets"
+                              class="form-control form-control-sm " [(ngModel)]="alertObj.metadata.beforeIntervalForVisualizationWidgets" style="width: 4em;">
+                            <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
+                            </div>
+                          </div>
+                          <div class="form-group input-group">
+                            <input type="number" step="1" [min]=minIntervalValueForVisualizationWidgets [max]=maxIntervalValueForVisualizationWidgets id="afterIntervalForVisualizationWidgets" name="afterIntervalForVisualizationWidgets"
+                              class="form-control form-control-sm " [(ngModel)]="alertObj.metadata.afterIntervalForVisualizationWidgets" style="width: 4em;">
+                            <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
+                            </div>
+                          </div>
                           <ng-select [items]="widgets" class="custom-dropdown w-12 sm" [searchable]="true"
                             clearSearchOnAdd="true" [multiple]="true" bindLabel="title" [closeOnSelect]="false"
                             groupBy="type" placeholder='Select {{widgetStringFromMenu}}' dropdownPosition="bottom" name="widget-dropdown1" id="template"
@@ -154,19 +155,27 @@
                           </ng-select>
                         </div>
                         <div class="form-group">
-                          <button type="button" class="addWidgetBtn btn btn-primary btn-sm  mx-2" placement="bottom" tooltip="Add"
+                          <!-- <button type="button" class="addWidgetBtn btn btn-primary btn-sm  mx-2" placement="bottom" tooltip="Add"
                             (click)="addVisualizationWidget()">
-                            <em class="fa fa-plus fa-sm"></em></button>
+                            <em class="fa fa-plus fa-sm"></em></button> -->
+                            <button type="button" class="btn btn-success btn-sm mx-1" 
+                            [disabled]="isCreateAlertConditionLoading || assetModel.freezed 
+                            || alertObj.metadata.beforeIntervalForVisualizationWidgets < minIntervalValueForVisualizationWidgets 
+                            || alertObj.metadata.beforeIntervalForVisualizationWidgets > maxIntervalValueForVisualizationWidgets 
+                            || alertObj.metadata.afterIntervalForVisualizationWidgets < minIntervalValueForVisualizationWidgets 
+                            || alertObj.metadata.afterIntervalForVisualizationWidgets > maxIntervalValueForVisualizationWidgets" 
+                            placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><em class="fa fa-save fa-sm"></em></button> 
+                             <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></em>
                         </div>
                     </ng-container>
                   </div>
                 </div>
                 <div class="col-12 my-2 accordion-padding" *ngIf="alertObj?.visualization_widgets?.length > 0">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                    <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
+                    <ng-container *ngFor="let item of selectedWidgets; let index = index">
                       <span class="tag">
-                        <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" (click)="removeVisualizationWidget(index)"
+                        <span class="tag-text">{{item.title}}</span>
+                        <button class="tag-remove" (click)="removeVisualizationWidget(item.title)"
                           *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && !assetModel.freezed"></button>
                       </span>
                     </ng-container>

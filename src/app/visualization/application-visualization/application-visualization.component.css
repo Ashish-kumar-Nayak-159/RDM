@@ -92,3 +92,8 @@ input:invalid {
   /* margin-bottom: 2px; */
 
 }
+
+.scrollable{
+  max-height:23.5rem !important;
+  overflow-y:scroll !important;
+}

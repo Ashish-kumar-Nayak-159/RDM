@@ -47,7 +47,7 @@ export class Conditions {
 }
 
 export class AlertCondition {
-    recommendations?: any[];
+    recommendation_html?: string;
     visualization_widgets?: any[];
     reference_documents?: any[];
     actions?: any;

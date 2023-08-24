@@ -26,7 +26,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     code?: string;
     severity?: string;
     created_by?: string;
-    recommendations?: any[];
+    recommendation_html?: string;
     visualization_widgets?: any[];
     reference_documents?: any[];
     actions?: any;
@@ -40,7 +40,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     severity?: string;
     created_by?: string;
     alert_type?: string;
-    recommendations?: any[];
+    recommendation_html?: string;
     visualization_widgets?: any[];
     reference_documents?: any[];
     actions?: any;
@@ -50,7 +50,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   widgets: any[] = [];
   toggleRows = {};
   viewType: string;
-  editRecommendationStep: any = {};
   editDocuments: any = {};
   assetMethods: any[] = [];
   documents: any[] = [];
@@ -242,19 +241,6 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.alertObj.visualization_widgets.splice(index, 1);
   }
 
-  addRecommendationStep() {
-    if (!this.recommendationObj.description || !this.recommendationObj.activity) {
-      this.toasterService.showError('Description and Activity is required', 'Add Recommendation Step');
-      return;
-    }
-    this.alertObj.recommendations.splice(this.alertObj.recommendations.length, 0, this.recommendationObj);
-    this.recommendationObj = {};
-  }
-
-  removeRecommendationStep(index) {
-    this.alertObj.recommendations.splice(index, 1);
-  }
-
   addReferenceDocument() {
     this.selectedDocuments.forEach(element => {
       const index = this.alertObj.reference_documents.findIndex((doc) => doc === element.name);
@@ -297,12 +283,6 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.alertObj.actions[key].recipients.splice(index, 1);
   }
 
-  editSteps() {
-    this.editRecommendationStep = {};
-    this.alertObj.recommendations.forEach((step, index) => {
-      this.editRecommendationStep[index] = true;
-    });
-  }
   removeDocument(index) {
     this.alertObj.reference_documents.splice(index, 1);
   }
@@ -310,7 +290,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   onClickOfViewActionIcon(type, index) {
     // this.getAssetModelWidgets();
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
     this.viewType = type;
     this.toggleRows[this.selectedTab + '_' + index] = true;
@@ -379,7 +358,6 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.alertObj.alert_type = this.selectedTab;
     }
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
     $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -422,18 +400,11 @@ export class AssetAlertConditionsComponent implements OnInit {
     $('#' + id).modal('hide');
     this.alertObj = undefined;
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
   }
 
   onUpdateAlertConditions() {
     let arr = [];
-    arr = this.alertObj.recommendations;
-    arr.forEach((step, i) => {
-      if (!step.description && !step.activity) {
-        this.alertObj.recommendations.splice(i, 1);
-      }
-    });
     arr = this.alertObj.visualization_widgets;
     arr.forEach((widget, index) => {
       if (!widget) {
@@ -477,7 +448,6 @@ export class AssetAlertConditionsComponent implements OnInit {
             this.onCloseAlertConditionModal();
             this.toasterService.showSuccess(response.message, 'Update Alert Condition');
             this.toggleRows = {};
-            this.editRecommendationStep = {};
             this.editDocuments = {};
           },
           (error) => {
@@ -515,7 +485,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     }
     this.isCreateAlertConditionLoading = true;
     alertObj.visualization_widgets = [];
-    alertObj.recommendations = [];
+    alertObj.recommendation_html = '';
     alertObj.reference_documents = [];
     alertObj.actions = {
       email: { enabled: false },
@@ -542,7 +512,6 @@ export class AssetAlertConditionsComponent implements OnInit {
     $('#addAlertConditionModal').modal('hide');
     this.alertObj = undefined;
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
   }
 
@@ -568,4 +537,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       }
     }
   }
+  onRecommendationChange(valuefromtextEditor: any) {
+    this.alertObj.recommendation_html = valuefromtextEditor;
+}
 }

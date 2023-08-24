@@ -288,7 +288,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         item.created_date_time = item.created_date
         item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
         if (item.last_ingestion_on!==null){
-          item.last_ingestion_on =this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
+          item.last_ingestion_on =this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
         }else{
           item.last_ingestion_on ="-";
         }
@@ -302,7 +302,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           item.connection_state = "Offline"
           item.cssclass = "offline";
           if (item.offline_since) {
-            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, "MMM dd, yyyy, HH:mm:ss aaaaa'm'");
+            item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
           }
         }
         else {

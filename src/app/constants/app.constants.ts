@@ -674,7 +674,7 @@ export class CONSTANTS {
       url: 'applications/:appName/uptime',
       display_name: 'UpTime History',
       icon: 'fa fa-fw fa-history',
-      visible: false,
+      visible: true,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [
@@ -2232,6 +2232,7 @@ export class CONSTANTS {
   public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.png';
   public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/app-media/logo.png';
   public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/asset-model-media/asset.svg';
+  public static DEFAULT_MAP_PIN_ICON = environment.blobContainerName + '/assets/img/legacy-assets.svg';
   public static METHODNAME_REGEX = /^[a-zA-Z0-9_]+$/;
   public static APP_LOGO_WIDTH = 1120;
   public static APP_LOGO_HEIGHT = 480;
@@ -2244,6 +2245,8 @@ export class CONSTANTS {
   public static ASSET_STATUS_ICON_SIZE = 1000000;
   public static ASSET_MODEL_IMAGE_WIDTH = 2000;
   public static ASSET_MODEL_IMAGE_HEIGHT = 2000;
+  public static SCALED_SIZE_IMAGE_WIDTH = 150;
+  public static SCALED_SIZE_IMAGE_HEIGHT = 75;
   public static ASSET_MODEL_IMAGE_SIZE = 2000000;
   public static DEFAULT_WHITELISTED_EXCEL_FILE = 'WhiteListedAssets_KPIX.xlsx';
   public static TIME_ZONES = [
@@ -2329,5 +2332,6 @@ export class CONSTANTS {
     { "label": "Auckland, Wellington (Pacific/Auckland)", "value": "+12:00" },
     { "label": "Fiji, Kamchatka, Marshall Is. (Pacific/Fiji)", "value": "+12:00" },
     { "label": "Nuku'alofa (Pacific/Tongatapu)", "value": "+13:00" }
-  ]
+  ];
+  public static DEFAULT_DATETIME_STR_FORMAT = "MMM dd, yyyy, hh:mm:ss a";
 }

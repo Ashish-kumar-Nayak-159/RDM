@@ -1,6 +1,6 @@
 import {
   ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector,
-  Input, OnDestroy, OnInit, ViewChild
+  Input, OnDestroy,OnChanges, OnInit, ViewChild
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as datefns from 'date-fns';
@@ -102,6 +102,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   headerMessage
   bodyMessage
   modalConfig
+  disableAckBtn=true;
+  selectFileType=undefined;
+  uploadFileType=undefined;
+  ackAlertType=undefined;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -437,10 +441,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             method.subscribe(
               (response: any) => {
                 if (response?.data) {
-                  this.alertCondition = response.data[0];
-                  if (this.alertCondition && !this.alertCondition.visualization_widgets) {
-                    this.alertCondition.visualization_widgets = [];
+                  this.alertCondition = {
+                    visualization_widgets: [],
+                    ...response.data[0],
+                    metadata: {
+                      beforeIntervalForVisualizationWidgets: 10,
+                      afterIntervalForVisualizationWidgets: 10,
+                      ...response.data[0].metadata
+                    }
                   }
+                  this.beforeInterval = this.alertCondition.metadata.beforeIntervalForVisualizationWidgets;
+                  this.afterInterval = this.alertCondition.metadata.afterIntervalForVisualizationWidgets;
                   resolve();
                 }
                 if (response.data.length === 0) {
@@ -882,7 +893,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    // filterObj.last_n_secs = filterObj.to_date - filterObj.from_date;
     let method;
     // this.onChangeOfAsset(filterObj.asset_id);
     const record = this.commonService.calculateEstimatedRecords(
@@ -1127,9 +1137,52 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       data: {},
     });
   }
+  extensisonValidator(fileName:any){
+    const name=fileName.split('.').pop()?.toLowerCase();
 
+    let extractedFileExtension='';
+    if(name=='webm'|| name=='mp4'){
+      return extractedFileExtension='Video';
+    }
+    else{
+      if(name=='jpg'|| name=='jpeg'|| name=='png'|| name=='svg'){
+        return extractedFileExtension='Image';
+      }
+     else{
+        if(name=='pdf'){
+          return extractedFileExtension='Pdf';
+        }
+        else{
+          if(name=='doc'|| name=='docx'){
+            return extractedFileExtension='Word';
+          }
+          else{
+            if(name=='xls'|| name=='xlsx'|| name=='csv'){
+              return extractedFileExtension='Excel';
+            }
+            else{
+              if(name=='zip'|| name=='rar'){
+                return extractedFileExtension='Compress';
+                }
+                else{
+                  if(name=='txt'){
+                    return extractedFileExtension='Text';
+                  }
+                }
+            }
+          }
+        }
+      }
+    }
+  }
   onDocumentFileSelected(files: FileList, index) {
-    if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    // if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+    //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+    //   return;
+    // }
+    const fileName=files?.item(0).name;
+    let extractedFileExtension=this.extensisonValidator(fileName);
+    if (extractedFileExtension?.toLowerCase() !== this.acknowledgedAlert.metadata.files[index].type?.toLowerCase()) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
@@ -1143,10 +1196,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       'file': files?.item(0),
       'index': index
     })
+    this.uploadFileType=this.acknowledgedAlert.metadata.files[index].type; // uploaded file type
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
     this.acknowledgedAlert.metadata.files[index].filetype = files?.item(0).type;
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    this.uploadFileType=undefined;
+  } 
+  selectionChange(selectedType:any,index){
+    this.selectFileType=selectedType; //dropdown file type 
+    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
+    if(this.disableAckBtn===true){
+      this.acknowledgedAlert.metadata.files[index].data.name='';
+    }
   }
-
   async uploadFile() {
     this.isFileUploading = true;
 
@@ -1169,7 +1231,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async acknowledgeAlert() {
     this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
-         if(!file?.filetype?.includes(file?.type?.toLowerCase()))
+         if(!this.extensisonValidator(file.data.name)?.toLowerCase()?.includes(file?.type?.toLowerCase()))
          {
           this.toasterService.showError('This file is not valid for selected document type', 'Select File');
           this.docType = true
@@ -1213,7 +1275,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
               this.getLatestAlerts();
               this.closeAcknowledgementModal();
-              this.acknowledgedAlert = undefined
+              this.acknowledgedAlert = undefined;
+              this.disableAckBtn = true;
+              this.uploadFileType=undefined;
+              this.selectFileType=undefined;
     
               //this.acknowledgedAlertIndex = -1
               // this.getAlarms();
@@ -1250,6 +1315,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.latestAlerts.forEach((alert) => {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};
+          this.disableAckBtn = true;
+          this.uploadFileType=undefined;
+          this.selectFileType=undefined;
         }
       });
     }

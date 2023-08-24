@@ -100,6 +100,7 @@
       </div>
       <div class="text-center py-5">
         <img class="img-fluid px-3 px-sm-2 mb-4"
+          *ngIf="assetModel?.metadata?.image?.url"
           src="{{(blobStorageURL + assetModel?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
       </div>
     </div>

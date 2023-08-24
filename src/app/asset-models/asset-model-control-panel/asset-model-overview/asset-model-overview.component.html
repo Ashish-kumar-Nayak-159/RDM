@@ -35,8 +35,18 @@
           </div>
           <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
             <h6 class="pl-3">Asset Model Image:
-              <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
+              <a href="javascript:void(0)" (click)="openCreateAssetModelModal('assetModelFlag')"
                 class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed"><em class="fa fa-edit" ></em></a>
+            </h6>
+          </div>
+
+          <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+            <h6 class="pl-3">Map Pin Icon:
+              <img class="img-fluid" *ngIf="assetModel.metadata.mapPinIcon?.url  && assetModel.metadata.mapPinIcon?.url !== default_pin_icon"
+          src="{{(blobStorageURL + (assetModel?.metadata?.mapPinIcon?.url + blobSASToken))}}" alt="" style="width:3rem;">
+              <a href="javascript:void(0)" (click)="openCreateAssetModelModal('mapPinIcon')"
+                class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed"><em class="fa fa-edit" ></em></a>
+              <a href="javascript:void(0)" tooltip="Remove Map Pin Icon" (click)="openCreateAssetModelModal('removePinIcon')" class="d-none d-sm-inline-block shadow-sm ml-2" [class.disabled]="assetModel.freezed ||assetModel.metadata.mapPinIcon?.url === default_pin_icon"><em class="fa fa-trash" ></em></a>
             </h6>
           </div>
         </div>
@@ -100,13 +110,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Change Model Image</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{ modelOpenFlag==='assetModelFlag'   ? 'Change Model Image':'Change Map Pin Icon'}} </h5>
         <button type="button" class="close" (click)="onCloseAssetsModelModal()" aria-label="Close"
           [disabled]="isUpdateAssetsModelAPILoading">
           <span aria-hidden="true" tooltip="Close">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="updatedAssetModel">
+      <div class="modal-body" *ngIf="modelOpenFlag==='assetModelFlag'">
         <form name="createAssetsModelForm">
 
           <!-- <div class="form-group">
@@ -128,8 +138,7 @@
                 <label for="file" class="overflow-text"
                   [tooltip]="(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : ''">
                   {{(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image &&
-                  updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : 'Choose
-                  File'}}</label>
+                  updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : 'Choose File'}}</label>
               </div>
               <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
                 <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file">
@@ -146,9 +155,48 @@
 
         </form>
       </div>
-      <div class="modal-footer" *ngIf="updatedAssetModel">
-        <button type="button" class="btn btn-primary add-row"
-          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="updateAssetsModel()">Save</button>
+      <!--Change Map Pin Icon -->
+      <div class="modal-body" *ngIf="modelOpenFlag==='mapPinIcon'">
+        <form name="createAssetsModelForm" [formGroup]="scaled_image_size">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Upload Map Pin Icon:</label>
+            <div class="form-group input-group row m-0">
+              <div class="file-input form-control form-control-sm p-0 col-8">
+                <input type="file" accept=".jpeg,.png,.svg,.jpg" formControlName="file" id="file" class="file"
+                  (change)="onLogoFileSelected($event.target.files)">
+                <label for="file" class="overflow-text"
+                  [tooltip]="overviewFile && overviewFile.name ? overviewFile.name : ''">
+                  {{overviewFile && overviewFile.name? overviewFile.name : 'Choose File'}}</label>
+                
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file" accept=".jpeg,.png,.svg,.jpg" formControlName="file" id="file" class="file">
+                <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
+            </div>
+              <div class="form-group input-group row mt-2 d-flex">
+                <div class="col-4">
+                  <div class="mb-3">
+                  <label for="height" class="form-label">Height:</label>
+                  <input type="number" class="form-control" pattern="[0-9]*" id="height" min="20" max="75"  placeholder="Height" tooltip="Height must be between 20 to 75" formControlName="height" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" [class.is-invalid]=" scaled_image_size.get('height')?.invalid && scaled_image_size.get('height')?.touched || scaled_image_size.get('height')?.max || invalid_height===true" (change)="validHeight()">
+                </div>
+               </div>
+                <div class="col-4">
+                  <div class="mb-3">
+                  <label for="width" class="form-label">Width:</label>
+                  <input type="number" class="form-control " id="width" tooltip="Width must be between 20 to 150" formControlName="width"  min="20" max="150" [class.is-invalid]="scaled_image_size.get('width')?.invalid && scaled_image_size.get('width')?.touched || scaled_image_size.get('width')?.max ||invalid_width===true" placeholder="Width" onkeydown="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" (change)="validWidth()">
+                  </div>
+                </div>
+              </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" *ngIf="modelOpenFlag">
+        <button type="button" *ngIf="modelOpenFlag==='assetModelFlag'" class="btn btn-primary add-row"
+          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)=" updateAssetsModel()">Save</button>
+
+          <button type="button" *ngIf="modelOpenFlag==='mapPinIcon'" class="btn btn-primary add-row"
+          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading || invalid_height===true || invalid_width===true || scaled_image_size.invalid" (click)=" updateAssetsModel()">Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading"
           (click)="onCloseAssetsModelModal()">
           Cancel

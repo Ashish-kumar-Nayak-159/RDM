@@ -322,39 +322,12 @@
         </div>
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}"
           aria-labelledby="recommendation-tab" class="tab-pane fade">
-          <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
+          <div class="ml-3 mt-3 scrollable" *ngIf="alertCondition?.recommendation_html && alertCondition?.recommendation_html !== undefined">
             <p class="ml-2">Following recommendations have been pre-configured.</p>
-            <div class="content-scroll content-scroll-alert"
-              [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-              <table class="table table-hover">
-                <thead style="display: none;">
-                  <tr>
-                    <th scope="col">Step</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Activity</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
-                    <tr *ngIf="alertCondition.recommendations.length > 0">
-
-                      <ng-container>
-                        <td style="width: 10%;">Step - {{i + 1}}</td>
-                        <td style="width: 30%;">{{step.description}}</td>
-                        <td style="width: 30%;">{{step.activity}} Activity</td>
-
-                      </ng-container>
-                    </tr>
-                    <tr *ngIf="alertCondition.recommendations.length === 0">
-                      <td colspan="4"> No Recommedation Steps added.</td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </div>
+              <div class="ml-2" [innerHTML]="alertCondition?.recommendation_html"></div>
           </div>
-          <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
+          
+          <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || !alertCondition?.recommendation_html ">
             No Recommendations added yet.
           </div>
         </div>
@@ -515,7 +488,7 @@
                 </a>
               </label>
               <select class="form-control form-control-sm" id="template_{{i}}" name="model_type_{{i}}"
-                [(ngModel)]="file.type">
+                [(ngModel)]="file.type" (ngModelChange)="selectionChange($event,i)">
                 <option [ngValue]="undefined">Select Document Type</option>
                 <option [ngValue]="'Text'">Text</option>
                 <option [ngValue]="'PDF'">PDF</option>
@@ -532,16 +505,15 @@
                 <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
                 <div class="file-input form-control form-control-sm p-0 col-8">
                   <input type="file" id="file_{{i}}" class="file"
-                    (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
-                    accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpeg,.png,.svg': (file.type === 'Video'? '.mp4,.wpeg,.webm': (file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar': (file.type ==='Word'? '.doc,.docx': (file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
+                    (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined" accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpg,.jpeg,.png,.svg':(file.type === 'Video'? '.mp4,.webm':(file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar':(file.type ==='Word'? '.doc,.docx':(file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
 
                   <label for="file_{{i}}" class="overflow-text"
-                    [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : ''">
+                    [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : 'Choose File'" >
                     {{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name
-                    : 'Choose File'}}</label>
+                    : 'Choose File'}}  </label>
                 </div>
                 <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-                  <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file" accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpeg,.png,.svg': (file.type === 'Video'? '.mp4,.wpeg,.webm': (file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar': (file.type ==='Word'? '.doc,.docx': (file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
+                  <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file" accept="{{(file.type === 'PDF'? '.pdf':(file.type === 'Image'? '.jpg,.jpeg,.png,.svg':(file.type === 'Video'? '.mp4,.webm':(file.type === 'Text'? '.txt': (file.type ==='Compress' ? '.zip,.rar':(file.type ==='Word'? '.doc,.docx':(file.type ==='Excel'? '.xls,.xlsx,.csv' : '*')))))))}}">
                   <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
                 </div>
               </div>
@@ -552,7 +524,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()"
-          [disabled]="isFileUploading">Acknowledge</button>
+          [disabled]="isFileUploading || disableAckBtn==true">Acknowledge</button>
         <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)"
           [disabled]="isFileUploading">Cancel</button>
         <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></em>
@@ -576,13 +548,17 @@
           [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" />
         <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.metadata" width="420" height="350" controls>
           <source [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" type="video/mp4">
+          <source [src]="blobStorageURL + selectedDocument.metadata.url + sasToken" type="video/webm">
         </video>
         <img *ngIf="selectedDocument.type === 'Image' && selectedDocument.data" width="420" height="350"
           [src]="blobStorageURL + selectedDocument.data.url + sasToken" />
         <video *ngIf="selectedDocument.type === 'Video' && selectedDocument.data" width="420" height="350" controls>
           <source [src]="blobStorageURL + selectedDocument.data.url + sasToken" type="video/mp4">
+          <source [src]="blobStorageURL + selectedDocument.data.url + sasToken" type="video/webm">
         </video>
         <iframe *ngIf="selectedDocument.type === 'PDF'" [src]="selectedDocument.sanitizedURL"
+          style="width: 100%;height: 80vh"></iframe>
+        <iframe *ngIf="selectedDocument.type === 'Text'" [src]="selectedDocument.sanitizedURL"
           style="width: 100%;height: 80vh"></iframe>
       </div>
       <div class="modal-footer">

@@ -24,7 +24,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     metadata?: any;
     code?: string;
     severity?: string;
-    recommendations?: any[];
+    recommendation_html?: string;
     visualization_widgets?: any[];
     reference_documents?: any[];
     actions?: any;
@@ -37,17 +37,20 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     code?: string;
     severity?: string;
     alert_type?: string;
-    recommendations?: any[];
+    recommendation_html?: string;
     visualization_widgets?: any[];
     reference_documents?: any[];
     actions?: any;
   };
+  defaultBeforeIntervalForVisualizationWidgets = 10;
+  defaultAfterIntervalForVisualizationWidgets = 10;
+  minIntervalValueForVisualizationWidgets = 1;
+  maxIntervalValueForVisualizationWidgets = 1440;
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
   toggleRows = {};
   viewType: string;
-  editRecommendationStep: any = {};
   editDocuments: any = {};
   assetMethods: any[] = [];
   documents: any[] = [];
@@ -108,15 +111,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   public onClick(e) {
-    let clickedInside = this.addVisulizationWidgetDiv?.nativeElement?.contains(e.target);
-    if (!clickedInside) {
-      this.addVisualizationWidget();
-    }
-    // clickedInside = this.addUserGroupDiv?.nativeElement?.contains(e.target);
-    // if (!clickedInside) {
-    //   this.addUserGroup('push_notification');
-    // }
-    clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
+    let clickedInside = this.documentSelectionDiv?.nativeElement?.contains(e.target);
     if (!clickedInside) {
       this.addReferenceDocument();
     }
@@ -253,24 +248,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, element.title);
       }
     });
-    this.selectedWidgets = []
   }
 
-  removeVisualizationWidget(index) {
-    this.alertObj.visualization_widgets.splice(index, 1);
-  }
-
-  addRecommendationStep() {
-    if (!this.recommendationObj.description || !this.recommendationObj.activity) {
-      this.toasterService.showError('Description and Activity is required', 'Add Recommendation Step');
-      return;
-    }
-    this.alertObj.recommendations.splice(this.alertObj.recommendations.length, 0, this.recommendationObj);
-    this.recommendationObj = {};
-  }
-
-  removeRecommendationStep(index) {
-    this.alertObj.recommendations.splice(index, 1);
+  removeVisualizationWidget(item) {
+    this.selectedWidgets = this.selectedWidgets.filter((widget) => widget.title !== item);
   }
 
   addReferenceDocument() {
@@ -316,12 +297,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.alertObj.actions[key].recipients.splice(index, 1);
   }
 
-  editSteps() {
-    this.editRecommendationStep = {};
-    this.alertObj.recommendations.forEach((step, index) => {
-      this.editRecommendationStep[index] = true;
-    });
-  }
   removeDocument(index) {
     this.alertObj.reference_documents.splice(index, 1);
   }
@@ -330,17 +305,25 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.selectedWidgets = []
     // this.getAssetModelWidgets();
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
     this.viewType = type;
     this.toggleRows[this.selectedTab + '_' + index] = true;
     this.alertObj = this.alertConditions[index];
-    // if (type === 'Visualization') {
-    //   this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, null);
-    if (type === 'Recommendations') {
+    if (type === 'Visualization') {
+      this.alertObj = {
+        ...this.alertObj,
+        metadata: {
+          ...this.alertObj.metadata,
+          beforeIntervalForVisualizationWidgets: this.alertObj?.metadata?.beforeIntervalForVisualizationWidgets || this.defaultBeforeIntervalForVisualizationWidgets,
+          afterIntervalForVisualizationWidgets: this.alertObj?.metadata?.afterIntervalForVisualizationWidgets || this.defaultAfterIntervalForVisualizationWidgets
+        }
+      }
+      this.selectedWidgets = this.widgets.filter((widget) => this.alertObj.visualization_widgets.includes(widget.title));
+    }
+    else if (type === 'Recommendations') {
       this.recommendationObj = {};
     }
-    if (type === 'Actions') {
+    else if (type === 'Actions') {
       if (!this.alertObj.actions) {
 
         this.alertObj.actions = {
@@ -443,7 +426,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.alertObj.alert_type = this.selectedTab;
     }
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
     $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -535,25 +517,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     $('#' + id).modal('hide');
     this.alertObj = undefined;
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
   }
 
   onUpdateAlertConditions() {
-    this.alertObj.metadata = this.setupForm?.value;
+    this.alertObj.metadata = {
+      ...this.alertObj?.metadata,
+      ...this.setupForm?.value
+    };
     let arr = [];
-    arr = this.alertObj.recommendations;
-    arr.forEach((step, i) => {
-      if (!step.description && !step.activity) {
-        this.alertObj.recommendations.splice(i, 1);
-      }
-    });
-    arr = this.alertObj.visualization_widgets;
-    arr.forEach((widget, index) => {
-      if (!widget) {
-        this.alertObj.visualization_widgets.splice(index, 1);
-      }
-    });
+    this.alertObj.visualization_widgets = this.selectedWidgets.map((widget) => widget.title);
     arr = this.alertObj.reference_documents;
     this.alertObj.reference_documents = [];
     this.documents.forEach((doc) => {
@@ -592,7 +565,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
             this.onCloseAlertConditionModal();
             this.toasterService.showSuccess(response.message, 'Update Alert Condition');
             this.toggleRows = {};
-            this.editRecommendationStep = {};
             this.editDocuments = {};
           },
           (error) => {
@@ -630,7 +602,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     }
     this.isCreateAlertConditionLoading = true;
     alertObj.visualization_widgets = [];
-    alertObj.recommendations = [];
+    alertObj.recommendation_html = '';
     alertObj.reference_documents = [];
     alertObj.actions = {
       email: { enabled: false },
@@ -657,7 +629,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     $('#addAlertConditionModal').modal('hide');
     this.alertObj = undefined;
     this.toggleRows = {};
-    this.editRecommendationStep = {};
     this.editDocuments = {};
     this.selectedUserGroups = {
       'email': [],
@@ -691,5 +662,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+  onRecommendationChange(valuefromtextEditor: any) {
+      this.alertObj.recommendation_html = valuefromtextEditor;
   }
 }

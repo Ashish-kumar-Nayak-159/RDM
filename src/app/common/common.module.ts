@@ -56,6 +56,8 @@ import { LivelinechartComponent } from './newcharts/livelinechart/livelinechart.
 import { NewLineChartWithoutAxisComponent } from './charts/newline-chart-without-axis/newline-chart-without-axis.component';
 import { ControlPropertiesComponent } from '../app-controlproperties/control-properties/control-properties.component';
 import { CommonTableControlPropertiesComponent } from './common-table-control-properties/common-table-control-properties/common-table-control-properties.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -101,7 +103,8 @@ import { CommonTableControlPropertiesComponent } from './common-table-control-pr
     NumberonlywidgetLogicalviewComponent,
     LivelinechartComponent,
     ControlPropertiesComponent,
-    CommonTableControlPropertiesComponent
+    CommonTableControlPropertiesComponent,
+    TextEditorComponent
   ],
   imports: [
     CommonModule,
@@ -120,7 +123,7 @@ import { CommonTableControlPropertiesComponent } from './common-table-control-pr
     BsDatepickerModule.forRoot(),
     MatIconModule,
     MatMenuModule,
-
+    AngularEditorModule
 
   ],
   exports: [
@@ -163,8 +166,8 @@ import { CommonTableControlPropertiesComponent } from './common-table-control-pr
     NumberonlywidgetLogicalviewComponent,
     LivelinechartComponent,
     ControlPropertiesComponent,
-    CommonTableControlPropertiesComponent
-
+    CommonTableControlPropertiesComponent,
+    TextEditorComponent
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],
 })

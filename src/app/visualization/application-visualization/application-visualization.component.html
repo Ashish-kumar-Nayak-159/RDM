@@ -322,39 +322,12 @@
         </div>
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}"
           aria-labelledby="recommendation-tab" class="tab-pane fade">
-          <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
+          <div class="ml-3 mt-3 scrollable" *ngIf="alertCondition?.recommendation_html && alertCondition?.recommendation_html !== undefined">
             <p class="ml-2">Following recommendations have been pre-configured.</p>
-            <div class="content-scroll content-scroll-alert"
-              [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-              <table class="table table-hover">
-                <thead style="display: none;">
-                  <tr>
-                    <th scope="col">Step</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Activity</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
-                    <tr *ngIf="alertCondition.recommendations.length > 0">
-
-                      <ng-container>
-                        <td style="width: 10%;">Step - {{i + 1}}</td>
-                        <td style="width: 30%;">{{step.description}}</td>
-                        <td style="width: 30%;">{{step.activity}} Activity</td>
-
-                      </ng-container>
-                    </tr>
-                    <tr *ngIf="alertCondition.recommendations.length === 0">
-                      <td colspan="4"> No Recommedation Steps added.</td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </div>
+              <div class="ml-2" [innerHTML]="alertCondition?.recommendation_html"></div>
           </div>
-          <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
+          
+          <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || !alertCondition?.recommendation_html ">
             No Recommendations added yet.
           </div>
         </div>

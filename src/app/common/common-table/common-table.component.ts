@@ -55,6 +55,10 @@ export class CommonTableComponent implements OnInit {
     }
   }
   onClickOfButton(data, value) {
+    if (!data.hasOwnProperty("auto_disable") || !data.hasOwnProperty("mfa_enabled")) {
+      data.auto_disable = {};
+      data.mfa_enabled = false;
+    }
     this.viewMessageEvent.emit({
       data,
       for: value,

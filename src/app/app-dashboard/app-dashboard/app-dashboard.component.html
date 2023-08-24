@@ -2,6 +2,10 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
+      <button data-toggle="modal" data-target="#exampleModal" type="submit" class="btn btn-sm searchBtn btn-primary"
+        (click)="openControlPropertiesModal()"
+        *ngIf="controlPropertybtn && decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMP') > -1 || decodedToken.privileges.indexOf('WASMP') > -1)"
+        placement="bottom" tooltip="Provision"><em class="fas fa-plus fa-sm"></em></button>
       <div class="ml-2 pt-15"
         *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry'">
         Turbo Mode:</div>
@@ -37,7 +41,7 @@
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
-    <ng-container >
+    <ng-container>
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
       </div>
@@ -208,31 +212,31 @@
 
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-          <div  *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType === 'ConditionalNumber'
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType === 'ConditionalNumber'
                   || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? widget?.widgetType === 'ConditionalNumber' ? '23%' : (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                   'margin-left':'2%', 'margin-top': '2%' }">
-                  <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
-            [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
-          </app-conditional-widget>
-            
-          
-          <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+            <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+              [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            </app-conditional-widget>
+
+
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                   || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-                [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
-                [telemetryObj]="telemetryObj">
-              </app-only-number-widget>
-              <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
-              </app-rectangle-widget>
-              <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
-              </app-cylinder-widget>
-              <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
-                [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
-              <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
-                *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
-              </app-live-line-chart>
+              [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
+              [telemetryObj]="telemetryObj">
+            </app-only-number-widget>
+            <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
+            <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
+              [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
+            <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
+              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+            </app-live-line-chart>
           </div>
         </ng-container>
       </div>
@@ -354,6 +358,8 @@
     </div> -->
   </div>
 </ng-container>
+<app-control-properties [telemetryData]="telemetryData" [filterObj]="controlpropertyassetId" [properties]="propertyList"
+  *ngIf="isOpenControlPropertiesModal"></app-control-properties>
 
 <!-- <ng-container *ngIf="selectedTab === 'alert'">
   <app-application-visualization [pageType]="'live'"></app-application-visualization>

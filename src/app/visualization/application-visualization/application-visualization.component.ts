@@ -238,7 +238,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       $('.responsive-tabs').addClass('open');
     } else {
       $('.responsive-tabs').removeClass('open');
+      if(type==='recommendation' && this.alertCondition?.recommendation_html){
+        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/<br>/g,'');
+        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/:&#160;/g,':&nbsp;');
+        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/&#160;/g,'');
     }
+  }
   }
 
   onNumberChange(event, type) {

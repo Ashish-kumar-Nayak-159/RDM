@@ -87,13 +87,13 @@ input:invalid {
   background: #f8f9fc;
   color: #000;
   position: sticky;
-  bottom: 45px;
-  padding: 1em;
+  bottom: 36px;
+  padding: .6rem;
   /* margin-bottom: 2px; */
 
 }
 
 .scrollable{
-  max-height:23.5rem !important;
-  overflow-y:scroll !important;
+  max-height:calc(100vh - 160px - 48px) !important;
+  overflow-y:auto !important;
 }

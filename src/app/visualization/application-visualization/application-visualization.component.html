@@ -322,7 +322,7 @@
         </div>
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}"
           aria-labelledby="recommendation-tab" class="tab-pane fade">
-          <div class="ml-3 mt-3 scrollable" *ngIf="alertCondition?.recommendation_html && alertCondition?.recommendation_html !== undefined">
+          <div class="ml-3 pt-3 scrollable" *ngIf="alertCondition?.recommendation_html && alertCondition?.recommendation_html !== undefined">
             <p class="ml-2">Following recommendations have been pre-configured.</p>
               <div class="ml-2" [innerHTML]="alertCondition?.recommendation_html"></div>
           </div>

@@ -13846,7 +13846,7 @@ body {
 
 .alert-scroll {
   padding: 0;
-  max-height: calc(100vh - 8rem);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
   overflow-x: auto;
 }

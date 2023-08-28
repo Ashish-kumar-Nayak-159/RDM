@@ -72,10 +72,54 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" (click)="resetData()" class="btn btn-secondary"
+                    data-dismiss="modal">Cancel</button>
+                {{!isEnteredAnyValue | json}}
+                {{!checkBoxvalue | json}}
                 <button [disabled]="!isEnteredAnyValue || !checkBoxvalue" (click)=" SyncuoCall($event)" type="button"
                     class="btn btn-primary">Sync</button>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="passwordCheckModal" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Unfreeze Model</h5>
+                <button type="button" class="close" aria-label="Close" (click)="onCloseModal('passwordCheckModal')">
+                    <span aria-hidden="true" tooltip="Close">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Please Enter your password to change Properties value.</h6>
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label required">Email:</label>
+                        <input type="text" class="form-control form-control-sm" id="email" name="email"
+                            [(ngModel)]="userData.email" placeholder="Enter Email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label required">Password:</label>
+                        <input type="{{this.isPasswordVisible ? 'text' : 'password'}}"
+                            class="form-control form-control-sm" id="display_name" name="display_name"
+                            [(ngModel)]="password" placeholder="Enter Your Password">
+                        <em class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+                            [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></em>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" [disabled]="isModelFreezeUnfreezeAPILoading"
+                    (click)="twoFactorAuth()">
+                    Update</button>
+                <button type="button" class="btn btn-white" [disabled]="isModelFreezeUnfreezeAPILoading"
+                    (click)="onCloseModal('passwordCheckModal')">
+                    Cancel
+                </button>
+                <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></em>
             </div>
         </div>
     </div>

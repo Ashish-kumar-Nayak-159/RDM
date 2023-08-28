@@ -24,7 +24,6 @@ export class CommonTableControlPropertiesComponent implements OnInit {
         this.isEnteredAnyValue = false;
         this.tableData?.map((detail) => { detail.clicked = false; detail.new_value = undefined; detail.syncUp = false; return detail });
         this.tableConfig?.data.map((detail) => {
-          console.log("dechingggg", detail)
           if (detail.type == "checkbox") {
             detail['selectCheckBoxs'] = false;
           }
@@ -35,7 +34,6 @@ export class CommonTableControlPropertiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("asdasdsada", this.lastTelemetryValue)
     this.tableData.forEach(data => {
       const defaultValue = data.json_model[data?.json_key]?.defaultValue;
       if (defaultValue !== null) {
@@ -70,7 +68,6 @@ export class CommonTableControlPropertiesComponent implements OnInit {
     if (event == true) {
       let counter = 0;
       this.tableData.forEach((detail) => {
-        console.log('1')
         if (detail.syncUp == true) {
           counter++;
           this.checkBoxValue = true;
@@ -141,8 +138,6 @@ export class CommonTableControlPropertiesComponent implements OnInit {
   }
 
   resolve(obj, path) {
-    console.log('obj', obj)
-    console.log('path', path)
     path = path.split('.');
     let current = obj;
     while (path.length) {

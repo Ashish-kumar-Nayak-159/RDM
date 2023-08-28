@@ -1232,7 +1232,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.apiSubscriptions.push(
           this.assetModelService.getAssetsModelProperties(obj).subscribe(
             (response: any) => {
-              debugger
               this.propertyList = response.properties.measured_properties
                 ? response.properties.measured_properties
                 : [];

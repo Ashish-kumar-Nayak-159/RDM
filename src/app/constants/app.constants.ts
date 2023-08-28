@@ -1915,15 +1915,15 @@ export class CONSTANTS {
     //   visible: true,
     //   isTitle: false,
     // },
-    {
-      page: 'control_property',
-      system_name: 'Control Properties',
-      url: '#asset_model_control_properties',
-      display_name: 'Control Properties',
-      icon: 'fa fa-fw fa-sun-o',
-      visible: true,
-      isTitle: false,
-    },
+    // {
+    //   page: 'control_property',
+    //   system_name: 'Control Properties',
+    //   url: '#asset_model_control_properties',
+    //   display_name: 'Control Properties',
+    //   icon: 'fa fa-fw fa-sun-o',
+    //   visible: true,
+    //   isTitle: false,
+    // },
 
     {
       page: 'c2d',

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import * as datefns from 'date-fns';
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
@@ -33,10 +35,20 @@ export class ControlPropertiesComponent implements OnInit {
   // Property to store values from select elements
   selectedValues: any[] = [];
   contextApp: any;
+  isPasswordVisible = false;
+  password: any;
+  userData: any;
+  selectedItems: any[] = []; // Declare the selectedItems array
+  isModelFreezeUnfreezeAPILoading = false;
+  subscriptions: Subscription[] = [];
+  setProperties: any;
+  checkDefaultValue: boolean = false;
 
-  constructor(private commonService: CommonService, private assetService: AssetService, private toasterService: ToasterService) { }
+  constructor(private commonService: CommonService, private assetModelService: AssetModelService,
+    private assetService: AssetService, private toasterService: ToasterService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.properties?.map((detail) => {
       detail['isSelected'] = false;
       detail['clicked'] = false;
@@ -79,12 +91,22 @@ export class ControlPropertiesComponent implements OnInit {
   }
 
   getCheckedItemList() {
+    this.selectedItems = this.controlproperties.filter(item => item.isSelected);
     this.checkedList = [];
     for (var i = 0; i < this.controlproperties.length; i++) {
       if (this.controlproperties[i].isSelected)
         this.checkedList.push(this.controlproperties[i]);
     }
+
     this.checkedList = JSON.stringify(this.checkedList);
+
+    this.selectedItems.forEach(item => {
+      const jsonKey = item.json_key;
+      if (item.json_model && item.json_model[jsonKey] && item.json_model[jsonKey].defaultValue !== undefined && item.json_model[jsonKey].defaultValue !== null) {
+        item.defaultValue = item.json_model[jsonKey].defaultValue;
+        this.isEnteredAnyValue = true;
+      }
+    });
     if (this.checkedList && JSON.parse(this.checkedList).length > 0) {
       this.checkBoxvalue = true
 
@@ -140,11 +162,9 @@ export class ControlPropertiesComponent implements OnInit {
   }
 
   SyncuoCall(event: any) {
-    if (this.selectedProperty?.hasOwnProperty('new_value') || this.selectedProperty?.length > 0) {
-      let setProperties: any = {};
-
+    if (this.selectedItems?.hasOwnProperty('new_value') || this.selectedItems?.length > 0) {
       let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.assetwiseData?.asset_id : this.selectedAssets.gateway_id) + '_' + this.commonService.generateUUID();
-      setProperties = {
+      this.setProperties = {
         "asset_id": this.assetwiseData.asset_id,
         "message": {
           "command": "write_data",
@@ -161,8 +181,8 @@ export class ControlPropertiesComponent implements OnInit {
         "sub_job_id": uniqueId + "_1",
       }
 
-      if (this.selectedProperty?.length > 0) {
-        this.selectedProperty?.forEach((detail) => {
+      if (this.selectedItems?.length > 0) {
+        this.selectedItems?.forEach((detail) => {
           if (detail?.syncUp == true && detail?.new_value?.toString().length > 0) {
             if (detail?.metadata.d != 'd') {
               if (detail.data_type == 'Number') {
@@ -178,8 +198,9 @@ export class ControlPropertiesComponent implements OnInit {
                 detail.new_value = parseFloat(detail.new_value);
               }
             }
-            setProperties['message']['properties'][detail.json_key] = detail.new_value;
           }
+          this.setProperties['message']['properties'][detail.json_key] = detail.new_value ? detail.new_value : this.selectedItems.find((propObj) => propObj.json_key == detail.json_key)?.defaultValue;
+
         })
       } else {
         if (this.selectedProperty?.new_value?.toString().length > 0) {
@@ -198,14 +219,30 @@ export class ControlPropertiesComponent implements OnInit {
               this.selectedProperty.new_value = parseFloat(this.selectedProperty.new_value);
             }
           }
-          setProperties['message']['properties'][this.selectedProperty.json_key] = this.selectedProperty.new_value;
+          this.setProperties['message']['properties'][this.selectedProperty.json_key] = this.selectedProperty.new_value ? this.selectedItems.find((propObj) => propObj.json_key == this.selectedProperty.json_key)?.defaultValue : this.selectedProperty.new_value;
         }
       }
-      const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
+
+
+      const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
       if (isEmpty) {
         this.toasterService.showError('To  Sync Control Properties select checkbox', 'Check Box Selection');
       } else {
-        this.syncControlProperties(setProperties);
+        let isMfaEnabled = false;
+        this.selectedItems.forEach(item => {
+          const matchingKey = Object.keys(item.json_model)[0]; // Assuming there's only one key
+          if (matchingKey in this.setProperties.message.properties && item.mfa_enabled) {
+            isMfaEnabled = true
+          }
+        });
+
+        if (isMfaEnabled) {
+          this.password = undefined;
+          this.isModelFreezeUnfreezeAPILoading = false;
+          $('#passwordCheckModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        } else {
+          this.syncControlProperties(this.setProperties);
+        }
       }
     }
     // debugger
@@ -231,6 +268,20 @@ export class ControlPropertiesComponent implements OnInit {
     // console.log("Checkinggggg", JSON.stringify(setProperties))
 
   }
+
+  resetData() {
+    this.properties?.map((detail) => {
+      detail['isSelected'] = false;
+      detail['clicked'] = false;
+      detail['new_value'] = undefined;
+      detail['syncUp'] = false;
+      return detail;
+    });
+    this.isEnteredAnyValue = false;
+    this.checkBoxvalue = false;
+    $('#exampleModal').modal('hide');
+
+  }
   syncControlProperties(propertyObject) {
     this.assetService
       .sendC2DMessage(
@@ -248,12 +299,51 @@ export class ControlPropertiesComponent implements OnInit {
             detail['syncUp'] = false;
             return detail;
           });
+          this.isEnteredAnyValue = false;
+          this.checkBoxvalue = false;
           $('#exampleModal').modal('hide');
 
         },
         (error) => {
+          this.isEnteredAnyValue = false;
+          this.checkBoxvalue = false;
           this.toasterService.showError(error.message, 'Sync Control Properties');
         }
       )
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
+  }
+  twoFactorAuth() {
+    if (!this.password) {
+      this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+      return;
+    }
+    this.isModelFreezeUnfreezeAPILoading = true;
+    const obj = {
+      email: this.userData.email,
+      password: this.password,
+      updated_by: this.userData.email + ' (' + this.userData.name + ')',
+    };
+    this.subscriptions.push(
+      this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.assetwiseData.asset_model, obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess('Requested properties value is updated successfully', 'Update Property Values');
+          this.isModelFreezeUnfreezeAPILoading = false;
+          this.syncControlProperties(this.setProperties);
+          this.onCloseModal('passwordCheckModal');
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Update Property Values');
+          this.isModelFreezeUnfreezeAPILoading = false;
+        }
+      )
+    );
+
   }
 }

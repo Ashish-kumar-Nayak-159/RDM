@@ -1,0 +1,36 @@
+.assetList {
+    width: 300px;
+    display: inline-block;
+}
+
+#selected_asset {
+    width: 230px;
+}
+
+.new_value {
+    padding: 7px;
+    border-radius: 5px;
+    border: 1px solid rgba(118, 118, 118, 0.3);
+    width: 160px;
+}
+
+.v-align-middle tr td {
+    vertical-align: middle;
+}
+
+.right {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 16px;
+    margin-top: 10px;
+}
+
+/* input[type='checkbox'] {
+    outline : 1px solid #000;
+} */
+.disabledinput {
+    pointer-events: none;
+    /* Disables pointer events like clicking */
+    opacity: 0.6;
+    /* Applies a faded appearance */
+}

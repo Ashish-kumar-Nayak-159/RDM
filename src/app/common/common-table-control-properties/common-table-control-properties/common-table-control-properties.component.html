@@ -1,0 +1,84 @@
+<table class="table table-hover v-align-middle">
+    <thead>
+        <tr>
+            <th *ngIf="tableConfig?.hideSerialNum != true" scope="col">No</th>
+            <ng-container *ngFor="let item of tableConfig?.data;let i = index;">
+                <th *ngIf="item.name != 'checkbox'" scope="col" class="{{item.headerClass}}">
+                    {{item.name}}
+                </th>
+                <th *ngIf="item.name == 'checkbox'" scope="col" class="{{item.headerClass}}">
+                    <input type="checkbox" #selectCheckBoxs="ngModel" [(ngModel)]="item.selectCheckBoxs"
+                        (change)="updateAllCheckBox(item.selectCheckBoxs)" />
+                </th>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngIf="tableData?.length > 0 && !isTableDataLoading && isTableFilterSelected">
+            <tr *ngFor="let data of tableData; let i = index;">
+                <td *ngIf="tableConfig?.hideSerialNum != true">{{i + 1}}</td>
+                <ng-container *ngFor="let header of tableConfig?.data">
+                    <td *ngIf="!header.isColumnHidden" class="{{header.valueClass}}">
+                        <ng-container *ngIf="header.type === 'checkbox'">
+                            <input class="form-group mb-0" type="checkbox" #syncUp="ngModel" [(ngModel)]="data.syncUp"
+                                name="syncUp" id="syncUp" (change)="updateSingleCheckBox(data.syncUp)" />
+                        </ng-container>
+                        <ng-container *ngIf="header.key === 'current_value' && lastTelemetryValue">
+                            <!-- <td>{{lastTelemetryValue[data.json_key] ? lastTelemetryValue[data.json_key] : '-' }}</td> -->
+                        </ng-container>
+                        <ng-container *ngIf="header.key === 'new_value'">
+                            <input [ngClass]="{'disabledinput': !checkBoxValue}"
+                                *ngIf="data.datatype != 'Boolean' &&  data.metadata.d != 'd' && data.data_type != 'Boolean'"
+                                maxlength="20" class="new_value" type="text" placeholder="New Value"
+                                #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"
+                                (change)="inputBoxValueChange(data,data.new_value)"
+                                [ngModel]="data.json_model[data?.json_key]?.defaultValue" />
+                            <select [ngClass]="{'disabledinput': !checkBoxValue}" placeholder="Select"
+                                *ngIf="data.datatype == 'Boolean'  || data.metadata.d == 'd' || data.data_type == 'Boolean'"
+                                class="new_value" id="selected_asset" #new_value="ngModel" [(ngModel)]="data.new_value"
+                                name="new_value" id="new_value{{i}}"
+                                (change)="inputBoxValueChange(data,data.new_value)">
+                                <option disabled [ngValue]="undefined">Select</option>
+                                <option [ngValue]="false">False</option>
+                                <option [ngValue]="true">True</option>
+                            </select>
+                        </ng-container>
+                        <ng-container *ngIf="header.type === 'text'">
+                            <span *ngIf="header.key">
+                                &nbsp;{{resolve(data,
+                                header.key)}} </span>
+                        </ng-container>
+                        <ng-container *ngIf="header.type === 'telmetry' && lastTelemetryValue">
+                            <span *ngIf="header.key">
+                                {{lastTelemetryValue[data.json_key] ? lastTelemetryValue[data.json_key] : '-' }} </span>
+                        </ng-container>
+                        <ng-container *ngIf="header.type === 'button'">
+                            <ng-container *ngFor="let btnData of header.btnData">
+                                <a [ngClass]="{'disabled' :  saveDataFlag && data.syncUp || data?.new_value?.length <= 0  }"
+                                    href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}"
+                                    (click)="onClickOfButton(data, btnData.id);data.clicked = true"
+                                    [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
+                                    <em class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
+                                        [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
+                                  (tableConfig.type === 'alert'
+                                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></em>
+                                    <span>{{btnData.text}}</span>
+                                    <em *ngIf="saveDataFlag && data.clicked == true && data?.new_value?.toString().length > 0"
+                                        class="fa fa-spinner fa-spin fa-fw"></em>
+                                </a>
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+            </tr>
+        </ng-container>
+
+    </tbody>
+</table>
+<div class="right">
+    <button [ngClass]="{'disabled' : saveDataFlag || (checkBoxValue == false && isEnteredAnyValue == false) }"
+        type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
+        Sync
+    </button>
+</div>

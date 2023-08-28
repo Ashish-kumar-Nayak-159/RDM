@@ -1,0 +1,9 @@
+<div class="table-responsive">
+    <div class="tableFixHead">
+        <app-common-table-control-properties *ngIf="properties.length > 0 && lastTelemetryValue"
+            [saveDataFlag]="isAPILoading" [isTableDataLoading]="isPropertiesLoading" [isTableFilterSelected]="true"
+            [tableData]="properties" (viewMessageEvent)="singleSyncupCall($event)"
+            [lastTelemetryValue]="lastTelemetryValue"
+            [tableConfig]="propertyTableConfig"></app-common-table-control-properties>
+    </div>
+</div>

@@ -93,7 +93,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   checkwidgettype: boolean = false;
   checkconditionaltype: boolean = false;
   checkingsmallwidget: '';
-  checkconditionalwidget: ''
+  checkconditionalwidget: '';
+  isOpenControlPropertiesModal = false;
+  controlpropertyassetId: any;
+  controlPropertybtn = false;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -619,6 +622,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
+    this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
 
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
@@ -654,9 +658,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
     if (asset_model) {
+
       this.getTelemetryMode(this.filterObj.asset.asset_id);
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
+      if (this.propertyList) {
+        this.propertyList.forEach(element => {
+          if (element?.metadata.rw == 'w' || element?.metadata.rw == 'rw') {
+            this.controlPropertybtn = true;
+          } else {
+            this.controlPropertybtn = false;
+          }
+        });
+      }
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
       await this.getLiveWidgets(asset_model);
@@ -1284,6 +1298,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         (error) => (this.isTelemetryDataLoading = false)
       )
     );
+  }
+
+  openControlPropertiesModal() {
+    this.isOpenControlPropertiesModal = true;
+
   }
 
   ngOnDestroy() {

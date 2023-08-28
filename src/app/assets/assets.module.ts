@@ -77,6 +77,7 @@ import { WhiteListAssetListComponent } from './white-list-asset/white-list-asset
 import { AssetUptimeComponent } from './asset-uptime/asset-uptime.component';
 import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module';
 import { AssetModelUpTimeComponent } from './asset-control-panel/asset-model-uptime/asset-model-uptime.component';
+import { AssetControlPropertiesComponent } from './asset-control-panel/asset-control-properties/asset-control-properties/asset-control-properties.component';
 
 @NgModule({
   declarations: [
@@ -137,6 +138,8 @@ import { AssetModelUpTimeComponent } from './asset-control-panel/asset-model-upt
     WhiteListAssetListComponent,
     AssetUptimeComponent,
     AssetModelUpTimeComponent,
+    AssetControlPropertiesComponent,
+
 
   ],
   imports: [

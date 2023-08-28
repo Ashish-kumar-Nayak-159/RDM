@@ -54,6 +54,8 @@ import { NewmodelProtocolSpecificDetailsComponent } from './newmodel-protocol-sp
 import { NumberonlywidgetLogicalviewComponent } from './newcharts/formcomponent/numberonlywidget-logicalview/numberonlywidget-logicalview.component';
 import { LivelinechartComponent } from './newcharts/livelinechart/livelinechart.component';
 import { NewLineChartWithoutAxisComponent } from './charts/newline-chart-without-axis/newline-chart-without-axis.component';
+import { ControlPropertiesComponent } from '../app-controlproperties/control-properties/control-properties.component';
+import { CommonTableControlPropertiesComponent } from './common-table-control-properties/common-table-control-properties/common-table-control-properties.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.component';
 @NgModule({
@@ -100,6 +102,8 @@ import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.
     NewmodelProtocolSpecificDetailsComponent,
     NumberonlywidgetLogicalviewComponent,
     LivelinechartComponent,
+    ControlPropertiesComponent,
+    CommonTableControlPropertiesComponent,
     TextEditorComponent
   ],
   imports: [
@@ -161,6 +165,8 @@ import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.
     NewmodelProtocolSpecificDetailsComponent,
     NumberonlywidgetLogicalviewComponent,
     LivelinechartComponent,
+    ControlPropertiesComponent,
+    CommonTableControlPropertiesComponent,
     TextEditorComponent
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],

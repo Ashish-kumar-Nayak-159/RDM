@@ -25,9 +25,9 @@
               </div>
             </div>
           </ng-container>
-          <app-hierarchy-dropdown *ngIf="!isGetAssetsAPILoading" #hierarchyDropdown [showAsset]="false" [closeOnSelection]="false"
-            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
-            (clearHierarchyEvent)="onClearHierarchy($event)">
+          <app-hierarchy-dropdown *ngIf="!isGetAssetsAPILoading" #hierarchyDropdown [showAsset]="false"
+            [closeOnSelection]="false" [filterObj]="filterObj" [assets]="assets"
+            (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
               (click)="onAssetFilterApply()"><em class="fas fa-search fa-sm"></em></button></div>
@@ -39,7 +39,8 @@
 </div>
 <div class="">
   <div id="map-container-google-1" class="z-depth-1-half map-container">
-    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle" [fitBounds]="mapFitBounds" [fullscreenControl]='true' [mapTypeControl]='true' >
+    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+      [fitBounds]="mapFitBounds" [fullscreenControl]='true' [mapTypeControl]='true'>
       <agm-marker-cluster imagePath="./assets/img/m">
         <ng-container *ngFor="let asset of mapAssets; let i = index; ">
           <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
@@ -47,7 +48,7 @@
             [iconUrl]="asset.icon">
             <agm-info-window #infowindow>
               <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
-              <div class="card border-0 border-top-1 border-primary" style="min-width:180px; max-width: 430px;" >
+              <div class="card border-0 border-top-1 border-primary" style="min-width:180px; max-width: 430px;">
                 <div class="card-header bg-white" style="padding: .75rem 1rem; border-bottom: 0; padding-bottom: 0;">
                   <strong class="mb-0 fw-bold">{{asset.display_name ? asset.display_name: asset.asset_id}}</strong>
                 </div>
@@ -56,31 +57,55 @@
 
                     <div class="col-sm-12 col-md-12">
                       <div class="d-flex" style="gap: 12px;">
-                        <a type="button" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1" style="z-index: 1;"
-                          (click)="redirectToAsset(asset)" class="text-primary d-flex align-items-center" style="gap: 6px;" >
-                          <em class="fa fa-fw fa-table me-4" title="View Control Panel" style="font-size: 15px;"></em>View Control Panel
+                        <a type="button"
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1"
+                          style="z-index: 1;" (click)="redirectToAsset(asset)"
+                          class="text-primary d-flex align-items-center" style="gap: 6px;">
+                          <em class="fa fa-fw fa-table me-4" title="View Control Panel"
+                            style="font-size: 15px;"></em>View Control Panel
                         </a>&nbsp;&nbsp;
-                        <a type="button" *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) " style="z-index: 1;"
-                          (click)="redirectToLiveData(asset)" class="text-primary d-flex align-items-center" style="gap: 6px;" >
-                          <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true" class="fa fa-chart-bar fa-fw me-4" title="{{tooltipmapicon}}" style="font-size: 15px;"></em>
-                          <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)" class="fa fa-chart-bar fa-fw me-4" title="View Historic Data"  style="font-size: 15px;"></em>Live Data
+                        <a type="button"
+                          *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) "
+                          style="z-index: 1;" (click)="redirectToLiveData(asset)"
+                          class="text-primary d-flex align-items-center" style="gap: 6px;">
+                          <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true"
+                            class="fa fa-chart-bar fa-fw me-4" title="{{tooltipmapicon}}" style="font-size: 15px;"></em>
+                          <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)"
+                            class="fa fa-chart-bar fa-fw me-4" title="View Historic Data"
+                            style="font-size: 15px;"></em>Live Data
+                        </a>&nbsp;&nbsp;
+                        <a type="button"
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1"
+                          style="z-index: 1;" (click)="redirectToControlPropertiesAsset(asset)"
+                          class="text-primary d-flex align-items-center" style="gap: 6px;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-sliders" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                              d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
+                          </svg>Control Properties
                         </a>
+
                         <div>
-                        <a *ngIf="contextApp.app==='CMS_Dev'" type="button" (click)="onSave(asset)" class="btn text-primary open-unity-card d-flex align-items-center" style="gap: 6px; font-size: 13px;" >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-unity" viewBox="0 0 16 16">
-                            <path d="M15 11.2V3.733L8.61 0v2.867l2.503 1.466c.099.067.099.2 0 .234L8.148 6.3c-.099.067-.197.033-.263 0L4.92 4.567c-.099-.034-.099-.2 0-.234l2.504-1.466V0L1 3.733V11.2v-.033.033l2.438-1.433V6.833c0-.1.131-.166.197-.133L6.6 8.433c.099.067.132.134.132.234v3.466c0 .1-.132.167-.198.134L4.031 10.8l-2.438 1.433L7.983 16l6.391-3.733-2.438-1.434L9.434 12.3c-.099.067-.198 0-.198-.133V8.7c0-.1.066-.2.132-.233l2.965-1.734c.099-.066.197 0 .197.134V9.8L15 11.2Z"/>
-                          </svg>
-                          3D Model
-                        </a>
-                      </div>
+                          <a *ngIf="contextApp.app==='CMS_Dev'" type="button" (click)="onSave(asset)"
+                            class="btn text-primary open-unity-card d-flex align-items-center"
+                            style="gap: 6px; font-size: 13px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
+                              class="bi bi-unity" viewBox="0 0 16 16">
+                              <path
+                                d="M15 11.2V3.733L8.61 0v2.867l2.503 1.466c.099.067.099.2 0 .234L8.148 6.3c-.099.067-.197.033-.263 0L4.92 4.567c-.099-.034-.099-.2 0-.234l2.504-1.466V0L1 3.733V11.2v-.033.033l2.438-1.433V6.833c0-.1.131-.166.197-.133L6.6 8.433c.099.067.132.134.132.234v3.466c0 .1-.132.167-.198.134L4.031 10.8l-2.438 1.433L7.983 16l6.391-3.733-2.438-1.434L9.434 12.3c-.099.067-.198 0-.198-.133V8.7c0-.1.066-.2.132-.233l2.965-1.734c.099-.066.197 0 .197.134V9.8L15 11.2Z" />
+                            </svg>
+                            3D Model
+                          </a>
+                        </div>
                       </div>
                     </div>
 
                     <div class="col-sm-12 col-md-12">
                       <hr>
-                      <div *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
+                      <div
+                        *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
                         <div *ngFor="let kpi of asset.map_content.data | keyvalue">
-                            <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+                          <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
                         </div>
                       </div>
                     </div>
@@ -104,8 +129,8 @@
                   </div>
                 </div>
               </div>
-  
-              
+
+
             </agm-info-window>
           </agm-marker>
         </ng-container>
@@ -117,16 +142,20 @@
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center w-100">
 
-      <h2>{{displayNameUnityModal?.display_name ? displayNameUnityModal?.display_name: displayNameUnityModal?.asset_id}}</h2>
+      <h2>{{displayNameUnityModal?.display_name ? displayNameUnityModal?.display_name: displayNameUnityModal?.asset_id}}
+      </h2>
       <button (click)="onClose()" class="pswp__button pswp__button--close animate__animated">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg close-unity-card" viewBox="0 0 16 16">
-        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-      </svg>
-    </button>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+          class="bi bi-x-lg close-unity-card" viewBox="0 0 16 16">
+          <path
+            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+        </svg>
+      </button>
     </div>
   </div>
   <div class="card-body p-0">
-    <canvas id="unity-canvas" width=960 height=600 style="width: 960px; height: 600px; background: #231F20; min-width: 100%; min-height: calc(100vh - 70px);"></canvas>
+    <canvas id="unity-canvas" width=960 height=600
+      style="width: 960px; height: 600px; background: #231F20; min-width: 100%; min-height: calc(100vh - 70px);"></canvas>
 
   </div>
 </div>

@@ -11,7 +11,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder":  "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/RDM",
             "index": "src/index.html",
@@ -42,14 +42,12 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/ng2-daterangepicker/assets/daterangepicker.css",
               "src/styles.css"
-              
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "src/assets/Build/KemsysBuild.loader.js"
-
             ],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -60,12 +58,6 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

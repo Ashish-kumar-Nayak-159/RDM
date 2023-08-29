@@ -4,7 +4,7 @@ export const environment = {
   blobAccountName: 'kpixproxstoragehot',
   blobContainerName: 'rdm-images',
   blobKey:
-    '?sp=racwdli&st=2023-08-28T04:50:56Z&se=2123-08-28T12:50:56Z&spr=https&sv=2022-11-02&sr=c&sig=qO8LjiCXCCRo0zreTuiXYnHPQ5%2B3q3EyammoGxXsAJk%3D',
+    '?sv=2022-11-02&ss=bf&srt=sco&sp=rwlacitf&se=2123-08-29T12:25:45Z&st=2023-08-29T04:25:45Z&spr=https&sig=pUigVmt%2FPjn24giQQ9OGy%2FRKfMGPwD1LXCOmI8GIV6s%3D',
   blobURL: 'https://kpixproxstoragehot.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: undefined,

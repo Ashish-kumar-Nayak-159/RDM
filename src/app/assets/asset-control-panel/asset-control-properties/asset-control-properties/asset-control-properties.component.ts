@@ -7,6 +7,7 @@ import * as datefns from 'date-fns';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Subscription } from 'rxjs';
+declare var $: any;
 
 @Component({
   selector: 'app-asset-control-properties',
@@ -25,12 +26,20 @@ export class AssetControlPropertiesComponent implements OnInit {
   apiSubscriptions: Subscription[] = [];
   filterObj: any = {};
   lastTelemetryValue: any;
+  isModelFreezeUnfreezeAPILoading = false;
+  userData: any;
+  isPasswordVisible = false;
+  password: any;
+  subscriptions: Subscription[] = [];
+  setProperties: any;
 
 
   constructor(private assetModelService: AssetModelService, private commonService: CommonService,
     private assetService: AssetService, private toasterService: ToasterService) { }
 
   async ngOnInit() {
+    console.log("Assettttt", this.asset.tags.asset_model)
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
     this.filterObj.dateOption = item.dateOption;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -75,7 +84,7 @@ export class AssetControlPropertiesComponent implements OnInit {
           valueclass: '',
         },
         {
-          name: 'Current Value',
+          name: ' Latest Telemetry Value',
           key: 'current_value',
           type: 'telmetry',
           headerClass: 'w-15',
@@ -179,11 +188,9 @@ export class AssetControlPropertiesComponent implements OnInit {
 
   singleSyncupCall(event: any) {
     if (event?.data?.hasOwnProperty('new_value') || event.length > 0) {
-      let setProperties: any = {};
 
       let uniqueId = (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) + '_' + this.commonService.generateUUID();
-
-      setProperties = {
+      this.setProperties = {
         "asset_id": this.asset.asset_id,
         "message": {
           "command": "write_data",
@@ -218,7 +225,7 @@ export class AssetControlPropertiesComponent implements OnInit {
                 detail.new_value = parseFloat(detail.new_value);
               }
             }
-            setProperties['message']['properties'][detail.json_key] = detail.new_value;
+            this.setProperties['message']['properties'][detail.json_key] = detail.new_value;
           }
         })
       } else {
@@ -238,17 +245,72 @@ export class AssetControlPropertiesComponent implements OnInit {
               event.data.new_value = parseFloat(event.data.new_value);
             }
           }
-          setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
+          this.setProperties['message']['properties'][event.data.json_key] = event.data.new_value;
         }
       }
-      const isEmpty = Object.keys(setProperties?.message?.properties).length === 0;
+      const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
       if (isEmpty) {
         this.toasterService.showError('To Sync Control Properties select checkbox', 'Check Box Selection');
       } else {
-        this.syncControlProperties(setProperties);
+        let isMfaEnabled = false;
+        event?.forEach(item => {
+          const matchingKey = Object.keys(item.json_model)[0]; // Assuming there's only one key
+          if (matchingKey in this.setProperties.message.properties && item.mfa_enabled) {
+            isMfaEnabled = true
+          }
+        });
+        if (isMfaEnabled) {
+          this.password = undefined;
+          this.isModelFreezeUnfreezeAPILoading = false;
+          $('#passwordCheckModal').modal({ backdrop: 'static', keyboard: false, show: true });
+        } else {
+          console.log("testingggg", this.setProperties)
+          this.syncControlProperties(this.setProperties);
+        }
+        // this.syncControlProperties(this.setProperties);
       }
     }
   }
+
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
+  }
+
+  twoFactorAuth() {
+    if (!this.password) {
+      this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+      return;
+    }
+    this.isModelFreezeUnfreezeAPILoading = true;
+    const obj = {
+      email: this.userData.email,
+      password: this.password,
+      updated_by: this.userData.email + ' (' + this.userData.name + ')',
+    };
+    this.subscriptions.push(
+      this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.asset.tags.asset_model, obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess('Requested properties value is updated successfully', 'Update Property Values');
+          this.isModelFreezeUnfreezeAPILoading = false;
+          setTimeout(() => {
+            this.syncControlProperties(this.setProperties);
+          }, 300);
+          this.isAPILoading = true;
+          this.onCloseModal('passwordCheckModal');
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Update Property Values');
+          this.isModelFreezeUnfreezeAPILoading = false;
+        }
+      )
+    );
+
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
 
 
   syncControlProperties(propertyObject) {

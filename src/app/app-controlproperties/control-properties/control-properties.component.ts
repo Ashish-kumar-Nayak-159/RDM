@@ -43,6 +43,7 @@ export class ControlPropertiesComponent implements OnInit {
   subscriptions: Subscription[] = [];
   setProperties: any;
   checkDefaultValue: boolean = false;
+  assetModalname: any;
 
   constructor(private commonService: CommonService, private assetModelService: AssetModelService,
     private assetService: AssetService, private toasterService: ToasterService) { }
@@ -57,7 +58,6 @@ export class ControlPropertiesComponent implements OnInit {
       return detail;
     });
     if (changes.telemetryData && changes.telemetryData?.currentValue !== changes.telemetryData.previousValue) {
-      // this.telemertyLiveData = changes?.telemetryData[changes.telemetryData.currentValue.length - 1]
       const lastObject = changes?.telemetryData.currentValue[changes?.telemetryData.currentValue.length - 1];
       this.telemertyLiveData = lastObject
     } else {
@@ -68,6 +68,7 @@ export class ControlPropertiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.assetModalname = this.filterObj?.asset?.asset_model
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
   }
 
@@ -226,7 +227,7 @@ export class ControlPropertiesComponent implements OnInit {
 
       const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
       if (isEmpty) {
-        this.toasterService.showError('To  Sync Control Properties select checkbox', 'Check Box Selection');
+        this.toasterService.showError('To  Sync Control Properties select checkbox and value', 'Check Box Selection');
       } else {
         let isMfaEnabled = false;
         this.selectedItems.forEach(item => {

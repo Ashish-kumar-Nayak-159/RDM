@@ -663,13 +663,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       if (this.propertyList) {
+        let flag = false;
         this.propertyList.forEach(element => {
           if (element?.metadata.rw == 'w' || element?.metadata.rw == 'rw') {
-            this.controlPropertybtn = true;
-          } else {
-            this.controlPropertybtn = false;
+            flag = true;
+            return;
           }
         });
+        this.controlPropertybtn = flag;
       }
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;

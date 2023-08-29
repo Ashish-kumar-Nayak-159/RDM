@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 declare var createUnityInstance: any;
 
 @Component({
@@ -61,14 +62,21 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   defaultAppName = environment.app;
   assetModelsList: any;
   properties: any = [];
+  assetModelData: any = [];
+  subscriptions: Subscription[] = [];
+
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-  constructor(private assetService: AssetService, private assetModelService: AssetModelService, private router: Router, private commonService: CommonService) { }
+  constructor(private assetService: AssetService, private assetModelService: AssetModelService, private toasterService: ToasterService,
+    private router: Router, private commonService: CommonService) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.assetModelsList = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
+    if (this.assetModelsList == undefined) {
+      await this.getAssetModelData()
+    }
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Live Data' && item.visible === true) {
         this.displayicon = true;
@@ -116,40 +124,26 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         this.mapFitBounds = false;
       }
     }, 200);
-    this.getModelPropertyByAssetID();
-
   }
 
-  async getModelPropertyByAssetID() {
-    // await this.assetModelService.getModelPropertiesByAssetsId(this.assets.asset_id).
-    //   toPromise().then((response: any) => {
-    //     response = response[0];
-    //     response.measured_properties = response.measured_properties
-    //       ? response.measured_properties
-    //       : [];
-    //     this.properties = response.measured_properties?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
-    //     response.measured_properties?.forEach((prop) => {
-    //       prop.type = 'Measured Properties'
-    //     });
-    //     response.edge_derived_properties = response.edge_derived_properties
-    //       ? response.edge_derived_properties
-    //       : [];
-    //     response.cloud_derived_properties = response.cloud_derived_properties
-    //       ? response.cloud_derived_properties
-    //       : [];
-    //     response.edge_derived_properties?.forEach((prop) => {
-    //       prop.type = 'Edge Derived Properties';
-    //       let matchCount = 0
-    //       prop.metadata?.properties?.forEach((actualProp) => {
-    //         matchCount++
-    //       })
-    //     });
-    //     response?.cloud_derived_properties?.forEach((prop) => {
-    //       prop.type = 'Cloud Derived Properties';
-    //     });
-    //   })
-
+  getAssetModelData(callFromMenu = false) {
+    this.assetModelData = [];
+    const obj = {
+      app: this.contextApp.app,
+    };
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelsList(obj).subscribe(
+        (response: any) => {
+          this.assetModelsList = response.data;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Model List');
+        }
+      )
+    );
   }
+
+
 
   showPosition = (position) => {
     this.centerLatitude = position?.coords?.latitude || this.centerLatitude;

@@ -15,8 +15,7 @@
           <em class="fa fa-times" style="color: red" *ngIf="!signalRModeValue"></em>
         </ui-switch>
       </div>
-      <div class="ml-2 pt-15"
-        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry'">
+      <div class="ml-2 pt-15" *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 ">
         Control Properties:</div>
       <button data-toggle="modal" data-target="#exampleModal" type="submit" class="btn btn-sm searchBtn btn-primary"
         (click)="openControlPropertiesModal()"

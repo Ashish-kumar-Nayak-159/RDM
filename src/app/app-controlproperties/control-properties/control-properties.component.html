@@ -74,8 +74,6 @@
             <div class="modal-footer">
                 <button type="button" (click)="resetData()" class="btn btn-secondary"
                     data-dismiss="modal">Cancel</button>
-                {{!isEnteredAnyValue | json}}
-                {{!checkBoxvalue | json}}
                 <button [disabled]="!isEnteredAnyValue || !checkBoxvalue" (click)=" SyncuoCall($event)" type="button"
                     class="btn btn-primary">Sync</button>
 

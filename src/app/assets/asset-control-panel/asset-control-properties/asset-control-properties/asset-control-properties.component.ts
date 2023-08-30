@@ -38,7 +38,6 @@ export class AssetControlPropertiesComponent implements OnInit {
     private assetService: AssetService, private toasterService: ToasterService) { }
 
   async ngOnInit() {
-    console.log("Assettttt", this.asset.tags.asset_model)
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
     this.filterObj.dateOption = item.dateOption;

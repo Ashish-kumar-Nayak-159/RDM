@@ -2,7 +2,9 @@
 <div class="blue-nav-bar">
     <div class="d-flex align-items-center">
         <div class="d-flex align-items-center">
-            <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
+            <div class="main-heading text-truncate" style="max-width: 150px;"
+                title="{{(tileData && tileData[0] ? tileData[0]?.value : '')}}">{{(tileData && tileData[0] ?
+                tileData[0]?.value : '')}}</div>
         </div>
         <div class="ml-auto">
             <div class="">

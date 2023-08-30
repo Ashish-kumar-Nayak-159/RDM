@@ -16,10 +16,10 @@
         </ui-switch>
       </div>
       <div class="ml-2 pt-15"
-        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && controlPropertybtn && telemetryData.length > 0">
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && controlPropertybtn">
         Control Properties:&nbsp;</div>
-      <button data-toggle="modal" data-target="#exampleModal" type="submit" class="btn btn-sm searchBtn btn-primary"
-        (click)="openControlPropertiesModal()"
+      <button data-toggle="modal" data-target="#exampleModal" type="submit"
+        class="btn btn-sm searchBtn btn-primary filterbtn" (click)="openControlPropertiesModal()"
         *ngIf="controlPropertybtn && decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMP') > -1 || decodedToken.privileges.indexOf('WASMP') > -1)"
         placement="bottom" tooltip="Provision"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
           fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">

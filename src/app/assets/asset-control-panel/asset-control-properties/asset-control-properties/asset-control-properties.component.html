@@ -1,12 +1,15 @@
 <div class="table-responsive">
-    <div class="tableFixHead">
-        <app-common-table-control-properties *ngIf="properties.length > 0 && lastTelemetryValue"
-            [saveDataFlag]="isAPILoading" [isTableDataLoading]="isPropertiesLoading" [isTableFilterSelected]="true"
-            [tableData]="properties" (viewMessageEvent)="singleSyncupCall($event)"
-            [lastTelemetryValue]="lastTelemetryValue"
+    <div class="tableFixHead" *ngIf="properties.length > 0">
+        <app-common-table-control-properties *ngIf="properties.length > 0" [saveDataFlag]="isAPILoading"
+            [isTableDataLoading]="isPropertiesLoading" [isTableFilterSelected]="true" [tableData]="properties"
+            (viewMessageEvent)="singleSyncupCall($event)" [lastTelemetryValue]="lastTelemetryValue"
             [tableConfig]="propertyTableConfig"></app-common-table-control-properties>
     </div>
+    <div class="noData" *ngIf="properties.length == 0">
+        No Control Properties data found
+    </div>
 </div>
+
 
 <div class="modal fade" id="passwordCheckModal" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered" role="document">

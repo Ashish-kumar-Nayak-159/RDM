@@ -681,7 +681,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.isTelemetryLoading = false;
           resolve();
         },
-        (error) => (this.isTelemetryLoading = false)
+        (error) => {
+          this.isTelemetryLoading = false
+          this.toasterService.showError(error.message, 'Report');
+        }
       );
       this.subscriptions.push(this.reportsFetchDataSubscription);
     });

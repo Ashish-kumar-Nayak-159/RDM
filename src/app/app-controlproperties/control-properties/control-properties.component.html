@@ -37,8 +37,8 @@
                                 </div>
                             </td>
                             <td>{{property?.name}}</td>
-                            <td *ngIf="telemertyLiveData">{{telemertyLiveData[property?.json_key]?.value}}
-                            </td>
+                            <td *ngIf="telemertyLiveData">{{ telemertyLiveData[property?.json_key]?.value }}</td>
+                            <td *ngIf="!telemertyLiveData">-</td>
                             <input *ngIf="property?.datatype != 'Boolean' &&  property?.metadata.d != 'd'"
                                 maxlength="20" class="form-control my-2 mx-auto" type="text" placeholder="New Value"
                                 [(ngModel)]="property.new_value" name="new_value" id="new_value{{i}}"

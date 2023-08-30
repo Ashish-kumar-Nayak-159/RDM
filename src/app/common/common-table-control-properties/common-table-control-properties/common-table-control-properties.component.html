@@ -48,9 +48,10 @@
                                 &nbsp;{{resolve(data,
                                 header.key)}} </span>
                         </ng-container>
-                        <ng-container *ngIf="header.type === 'telmetry' && lastTelemetryValue">
-                            <span *ngIf="header.key">
-                                {{lastTelemetryValue[data.json_key] ? lastTelemetryValue[data.json_key] : '-' }} </span>
+                        <ng-container *ngIf="header.type === 'telmetry'">
+                            <span *ngIf=" header.key">
+                                {{lastTelemetryValue?.[data.json_key] ? lastTelemetryValue?.[data.json_key] : '-' }}
+                            </span>
                         </ng-container>
                         <ng-container *ngIf="header.type === 'button'">
                             <ng-container *ngFor="let btnData of header.btnData">

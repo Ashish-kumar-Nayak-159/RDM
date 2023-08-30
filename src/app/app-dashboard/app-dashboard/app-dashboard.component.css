@@ -1,6 +1,6 @@
 .contain-pad-dashboard {
   margin-top: 2.5rem;
-  max-height: calc(100vh - 12rem)!important;
+  max-height: calc(100vh - 12rem) !important;
 }
 
 .red-box {
@@ -33,13 +33,15 @@
   gap: 5px;
   padding: 0 5px;
   margin-bottom: 20px;
-  }
-  .smallnumber-widget-class{
-    max-width: calc(100%/12 - 5px);
-  
-
-    /* margin-top: 2px !important; */
 }
+
+.smallnumber-widget-class {
+  max-width: calc(100%/12 - 5px);
+
+
+  /* margin-top: 2px !important; */
+}
+
 .smallnumber-widget-class-overflowhidden {
   /* height: 70vh; */
   overflow-x: hidden !important;
@@ -47,8 +49,20 @@
   width: 100%;
 }
 
-.conditional-widget-class{
- width: 23% !important;
- margin-top: 2%;
- margin-left: 2%;
+.conditional-widget-class {
+  width: 23% !important;
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.filterbtn {
+  font-size: 0.875rem;
+  padding: 0.1rem 0.5rem;
+  margin-left: 4px;
+
+}
+
+.filterbtn svg {
+  position: relative;
+  top: -2px;
 }

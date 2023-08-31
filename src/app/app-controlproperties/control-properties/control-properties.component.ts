@@ -68,7 +68,7 @@ export class ControlPropertiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.assetModalname = this.filterObj?.asset?.asset_model
+    this.assetModalname = this.filterObj?.asset?.display_name
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
   }
 
@@ -274,7 +274,7 @@ export class ControlPropertiesComponent implements OnInit {
     this.properties?.map((detail) => {
       detail['isSelected'] = false;
       detail['clicked'] = false;
-      detail['new_value'] = undefined;
+      detail['new_value'] = null;
       detail['syncUp'] = false;
       return detail;
     });
@@ -296,7 +296,7 @@ export class ControlPropertiesComponent implements OnInit {
           this.properties?.map((detail) => {
             detail['isSelected'] = false;
             detail['clicked'] = false;
-            detail['new_value'] = undefined;
+            detail['new_value'] = null;
             detail['syncUp'] = false;
             return detail;
           });

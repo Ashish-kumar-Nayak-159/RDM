@@ -665,7 +665,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.propertyList) {
         let flag = false;
         this.propertyList.forEach(element => {
-          if (element?.metadata.rw == 'w' || element?.metadata.rw == 'rw') {
+          if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
             flag = true;
             return;
           }

@@ -64,13 +64,13 @@ export class ControlPropertiesComponent implements OnInit {
     //   this.telemertyLiveData = this.telemetryData
     // }
     this.assetwiseData = this.filterObj.asset
+    this.assetModalname = this.filterObj?.asset?.display_name
     this.controlproperties = this.properties
       ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
     this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
   }
 
   ngOnInit(): void {
-    this.assetModalname = this.filterObj?.asset?.display_name
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
   }
 
@@ -294,7 +294,7 @@ export class ControlPropertiesComponent implements OnInit {
   }
 
   resetData() {
-    this.properties?.map((detail) => {
+    this.controlproperties?.map((detail) => {
       detail['isSelected'] = false;
       detail['clicked'] = false;
       detail['new_value'] = null;
@@ -316,7 +316,7 @@ export class ControlPropertiesComponent implements OnInit {
       .subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Sync Control Properties');
-          this.properties?.map((detail) => {
+          this.controlproperties?.map((detail) => {
             detail['isSelected'] = false;
             detail['clicked'] = false;
             detail['new_value'] = null;
@@ -352,10 +352,11 @@ export class ControlPropertiesComponent implements OnInit {
     const obj = {
       email: this.userData.email,
       password: this.password,
-      updated_by: this.userData.email + ' (' + this.userData.name + ')',
+      app: environment.app
     };
+
     this.subscriptions.push(
-      this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.assetwiseData.asset_model, obj).subscribe(
+      this.commonService.loginUser(obj).subscribe(
         (response: any) => {
           this.toasterService.showSuccess('Requested properties value is updated successfully', 'Update Property Values');
           this.isModelFreezeUnfreezeAPILoading = false;

@@ -7,6 +7,7 @@ import * as datefns from 'date-fns';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 declare var $: any;
 
 @Component({
@@ -32,7 +33,7 @@ export class AssetControlPropertiesComponent implements OnInit {
   password: any;
   subscriptions: Subscription[] = [];
   setProperties: any;
-  assetName: any
+  assetName: any;
 
 
   constructor(private assetModelService: AssetModelService, private commonService: CommonService,
@@ -285,16 +286,16 @@ export class AssetControlPropertiesComponent implements OnInit {
     const obj = {
       email: this.userData.email,
       password: this.password,
-      updated_by: this.userData.email + ' (' + this.userData.name + ')',
+      app: environment.app
     };
     this.subscriptions.push(
-      this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.asset.tags.asset_model, obj).subscribe(
+      this.commonService.loginUser(obj).subscribe(
         (response: any) => {
           this.toasterService.showSuccess('Requested properties value is updated successfully', 'Update Property Values');
           this.isModelFreezeUnfreezeAPILoading = false;
           setTimeout(() => {
             this.syncControlProperties(this.setProperties);
-          }, 300);
+          }, 200);
           this.isAPILoading = true;
           this.onCloseModal('passwordCheckModal');
         },

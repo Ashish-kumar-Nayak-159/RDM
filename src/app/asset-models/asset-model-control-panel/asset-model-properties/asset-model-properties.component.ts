@@ -200,7 +200,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   getAssetsModelProperties() {
-    // this.properties = {};
+    this.properties = {};
     this.dependentProperties = [];
     this.dependentProperty = [];
     this.isPropertiesLoading = true;

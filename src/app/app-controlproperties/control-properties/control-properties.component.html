@@ -37,26 +37,30 @@
                                 </div>
                             </td>
                             <td>{{property?.name}}</td>
-                            <td *ngIf="telemertyLiveData">{{ telemertyLiveData[property?.json_key]?.value }}</td>
-                            <td *ngIf="!telemertyLiveData">-</td>
-                            <input *ngIf="property?.datatype != 'Boolean' &&  property?.metadata.d != 'd'"
+                            <td *ngIf="telemetryData">{{
+                                telemetryData[property?.json_key] }}</td>
+                            <td *ngIf="!telemetryData">-</td>
+                            <input
+                                *ngIf="property?.data_type != 'Boolean' &&  property?.metadata.d != 'd' && property?.data_type != 'Boolean'"
                                 maxlength="20" class="form-control my-2 mx-auto" type="text" placeholder="New Value"
                                 [(ngModel)]="property.new_value" name="new_value" id="new_value{{i}}"
                                 [ngModel]="property.json_model[property?.json_key]?.defaultValue"
                                 (change)="inputBoxValueChange(property,property.new_value)" style="max-width: 150px;" />
                             <select placeholder="Select"
-                                *ngIf="property?.datatype == 'Boolean'  || property?.metadata.d == 'd'"
-                                [(ngModel)]="property.new_value" name="new_value" id="new_value{{i}}"
-                                class="form-control my-2 mx-auto" style="max-width: 150px;" id="selected_asset"
-                                (change)="inputBoxValueChange(property,property.new_value)"
-                                [(ngModel)]="property.new_value" name="new_value">
-                                <option [ngValue]="undefined">Select</option>
+                                *ngIf="property?.data_type == 'Boolean'  || property?.metadata.d == 'd' || property?.data_type == 'Boolean'"
+                                id="new_value{{i}}" class="form-control my-2 mx-auto" style="max-width: 150px;"
+                                id="selected_asset" (change)="inputBoxValueChange(property,property.new_value)"
+                                [(ngModel)]="property.new_value">
+                                <option disabled [ngValue]="null">Select</option>
                                 <option [ngValue]="false">False</option>
                                 <option [ngValue]="true">True</option>
+
                             </select>
                             <!-- <td>New Record</td> -->
                             <td>
-                                <p title="{{property?.name}}" class="mb-0">
+                                <p title="{{property?.auto_disable.disable_interval_in_sec ? 'Auto Revert - ' +
+                                    property?.auto_disable.disable_interval_in_sec + ' (sec)' : property?.name }}"
+                                    class="mb-0" style="cursor: pointer;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle" viewBox="0 0 16 16">
                                         <path

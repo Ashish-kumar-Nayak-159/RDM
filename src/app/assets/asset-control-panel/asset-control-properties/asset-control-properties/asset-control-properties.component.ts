@@ -32,6 +32,7 @@ export class AssetControlPropertiesComponent implements OnInit {
   password: any;
   subscriptions: Subscription[] = [];
   setProperties: any;
+  assetName: any
 
 
   constructor(private assetModelService: AssetModelService, private commonService: CommonService,
@@ -41,6 +42,7 @@ export class AssetControlPropertiesComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
     this.filterObj.dateOption = item.dateOption;
+    this.assetName = this.asset?.tags?.display_name;
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.setUpPropertyData();
   }
@@ -263,7 +265,6 @@ export class AssetControlPropertiesComponent implements OnInit {
           this.isModelFreezeUnfreezeAPILoading = false;
           $('#passwordCheckModal').modal({ backdrop: 'static', keyboard: false, show: true });
         } else {
-          console.log("testingggg", this.setProperties)
           this.syncControlProperties(this.setProperties);
         }
         // this.syncControlProperties(this.setProperties);

@@ -367,8 +367,8 @@
     </div> -->
   </div>
 </ng-container>
-<app-control-properties [telemetryData]="telemetryData" [filterObj]="controlpropertyassetId" [properties]="propertyList"
-  *ngIf="isOpenControlPropertiesModal"></app-control-properties>
+<app-control-properties [telemetryData]="signalRControlTelemetry" [filterObj]="controlpropertyassetId"
+  [properties]="propertyList" *ngIf="isOpenControlPropertiesModal"></app-control-properties>
 
 <!-- <ng-container *ngIf="selectedTab === 'alert'">
   <app-application-visualization [pageType]="'live'"></app-application-visualization>

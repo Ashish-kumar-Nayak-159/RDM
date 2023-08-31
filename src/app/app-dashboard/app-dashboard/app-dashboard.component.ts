@@ -97,6 +97,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isOpenControlPropertiesModal = false;
   controlpropertyassetId: any;
   controlPropertybtn = false;
+  signalRControlTelemetry: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -665,7 +666,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.propertyList) {
         let flag = false;
         this.propertyList.forEach(element => {
-          if (element?.metadata.rw == 'w' || element?.metadata.rw == 'rw') {
+          if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
             flag = true;
             return;
           }
@@ -776,6 +777,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
         }
+        this.signalRControlTelemetry = JSON.parse(JSON.stringify(data));
         this.processTelemetryData(data);
         this.isTelemetryDataLoading = false;
       }
@@ -785,6 +787,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response?.message) {
+            if (this.signalRControlTelemetry == undefined) {
+              this.signalRControlTelemetry = response?.message;
+            }
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};

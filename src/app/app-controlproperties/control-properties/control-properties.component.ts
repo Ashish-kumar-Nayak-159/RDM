@@ -57,14 +57,16 @@ export class ControlPropertiesComponent implements OnInit {
       detail['syncUp'] = false;
       return detail;
     });
-    if (changes.telemetryData && changes.telemetryData?.currentValue !== changes.telemetryData.previousValue) {
-      const lastObject = changes?.telemetryData.currentValue[changes?.telemetryData.currentValue.length - 1];
-      this.telemertyLiveData = lastObject
-    } else {
-      this.telemertyLiveData = this.telemetryData[0]
-    }
+    // if (changes.telemetryData && changes.telemetryData?.currentValue !== changes.telemetryData.previousValue) {
+    //   const lastObject = changes?.telemetryData.currentValue[changes?.telemetryData.currentValue.length - 1];
+    //   this.telemertyLiveData = lastObject
+    // } else {
+    //   this.telemertyLiveData = this.telemetryData
+    // }
     this.assetwiseData = this.filterObj.asset
-    this.controlproperties = this.properties?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+    this.controlproperties = this.properties
+      ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+    this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
   }
 
   ngOnInit(): void {
@@ -79,6 +81,14 @@ export class ControlPropertiesComponent implements OnInit {
     }
     this.selectedProperty = this.controlproperties;
     this.getCheckedItemList();
+  }
+
+  getMeasuredTelemetryValue(telemetryObj: any, properties: any[], jsonKey: string) {
+    const propObj = properties.find(p => p.json_key === jsonKey);
+    if (!propObj) return undefined;
+    if (propObj.type === "Measured Properies") {
+      return telemetryObj["m"][jsonKey];
+    }
   }
 
   isAllSelected(property: any) {
@@ -105,6 +115,10 @@ export class ControlPropertiesComponent implements OnInit {
       const jsonKey = item.json_key;
       if (item.json_model && item.json_model[jsonKey] && item.json_model[jsonKey].defaultValue !== undefined && item.json_model[jsonKey].defaultValue !== null) {
         item.defaultValue = item.json_model[jsonKey].defaultValue;
+        // this.properties?.map((property) => {
+        //   property['new_value'] = item.defaultValue;
+        //   return property;
+        // });
         this.isEnteredAnyValue = true;
       }
     });
@@ -123,8 +137,12 @@ export class ControlPropertiesComponent implements OnInit {
       if (data.metadata.sd) {
         if (detail.id == data.id) {
           if (data.metadata.sd == 1 || data.metadata.sd == 7) {
-            detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi, "");
-            value = value?.replace(/[^0-9-+]+/gi, "");
+            if (typeof detail.new_value === 'string') {
+              detail.new_value = detail.new_value.replace(/[^0-9-+]+/gi, "");
+            }
+            if (typeof value === 'string') {
+              value = value.replace(/[^0-9-+]+/gi, "");
+            }
           }
           if (data.metadata.sd == 2 || data.metadata.sd == 8) {
             detail.new_value = detail?.new_value?.replace(/[^0-9]+/gi, "");
@@ -138,9 +156,14 @@ export class ControlPropertiesComponent implements OnInit {
             detail.new_value = detail?.new_value?.replace(/[^0-9-+.]+/gi, "");
             value = value?.replace(/[^0-9-+.]+/gi, "");
           }
-          if (detail?.new_value?.toString()?.length > 0) {
+          if (detail?.new_value !== null && detail?.new_value !== undefined) {
             this.isEnteredAnyValue = true;
+            // new_value has a value
+            // You can further process it here
           }
+          // if (detail?.new_value?.length > 0) {
+          //   this.isEnteredAnyValue = true;
+          // }
         }
       } else {
         if (data.metadata.d != 'd') {
@@ -200,7 +223,7 @@ export class ControlPropertiesComponent implements OnInit {
               }
             }
           }
-          this.setProperties['message']['properties'][detail.json_key] = detail.new_value ? detail.new_value : this.selectedItems.find((propObj) => propObj.json_key == detail.json_key)?.defaultValue;
+          this.setProperties['message']['properties'][detail.json_key] = detail.new_value != undefined && detail.new_value.toString().length > 0 ? detail.new_value : this.selectedItems.find((propObj) => propObj.json_key == detail.json_key)?.defaultValue;
 
         })
       } else {

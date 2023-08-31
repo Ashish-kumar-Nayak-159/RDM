@@ -26,6 +26,8 @@ export class CommonTableControlPropertiesComponent implements OnInit {
         this.tableConfig?.data.map((detail) => {
           if (detail.type == "checkbox") {
             detail['selectCheckBoxs'] = false;
+            this.checkBoxValue = false;
+
           }
           return detail;
         });

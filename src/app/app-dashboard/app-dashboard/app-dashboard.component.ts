@@ -98,6 +98,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   controlpropertyassetId: any;
   controlPropertybtn = false;
   signalRControlTelemetry: any;
+  lastTelemetryValueControl: any
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -227,6 +228,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFilterSelected = false;
     this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
     this.frequency = undefined;
+    this.controlPropertybtn = false;
   }
 
   onChangeOfAsset() {
@@ -788,9 +790,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response?.message) {
-            if (this.signalRControlTelemetry == undefined) {
-              this.signalRControlTelemetry = response?.message;
-            }
+            this.lastTelemetryValueControl = response?.message;
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};

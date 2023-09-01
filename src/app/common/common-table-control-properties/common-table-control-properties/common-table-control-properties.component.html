@@ -78,8 +78,8 @@
     </tbody>
 </table>
 <div class="right">
-    <button [ngClass]="{'disabled' : saveDataFlag || (checkBoxValue == false && isEnteredAnyValue == false) }"
-        type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
+    <button [disabled]="(checkBoxValue == false && isEnteredAnyValue == false)" type="button"
+        class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
         Sync
     </button>
 </div>

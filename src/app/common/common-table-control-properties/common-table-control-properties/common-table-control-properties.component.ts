@@ -103,12 +103,13 @@ export class CommonTableControlPropertiesComponent implements OnInit {
     this.tableData?.map((detail) => {
       if (data.metadata.sd) {
         if (detail.id == data.id) {
+
           if (data.metadata.sd == 1 || data.metadata.sd == 7) {
             if (typeof detail.new_value === 'string') {
-              detail.new_value = detail.new_value.replace(/[^0-9-+]+/gi, "");
+              detail.new_value = detail.new_value.replace(/[^0-9.]+/gi, "");
             }
             if (typeof value === 'string') {
-              value = value.replace(/[^0-9-+]+/gi, "");
+              value = value.replace(/[^0-9.]+/gi, "");
             }
           }
           if (data.metadata.sd == 2 || data.metadata.sd == 8) {

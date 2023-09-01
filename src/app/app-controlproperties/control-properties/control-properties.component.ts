@@ -18,6 +18,7 @@ export class ControlPropertiesComponent implements OnInit {
   @Input() properties;
   @Input() filterObj;
   @Input() telemetryData: any;
+  @Input() lastTelemetryValueControl: any;
   telemertyLiveData: any
   assetwiseData: any;
   controlproperties: any;
@@ -138,10 +139,10 @@ export class ControlPropertiesComponent implements OnInit {
         if (detail.id == data.id) {
           if (data.metadata.sd == 1 || data.metadata.sd == 7) {
             if (typeof detail.new_value === 'string') {
-              detail.new_value = detail.new_value.replace(/[^0-9-+]+/gi, "");
+              detail.new_value = detail.new_value.replace(/[^0-9.]+/gi, "");
             }
             if (typeof value === 'string') {
-              value = value.replace(/[^0-9-+]+/gi, "");
+              value = value.replace(/[^0-9.]+/gi, "");
             }
           }
           if (data.metadata.sd == 2 || data.metadata.sd == 8) {
@@ -246,9 +247,9 @@ export class ControlPropertiesComponent implements OnInit {
           this.setProperties['message']['properties'][this.selectedProperty.json_key] = this.selectedProperty.new_value ? this.selectedItems.find((propObj) => propObj.json_key == this.selectedProperty.json_key)?.defaultValue : this.selectedProperty.new_value;
         }
       }
-
-
-      const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
+      const propertiesObject = this.setProperties?.message?.properties;
+      const isEmpty = propertiesObject &&
+        Object.keys(propertiesObject).every(key => propertiesObject[key] === undefined);
       if (isEmpty) {
         this.toasterService.showError('To  Sync Control Properties select checkbox and value', 'Check Box Selection');
       } else {
@@ -370,5 +371,11 @@ export class ControlPropertiesComponent implements OnInit {
       )
     );
 
+  }
+  getTelemetryValue(property: any): any {
+    if (this.telemetryData && property?.json_key in this.telemetryData) {
+      return this.telemetryData[property?.json_key];
+    }
+    return this.lastTelemetryValueControl?.[property?.json_key] || '-';
   }
 }

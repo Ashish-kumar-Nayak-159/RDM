@@ -1,7 +1,7 @@
 import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit, OnDestroy, SimpleChanges } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { Asset } from 'src/app/models/asset.model';
@@ -46,6 +46,15 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
     private toasterService: ToasterService,
     private router: Router
   ) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('1111')
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([currentUrl]);
+    });
+
+  }
 
   async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));

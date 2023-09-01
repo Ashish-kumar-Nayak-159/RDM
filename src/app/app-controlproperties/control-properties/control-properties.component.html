@@ -37,9 +37,7 @@
                                 </div>
                             </td>
                             <td>{{property?.name}}</td>
-                            <td *ngIf="telemetryData">{{
-                                telemetryData[property?.json_key] }}</td>
-                            <td *ngIf="!telemetryData">-</td>
+                            <td>{{ getTelemetryValue(property) }}</td>
                             <input
                                 *ngIf="property?.data_type != 'Boolean' &&  property?.metadata.d != 'd' && property?.data_type != 'Boolean'"
                                 maxlength="20" class="form-control my-2 mx-auto" type="text" placeholder="New Value"

@@ -252,7 +252,7 @@ export class AssetControlPropertiesComponent implements OnInit {
       }
       const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
       if (isEmpty) {
-        this.toasterService.showError('To Sync Control Properties select checkbox', 'Check Box Selection');
+        this.toasterService.showError('To Sync Control Properties select checkbox and value', 'Check Box Selection');
       } else {
         let isMfaEnabled = false;
         event?.forEach(item => {
@@ -279,7 +279,7 @@ export class AssetControlPropertiesComponent implements OnInit {
 
   twoFactorAuth() {
     if (!this.password) {
-      this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+      this.toasterService.showError('Password is compulsory.', 'Password');
       return;
     }
     this.isModelFreezeUnfreezeAPILoading = true;
@@ -300,7 +300,7 @@ export class AssetControlPropertiesComponent implements OnInit {
           this.onCloseModal('passwordCheckModal');
         },
         (error) => {
-          this.toasterService.showError(error.message, 'Update Property Values');
+          this.toasterService.showError(error.message, 'Password');
           this.isModelFreezeUnfreezeAPILoading = false;
         }
       )

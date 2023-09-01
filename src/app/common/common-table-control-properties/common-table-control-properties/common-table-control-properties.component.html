@@ -48,10 +48,8 @@
                                 &nbsp;{{resolve(data,
                                 header.key)}} </span>
                         </ng-container>
-                        <ng-container *ngIf="header.type === 'telmetry'">
-                            <span *ngIf=" header.key">
-                                {{lastTelemetryValue?.[data.json_key] ? lastTelemetryValue?.[data.json_key] : '-' }}
-                            </span>
+                        <ng-container *ngIf="header.key === 'current_value'">
+                            {{lastTelemetryValue?.[data?.json_key].toString() || '-'}}
                         </ng-container>
                         <ng-container *ngIf="header.type === 'button'">
                             <ng-container *ngFor="let btnData of header.btnData">
@@ -78,8 +76,8 @@
     </tbody>
 </table>
 <div class="right">
-    <button [ngClass]="{'disabled' : saveDataFlag || (checkBoxValue == false && isEnteredAnyValue == false) }"
-        type="button" class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
+    <button [disabled]="(checkBoxValue == false && isEnteredAnyValue == false)" type="button"
+        class="mt-1 btn btn-primary btn-md" (click)="multiSyncupData()">
         Sync
     </button>
 </div>

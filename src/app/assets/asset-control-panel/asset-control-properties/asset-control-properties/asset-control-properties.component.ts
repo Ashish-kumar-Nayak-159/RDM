@@ -275,6 +275,7 @@ export class AssetControlPropertiesComponent implements OnInit {
 
   onCloseModal(id) {
     $('#' + id).modal('hide');
+    this.isPasswordVisible = false;
   }
 
   twoFactorAuth() {

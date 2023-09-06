@@ -252,7 +252,6 @@ export class AssetModelUpTimeComponent implements OnInit {
     let upTimeData = e.metaData;
     this.upTimeData = [];
     this.isWorkingAllTime = upTimeData.is_all_time_working;
-    console.log(e.metaData)
     upTimeData.working_hours = upTimeData?.working_hours.map(o => ({ ...o }));
     upTimeData?.working_hours?.forEach((item) => {
       let dummyLocalFromtime = '2022-01-15T' + item?.from_time;

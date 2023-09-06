@@ -184,7 +184,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
                 }
               }
               else {
-                console.log(this.Y2LastTelemetryData);
                 this.telemetryData = this.telemetryData.concat(this.Y2LastTelemetryData);
               }
 

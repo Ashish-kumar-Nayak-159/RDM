@@ -19,6 +19,7 @@ export class ControlPropertiesComponent implements OnInit {
   @Input() filterObj;
   @Input() telemetryData: any;
   @Input() lastTelemetryValueControl: any;
+  lastTelemetryValue: any;
   telemertyLiveData: any
   assetwiseData: any;
   controlproperties: any;
@@ -51,13 +52,7 @@ export class ControlPropertiesComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.properties?.map((detail) => {
-      detail['isSelected'] = false;
-      detail['clicked'] = false;
-      detail['new_value'] = undefined;
-      detail['syncUp'] = false;
-      return detail;
-    });
+
     // if (changes.telemetryData && changes.telemetryData?.currentValue !== changes.telemetryData.previousValue) {
     //   const lastObject = changes?.telemetryData.currentValue[changes?.telemetryData.currentValue.length - 1];
     //   this.telemertyLiveData = lastObject
@@ -66,13 +61,24 @@ export class ControlPropertiesComponent implements OnInit {
     // }
     this.assetwiseData = this.filterObj.asset
     this.assetModalname = this.filterObj?.asset?.display_name
-    this.controlproperties = this.properties
-      ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
-    this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
+    this.lastTelemetryValue = this.lastTelemetryValueControl;
+
   }
 
   ngOnInit(): void {
+    this.controlproperties = this.properties
+      ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+    this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
+    this.properties?.map((detail) => {
+      detail['isSelected'] = false;
+      detail['clicked'] = false;
+      detail['new_value'] = undefined;
+      detail['syncUp'] = false;
+      return detail;
+    });
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.lastTelemetryValue = this.lastTelemetryValueControl;
+
   }
 
   checkUncheckAll() {
@@ -304,6 +310,7 @@ export class ControlPropertiesComponent implements OnInit {
     });
     this.isEnteredAnyValue = false;
     this.checkBoxvalue = false;
+    this.masterSelected = false;
     $('#exampleModal').modal('hide');
 
   }
@@ -343,10 +350,12 @@ export class ControlPropertiesComponent implements OnInit {
 
   onCloseModal(id) {
     $('#' + id).modal('hide');
+    this.isPasswordVisible = false;
+
   }
   twoFactorAuth() {
     if (!this.password) {
-      this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+      this.toasterService.showError('Password is compulsory.', 'Password');
       return;
     }
     this.isModelFreezeUnfreezeAPILoading = true;
@@ -365,7 +374,7 @@ export class ControlPropertiesComponent implements OnInit {
           this.onCloseModal('passwordCheckModal');
         },
         (error) => {
-          this.toasterService.showError(error.message, 'Update Property Values');
+          this.toasterService.showError(error.message, 'Password');
           this.isModelFreezeUnfreezeAPILoading = false;
         }
       )
@@ -376,6 +385,6 @@ export class ControlPropertiesComponent implements OnInit {
     if (this.telemetryData && property?.json_key in this.telemetryData) {
       return this.telemetryData[property?.json_key];
     }
-    return this.lastTelemetryValueControl?.[property?.json_key] || '-';
+    return this.lastTelemetryValue?.[property?.json_key]?.toString() || '-';
   }
 }

@@ -49,7 +49,7 @@
                                 header.key)}} </span>
                         </ng-container>
                         <ng-container *ngIf="header.key === 'current_value'">
-                            {{lastTelemetryValue?.[data?.json_key].toString() || '-'}}
+                            {{lastTelemetryValue?.[data?.json_key]?.toString() || '-'}}
                         </ng-container>
                         <ng-container *ngIf="header.type === 'button'">
                             <ng-container *ngFor="let btnData of header.btnData">

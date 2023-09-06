@@ -48,7 +48,6 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('1111')
     const currentUrl = this.router.url;
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigate([currentUrl]);

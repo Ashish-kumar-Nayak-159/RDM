@@ -331,13 +331,14 @@ export class ControlPropertiesComponent implements OnInit {
             detail['syncUp'] = false;
             return detail;
           });
+          this.masterSelected = false;
           this.isEnteredAnyValue = false;
           this.checkBoxvalue = false;
           $('#exampleModal').modal('hide');
-
         },
         (error) => {
           this.isEnteredAnyValue = false;
+          this.masterSelected = false;
           this.checkBoxvalue = false;
           this.toasterService.showError(error.message, 'Sync Control Properties');
         }

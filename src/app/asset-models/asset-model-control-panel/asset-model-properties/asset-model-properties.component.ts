@@ -1016,6 +1016,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       // this.propertyObj.derived_function = this.code;
       if (this.type == 'measured_properties' || this.type == 'controllable_properties') {
         this.properties['measured_properties'].splice(index, 0, this.propertyObj);
+        this.properties?.measured_properties?.forEach(element => {
+          element.unit = element?.json_model[element.json_key]?.units;
+        });
       } else {
         this.properties[this.type].splice(index, 0, this.propertyObj);
       }
@@ -1030,6 +1033,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
+
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
 
 
@@ -1051,6 +1055,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       })
     }
+    console.log("objecttttt", obj)
 
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(

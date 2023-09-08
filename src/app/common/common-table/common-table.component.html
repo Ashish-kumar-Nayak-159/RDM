@@ -50,12 +50,13 @@
                 id="syncUp" (change)="updateSingleCheckBox(data.syncUp)" />
             </ng-container>
             <ng-container *ngIf="header.key === 'new_value'">
-              <input *ngIf="data.datatype != 'Boolean' &&  data.metadata.d != 'd'"
+              <input *ngIf="data.datatype != 'Boolean' &&  data.metadata.d != 'd' && data.data_type != 'Boolean'"
                 [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
                 maxlength="20" class="new_value" type="text" placeholder="New Value" #new_value="ngModel"
                 [(ngModel)]="data.new_value" name="new_value" id="new_value{{i}}"
                 (change)="inputBoxValueChange(data,data.new_value)" />
-              <select placeholder="Select" *ngIf="data.datatype == 'Boolean'  || data.metadata.d == 'd'"
+              <select placeholder="Select"
+                *ngIf="data.datatype == 'Boolean'  || data.metadata.d == 'd' || data.data_type == 'Boolean'"
                 [disabled]="assetModelData?.length> 0 && !assetSelectForm.get('selected_asset')?.value?.asset_id"
                 class="new_value" id="selected_asset" #new_value="ngModel" [(ngModel)]="data.new_value" name="new_value"
                 id="new_value{{i}}" (change)="inputBoxValueChange(data,data.new_value)">

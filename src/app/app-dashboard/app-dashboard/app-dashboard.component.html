@@ -2,6 +2,7 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
+
       <div class="ml-2 pt-15"
         *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry'">
         Turbo Mode:</div>
@@ -14,6 +15,18 @@
           <em class="fa fa-times" style="color: red" *ngIf="!signalRModeValue"></em>
         </ui-switch>
       </div>
+      <div class="ml-2 pt-15"
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && controlPropertybtn">
+        Control Properties:&nbsp;</div>
+      <button data-toggle="modal" data-target="#exampleModal" type="submit"
+        class="btn btn-sm searchBtn btn-primary filterbtn" (click)="openControlPropertiesModal()"
+        *ngIf="controlPropertybtn" placement="bottom" tooltip="Control Properties"><svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders"
+          viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
+        </svg>
+      </button>
     </div>
     <div class="ml-auto">
       <div class="">
@@ -37,7 +50,7 @@
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
-    <ng-container >
+    <ng-container>
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
       </div>
@@ -208,31 +221,31 @@
 
       <div class="row col-md-12">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-          <div  *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType === 'ConditionalNumber'
+          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  || widget?.widgetType === 'ConditionalNumber'
                   || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? widget?.widgetType === 'ConditionalNumber' ? '23%' : (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                   'margin-left':'2%', 'margin-top': '2%' }">
-                  <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
-            [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
-          </app-conditional-widget>
-            
-          
-          <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+            <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+              [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            </app-conditional-widget>
+
+
+            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                   || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-                [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
-                [telemetryObj]="telemetryObj">
-              </app-only-number-widget>
-              <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
-              </app-rectangle-widget>
-              <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
-              </app-cylinder-widget>
-              <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
-                *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
-                [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
-              <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
-                *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
-              </app-live-line-chart>
+              [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
+              [telemetryObj]="telemetryObj">
+            </app-only-number-widget>
+            <app-rectangle-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'RectangleWidget'" [telemetryObj]="telemetryObj">
+            </app-rectangle-widget>
+            <app-cylinder-widget [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'CylinderWidget'" [telemetryObj]="telemetryObj">
+            </app-cylinder-widget>
+            <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
+              *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
+              [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
+            <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
+              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+            </app-live-line-chart>
           </div>
         </ng-container>
       </div>
@@ -345,6 +358,8 @@
           </div>
         </div>
       </ng-container>
+      {{lastTelemetryValueControl | json}}
+
     </div>
     <!-- <div class="row col-md-12"
       *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets" id="mainChartDiv">
@@ -353,7 +368,11 @@
       </div>
     </div> -->
   </div>
+
 </ng-container>
+<app-control-properties [telemetryData]="signalRControlTelemetry"
+  [lastTelemetryValueControl]="lastTelemetryValueControl" [filterObj]="controlpropertyassetId"
+  [properties]="propertyList" *ngIf="isOpenControlPropertiesModal"></app-control-properties>
 
 <!-- <ng-container *ngIf="selectedTab === 'alert'">
   <app-application-visualization [pageType]="'live'"></app-application-visualization>

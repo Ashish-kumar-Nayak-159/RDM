@@ -995,6 +995,18 @@ export class CONSTANTS {
       accordion_value: { configuration: true, control: true, purge: true },
     },
     {
+      page: 'control_properties',
+      system_name: 'Control Properties',
+      url: '#asset_control_properties',
+      display_name: 'Control Properties',
+      icon: 'fa fa-fw fa-area-chart',
+      privileges_required: ['ASMMV'],
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {},
+    },
+    {
       page: 'compute',
       system_name: 'Compute',
       url: 'null',
@@ -1399,6 +1411,18 @@ export class CONSTANTS {
         { name: 'Purge', key: 'purge' },
       ],
       accordion_value: { configuration: true, purge: true, control: true },
+    },
+    {
+      page: 'control_properties',
+      system_name: 'Control Properties',
+      url: 'null',
+      display_name: 'Control Properties',
+      icon: 'fa fa-fw fa-area-chart',
+      privileges_required: ['ASMMV'],
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {},
     },
     {
       page: 'compute',
@@ -1891,15 +1915,15 @@ export class CONSTANTS {
     //   visible: true,
     //   isTitle: false,
     // },
-    {
-      page: 'control_property',
-      system_name: 'Control Properties',
-      url: '#asset_model_control_properties',
-      display_name: 'Control Properties',
-      icon: 'fa fa-fw fa-sun-o',
-      visible: true,
-      isTitle: false,
-    },
+    // {
+    //   page: 'control_property',
+    //   system_name: 'Control Properties',
+    //   url: '#asset_model_control_properties',
+    //   display_name: 'Control Properties',
+    //   icon: 'fa fa-fw fa-sun-o',
+    //   visible: true,
+    //   isTitle: false,
+    // },
 
     {
       page: 'c2d',
@@ -2308,5 +2332,6 @@ export class CONSTANTS {
     { "label": "Auckland, Wellington (Pacific/Auckland)", "value": "+12:00" },
     { "label": "Fiji, Kamchatka, Marshall Is. (Pacific/Fiji)", "value": "+12:00" },
     { "label": "Nuku'alofa (Pacific/Tongatapu)", "value": "+13:00" }
-  ]
+  ];
+  public static DEFAULT_DATETIME_STR_FORMAT = "MMM dd, yyyy, hh:mm:ss a";
 }

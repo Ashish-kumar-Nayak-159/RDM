@@ -93,7 +93,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   checkwidgettype: boolean = false;
   checkconditionaltype: boolean = false;
   checkingsmallwidget: '';
-  checkconditionalwidget: ''
+  checkconditionalwidget: '';
+  isOpenControlPropertiesModal = false;
+  controlpropertyassetId: any;
+  controlPropertybtn = false;
+  signalRControlTelemetry: any;
+  lastTelemetryValueControl: any
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -223,6 +228,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFilterSelected = false;
     this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
     this.frequency = undefined;
+    this.controlPropertybtn = false;
   }
 
   onChangeOfAsset() {
@@ -614,11 +620,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
     this.propertyList = [];
     this.c2dResponseMessage = [];
+    this.signalRControlTelemetry = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
+    this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
 
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
@@ -654,9 +662,20 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
     if (asset_model) {
+
       this.getTelemetryMode(this.filterObj.asset.asset_id);
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
+      if (this.propertyList) {
+        let flag = false;
+        this.propertyList.forEach(element => {
+          if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
+            flag = true;
+            return;
+          }
+        });
+        this.controlPropertybtn = flag;
+      }
       this.sampleCountArr = Array(60).fill(0);
       this.sampleCountValue = 0;
       await this.getLiveWidgets(asset_model);
@@ -761,6 +780,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
         }
+        this.signalRControlTelemetry = JSON.parse(JSON.stringify(data));
         this.processTelemetryData(data);
         this.isTelemetryDataLoading = false;
       }
@@ -770,6 +790,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response?.message) {
+            this.lastTelemetryValueControl = response?.message;
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};
@@ -1284,6 +1305,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         (error) => (this.isTelemetryDataLoading = false)
       )
     );
+  }
+
+  openControlPropertiesModal() {
+    this.isOpenControlPropertiesModal = true;
+
   }
 
   ngOnDestroy() {

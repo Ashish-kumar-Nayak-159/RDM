@@ -53,7 +53,6 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
   }
 
   selectedDate(value: any) {
-    console.log(value);
     this.filterObj.dateOption = value.label;
     this.filterObj.from_date = datefns.getUnixTime(new Date(value.start));
     this.filterObj.to_date = datefns.getUnixTime(new Date(value.end));

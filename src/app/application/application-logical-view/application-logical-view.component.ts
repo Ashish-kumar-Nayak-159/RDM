@@ -339,7 +339,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         this.assetWiseTelemetryData = [];
         this.propertyList = [];
         this.measuredMessageProps = [];
-        this.toasterService.showError('Logical Asset selection is required', 'Logical View Telemetry');
+        //this.toasterService.showError('Logical Asset selection is required', 'Logical View Telemetry');
       }
     }
     else {

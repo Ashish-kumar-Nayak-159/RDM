@@ -46,6 +46,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   isDisabled = false;
   displaybutton = false;
   setBasedOnSelection: boolean = false;
+  autoRevertChecked = false;
+  autorevertInputValue = '30'
+
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -197,7 +200,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   getAssetsModelProperties() {
-    // this.properties = {};
+    this.properties = {};
     this.dependentProperties = [];
     this.dependentProperty = [];
     this.isPropertiesLoading = true;
@@ -326,6 +329,25 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.setBasedOnSelection = false;
     }
   }
+
+  toggleAutoRevert(type) {
+    this.propertyObj.auto_disable.enabled = !this.propertyObj.auto_disable.enabled
+    // Clear the autorevertInputValue when checkbox is unchecked
+    if (this.propertyObj.auto_disable.enabled) {
+      this.propertyObj.auto_disable.disable_interval_in_sec = '30';
+    }
+  }
+  onAutorevertInputChange(event: any) {
+    // Update the autorevertInputValue with the new input value
+    this.propertyObj.auto_disable.disable_interval_in_sec = event.target.value;
+  }
+  MultiFactionAuth(isEnabled: boolean) {
+    if (isEnabled) {
+      this.propertyObj.mfa_enabled = isEnabled
+    } else {
+      this.propertyObj.mfa_enabled = isEnabled
+    }
+  }
   openAddPropertiesModal() {
     this.isDisabled = false;
     this.displaybutton = false;
@@ -335,6 +357,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       threshold: {},
       read: true,
       write: false,
+      auto_disable: {},
+      mfa_enabled: false
     };
     if (this.type == 'controllable_properties') {
       this.propertyObj.read = false;
@@ -746,6 +770,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       obj.properties = JSON.parse(JSON.stringify(this.properties));
 
       if (this.type == 'measured_properties' || this.type == 'controllable_properties') {
+        if (this.propertyObj.auto_disable.enabled) {
+          let obj = {
+            enabled: this.propertyObj.auto_disable.enabled,
+            disable_interval_in_sec: this.propertyObj.auto_disable.disable_interval_in_sec
+          }
+          this.propertyObj.auto_disable = obj
+        }
+        else {
+          this.propertyObj.auto_disable = {}
+        }
+
         if (this.propertyObj.read == true && this.propertyObj.write == true) {
           this.propertyObj['metadata']['rw'] = 'rw'
         } else if (this.propertyObj.read == true) {
@@ -886,6 +921,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     }
     if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.propertyObj.metadata = this.setupForm?.value;
+      if (this.propertyObj.auto_disable.enabled) {
+        let obj = {
+          enabled: this.propertyObj.auto_disable.enabled,
+          disable_interval_in_sec: this.propertyObj.auto_disable.disable_interval_in_sec
+        }
+        this.propertyObj.auto_disable = obj
+      } else {
+        this.propertyObj.auto_disable = {}
+      }
+
     }
     if (this.propertyObj.json_key.length <= 0 || this.propertyObj.name.length <= 0
       || this.propertyObj.data_type.length <= 0 || this.propertyObj.data_type === 'undefined') {

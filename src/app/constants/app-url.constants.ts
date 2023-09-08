@@ -261,6 +261,9 @@ export class AppUrls {
   public static ASSET_UPTIME_ID = 'assetuptime/{0}'
   public static ASSET_DOWNTIME_ID = 'apps/{0}/assets/{1}/mttr_events'
 
-
+  public static GET_SERVICE_CONNECTION = 'service-connection'
+  public static DELETE_SERVICE_CONNECTION = 'service-connection/{0}'
+  public static CREATE_SERVICE_CONNECTION = 'service-connection'
+  public static UPDATE_SERVICE_CONNECTION = 'service-connection/{0}'
 
 }

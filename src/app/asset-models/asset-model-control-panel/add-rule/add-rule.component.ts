@@ -68,6 +68,11 @@ export class AddRuleComponent implements OnInit {
   escalationTimeDropdown: { visibility: true; };
   typeRulesDropdown: { visibility: boolean; };
   overrideRuleMapping : boolean = false;
+  serviceConnectionGroups: any[] = [];
+  selectedServiceConnectionsGroup:any={
+    'connections':[]
+  }
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -82,6 +87,7 @@ export class AddRuleComponent implements OnInit {
     this.addRuleCondition = this.commonService.getItemFromLocalStorage("model_item").toString().substring(1, this.commonService.getItemFromLocalStorage("model_item").toString().length - 1);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getSlaveData();
     this.DefaultRuleModelSetup();
     this.getEscalationTime();
@@ -98,6 +104,9 @@ export class AddRuleComponent implements OnInit {
       this.getRules();
     }
     this.getApplicationUserGroups();
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.getServiceConnectionGroups();
+    }
   }
 
   getEscalationTime(){
@@ -136,6 +145,9 @@ export class AddRuleComponent implements OnInit {
     }
     if (!this.ruleModel.actions.asset_control) {
       this.ruleModel.actions.asset_control = { enabled: false, disable: false };
+    }
+    if (!this.ruleModel.actions.service_connection) {
+      this.ruleModel.actions.service_connection = { enabled: false, connections: [] };
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
@@ -376,6 +388,48 @@ export class AddRuleComponent implements OnInit {
     });
   }
 
+  getServiceConnectionGroups() {
+    this.subscriptions.push(
+      this.applicationService.getServiceConnection().subscribe((response: any) => {
+        if (response && response.data) {
+          this.serviceConnectionGroups=response.data;
+          this.serviceConnectionGroups.forEach((element) => {
+            element.type = this.organizeServiceConnectionsType(element.type);
+          });
+        }
+      })
+    );
+  }
+
+  organizeServiceConnectionsType(type) {
+    if(type === 'Servicebus') {
+      return 'Service Bus';
+    }
+    else{
+      if(type === 'MicrosoftTeams') {
+        return 'Microsoft Teams';
+      }
+      else{
+        if(type === 'Webhook') {
+          return 'Webhook';
+        }
+        else{
+          if(type === 'Service Bus'){
+            return 'Servicebus';
+          }
+          else{
+            if(type === 'Microsoft Teams'){
+              return 'MicrosoftTeams';
+            }
+            else{
+              return "";
+            }
+          }
+        }
+      }
+    }
+  }
+
   onChangeOfSendAlertCheckbox() {
     this.ruleModel.actions.alert_management.alert_condition_code = null;
     this.ruleModel.actions.alert_management.severity = null;
@@ -400,6 +454,32 @@ export class AddRuleComponent implements OnInit {
     } else {
       this.ruleModel.actions.asset_control.disable = false;
     }
+  }
+  addserviceConnectionGroup(key){
+    this.selectedServiceConnectionsGroup[key].forEach(connectionData => {
+      const index = this.ruleModel.actions.service_connection.connections.findIndex((connection) => connection === connectionData.id);
+      if (index > -1) {
+        this.toasterService.showError('Same Service Connection is already added.', 'Add Service Connection');
+        return;
+      } else if (!connectionData.id) {
+        this.toasterService.showError('Please select Service Connection to add', 'Add Service Connection');
+        return;
+      }
+      if (connectionData.id && index === -1) {
+        this.ruleModel.actions.service_connection.connections.splice(
+          this.ruleModel.actions.service_connection.connections.length,
+          0,
+          connectionData.id
+        );
+      }
+    });
+    this.selectedServiceConnectionsGroup[key]=[];
+  }
+  removeServiceConnectionGroup(index) {
+    this.ruleModel.actions.service_connection.connections.splice(index, 1);
+  }
+  onChangeOfServiceConnectionCheckbox(){
+    this.ruleModel.actions.service_connection.connections = [];
   }
 
   onSwitchValueChange(event) {
@@ -507,7 +587,8 @@ export class AddRuleComponent implements OnInit {
     } else if (
       !this.ruleModel.actions.alert_management.enabled &&
       !this.ruleModel.actions.notification.enabled &&
-      !this.ruleModel.actions.asset_control.disable
+      !this.ruleModel.actions.asset_control.disable &&
+      !this.ruleModel.actions.service_connection.enabled
     ) {
       this.toasterService.showError('Please select any one of the actions', 'Add Rule');
       return;

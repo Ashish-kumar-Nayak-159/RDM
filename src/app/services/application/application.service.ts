@@ -352,4 +352,20 @@ export class ApplicationService {
     
   }
 
+  getServiceConnection(){
+    // return this.http.get(this.url + AppUrls.GET_SERVICE_CONNECTION)
+    return this.http.get(this.url + String.Format(AppUrls.GET_SERVICE_CONNECTION))
+  }
+  deleteServiceConnection(id){
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_SERVICE_CONNECTION,id))
+  }
+
+  createServiceConnection(obj){
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_SERVICE_CONNECTION),obj)
+  }
+
+  updateServiceConnection(obj,id){
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_SERVICE_CONNECTION,id),obj)
+  }
+
 }

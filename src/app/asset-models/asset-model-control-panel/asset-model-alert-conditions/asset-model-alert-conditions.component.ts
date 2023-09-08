@@ -46,6 +46,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   defaultAfterIntervalForVisualizationWidgets = 10;
   minIntervalValueForVisualizationWidgets = 1;
   maxIntervalValueForVisualizationWidgets = 1440;
+  selectedAudioFile:any;
+  updatedAssetModel: any;
+  selectedEditseverityType: any;
+  // uploadAudioFile: [url:string, name:string][];
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
@@ -61,7 +65,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     'email': [],
     'sms': [],
     'whatsapp': [],
-    'push_notification': []
+    'push_notification': [],
+    'service_connection': [],
 
   };
   recommendationObj: any;
@@ -75,6 +80,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   contextApp: any;
   decodedToken: any;
   userGroups: any[] = [];
+  serviceConnectionGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
 
@@ -102,6 +108,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.getSlaveData();
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();
+    }
+
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.getServiceConnectionGroups();
     }
 
     $('.custom-dropdown').on('shown.bs.collapse', function (e) {
@@ -135,6 +145,46 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+  getServiceConnectionGroups() {
+    this.subscriptions.push(
+      this.applicationService.getServiceConnection().subscribe((response: any) => {
+        if (response && response.data) {
+          this.serviceConnectionGroups=response.data;
+          this.serviceConnectionGroups.forEach((element) => {
+            element.type = this.organizeServiceConnectionsType(element.type);
+          });
+        }
+      })
+    );
+  }
+  organizeServiceConnectionsType(type) {
+    if(type === 'Servicebus') {
+      return 'Service Bus';
+    }
+    else{
+      if(type === 'MicrosoftTeams') {
+        return 'Microsoft Teams';
+      }
+      else{
+        if(type === 'Webhook') {
+          return 'Webhook';
+        }
+        else{
+          if(type === 'Service Bus'){
+            return 'Servicebus';
+          }
+          else{
+            if(type === 'Microsoft Teams'){
+              return 'MicrosoftTeams';
+            }
+            else{
+              return "";
+            }
+          }
+        }
+      }
+    }
   }
 
   getAssetModelWidgets() {
@@ -270,31 +320,72 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     })
     this.selectedDocuments = [];
   }
+  renameKey(obj: any, oldKey: string, newKey: string): any {
+    if (obj.hasOwnProperty(oldKey)) {
+      obj[newKey] = obj[oldKey];
+    }
+    return obj;
+  }
 
   addUserGroup(key) {
 
     this.selectedUserGroups[key].forEach(element => {
-      const index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
-      if (index > -1) {
-        this.toasterService.showError('Same UserGroup is already added.', 'Add UserGroup');
-        return;
-      } else if (!element.group_name) {
-        this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
-        return;
+      let index;
+      if(key==='service_connection'){
+        element.type=this.organizeServiceConnectionsType(element.type);
+        if(element.name){
+          element= this.renameKey(element,'name','group_name');
+        }
+        index = this.alertObj.actions[key].connections.findIndex((group) =>  group === element.id );
       }
-      if (element.group_name && index === -1) {
-        this.alertObj.actions[key].recipients.splice(
-          this.alertObj.actions[key].recipients.length,
-          0,
-          element.group_name
-        );
+      else{
+        index = this.alertObj.actions[key].recipients.findIndex((group) =>  group === element.group_name );
       }
+        if (index > -1) {
+          if(key!=='service_connection'){
+            this.toasterService.showError( 'Same UserGroup is already added.', 'Add UserGroup');
+          }
+          else{
+            this.toasterService.showError( 'Same Service Connection is already added.', 'Add Service Connection');
+          }
+          return;
+        } else if (!element.group_name) {
+          if(key!=='service_connection'){
+            this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
+          }
+          else{
+            this.toasterService.showError('Please select service connection to add', 'Add Service Connection');
+          }
+          return;
+        }
+        if (element.group_name && index === -1) {
+        if(key!=='service_connection'){
+          this.alertObj.actions[key].recipients.splice(
+            this.alertObj.actions[key].recipients.length,
+            0,
+            element.group_name
+          );
+        }
+        else{
+          this.alertObj.actions[key].connections.splice(
+            this.alertObj.actions[key].connections.length,
+            0,
+            element.id
+          );
+        }
+        }
+
     });
     this.selectedUserGroups[key] = [];
   }
 
   removeUserGroup(index, key) {
-    this.alertObj.actions[key].recipients.splice(index, 1);
+    if(key!=='service_connection'){
+      this.alertObj.actions[key].recipients.splice(index, 1);
+    }
+    else{
+      this.alertObj.actions[key].connections.splice(index, 1);
+    }
   }
 
   removeDocument(index) {
@@ -331,6 +422,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           whatsapp: { enabled: false, recipients: [] },
           sms: { enabled: false, recipients: [] },
           push_notification: { enabled: false, recipients: [] },
+          service_connection: { enabled: false, connections: [] }
 
         };
       } else {
@@ -358,6 +450,12 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         if (!this.alertObj.actions.push_notification.recipients) {
           this.alertObj.actions.push_notification.recipients = [];
         }
+        if (!this.alertObj.actions.service_connection) {
+          this.alertObj.actions.service_connection = { enabled: false, connections: [] };
+        }
+        if (!this.alertObj.actions.service_connection.connections) {
+          this.alertObj.actions.service_connection.connections = [];
+        }
       }
     }
   }
@@ -366,6 +464,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     this.setupForm?.reset();
     if (alertObj) {
+      this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
+      this.selectedEditseverityType=alertObj.severity;
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
       if (this.alertObj.alert_type === 'Asset') {
         this.setupForm = new FormGroup({
@@ -519,12 +619,27 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.toggleRows = {};
     this.editDocuments = {};
   }
+  // uploadFile(){
+  //   const data = this.commonService.uploadAudioToBlob(
+  //     this.updatedAssetModel.metadata.critical_alert_sound,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name);
+  //     if (data) {
+  //       this.alertObj.metadata = {
+  //         ...this.alertObj?.metadata,
+  //         critical_alert_sound: data
+  //       };
+  //     } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  // }
 
   onUpdateAlertConditions() {
     this.alertObj.metadata = {
       ...this.alertObj?.metadata,
       ...this.setupForm?.value
     };
+    // if(this.selectedAudioFile){
+    //   this.uploadFile();
+    // }
     let arr = [];
     this.alertObj.visualization_widgets = this.selectedWidgets.map((widget) => widget.title);
     arr = this.alertObj.reference_documents;
@@ -577,6 +692,9 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   onCreateAlertCondition() {
     this.alertObj.metadata = this.setupForm?.value;
+    // if(this.selectedAudioFile){
+    //   this.uploadFile();
+    // }
     const alertObj = JSON.parse(JSON.stringify(this.alertObj));
     if (
       !alertObj.message ||
@@ -634,9 +752,12 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       'email': [],
       'sms': [],
       'whatsapp': [],
-      'push_notification': []
+      'push_notification': [],
+      'service_connection': []
 
     }
+    this.selectedAudioFile = undefined;
+    this.selectedEditseverityType = undefined;
   }
 
   ngOnDestroy() {
@@ -657,7 +778,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           'email': [],
           'sms': [],
           'whatsapp': [],
-          'push_notification': []
+          'push_notification': [],
+          'service_connection': []
 
         }
       }
@@ -666,4 +788,36 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   onRecommendationChange(valuefromtextEditor: any) {
       this.alertObj.recommendation_html = valuefromtextEditor;
   }
+  // onAudioFileSelected(audio : FileList){
+  //   let selectedFile = audio.item(0);
+  //   let new_audio=new Audio();
+  //   if(!selectedFile.type.startsWith('audio/')){
+  //     this.toasterService.showError('Please Select Audio File', 'Upload File');
+  //     return;
+  //   }
+  //   else{
+  //     if (selectedFile.size > CONSTANTS.ASSET_MODEL_AUDIO_SIZE){
+  //       this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_MODEL_AUDIO_SIZE / 1000 + " " + 'KB', 'Upload File');
+  //       return;
+  //     }
+  //     else {
+  //       let audioElement: HTMLAudioElement;
+  //       audioElement = new Audio();
+  //       audioElement.src = URL.createObjectURL(selectedFile);
+  //       audioElement.load();
+  //       let audioDuration;
+  //       audioElement.addEventListener('loadedmetadata', () => {
+  //         audioDuration = audioElement.duration;
+  //       });
+  //       if(audioDuration > CONSTANTS.ASSET_MODEL_AUDIO_DURATION){
+  //         this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.ASSET_MODEL_AUDIO_SIZE * 1000 + " " + 'Second', 'Upload File');
+  //         this.selectedAudioFile = undefined;
+  //       }
+  //       else{
+  //         this.selectedAudioFile = selectedFile;
+  //         this.updatedAssetModel.metadata.critical_alert_sound = this.selectedAudioFile;
+  //       }
+  //     }
+  //   }
+  // }
 }

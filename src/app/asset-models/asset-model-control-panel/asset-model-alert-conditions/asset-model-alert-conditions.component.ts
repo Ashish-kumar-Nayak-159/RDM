@@ -46,10 +46,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   defaultAfterIntervalForVisualizationWidgets = 10;
   minIntervalValueForVisualizationWidgets = 1;
   maxIntervalValueForVisualizationWidgets = 1440;
-  selectedAudioFile:any;
-  updatedAssetModel: any;
-  selectedEditseverityType: any;
-  // uploadAudioFile: [url:string, name:string][];
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
@@ -464,8 +460,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     this.setupForm?.reset();
     if (alertObj) {
-      this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
-      this.selectedEditseverityType=alertObj.severity;
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
       if (this.alertObj.alert_type === 'Asset') {
         this.setupForm = new FormGroup({
@@ -619,27 +613,11 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.toggleRows = {};
     this.editDocuments = {};
   }
-  // uploadFile(){
-  //   const data = this.commonService.uploadAudioToBlob(
-  //     this.updatedAssetModel.metadata.critical_alert_sound,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name);
-  //     if (data) {
-  //       this.alertObj.metadata = {
-  //         ...this.alertObj?.metadata,
-  //         critical_alert_sound: data
-  //       };
-  //     } else {
-  //     this.toasterService.showError('Error in uploading file', 'Upload file');
-  //   }
-  // }
-
   onUpdateAlertConditions() {
     this.alertObj.metadata = {
       ...this.alertObj?.metadata,
       ...this.setupForm?.value
     };
-    // if(this.selectedAudioFile){
-    //   this.uploadFile();
-    // }
     let arr = [];
     this.alertObj.visualization_widgets = this.selectedWidgets.map((widget) => widget.title);
     arr = this.alertObj.reference_documents;
@@ -692,9 +670,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   onCreateAlertCondition() {
     this.alertObj.metadata = this.setupForm?.value;
-    // if(this.selectedAudioFile){
-    //   this.uploadFile();
-    // }
     const alertObj = JSON.parse(JSON.stringify(this.alertObj));
     if (
       !alertObj.message ||
@@ -756,8 +731,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       'service_connection': []
 
     }
-    this.selectedAudioFile = undefined;
-    this.selectedEditseverityType = undefined;
   }
 
   ngOnDestroy() {
@@ -788,36 +761,4 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   onRecommendationChange(valuefromtextEditor: any) {
       this.alertObj.recommendation_html = valuefromtextEditor;
   }
-  // onAudioFileSelected(audio : FileList){
-  //   let selectedFile = audio.item(0);
-  //   let new_audio=new Audio();
-  //   if(!selectedFile.type.startsWith('audio/')){
-  //     this.toasterService.showError('Please Select Audio File', 'Upload File');
-  //     return;
-  //   }
-  //   else{
-  //     if (selectedFile.size > CONSTANTS.ASSET_MODEL_AUDIO_SIZE){
-  //       this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_MODEL_AUDIO_SIZE / 1000 + " " + 'KB', 'Upload File');
-  //       return;
-  //     }
-  //     else {
-  //       let audioElement: HTMLAudioElement;
-  //       audioElement = new Audio();
-  //       audioElement.src = URL.createObjectURL(selectedFile);
-  //       audioElement.load();
-  //       let audioDuration;
-  //       audioElement.addEventListener('loadedmetadata', () => {
-  //         audioDuration = audioElement.duration;
-  //       });
-  //       if(audioDuration > CONSTANTS.ASSET_MODEL_AUDIO_DURATION){
-  //         this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.ASSET_MODEL_AUDIO_SIZE * 1000 + " " + 'Second', 'Upload File');
-  //         this.selectedAudioFile = undefined;
-  //       }
-  //       else{
-  //         this.selectedAudioFile = selectedFile;
-  //         this.updatedAssetModel.metadata.critical_alert_sound = this.selectedAudioFile;
-  //       }
-  //     }
-  //   }
-  // }
 }

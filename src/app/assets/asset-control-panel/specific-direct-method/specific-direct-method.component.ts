@@ -38,7 +38,7 @@ export class SpecificDirectMethodComponent implements OnInit {
     private assetModelService: AssetModelService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -194,6 +194,8 @@ export class SpecificDirectMethodComponent implements OnInit {
           this.toasterService.showSuccess(response.message, 'Invoke Direct Method');
           this.isInvokeDirectMethod = false;
           this.responseMessage = response;
+          this.assetService.reloadAssetInControlPanelEmitter.emit();
+
         },
         (error) => {
           this.toasterService.showError(error.message, 'Invoke Direct Method');

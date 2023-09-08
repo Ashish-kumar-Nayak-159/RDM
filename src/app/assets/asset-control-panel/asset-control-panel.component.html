@@ -130,6 +130,13 @@
               [asset]="asset" [componentState]="componentState" [pageType]="activeTab"
               [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
           </div>
+
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_properties'}" role="tabpanel"
+            id="asset_control_properties">
+            <app-asset-control-properties *ngIf="activeTab === 'control_properties' && asset" [asset]="asset"
+              [componentState]="componentState">
+            </app-asset-control-properties>
+          </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'mttr'}" role="tabpanel" id="asset_mttr">
             <app-asset-mttr *ngIf="activeTab === 'mttr' && asset" [asset]="asset" [componentState]="componentState">
             </app-asset-mttr>

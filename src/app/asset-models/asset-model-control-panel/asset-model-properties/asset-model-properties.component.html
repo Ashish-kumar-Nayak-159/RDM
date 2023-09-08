@@ -109,6 +109,24 @@
             </div>
           </div>
 
+          <div class="row pt-2"
+            *ngIf="(this.type.includes('controllable'))  && (assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster' || assetModel.tags.protocol ===  'SiemensTCPIP')">
+            <div class="col-6" *ngIf="propertyObj.write == true && propertyObj?.data_type == 'Boolean'">
+              <input class="form-group" type="checkbox" #enabled="ngModel"
+                [(ngModel)]="propertyObj.auto_disable.enabled" name="enabled" id="enabled"
+                (click)="toggleAutoRevert('enabled')" />
+              Auto Disable (In Seconds)<br>
+              <input *ngIf="propertyObj.auto_disable && propertyObj.auto_disable.enabled" class="form-control"
+                [(ngModel)]="propertyObj.auto_disable.disable_interval_in_sec" type="text" name="autorevertInput"
+                id="autorevertInput" (input)="onAutorevertInputChange($event)">
+            </div>
+            <div class="col-6" *ngIf="propertyObj.write == true">
+              <input class="form-group" type="checkbox" #mfa_enabled="ngModel" [(ngModel)]="propertyObj.mfa_enabled"
+                name="mfa_enabled" id="mfa_enabled" (change)="MultiFactionAuth($event.target.checked)" /> MFA
+              Enabled<br>
+            </div>
+          </div>
+
           <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
           </div>

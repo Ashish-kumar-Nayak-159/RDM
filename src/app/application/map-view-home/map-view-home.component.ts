@@ -6,6 +6,8 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { environment } from 'src/environments/environment';
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 declare var createUnityInstance: any;
 
 @Component({
@@ -35,8 +37,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   zoom = undefined;
   isGetAssetsAPILoading = false;
   decodedToken: any;
-  tooltipmapicon:any;
-  displayicon:boolean = true;
+  tooltipmapicon: any;
+  displayicon: boolean = true;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -58,15 +60,23 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   gameConfig: any;
   displayNameUnityModal: any;
   defaultAppName = environment.app;
-  assetModelsList:any;
+  assetModelsList: any;
+  properties: any = [];
+  assetModelData: any = [];
+  subscriptions: Subscription[] = [];
+
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-  constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) { }
+  constructor(private assetService: AssetService, private assetModelService: AssetModelService, private toasterService: ToasterService,
+    private router: Router, private commonService: CommonService) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.assetModelsList=this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
+    this.assetModelsList = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
+    if (this.assetModelsList == undefined) {
+      await this.getAssetModelData()
+    }
     this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Live Data' && item.visible === true) {
         this.displayicon = true;
@@ -116,6 +126,25 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
+  getAssetModelData(callFromMenu = false) {
+    this.assetModelData = [];
+    const obj = {
+      app: this.contextApp.app,
+    };
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelsList(obj).subscribe(
+        (response: any) => {
+          this.assetModelsList = response.data;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Model List');
+        }
+      )
+    );
+  }
+
+
+
   showPosition = (position) => {
     this.centerLatitude = position?.coords?.latitude || this.centerLatitude;
     this.centerLongitude = position.coords.longitude || this.centerLongitude;
@@ -148,11 +177,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       );
     });
   }
-  modifyIcon(asset:any,assetModelsList?: any[]){
-    if(asset && assetModelsList){
-      const assetModel=asset.asset_model;
-      let pinIconUrl=assetModelsList.find(modelData=>modelData.name===assetModel).mapPinIcon;
-    return pinIconUrl;
+  modifyIcon(asset: any, assetModelsList?: any[]) {
+    if (asset && assetModelsList) {
+      const assetModel = asset.asset_model;
+      let pinIconUrl = assetModelsList.find(modelData => modelData.name === assetModel).mapPinIcon;
+      return pinIconUrl;
     }
   }
 
@@ -248,16 +277,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     },
                   };
                 } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                    let pinData=this.modifyIcon(asset,this.assetModelsList);
+                  let pinData = this.modifyIcon(asset, this.assetModelsList);
                   asset.icon = {
                     url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
                       ? this.blobURL +
                       this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
                       this.blobToken
-                      :this.assetModelsList  && pinData !== undefined && pinData && pinData.url? this.blobURL +pinData.url+this.blobToken : './assets/img/legacy-assets.svg',
+                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
                     scaledSize: {
-                      width:this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height:this.assetModelsList && pinData!== undefined && pinData && pinData.height ? pinData.height : 20,
+                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
+                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
                     },
                   };
                 }
@@ -378,6 +407,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   redirectToAsset(asset) {
     this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
   }
+  redirectToControlPropertiesAsset(asset) {
+    this.router.navigate([`applications/${this.contextApp.app}/assets/${asset.asset_id}/control-panel`], { fragment: 'control_properties' })
+  }
 
   redirectToLiveData(asset) {
     const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -386,52 +418,52 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     this.router.navigate(['applications', this.contextApp.app, 'dashboard']);
   }
-  onSave(asset){
+  onSave(asset) {
     this.displayNameUnityModal = asset;
-      // Hide by defualt unity card
-      // $(".unity-modal-card").addClass("d-none");
+    // Hide by defualt unity card
+    // $(".unity-modal-card").addClass("d-none");
 
-      // Show Card
-      // $(".open-unity-card").click(function () {
-        $(".unity-modal-card").removeClass("d-none");
-        $(".unity-modal-card").addClass("d-block");
-        $(".unity-backdrop").removeClass("d-none");
-        $(".unity-backdrop").addClass("d-block");
+    // Show Card
+    // $(".open-unity-card").click(function () {
+    $(".unity-modal-card").removeClass("d-none");
+    $(".unity-modal-card").addClass("d-block");
+    $(".unity-backdrop").removeClass("d-none");
+    $(".unity-backdrop").addClass("d-block");
 
-        $(".unity-backdrop").click(() =>{
-          $(".pswp__button--close").css("background-color", "#ff0000");
-          $(".close-unity-card").css("fill", "#ffffff");
-          setTimeout(() => {
-            $(".pswp__button--close").css("background-color", "#000000");
-            $(".close-unity-card").css("fill", "#ffffff");
-           }, 1000);
-        });
-        var buildUrl = "assets/Build";
-        var loaderUrl = buildUrl + "/KemsysBuild.loader.js";
-    
-        this.gameConfig = {
-          dataUrl: buildUrl + "/KemsysBuild.data",
-          frameworkUrl: buildUrl + "/KemsysBuild.framework.js",
-          codeUrl: buildUrl + "/KemsysBuild.wasm",
-          // streamingAssetsUrl: "StreamingAssets",
-          companyName: "DefaultCompany",
-          productName: "API Data",
-          productVersion: "0.1",
-        };
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-          // Mobile device style: fill the whole browser client area with the game canvas:
-          var meta = document.createElement('meta');
-          meta.name = 'viewport';
-          meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-          document.getElementsByTagName('head')[0].appendChild(meta);
-        }
-        var script = document.createElement("script");
-        var canvas = document.querySelector("#unity-canvas");   
-        createUnityInstance(document.querySelector("#unity-canvas"),this.gameConfig).then((unityInstance) => {  
-          this.gameInstance = unityInstance;
-        });
+    $(".unity-backdrop").click(() => {
+      $(".pswp__button--close").css("background-color", "#ff0000");
+      $(".close-unity-card").css("fill", "#ffffff");
+      setTimeout(() => {
+        $(".pswp__button--close").css("background-color", "#000000");
+        $(".close-unity-card").css("fill", "#ffffff");
+      }, 1000);
+    });
+    var buildUrl = "assets/Build";
+    var loaderUrl = buildUrl + "/KemsysBuild.loader.js";
+
+    this.gameConfig = {
+      dataUrl: buildUrl + "/KemsysBuild.data",
+      frameworkUrl: buildUrl + "/KemsysBuild.framework.js",
+      codeUrl: buildUrl + "/KemsysBuild.wasm",
+      // streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "API Data",
+      productVersion: "0.1",
+    };
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // Mobile device style: fill the whole browser client area with the game canvas:
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+    }
+    var script = document.createElement("script");
+    var canvas = document.querySelector("#unity-canvas");
+    createUnityInstance(document.querySelector("#unity-canvas"), this.gameConfig).then((unityInstance) => {
+      this.gameInstance = unityInstance;
+    });
   }
-  onClose(){
+  onClose() {
     $(".unity-modal-card").addClass("d-none");
     $(".unity-modal-card").removeClass("d-block");
     $(".unity-backdrop").addClass("d-none");

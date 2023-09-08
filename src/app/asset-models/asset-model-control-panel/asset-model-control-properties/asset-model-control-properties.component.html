@@ -7,7 +7,9 @@
 <br>
 <div class="table-responsive">
   <div class="tableFixHead">
-    <app-common-table [assetModelData]="asset" [tableData]="properties" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
-  [isTableDataLoading]="isPropertiesLoading" [saveDataFlag]="isAPILoading" (viewMessageEvent)="singleSyncuoCall($event)" (assetSelectionChange)="assetSelectionChangeFun($event)"></app-common-table>
+    <app-common-table [assetModelData]="asset" [tableData]="properties" [tableConfig]="propertyTableConfig"
+      [isTableFilterSelected]="true" [isTableDataLoading]="isPropertiesLoading" [saveDataFlag]="isAPILoading"
+      (viewMessageEvent)="singleSyncuoCall($event)"
+      (assetSelectionChange)="assetSelectionChangeFun($event)"></app-common-table>
   </div>
 </div>

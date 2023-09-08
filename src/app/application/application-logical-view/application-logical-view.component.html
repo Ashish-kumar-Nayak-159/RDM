@@ -2,7 +2,9 @@
 <div class="blue-nav-bar">
     <div class="d-flex align-items-center">
         <div class="d-flex align-items-center">
-            <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
+            <div class="main-heading text-truncate" style="max-width: 150px;"
+                title="{{(tileData && tileData[0] ? tileData[0]?.value : '')}}">{{(tileData && tileData[0] ?
+                tileData[0]?.value : '')}}</div>
         </div>
         <div class="ml-auto">
             <div class="">
@@ -24,7 +26,7 @@
 <div class="tab-bar" *ngIf="!isFilterSelected">
     <ng-container>
         <div>
-            Please select an logical view and click on search to view the data.
+            Please select an logical asset and click on search to view the data.
         </div>
     </ng-container>
     <!-- <div class="form-group mb-0">

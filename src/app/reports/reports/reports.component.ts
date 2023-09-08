@@ -103,7 +103,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   async ngAfterViewInit(): Promise<void> {
     setTimeout(() => {
-      if(this.tabType === 'custom'){
+      if (this.tabType === 'custom') {
         this.loadFromCache();
       }
     }, 0);
@@ -124,6 +124,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.latestAlerts = [];
       this.isFilterOpen = true;
       this.isFilterSelected = false;
+      this.loadFromCache();
     } else {
       this.isFilterSelected = false;
     }
@@ -131,6 +132,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    if (!this.hierarchyDropdown) return;
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(item);
       if (item.dateOption) {
@@ -679,7 +681,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.isTelemetryLoading = false;
           resolve();
         },
-        (error) => (this.isTelemetryLoading = false)
+        (error) => {
+          this.isTelemetryLoading = false
+          this.toasterService.showError(error.message, 'Report');
+        }
       );
       this.subscriptions.push(this.reportsFetchDataSubscription);
     });

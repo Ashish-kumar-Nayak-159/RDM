@@ -102,7 +102,7 @@ export class ServiceConnectionComponent implements OnInit {
           endpoint: new FormControl(serviceConnectionObj?.endpoint ? serviceConnectionObj.endpoint : "", [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
           connection_string: new FormControl(serviceConnectionObj.config.connection_string, [
             Validators.required
-            ,Validators.pattern(/^(?:Endpoint=sb:\/\/){1}[A-Za-z]{1}[a-zA-Z0-9-]{4,48}[a-zA-Z0-9]{1}(?:.servicebus.windows.net\/;SharedAccessKeyName=[\w.-\/]{1,260};SharedAccessKey=){1}(.){44}(;EntityPath=[\w.-\/]{1,260}){1}()+$/)
+            ,Validators.pattern(CONSTANTS.DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX)
           ]),
         });
       }
@@ -187,7 +187,7 @@ export class ServiceConnectionComponent implements OnInit {
       this.addServiceConnectionForm.removeControl('connection_string');
       this.addServiceConnectionForm.addControl('endpoint', new FormControl("", [Validators.required, Validators.minLength(4), Validators.maxLength(50)]));
       this.addServiceConnectionForm.addControl('connection_string', new FormControl(userObj && userObj?.config && userObj?.config?.connection_string ? userObj.config.connection_string : "", [Validators.required
-        , Validators.pattern(/^(?:Endpoint=sb:\/\/){1}[A-Za-z]{1}[a-zA-Z0-9-]{4,48}[a-zA-Z0-9]{1}(?:.servicebus.windows.net\/;SharedAccessKeyName=[\w.-\/]{1,260};SharedAccessKey=){1}(.){44}(;EntityPath=[\w.-\/]{1,260}){1}()+$/)
+        , Validators.pattern(CONSTANTS.DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX)
       ]));
     }
     else {
@@ -196,7 +196,7 @@ export class ServiceConnectionComponent implements OnInit {
         this.addServiceConnectionForm.removeControl('endpoint');
         this.addServiceConnectionForm.removeControl('connection_string');
         this.addServiceConnectionForm.addControl('endpoint', new FormControl(null, [Validators.required
-          , Validators.pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/)
+          , Validators.pattern(CONSTANTS.DEFAULT_MICROSOFT_TEAMS_ENDPOINT_REGEX)
         ]));
       }
       else {
@@ -204,7 +204,7 @@ export class ServiceConnectionComponent implements OnInit {
           this.addServiceConnectionForm.removeControl('endpoint');
           this.addServiceConnectionForm.removeControl('connection_string');
           this.addServiceConnectionForm.addControl('endpoint', new FormControl(null, [Validators.required
-            , Validators.pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/)
+            , Validators.pattern(CONSTANTS.DEFAULT_WEBHOOK_ENDPOINT_REGEX)
           ]));
         }
       }

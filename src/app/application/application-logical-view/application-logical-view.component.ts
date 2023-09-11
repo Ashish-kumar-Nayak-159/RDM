@@ -242,13 +242,14 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
               widget?.properties.forEach((prop) => {
                 prop.type = this.getPropertieType(prop?.type);
-
+                widget['formula'] = widget?.metadata?.formula;
+                widget['text'] = widget?.metadata?.text;
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }
                 // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop?.type;
-                this.addPropertyInList(prop);
+                this.actualPropertyList.push(prop);
 
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
@@ -827,6 +828,12 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
         };
       }
     });
+
+
+
+
+
+
     obj['previous_properties'] = this.previousProperties;
     obj['message_date'] = telemetryObj.message_date;
     obj["asset_id"] = telemetryObj.asset_id;

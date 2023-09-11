@@ -71,6 +71,9 @@ export class SmallnumberwidgetComponent implements OnInit {
               this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
             );
             prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+
           }
         });
       }

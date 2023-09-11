@@ -1055,7 +1055,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       })
     }
-    console.log("objecttttt", obj)
 
     this.subscriptions.push(
       this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(

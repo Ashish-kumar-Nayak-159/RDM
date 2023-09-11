@@ -2,6 +2,8 @@ export class UIMESSAGES {
   public static MESSAGES = {
     CONTACT_ADMINISTRATOR: 'Contact Administrator',
     ALL_FIELDS_REQUIRED: 'Please enter all required fields',
+    WIDGET_TITLE: 'Please provide valid chartname in request, chartname length shoud be between 4 to 50.',
+    ONLY_CHARACTER: 'Only 5 character are allowed',
     APP_CREATE_DB_CONFIG_WARNING: `You have requested seperate Database/Schema, This is manual step.
   Until you perform that, this app will be in unprovisioned state. And won't be visible.
   Please create seperate Database/Schema and manually change the app status 'Provisoned'`,

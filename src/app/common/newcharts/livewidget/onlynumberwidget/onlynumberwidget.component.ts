@@ -56,15 +56,19 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
-
-    if (this.type == 'LogicalView') {
-      this.chartConfig.properties.forEach(prop => {
-        if (this.telemetryObj) {
-          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-            (this.telemetryObj[prop?.json_key]?.value !== undefined
-              && this.telemetryObj[prop?.json_key]?.value !== null)) {
-            if (prop?.data_type === 'Number') {
-              prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals))
+    setTimeout(() => {
+      if (this.type == 'LogicalView') {
+        this.chartConfig.properties.forEach(prop => {
+          if (this.telemetryObj) {
+            if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
+              (this.telemetryObj[prop?.json_key]?.value !== undefined
+                && this.telemetryObj[prop?.json_key]?.value !== null)) {
+              if (prop?.data_type === 'Number') {
+                prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals))
+              }
+              else {
+                prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+              }
             }
             else {
               prop.lastValue = this.telemetryObj[prop?.json_key]?.value
@@ -73,23 +77,25 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
           else {
             prop.lastValue = "NA"
           }
-        }
-        else {
-          prop.lastValue = "NA"
-        }
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-        }
-        if (this.telemetryObj) {
-          if (this.telemetryObj[prop?.json_key]?.date)
-            this.startPoint[prop.asset_id] = new Date(
-              this.telemetryObj[prop?.json_key]?.date
-            );
-        }
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+
+          }
+          if (this.telemetryObj) {
+            if (this.telemetryObj[prop?.json_key]?.date)
+              this.startPoint[prop.asset_id] = new Date(
+                this.telemetryObj[prop?.json_key]?.date
+              );
+          }
 
 
-      });
-    }
+        });
+      }
+
+    }, 400);
+
 
     // this.asset = { "asset_id": "c135f97" }
   }

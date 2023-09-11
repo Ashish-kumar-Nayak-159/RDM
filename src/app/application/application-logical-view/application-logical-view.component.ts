@@ -242,7 +242,8 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
 
               widget?.properties.forEach((prop) => {
                 prop.type = this.getPropertieType(prop?.type);
-
+                widget['formula'] = widget?.metadata?.formula;
+                widget['text'] = widget?.metadata?.text;
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }

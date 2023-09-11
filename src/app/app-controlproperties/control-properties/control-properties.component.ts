@@ -163,7 +163,7 @@ export class ControlPropertiesComponent implements OnInit {
             detail.new_value = detail?.new_value?.replace(/[^0-9-+.]+/gi, "");
             value = value?.replace(/[^0-9-+.]+/gi, "");
           }
-          if (detail?.new_value !== null && detail?.new_value !== undefined) {
+          if (detail?.new_value !== null && detail?.new_value !== undefined && detail?.new_value.trim() !== '') {
             this.isEnteredAnyValue = true;
             // new_value has a value
             // You can further process it here

@@ -72,11 +72,20 @@
                     </div>
                     <div>
                         <span class="text-grey">
-                            {{ prop?.asset_id == this.telemetryObj?.asset_id ?(telemetryObj[prop?.json_key]?.date ||
+                            {{ prop?.asset_id == this.telemetryObj[prop?.json_key]?.asset_id
+                            ?(telemetryObj[prop?.json_key]?.date ||
                             telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
                         </span>
                     </div>
+                    <div *ngIf="type != 'LogicalView'">
+                        <div style="margin-top: 50px;">
+                            <span class="text-grey" *ngIf="chartConfig.widget_type === 'GaugeChart'">
+                                {{telemetryObj[prop.json_key]?.date}}
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

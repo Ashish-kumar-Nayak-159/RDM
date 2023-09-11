@@ -193,14 +193,14 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           name: this?.filterObj?.logicalview?.code,
         };
         this.sameAsset = this.filterObj?.logicalview?.code
-        this.getTelemetryMode(this.filterObj?.logicalview?.assets[0]?.asset_id);
+        //this.getTelemetryMode(this.filterObj?.logicalview?.assets[0]?.asset_id);
 
         this.assetService.getLogicalViewByCode(this.sameAsset).subscribe(async (response: any) => {
           this.logicalViewData = response;
           this.logicalViewDatarender = this.logicalViewData?.charts
           this.isLogicalViewData = false;
 
-          this.logicalViewData.charts = this.logicalViewData?.charts.filter(x => x.metadata?.dashboardVisibility);
+          this.logicalViewData.charts = this.logicalViewData?.charts?.filter(x => x.metadata?.dashboardVisibility);
 
           this.actualPropertyList = [];
           this.logicalViewData?.charts?.forEach((widget, index) => {

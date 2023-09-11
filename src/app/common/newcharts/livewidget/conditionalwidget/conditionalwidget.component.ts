@@ -31,6 +31,8 @@ export class ConditionalwidgetComponent implements OnInit {
   @Output() chart_Id = new EventEmitter<any>();
   widgetId: any;
   chartId: any;
+  startPoint: any = {};
+
 
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
@@ -55,6 +57,21 @@ export class ConditionalwidgetComponent implements OnInit {
         "json_Data": jsonArray
       }
       this.chartConfig.properties = [obj];
+      setTimeout(() => {
+
+
+        this.chartConfig.properties[0].json_Data.forEach(prop => {
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            );
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          }
+        })
+
+      }, 400);
     }
 
 
@@ -68,6 +85,10 @@ export class ConditionalwidgetComponent implements OnInit {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
+
+
+
   }
 
   convertToNumber(value) {

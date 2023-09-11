@@ -77,6 +77,21 @@ export class SmallnumberwidgetComponent implements OnInit {
           }
         });
       }
+      if (this.telemetryObj && this.type !== 'LogicalView') {
+        this.chartConfig.properties.forEach(prop => {
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            );
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+
+          }
+
+        })
+
+      }
 
     }
     this.subscriptions.push(

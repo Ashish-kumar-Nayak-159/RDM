@@ -44,7 +44,7 @@
                             [apiTelemetryObj]="telemetryObj">
                         </app-small-number-widget> -->
                         <app-smallnumberwidget *ngIf="widget?.widget_type === 'SmallNumber'" [chartConfig]="widget"
-                            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
+                            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"
                             [apiTelemetryObj]="telemetryObj" (chart_Id)="onMenu($event)">
                         </app-smallnumberwidget>
                     </div>
@@ -74,8 +74,8 @@
 
                     <app-onlynumberwidget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'
               || widget?.widget_type === 'NumberWithImage' || widget.widget_type === 'StringWidget'"
-                        [type]="'LogicalView'" [chartConfig]="widget" (chart_Id)="onMenu($event)"
-                        [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+                        [chartConfig]="widget" (chart_Id)="onMenu($event)" [telemetryObj]="telemetryObj"
+                        [apiTelemetryObj]="telemetryObj">
                     </app-onlynumberwidget>
 
                     <!-- <app-only-number-widget *ngIf="widget?.widget_type === 'OnlyNumber'  || widget?.widget_type === 'NumberWithTrend'

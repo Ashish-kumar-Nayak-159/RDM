@@ -52,6 +52,8 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   y2Start: any = {};
   Y1LastTelemetryData: any[];
   Y2LastTelemetryData: any[];
+  telemetryDataTimestamps: number[] = [];
+
   constructor(private chartService: ChartService, private zone: NgZone, private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -91,7 +93,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.telemetryObj && this.chart) {
+    if (changes.telemetryObj && this.chart && this.telemetryData) {
 
       // if (this.chartConfig.noOfDataPointsForTrend > 0) {
       if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
@@ -111,7 +113,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
         const lastTemletryObj = this.telemetryData[this.telemetryData.length - 1];
         this.telemetryData = [];
         this.chartConfig.y1AxisProps?.forEach((prop) => {
-
           if (
             this.telemetryObj[prop.json_key].value !== undefined &&
             this.telemetryObj[prop.json_key].value !== null
@@ -138,11 +139,10 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
                 }
+                if (!this.telemetryDataTimestamps.includes(obj['message_date'].getTime()))
+                  this.telemetryDataTimestamps.push(obj['message_date'].getTime());
               }
-              else {
-                this.telemetryData = this.telemetryData.concat(this.Y1LastTelemetryData);
-
-              }
+              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
             }
 
             if (prop?.assetid == this.telemetryObj?.asset_id) {
@@ -152,9 +152,14 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
             // this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
           }
         });
+        this.telemetryDataTimestamps.sort((a, b) => a - b);
+        if (this.telemetryDataTimestamps.length > this.chartConfig.noOfDataPointsForTrend) {
+          this.telemetryDataTimestamps = this.telemetryDataTimestamps.slice(-this.chartConfig.noOfDataPointsForTrend)
+        }
+        this.telemetryData = this.telemetryData.filter(t => t.message_date.getTime() >= this.telemetryDataTimestamps[0]);
+        this.telemetryData.sort((a, b) => a.message_date - b.message_date);
 
         this.chartConfig.y2AxisProps?.forEach((prop) => {
-
 
           if (
             this.telemetryObj && this.telemetryObj[prop.json_key]?.value !== undefined &&
@@ -182,11 +187,10 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.propertyBasedData[prop.json_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.json_key]['data'].splice(0, 1);
                 }
+                if (!this.telemetryDataTimestamps.includes(obj['message_date'].getTime()))
+                  this.telemetryDataTimestamps.push(obj['message_date'].getTime());
               }
-              else {
-                this.telemetryData = this.telemetryData.concat(this.Y2LastTelemetryData);
-              }
-
+              this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
             }
             if (prop?.assetid == this.telemetryObj?.asset_id) {
               this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.json_key]['data']);
@@ -194,12 +198,21 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         });
+        this.telemetryDataTimestamps.sort((a, b) => a - b);
+
+        if (this.telemetryDataTimestamps.length > this.chartConfig.noOfDataPointsForTrend) {
+          this.telemetryDataTimestamps = this.telemetryDataTimestamps.slice(-this.chartConfig.noOfDataPointsForTrend);
+        }
+        this.telemetryData = this.telemetryData.filter(t => t.message_date.getTime() >= this.telemetryDataTimestamps[0]);
+        this.telemetryData.sort((a, b) => a.message_date - b.message_date);
       }
       // if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
       //   this.telemetryData.splice(0, 1);
       // }
       // }
       this.chart.data = this.telemetryData;
+      this.chart.validateData();
+
     }
   }
 

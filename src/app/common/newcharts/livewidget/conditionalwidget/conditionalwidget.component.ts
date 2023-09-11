@@ -31,6 +31,8 @@ export class ConditionalwidgetComponent implements OnInit {
   @Output() chart_Id = new EventEmitter<any>();
   widgetId: any;
   chartId: any;
+  startPoint: any = {};
+
 
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
@@ -55,6 +57,21 @@ export class ConditionalwidgetComponent implements OnInit {
         "json_Data": jsonArray
       }
       this.chartConfig.properties = [obj];
+      setTimeout(() => {
+
+
+        this.chartConfig.properties[0].json_Data.forEach(prop => {
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            );
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          }
+        })
+
+      }, 400);
     }
 
 
@@ -68,6 +85,10 @@ export class ConditionalwidgetComponent implements OnInit {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
+
+
+
   }
 
   convertToNumber(value) {
@@ -119,10 +140,10 @@ export class ConditionalwidgetComponent implements OnInit {
   }
 
   evaluatePropCondition(telemetryObj) {
-    let condition = this.chartConfig?.metadata?.formula;
+    let condition = this.chartConfig?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
-        condition = condition?.replaceAll(`%${i + 1}%`, (jd.asset_id == telemetryObj[jd?.json_key]?.asset_id) ? telemetryObj[jd?.json_key]?.value : "");
+        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
       });
       var actualVal = eval(condition);
       if (this.chartConfig?.metadata?.text && this.chartConfig?.metadata?.text.length > 0) {

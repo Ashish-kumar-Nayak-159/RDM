@@ -194,8 +194,8 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
   async valueSet() {
     if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
 
-      this.selectedY1Assest = this.widgetObj.properties[0].y1AxisProps[0].assetid;
-      this.selectedY2Assest = this.widgetObj.properties[0].y2AxisProps[0]?.assetid;
+      this.selectedY1Assest = this.widgetObj.properties[0].y1AxisProps[0].asset_id;
+      this.selectedY2Assest = this.widgetObj.properties[0].y2AxisProps[0]?.asset_id;
       await this.getAssetsModelProperties(this.selectedY1Assest, 0, 0);
 
       if (this.selectedY2Assest) {

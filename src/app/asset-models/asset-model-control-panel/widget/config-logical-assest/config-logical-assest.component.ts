@@ -158,6 +158,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
     if (this.widgetObj?.widget_type === "ConditionalNumber") {
       this.isDisabled = false;
+      this.trueConditionalNumber = 'ON';
+      this.falseConditionalNumber = 'OFF';
       this.formula = '';
       this.propertyObj.metadata = {
         properties: [
@@ -206,7 +208,12 @@ export class ConfigLogicalAssestComponent implements OnInit {
           flag = true;
           return;
         }
-        if (this.propertyObj.metadata.properties[i + 1] && prop.operator1 === null) {
+        if (this.propertyObj.metadata.properties[i] && prop.operator === undefined) {
+          this.toasterService.showError('Please select operator in condition', 'Add Properity');
+          flag = true;
+          return;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && prop.operator1 === undefined) {
           this.toasterService.showError('Please select operator in condition', 'Add Properity');
           flag = true;
           return;
@@ -241,7 +248,12 @@ export class ConfigLogicalAssestComponent implements OnInit {
         }
       });
     }
-    this.isDisabled = true;
+    if (this.trueConditionalNumber.length > 5 || this.falseConditionalNumber.length > 5) {
+      this.isDisabled = false;
+
+    } else {
+      this.isDisabled = true;
+    }
 
   }
 
@@ -309,6 +321,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
     }
+    if (this.widgetObj.widget_title.length < 4 || this.widgetObj.widget_title.length > 50) {
+      this.toasterService.showError(UIMESSAGES.MESSAGES.WIDGET_TITLE, 'Add ' + this.widgetStringFromMenu);
+      return;
+    }
     if (!this.widgetObj.noOfDataPointsForTrend === null) {
       this.toasterService.showError('No of Data points should be geater than 0', 'Add ' + this.widgetStringFromMenu);
       return;
@@ -344,10 +360,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
     if (this.widgetObj.widget_type == "NumberWithImage") {
       let isInValid = this.widgetObj.properties.find(x => !x?.image);
       if (isInValid && this.widgetObj.widget_type !== 'LineChart' && this.widgetObj.widget_type !== 'AreaChart' && this.widgetObj.widget_type != "NumberWithImage" && this.widgetObj.widget_type !== 'ConditionalNumber') {
-        found = false;
+        this.toasterService.showError('Please select properties details.', 'Add Widget');
+        return;
       }
-      this.toasterService.showError('Please select properties details.', 'Add Widget');
-      return;
+      ;
     }
 
     this.widgetObj.properties.forEach((prop) => {
@@ -413,8 +429,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             // slave_id: prop?.metadata?.slave_id,
             assetid: this.widgetObj.Y1Assest,
             // asset_model: this.widgetObj.Y1Assest?.asset_model,
-            color: prop.color
-
+            color: prop.color,
           };
           arr.push(obj);
         });
@@ -435,7 +450,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             // slave_id: prop?.metadata?.slave_id,
             assetid: this.widgetObj.Y2Assest,
             // asset_model: this.widgetObj.Y2Assest?.asset_model,
-            color: prop.color
+            color: prop.color,
           };
           arr.push(obj);
         });
@@ -509,7 +524,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "json_key": element.json_key,
           "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
-          "asset_id": element.asset_id
+          "asset_id": element.asset_id,
         }
         customProperties.push(obj);
       });
@@ -548,7 +563,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "json_key": element.property.json_key,
           "data_type": element.property.data_type,
           "operator1": element.operator1,
-          "asset_id": element.asset_id
+          "asset_id": element.asset_id,
         }
         customProperties.push(obj);
       });
@@ -575,7 +590,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "json_key": element.json_key,
           "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
-          "asset_id": element.asset_id
+          "asset_id": element.asset_id,
         }
         customProperties.push(obj);
 
@@ -610,7 +625,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "type": element.property.type,
           "json_key": element.property.json_key,
           "units": element.property.unit,
-          "asset_id": element.asset_id
+          "asset_id": element.asset_id,
         }
         customProperties.push(obj);
       });
@@ -640,7 +655,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "normal_max": element.normal_max,
           "normal_min": element.normal_min,
           "normal_color": element.normal_color,
-          "digitsAfterDecimals": element.digitsAfterDecimals
+          "digitsAfterDecimals": element.digitsAfterDecimals,
         }
         customProperties.push(obj);
 
@@ -656,9 +671,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
     else if (this.widgetObj.widget_type == "RectangleWidget" || this.widgetObj.widget_type == "CylinderWidget") {
       this.widgetObj.properties.forEach(element => {
         element.type = this.getPropertieType(element.type);
-        element.units = element.unit,
-
-          delete element['propertyList'];
+        element.units = element.unit;
+        delete element['propertyList'];
       });
       properties = this.widgetObj.properties;
     }
@@ -699,7 +713,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
       },
         async (err) => {
           await this.getLogicalViewWidget();
-          await this.onCloseAddWidgetModal();
+          // await this.onCloseAddWidgetModal();
           await this.onCloseConfigureDashboardModal();
           this.isCreateWidgetAPILoading = false;
           this.toasterService.showError(err.message, 'Add Live ' + this.widgetStringFromMenu);
@@ -925,7 +939,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
         }
         else if (data.widget_type == "ConditionalNumber") {
-
           this.widgetObj = data;
           this.propertyObj = {
             json_model: {},

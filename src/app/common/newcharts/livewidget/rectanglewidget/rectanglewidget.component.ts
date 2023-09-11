@@ -79,10 +79,12 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
           prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+        } else {
+          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+
         }
       });
     }
-
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }

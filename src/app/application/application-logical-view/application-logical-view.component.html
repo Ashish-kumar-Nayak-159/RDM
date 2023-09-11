@@ -2,7 +2,7 @@
 <div class="blue-nav-bar">
     <div class="d-flex align-items-center">
         <div class="d-flex align-items-center">
-            <div class="main-heading text-truncate" style="max-width: 150px;"
+            <div class="main-heading text-truncate" style="max-width:385px;"
                 title="{{(tileData && tileData[0] ? tileData[0]?.value : '')}}">{{(tileData && tileData[0] ?
                 tileData[0]?.value : '')}}</div>
         </div>
@@ -99,7 +99,6 @@
                             [chartConfig]="widget" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj"
                             [type]="'LogicalView'">
                         </app-onlynumberwidget>
-
                         <app-conditionalwidget *ngIf="telemetryObj && widget?.widget_type === 'ConditionalNumber'"
                             [type]="'LogicalView'" [chartConfig]="widget" [telemetryObj]="telemetryObj"
                             [apiTelemetryObj]="telemetryObj">

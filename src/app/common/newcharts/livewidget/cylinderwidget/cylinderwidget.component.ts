@@ -78,6 +78,9 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
 
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
           prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+        } else {
+          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+
         }
       });
     }

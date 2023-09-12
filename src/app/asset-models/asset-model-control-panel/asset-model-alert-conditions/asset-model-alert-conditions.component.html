@@ -552,8 +552,8 @@
                               name="group-dropdown" groupBy="type" [(ngModel)]="selectedUserGroups['service_connection']" [closeOnSelect]="false"
                               required>
                               <ng-template ng-header-tmp>
-                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                                  <li *ngIf="serviceConnectionGroups.length !== selectedUserGroups['service_connection'].length"> <a
+                                <ul *ngIf="serviceConnectionGroups?.length!==0" style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                  <li *ngIf="serviceConnectionGroups?.length !== selectedUserGroups['service_connection'].length"> <a
                                       href="javascript:void(0)"
                                       (click)="selectedUserGroups['service_connection'] = serviceConnectionGroups">Select All</a></li>
                                   <li *ngIf="serviceConnectionGroups.length === selectedUserGroups['service_connection'].length"> <a
@@ -563,7 +563,7 @@
                               </ng-template>
                               <ng-template ng-option-tmp let-item="item">
                                 <span>
-                                  {{item.name}}
+                                  {{item?.name}}
                                 </span>
                               </ng-template>
                               <ng-template ng-multi-label-tmp let-items="items">

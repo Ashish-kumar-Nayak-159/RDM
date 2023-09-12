@@ -434,15 +434,14 @@
                 <label class="form-check-label" for="asset_control">Disable Asset</label>
               </div>
 
-              
+              <hr *ngIf="!ruleModel.isEdgeRule && decodedToken?.privileges?.indexOf('SCV') > -1">
               <div class="form-group mx-3" *ngIf="!ruleModel.isEdgeRule && decodedToken?.privileges?.indexOf('SCV') > -1">
-                <hr *ngIf="!ruleModel.isEdgeRule">
                 <input type="checkbox" class="form-check-input" id="service_connection" name="service_connection" (change)="onChangeOfServiceConnectionCheckbox()"
                   [(ngModel)]="ruleModel.actions.service_connection.enabled" 
                   [disabled]="isView">
                 <label class="form-check-label" for="service_connection">Service Connection</label>
 
-                <div class="" *ngIf="ruleModel.actions.service_connection.enabled && decodedToken?.privileges?.indexOf('SCV') > -1">
+                <div class="" *ngIf="ruleModel.actions?.service_connection.enabled && decodedToken?.privileges?.indexOf('SCV') > -1">
                   <div class="form-inline">
                     <ng-container>
                       <div class="form-group">
@@ -452,22 +451,22 @@
                           name="group-dropdown" groupBy="type" [(ngModel)]="selectedServiceConnectionsGroup['connections']" [closeOnSelect]="false"
                           required>
                           <ng-template ng-header-tmp>
-                            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                              <li *ngIf="serviceConnectionGroups.length !== selectedServiceConnectionsGroup['connections'].length"> <a
+                            <ul *ngIf="serviceConnectionGroups?.length" style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                              <li *ngIf="serviceConnectionGroups?.length !== selectedServiceConnectionsGroup['connections']?.length"> <a
                                   href="javascript:void(0)"
                                   (click)="selectedServiceConnectionsGroup['connections'] = serviceConnectionGroups">Select All</a></li>
-                              <li *ngIf="serviceConnectionGroups.length === selectedServiceConnectionsGroup['connections'].length"> <a
+                              <li *ngIf="serviceConnectionGroups?.length === selectedServiceConnectionsGroup['connections']?.length"> <a
                                   href="javascript:void(0)" (click)="selectedServiceConnectionsGroup['connections']= []">Deselect
                                   All</a></li>
                             </ul>
                           </ng-template>
                           <ng-template ng-option-tmp let-item="item">
                             <span>
-                              {{item.name}}
+                              {{item?.name}}
                             </span>
                           </ng-template>
                           <ng-template ng-multi-label-tmp let-items="items">
-                            {{items.length}} Service Connections Selected
+                            {{items?.length}} Service Connections Selected
                           </ng-template>
                         </ng-select>
                       </div>
@@ -479,13 +478,13 @@
                     </ng-container>
                   </div>
                   <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
-                    *ngIf="ruleModel.actions.service_connection.connections?.length > 0">
-                    <ng-container *ngFor="let item of ruleModel.actions.service_connection.connections; let index = index">
+                    *ngIf="ruleModel.actions?.service_connection.connections?.length > 0">
+                    <ng-container *ngFor="let item of ruleModel.actions?.service_connection?.connections; let index = index">
                       <span class="tag">
                         <span class="tag-text">
                           <ng-container *ngFor="let serviceConnectionObj of serviceConnectionGroups" >
-                            <ng-container *ngIf="serviceConnectionObj.id==item">
-                              {{serviceConnectionObj.name}}
+                            <ng-container *ngIf="serviceConnectionObj?.id==item">
+                              {{serviceConnectionObj?.name}}
                             </ng-container>
                           </ng-container>
                         </span>

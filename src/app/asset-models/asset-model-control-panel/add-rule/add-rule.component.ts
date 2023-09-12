@@ -146,7 +146,7 @@ export class AddRuleComponent implements OnInit {
     if (!this.ruleModel.actions.asset_control) {
       this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
-    if (!this.ruleModel.actions.service_connection) {
+    if (this.decodedToken?.privileges?.indexOf('SCV') > -1 && !this.ruleModel.actions.service_connection) {
       this.ruleModel.actions.service_connection = { enabled: false, connections: [] };
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -271,8 +271,27 @@ export class AddRuleComponent implements OnInit {
         notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
         asset_control: { enabled: false, disable: false },
       };
+      if (this.decodedToken?.privileges?.indexOf('SCV') > -1 && !this.ruleModel?.actions?.service_connection) {
+        this.ruleModel.actions.service_connection = { enabled: false, connections: [] };
+      }
     } else {
       this.ruleModel.actions = this.ruleData.actions;
+      if (this.decodedToken?.privileges?.indexOf('SCV') > -1 && !this.ruleData?.actions?.service_connection && this.ruleData?.actions?.service_connection?.enabled=== undefined ) {
+        this.ruleModel.actions.service_connection = { enabled: false, connections: [] };
+      }
+      else{
+        this.ruleModel.actions.service_connection = this.ruleData.actions.service_connection;
+        this.selectedServiceConnectionsGroup['connections'] = this.ruleModel.actions.service_connection.connections;
+        this.ruleModel.actions?.service_connection?.connections.forEach((connection) => {
+          this.serviceConnectionGroups.forEach((serviceConnectionElement) => {
+  
+            if(serviceConnectionElement.id === connection){
+              this.selectedServiceConnectionsGroup['connections'].push(serviceConnectionElement.name);
+            }
+          });
+
+        });
+      }
     }
     if (!this.ruleModel.actions.alert_management) {
       this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null,severity:null };
@@ -473,13 +492,13 @@ export class AddRuleComponent implements OnInit {
         );
       }
     });
-    this.selectedServiceConnectionsGroup[key]=[];
   }
   removeServiceConnectionGroup(index) {
     this.ruleModel.actions.service_connection.connections.splice(index, 1);
   }
   onChangeOfServiceConnectionCheckbox(){
     this.ruleModel.actions.service_connection.connections = [];
+    this.selectedServiceConnectionsGroup['connections']=[];
   }
 
   onSwitchValueChange(event) {
@@ -588,7 +607,7 @@ export class AddRuleComponent implements OnInit {
       !this.ruleModel.actions.alert_management.enabled &&
       !this.ruleModel.actions.notification.enabled &&
       !this.ruleModel.actions.asset_control.disable &&
-      !this.ruleModel.actions.service_connection.enabled
+      !this.ruleModel.actions?.service_connection?.enabled
     ) {
       this.toasterService.showError('Please select any one of the actions', 'Add Rule');
       return;

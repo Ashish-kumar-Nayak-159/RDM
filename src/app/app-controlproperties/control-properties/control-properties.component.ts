@@ -100,8 +100,10 @@ export class ControlPropertiesComponent implements OnInit {
 
   isAllSelected(property: any) {
     this.selectedProperty = property;
+    this.controlproperties.forEach(function (item) {
+      item.syncUp = true; // Set item.syncUp to true
+    });
     this.masterSelected = this.controlproperties.every(function (item: any) {
-      item.syncUp == true;
       return item.isSelected == true
     })
     this.getCheckedItemList();

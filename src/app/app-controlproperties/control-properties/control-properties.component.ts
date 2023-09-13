@@ -194,6 +194,60 @@ export class ControlPropertiesComponent implements OnInit {
     })
   }
 
+  // inputBoxValueChange(data, value: string) {
+  //   this.isEnteredAnyValue = false;
+  //   this.controlproperties.map((detail) => {
+  //     if (data.metadata.sd) {
+  //       if (detail.id == data.id) {
+  //         if (data.metadata.sd == 1 || data.metadata.sd == 7) {
+  //           if (typeof detail.new_value === 'string') {
+  //             detail.new_value = detail.new_value.replace(/[^0-9.]+/gi, "");
+  //           }
+  //           if (typeof value === 'string') {
+  //             value = value.replace(/[^0-9.]+/gi, "");
+  //           }
+  //         }
+  //         if (data.metadata.sd == 2 || data.metadata.sd == 8) {
+  //           detail.new_value = detail?.new_value?.replace(/[^0-9]+/gi, "");
+  //           value = value?.replace(/[^0-9]+/gi, "");
+  //         }
+  //         if (data.metadata.sd == 3 || data.metadata.sd == 4) {
+  //           detail.new_value = detail?.new_value?.replace(/[^0-9-+]+/gi, "");
+  //           value = value?.replace(/[^0-9-+]+/gi, "");
+  //         }
+  //         if (data.metadata.sd == 5 || data.metadata.sd == 6) {
+  //           detail.new_value = detail?.new_value?.replace(/[^0-9-+.]+/gi, "");
+  //           value = value?.replace(/[^0-9-+.]+/gi, "");
+  //         }
+  //         if (detail?.new_value !== null && detail?.new_value !== undefined && detail?.new_value.trim() !== '') {
+  //           this.isEnteredAnyValue = true;
+  //           // new_value has a value
+  //           // You can further process it here
+  //         }
+  //         // if (detail?.new_value?.length > 0) {
+  //         //   this.isEnteredAnyValue = true;
+  //         // }
+  //       }
+  //     } else {
+  //       if (data.metadata.d != 'd') {
+  //         if (detail.id == data.id && data.data_type == 'Number') {
+  //           detail.new_value = detail?.new_value?.replace(/[^0-9.]+/gi, "");
+  //           value = value?.replace(/[^0-9.]+/gi, "");
+  //         }
+  //         if (detail.id == data.id && data.data_type == 'String') {
+  //           detail.new_value = detail?.new_value?.replace(/[^a-zA-Z_]+/gi, "");
+  //           value = value?.replace(/[^a-zA-Z_]+/gi, "");
+  //         }
+  //       }
+  //       if (detail?.new_value?.toString()?.length > 0) {
+  //         this.isEnteredAnyValue = true;
+  //       }
+
+  //     }
+  //     return detail;
+  //   })
+  // }
+
   SyncuoCall(event: any) {
     if (this.selectedItems?.hasOwnProperty('new_value') || this.selectedItems?.length > 0) {
       let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.assetwiseData?.asset_id : this.selectedAssets.gateway_id) + '_' + this.commonService.generateUUID();

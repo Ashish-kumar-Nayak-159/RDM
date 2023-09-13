@@ -1,7 +1,7 @@
 <div class="tab-bar">
     <div class="d-flex d-flex align-items-center">
       <div class="h6 m-0 p-0">Service Connections
-        <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('SCM') > -1">
+        <ng-container *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('SCM') > -1">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateEditServiceConnection()"
             placement="bottom" tooltip="Add Service Connection"><em class="fas fa-plus fa-sm"></em></button>
         </ng-container>
@@ -16,21 +16,21 @@
           <th scope="col">Connection Name</th>
           <th scope="col">Connection Type</th>
           <th scope="col">Endpoint</th>
-          <th scope="col"*ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1 && decodedToken.privileges.indexOf('SCM') > -1">Actions</th>
+          <th scope="col"*ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('UMM') > -1 && decodedToken?.privileges?.indexOf('SCM') > -1">Actions</th>
         </tr>
       </thead>
        <tbody >
-       <ng-container *ngIf="service_connections.length > 0 && !isGetAPILoading">
+       <ng-container *ngIf="service_connections?.length > 0 && !isGetAPILoading">
           <tr *ngFor="let getConnection of service_connections">
-            <td>{{ getConnection.name }}</td>
-            <td>{{ getConnection.type }}</td>
+            <td>{{ getConnection?.name }}</td>
+            <td>{{ getConnection?.type }}</td>
             <td class="w-50"> 
-              <div [tooltip]="getConnection.endpoint" placement="top">
-                {{ getConnection.endpoint | ellipsis:80 }}
+              <div [tooltip]="getConnection?.endpoint" placement="top">
+                {{ getConnection?.endpoint | ellipsis:80 }}
                 </div> 
               </td>
             <td>
-              <span *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('SCM') > -1">
+              <span *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('SCM') > -1">
                 <a href="javascript:void(0)" (click)="openCreateEditServiceConnection(getConnection)" class="mr-1" placement="bottom"
                   tooltip="Edit">
                   <em class="fa fa-fw fa-edit"></em>
@@ -48,9 +48,9 @@
             <td colspan="5"><em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></td>
           </tr>
         </ng-container>
-        <ng-container *ngIf="!isGetAPILoading && service_connections.length === 0">
+        <ng-container *ngIf="!isGetAPILoading && service_connections?.length === 0">
           <tr>
-            <td colspan="5"> No Users available.</td>
+            <td colspan="5"> No Service Connection available.</td>
           </tr>
         </ng-container>
   
@@ -58,12 +58,12 @@
     </table>
   </div>
 
-  <div class="modal right fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal right fade" id="create_Edit_Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">
       <div class="modal-content" *ngIf="addConnectionObj">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{addConnectionObj.id ? 'Edit': 'Add New'}} Service Connection</h5>
-          <button type="button" class="close" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
+          <h5 class="modal-title" id="exampleModalLabel">{{addConnectionObj?.id ? 'Edit': 'Add New'}} Service Connection </h5>
+          <button type="button" class="close" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateEditModal()">
             <span aria-hidden="true" tooltip="Close">&times;</span>
           </button>
         </div>
@@ -71,7 +71,7 @@
           <form [formGroup]="addServiceConnectionForm">
             <div class="form-group">
               <label for="service_connection_name" class="col-form-label required">Service Connection Name:</label>
-              <input type="text" class="form-control form-control-sm" id="service_connection_name" placeholder="Enter Service Connection Name" formControlName="name" [defaultValue]="addConnectionObj.name"/>
+              <input type="text" class="form-control form-control-sm" id="service_connection_name" placeholder="Enter Service Connection Name" formControlName="name" [defaultValue]="addConnectionObj?.name"/>
             </div>
             <div class="form-group">
                 <label for="connection_type" class="col-form-label required">Service Connection Type:</label>
@@ -80,7 +80,7 @@
                   <option [value]="type" *ngFor="let type of service_connection_type">{{type}}</option>
                 </select>
               </div>
-              <ng-container *ngIf="connectionType==='Service Bus' || addConnectionObj.type==='Servicebus' && addServiceConnectionForm.get('endpoint') && addServiceConnectionForm.get('connection_string')">
+              <ng-container *ngIf="connectionType==='Service Bus'">
                 <div class="form-group">
                     <label for="topic_name" class="col-form-label required">Service Bus Queue / Topic Name:</label>
                     <input type="text" class="form-control form-control-sm" id="topic_name" placeholder="Enter Service Bus Queue / Topic Name" formControlName="endpoint" />
@@ -90,21 +90,20 @@
                     <input type="text" class="form-control form-control-sm" id="connection_string" placeholder="Enter Service Bus Connection String" formControlName="connection_string" (change)="on_connection_string()" />
                   </div>
               </ng-container>
-              <ng-container *ngIf="connectionType==='Microsoft Teams' || addConnectionObj.type==='MicrosoftTeams'">
+              <ng-container *ngIf="connectionType==='Microsoft Teams'">
                 <div class="form-group">
                   <label for="microsoftTeam" class="col-form-label required">Microsoft Teams Webhook URL:</label>
                   <input type="text" class="form-control form-control-sm" id="microsoftTeam" placeholder="Enter Microsoft Teams Webhook URL" formControlName="endpoint"/>
                   </div>
                 </ng-container>
-                
-                <ng-container *ngIf="connectionType==='Webhook' || addConnectionObj.type==='Webhook'">
+                <ng-container *ngIf="connectionType==='Webhook'">
                   <div class="form-group">
                       <label for="Webhook_URL" class="col-form-label required">Webhook URL:</label>
                       <input type="text" class="form-control form-control-sm" id="Webhook_URL" placeholder="Enter Webhook URL" formControlName="endpoint"/>
                     </div>
                   <div class="form-group">
                     <div class="mb-2 ms-1"> Http Header (Optional):
-                      <ng-container  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
+                      <ng-container  *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('UMM') > -1">
                         <button type="button" class="btn btn-sm httpHeaderBtn btn-primary" (click)="addHttpHeader()"
                         placement="right" tooltip="Add Http Header"><em class="fas fa-plus fa-sm"></em></button>
                       </ng-container>
@@ -121,7 +120,7 @@
                                [class.is-invalid]="key?.touched && 
                                key?.errors?.whitespace
                                 "
-                                (focusout)="key.touched && key.errors?.whitespace ? disableKey=true : disableKey=false"
+                                (focusout)="key?.touched && key.errors?.whitespace ? disableKey=true : disableKey=false"
                                  >
                           </div>
                             <div class="col">
@@ -142,13 +141,13 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary add-row" (click)="onCreateServiceConnection()"
+          <button type="submit" class="btn btn-primary add-row" (click)="onCreateEditServiceConnection()"
             [disabled]="isCreateUserAPILoading || !addServiceConnectionForm?.valid || !connectionType || disableKey || disableValue">
             Save
             <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></em>
           </button>
           <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading"
-            (click)="onCloseCreateUserModal()">
+            (click)="onCloseCreateEditModal()">
             Cancel
           </button>
         </div>

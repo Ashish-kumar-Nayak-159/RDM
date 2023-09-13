@@ -63,8 +63,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     'email': [],
     'sms': [],
     'whatsapp': [],
-    'push_notification': [],
-    'service_connection': []
+    'push_notification': []
   };
   serviceConnectionGroups: any[] = [];
   subscriptions: Subscription[] = [];
@@ -102,6 +101,13 @@ export class AssetAlertConditionsComponent implements OnInit {
       this.getApplicationUserGroups();
     }
     if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.selectedUserGroups={
+        'email': [],
+        'sms': [],
+        'whatsapp': [],
+        'push_notification': [],
+        'service_connection': []
+      };
       this.getServiceConnectionGroups();
     }
   }
@@ -281,7 +287,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       let index;
       if(key==='service_connection'){
         element.type=this.organizeServiceConnectionsType(element.type);
-        if(element.name){
+        if(element?.name){
           element= this.renameKey(element,'name','group_name');
         }
         index = this.alertObj.actions[key].connections.findIndex((group) =>  group === element.id );
@@ -297,7 +303,7 @@ export class AssetAlertConditionsComponent implements OnInit {
             this.toasterService.showError( 'Same Service Connection is already added.', 'Add Service Connection');
           }
           return;
-        } else if (!element.group_name) {
+        } else if (!element?.group_name) {
           if(key!=='service_connection'){
             this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
           }
@@ -306,7 +312,7 @@ export class AssetAlertConditionsComponent implements OnInit {
           }
           return;
         }
-        if (element.group_name && index === -1) {
+        if (element?.group_name && index === -1) {
         if(key!=='service_connection'){
           this.alertObj.actions[key].recipients.splice(
             this.alertObj.actions[key].recipients.length,
@@ -353,14 +359,23 @@ export class AssetAlertConditionsComponent implements OnInit {
     }
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
+        console.log('1. this.alertObj.actions', this.alertObj.actions);
         this.alertObj.actions = {
           email: { enabled: false, recipients: [] },
           whatsapp: { enabled: false, recipients: [] },
           sms: { enabled: false, recipients: [] },
-          push_notification: { enabled: false, recipients: [] },
-          service_connection: { enabled: false, connections: [] }
-
+          push_notification: { enabled: false, recipients: [] }
         };
+        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+          this.alertObj.actions = {
+            email: { enabled: false, recipients: [] },
+            whatsapp: { enabled: false, recipients: [] },
+            sms: { enabled: false, recipients: [] },
+            push_notification: { enabled: false, recipients: [] },
+            service_connection: { enabled: false, connections: [] }
+        };
+      }
+        console.log('2. this.alertObj.actions', this.alertObj.actions);
       } else {
         if (!this.alertObj.actions.email) {
           this.alertObj.actions.email = { enabled: false, recipients: [] };
@@ -398,11 +413,13 @@ export class AssetAlertConditionsComponent implements OnInit {
         if (!this.alertObj.actions.push_notification.enabled) {
           this.alertObj.actions.push_notification.recipients = [];
         }
-        if (!this.alertObj.actions.service_connection) {
-          this.alertObj.actions.service_connection = { enabled: false, connections: [] };
-        }
-        if (!this.alertObj.actions.service_connection.connections) {
-          this.alertObj.actions.service_connection.connections = [];
+        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+          if (!this.alertObj.actions.service_connection) {
+            this.alertObj.actions.service_connection = { enabled: false, connections: [] };
+          }
+          if (!this.alertObj.actions.service_connection.connections) {
+            this.alertObj.actions.service_connection.connections = [];
+          }
         }
       }
     }
@@ -591,8 +608,16 @@ export class AssetAlertConditionsComponent implements OnInit {
           'email': [],
           'sms': [],
           'whatsapp': [],
-          'push_notification': [],
-          'service_connection': []
+          'push_notification': []
+        }
+        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+          this.selectedUserGroups={
+            'email': [],
+            'sms': [],
+            'whatsapp': [],
+            'push_notification': [],
+            'service_connection': []
+          };
         }
       }
     }

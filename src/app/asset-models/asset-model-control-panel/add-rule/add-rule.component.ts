@@ -146,7 +146,7 @@ export class AddRuleComponent implements OnInit {
     if (!this.ruleModel.actions.asset_control) {
       this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
-    if (this.decodedToken?.privileges?.indexOf('SCV') > -1 && !this.ruleModel.actions.service_connection) {
+    if (this.decodedToken?.privileges?.indexOf('SCV') > -1 && !this.ruleModel?.actions?.service_connection) {
       this.ruleModel.actions.service_connection = { enabled: false, connections: [] };
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -285,7 +285,7 @@ export class AddRuleComponent implements OnInit {
         this.ruleModel.actions?.service_connection?.connections.forEach((connection) => {
           this.serviceConnectionGroups.forEach((serviceConnectionElement) => {
   
-            if(serviceConnectionElement.id === connection){
+            if(serviceConnectionElement?.id === connection){
               this.selectedServiceConnectionsGroup['connections'].push(serviceConnectionElement.name);
             }
           });
@@ -410,7 +410,7 @@ export class AddRuleComponent implements OnInit {
   getServiceConnectionGroups() {
     this.subscriptions.push(
       this.applicationService.getServiceConnection().subscribe((response: any) => {
-        if (response && response.data) {
+        if (response && response?.data) {
           this.serviceConnectionGroups=response.data;
           this.serviceConnectionGroups.forEach((element) => {
             element.type = this.organizeServiceConnectionsType(element.type);
@@ -476,15 +476,15 @@ export class AddRuleComponent implements OnInit {
   }
   addserviceConnectionGroup(key){
     this.selectedServiceConnectionsGroup[key].forEach(connectionData => {
-      const index = this.ruleModel.actions.service_connection.connections.findIndex((connection) => connection === connectionData.id);
+      const index = this.ruleModel.actions.service_connection.connections.findIndex((connection) => connection === connectionData?.id);
       if (index > -1) {
         this.toasterService.showError('Same Service Connection is already added.', 'Add Service Connection');
         return;
-      } else if (!connectionData.id) {
+      } else if (!connectionData?.id) {
         this.toasterService.showError('Please select Service Connection to add', 'Add Service Connection');
         return;
       }
-      if (connectionData.id && index === -1) {
+      if (connectionData?.id && index === -1) {
         this.ruleModel.actions.service_connection.connections.splice(
           this.ruleModel.actions.service_connection.connections.length,
           0,

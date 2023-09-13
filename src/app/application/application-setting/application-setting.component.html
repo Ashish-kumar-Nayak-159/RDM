@@ -68,7 +68,7 @@
                  (click)="setActiveTab('user-groups')">
                 User Groups</a>
             </li>
-            <li class="nav-item" *ngIf="decodedToken.privileges && decodedToken.privileges.indexOf('SCV') > -1">
+            <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('SCV') > -1">
               <a class="nav-item nav-link border-0"  data-toggle="tab"
                 [ngClass]="{'active': activeTab === 'service-connections'}" href="#app-service-connections" 
                  (click)="setActiveTab('service-connections')">
@@ -136,7 +136,7 @@
       <app-application-filter-settings *ngIf="activeTab === 'filter-settings' && applicationData"
         [applicationData]="applicationData"></app-application-filter-settings>
     </div>
-    <div *ngIf="decodedToken.privileges.indexOf('SCV') > -1" class="tab-pane" id="app-service-connections" role="tabpanel" aria-labelledby="nav-about-tab"
+    <div *ngIf="decodedToken?.privileges?.indexOf('SCV') > -1" class="tab-pane" id="app-service-connections" role="tabpanel" aria-labelledby="nav-about-tab"
       [ngClass]="{'active': activeTab === 'service-connections'}">
       <app-service-connection *ngIf="activeTab === 'service-connections'" [applicationData]="applicationData"></app-service-connection>
     </div>

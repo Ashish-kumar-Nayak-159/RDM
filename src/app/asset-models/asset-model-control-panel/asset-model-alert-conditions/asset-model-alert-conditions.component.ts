@@ -61,9 +61,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     'email': [],
     'sms': [],
     'whatsapp': [],
-    'push_notification': [],
-    'service_connection': [],
-
+    'push_notification': []
   };
   recommendationObj: any;
   // docName: any;
@@ -107,6 +105,13 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     }
 
     if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.selectedUserGroups = {
+        'email': [],
+        'sms': [],
+        'whatsapp': [],
+        'push_notification': [],
+        'service_connection': []
+      };
       this.getServiceConnectionGroups();
     }
 
@@ -701,7 +706,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       email: { enabled: false },
       whatsapp: { enabled: false },
       sms: { enabled: false },
+      push_notification: { enabled: false },
     };
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      alertObj.actions = {
+        email: { enabled: false },
+        whatsapp: { enabled: false },
+        sms: { enabled: false },
+        service_connection: { enabled: false }
+      };
+    }
     this.subscriptions.push(
       this.assetModelService.createAlertCondition(alertObj, this.assetModel.app, this.assetModel.name).subscribe(
         (response: any) => {
@@ -727,9 +741,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       'email': [],
       'sms': [],
       'whatsapp': [],
-      'push_notification': [],
-      'service_connection': []
-
+      'push_notification': []
+    }
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.selectedUserGroups= {
+        'email': [],
+        'sms': [],
+        'whatsapp': [],
+        'push_notification': [],
+        'service_connection': []
+      }
     }
   }
 
@@ -751,9 +772,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           'email': [],
           'sms': [],
           'whatsapp': [],
-          'push_notification': [],
-          'service_connection': []
-
+          'push_notification': []
+        }
+        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+          this.selectedUserGroups= {
+            'email': [],
+            'sms': [],
+            'whatsapp': [],
+            'push_notification': [],
+            'service_connection': []
+          };
         }
       }
     }

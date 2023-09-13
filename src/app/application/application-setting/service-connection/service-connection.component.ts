@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, AbstractControl, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -34,11 +34,11 @@ export class ServiceConnectionComponent implements OnInit {
   connectionType;
   isDeleteUserAPILoadig = false;
   selectedServiceConnectionForDelete: any;
+  webhookKeyValue: any[] = [];
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
-    private toasterService: ToasterService,
-    private fb: FormBuilder,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -59,7 +59,7 @@ export class ServiceConnectionComponent implements OnInit {
     this.service_connections = [];
     this.apiSubscriptions.push(
       this.applicationService.getServiceConnection().subscribe((response: any) => {
-        if (response && response.data) {
+        if (response && response?.data) {
           this.service_connections = response.data;
           this.isGetAPILoading = false;
         }
@@ -92,10 +92,9 @@ export class ServiceConnectionComponent implements OnInit {
       if(this.connectionType===""){
         this.connectionType = undefined;
       }
-      // this.connectionType = serviceConnectionObj.type === 'Servicebus' ? 'Service Bus' : serviceConnectionObj.type === 'MicrosoftTeams' ? 'Microsoft Teams' : serviceConnectionObj.type === 'Webhook' ? 'Webhook' : undefined;
       this.addConnectionObj = JSON.parse(JSON.stringify(serviceConnectionObj));
       this.onConnectionTypeChange(this.connectionType, this.addConnectionObj);
-      if (serviceConnectionObj && serviceConnectionObj.type === 'Servicebus' && this.connectionType === 'Service Bus') {
+      if (serviceConnectionObj && serviceConnectionObj?.type === 'Servicebus' && this.connectionType === 'Service Bus') {
         this.addServiceConnectionForm = new FormGroup({
           name: new FormControl(serviceConnectionObj?.name ? serviceConnectionObj.name : "", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
           type: new FormControl(this.organizeServiceConnectionsType(serviceConnectionObj.type), [Validators.required]),
@@ -107,7 +106,7 @@ export class ServiceConnectionComponent implements OnInit {
         });
       }
       else {
-        if (serviceConnectionObj.type === 'MicrosoftTeams') {
+        if (serviceConnectionObj?.type === 'MicrosoftTeams' && this.connectionType === 'Microsoft Teams') {
           this.addServiceConnectionForm = new FormGroup({
             name: new FormControl(serviceConnectionObj.name, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
             type: new FormControl(this.organizeServiceConnectionsType(serviceConnectionObj.type), [Validators.required]),
@@ -117,7 +116,7 @@ export class ServiceConnectionComponent implements OnInit {
           this.addServiceConnectionForm.get('endpoint').setValue(serviceConnectionObj?.endpoint ? serviceConnectionObj.endpoint : null);
         }
         else {
-          if (serviceConnectionObj.type === 'Webhook') {
+          if (serviceConnectionObj?.type === 'Webhook' && this.connectionType === 'Webhook') {
             this.addServiceConnectionForm = new FormGroup({
               name: new FormControl(serviceConnectionObj.name, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
               type: new FormControl(this.organizeServiceConnectionsType(serviceConnectionObj.type), [Validators.required]),
@@ -134,7 +133,7 @@ export class ServiceConnectionComponent implements OnInit {
         }
       }
     }
-    $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#create_Edit_Modal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   openDeleteServiceConnection(connectionObj) {
@@ -166,33 +165,41 @@ export class ServiceConnectionComponent implements OnInit {
     );
   }
 
-  onCloseCreateUserModal() {
-    $('#createUserModal').modal('hide');
+  onCloseCreateEditModal() {
+    $('#create_Edit_Modal').modal('hide');
     this.addConnectionObj = undefined;
     this.addServiceConnectionForm.reset();
     this.connectionType = undefined;
     this.webhookKeyValue = [];
   }
-  onConnectionTypeChange(event, userObj?) {
+  onConnectionTypeChange(event, serviceObj?) {
     if (event) {
       this.connectionType = event;
       this.serviceConnectionsObj.type = event.replace(/ /g, '');
-      if (event === 'Service Bus') {
+      if (event === 'Service Bus' && this.serviceConnectionsObj.type === 'Service Bus') {
         this.serviceConnectionsObj.type = 'Servicebus';
       }
     }
     if (this.connectionType === 'Service Bus') {
+      if(this.webhookKeyValue?.length > 0) {
+        this.webhookKeyValue = [];
+      }
       this.addServiceConnectionForm.removeControl('endpoint');
-      this.addServiceConnectionForm.removeControl('keyValue');
+      this.addServiceConnectionForm.removeControl('key');
+      this.addServiceConnectionForm.removeControl('value');
       this.addServiceConnectionForm.removeControl('connection_string');
-      this.addServiceConnectionForm.addControl('endpoint', new FormControl("", [Validators.required, Validators.minLength(4), Validators.maxLength(50)]));
-      this.addServiceConnectionForm.addControl('connection_string', new FormControl(userObj && userObj?.config && userObj?.config?.connection_string ? userObj.config.connection_string : "", [Validators.required
+      this.addServiceConnectionForm.addControl('endpoint', new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]));
+      this.addServiceConnectionForm.addControl('connection_string', new FormControl('', [Validators.required
         , Validators.pattern(CONSTANTS.DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX)
       ]));
     }
     else {
       if (this.connectionType === 'Microsoft Teams') {
-        this.addServiceConnectionForm.removeControl('keyValue');
+        if(this.webhookKeyValue?.length > 0) {
+          this.webhookKeyValue = [];
+        }
+        this.addServiceConnectionForm.removeControl('key');
+        this.addServiceConnectionForm.removeControl('value');
         this.addServiceConnectionForm.removeControl('endpoint');
         this.addServiceConnectionForm.removeControl('connection_string');
         this.addServiceConnectionForm.addControl('endpoint', new FormControl(null, [Validators.required
@@ -200,7 +207,7 @@ export class ServiceConnectionComponent implements OnInit {
         ]));
       }
       else {
-        if (this.connectionType === 'Webhook' || userObj?.type === 'Webhook') {
+        if (this.connectionType === 'Webhook') {
           this.addServiceConnectionForm.removeControl('endpoint');
           this.addServiceConnectionForm.removeControl('connection_string');
           this.addServiceConnectionForm.addControl('endpoint', new FormControl(null, [Validators.required
@@ -210,7 +217,6 @@ export class ServiceConnectionComponent implements OnInit {
       }
     }
   }
-  webhookKeyValue: any[] = [];
   addHttpHeader() {
     this.webhookKeyValue.push({
       key: undefined,
@@ -229,7 +235,7 @@ export class ServiceConnectionComponent implements OnInit {
   disableValue = false;
   allKeyValues: any[];
   keyValue: { [key: string]: string } = {};
-  onCreateServiceConnection() {
+  onCreateEditServiceConnection() {
     this.serviceConnectionsObj.name = this.addServiceConnectionForm.value.name;
     this.serviceConnectionsObj.config = {};
     if (this.connectionType === 'Service Bus') {
@@ -242,39 +248,39 @@ export class ServiceConnectionComponent implements OnInit {
       }
       else {
         this.serviceConnectionsObj.endpoint = this.addServiceConnectionForm.value.endpoint;
-        if (this.webhookKeyValue.length > 0) {
+        if (this.webhookKeyValue?.length > 0) {
           let flag = 0;
-          for (let i = 0; i < this.webhookKeyValue.length; i++) {
-            if (this.webhookKeyValue[i].key !== undefined && this.webhookKeyValue[i].value !== undefined && this.webhookKeyValue[i].key !== null && this.webhookKeyValue[i].value !== null) {
+          for (let i = 0; i < this.webhookKeyValue?.length; i++) {
+            if (this.webhookKeyValue[i]?.key !== undefined && this.webhookKeyValue[i]?.value !== undefined && this.webhookKeyValue[i]?.key !== null && this.webhookKeyValue[i]?.value !== null) {
               flag++;
               this.keyValue[this.webhookKeyValue[i].key] = this.webhookKeyValue[i].value;
             }
             else {
               this.toasterService.showError("Please fill all the key value pairs", 'Create Service Connection');
-              break;
+              return;
             }
           }
-          if (flag !== 0 && this.webhookKeyValue.length === flag) {
+          if (flag !== 0 && this.webhookKeyValue?.length === flag) {
             this.serviceConnectionsObj.config = this.keyValue;
           }
         }
       }
     }
 
-    if (this.addServiceConnectionForm.valid) {
+    if (this.addServiceConnectionForm?.valid) {
       this.isCreateUserAPILoading = true;
-      let apiResponse = this.addConnectionObj && this.addConnectionObj.id ? this.applicationService.updateServiceConnection(this.serviceConnectionsObj, this.addConnectionObj.id) : this.applicationService.createServiceConnection(this.serviceConnectionsObj);
+      let apiResponse = this.addConnectionObj && this.addConnectionObj?.id ? this.applicationService.updateServiceConnection(this.serviceConnectionsObj, this.addConnectionObj?.id) : this.applicationService.createServiceConnection(this.serviceConnectionsObj);
 
-      this.apiSubscriptions.push(
-        apiResponse.subscribe(
+      this.apiSubscriptions?.push(
+        apiResponse?.subscribe(
           (response: any) => {
-            this.toasterService.showSuccess(response.message, this.addConnectionObj?.id ? 'Update Service Connection' : 'Create Service Connection');
+            this.toasterService.showSuccess(response?.message, this.addConnectionObj?.id ? 'Update Service Connection' : 'Create Service Connection');
             this.isCreateUserAPILoading = false;
-            this.onCloseCreateUserModal();
+            this.onCloseCreateEditModal();
             this.getAllServiceConnections();
           },
           (error) => {
-            this.toasterService.showError(error.message, this.addConnectionObj?.id ? 'Update Service Connection' : 'Create Service Connection');
+            this.toasterService?.showError(error?.message, this.addConnectionObj?.id ? 'Update Service Connection' : 'Create Service Connection');
             this.isCreateUserAPILoading = false;
           }
         )

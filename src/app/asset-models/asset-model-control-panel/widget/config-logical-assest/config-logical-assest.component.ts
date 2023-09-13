@@ -430,6 +430,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
             assetid: this.widgetObj.Y1Assest,
             // asset_model: this.widgetObj.Y1Assest?.asset_model,
             color: prop.color,
+            composite_key: `${this.widgetObj.Y1Assest}#${prop.type}#${prop.json_key}`,
+
           };
           arr.push(obj);
         });
@@ -451,6 +453,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
             assetid: this.widgetObj.Y2Assest,
             // asset_model: this.widgetObj.Y2Assest?.asset_model,
             color: prop.color,
+            composite_key: `${this.widgetObj.Y2Assest}#${prop.type}#${prop.json_key}`,
+
           };
           arr.push(obj);
         });
@@ -525,6 +529,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id,
+          "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`
+
         }
         customProperties.push(obj);
       });
@@ -591,6 +597,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "units": element.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id,
+          "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`
+
         }
         customProperties.push(obj);
 
@@ -626,6 +634,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "json_key": element.property.json_key,
           "units": element.property.unit,
           "asset_id": element.asset_id,
+          "composite_key": `${element.asset_id}#${element.property.type}#${element.property.json_key}`
+
         }
         customProperties.push(obj);
       });
@@ -656,6 +666,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "normal_min": element.normal_min,
           "normal_color": element.normal_color,
           "digitsAfterDecimals": element.digitsAfterDecimals,
+          "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`
+
         }
         customProperties.push(obj);
 
@@ -672,6 +684,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
       this.widgetObj.properties.forEach(element => {
         element.type = this.getPropertieType(element.type);
         element.units = element.unit;
+        element.composite_key = `${element.asset_id}#${element.type}#${element.json_key}`;
         delete element['propertyList'];
       });
       properties = this.widgetObj.properties;

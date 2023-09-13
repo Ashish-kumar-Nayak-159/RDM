@@ -226,11 +226,11 @@
                             <ng-template ng-multi-label-tmp let-items="items">
                               {{items.length}} documents selected
                             </ng-template>
-                            <ng-template ng-header-tmp>
+                            <ng-template ng-header-tmp *ngIf="documents?.length">
                               <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                                <li *ngIf="documents.length !== selectedDocuments.length"> <a href="javascript:void(0)"
+                                <li *ngIf="documents?.length !== selectedDocuments?.length"> <a href="javascript:void(0)"
                                     (click)="selectedDocuments = documents">Select All</a></li>
-                                <li *ngIf="documents.length === selectedDocuments.length"> <a href="javascript:void(0)"
+                                <li *ngIf="documents?.length === selectedDocuments?.length"> <a href="javascript:void(0)"
                                     (click)="selectedDocuments = []">Deselect All</a></li>
                               </ul>
                             </ng-template>
@@ -531,6 +531,73 @@
                   </div>
                   </div>  
                 
+                </div>
+                <div class="form-group accordion-padding mx-3" *ngIf="contextApp?.app!='Indygo'  && contextApp?.app!='IndygoBeta' && decodedToken?.privileges?.indexOf('SCV') > -1">
+                <hr *ngIf="contextApp?.app!='Indygo'  && contextApp?.app!='IndygoBeta'">
+                  <input type="checkbox" class="form-check-input" id="service_connection" name="service_connection"
+                  [(ngModel)]="alertObj.actions.service_connection.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1 || assetModel?.freezed">
+                  <label class="form-check-label" for="service_connection">Service Connection</label>
+                  <div class="row my-2"
+                  *ngIf="alertObj?.actions?.service_connection?.enabled && decodedToken?.privileges?.indexOf('SCV') > -1">
+                  <div class="col-auto">
+                    <div class=""
+                      *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('ASMMM') > -1 && !assetModel?.freezed">
+                      <div class="form-inline">
+                        <ng-container>
+                          <div class="form-group">
+                            <ng-select [items]="serviceConnectionGroups" clearSearchOnAdd="true" [multiple]="true"
+                              class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                              placeholder="Select Service Connection" bindLabel="name" dropdownPosition="bottom" 
+                              name="group-dropdown" groupBy="type" [(ngModel)]="selectedUserGroups['service_connection']" [closeOnSelect]="false"
+                              required>
+                              <ng-template ng-header-tmp  *ngIf="serviceConnectionGroups?.length!==0" >
+                                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                                  <li *ngIf="serviceConnectionGroups?.length !== selectedUserGroups['service_connection']?.length"> <a
+                                      href="javascript:void(0)"
+                                      (click)="selectedUserGroups['service_connection'] = serviceConnectionGroups">Select All</a></li>
+                                  <li *ngIf="serviceConnectionGroups?.length === selectedUserGroups['service_connection']?.length"> <a
+                                      href="javascript:void(0)" (click)="selectedUserGroups['service_connection'] = []">Deselect
+                                      All</a></li>
+                                </ul>
+                              </ng-template>
+                              <ng-template ng-option-tmp let-item="item">
+                                <span>
+                                  {{item?.name}}
+                                </span>
+                              </ng-template>
+                              <ng-template ng-multi-label-tmp let-items="items">
+                                {{items?.length}} Service Conections selected
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                          <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                              tooltip="Add" (click)="addUserGroup('service_connection')">
+                              <em class="fa fa-plus fa-sm"></em></button>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                      *ngIf="alertObj?.actions?.service_connection?.connections?.length > 0">
+                      <ng-container *ngFor="let item of alertObj.actions.service_connection.connections; let index = index">
+                        <span class="tag">
+                          <span class="tag-text">
+                            <ng-container *ngFor="let serviceConnectionG of serviceConnectionGroups" >
+                              <ng-container *ngIf="serviceConnectionG?.id==item">
+                                {{serviceConnectionG?.name}}
+                              </ng-container>
+                            </ng-container>
+                          </span>
+                          <button class="tag-remove" (click)="removeUserGroup(index, 'service_connection')"
+                            *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('ASMMM') > -1 && !assetModel?.freezed"></button>
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                  </div>
                 </div>
                 </div>
               </td>

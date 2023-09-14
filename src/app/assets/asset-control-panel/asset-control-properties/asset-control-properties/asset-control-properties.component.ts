@@ -252,7 +252,7 @@ export class AssetControlPropertiesComponent implements OnInit {
       }
       const isEmpty = Object.keys(this.setProperties?.message?.properties).length === 0;
       if (isEmpty) {
-        this.toasterService.showError('To Sync Control Properties select checkbox and value', 'Check Box Selection');
+        this.toasterService.showError('To Sync Control Properties select checkbox or enter valid input.', 'Check Box Selection');
       } else {
         let isMfaEnabled = false;
         event?.forEach(item => {

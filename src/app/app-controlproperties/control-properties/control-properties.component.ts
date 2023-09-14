@@ -311,7 +311,7 @@ export class ControlPropertiesComponent implements OnInit {
       const isEmpty = propertiesObject &&
         Object.keys(propertiesObject).every(key => propertiesObject[key] === undefined);
       if (isEmpty) {
-        this.toasterService.showError('To  Sync Control Properties select checkbox and value', 'Check Box Selection');
+        this.toasterService.showError('To Sync Control Properties select checkbox or enter valid input.', 'Check Box Selection');
       } else {
         let isMfaEnabled = false;
         this.selectedItems.forEach(item => {

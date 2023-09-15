@@ -77,6 +77,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   userGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
+  selectedAudioFile:any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -359,7 +360,6 @@ export class AssetAlertConditionsComponent implements OnInit {
     }
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
-        console.log('1. this.alertObj.actions', this.alertObj.actions);
         this.alertObj.actions = {
           email: { enabled: false, recipients: [] },
           whatsapp: { enabled: false, recipients: [] },
@@ -375,7 +375,6 @@ export class AssetAlertConditionsComponent implements OnInit {
             service_connection: { enabled: false, connections: [] }
         };
       }
-        console.log('2. this.alertObj.actions', this.alertObj.actions);
       } else {
         if (!this.alertObj.actions.email) {
           this.alertObj.actions.email = { enabled: false, recipients: [] };
@@ -479,7 +478,10 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.editDocuments = {};
   }
 
-  onUpdateAlertConditions() {
+  async onUpdateAlertConditions() {
+    if(this.selectedAudioFile && this.selectedAudioFile?.name){
+      await this.uploadFile();
+    }
     let arr = [];
     arr = this.alertObj.visualization_widgets;
     arr.forEach((widget, index) => {
@@ -534,7 +536,10 @@ export class AssetAlertConditionsComponent implements OnInit {
     );
   }
 
-  onCreateAlertCondition() {
+  async onCreateAlertCondition() {
+    if(this.selectedAudioFile && this.selectedAudioFile?.name){
+      await this.uploadFile();
+    }
     const alertObj = JSON.parse(JSON.stringify(this.alertObj));
     alertObj.created_by = this.loggedInUser.email;
     if (
@@ -586,6 +591,7 @@ export class AssetAlertConditionsComponent implements OnInit {
 
   onCloseAlertConditionModal() {
     $('#addAlertConditionModal').modal('hide');
+    this.selectedAudioFile = undefined;
     this.alertObj = undefined;
     this.toggleRows = {};
     this.editDocuments = {};
@@ -661,4 +667,46 @@ renameKey(obj: any, oldKey: string, newKey: string): any {
   }
   return obj;
 }
+
+onAudioFileSelected(audio : FileList){
+  let selectedFile = audio.item(0);
+  if(!selectedFile.type.startsWith('audio/')){
+    this.toasterService.showError('Please Select Audio File', 'Upload File');
+    return;
+  }
+  else{
+    if (selectedFile?.size > CONSTANTS?.ASSET_ALERT_AUDIO_SIZE){
+      this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_ALERT_AUDIO_SIZE / 1000000 + " " + 'MB', 'Upload File');
+      return;
+    }
+    else {
+      this.selectedAudioFile = selectedFile;
+    }
+  }
+}
+
+async uploadFile(){
+    const data = await this.commonService.uploadImageToBlob(
+      this.selectedAudioFile,this.contextApp.app + '/models/' + this.asset.name);
+      if (data && data?.name && data?.url) {
+        const audioFile ={
+          name:data.name,
+          url:data.url
+        }
+        this.alertObj.metadata = {
+          ...this.alertObj?.metadata,
+          critical_alert_sound: audioFile
+        };
+      } 
+      else {
+      this.toasterService.showError('Error in uploading audio file', 'Upload file');
+      return ;
+    }
+  }
+
+  removeCriticalAlertAudioData(){
+    if(this.alertObj?.severity.toLowerCase()!=='critical' && this.alertObj?.metadata?.critical_alert_sound){
+      delete this.alertObj.metadata.critical_alert_sound;
+    }
+  }
 }

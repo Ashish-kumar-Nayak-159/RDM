@@ -5,6 +5,9 @@ import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
+import { AssetService } from '../services/assets/asset.service';
+import { AssetModelService } from '../services/asset-model/asset-model.service';
+import { environment } from 'src/environments/environment';
 declare var $: any;
 @Component({
   selector: 'app-rdm-side-menu',
@@ -40,13 +43,18 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   e_message_asset_id:any;
   w_message_asset_id:any;
   i_message_asset_id:any;
-
+  selectedAsset: any;
+  sasToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
+  audioUrl :any;
   constructor(
     private commonService: CommonService,
     private router: Router,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    private assetService: AssetService,
+    private assetModelService: AssetModelService,
   ) { }
 
   async ngOnInit(): Promise<void> { 
@@ -54,15 +62,19 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp && !this.userData?.is_super_admin) {
       this.connectToSignalR();
-      this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
-      
+      this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {
         if ((!msg.type || msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical')) {
+          this.getAssetData(msg);
+          await this.criticalAlertNotification(msg);
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
             'toast-bottom-right',
-            60000
-          );
+            60000,
+            this.criticalAlertAudioLoader(this.audioUrl)
+          )
+          this.audioUrl='';
+
         }
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){
           this.toasterService.showWarningAlert(
@@ -127,6 +139,70 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       })
     );
   }
+  criticalAlertAudioLoader(srcUrl?){
+    let playAudio: HTMLAudioElement = new Audio();
+    if(srcUrl){
+      playAudio.src = srcUrl;
+      return playAudio;
+    }
+  }
+
+ async criticalAlertNotification(msg){
+    return new Promise<void>((resolve) => {
+      if(msg && msg?.asset_id && msg?.severity && msg?.code){
+        const filterObj = {
+          app: this.contextApp.app,
+          asset_id: msg.asset_id,
+          asset_model: this.selectedAsset.asset_model
+        };
+        let assetData;
+        if(msg?.code?.startsWith('M_')){
+          assetData = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
+        }
+        else{
+          assetData = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
+        }
+        
+        if(assetData){
+          this.apiSubscriptions.push(
+            assetData.subscribe((response : any) => {
+              if(response?.data){
+                response?.data.forEach((item) => {
+                  if(msg?.severity?.toLowerCase()=== item?.severity?.toLowerCase() && msg?.code === item?.code && msg?.source?.toLowerCase()===item?.alert_type?.toLowerCase() ){
+                    if(item?.metadata && item?.metadata?.critical_alert_sound && item?.metadata?.critical_alert_sound?.url){
+                      this.audioUrl = this.blobStorageURL+(item.metadata.critical_alert_sound.url)+ this.sasToken;
+                      resolve();
+                    }
+                  }
+                });
+              }
+            })
+          )
+        }
+      }
+    });
+  }
+  getAssetData(msg?) {
+    if(msg && msg?.asset_id){
+      const obj = {
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+      };
+      const method = this.assetService.getAndSetAllAssets(obj, this.contextApp.app);
+      this.apiSubscriptions.push(
+        method.subscribe((response: any) => {
+          if (response?.data?.length > 0) {
+            const allAssets =  response.data;
+            allAssets.forEach((data) => {
+              if(data?.asset_id === msg?.asset_id){
+                this.selectedAsset= data;
+              }
+            });
+          }
+        })
+      );
+    }
+  }
 
   processAppMenuData() {
     if (this.contextApp?.app) {
@@ -166,13 +242,16 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       if (this.contextApp) {
         // alert('here');
         this.connectToSignalR();
-        this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
+        this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {
           if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
+            this.getAssetData(msg);
+            await this.criticalAlertNotification(msg);
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
               'toast-bottom-right',
-              60000
+              60000,
+              this.criticalAlertAudioLoader(this.audioUrl)
             );
           }
           if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){

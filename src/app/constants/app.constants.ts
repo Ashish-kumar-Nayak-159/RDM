@@ -2337,4 +2337,5 @@ export class CONSTANTS {
   public static DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX = /^(?:Endpoint=sb:\/\/){1}[A-Za-z]{1}[a-zA-Z0-9-]{4,48}[a-zA-Z0-9]{1}(?:.servicebus.windows.net\/;SharedAccessKeyName=[\w.-\/]{1,260};SharedAccessKey=){1}(.){44}(;EntityPath=[\w.-\/]{1,260}){1}()+$/;
   public static DEFAULT_MICROSOFT_TEAMS_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
   public static DEFAULT_WEBHOOK_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
+  public static ASSET_ALERT_AUDIO_SIZE = 5000000;
 }

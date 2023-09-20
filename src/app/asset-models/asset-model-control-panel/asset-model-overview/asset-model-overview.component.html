@@ -196,7 +196,7 @@
           [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)=" updateAssetsModel()">Save</button>
 
           <button type="button" *ngIf="modelOpenFlag==='mapPinIcon'" class="btn btn-primary add-row"
-          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading || invalid_height===true || invalid_width===true || scaled_image_size.invalid" (click)=" updateAssetsModel()">Save</button>
+          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading || invalid_height===true || invalid_width===true || scaled_image_size.invalid || !overviewFile?.name" (click)=" updateAssetsModel()">Save</button>
         <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading"
           (click)="onCloseAssetsModelModal()">
           Cancel

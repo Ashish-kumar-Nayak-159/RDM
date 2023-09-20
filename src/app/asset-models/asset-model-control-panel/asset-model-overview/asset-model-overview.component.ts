@@ -101,10 +101,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.overviewFile = files.item(0);
- 
-    // this.updatedAssetModel.metadata.image = this.overviewFile;
-
-    if (this.overviewFile.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
+    if (this.overviewFile?.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
       this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
       this.overviewFile = undefined;
     }

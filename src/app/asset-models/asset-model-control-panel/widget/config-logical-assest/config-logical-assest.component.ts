@@ -427,7 +427,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             json_key: prop.json_key,
             units: prop.unit,
             // slave_id: prop?.metadata?.slave_id,
-            assetid: this.widgetObj.Y1Assest,
+            asset_id: this.widgetObj.Y1Assest,
             // asset_model: this.widgetObj.Y1Assest?.asset_model,
             color: prop.color,
             composite_key: `${this.widgetObj.Y1Assest}#${prop.type}#${prop.json_key}`,
@@ -450,7 +450,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
             json_key: prop.json_key,
             units: prop.unit,
             // slave_id: prop?.metadata?.slave_id,
-            assetid: this.widgetObj.Y2Assest,
+            asset_id: this.widgetObj.Y2Assest,
             // asset_model: this.widgetObj.Y2Assest?.asset_model,
             color: prop.color,
             composite_key: `${this.widgetObj.Y2Assest}#${prop.type}#${prop.json_key}`,
@@ -473,7 +473,8 @@ export class ConfigLogicalAssestComponent implements OnInit {
         const obj = {
           name: prop.property.name,
           type: type,
-          json_key: prop.property.json_key
+          json_key: prop.property.json_key,
+          composite_key: `${prop?.asset_id}#${type}#${prop?.property?.json_key}`,
         };
         arr[0]['json_Data'].push(obj);
       });
@@ -570,6 +571,9 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "data_type": element.property.data_type,
           "operator1": element.operator1,
           "asset_id": element.asset_id,
+          "composite_key": `${element.asset_id}#${element.property.type}#${element.property.json_key}`
+
+
         }
         customProperties.push(obj);
       });
@@ -937,7 +941,6 @@ export class ConfigLogicalAssestComponent implements OnInit {
         }
         else if (data.widget_type == "LineChart" || data.widget_type == "AreaChart") {
           setTimeout(() => {
-
             data.y1AxisProps = data.properties[0].y1AxisProps;
             data.y2AxisProps = data.properties[0].y2AxisProps;
             data.noOfDataPointsForTrend = data.metadata.noOfDataPointsForTrend;

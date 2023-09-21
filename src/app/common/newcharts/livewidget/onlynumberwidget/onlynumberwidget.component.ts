@@ -60,33 +60,33 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
       if (this.type == 'LogicalView') {
         this.chartConfig.properties.forEach(prop => {
           if (this.telemetryObj) {
-            if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-              (this.telemetryObj[prop?.json_key]?.value !== undefined
-                && this.telemetryObj[prop?.json_key]?.value !== null)) {
+            if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+              (this.telemetryObj[prop?.composite_key]?.value !== undefined
+                && this.telemetryObj[prop?.composite_key]?.value !== null)) {
               if (prop?.data_type === 'Number') {
-                prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals))
+                prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.composite_key]?.value)?.toFixed(prop.digitsAfterDecimals))
               }
               else {
-                prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+                prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
               }
             }
             else {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+              prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
             }
           }
           else {
             prop.lastValue = "NA"
           }
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
           } else {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date || 'NA';
 
           }
           if (this.telemetryObj) {
-            if (this.telemetryObj[prop?.json_key]?.date)
+            if (this.telemetryObj[prop?.composite_key]?.date)
               this.startPoint[prop.asset_id] = new Date(
-                this.telemetryObj[prop?.json_key]?.date
+                this.telemetryObj[prop?.composite_key]?.date
               );
           }
 
@@ -99,6 +99,8 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
             prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
           } else {
             prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value;
+
           }
         })
       }
@@ -122,26 +124,26 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
       this.chartConfig.properties.forEach(prop => {
         if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
           if (this.telemetryObj) {
-            if (this.telemetryObj[prop?.json_key]?.date) {
+            if (this.telemetryObj[prop?.composite_key]?.date) {
 
               if (!this.startPoint[prop.asset_id]) {
-                this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+                this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.composite_key]?.date);
               }
-              if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
-                if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-                  (this.telemetryObj[prop?.json_key]?.value !== undefined
-                    && this.telemetryObj[prop?.json_key]?.value !== null)) {
+              if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.asset_id]) {
+                if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+                  (this.telemetryObj[prop?.composite_key]?.value !== undefined
+                    && this.telemetryObj[prop?.composite_key]?.value !== null)) {
                   if (prop?.data_type === 'Number') {
-                    prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.json_key]?.value))
+                    prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.composite_key]?.value))
                   }
                   // else {
                   //   console.log('111111111')
-                  //   prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+                  //   prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
                   // }
                 }
                 if (prop?.asset_id == this.telemetryObj?.asset_id) {
-                  prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
-                  prop.lastValue = this.telemetryObj[prop?.json_key]?.value;
+                  prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date;
+                  prop.lastValue = this.telemetryObj[prop?.composite_key]?.value;
 
                 }
               }

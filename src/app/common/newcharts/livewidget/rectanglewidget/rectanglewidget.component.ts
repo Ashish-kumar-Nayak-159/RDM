@@ -63,24 +63,24 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
     if (this.telemetryObj && this.type == 'LogicalView') {
       this.chartConfig.properties.forEach(prop => {
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-          (this.telemetryObj[prop?.json_key]?.value !== undefined
-            && this.telemetryObj[prop?.json_key]?.value !== null)) {
+        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+          (this.telemetryObj[prop?.composite_key]?.value !== undefined
+            && this.telemetryObj[prop?.composite_key]?.value !== null)) {
           if (prop?.data_type === 'Number') {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+            prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
           }
           else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+            prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
           }
         }
         else {
-          prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+          prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
         }
 
         if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
         } else {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
 
         }
       });
@@ -99,38 +99,39 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.chartConfig.properties.forEach((prop, index) => {
         const chart = this.chart[index];
-        if (!this.startPoint[prop.asset_id]) {
-          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
+        if (!this.startPoint[prop.composite_key]) {
+          this.startPoint[prop.composite_key] = new Date(this.telemetryObj[prop?.composite_key]?.date);
         }
-        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
+        if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.composite_key]) {
+          debugger
           if (chart) {
             this.telemetryData = {};
 
             if (prop.asset_id == this.telemetryObj.asset_id &&
-              this.telemetryObj[prop?.json_key]?.value !== undefined &&
-              this.telemetryObj[prop?.json_key]?.value !== null
+              this.telemetryObj[prop?.composite_key]?.value !== undefined &&
+              this.telemetryObj[prop?.composite_key]?.value !== null
             ) {
-              this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
+              this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
               this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
               this.telemetryData.category = '';
-              this.startPoint[prop.asset_id] = prop.lastDate;
+              this.startPoint[prop.composite_key] = prop.lastDate;
               chart.data = [this.telemetryData];
             }
           }
 
-          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-            (this.telemetryObj[prop?.json_key]?.value !== undefined
-              && this.telemetryObj[prop?.json_key]?.value !== null)) {
+          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+            (this.telemetryObj[prop?.composite_key]?.value !== undefined
+              && this.telemetryObj[prop?.composite_key]?.value !== null)) {
             if (prop?.data_type === 'Number') {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+              prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
             }
             else {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
+              prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
             }
           }
 
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
           }
         }
       });
@@ -185,16 +186,16 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.telemetryData = {};
       if (
-        this.telemetryObj[prop?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop?.json_key]?.value !== null
+        this.telemetryObj[prop?.composite_key]?.value !== undefined &&
+        this.telemetryObj[prop?.composite_key]?.value !== null
       ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
+        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
         this.telemetryData.category = '';
       }
       chart.data = [this.telemetryData];
-      this.startPoint[prop.asset_id] = new Date(
-        this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+      this.startPoint[prop.composite_key] = new Date(
+        this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
       );
       this.chart.push(chart);
 

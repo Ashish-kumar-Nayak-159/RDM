@@ -37,7 +37,7 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   headerMessage: string;
   decodedToken: any;
   isOverlayVisible = false;
-  telemetryData: any;
+  latestPropWiseTelemetryData: any;
   subscriptions: Subscription[] = [];
   widgetStringFromMenu: any;
   @Output() chart_Id = new EventEmitter<any>();
@@ -47,6 +47,8 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
   innerClass: any;
   overlayLeft: any = '60px';
   startPoint: any = {};
+  currentDate: string;
+
 
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
@@ -54,7 +56,6 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties;
 
       this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
@@ -62,80 +63,99 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
     }
 
     if (this.telemetryObj && this.type == 'LogicalView') {
-      this.chartConfig.properties.forEach(prop => {
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
-          (this.telemetryObj[prop?.composite_key]?.value !== undefined
-            && this.telemetryObj[prop?.composite_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
-          }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
-          }
+      setTimeout(() => {
+        if (this.telemetryObj && this.type == 'LogicalView') {
+          this.chartConfig.properties.forEach((prop, cIndex) => {
+            if (this.chart.length > cIndex) {
+              this.refreshLatestTelemetryInChart(this.chart[cIndex], prop);
+            }
+          });
         }
-        else {
-          prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
-        }
-
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
-        } else {
-          prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
-
-        }
-      });
+      }, 400);
     }
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
-    this.generateChart();
+    setTimeout(() => {
+      this.generateChart();
+    }, 400);
+  }
 
+  refreshLatestTelemetryInChart(chartItem: am4charts.XYChart3D, prop: any) {
+    this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+    const compositeKey = prop.composite_key;
+    if (this.telemetryObj.hasOwnProperty(compositeKey)) {
+      if (!this.latestPropWiseTelemetryData || !this.latestPropWiseTelemetryData.hasOwnProperty(compositeKey) || (
+        this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.latestPropWiseTelemetryData[compositeKey].date < this.telemetryObj[compositeKey].date &&
+        this.telemetryObj[compositeKey].hasOwnProperty('value') &&
+        this.telemetryObj[compositeKey]['value'] !== undefined &&
+        this.telemetryObj[compositeKey]['value'] !== null)) {
+        if (!this.latestPropWiseTelemetryData) this.latestPropWiseTelemetryData = {};
+        if (prop?.data_type === 'Number' && prop.hasOwnProperty('digitsAfterDecimals')) this.telemetryObj[compositeKey].value = this.telemetryObj[compositeKey].value.toFixed(prop.digitsAfterDecimals);
+        this.latestPropWiseTelemetryData[compositeKey] = this.telemetryObj[compositeKey];
+      }
+    }
+    if (chartItem && this.latestPropWiseTelemetryData?.hasOwnProperty(compositeKey) &&
+      this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('value')) {
+      chartItem.data = [{
+        fillCapacity: Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        empty: Number(prop?.maxCapacityValue || '100') - Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        category: ''
+      }];
+    }
   }
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-
-      this.chartConfig.properties.forEach((prop, index) => {
-        const chart = this.chart[index];
-        if (!this.startPoint[prop.composite_key]) {
-          this.startPoint[prop.composite_key] = new Date(this.telemetryObj[prop?.composite_key]?.date);
-        }
-        if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.composite_key]) {
-          debugger
-          if (chart) {
-            this.telemetryData = {};
-
-            if (prop.asset_id == this.telemetryObj.asset_id &&
-              this.telemetryObj[prop?.composite_key]?.value !== undefined &&
-              this.telemetryObj[prop?.composite_key]?.value !== null
-            ) {
-              this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
-              this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-              this.telemetryData.category = '';
-              this.startPoint[prop.composite_key] = prop.lastDate;
-              chart.data = [this.telemetryData];
-            }
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
-            (this.telemetryObj[prop?.composite_key]?.value !== undefined
-              && this.telemetryObj[prop?.composite_key]?.value !== null)) {
-            if (prop?.data_type === 'Number') {
-              prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
-            }
-            else {
-              prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
-            }
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
-          }
-        }
+      this.chartConfig.properties.forEach((prop, cIndex) => {
+        const chartItem = this.chart.length > cIndex ? this.chart[cIndex] : undefined;
+        this.refreshLatestTelemetryInChart(chartItem, prop);
       });
     }
+    // if (this.chart && changes.telemetryObj) {
+
+    //   this.chartConfig.properties.forEach((prop, index) => {
+    //     const chart = this.chart[index];
+    //     if (!this.startPoint[prop.composite_key]) {
+    //       this.startPoint[prop.composite_key] = new Date(this.telemetryObj[prop?.composite_key]?.date);
+    //     }
+    //     if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.composite_key]) {
+    //       if (chart) {
+    //         this.telemetryData = {};
+
+    //         if (prop.asset_id == this.telemetryObj.asset_id &&
+    //           this.telemetryObj[prop?.composite_key]?.value !== undefined &&
+    //           this.telemetryObj[prop?.composite_key]?.value !== null
+    //         ) {
+    //           this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
+    //           this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
+    //           this.telemetryData.category = '';
+    //           this.startPoint[prop.composite_key] = prop.lastDate;
+    //           chart.data = [this.telemetryData];
+    //         }
+    //       }
+
+    //       if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+    //         (this.telemetryObj[prop?.composite_key]?.value !== undefined
+    //           && this.telemetryObj[prop?.composite_key]?.value !== null)) {
+    //         if (prop?.data_type === 'Number') {
+    //           prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
+    //         }
+    //         else {
+    //           prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
+    //         }
+    //       }
+
+    //       if (prop?.asset_id == this.telemetryObj?.asset_id) {
+    //         prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+    //       }
+    //     }
+    //   });
+    // }
   }
 
   generateChart() {
@@ -183,20 +203,7 @@ export class RectanglewidgetComponent implements OnInit, OnChanges, AfterViewIni
       series2.columns.template.column3D.stroke = am4core.color('#ccc');
       series2.columns.template.column3D.strokeOpacity = 0.2;
       series2.columns.template.column3D.strokeWidth = 2;
-
-      this.telemetryData = {};
-      if (
-        this.telemetryObj[prop?.composite_key]?.value !== undefined &&
-        this.telemetryObj[prop?.composite_key]?.value !== null
-      ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
-        this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = '';
-      }
-      chart.data = [this.telemetryData];
-      this.startPoint[prop.composite_key] = new Date(
-        this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
-      );
+      this.refreshLatestTelemetryInChart(chart, prop);
       this.chart.push(chart);
 
     });

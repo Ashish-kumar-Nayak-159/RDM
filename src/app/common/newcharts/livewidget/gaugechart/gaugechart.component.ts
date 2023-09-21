@@ -30,6 +30,8 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   widgetId: any;
   chartId: any;
   startPoint: any = {};
+  currentDate: string;
+
 
   constructor(private commonService: CommonService) { }
 
@@ -40,85 +42,128 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       this.chartConfig.properties = this.chartConfig.properties[0].properties;
     }
 
+    setTimeout(() => {
+      if (this.telemetryObj && this.type == 'LogicalView') {
+        this.chartConfig.properties.forEach((prop, cIndex) => {
+          if (this.chart.length > cIndex) {
+            this.refreshLatestTelemetryInChart(this.chart[cIndex], prop);
+          }
+        });
+      }
+    }, 400);
+
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-    if (this.telemetryObj && this.type == 'LogicalView') {
-      this.chartConfig.properties.forEach(prop => {
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-          (this.telemetryObj[prop?.json_key]?.value !== undefined
-            && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
-          }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-          }
-        }
-        else {
-          prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-        }
+    // if (this.telemetryObj && this.type == 'LogicalView') {
+    //   this.chartConfig.properties.forEach(prop => {
+    //     if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+    //       (this.telemetryObj[prop?.composite_key]?.value !== undefined
+    //         && this.telemetryObj[prop?.composite_key]?.value !== null)) {
+    //       if (prop?.data_type === 'Number') {
+    //         prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
+    //       }
+    //       else {
+    //         prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
+    //       }
+    //     }
+    //     else {
+    //       prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
+    //     }
 
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-        } else {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+    //     if (prop?.asset_id == this.telemetryObj?.asset_id) {
+    //       prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+    //     } else {
+    //       prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
 
-        }
-      });
-    }
+    //     }
+    //   });
+    // }
   }
 
   ngAfterViewInit() {
-    this.loadChart();
+    setTimeout(() => {
+      this.loadChart();
+    }, 400);
+  }
+
+  refreshLatestTelemetryInChart(chartItem: am4charts.ClockHand, prop: any) {
+    this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+    const compositeKey = prop.composite_key;
+    if (this.telemetryObj.hasOwnProperty(compositeKey)) {
+      if (!this.telemetryObj || !this.telemetryObj.hasOwnProperty(compositeKey) || (
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].date < this.telemetryObj[compositeKey].date &&
+        this.telemetryObj[compositeKey].hasOwnProperty('value') &&
+        this.telemetryObj[compositeKey]['value'] !== undefined &&
+        this.telemetryObj[compositeKey]['value'] !== null)) {
+        if (!this.telemetryObj) this.telemetryObj = {};
+        if (prop?.data_type === 'Number' && prop.hasOwnProperty('digitsAfterDecimals')) this.telemetryObj[compositeKey].value = this.telemetryObj[compositeKey].value.toFixed(prop.digitsAfterDecimals);
+        this.telemetryObj[compositeKey] = this.telemetryObj[compositeKey];
+      }
+    }
+    if (chartItem && this.telemetryObj.hasOwnProperty(compositeKey) &&
+      this.telemetryObj[compositeKey].hasOwnProperty('value')) {
+      chartItem.radius = am4core.percent(97);
+      chartItem.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
+
+
+    }
   }
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-
-      //  this.label.text = changes.value.currentValue;
-      this.chartConfig?.properties?.forEach((prop, index) => {
-        if (!this.startPoint[prop.asset_id]) {
-          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
-        }
-        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
-          if (this.hand[index] && this.chart[index]) {
-            this.hand[index].value = Number(this.telemetryObj[prop.json_key]?.value || '0');
-          }
-          if (
-            prop.asset_id == this.telemetryObj.asset_id &&
-            this.chart[index] &&
-            !this.hand[index] &&
-            this.telemetryObj[prop.json_key]?.value !== undefined &&
-            this.telemetryObj[prop.json_key]?.value !== null
-          ) {
-            const hand = this.chart[index].hands.push(new am4charts.ClockHand());
-            hand.radius = am4core.percent(97);
-            hand.value = Number(this.telemetryObj[prop.json_key]?.value || '0');
-            this.hand.splice(index, 0, hand);
-
-            // this.chart[index].hands = this.hand[index];
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-            (this.telemetryObj[prop?.json_key]?.value !== undefined
-              && this.telemetryObj[prop?.json_key]?.value !== null)) {
-            if (prop?.data_type === 'Number') {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
-            }
-            else {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-            }
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-            this.startPoint[prop.asset_id] = prop.lastDate;
-          }
-
-        }
+      this.chartConfig.properties.forEach((prop, cIndex) => {
+        const chartItem = this.chart.length > cIndex ? this.chart[cIndex] : undefined;
+        this.refreshLatestTelemetryInChart(chartItem, prop);
       });
-      // this.loadChart();
     }
+    // if (this.chart && changes.telemetryObj) {
+
+    //   //  this.label.text = changes.value.currentValue;
+    //   this.chartConfig?.properties?.forEach((prop, index) => {
+    //     if (!this.startPoint[prop.asset_id]) {
+    //       this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.composite_key]?.date);
+    //     }
+    //     if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.asset_id]) {
+    //       if (this.hand[index] && this.chart[index]) {
+    //         this.hand[index].value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
+    //       }
+    //       if (
+    //         prop.asset_id == this.telemetryObj.asset_id &&
+    //         this.chart[index] &&
+    //         !this.hand[index] &&
+    //         this.telemetryObj[prop.composite_key]?.value !== undefined &&
+    //         this.telemetryObj[prop.composite_key]?.value !== null
+    //       ) {
+    //         const hand = this.chart[index].hands.push(new am4charts.ClockHand());
+    //         hand.radius = am4core.percent(97);
+    //         hand.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
+    //         this.hand.splice(index, 0, hand);
+
+    //         // this.chart[index].hands = this.hand[index];
+    //       }
+
+    //       if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+    //         (this.telemetryObj[prop?.composite_key]?.value !== undefined
+    //           && this.telemetryObj[prop?.composite_key]?.value !== null)) {
+    //         if (prop?.data_type === 'Number') {
+    //           prop.lastValue = this.telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)
+    //         }
+    //         else {
+    //           prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
+    //         }
+    //       }
+
+    //       if (prop?.asset_id == this.telemetryObj?.asset_id) {
+    //         prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+    //         this.startPoint[prop.asset_id] = prop.lastDate;
+    //       }
+
+    //     }
+    //   });
+    //   // this.loadChart();
+    // }
   }
 
   loadChart() {
@@ -164,27 +209,27 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
       range2.axisFill.zIndex = -1;
 
-      if (this.telemetryObj) {
-        if (
-          prop.asset_id == this.telemetryObj[prop.json_key]?.asset_id &&
-          this.telemetryObj[prop.json_key]?.value !== undefined &&
-          this.telemetryObj[prop.json_key]?.value !== null
-        ) {
-          const hand = chart.hands.push(new am4charts.ClockHand());
-          hand.radius = am4core.percent(97);
-          hand.value = Number(this.telemetryObj[prop.json_key]?.value || '0');
-          this.hand.splice(index, 0, hand);
-        }
-        else {
-          const hand = chart.hands.push(new am4charts.ClockHand());
-          hand.radius = am4core.percent(97);
-          hand.value = Number(0);
-          this.hand.splice(index, 0, hand);
-        }
-      }
-      this.startPoint[prop.asset_id] = new Date(
-        this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-      );
+      // if (this.telemetryObj) {
+      //   if (
+      //     prop.asset_id == this.telemetryObj[prop.composite_key]?.asset_id &&
+      //     this.telemetryObj[prop.composite_key]?.value !== undefined &&
+      //     this.telemetryObj[prop.composite_key]?.value !== null
+      //   ) {
+      //     const hand = chart.hands.push(new am4charts.ClockHand());
+      //     hand.radius = am4core.percent(97);
+      //     hand.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
+      //     this.hand.splice(index, 0, hand);
+      //   }
+      //   else {
+      //     const hand = chart.hands.push(new am4charts.ClockHand());
+      //     hand.radius = am4core.percent(97);
+      //     hand.value = Number(0);
+      //     this.hand.splice(index, 0, hand);
+      //   }
+      // }
+      // this.startPoint[prop.asset_id] = new Date(
+      //   this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+      // );
       this.chart.splice(index, 0, chart);
     });
   }

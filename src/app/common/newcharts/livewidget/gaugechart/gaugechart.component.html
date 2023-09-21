@@ -62,25 +62,41 @@
                             <div id="{{chartConfig.chart_id}}_chart_{{i}}" style="width: 100%;height: 130px"></div>
                         </div>
                         <span class="text-darkblue display-5 font-weight-bold">
-                            {{(prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
-                            (telemetryObj[prop?.json_key]?.value !== undefined
-                            && telemetryObj[prop?.json_key]?.value !== null)) ?
+
+                            {{ telemetryObj && telemetryObj[prop.composite_key] &&
+                            telemetryObj[prop?.composite_key]?.value !== undefined &&
+                            telemetryObj[prop?.composite_key]?.value !== null
+                            ?
+                            (
+                            prop?.data_type === 'Number'
+                            ? telemetryObj[prop?.composite_key].value.toFixed(prop.digitsAfterDecimals)
+                            : telemetryObj[prop?.composite_key].value
+                            )
+                            : 'NA' }}
+
+                            <!-- {{(prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.composite_key] &&
+                            (telemetryObj[prop?.composite_key]?.value !== undefined
+                            && telemetryObj[prop?.composite_key]?.value !== null)) ?
                             (prop?.data_type === 'Number' ?
-                            telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals) :
-                            telemetryObj[prop?.json_key]?.value) : 'NA':prop?.lastValue}}
+                            telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals) :
+                            telemetryObj[prop?.composite_key]?.value) : 'NA':prop?.lastValue}} -->
                         </span>
                     </div>
                     <div>
                         <span class="text-grey">
-                            {{ prop?.asset_id == this.telemetryObj[prop?.json_key]?.asset_id
-                            ?(telemetryObj[prop?.json_key]?.date ||
-                            telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
+                            {{ telemetryObj && telemetryObj[prop.composite_key] &&
+                            telemetryObj[prop?.composite_key]?.date
+                            ? telemetryObj[prop?.composite_key].date
+                            : 'NA' }}
+                            <!-- {{ prop?.asset_id == this.telemetryObj[prop?.composite_key]?.asset_id
+                            ?(telemetryObj[prop?.composite_key]?.date ||
+                            telemetryObj[prop?.composite_key]?.message_date):prop.lastDate}} -->
                         </span>
                     </div>
                     <div *ngIf="type != 'LogicalView'">
                         <div style="margin-top: 50px;">
                             <span class="text-grey" *ngIf="chartConfig.widget_type === 'GaugeChart'">
-                                {{telemetryObj[prop.json_key]?.date}}
+                                {{telemetryObj[prop.composite_key]?.date}}
                             </span>
                         </div>
                     </div>

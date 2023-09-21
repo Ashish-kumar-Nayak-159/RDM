@@ -122,7 +122,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
           ...this.chartConfig.y1AxisProps.map(p => p.asset_id),
           ...this.chartConfig.y2AxisProps.map(p => p.asset_id)
         ];
-        console.log("chartAssets", chartAssets)
         if (!chartAssets.includes(this.telemetryObj.asset_id)) return;
 
         this.chartConfig.y1AxisProps?.forEach((prop) => {
@@ -154,8 +153,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.propertyBasedData[prop.composite_key]['data'].length > this.chartConfig.noOfDataPointsForTrend) {
                   this.propertyBasedData[prop.composite_key]['data'].splice(0, 1);
                 }
-
-                console.log('obj', obj)
                 if (!this.telemetryDataTimestamps.includes(obj['message_date'].getTime()))
                   this.telemetryDataTimestamps.push(obj['message_date'].getTime());
 

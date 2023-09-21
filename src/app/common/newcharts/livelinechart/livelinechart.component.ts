@@ -227,7 +227,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
       //   this.telemetryData.splice(0, 1);
       // }
       // }
-      console.log("telemetryData", this.telemetryData)
 
       this.chart.data = this.telemetryData;
       this.chart.validateData();

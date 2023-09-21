@@ -48,6 +48,7 @@ export class ConditionalwidgetComponent implements OnInit {
           type: element.type,
           composite_key: element.composite_key,
           asset_id: element.asset_id,
+          json_key: element.json_key
         };
         jsonArray.push(jsonObj);
       });
@@ -58,20 +59,20 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       this.chartConfig.properties = [obj];
       setTimeout(() => {
-
-
         this.chartConfig.properties[0].json_Data.forEach(prop => {
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
             this.startPoint[prop.asset_id] = new Date(
-              this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
             );
-            prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
           } else {
-            prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
           }
         })
 
       }, 400);
+
+
     }
 
 
@@ -85,6 +86,9 @@ export class ConditionalwidgetComponent implements OnInit {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
+
+
 
 
 
@@ -125,7 +129,7 @@ export class ConditionalwidgetComponent implements OnInit {
     let condition = prop.formula;
     try {
       prop.json_Data.forEach((jd, i) => {
-        condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.composite_key}`);
+        condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.json_key}`);
       });
       var actualVal = eval(condition);
       if (prop?.text && prop?.text.length > 0) {
@@ -134,13 +138,12 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       return actualVal;
     } catch (err) {
-      return 'NA';
+      return this.chartConfig?.metadata?.text[1];
     }
 
   }
 
   evaluatePropCondition(telemetryObj) {
-    debugger
     let condition = this.chartConfig?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {

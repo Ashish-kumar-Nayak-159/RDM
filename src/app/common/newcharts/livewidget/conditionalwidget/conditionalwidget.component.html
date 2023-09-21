@@ -76,19 +76,11 @@
                                 </ng-template>
                             </span>
                         </div>
-                        <div>
-                            <span class="text-grey">
-                                {{ prop?.json_Data[0]?.asset_id ==
-                                this.telemetryObj[prop?.json_Data[0]?.composite_key]?.asset_id
-                                ?(telemetryObj[prop?.json_Data[0]?.composite_key]?.date ||
-                                telemetryObj[prop?.json_Data[0]?.composite_key]?.message_date):prop.lastDate}}
-                            </span>
-                        </div>
                         <span class="text-grey">
                             {{prop?.json_Data[0]?.asset_id == this.telemetryObj?.asset_id
-                            ?(telemetryObj[prop?.json_Data[0]?.composite_key]?.date ||
-                            telemetryObj[prop?.json_Data[0]?.composite_key]?.message_date):prop?.json_Data[0]?.lastDate}}
-                            <!-- {{telemetryObj[chartConfig?.properties[0]?.json_Data[0]?.composite_key]?.date }} -->
+                            ?(telemetryObj[prop?.json_Data[0]?.json_key]?.date ||
+                            telemetryObj[prop?.json_Data[0]?.json_key]?.message_date):prop?.json_Data[0]?.lastDate}}
+                            <!-- {{telemetryObj[chartConfig?.properties[0]?.json_Data[0]?.json_key]?.date }} -->
                         </span>
                     </div>
 

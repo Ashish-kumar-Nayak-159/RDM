@@ -33,6 +33,8 @@ import { ApplicationHistoricalLiveDataComponent } from './application-historical
 import { ApplicationLogicalViewComponent } from './application-logical-view/application-logical-view.component';
 import { GatewayComponent } from './application-logical-view/gateway/gateway.component';
 import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
+import { ServiceConnectionComponent } from './application-setting/service-connection/service-connection.component';
+import { EllipsisPipe } from './application-setting/ellipsis.pipe';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -54,6 +56,8 @@ import { LivelinechartComponent } from '../common/newcharts/livelinechart/liveli
     ApplicationHistoricalLiveDataComponent,
     ApplicationLogicalViewComponent,
     GatewayComponent,
+    ServiceConnectionComponent,
+    EllipsisPipe,
   ],
   imports: [
     CommonModule,

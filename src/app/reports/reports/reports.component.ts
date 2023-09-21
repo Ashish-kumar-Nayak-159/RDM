@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
@@ -65,7 +65,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private assetService: AssetService,
     private toasterService: ToasterService,
-    private assetModelService: AssetModelService
+    private assetModelService: AssetModelService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -172,9 +173,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.cd.detectChanges();
       // if (this.filterObj.asset) {
-      //   this.onFilterSelection(false, false);
-      // }
+        //   this.onFilterSelection(false, false);
+        // }
     } else {
       this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
     }
@@ -804,13 +806,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         data = [];
         this.telemetry.forEach((telemetryObj) => {
           const obj = {
-            'Asset Name': this.originalFilterObj.non_ip_asset
-              ? this.originalFilterObj.non_ip_asset.asset_display_name
-                ? this.originalFilterObj.non_ip_asset?.asset_display_name
-                : this.originalFilterObj.non_ip_asset?.asset_id
+            'Asset Name': this.originalFilterObj?.asset
+              ? this.originalFilterObj?.asset?.display_name
+                ? this.originalFilterObj.asset?.display_name
+                : this.originalFilterObj.asset?.asset_id
               : this.assetFilterObj
-                ? this.assetFilterObj.asset_display_name
-                  ? this.assetFilterObj.asset_display_name
+                ? this.assetFilterObj?.display_name
+                  ? this.assetFilterObj.display_name
                   : this.assetFilterObj.asset_id
                 : '',
             Time: telemetryObj.local_created_date,

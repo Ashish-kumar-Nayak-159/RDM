@@ -62,7 +62,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     'sms': [],
     'whatsapp': [],
     'push_notification': []
-
   };
   recommendationObj: any;
   // docName: any;
@@ -75,6 +74,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   contextApp: any;
   decodedToken: any;
   userGroups: any[] = [];
+  serviceConnectionGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
 
@@ -102,6 +102,17 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.getSlaveData();
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();
+    }
+
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.selectedUserGroups = {
+        'email': [],
+        'sms': [],
+        'whatsapp': [],
+        'push_notification': [],
+        'service_connection': []
+      };
+      this.getServiceConnectionGroups();
     }
 
     $('.custom-dropdown').on('shown.bs.collapse', function (e) {
@@ -135,6 +146,46 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+  getServiceConnectionGroups() {
+    this.subscriptions.push(
+      this.applicationService.getServiceConnection().subscribe((response: any) => {
+        if (response && response.data) {
+          this.serviceConnectionGroups=response.data;
+          this.serviceConnectionGroups.forEach((element) => {
+            element.type = this.organizeServiceConnectionsType(element.type);
+          });
+        }
+      })
+    );
+  }
+  organizeServiceConnectionsType(type) {
+    if(type === 'Servicebus') {
+      return 'Service Bus';
+    }
+    else{
+      if(type === 'MicrosoftTeams') {
+        return 'Microsoft Teams';
+      }
+      else{
+        if(type === 'Webhook') {
+          return 'Webhook';
+        }
+        else{
+          if(type === 'Service Bus'){
+            return 'Servicebus';
+          }
+          else{
+            if(type === 'Microsoft Teams'){
+              return 'MicrosoftTeams';
+            }
+            else{
+              return "";
+            }
+          }
+        }
+      }
+    }
   }
 
   getAssetModelWidgets() {
@@ -270,31 +321,72 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     })
     this.selectedDocuments = [];
   }
+  renameKey(obj: any, oldKey: string, newKey: string): any {
+    if (obj.hasOwnProperty(oldKey)) {
+      obj[newKey] = obj[oldKey];
+    }
+    return obj;
+  }
 
   addUserGroup(key) {
 
     this.selectedUserGroups[key].forEach(element => {
-      const index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
-      if (index > -1) {
-        this.toasterService.showError('Same UserGroup is already added.', 'Add UserGroup');
-        return;
-      } else if (!element.group_name) {
-        this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
-        return;
+      let index;
+      if(key==='service_connection'){
+        element.type=this.organizeServiceConnectionsType(element.type);
+        if(element.name){
+          element= this.renameKey(element,'name','group_name');
+        }
+        index = this.alertObj.actions[key].connections.findIndex((group) =>  group === element.id );
       }
-      if (element.group_name && index === -1) {
-        this.alertObj.actions[key].recipients.splice(
-          this.alertObj.actions[key].recipients.length,
-          0,
-          element.group_name
-        );
+      else{
+        index = this.alertObj.actions[key].recipients.findIndex((group) =>  group === element.group_name );
       }
+        if (index > -1) {
+          if(key!=='service_connection'){
+            this.toasterService.showError( 'Same UserGroup is already added.', 'Add UserGroup');
+          }
+          else{
+            this.toasterService.showError( 'Same Service Connection is already added.', 'Add Service Connection');
+          }
+          return;
+        } else if (!element.group_name) {
+          if(key!=='service_connection'){
+            this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
+          }
+          else{
+            this.toasterService.showError('Please select service connection to add', 'Add Service Connection');
+          }
+          return;
+        }
+        if (element.group_name && index === -1) {
+        if(key!=='service_connection'){
+          this.alertObj.actions[key].recipients.splice(
+            this.alertObj.actions[key].recipients.length,
+            0,
+            element.group_name
+          );
+        }
+        else{
+          this.alertObj.actions[key].connections.splice(
+            this.alertObj.actions[key].connections.length,
+            0,
+            element.id
+          );
+        }
+        }
+
     });
     this.selectedUserGroups[key] = [];
   }
 
   removeUserGroup(index, key) {
-    this.alertObj.actions[key].recipients.splice(index, 1);
+    if(key!=='service_connection'){
+      this.alertObj.actions[key].recipients.splice(index, 1);
+    }
+    else{
+      this.alertObj.actions[key].connections.splice(index, 1);
+    }
   }
 
   removeDocument(index) {
@@ -331,6 +423,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           whatsapp: { enabled: false, recipients: [] },
           sms: { enabled: false, recipients: [] },
           push_notification: { enabled: false, recipients: [] },
+          service_connection: { enabled: false, connections: [] }
 
         };
       } else {
@@ -357,6 +450,12 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         }
         if (!this.alertObj.actions.push_notification.recipients) {
           this.alertObj.actions.push_notification.recipients = [];
+        }
+        if (!this.alertObj.actions.service_connection) {
+          this.alertObj.actions.service_connection = { enabled: false, connections: [] };
+        }
+        if (!this.alertObj.actions.service_connection.connections) {
+          this.alertObj.actions.service_connection.connections = [];
         }
       }
     }
@@ -519,7 +618,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.toggleRows = {};
     this.editDocuments = {};
   }
-
   onUpdateAlertConditions() {
     this.alertObj.metadata = {
       ...this.alertObj?.metadata,
@@ -608,7 +706,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       email: { enabled: false },
       whatsapp: { enabled: false },
       sms: { enabled: false },
+      push_notification: { enabled: false },
     };
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      alertObj.actions = {
+        email: { enabled: false },
+        whatsapp: { enabled: false },
+        sms: { enabled: false },
+        service_connection: { enabled: false }
+      };
+    }
     this.subscriptions.push(
       this.assetModelService.createAlertCondition(alertObj, this.assetModel.app, this.assetModel.name).subscribe(
         (response: any) => {
@@ -635,7 +742,15 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       'sms': [],
       'whatsapp': [],
       'push_notification': []
-
+    }
+    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+      this.selectedUserGroups= {
+        'email': [],
+        'sms': [],
+        'whatsapp': [],
+        'push_notification': [],
+        'service_connection': []
+      }
     }
   }
 
@@ -658,7 +773,15 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           'sms': [],
           'whatsapp': [],
           'push_notification': []
-
+        }
+        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+          this.selectedUserGroups= {
+            'email': [],
+            'sms': [],
+            'whatsapp': [],
+            'push_notification': [],
+            'service_connection': []
+          };
         }
       }
     }

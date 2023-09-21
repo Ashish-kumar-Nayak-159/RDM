@@ -1,0 +1,8 @@
+.httpHeaderBtn{
+    height:24px !important;
+    width: 24px !important;
+    padding: 0px !important;
+}
+.httpHeaderBtn em{
+    font-size: 14px;
+}

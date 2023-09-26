@@ -100,8 +100,8 @@ export class AssetAlertConditionsComponent implements OnInit {
     if (this.decodedToken?.privileges?.indexOf('APMV') > -1) {
       this.getApplicationUserGroups();
     }
-    if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
-      this.selectedUserGroups={
+    if (this.decodedToken?.privileges?.indexOf('SCV') > -1) {
+      this.selectedUserGroups = {
         'email': [],
         'sms': [],
         'whatsapp': [],
@@ -154,7 +154,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.subscriptions.push(
       this.applicationService.getServiceConnection().subscribe((response: any) => {
         if (response && response.data) {
-          this.serviceConnectionGroups=response.data;
+          this.serviceConnectionGroups = response.data;
           this.serviceConnectionGroups.forEach((element) => {
             element.type = this.organizeServiceConnectionsType(element.type);
           });
@@ -162,7 +162,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       })
     );
   }
-  
+
   getSlaveData() {
     this.slaveData = [];
     const filterObj = {};
@@ -285,58 +285,58 @@ export class AssetAlertConditionsComponent implements OnInit {
   addUserGroup(key) {
     this.selectedUserGroups[key].forEach(element => {
       let index;
-      if(key==='service_connection'){
-        element.type=this.organizeServiceConnectionsType(element.type);
-        if(element?.name){
-          element= this.renameKey(element,'name','group_name');
+      if (key === 'service_connection') {
+        element.type = this.organizeServiceConnectionsType(element.type);
+        if (element?.name) {
+          element = this.renameKey(element, 'name', 'group_name');
         }
-        index = this.alertObj.actions[key].connections.findIndex((group) =>  group === element.id );
+        index = this.alertObj.actions[key].connections.findIndex((group) => group === element.id);
       }
-      else{
-        index = this.alertObj.actions[key].recipients.findIndex((group) =>  group === element.group_name );
+      else {
+        index = this.alertObj.actions[key].recipients.findIndex((group) => group === element.group_name);
       }
-        if (index > -1) {
-          if(key!=='service_connection'){
-            this.toasterService.showError( 'Same UserGroup is already added.', 'Add UserGroup');
-          }
-          else{
-            this.toasterService.showError( 'Same Service Connection is already added.', 'Add Service Connection');
-          }
-          return;
-        } else if (!element?.group_name) {
-          if(key!=='service_connection'){
-            this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
-          }
-          else{
-            this.toasterService.showError('Please select service connection to add', 'Add Service Connection');
-          }
-          return;
+      if (index > -1) {
+        if (key !== 'service_connection') {
+          this.toasterService.showError('Same UserGroup is already added.', 'Add UserGroup');
         }
-        if (element?.group_name && index === -1) {
-        if(key!=='service_connection'){
+        else {
+          this.toasterService.showError('Same Service Connection is already added.', 'Add Service Connection');
+        }
+        return;
+      } else if (!element?.group_name) {
+        if (key !== 'service_connection') {
+          this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
+        }
+        else {
+          this.toasterService.showError('Please select service connection to add', 'Add Service Connection');
+        }
+        return;
+      }
+      if (element?.group_name && index === -1) {
+        if (key !== 'service_connection') {
           this.alertObj.actions[key].recipients.splice(
             this.alertObj.actions[key].recipients.length,
             0,
             element.group_name
           );
         }
-        else{
+        else {
           this.alertObj.actions[key].connections.splice(
             this.alertObj.actions[key].connections.length,
             0,
             element.id
           );
         }
-        }
+      }
     });
     this.selectedUserGroups[key] = [];
   }
 
   removeUserGroup(index, key) {
-    if(key!=='service_connection'){
+    if (key !== 'service_connection') {
       this.alertObj.actions[key].recipients.splice(index, 1);
     }
-    else{
+    else {
       this.alertObj.actions[key].connections.splice(index, 1);
     }
   }
@@ -359,23 +359,21 @@ export class AssetAlertConditionsComponent implements OnInit {
     }
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
-        console.log('1. this.alertObj.actions', this.alertObj.actions);
         this.alertObj.actions = {
           email: { enabled: false, recipients: [] },
           whatsapp: { enabled: false, recipients: [] },
           sms: { enabled: false, recipients: [] },
           push_notification: { enabled: false, recipients: [] }
         };
-        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+        if (this.decodedToken?.privileges?.indexOf('SCV') > -1) {
           this.alertObj.actions = {
             email: { enabled: false, recipients: [] },
             whatsapp: { enabled: false, recipients: [] },
             sms: { enabled: false, recipients: [] },
             push_notification: { enabled: false, recipients: [] },
             service_connection: { enabled: false, connections: [] }
-        };
-      }
-        console.log('2. this.alertObj.actions', this.alertObj.actions);
+          };
+        }
       } else {
         if (!this.alertObj.actions.email) {
           this.alertObj.actions.email = { enabled: false, recipients: [] };
@@ -413,7 +411,7 @@ export class AssetAlertConditionsComponent implements OnInit {
         if (!this.alertObj.actions.push_notification.enabled) {
           this.alertObj.actions.push_notification.recipients = [];
         }
-        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
+        if (this.decodedToken?.privileges?.indexOf('SCV') > -1) {
           if (!this.alertObj.actions.service_connection) {
             this.alertObj.actions.service_connection = { enabled: false, connections: [] };
           }
@@ -610,8 +608,8 @@ export class AssetAlertConditionsComponent implements OnInit {
           'whatsapp': [],
           'push_notification': []
         }
-        if(this.decodedToken?.privileges?.indexOf('SCV') > -1){
-          this.selectedUserGroups={
+        if (this.decodedToken?.privileges?.indexOf('SCV') > -1) {
+          this.selectedUserGroups = {
             'email': [],
             'sms': [],
             'whatsapp': [],
@@ -624,41 +622,41 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
   onRecommendationChange(valuefromtextEditor: any) {
     this.alertObj.recommendation_html = valuefromtextEditor;
-}
+  }
 
-organizeServiceConnectionsType(type) {
-  if(type === 'Servicebus') {
-    return 'Service Bus';
-  }
-  else{
-    if(type === 'MicrosoftTeams') {
-      return 'Microsoft Teams';
+  organizeServiceConnectionsType(type) {
+    if (type === 'Servicebus') {
+      return 'Service Bus';
     }
-    else{
-      if(type === 'Webhook') {
-        return 'Webhook';
+    else {
+      if (type === 'MicrosoftTeams') {
+        return 'Microsoft Teams';
       }
-      else{
-        if(type === 'Service Bus'){
-          return 'Servicebus';
+      else {
+        if (type === 'Webhook') {
+          return 'Webhook';
         }
-        else{
-          if(type === 'Microsoft Teams'){
-            return 'MicrosoftTeams';
+        else {
+          if (type === 'Service Bus') {
+            return 'Servicebus';
           }
-          else{
-            return "";
+          else {
+            if (type === 'Microsoft Teams') {
+              return 'MicrosoftTeams';
+            }
+            else {
+              return "";
+            }
           }
         }
       }
     }
   }
-}
 
-renameKey(obj: any, oldKey: string, newKey: string): any {
-  if (obj.hasOwnProperty(oldKey)) {
-    obj[newKey] = obj[oldKey];
+  renameKey(obj: any, oldKey: string, newKey: string): any {
+    if (obj.hasOwnProperty(oldKey)) {
+      obj[newKey] = obj[oldKey];
+    }
+    return obj;
   }
-  return obj;
-}
 }

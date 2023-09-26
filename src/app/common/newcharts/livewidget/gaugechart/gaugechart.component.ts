@@ -45,10 +45,21 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
     setTimeout(() => {
       if (this.telemetryObj && this.type == 'LogicalView') {
         this.chartConfig.properties.forEach((prop, cIndex) => {
-          if (this.chart.length > cIndex) {
-            this.refreshLatestTelemetryInChart(this.chart[cIndex], prop);
-          }
+          this.refreshLatestTelemetryInChart(this.chart[cIndex], prop, cIndex);
+
         });
+      }
+      if (this.type !== 'LogicalView') {
+        this.chartConfig.properties.forEach(prop => {
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            this.startPoint[prop.asset_id] = new Date(
+              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+            );
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          }
+        })
       }
     }, 400);
 
@@ -81,12 +92,10 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.loadChart();
-    }, 400);
+    this.loadChart();
   }
 
-  refreshLatestTelemetryInChart(chartItem: am4charts.ClockHand, prop: any) {
+  refreshLatestTelemetryInChart(chartItem: any, prop: any, index: any) {
     this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
     const compositeKey = prop.composite_key;
     if (this.telemetryObj.hasOwnProperty(compositeKey)) {
@@ -104,10 +113,16 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
     }
     if (chartItem && this.telemetryObj.hasOwnProperty(compositeKey) &&
       this.telemetryObj[compositeKey].hasOwnProperty('value')) {
-      chartItem.radius = am4core.percent(97);
-      chartItem.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
-
-
+      const hand = this.chart[index].hands.push(new am4charts.ClockHand());
+      hand.radius = am4core.percent(97);
+      hand.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
+      this.hand.splice(index, 0, hand);
+    }
+    if (this.type != 'LogicalView') {
+      const hand = this.chart[index].hands.push(new am4charts.ClockHand());
+      hand.radius = am4core.percent(97);
+      hand.value = Number(0);
+      this.hand.splice(index, 0, hand);
     }
   }
 
@@ -115,7 +130,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.chart && changes.telemetryObj) {
       this.chartConfig.properties.forEach((prop, cIndex) => {
         const chartItem = this.chart.length > cIndex ? this.chart[cIndex] : undefined;
-        this.refreshLatestTelemetryInChart(chartItem, prop);
+        this.refreshLatestTelemetryInChart(chartItem, prop, cIndex);
       });
     }
     // if (this.chart && changes.telemetryObj) {
@@ -215,12 +230,15 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       //     this.telemetryObj[prop.composite_key]?.value !== undefined &&
       //     this.telemetryObj[prop.composite_key]?.value !== null
       //   ) {
+      //     alert('1')
       //     const hand = chart.hands.push(new am4charts.ClockHand());
       //     hand.radius = am4core.percent(97);
       //     hand.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
       //     this.hand.splice(index, 0, hand);
       //   }
       //   else {
+      //     alert('2')
+
       //     const hand = chart.hands.push(new am4charts.ClockHand());
       //     hand.radius = am4core.percent(97);
       //     hand.value = Number(0);

@@ -107,7 +107,6 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
-      console.log("assettt", this.asset)
       const foundAsset = Object.keys(this.telemetryObj).find(key => key === this.asset);
 
       if (foundAsset && this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {

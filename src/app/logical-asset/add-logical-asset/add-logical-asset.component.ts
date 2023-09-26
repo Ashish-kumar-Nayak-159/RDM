@@ -84,7 +84,7 @@ export class AddLogicalAssetComponent implements OnInit, OnChanges {
     this.actualhierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
     // this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     // this.actualGateways = this.gateways;
-    this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+    this.originalAssets = JSON?.parse(JSON.stringify(this.assets));
     this.actualAssets = this.originalAssets;
 
     await this.getApplicationUsers();

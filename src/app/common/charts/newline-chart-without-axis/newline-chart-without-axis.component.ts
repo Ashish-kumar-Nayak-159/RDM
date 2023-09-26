@@ -48,15 +48,18 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
   }
 
   ngAfterViewInit() {
-    this.plotChart();
+    setTimeout(() => {
+      this.plotChart();
+    }, 500);
   }
 
   ngOnChanges(changes) {
     if (changes.telemetryObj && this.chart) {
       // const data = JSON.parse(JSON.stringify(this.chart.data));
       let valueArr = [];
+      const foundAsset = Object.keys(this.telemetryObj).find(key => key === this.asset);
 
-      if (this.asset == this.telemetryObj?.asset_id) {
+      if (foundAsset) {
         const newObj = {
           message_date: new Date(this.telemetryObj[this.property]?.date),
         };
@@ -104,16 +107,17 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
-      if (this.asset == this.telemetryObj?.asset_id && this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
+      const foundAsset = Object.keys(this.telemetryObj).find(key => key === this.asset);
+
+      if (foundAsset && this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
         const newObj = {
           message_date: new Date(this.telemetryObj[this.property]?.date),
         };
         newObj[this.property] = this.telemetryObj[this.property]?.value;
 
-
         data.push(newObj);
       }
-      if (this.asset == this.telemetryObj?.asset_id && this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
+      if (foundAsset && this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
         this.max = Number(this.telemetryObj[this.property]?.value);
         this.min = Number(this.telemetryObj[this.property]?.value);
         if (this.min === this.max) {
@@ -123,6 +127,7 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
       }
       chart.data = data;
+      debugger
       this.startPoint[this.property] = new Date(this.telemetryObj[this.property]?.date);
 
       chart.logo.disabled = true;

@@ -281,6 +281,9 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
                 count++;
               }
             }
+            if (titleObj && count > 0) {
+              titleObj.isDisplay = true;
+            }
           });
 
           const menu =

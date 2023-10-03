@@ -26,7 +26,7 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
-                (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
+                (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" placement="top">
                 <em class="{{menu.icon}}" placement="bottom"></em>
                 <span>{{menu.display_name}}</span></a>
             </li>
@@ -198,6 +198,11 @@
             id="asset_cached_alerts">
             <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && asset" [asset]="asset">
             </app-gateway-cached-alerts>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
+            id="daily_report" >
+            <app-asset-daily-reports *ngIf="activeTab === 'daily_report'" [asset]="asset">
+            </app-asset-daily-reports>
           </div>
           <!-- /.container1-fluid -->
 

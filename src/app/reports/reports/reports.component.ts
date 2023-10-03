@@ -46,6 +46,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
   preGeneratedTab: { visibility: boolean; name: any };
+  dailyReportTab : { visibility : boolean ; name: any};
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -99,6 +100,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.onTabSelect('custom');
     } else if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
+    }
+    else if(this.decodedToken?.privileges?.indexOf('RV') !== -1){
+      this.onTabSelect('daily-reports');
     }
   }
 
@@ -202,6 +206,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
       visibility: reportDataItem['Pre-Generated Reports'],
       name: reportDataItem['Pre-Generated Reports'],
     };
+    if(this.decodedToken?.privileges && this.decodedToken?.privileges?.indexOf('RV') > -1){
+      this.dailyReportTab ={
+        visibility: reportDataItem['daily Reports'],
+        name: reportDataItem['daily Reports'],
+      }
+    }
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 

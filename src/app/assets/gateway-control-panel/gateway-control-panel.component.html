@@ -118,6 +118,12 @@
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="asset_package_management">
               <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset"></app-asset-packages>
             </div>
+
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
+            id="daily_report">
+            <app-asset-daily-reports *ngIf="activeTab === 'daily_report'" [asset]="asset">
+            </app-asset-daily-reports>
+          </div>
             <!-- /.container1-fluid -->
 
           </div>

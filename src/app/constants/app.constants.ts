@@ -417,7 +417,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: false,
       exactMatch: true,
-      privileges_required: ['ASMV', 'RMV'],
+      privileges_required: ['LVM', 'LVV'],
       showAccordion: [
         {
           name: 'Title',
@@ -659,7 +659,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: false,
       exactMatch: true,
-      privileges_required: ['ASMV', 'RMV'],
+      privileges_required: ['LVM', 'LVV'],
       showAccordion: [
         {
           name: 'Title',

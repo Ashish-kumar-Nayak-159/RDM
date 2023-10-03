@@ -71,14 +71,27 @@
                                     </sub>
                                 </ng-container>
                                 <ng-container *ngIf="type == 'LogicalView'">
-                                    {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.json_key] &&
-                                    (telemetryObj[prop?.json_key]?.value !==
+                                    {{ telemetryObj && telemetryObj[prop.composite_key] &&
+                                    telemetryObj[prop?.composite_key]?.value !== undefined &&
+                                    telemetryObj[prop?.composite_key]?.value !== null
+                                    ?
+                                    (
+                                    prop?.data_type === 'Number'
+                                    ? (convertToNumber(telemetryObj[prop?.composite_key]?.value))
+                                    : telemetryObj[prop?.composite_key].value
+                                    )
+                                    : 'NA' }}
+
+
+                                    <!-- {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.composite_key]
+                                    &&
+                                    (telemetryObj[prop?.composite_key]?.value !==
                                     undefined
-                                    && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                    && telemetryObj[prop?.composite_key]?.value !== null)) ?
                                     (prop?.data_type === 'Number' ?
-                                    (convertToNumber(telemetryObj[prop?.json_key]?.value)) :
-                                    (telemetryObj[prop?.json_key].value))
-                                    : 'NA':prop?.lastValue}}
+                                    (convertToNumber(telemetryObj[prop?.composite_key]?.value)) :
+                                    (telemetryObj[prop?.composite_key].value))
+                                    : 'NA':prop?.lastValue}} -->
                                     <sub class="text-xs live-widget-title mb-0">
                                         {{prop?.units ? ('(' +
                                         prop?.units + ')') : ''}}
@@ -89,18 +102,27 @@
                             </ng-container>
 
                             <ng-template #APIPropValTemplate>
-                                {{ (apiTelemetryObj[prop?.json_key] &&
-                                (apiTelemetryObj[prop?.json_key]?.value !==
-                                undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
+                                kllsjdslkadjslakdjlaskdjasldasdjk
+                                {{ (apiTelemetryObj[prop?.composite_key] &&
+                                (apiTelemetryObj[prop?.composite_key]?.value !==
+                                undefined && apiTelemetryObj[prop?.composite_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
-                                (apiTelemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
-                                (apiTelemetryObj[prop?.json_key].value))
+                                (apiTelemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
+                                (apiTelemetryObj[prop?.composite_key].value))
                                 : 'NA'}} {{prop.unit}}
                             </ng-template>
                         </span>
-                        <p class="mb-0" style="font-size: 10px;">
-                            {{ prop?.asset_id == this.telemetryObj?.asset_id ?(telemetryObj[prop?.json_key]?.date ||
-                            telemetryObj[prop?.json_key]?.message_date):prop.lastDate}}
+                        <p *ngIf="type == 'LogicalView'" class="mb-0" style="font-size: 10px;">
+                            {{ telemetryObj && telemetryObj[prop.composite_key] &&
+                            telemetryObj[prop?.composite_key]?.date
+                            ? telemetryObj[prop?.composite_key].date
+                            : 'NA' }}
+                        </p>
+                        <p *ngIf="type != 'LogicalView'" class="mb-0" style="font-size: 10px;">
+                            {{ telemetryObj && telemetryObj[prop.json_key] &&
+                            telemetryObj[prop?.json_key]?.date
+                            ? telemetryObj[prop?.json_key].date
+                            : 'NA' }}
                         </p>
                     </div>
                     <div *ngIf="contextApp.app=='Kirloskar'"
@@ -109,13 +131,13 @@
                             [ngStyle]="{'font-size': chartConfig.widget_type === 'SmallNumber' || chartConfig.widget_type === 'StringWidget' ? '1.3rem' : '' }">
                             <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                                {{ (telemetryObj[prop?.json_key] &&
-                                (telemetryObj[prop?.json_key]?.value !==
+                                {{ (telemetryObj[prop?.composite_key] &&
+                                (telemetryObj[prop?.composite_key]?.value !==
                                 undefined
-                                && telemetryObj[prop?.json_key]?.value !== null)) ?
+                                && telemetryObj[prop?.composite_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
-                                (telemetryObj[prop?.json_key]?.value) :
-                                (telemetryObj[prop?.json_key].value))
+                                (telemetryObj[prop?.composite_key]?.value) :
+                                (telemetryObj[prop?.composite_key].value))
                                 : 'NA'}}
                                 <sub class="text-xs live-widget-title mb-0">
                                     {{prop?.units ? ('(' +
@@ -125,17 +147,17 @@
                             </ng-container>
 
                             <ng-template #APIPropValTemplate>
-                                {{ (apiTelemetryObj[prop?.json_key] &&
-                                (apiTelemetryObj[prop?.json_key]?.value !==
-                                undefined && apiTelemetryObj[prop?.json_key]?.value !== null)) ?
+                                {{ (apiTelemetryObj[prop?.composite_key] &&
+                                (apiTelemetryObj[prop?.composite_key]?.value !==
+                                undefined && apiTelemetryObj[prop?.composite_key]?.value !== null)) ?
                                 (prop?.data_type === 'Number' ?
-                                (apiTelemetryObj[prop?.json_key]?.value) :
-                                (apiTelemetryObj[prop?.json_key].value))
+                                (apiTelemetryObj[prop?.composite_key]?.value) :
+                                (apiTelemetryObj[prop?.composite_key].value))
                                 : 'NA'}} {{prop.unit}}
                             </ng-template>
                         </span>
                         <p class="mb-0" style="font-size: 10px;">
-                            {{(telemetryObj[prop?.json_key]?.date) ? (telemetryObj[prop?.json_key]?.date) :
+                            {{(telemetryObj[prop?.composite_key]?.date) ? (telemetryObj[prop?.composite_key]?.date) :
                             ''}}
                         </p>
                     </div>

@@ -37,7 +37,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
   headerMessage: string;
   decodedToken: any;
   isOverlayVisible = false;
-  telemetryData: any;
+  latestPropWiseTelemetryData: any;
   subscriptions: Subscription[] = [];
   widgetStringFromMenu: any;
   @Output() chart_Id = new EventEmitter<any>();
@@ -46,7 +46,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
   telmetryDivAddonClass: any;
   innerClass: any;
   overlayLeft: any = '60px';
-  startPoint: any = {};
+  currentDate: string;
 
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
@@ -54,169 +54,63 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties;
-
       this.telmetryDivAddonClass = this.chartConfig.widget_type === 'RectangleWidget' ? 'mt-n2' : '';
       this.innerClass = this.chartConfig.widget_type === 'CylinderWidget' ? 'mt-n4' : 'mt-n2';
-
     }
-    if (this.telemetryObj && this.type == 'LogicalView') {
-      this.chartConfig.properties.forEach(prop => {
-        if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-          (this.telemetryObj[prop?.json_key]?.value !== undefined
-            && this.telemetryObj[prop?.json_key]?.value !== null)) {
-          if (prop?.data_type === 'Number') {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
+    setTimeout(() => {
+      if (this.telemetryObj && this.type == 'LogicalView') {
+        this.chartConfig.properties.forEach((prop, cIndex) => {
+          if (this.chart.length > cIndex) {
+            this.refreshLatestTelemetryInChart(this.chart[cIndex], prop);
           }
-          else {
-            prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-          }
-        }
-        else {
-          prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-        }
+        });
+      }
+    }, 400);
 
-        if (prop?.asset_id == this.telemetryObj?.asset_id) {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-        } else {
-          prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-
-        }
-      });
-    }
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
   }
 
   ngAfterViewInit() {
-    if (this.chartConfig.widget_type === 'RectangleWidget') {
-      this.generateChart();
-    }
-    else {
+    setTimeout(() => {
       this.generateChartCY();
+    }, 400);
+  }
+
+  refreshLatestTelemetryInChart(chartItem: am4charts.XYChart3D, prop: any) {
+    this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+    const compositeKey = prop.composite_key;
+    if (this.telemetryObj.hasOwnProperty(compositeKey)) {
+      if (!this.latestPropWiseTelemetryData || !this.latestPropWiseTelemetryData.hasOwnProperty(compositeKey) || (
+        this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.latestPropWiseTelemetryData[compositeKey].date < this.telemetryObj[compositeKey].date &&
+        this.telemetryObj[compositeKey].hasOwnProperty('value') &&
+        this.telemetryObj[compositeKey]['value'] !== undefined &&
+        this.telemetryObj[compositeKey]['value'] !== null)) {
+        if (!this.latestPropWiseTelemetryData) this.latestPropWiseTelemetryData = {};
+        if (prop?.data_type === 'Number' && prop.hasOwnProperty('digitsAfterDecimals')) this.telemetryObj[compositeKey].value = this.telemetryObj[compositeKey].value.toFixed(prop.digitsAfterDecimals);
+        this.latestPropWiseTelemetryData[compositeKey] = this.telemetryObj[compositeKey];
+      }
+    }
+    if (chartItem && this.latestPropWiseTelemetryData.hasOwnProperty(compositeKey) &&
+      this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('value')) {
+      chartItem.data = [{
+        fillCapacity: Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        empty: Number(prop?.maxCapacityValue || '100') - Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        category: ''
+      }];
     }
   }
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-
-      this.chartConfig.properties.forEach((prop, index) => {
-        const chart = this.chart[index];
-        if (!this.startPoint[prop.asset_id]) {
-          this.startPoint[prop.asset_id] = new Date(this.telemetryObj[prop?.json_key]?.date);
-        }
-        if (new Date(this.telemetryObj[prop?.json_key]?.date) >= this.startPoint[prop.asset_id]) {
-
-          if (chart) {
-            this.telemetryData = {};
-            if (prop.asset_id == this.telemetryObj.asset_id &&
-              this.telemetryObj[prop?.json_key]?.value !== undefined &&
-              this.telemetryObj[prop?.json_key]?.value !== null
-            ) {
-              this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
-              this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-              this.telemetryData.category = '';
-
-              this.startPoint[prop.asset_id] = prop.lastDate;
-              chart.data = [this.telemetryData];
-            }
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id && this.telemetryObj[prop?.json_key] &&
-            (this.telemetryObj[prop?.json_key]?.value !== undefined
-              && this.telemetryObj[prop?.json_key]?.value !== null)) {
-            if (prop?.data_type === 'Number') {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)
-            }
-            else {
-              prop.lastValue = this.telemetryObj[prop?.json_key]?.value
-            }
-          }
-
-          if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-          }
-        }
+      this.chartConfig.properties.forEach((prop, cIndex) => {
+        const chartItem = this.chart.length > cIndex ? this.chart[cIndex] : undefined;
+        this.refreshLatestTelemetryInChart(chartItem, prop);
       });
     }
-  }
-
-  generateChart() {
-    this.chartConfig?.properties.forEach((prop, index) => {
-      am4core.options.autoDispose = true;
-      const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.XYChart3D);
-      chart.hiddenState.properties.opacity = 0;
-      chart.logo.disabled = true;
-
-      const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-      categoryAxis.dataFields.category = 'category';
-      categoryAxis.renderer.grid.template.location = 0;
-      categoryAxis.renderer.grid.template.strokeOpacity = 0;
-      categoryAxis.renderer.labels.template.disabled = true;
-
-      const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      // valueAxis.min = (prop?.minCapacityValue - Math.round((prop?.maxCapacityValue / 100) * 27)) || -10;
-      // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 40)) || 200;
-      valueAxis.min = (prop?.minCapacityValue < 10 ? 10 : prop?.minCapacityValue) || 10;
-      // valueAxis.max = (prop?.maxCapacityValue + Math.round((prop?.maxCapacityValue / 100) * 100)) || 300;
-      valueAxis.max = prop?.maxCapacityValue * 2 || 300;
-      valueAxis.paddingBottom = 10;
-      // valueAxis.marginTop = 10;
-      // valueAxis.paddingTop = 25;
-      valueAxis.strictMinMax = true;
-      valueAxis.logarithmic = true;
-      // valueAxis.treatZeroAs = 0.00001;
-      // valueAxis.extraMax = 0.5;
-      valueAxis.renderer.fontSize = '0.6em';
-      valueAxis.renderer.grid.template.strokeOpacity = 0;
-      valueAxis.renderer.baseGrid.disabled = true;
-      valueAxis.renderer.minGridDistance = 50;
-      // valueAxis.renderer.labels.template.disabled = true;
-      // valueAxis.renderer.minLabelPosition = 0.05;
-      // valueAxis.renderer.maxLabelPosition = 0.95;
-      // valueAxis.renderer.labels.template.adapter.add("text", function(text) {
-      //   if (+text < valueAxis.min || +text > valueAxis.max) {
-      //     return "";
-      //   }
-      //   return text;
-      // });
-
-      const series1 = chart.series.push(new am4charts.ConeSeries());
-      series1.dataFields.valueY = 'fillCapacity';
-      series1.dataFields.categoryX = 'category';
-      series1.columns.template.width = am4core.percent(80);
-      series1.columns.template.fillOpacity = 0.9;
-      series1.columns.template.strokeOpacity = 1;
-      series1.columns.template.strokeWidth = 2;
-      // series1.columns.template.column3D.tooltipText = "{valueY}";
-
-      const series2 = chart.series.push(new am4charts.ConeSeries());
-      series2.dataFields.valueY = 'empty';
-      series2.dataFields.categoryX = 'category';
-      series2.stacked = true;
-      series2.columns.template.width = am4core.percent(80);
-      series2.columns.template.fill = am4core.color('#000');
-      series2.columns.template.fillOpacity = 0.1;
-      series2.columns.template.stroke = am4core.color('#ccc');
-      series2.columns.template.strokeOpacity = 0.2;
-      series2.columns.template.strokeWidth = 2;
-
-      this.telemetryData = {};
-      if (this.telemetryObj) {
-
-        if (
-          this.telemetryObj[prop?.json_key]?.value !== undefined &&
-          this.telemetryObj[prop?.json_key]?.value !== null
-        ) {
-          this.telemetryData.fillCapacity = Number(this.telemetryObj[prop?.json_key]?.value || '0');
-          this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-          this.telemetryData.category = '';
-        }
-      }
-      chart.data = [this.telemetryData];
-      this.chart.push(chart);
-    });
   }
 
   generateChartCY() {
@@ -279,19 +173,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
       series2.columns.template.strokeOpacity = 0.2;
       series2.columns.template.strokeWidth = 2;
 
-      this.telemetryData = {};
-      if (
-        this.telemetryObj[prop?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop?.json_key]?.value !== null
-      ) {
-        this.telemetryData.fillCapacity = 300;// Number(this.telemetryObj[prop?.json_key]?.value || '0');
-        this.telemetryData.empty = 0; //Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = '';
-      }
-      chart.data = [this.telemetryData];
-      this.startPoint[prop.asset_id] = new Date(
-        this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-      );
+      this.refreshLatestTelemetryInChart(chart, prop);
       this.chart.push(chart);
     });
   }

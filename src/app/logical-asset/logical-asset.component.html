@@ -2,8 +2,9 @@
     <div class="d-flex align-items-center">
         <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
         </div>
-        <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()"
-            placement="bottom" tooltip="Add {{(tileData && tileData[0] ? tileData[0]?.value : '')}}"><em
+        <button *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('LVM') > -1" type="submit"
+            class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()" placement="bottom"
+            tooltip="Add {{(tileData && tileData[0] ? tileData[0]?.value : '')}}"><em
                 class="fas fa-plus fa-sm"></em></button>
     </div>
 </div>
@@ -51,11 +52,13 @@
                         <td>{{item.level}}</td>
                         <td>{{item.hierarchyString}}</td>
                         <td>
-                            <em class="fas fa-eye fa-fw icon-gray" tooltip="View"
+                            <em *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('LVV') > -1"
+                                class="fas fa-eye fa-fw icon-gray" tooltip="View"
                                 (click)="singleRecordData(item,'view')"></em>
-                            <em class="fa fa-cog fa-fw icon-gray" tooltip="Configuration"
+                            <em *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('LVM') > -1"
+                                class="fa fa-cog fa-fw icon-gray" tooltip="Configuration"
                                 (click)="singleRecordData(item,'config')"></em>
-                            <em *ngIf=" decodedToken?.privileges?.indexOf('RSM') > -1"
+                            <em *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('LVM') > -1"
                                 class="fa fa-fw fa-trash icon-gray" tooltip="Delete"
                                 (click)="singleRecordData(item,'delete')"></em>
 

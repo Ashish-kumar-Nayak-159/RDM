@@ -179,8 +179,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.cd.detectChanges();
       // if (this.filterObj.asset) {
-        //   this.onFilterSelection(false, false);
-        // }
+      //   this.onFilterSelection(false, false);
+      // }
     } else {
       this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
     }
@@ -716,7 +716,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   async savePDF(): Promise<void> {
     if (this.originalFilterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
-      alert('1')
       $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
       setTimeout(() => {
         $('#downloadReportModal').modal('hide');

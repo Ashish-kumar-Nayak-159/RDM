@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -28,16 +28,14 @@ export class AssetDailyReportsComponent implements OnInit {
     autoUpdateInput: true,
     singleDatePicker: true,
     maxDate: new Date(),
-    timePicker: true,
+    timePicker: false,
     ranges: CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS,
   }
   selectedDateRange: string;
   contextApp: any;
-  downloadingDPRExcel: boolean = false;
   loadingMessage: string;
   filterObj: any = {};
   originalFilterObj: any = {};
-  decodedToken: any;
   dailyReportApiLoading: boolean = false;
   allAssets: any;
   loadMoreVisible: boolean = false;
@@ -45,31 +43,33 @@ export class AssetDailyReportsComponent implements OnInit {
   totalCount: any = 0;
   constructor(
     private activatedRoute: ActivatedRoute,
-    private commonService: CommonService,
+    public commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(CONSTANTS.APP_TOKEN);
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.allAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
-    this.apiResponseSubscription.push(
-      this.allAssets.forEach((item) => {
-        if (this.asset?.asset_id === item?.asset_id) {
-          this.selectedAsstDetails = item;
-        }
-      }),
-      this.activatedRoute.paramMap.subscribe((paramData) => {
-        if (paramData?.get('applicationId')) {
-          this.filterObj.app = this.contextApp.app;
-        }
-      })
-    );
-    this.datePickerOptions.maxDate.setDate(this.datePickerOptions.maxDate.getDate() - 1);
-    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    this.loadFromLocalStorage();
-    this.getReportDatabySearch();
+    if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'
+    ){
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      this.allAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
+      this.apiResponseSubscription.push(
+        this.allAssets.forEach((item) => {
+          if (this.asset?.asset_id === item?.asset_id) {
+            this.selectedAsstDetails = item;
+          }
+        }),
+        this.activatedRoute.paramMap.subscribe((paramData) => {
+          if (paramData?.get('applicationId')) {
+            this.filterObj.app = this.contextApp.app;
+          }
+        })
+      );
+      this.datePickerOptions.maxDate.setDate(this.datePickerOptions.maxDate.getDate() - 1);
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.loadFromLocalStorage();
+      this.getReportDatabySearch();
+    }
   }
   loadFromLocalStorage() {
     const data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -136,8 +136,6 @@ export class AssetDailyReportsComponent implements OnInit {
     if(this.dailyReportsData?.length){
       const fileName = 'DPR -' + this.selectedAsstDetails?.display_name ? this.selectedAsstDetails.display_name : this.selectedAsstDetails?.asset_id + '-' + this.filterObj.from_date + '-' + this.filterObj.to_date;
       const exportType = exportFromJSON.types.xls;
-      this.downloadingDPRExcel = true;
-  
       let data = [];
       $('#downloadReportModel').modal({ backdrop: 'static', keyboard: false, show: true });
       this.loadingMessage = "Preparing daily Report Data...";

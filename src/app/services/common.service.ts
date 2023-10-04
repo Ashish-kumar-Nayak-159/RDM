@@ -458,4 +458,13 @@ export class CommonService {
   getAssetUpTime(asset_id: any) {
     return this.http.get(this.url + AppUrls.ASSET_UPTIME + asset_id)
   }
+
+  appPrivilegesPermission(key: string){
+    const decodedToken = this.getdecodedToken();
+    return decodedToken?.privileges?.indexOf(key) !== -1;
+  }
+
+  getdecodedToken(){
+    return this.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+  }
 }

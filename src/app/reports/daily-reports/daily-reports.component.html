@@ -1,5 +1,5 @@
 <ng-container class="daily-report-adjust"
-    *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('RV') > -1">
+    *ngIf="commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests'">
     <div class="tab-bar">
         <div class="col">
             <form class="form-inline vw-75">
@@ -17,14 +17,14 @@
                         <div class="form-group">
                             <button class="btn btn-sm searchBtn btn-primary" type="button" placement="bottom"
                                 tooltip="Search" [disabled]="dailyReportApiLoading"
-                                (click)="dailyReportsData=[]; prOffset= 0; getReportDatabySearch()">
+                                (click)="dailyReportsData=[]; preOffset= 0; getReportDatabySearch()">
                                 <em class="fa fa-search fa-sm"></em>
                             </button>
                         </div>
                     </div>
                     <div class="col-6 d-flex justify-content-end">
                         <div class="form-group">
-                            <a *ngIf="decodedToken?.privileges && decodedToken?.privileges?.indexOf('RV') > -1"
+                            <a
                                 href="javascript:void(0)" (click)="saveExcel()"
                                 [style.pointer-events]="dailyReportApiLoading" placement="left"
                                 tooltip="Export as Excel" class="ml-1">
@@ -53,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <ng-container *ngIf="dailyReportsData">
+                            <ng-container *ngIf="dailyReportsData?.length">
                                 <ng-container *ngFor="let report of dailyReportsData; let i = index;">
                                     <tr>
                                         <td> {{i+1}} </td>
@@ -89,7 +89,7 @@
                     <div class="loadMoreBtn ">
                         <span class="pull-center " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
                             <a href="javascript:void(0)" class=" "
-                                (click)="prOffset = prOffset + preLimit; getReportDatabySearch();" placement="bottom"
+                                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="bottom"
                                 tooltip="Load More Records...">Load More...</a>
                         </span>
                     </div>

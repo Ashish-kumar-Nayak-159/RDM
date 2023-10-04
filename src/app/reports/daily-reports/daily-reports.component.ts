@@ -24,10 +24,9 @@ export class DailyReportsComponent implements OnInit {
   decodedToken: any;
   contextApp: any;
   dailyReportsData: any[] = [];
-  prOffset = 0;
+  preOffset = 0;
   contextAppUserHierarchyLength = 0;
   actualHierarchyArr: any;
-  tileData: any;
   preLimit = 20;
   currentLimit = 20;
   apiSubscriptions: Subscription[] = [];
@@ -38,7 +37,6 @@ export class DailyReportsComponent implements OnInit {
   dailyReportApiLoading: boolean = false;
   originalFilterObj: any = {};
   selectedDateRange: string = '';
-  isFileDownloading: boolean = false;
   loadingMessage: string = undefined;
   mindate = new Date();
   totalCount = 0;
@@ -48,14 +46,13 @@ export class DailyReportsComponent implements OnInit {
     autoUpdateInput: false,
     maxDate: new Date(),
     minDate: new Date(),
-    timePicker: true,
+    timePicker: false,
     ranges: CONSTANTS.DATE_OPTION_YESTERDAY,
     singleDatePicker: true
   }
-  constantData = CONSTANTS;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
-    private commonService: CommonService,
+    public commonService: CommonService,
     private activatedRoute: ActivatedRoute,
     private assetService: AssetService,
     private toasterService: ToasterService,
@@ -64,12 +61,11 @@ export class DailyReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    if(this.decodedToken?.privileges?.indexOf('RV') > -1){
+    if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'){
       this.allAsset = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       this.actualHierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
       this.dailyReportsData = [];
-      this.getTileName();
       this.loadFromLocalStorage();
       this.getReportDatabySearch();
       if (this.contextApp?.user?.hierarchy) {
@@ -83,7 +79,7 @@ export class DailyReportsComponent implements OnInit {
         })
       );
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      this.prOffset = 0;
+      this.preOffset = 0;
     }
   }
   loadFromLocalStorage() {
@@ -104,13 +100,6 @@ export class DailyReportsComponent implements OnInit {
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
   }
-  getTileName() {
-    this.contextApp.menu_settings.main_menu.forEach((item) => {
-      if (item?.system_name === 'Reports') {
-        this.tileData = item.showAccordion;
-      }
-    });
-  }
 
   getReportDatabySearch() {
     this.isReportDataLoading = true;
@@ -120,7 +109,7 @@ export class DailyReportsComponent implements OnInit {
     });
 
     let obj = {
-      offset: this.prOffset,
+      offset: this.preOffset,
       count: this.preLimit,
       hierarchy: JSON.stringify(Object.keys(this.configureHierarchy)?.length <= 0 ? this.contextApp?.user?.hierarchy : newHierarchy),
       fromDate: this.filterObj?.from_date,
@@ -149,7 +138,7 @@ export class DailyReportsComponent implements OnInit {
   }
 
   onSaveHierarchy(save: any) {
-    this.prOffset = 0;
+    this.preOffset = 0;
     this.preLimit = this.currentLimit;
     this.configureHierarchy = JSON.parse(JSON.stringify(save));
   }
@@ -206,8 +195,11 @@ export class DailyReportsComponent implements OnInit {
   }
 
   dailyReportViewMore(report: any) {
-    if(report){
+    if(report?.assetId){
       this.router.navigate([`/applications/${this.contextApp.app}/assets/${report.assetId}/control-panel`], { fragment: 'daily_report' });
+    }
+    else{
+      this.toasterService.showError('Asset Id Not Found','Error');
     }
   }
   selectedDate(selectedDateObj) {
@@ -216,15 +208,13 @@ export class DailyReportsComponent implements OnInit {
     this.filterObj.from_date = this.originalFilterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
     this.filterObj.to_date =this.originalFilterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd").toString();
     this.selectedDateRange = selectedDateObj.dateOption;
-    this.prOffset = 0;
+    this.preOffset = 0;
   }
 
   saveExcel() {
     if(this.dailyReportsData?.length){
       const fileName = 'DPR-' + this.contextApp?.app + this.filterObj?.from_date;
-      const exportType = exportFromJSON.types.xls;
-      this.isFileDownloading = true;
-  
+      const exportType = exportFromJSON.types.xls;  
       let data = [];
       $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.loadingMessage = 'Preparing Daily Report Data...';

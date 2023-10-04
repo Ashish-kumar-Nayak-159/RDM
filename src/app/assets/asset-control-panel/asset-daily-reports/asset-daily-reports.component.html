@@ -1,4 +1,4 @@
-<ng-container >
+<ng-container *ngIf="commonService.appPrivilegesPermission('RV') && commonService.getdecodedToken()?.app === 'Kirloskar' || commonService.getdecodedToken()?.app === 'VNHierarchyTests'">
     <div class="tab-bar">
         <div class="col">
             <form class="form-inline vw-75">

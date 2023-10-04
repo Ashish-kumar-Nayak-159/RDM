@@ -771,9 +771,11 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
               // console.log(JSON.stringify(response));
               // console.log(JSON.stringify(this.actualPropertyList));
               this.actualPropertyList.filter(prop => prop.asset_id == asset.asset_id).forEach((prop) => {
+                var type = (prop?.type === 'Edge Derived Properties' ? 'ed' : (prop?.type === 'Measured Properties' ? 'm' : (prop?.type === 'Cloud Derived Properties' ? 'cd' : '')))
                 if (prop.type !== 'Derived KPIs') {
+                  var typeKey = type ?? '';
                   obj[prop?.composite_key] = {
-                    value: response.message[prop?.json_key],
+                    value: response.message[typeKey]?.[prop?.json_key],
                     date: response.message.message_date,
                     asset_id: prop.asset_id,
                   };

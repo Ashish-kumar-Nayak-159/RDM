@@ -767,11 +767,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
                 this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
               }
-              // console.log(asset.asset_id);
-              // console.log(JSON.stringify(response));
-              // console.log(JSON.stringify(this.actualPropertyList));
               this.actualPropertyList.filter(prop => prop.asset_id == asset.asset_id).forEach((prop) => {
-                var type = (prop?.type === 'Edge Derived Properties' ? 'ed' : (prop?.type === 'Measured Properties' ? 'm' : (prop?.type === 'Cloud Derived Properties' ? 'cd' : '')))
+                var type = (prop?.type === 'Edge Derived Properties' || prop?.type === 'ed') ? 'ed' :
+                  (prop?.type === 'Measured Properties' || prop?.type === 'm') ? 'm' :
+                    (prop?.type === 'Cloud Derived Properties' || prop?.type === 'cd') ? 'cd' : '';
                 if (prop.type !== 'Derived KPIs') {
                   var typeKey = type ?? '';
                   obj[prop?.composite_key] = {
@@ -779,8 +778,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                     date: response.message.message_date,
                     asset_id: prop.asset_id,
                   };
-                  // console.log(JSON.stringify(prop));
-                  // console.log(JSON.stringify(obj));
                 } else {
                   const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
                   obj[prop?.composite_key] = {

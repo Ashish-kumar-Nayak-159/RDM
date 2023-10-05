@@ -119,7 +119,8 @@
                             [telemetryObj]="telemetryObj">
                         </app-rectanglewidget>
 
-                        <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj" [type]="'LogicalView'"
+                        <app-livelinechart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+                            [propertyList]="actualPropertyList" [type]="'LogicalView'"
                             *ngIf="telemetryObj && (widget.widgettype === 'LineChart' || widget.widgettype === 'AreaChart')">
                         </app-livelinechart>
 

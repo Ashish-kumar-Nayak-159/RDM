@@ -1,0 +1,20 @@
+  #table-top-2{
+    height: calc(100vh - 14rem)
+  } 
+  .table-header{
+      opacity: 0.9;
+      font-weight: 100;
+      font-size: 12px;
+  }
+  .tableFixHead {
+    overflow: auto;
+    height: calc(100vh - 10.5rem);
+  }
+  .loadMoreBtn {
+    width : 80vw !important;
+    height : 2.7rem !important;
+     display: flex !important;
+     justify-content: center !important;
+     padding-bottom: 2.5rem !important;
+
+  }

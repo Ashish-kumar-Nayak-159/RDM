@@ -1475,4 +1475,16 @@ export class AssetService {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_LOGICAL_VIEW, encodeURIComponent(id)));
   }
 
+  getDailyReportSubscription(app, filterObj?: any) {
+    let params = new HttpParams();
+    if (filterObj) {
+      Object?.keys(filterObj)?.forEach((key) => {
+        if (filterObj[key]) {
+          params = params.set(key, filterObj[key]);
+        }
+      });
+    }
+    return this.http.get(this.url + String.Format(AppUrls.CREATE_DAILY_REPORT_SUBSCRIPTION), { params });
+  }
+
 }

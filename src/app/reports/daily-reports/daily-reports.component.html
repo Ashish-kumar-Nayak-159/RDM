@@ -1,0 +1,125 @@
+<ng-container class="daily-report-adjust"
+    *ngIf="commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests'">
+    <div class="tab-bar">
+        <div class="col">
+            <form class="form-inline vw-75">
+                <div class="row d-flex vw-100">
+                    <div class="col-6 d-flex">
+                        <app-hierarchy-dropdown *ngIf="filterObj" #hierarchyDropdown [filterObj]="filterObj"
+                            [assets]="assets" [closeOnSelection]="false" [showAsset]="false"
+                            (clearHierarchyEvent)="onClearHierarchy($event)"
+                            (saveHierarchyEvent)="onSaveHierarchy($event)"></app-hierarchy-dropdown>
+
+                        <app-date-range-picker *ngIf="filterObj?.from_date && filterObj?.to_date"
+                            [filterObj]="originalFilterObj" (selectedDateApplyEmitter)="selectedDate($event)"
+                            [selectedDateRange]="selectedDateRange"
+                            [options]="datePickerOptions"></app-date-range-picker>
+                        <div class="form-group">
+                            <button class="btn btn-sm searchBtn btn-primary" type="button" placement="bottom"
+                                tooltip="Search" [disabled]="dailyReportApiLoading"
+                                (click)="dailyReportsData=[]; preOffset= 0; getReportDatabySearch()">
+                                <em class="fa fa-search fa-sm"></em>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <div class="form-group">
+                            <a
+                                href="javascript:void(0)" (click)="saveExcel()"
+                                [style.pointer-events]="dailyReportApiLoading" placement="left"
+                                tooltip="Export as Excel" class="ml-1">
+                                <em class="fa fa-lg fa-file-excel-o"></em>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="overlap-wrapper">
+        <div class="over-lap">
+            <div class="table-responsive">
+                <div class="tablefixHead">
+                    <table class="table table-hover" aria-describedby="">
+                        <thead class="table-header ">
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Asset Name</th>
+                                <th scope="col">% Volumetric Eff.</th>
+                                <th scope="col">fuel Consumption KG/HR</th>
+                                <th scope="col">power Consumption KW/HR</th>
+                                <th scope="col">Error (%)</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="dailyReportsData?.length">
+                                <ng-container *ngFor="let report of dailyReportsData; let i = index;">
+                                    <tr>
+                                        <td> {{i+1}} </td>
+                                        <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
+                                        <td>{{report?.volumetricEfficiency ? report.volumetricEfficiency : 0}}</td>
+                                        <td>{{report?.fuelConsumption ? report.fuelConsumption : 0 }}</td>
+                                        <td>{{report?.powerConsumption ? report.powerConsumption : 0}}</td>
+                                        <td>{{report?.error ? report.error : 0}}</td>
+                                        <td>
+                                            <a type="button" role="button"
+                                                *ngIf="report ? isTabVisible(report)?.visible : ''"
+                                                tooltip="View" placement="auto" (click)="dailyReportViewMore(report)">
+                                                <em class="fa fa-eye"></em>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                                <tr>
+                                    <td colspan="7">Daily Reports not available.</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="dailyReportApiLoading">
+                                <tr>
+                                    <td colspan="7">
+                                        <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                    <div class="loadMoreBtn ">
+                        <span class="pull-center " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
+                            <a href="javascript:void(0)" class=" "
+                                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="bottom"
+                                tooltip="Load More Records...">Load More...</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="downloadReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalLabel">Download Daily Report</h6>
+                    <button type="button" class="close" (click)="cancelDownloadModal()"
+                        *ngIf="loadingMessage?.toLowerCase()?.includes('loading')" aria-label="Close">
+                        <span aria-hidden="true" tooltip="Close">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ng-container>
+                        {{loadingMessage}}
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+                    </ng-container>
+                </div>
+                <div class="modal-footer" *ngIf="loadingMessage?.toLowerCase()?.includes('loading')">
+                    <button type="button" class="btn btn-secondary add-row"
+                        (click)="cancelDownloadModal()">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</ng-container>

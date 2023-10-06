@@ -24,16 +24,13 @@ export class ToasterService {
   showErrorAlert(message, header, positionClass, timeOut) {
     this.toastr.error(message, header, { positionClass, timeOut });
   }
-  showCriticalAlert(message, header, positionClass, timeOut,playAudio?){
-    if(playAudio && playAudio?.src){
-      playAudio.load();
-      playAudio.play();
-    }
-    this.toastr.error(message, header, { positionClass, timeOut})
-    .onHidden.subscribe(() => {
-      if(playAudio && playAudio?.src){
-        playAudio.pause();
-      }
+  showCriticalAlert(message, header, positionClass, timeOut,playAudio?: any){
+    const toast =this.toastr.error(message, header, { positionClass, timeOut});
+    toast.onShown.subscribe(() => {
+        playAudio?.play();
+    }),
+    toast.onHidden.subscribe(() => {
+        playAudio?.pause();
       });
   }
   

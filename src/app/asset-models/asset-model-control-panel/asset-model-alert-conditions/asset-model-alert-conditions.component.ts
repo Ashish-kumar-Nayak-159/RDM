@@ -1,7 +1,7 @@
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
-import { Component, Input, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, HostListener, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -81,7 +81,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   @ViewChild('addVisulizationWidgetDiv', { static: false }) addVisulizationWidgetDiv;
   @ViewChild('addUserGroupDiv', { static: false }) addUserGroupDiv;
   @ViewChild('documentSelectionDiv', { static: false }) documentSelectionDiv;
-
+  @ViewChild('#alert_sound', {static: false}) alert_sound :ElementRef;
 
   constructor(
     private commonService: CommonService,
@@ -801,17 +801,37 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     const selectedFile = audio.item(0);
     if(!selectedFile?.type?.startsWith('audio/')){
       this.toasterService.showError('Please Select Audio File', 'Upload File');
+      this.alert_sound.nativeElement.value='';
       return;
     }
     else{
       if (selectedFile?.size > CONSTANTS?.ASSET_ALERT_AUDIO_SIZE){
-            this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_ALERT_AUDIO_SIZE / 1000000 + " " + 'MB', 'Upload File');
-            return;
+        this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_ALERT_AUDIO_SIZE / 1000000 + " " + 'MB', 'Upload File');
+        this.alert_sound.nativeElement.value='';
+        return;
           }
           else {
-            this.selectedAudioFile = selectedFile;
+            let audioDuration;
+            const audioElement: HTMLAudioElement = new Audio();
+            audioElement.src = URL.createObjectURL(selectedFile);
+            audioElement.load();
+              audioElement.addEventListener('loadedmetadata', () => {
+                console.log(audioElement.duration);
+                audioDuration = audioElement.duration;
+              });        
+              setTimeout(() =>{
+                console.log("audioDuration =",audioDuration);
+                console.log("6 sec=",CONSTANTS.DEFAULT_AUDIO_DURATION);
+                if(audioDuration > CONSTANTS.DEFAULT_AUDIO_DURATION/1000){
+                  this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.DEFAULT_AUDIO_DURATION / 1000 + " " + 'Second', 'Upload File');
+                  this.alert_sound.nativeElement.value='';
+                  return;
+                }else{
+                  this.selectedAudioFile = selectedFile;
+                }
+              },100);
           }
-    }
+        }
   }
 
   async uploadFile(){

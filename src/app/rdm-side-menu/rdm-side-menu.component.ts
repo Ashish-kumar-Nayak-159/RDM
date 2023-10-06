@@ -4,7 +4,7 @@ import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { AssetService } from '../services/assets/asset.service';
 import { AssetModelService } from '../services/asset-model/asset-model.service';
 import { environment } from 'src/environments/environment';
@@ -46,7 +46,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   selectedAsset: any;
   sasToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
-  audioUrl :any;
+  audioUrl: any;
   constructor(
     private commonService: CommonService,
     private router: Router,
@@ -60,30 +60,30 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   async ngOnInit(): Promise<void> { 
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getAssetData();
     if (this.contextApp && !this.userData?.is_super_admin) {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {
         if ((!msg.type || msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical')) {
-          this.getAssetData(msg);
           await this.criticalAlertNotification(msg);
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
             'toast-bottom-right',
             60000,
-            this.criticalAlertAudioLoader(this.audioUrl)
+            this.audioUrl !== null ? this.criticalAlertAudioLoader(this.audioUrl) : ''
           )
           this.audioUrl='';
 
         }
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){
+        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
           this.toasterService.showWarningAlert(
-          msg.message,
-          msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-          'toast-bottom-right',
-          60000
-        );
-      }
+            msg.message,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-bottom-right',
+            60000
+          );
+        }
         // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
         //   this.c_message = msg?.message
         //   this.c_message_asset_display_name = msg?.asset_display_name
@@ -149,59 +149,120 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
 
  async criticalAlertNotification(msg){
     return new Promise<void>((resolve) => {
-      if(msg && msg?.asset_id && msg?.severity && msg?.code){
+      let asset_model_name: any;
+      if (msg?.asset_id && msg?.severity && msg?.code) {
+        if (this.selectedAsset?.length > 0) {
+          this.selectedAsset.forEach((data) => {
+            if (data?.asset_id === msg?.asset_id) {
+              asset_model_name = data.asset_model;
+            }
+          });
+        }
         const filterObj = {
           app: this.contextApp.app,
           asset_id: msg.asset_id,
-          asset_model: this.selectedAsset.asset_model
+          asset_model: asset_model_name
         };
-        let assetData;
-        if(msg?.code?.startsWith('M_')){
-          assetData = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
+        let assetResponseData;
+        if (msg?.code?.startsWith('M_')) {
+          const model = this.commonService.getItemFromLocalStorage(CONSTANTS.MODEL_ALERT_AUDIO);
+          let isStorageAvailable = false;
+          const getLocalModelAlertData = model ? JSON.parse(model) : [];
+          if (getLocalModelAlertData?.length) {
+            getLocalModelAlertData.forEach((modelAlert: any) => {
+              if (modelAlert?.message.toLowerCase() === msg?.message.toLowerCase() && modelAlert?.alert_Id === msg?.asset_id && modelAlert?.msgCode.toLowerCase() === msg?.code.toLowerCase()) {
+                this.audioUrl = modelAlert?.url;
+                assetResponseData = null;
+                isStorageAvailable = true;
+              }
+            })
+          }
+          if (isStorageAvailable == false) {
+            assetResponseData = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
+          }
         }
-        else{
-          assetData = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
+        else {
+          const asset_alert = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_ALERT_AUDIO);
+          const getLocalAssetAlertData = asset_alert ? JSON.parse(asset_alert) : [];
+          let isAssetStorageAvailable = false;
+          if (getLocalAssetAlertData?.length) {
+            getLocalAssetAlertData.forEach((assetAlert: any) => {
+              if (assetAlert?.message.toLowerCase() === msg?.message.toLowerCase() && assetAlert?.alert_Id === msg?.asset_id && assetAlert?.msgCode.toLowerCase() === msg?.code.toLowerCase()) {
+                this.audioUrl = assetAlert.url;
+                assetResponseData = null;
+                isAssetStorageAvailable = true;
+              }
+            })
+          }
+          if (isAssetStorageAvailable == false) {
+            assetResponseData = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
+          }
         }
-        
-        if(assetData){
+
+        if (assetResponseData) {
           this.apiSubscriptions.push(
-            assetData.subscribe((response : any) => {
-              if(response?.data){
+            assetResponseData.subscribe((response: any) => {
+              if (response?.data) {
                 response?.data.forEach((item) => {
-                  if(msg?.severity?.toLowerCase()=== item?.severity?.toLowerCase() && msg?.code === item?.code && msg?.source?.toLowerCase()===item?.alert_type?.toLowerCase() ){
-                    if(item?.metadata && item?.metadata?.critical_alert_sound && item?.metadata?.critical_alert_sound?.url){
-                      this.audioUrl = this.blobStorageURL+(item.metadata.critical_alert_sound.url)+ this.sasToken;
-                      resolve();
+                  if (msg?.severity?.toLowerCase() === item?.severity?.toLowerCase() && msg?.code === item?.code && msg?.source?.toLowerCase() === item?.alert_type?.toLowerCase()) {
+                    if (item?.metadata && item?.metadata?.critical_alert_sound && item?.metadata?.critical_alert_sound?.url) {
+                      this.audioUrl = this.blobStorageURL + (item.metadata.critical_alert_sound.url) + this.sasToken;
+                      const alertDataObj = {
+                        msgCode: msg?.code,
+                        message: msg?.message,
+                        alert_Id: msg?.asset_id,
+                        url: this.audioUrl ? this.audioUrl : ''
+                      }
+                      if (msg?.code?.startsWith('M_')) {
+                        this.storingInLocalStorage(alertDataObj, msg,CONSTANTS.MODEL_ALERT_AUDIO);
+                      }
+                      else {
+                        this.storingInLocalStorage(alertDataObj, msg,CONSTANTS.ASSET_ALERT_AUDIO);
+                      }
                     }
                   }
+                  resolve();
                 });
               }
             })
           )
-        }
+          assetResponseData = null;
+        } else
+          if (!assetResponseData) {
+            resolve();
+          }
       }
     });
   }
-  getAssetData(msg?) {
-    if(msg && msg?.asset_id){
-      const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
-      };
-      const method = this.assetService.getAndSetAllAssets(obj, this.contextApp.app);
-      this.apiSubscriptions.push(
-        method.subscribe((response: any) => {
-          if (response?.data?.length > 0) {
-            const allAssets =  response.data;
-            allAssets.forEach((data) => {
-              if(data?.asset_id === msg?.asset_id){
-                this.selectedAsset= data;
-              }
-            });
-          }
-        })
-      );
+
+  storingInLocalStorage(alertDataObj, msg, storage) {
+    let margeNewAlertData: any[] = [];
+    const preData = this.commonService.getItemFromLocalStorage(storage);
+    const alertData = preData ? JSON.parse(preData) : [];
+    if (alertData?.length) {
+      alertData.forEach((item: any) => {
+        if (item?.msgCode != msg?.code && item?.message !== msg?.message) {
+          margeNewAlertData.push(item, alertDataObj);
+        }
+      })
+    } else {
+      margeNewAlertData.push(alertDataObj);
     }
+    this.commonService.setItemInLocalStorage(storage, JSON.stringify(margeNewAlertData));
+  }
+  getAssetData() {
+    const obj = {
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+    };
+    const method = this.assetService.getAndSetAllAssets(obj, this.contextApp.app);
+    this.apiSubscriptions.push(
+      method.subscribe((response: any) => {
+        if (response?.data?.length > 0) {
+          this.selectedAsset = response.data;
+        }
+      })
+    );
   }
 
   processAppMenuData() {
@@ -242,26 +303,27 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       if (this.contextApp) {
         // alert('here');
         this.connectToSignalR();
+        this.getAssetData();
         this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {
           if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
-            this.getAssetData(msg);
             await this.criticalAlertNotification(msg);
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
               'toast-bottom-right',
               60000,
-              this.criticalAlertAudioLoader(this.audioUrl)
+              this.audioUrl !== null ? this.criticalAlertAudioLoader(this.audioUrl) : ''
+            );
+            this.audioUrl='';
+          }
+          if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
+            this.toasterService.showWarningAlert(
+              msg.message,
+              msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+              'toast-bottom-right',
+              60000
             );
           }
-          if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){
-            this.toasterService.showWarningAlert(
-            msg.message,
-            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-            'toast-bottom-right',
-            60000
-          );
-        }
         });
         this.processAppMenuData();
       }

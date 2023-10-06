@@ -2,7 +2,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { AssetService } from './../../../services/assets/asset.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy,ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -78,6 +78,8 @@ export class AssetAlertConditionsComponent implements OnInit {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
   selectedAudioFile:any;
+
+  @ViewChild('alert_sound', {static: false})alert_sound :ElementRef;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -672,15 +674,35 @@ onAudioFileSelected(audio : FileList){
   let selectedFile = audio.item(0);
   if(!selectedFile.type.startsWith('audio/')){
     this.toasterService.showError('Please Select Audio File', 'Upload File');
+    this.alert_sound.nativeElement.value='';
     return;
   }
   else{
     if (selectedFile?.size > CONSTANTS?.ASSET_ALERT_AUDIO_SIZE){
       this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_ALERT_AUDIO_SIZE / 1000000 + " " + 'MB', 'Upload File');
+      this.alert_sound.nativeElement.value='';
       return;
     }
     else {
-      this.selectedAudioFile = selectedFile;
+      let audioDuration;
+      const audioElement: HTMLAudioElement = new Audio();
+      audioElement.src = URL.createObjectURL(selectedFile);
+      audioElement.load();
+        audioElement.addEventListener('loadedmetadata', () => {
+          console.log(audioElement.duration);
+          audioDuration = audioElement.duration;
+        });        
+        setTimeout(() =>{
+          console.log("audioDuration =",audioDuration);
+          console.log("6 sec=",CONSTANTS.DEFAULT_AUDIO_DURATION);
+          if(audioDuration > CONSTANTS.DEFAULT_AUDIO_DURATION/1000){
+            this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.DEFAULT_AUDIO_DURATION / 1000 + " " + 'Second', 'Upload File');
+            this.alert_sound.nativeElement.value='';
+            return;
+          }else{
+            this.selectedAudioFile = selectedFile;
+          }
+        },100);
     }
   }
 }

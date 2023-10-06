@@ -60,10 +60,10 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
         if (chart) {
           this.telemetryData = {};
           if (
-            this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-            this.telemetryObj[prop.property?.json_key]?.value !== null
+            this.telemetryObj[prop.property?.composite_key]?.value !== undefined &&
+            this.telemetryObj[prop.property?.composite_key]?.value !== null
           ) {
-            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.composite_key]?.value || '0');
             this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
             this.telemetryData.category = '';
             chart.data = [this.telemetryData];
@@ -121,10 +121,10 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
 
       this.telemetryData = {};
       if (
-        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop.property?.json_key]?.value !== null
+        this.telemetryObj[prop.property?.composite_key]?.value !== undefined &&
+        this.telemetryObj[prop.property?.composite_key]?.value !== null
       ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.composite_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
         this.telemetryData.category = '';
       }

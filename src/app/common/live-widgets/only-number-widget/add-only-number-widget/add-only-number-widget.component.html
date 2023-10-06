@@ -3,8 +3,9 @@
   <ng-container *ngFor="let prop of widgetObj.properties; let i = index;">
     <div class="form-group">
       <label for="message-text" class="col-form-label required">Property </label>
-      <a *ngIf="i === 0 && widgetObj?.widgetType !== 'SmallNumber'" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1"
-        href="javascript:void(0)" (click)="addProperty()" placement="bottom" tooltip="Add Property"><em
+      <a *ngIf="i === 0 && widgetObj?.widgetType !== 'SmallNumber'"
+        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1" href="javascript:void(0)"
+        (click)="addProperty()" placement="bottom" tooltip="Add Property"><em
           class="fa fa-plus fa-sm text-white"></em></a>
       <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm ml-2 mb-1"
         href="javascript:void(0)" (click)="removeProperty(i)" placement="bottom" tooltip="Remove Property"><em
@@ -30,10 +31,11 @@
     <div class="form-group" *ngIf="prop?.property?.data_type === 'Number'">
       <label for="message-text" class="col-form-label ">Digits after Decimal:</label>
 
-      <input *ngIf="widgetObj?.widgetType === 'SmallNumber'" type="number"   class="form-control form-control-sm" id="digitsAfterDecimals"
-        name="digitsAfterDecimals" value="2" disabled>
-        <input *ngIf="widgetObj?.widgetType !== 'SmallNumber'" type="number" min="0" class="form-control form-control-sm" id="digitsAfterDecimals"
-        name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals" placeholder="Digits after Decimal">
+      <input *ngIf="widgetObj?.widgetType === 'SmallNumber'" type="number" class="form-control form-control-sm"
+        id="digitsAfterDecimals" name="digitsAfterDecimals" value="2" disabled>
+      <input *ngIf="widgetObj?.widgetType !== 'SmallNumber'" type="number" min="0" class="form-control form-control-sm"
+        id="digitsAfterDecimals" name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals"
+        placeholder="Digits after Decimal">
     </div>
     <!-- <div class="row col-md-12">
       <label for="message-text" class="col-form-label">Load property data using:</label>
@@ -189,9 +191,9 @@
 <ng-template #singleChartTemplate>
   <div class="form-group">
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
-    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
-      placeholder="Y1 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
-      bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
+    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true" placeholder="Y1 Axis Props"
+      clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type" bindLabel="json_key"
+      dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
       </ng-template>
@@ -212,9 +214,9 @@
   </div>
   <div class="form-group">
     <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
-    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true"
-      placeholder="Y2 Axis Props" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type"
-      bindLabel="json_key" dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
+    <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" [searchable]="true" placeholder="Y2 Axis Props"
+      clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false" groupBy="type" bindLabel="json_key"
+      dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
       </ng-template>

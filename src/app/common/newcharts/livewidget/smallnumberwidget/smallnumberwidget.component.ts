@@ -39,7 +39,6 @@ export class SmallnumberwidgetComponent implements OnInit {
 
 
   async ngOnInit() {
-
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;

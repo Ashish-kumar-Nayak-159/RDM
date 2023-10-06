@@ -461,6 +461,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           async (response: any) => {
             if (response?.live_widgets?.length > 0) {
               response.live_widgets.forEach((widget) => {
+                if (!widget.dashboardVisibility) {
+                  return;
+                }
                 this.checkingsmallwidget = widget.widgetType;
                 this.checkconditionalwidget = widget.widgetType;
                 if (widget.widgetType === 'SmallNumber') {
@@ -479,6 +482,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   widget['text'] = widget?.properties[0]?.text;
                   widget?.properties[0]?.json_Data.forEach((prop) => {
                     let newProp = {};
+                    newProp['composite_key'] = prop.composite_key;
                     let filteredProp = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                     newProp["property"] = filteredProp;
                     newProp["type"] = filteredProp?.type;
@@ -501,12 +505,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   widget.properties = propertiesData;
                 }
                 else if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
-
+                  console.log(JSON.stringify(widget));
                   widget?.properties.forEach((prop) => {
                     if (prop.property) {
                       prop.json_key = prop.property.json_key;
                     }
                     prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                    prop.property.composite_key = prop.composite_key;
                     prop.type = prop.property?.type;
 
                     if (prop?.property) {
@@ -611,7 +616,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.widgetPropertyList.length === 0) {
       this.widgetPropertyList.push(prop);
     } else {
-      const index = this.widgetPropertyList.findIndex((propObj) => propObj.json_key === prop.json_key);
+      const index = this.widgetPropertyList.findIndex((propObj) => propObj.composite_key === prop.composite_key);
       if (index === -1) {
         this.widgetPropertyList.push(prop);
       }
@@ -743,6 +748,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
   }
+  flattenTelemetryData = (telemetryObj: any) => {
+    const normalizedTelemetryObj = {};
+    const supportedTelemetryType = ['m', 'ed', 'cd', 'dkpi'];
+    supportedTelemetryType.forEach(telemetryType => {
+      if (telemetryObj.hasOwnProperty(telemetryType)) {
+        Object.keys(telemetryObj[telemetryType]).forEach(key => {
+          normalizedTelemetryObj[`${telemetryType}#${key}`] = telemetryObj[telemetryType][key];
+        });
+        delete telemetryObj[telemetryType];
+      }
+    });
+    return { ...normalizedTelemetryObj, ...telemetryObj };
+  }
 
   async getLiveWidgetTelemetryDetails(obj) {
     this.telemetryObj = undefined;
@@ -772,21 +790,24 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-      (data) => {
+      (async (data) => {
         // if (data.type !== 'alert') {
         if (data) {
           let obj = JSON.parse(JSON.stringify(data));
-          delete obj.m;
-          delete obj.ed;
-          delete obj.cd;
-          delete obj.dkpi;
-          obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+          // delete obj.m;
+          // delete obj.ed;
+          // delete obj.cd;
+          // delete obj.dkpi;
+          // obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
+          // debugger
+          // data = JSON.parse(JSON.stringify(obj));
+          obj = this.flattenTelemetryData(obj);
           data = JSON.parse(JSON.stringify(obj));
         }
         this.signalRControlTelemetry = JSON.parse(JSON.stringify(data));
-        this.processTelemetryData(data);
+        await this.processTelemetryData(data);
         this.isTelemetryDataLoading = false;
-      }
+      })
       // }
     );
     this.apiSubscriptions.push(
@@ -802,17 +823,20 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               this.latestRunningHours = response.message[this.getPropertyKey('Running Hours')];
               this.latestRunningMinutes = response.message[this.getPropertyKey('Running Minutes')];
             }
-            this.widgetPropertyList.forEach((prop) => {
+            this.widgetPropertyList?.forEach((prop) => {
+              var type = (prop?.type === 'Edge Derived Properties' ? 'ed' : (prop?.type === 'Measured Properties' ? 'm' : (prop?.type === 'Cloud Derived Properties' ? 'cd' : '')))
               if (prop.type !== 'Derived KPIs') {
-                obj[prop?.json_key] = {
-                  value: response.message[prop?.json_key],
-                  date: response.message.message_date,
+                var typeKey = type ?? '';
+                obj[prop?.composite_key] = {
+                  value: response?.message[typeKey]?.[prop?.json_key],
+                  date: response?.message?.message_date,
                 };
               } else {
                 const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
-                obj[prop?.json_key] = {
+                obj[prop?.composite_key] = {
                   value: kpiObj.kpi_result,
                   date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+
                 };
               }
             });
@@ -1123,24 +1147,31 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
     this.widgetPropertyList.forEach((prop) => {
-      if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
-        obj[prop?.json_key] = {
-          value: telemetryObj[prop?.json_key],
+      if (prop?.json_key && telemetryObj[prop.composite_key] !== undefined && telemetryObj[prop.composite_key] !== null) {
+        obj[prop?.composite_key] = {
+          value: telemetryObj[prop?.composite_key],
           date: telemetryObj.date,
         };
       }
     });
+
     obj['previous_properties'] = this.previousProperties;
     obj['message_date'] = telemetryObj.message_date;
-    this.telemetryObj = obj;
-    this.previousProperties = [];
-    Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
-    this.lastReportedTelemetryValues = obj;
-    if (this.telemetryData.length >= 15) {
-      this.telemetryData.splice(0, 1);
-    }
-    this.telemetryData.push(this.telemetryObj);
-    this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
+    obj["asset_id"] = telemetryObj.asset_id;
+
+    this.telemetryObj = Object.assign({}, obj);
+
+    // obj['previous_properties'] = this.previousProperties;
+    // obj['message_date'] = telemetryObj.message_date;
+    // this.telemetryObj = obj;
+    // this.previousProperties = [];
+    // Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
+    // this.lastReportedTelemetryValues = obj;
+    // if (this.telemetryData.length >= 15) {
+    //   this.telemetryData.splice(0, 1);
+    // }
+    // this.telemetryData.push(this.telemetryObj);
+    // this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
   }
 
   getPropertyKey(name) {
@@ -1278,6 +1309,30 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         resolve1();
       }
     });
+  }
+
+  generateCompositeKey(prop) {
+    return '';
+  }
+
+  getPropertyType(type) {
+    switch (type) {
+      case "m":
+        type = "Measured Properties";
+        break;
+      case "ed":
+        type = "Edge Derived Properties";
+        break;
+      case "m":
+        type = "Controllable Properties";
+        break;
+      case "cd":
+        type = "Cloud Derived Properties";
+        break;
+      default:
+        type = type;
+    }
+    return type;
   }
 
   getTelemetryMode(assetId) {

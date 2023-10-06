@@ -1,99 +1,103 @@
 <div class="mt-1">
-    <div class="card">
-      <div class="card-header d-flex px-2">
-        <div style="min-width: 0; flex:1">
-          <h6 class="my-0 live-widget-title" [ngClass]="{'w-11': !asset  && !chartConfig.freezed}" placement="bottom"
-            [tooltip]="chartConfig.widgetTitle">
-            {{chartConfig.widgetTitle}}
-          </h6>
-        </div>
-        <div class="ml-auto">
-          <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
-          <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
-            ED</div>
-          <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
-            *ngIf="chartConfig.cloud_derived_props">CD</div>
-  
-          <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-          <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
-            href="javascript:void(0)" (click)="modalOpenEvents.emit()" placement="bottom"
-            tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
-        </div>
+  <div class="card">
+    <div class="card-header d-flex px-2">
+      <div style="min-width: 0; flex:1">
+        <h6 class="my-0 live-widget-title" [ngClass]="{'w-11': !asset  && !chartConfig.freezed}" placement="bottom"
+          [tooltip]="chartConfig.widgetTitle">
+          {{chartConfig.widgetTitle}}
+        </h6>
       </div>
-      <div class="card-body1 card-height">
-        <div class="row text-center " *ngIf="telemetryObj && asset">
-          <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
-            *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
-            <p class="text-xs live-widget-title mb-0" placement="bottom"
-              [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
-              [ngClass]= "{'border-top' : i > 3}">
-              ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
-              (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
-              prop?.type === 'Derived KPIs' ? 'DK' : 'M'
-              )))}}) {{prop.title}}
-              {{prop.property?.json_model[prop.json_key].units ? ('(' +
-              prop.property?.json_model[prop.json_key].units + ')') : ''}}
-            </p>
+      <div class="ml-auto">
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+          ED</div>
+        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+          *ngIf="chartConfig.cloud_derived_props">CD</div>
+
+        <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+        <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
+          href="javascript:void(0)" (click)="modalOpenEvents.emit()" placement="bottom"
+          tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>
+      </div>
+    </div>
+    <div class="card-body1 card-height">
+      <div class="row text-center " *ngIf="telemetryObj && asset">
+        <div
+          class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
+          *ngFor="let prop of chartConfig.properties; let i = index"
+          [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
+          <p class="text-xs live-widget-title mb-0" placement="bottom"
+            [tooltip]="prop.title + ' ' + (prop?.units ? ('(' + prop?.units + ')') : '')"
+            [ngClass]="{'border-top' : i > 3}">
+            ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
+            (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
+            prop?.type === 'Derived KPIs' ? 'DK' : 'M'
+            )))}}) {{prop.title}}
+            {{prop?.units ? ('(' +
+            prop?.units + ')') : ''}}
+          </p>
+          <div>
+            <div id="{{chartConfig.chartId}}_chart_{{i}}" [ngClass]="innerClass.length > 0 ? innerClass : 'mt-n4'"
+              [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
+            <div class="text-darkblue display-5 font-weight-bold"
+              [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
+              {{ (telemetryObj[prop?.composite_key] && (telemetryObj[prop?.composite_key]?.value !== undefined
+              && telemetryObj[prop?.composite_key]?.value !== null)) ?
+              (prop.property?.data_type === 'Number' ?
+              telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals) :
+              telemetryObj[prop?.composite_key]?.value) : 'NA'}}
+            </div>
             <div>
-              <div id="{{chartConfig.chartId}}_chart_{{i}}" [ngClass]="innerClass.length > 0 ? innerClass : 'mt-n4'"
-                [ngStyle]="{'width': '100%', 'height': '9rem'}"></div>
-              <div class="text-darkblue display-5 font-weight-bold" [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
-                {{ (telemetryObj[prop?.json_key] && (telemetryObj[prop?.json_key]?.value !== undefined
-                && telemetryObj[prop?.json_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                telemetryObj[prop?.json_key]?.value?.toFixed(prop.digitsAfterDecimals) :
-                telemetryObj[prop?.json_key]?.value) : 'NA'}}
-              </div>
-              <div>
-                <span class="text-grey">
-                  {{telemetryObj[prop.json_key]?.date}}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row text-center " *ngIf="telemetryObj && !asset">
-          <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
-            *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
-            <p class="text-xs live-widget-title mb-0" placement="bottom"
-              [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
-              [ngClass]= "{'border-top' : i > 3}">
-              ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
-              (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
-              prop?.type === 'Derived KPIs' ? 'DK' : 'M'
-              )))}}) {{prop.title}}
-              {{prop.property?.json_model[prop.json_key].units ? ('(' +
-              prop.property?.json_model[prop.json_key].units + ')') : ''}}
-            </p>
-           
-            <div class="text-center" >
-                <div style="height: 6.25rem;" *ngIf="chartConfig.widgetType === 'RectangleWidget'">
-                  <div class="rectangle-widget"></div>
-                </div>
-                <div style="height:6rem;" *ngIf="chartConfig.widgetType === 'CylinderWidget'">
-                  <div class="cylinder-widget"></div>
-                </div>
-            </div>
-
-            <div style="margin-top: 50px;">
               <span class="text-grey">
-                {{telemetryObj[prop.json_key]?.date}}
+                {{telemetryObj[prop.composite_key]?.date}}
               </span>
             </div>
           </div>
         </div>
-
       </div>
+
+      <div class="row text-center " *ngIf="telemetryObj && !asset">
+        <div
+          class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) +  2) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
+          *ngFor="let prop of chartConfig.properties; let i = index"
+          [ngClass]="{'border-left': i > 0 && i % 4 != 0,'border-right' : i > 5 && i == chartConfig.properties.length -1}">
+          <p class="text-xs live-widget-title mb-0" placement="bottom"
+            [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.json_key].units ? ('(' + prop.property?.json_model[prop.json_key].units + ')') : '')"
+            [ngClass]="{'border-top' : i > 3}">
+            ({{(prop?.type === 'Edge Derived Properties' ? 'ED' :
+            (prop?.type === 'Cloud Derived Properties' ? 'CD' : (
+            prop?.type === 'Derived KPIs' ? 'DK' : 'M'
+            )))}}) {{prop.title}}
+            {{prop.property?.json_model[prop.json_key].units ? ('(' +
+            prop.property?.json_model[prop.json_key].units + ')') : ''}}
+          </p>
+
+          <div class="text-center">
+            <div style="height: 6.25rem;" *ngIf="chartConfig.widgetType === 'RectangleWidget'">
+              <div class="rectangle-widget"></div>
+            </div>
+            <div style="height:6rem;" *ngIf="chartConfig.widgetType === 'CylinderWidget'">
+              <div class="cylinder-widget"></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 50px;">
+            <span class="text-grey">
+              {{telemetryObj[prop.json_key]?.date}}
+            </span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
-  
-  
-  <div class="modal fade" id="confirmRemoveWidgetModal{{chartConfig.chartId}}" tabindex="-1" role="dialog"
-    aria-labelledby="ModalLabel2">
-    <div class="modal-dialog" role="document">
-      <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
-        (modalEvents)="modalEvents.emit($event)" [modalConfig]="modalConfig"></app-confirm-modal>
-    </div>
+</div>
+
+
+<div class="modal fade" id="confirmRemoveWidgetModal{{chartConfig.chartId}}" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+      (modalEvents)="modalEvents.emit($event)" [modalConfig]="modalConfig"></app-confirm-modal>
   </div>
-  
+</div>

@@ -79,7 +79,7 @@ export class ConditionalWidgetComponent implements OnInit {
 
     try {
       prop.json_Data.forEach((jd, i) => {
-        condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.json_key}`);
+        condition = condition.replaceAll(`%${i + 1}%`, `telemetryObj?.${jd.type}?.${jd.composite_key}`);
       });
       var actualVal = eval(condition);
       if (prop?.text && prop?.text.length > 0) {
@@ -88,7 +88,7 @@ export class ConditionalWidgetComponent implements OnInit {
       }
       return actualVal;
     } catch (err) {
-      return 'NA';
+      return prop?.text[1];
     }
 
   }
@@ -97,7 +97,7 @@ export class ConditionalWidgetComponent implements OnInit {
     let condition = this.chartConfig?.formula;
     try {
       this.chartConfig?.properties?.forEach((jd, i) => {
-        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
+        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.composite_key]?.value);
       });
       var actualVal = eval(condition);
       if (this.chartConfig?.text && this.chartConfig?.text.length > 0) {

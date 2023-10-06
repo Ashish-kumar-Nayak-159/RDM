@@ -41,7 +41,7 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
   subscriptions: Subscription[] = [];
   widgetStringFromMenu: any;
 
-  constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) {}
+  constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -59,10 +59,10 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
         if (chart) {
           this.telemetryData = {};
           if (
-            this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-            this.telemetryObj[prop.property?.json_key]?.value !== null
+            this.telemetryObj[prop.property?.composite_key]?.value !== undefined &&
+            this.telemetryObj[prop.property?.composite_key]?.value !== null
           ) {
-            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+            this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.composite_key]?.value || '0');
             this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
             this.telemetryData.category = '';
             chart.data = [this.telemetryData];
@@ -134,10 +134,10 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
 
       this.telemetryData = {};
       if (
-        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
-        this.telemetryObj[prop.property?.json_key]?.value !== null
+        this.telemetryObj[prop.property?.composite_key]?.value !== undefined &&
+        this.telemetryObj[prop.property?.composite_key]?.value !== null
       ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
+        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.composite_key]?.value || '0');
         this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
         this.telemetryData.category = '';
       }

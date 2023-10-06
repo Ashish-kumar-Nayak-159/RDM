@@ -20,26 +20,26 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   activeFragment: any;
   currentURL: string;
-  criticalToaster:boolean = false;
-  errorToaster:boolean = false;
-  warningToaster:boolean = false;
-  informationalToaster:boolean = false;
-  criticalFlag:boolean = false;
-  errorFlag:boolean = false;
-  warningFlag:boolean = false;
-  informationalFlag:boolean = false;
-  c_message:any;
-  e_message:any;
-  w_message:any;
-  i_message:any;
-  c_message_asset_display_name:any;
-  e_message_asset_display_name:any;
-  w_message_asset_display_name:any;
-  i_message_asset_display_name:any;
-  c_message_asset_id:any;
-  e_message_asset_id:any;
-  w_message_asset_id:any;
-  i_message_asset_id:any;
+  criticalToaster: boolean = false;
+  errorToaster: boolean = false;
+  warningToaster: boolean = false;
+  informationalToaster: boolean = false;
+  criticalFlag: boolean = false;
+  errorFlag: boolean = false;
+  warningFlag: boolean = false;
+  informationalFlag: boolean = false;
+  c_message: any;
+  e_message: any;
+  w_message: any;
+  i_message: any;
+  c_message_asset_display_name: any;
+  e_message_asset_display_name: any;
+  w_message_asset_display_name: any;
+  i_message_asset_display_name: any;
+  c_message_asset_id: any;
+  e_message_asset_id: any;
+  w_message_asset_id: any;
+  i_message_asset_id: any;
 
   constructor(
     private commonService: CommonService,
@@ -49,13 +49,13 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     public route: ActivatedRoute
   ) { }
 
-  async ngOnInit(): Promise<void> { 
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp && !this.userData?.is_super_admin) {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
-      
+
         if ((!msg.type || msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical')) {
           this.toasterService.showCriticalAlert(
             msg.message,
@@ -64,14 +64,14 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             60000
           );
         }
-        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){
+        if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
           this.toasterService.showWarningAlert(
-          msg.message,
-          msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-          'toast-bottom-right',
-          60000
-        );
-      }
+            msg.message,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+            'toast-bottom-right',
+            60000
+          );
+        }
         // if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'critical') {
         //   this.c_message = msg?.message
         //   this.c_message_asset_display_name = msg?.asset_display_name
@@ -175,14 +175,14 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
               60000
             );
           }
-          if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning'){
+          if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
             this.toasterService.showWarningAlert(
-            msg.message,
-            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
-            'toast-bottom-right',
-            60000
-          );
-        }
+              msg.message,
+              msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
+              'toast-bottom-right',
+              60000
+            );
+          }
         });
         this.processAppMenuData();
       }

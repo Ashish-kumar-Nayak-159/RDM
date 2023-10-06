@@ -433,12 +433,11 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
       series.legendSettings.labelText = '({propType}) {name} ({units})';
       series.fillOpacity = this.chartConfig.widget_type.includes('Area') ? 0.3 : 0;
       // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
-
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       if (series.units) {
-        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
       } else {
-        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       }
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;

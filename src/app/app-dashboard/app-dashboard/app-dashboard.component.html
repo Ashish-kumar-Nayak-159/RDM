@@ -227,8 +227,6 @@
             <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
               [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
             </app-conditional-widget>
-
-
             <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                   || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
               [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
@@ -243,7 +241,8 @@
             <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
               *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
               [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
-            <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
+            <app-live-line-chart [chartConfig]="widget" [propertyList]="widgetPropertyList"
+              [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
               *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
             </app-live-line-chart>
           </div>

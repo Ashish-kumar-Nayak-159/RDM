@@ -164,6 +164,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_key = kpi.kpi_json_key;
             obj.json_model = {};
             obj.json_model[obj.json_key] = {};
+
             if (!selectedSlave?.slave_id || kpi?.metadata?.slave_id == selectedSlave?.slave_id) {
               this.propertyList.push(obj);
             }
@@ -560,6 +561,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   async onSaveWidgetObj() {
+    debugger
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -575,9 +577,12 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         found = false;
 
       } else if (prop.property && this.widgetObj.widgetType != "NumberWithImage") {
+        var type = (prop?.property?.type === 'Edge Derived Properties' ? 'ed' : (prop?.property?.type === 'Measured Properties' ? 'm' : (prop?.property?.type === 'Cloud Derived Properties' ? 'cd' : '')))
         prop.json_key = prop.property?.json_key;
         prop.type = prop.property?.type;
-        delete prop.property;
+        prop.units = prop?.property?.json_model[prop?.json_key]?.units
+        prop.composite_key = `${type}#${prop.json_key}`,
+          delete prop.property;
       }
     });
     if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart' && this.widgetObj.widgetType != "NumberWithImage" && this.widgetObj.widgetType !== 'ConditionalNumber') {
@@ -599,12 +604,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         return;
       } else {
         const arr = [];
-
         this.widgetObj.y1AxisProps.forEach((prop) => {
+          var type = (prop?.type === 'Edge Derived Properties' ? 'ed' : (prop?.type === 'Measured Properties' ? 'm' : (prop?.type === 'Cloud Derived Properties' ? 'cd' : '')))
           const obj = {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            color: prop.color,
+            composite_key: `${type}#${prop.json_key}`,
           };
           arr.push(obj);
         });
@@ -615,10 +622,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       } else {
         const arr = [];
         this.widgetObj.y2AxisProps.forEach((prop) => {
+          var type = (prop?.type === 'Edge Derived Properties' ? 'ed' : (prop?.type === 'Measured Properties' ? 'm' : (prop?.type === 'Cloud Derived Properties' ? 'cd' : '')))
           const obj = {
             name: prop.name,
             type: prop.type,
             json_key: prop.json_key,
+            color: prop.color,
+            composite_key: `${type}#${prop.json_key}`,
+
           };
           arr.push(obj);
         });
@@ -637,7 +648,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         const obj = {
           name: prop.property.name,
           type: type,
-          json_key: prop.property.json_key
+          json_key: prop.property.json_key,
+          composite_key: `${type}#${prop?.property?.json_key}`,
+
         };
         arr[0]['json_Data'].push(obj);
       });
@@ -647,6 +660,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     else if (this.widgetObj.widgetType == "NumberWithImage") {
       let imgUploadError = false;
       await Promise.all(this.widgetObj.properties.map(async (element, index) => {
+        var type = (element?.property.type === 'Edge Derived Properties' ? 'ed' : (element?.property.type === 'Measured Properties' ? 'm' : (element?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
+        element.composite_key = `${type}#${element?.property?.json_key}`
         const data = await this.commonService.uploadImageToBlob(
           element.image,
           this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets'

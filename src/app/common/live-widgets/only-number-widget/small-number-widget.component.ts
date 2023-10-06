@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy,SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/services/chart/chart.service';
@@ -12,6 +12,9 @@ declare var $: any;
   styleUrls: ['./small-number-widget.component.css']
 })
 export class SmallNumberWidgetComponent implements OnInit {
+  isString(value: any): boolean {
+    return typeof value === 'string';
+  }
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
   @Input() apiTelemetryObj: any;
@@ -27,10 +30,36 @@ export class SmallNumberWidgetComponent implements OnInit {
   decodedToken: any;
   widgetStringFromMenu: any;
   contextApp: any;
+  currentDate: string;
 
-  constructor(private chartService:ChartService, private commonService:CommonService) { }
+  constructor(private chartService: ChartService, private commonService: CommonService) { }
 
 
+  ngOnChanges(changes) {
+    if (changes.telemetryObj) {
+      this.chartConfig.properties.forEach((prop, cIndex) => {
+        this.refreshLatestTelemetryInChart(prop);
+      });
+    }
+  }
+
+  refreshLatestTelemetryInChart(prop: any) {
+    this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+    const compositeKey = prop.composite_key;
+    if (this.telemetryObj.hasOwnProperty(compositeKey)) {
+      if (!this.telemetryObj || !this.telemetryObj.hasOwnProperty(compositeKey) || (
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].date < this.telemetryObj[compositeKey].date &&
+        this.telemetryObj[compositeKey].hasOwnProperty('value') &&
+        this.telemetryObj[compositeKey]['value'] !== undefined &&
+        this.telemetryObj[compositeKey]['value'] !== null)) {
+        if (!this.telemetryObj) this.telemetryObj = {};
+        if (prop?.data_type === 'Number' && prop.hasOwnProperty('digitsAfterDecimals')) this.telemetryObj[compositeKey].value = this.telemetryObj[compositeKey].value.toFixed(prop.digitsAfterDecimals);
+        this.telemetryObj[compositeKey] = this.telemetryObj[compositeKey];
+      }
+    }
+  }
 
   async ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -39,6 +68,7 @@ export class SmallNumberWidgetComponent implements OnInit {
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
+    console.log("Chekcinggg", this.telemetryObj)
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
         this.telemetryData = JSON.parse(JSON.stringify([]));

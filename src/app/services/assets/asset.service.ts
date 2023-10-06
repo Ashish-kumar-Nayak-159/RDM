@@ -7,6 +7,7 @@ import { AppUrls } from 'src/app/constants/app-url.constants';
 import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
 import { catchError, map, filter } from 'rxjs/operators';
+import { createDebuggerStatement } from 'typescript';
 
 @Injectable({
   providedIn: 'root',
@@ -733,6 +734,8 @@ export class AssetService {
             delete obj.ed;
             delete obj.cd;
             obj = { ...obj, ...data.message?.m, ...data.message?.ed, ...data.message?.cd };
+            obj.m = data?.message?.m;
+            obj.ed = data?.message?.ed;
             data.message = JSON.parse(JSON.stringify(obj));
           }
           return data;
@@ -742,6 +745,8 @@ export class AssetService {
         // })
       );
   }
+
+
 
   getFirstTelmetry(app, filterObj) {
     let params = new HttpParams();

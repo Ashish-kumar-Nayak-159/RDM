@@ -689,12 +689,9 @@ onAudioFileSelected(audio : FileList){
       audioElement.src = URL.createObjectURL(selectedFile);
       audioElement.load();
         audioElement.addEventListener('loadedmetadata', () => {
-          console.log(audioElement.duration);
           audioDuration = audioElement.duration;
         });        
         setTimeout(() =>{
-          console.log("audioDuration =",audioDuration);
-          console.log("6 sec=",CONSTANTS.DEFAULT_AUDIO_DURATION);
           if(audioDuration > CONSTANTS.DEFAULT_AUDIO_DURATION/1000){
             this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.DEFAULT_AUDIO_DURATION / 1000 + " " + 'Second', 'Upload File');
             this.alert_sound.nativeElement.value='';

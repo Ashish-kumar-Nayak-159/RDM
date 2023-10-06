@@ -158,9 +158,21 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
 
         this.propertyList.forEach((prop) => {
           if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-            this.filteredPropList.push(prop);
+            if (this.widgetObj?.widget_type !== "StringWidget" && prop.data_type === "Number") {
+              this.filteredPropList.push(prop);
+            }
+            else if (this.widgetObj?.widget_type === "StringWidget") {
+              this.filteredPropList.push(prop);
+            }
+
           }
         });
+
+        // this.propertyList.forEach((prop) => {
+        //   if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+        //     this.filteredPropList.push(prop);
+        //   }
+        // });
 
         if (type == 0) {
           this.Y1PropertyList = this.filteredPropList;

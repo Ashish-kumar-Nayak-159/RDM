@@ -134,7 +134,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   onWidgetTypeChange() {
-    // this.widgetObj.properties = [{}];
+    this.widgetObj.properties = [{}];
     if (
       this.widgetObj.widget_type === 'NumberWithTrend' ||
       this.widgetObj.widget_type === 'LineChart' ||

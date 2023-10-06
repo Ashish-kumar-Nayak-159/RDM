@@ -10,6 +10,8 @@ import { AssetModelService } from './../../services/asset-model/asset-model.serv
 import { AssetService } from './../../services/assets/asset.service';
 import { CommonService } from './../../services/common.service';
 import { ToasterService } from './../../services/toaster.service';
+import { environment } from 'src/environments/environment';
+import { Console } from 'console';
 declare var $: any;
 declare var jsPDF: any;
 @Component({
@@ -46,6 +48,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
   preGeneratedTab: { visibility: boolean; name: any };
+  dailyReportTab : { visibility : boolean ; name: any};
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -60,7 +63,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
-    private commonService: CommonService,
+    public commonService: CommonService,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
     private assetService: AssetService,
@@ -99,6 +102,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.onTabSelect('custom');
     } else if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
+    }
+    else if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
+      this.onTabSelect('daily-reports');
     }
   }
 
@@ -202,6 +208,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
       visibility: reportDataItem['Pre-Generated Reports'],
       name: reportDataItem['Pre-Generated Reports'],
     };
+    if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
+      this.dailyReportTab ={
+        visibility: reportDataItem['daily Reports'],
+        name: reportDataItem['daily Reports'],
+      }
+    }
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 

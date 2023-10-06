@@ -1,0 +1,12 @@
+.loadMoreBtn {
+    width : 80vw !important;
+     display: flex !important;
+     justify-content: center !important;
+     z-index: 4;
+     padding-right: 3rem !important;
+  }
+
+  .tableFixHead {
+    overflow: auto !important;
+    height: calc(100vh - 10.5rem) !important;
+  }

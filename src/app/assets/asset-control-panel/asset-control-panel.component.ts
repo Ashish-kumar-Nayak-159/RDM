@@ -42,7 +42,7 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
     private assetService: AssetService,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
-    private commonService: CommonService,
+    public commonService: CommonService,
     private toasterService: ToasterService,
     private router: Router
   ) { }
@@ -280,6 +280,9 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
               if (menu.visible) {
                 count++;
               }
+            }
+            if (titleObj && count > 0) {
+              titleObj.isDisplay = true;
             }
           });
 

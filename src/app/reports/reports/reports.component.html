@@ -12,6 +12,12 @@
               <em class="fa fa-chart-pie mr-2" aria-hidden="true"></em>
               <span class="d-none d-md-inline-block">Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
             </a>
+
+            <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'daily-reports'}" *ngIf="commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests'" (click)="onTabSelect('daily-reports')" href="#daily-reports" role="tab" id="nav-daily-reports-tab" data-toggle="tab" aria-controls="nav-daily-reports" arial-selected="false">
+              <em class="fas fa-chart-line mr-2"></em>
+              <span class="d-none d-md-inline-block">Daily {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
+            </a>
+            
             <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
               id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
               aria-controls="nav-pre-generated" aria-selected="false" (click)="onTabSelect('pre-generated')"
@@ -27,7 +33,7 @@
   </div>
 </div>
 
-<div class="">
+<div class="report-table">
   <div id="assetTabContent" class="tab-content">
     <div id="pre-generated" role="tabpanel" aria-labelledby="pre-generated-tab" class="tab-pane fade show"
       [ngClass]="{'active': tabType === 'pre-generated'}"
@@ -394,6 +400,9 @@
           </div>
         </div>
       </ng-container>
+    </div>
+    <div id="daily-reports" role="tabpanel" aria-labelledby="daily-reports-tab" class="tab-pane fade show daily-report-adjust" [ngClass]="{ 'active' :tabType === 'daily-reports'}" *ngIf="commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests' ">
+      <app-daily-reports *ngIf="commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests' && tabType === 'daily-reports'"></app-daily-reports>
     </div>
   </div>
 </div>

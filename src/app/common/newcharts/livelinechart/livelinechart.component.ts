@@ -19,11 +19,13 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() asset: any;
   @Input() telemetryObj: any;
   @Input() type: any;
+  @Input() propertyList: any;
+
   // @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
-  propertyList: any[] = [];
+  // propertyList: any[] = [];
   y1AxisProps: any[] = [];
   y2AxisProps: any[] = [];
   chartHeight: any;
@@ -408,7 +410,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
       const series = chart.series.push(new am4charts.LineSeries());
       series.units = prop.property?.json_model ? prop.property?.json_model[prop.composite_key]?.units : "V";
       series.name = prop.name;
-      const proptype = this.getPropertyType(prop);
+      const proptype = this.getPropertyType(prop.composite_key);
       series.propType =
         proptype === 'Edge Derived Properties'
           ? 'ED'
@@ -454,7 +456,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getPropertyType(key) {
-    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.type || 'Measured';
+    return this.propertyList.filter((prop) => prop.composite_key === key)[0]?.type || 'Measured';
   }
 
   openConfirmRemoveWidgetModal() {

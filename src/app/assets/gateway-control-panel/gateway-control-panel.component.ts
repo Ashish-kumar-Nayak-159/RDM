@@ -38,7 +38,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private assetService: AssetService,
     private route: ActivatedRoute,
-    private commonService: CommonService,
+    public commonService: CommonService,
     private toasterService: ToasterService
   ) {}
 

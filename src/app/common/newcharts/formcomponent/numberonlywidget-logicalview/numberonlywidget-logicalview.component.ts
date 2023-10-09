@@ -158,9 +158,21 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
 
         this.propertyList.forEach((prop) => {
           if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
-            this.filteredPropList.push(prop);
+            if (this.widgetObj?.widget_type !== "StringWidget" && prop.data_type === "Number") {
+              this.filteredPropList.push(prop);
+            }
+            else if (this.widgetObj?.widget_type === "StringWidget") {
+              this.filteredPropList.push(prop);
+            }
+
           }
         });
+
+        // this.propertyList.forEach((prop) => {
+        //   if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+        //     this.filteredPropList.push(prop);
+        //   }
+        // });
 
         if (type == 0) {
           this.Y1PropertyList = this.filteredPropList;
@@ -194,8 +206,8 @@ export class NumberonlywidgetLogicalviewComponent implements OnInit {
   async valueSet() {
     if (this.widgetObj.widget_type == "LineChart" || this.widgetObj.widget_type == "AreaChart") {
 
-      this.selectedY1Assest = this.widgetObj.properties[0].y1AxisProps[0].assetid;
-      this.selectedY2Assest = this.widgetObj.properties[0].y2AxisProps[0]?.assetid;
+      this.selectedY1Assest = this.widgetObj.properties[0].y1AxisProps[0].asset_id;
+      this.selectedY2Assest = this.widgetObj.properties[0].y2AxisProps[0]?.asset_id;
       await this.getAssetsModelProperties(this.selectedY1Assest, 0, 0);
 
       if (this.selectedY2Assest) {

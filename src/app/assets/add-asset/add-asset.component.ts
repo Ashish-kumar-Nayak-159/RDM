@@ -613,6 +613,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       asset_id: this.legacyassetId ? this.legacyassetId : assetObj.asset_id,
       partition_key: this.legacyassetId ? this.legacyassetId : assetObj.tags.partition_key,
       model_id: assetObj.tags.asset_model,
+      display_name: assetObj?.tags?.display_name
     };
     // obj.partition_key[assetObj.asset_id] = assetObj.tags.partition_key;
     this.subscriptions.push(

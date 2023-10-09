@@ -11,9 +11,10 @@ import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports/reports.component';
 import { PreGeneratedReportsComponent } from './pre-generated-reports/pre-generated-reports.component';
 import { CommonCustomModule } from '../common/common.module';
+import { DailyReportsComponent } from './daily-reports/daily-reports.component';
 
 @NgModule({
-  declarations: [ReportsComponent, PreGeneratedReportsComponent],
+  declarations: [ReportsComponent, PreGeneratedReportsComponent, DailyReportsComponent],
   imports: [
     CommonModule,
     ReportsRoutingModule,

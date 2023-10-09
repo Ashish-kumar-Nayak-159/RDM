@@ -98,7 +98,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   controlpropertyassetId: any;
   controlPropertybtn = false;
   signalRControlTelemetry: any;
-  lastTelemetryValueControl: any
+  lastTelemetryValueControl: any;
+  refreshcontrolProperties = false;
+
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -618,6 +620,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+    this.refreshcontrolProperties = true
     this.propertyList = [];
     this.c2dResponseMessage = [];
     this.signalRControlTelemetry = [];
@@ -791,6 +794,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         (response: any) => {
           if (response?.message) {
             this.lastTelemetryValueControl = response?.message;
+            this.refreshcontrolProperties = false;
             response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
             response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
             const obj = {};

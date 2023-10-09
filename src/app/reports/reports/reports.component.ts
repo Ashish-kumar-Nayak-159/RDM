@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,8 @@ import { AssetModelService } from './../../services/asset-model/asset-model.serv
 import { AssetService } from './../../services/assets/asset.service';
 import { CommonService } from './../../services/common.service';
 import { ToasterService } from './../../services/toaster.service';
+import { environment } from 'src/environments/environment';
+import { Console } from 'console';
 declare var $: any;
 declare var jsPDF: any;
 @Component({
@@ -46,6 +48,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
   preGeneratedTab: { visibility: boolean; name: any };
+  dailyReportTab : { visibility : boolean ; name: any};
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -60,12 +63,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
-    private commonService: CommonService,
+    public commonService: CommonService,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
     private assetService: AssetService,
     private toasterService: ToasterService,
-    private assetModelService: AssetModelService
+    private assetModelService: AssetModelService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -98,6 +102,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.onTabSelect('custom');
     } else if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
+    }
+    else if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
+      this.onTabSelect('daily-reports');
     }
   }
 
@@ -172,6 +179,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.cd.detectChanges();
       // if (this.filterObj.asset) {
       //   this.onFilterSelection(false, false);
       // }
@@ -200,6 +208,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
       visibility: reportDataItem['Pre-Generated Reports'],
       name: reportDataItem['Pre-Generated Reports'],
     };
+    if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
+      this.dailyReportTab ={
+        visibility: reportDataItem['daily Reports'],
+        name: reportDataItem['daily Reports'],
+      }
+    }
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
@@ -704,7 +718,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   async savePDF(): Promise<void> {
     if (this.originalFilterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
-      alert('1')
       $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
       setTimeout(() => {
         $('#downloadReportModal').modal('hide');
@@ -804,13 +817,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         data = [];
         this.telemetry.forEach((telemetryObj) => {
           const obj = {
-            'Asset Name': this.originalFilterObj.non_ip_asset
-              ? this.originalFilterObj.non_ip_asset.asset_display_name
-                ? this.originalFilterObj.non_ip_asset?.asset_display_name
-                : this.originalFilterObj.non_ip_asset?.asset_id
+            'Asset Name': this.originalFilterObj?.asset
+              ? this.originalFilterObj?.asset?.display_name
+                ? this.originalFilterObj.asset?.display_name
+                : this.originalFilterObj.asset?.asset_id
               : this.assetFilterObj
-                ? this.assetFilterObj.asset_display_name
-                  ? this.assetFilterObj.asset_display_name
+                ? this.assetFilterObj?.display_name
+                  ? this.assetFilterObj.display_name
                   : this.assetFilterObj.asset_id
                 : '',
             Time: telemetryObj.local_created_date,

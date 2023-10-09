@@ -87,8 +87,10 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       if(this.modelOpenFlag!=='removePinIcon'){
         $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }else{
-        this.updatedAssetModel.metadata.mapPinIcon=undefined;
-        this.updateAssetsModel();
+        if(this.updatedAssetModel?.metadata && this.updatedAssetModel?.metadata?.mapPinIcon && this.updatedAssetModel?.metadata?.mapPinIcon?.name){
+          this.updatedAssetModel.metadata.mapPinIcon=undefined;
+          this.updateAssetsModel();
+        }
       }
   }
   getConnectivityData() {
@@ -101,12 +103,12 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.overviewFile = files.item(0);
- 
-    // this.updatedAssetModel.metadata.image = this.overviewFile;
-
-    if (this.overviewFile.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
+    if (this.overviewFile?.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
       this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
       this.overviewFile = undefined;
+      if(this.scaled_image_size && this.scaled_image_size?.controls['file']){
+        this.scaled_image_size.controls['file'].reset();
+      }
     }
     else {
       const image = new Image();
@@ -144,7 +146,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     }
 
     const data = await this.commonService.uploadImageToBlob(
-      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name,icon_size
+      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name,this.modelOpenFlag !=='assetModelFlag' ? icon_size : ''
     );
     if (data) {
       if(this.modelOpenFlag==='assetModelFlag'){

@@ -19,6 +19,7 @@ export class ControlPropertiesComponent implements OnInit {
   @Input() filterObj;
   @Input() telemetryData: any;
   @Input() lastTelemetryValueControl: any;
+  @Input() refreshcontrolProperties: any;
   lastTelemetryValue: any;
   telemertyLiveData: any
   assetwiseData: any;
@@ -48,9 +49,23 @@ export class ControlPropertiesComponent implements OnInit {
   assetModalname: any;
 
   constructor(private commonService: CommonService, private assetModelService: AssetModelService,
-    private assetService: AssetService, private toasterService: ToasterService) { }
+    private assetService: AssetService, private toasterService: ToasterService) {
+
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.refreshcontrolProperties == true) {
+      this.controlproperties = this.properties
+        ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+      this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
+      this.properties?.map((detail) => {
+        detail['isSelected'] = false;
+        detail['clicked'] = false;
+        detail['new_value'] = undefined;
+        detail['syncUp'] = false;
+        return detail;
+      });
+    }
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
     // if (changes.telemetryData && changes.telemetryData?.currentValue !== changes.telemetryData.previousValue) {

@@ -46,8 +46,9 @@ export class ConditionalwidgetComponent implements OnInit {
         let jsonObj = {
           name: element.title,
           type: element.type,
-          json_key: element.json_key,
+          composite_key: element.composite_key,
           asset_id: element.asset_id,
+          json_key: element.json_key
         };
         jsonArray.push(jsonObj);
       });
@@ -58,8 +59,6 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       this.chartConfig.properties = [obj];
       setTimeout(() => {
-
-
         this.chartConfig.properties[0].json_Data.forEach(prop => {
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
             this.startPoint[prop.asset_id] = new Date(
@@ -72,6 +71,8 @@ export class ConditionalwidgetComponent implements OnInit {
         })
 
       }, 400);
+
+
     }
 
 
@@ -85,6 +86,9 @@ export class ConditionalwidgetComponent implements OnInit {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
+
+
 
 
 
@@ -134,7 +138,7 @@ export class ConditionalwidgetComponent implements OnInit {
       }
       return actualVal;
     } catch (err) {
-      return 'NA';
+      return this.chartConfig?.metadata?.text[1];
     }
 
   }
@@ -143,7 +147,7 @@ export class ConditionalwidgetComponent implements OnInit {
     let condition = this.chartConfig?.formula;
     try {
       this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
-        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.json_key]?.value);
+        condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.composite_key]?.value);
       });
       var actualVal = eval(condition);
       if (this.chartConfig?.metadata?.text && this.chartConfig?.metadata?.text.length > 0) {

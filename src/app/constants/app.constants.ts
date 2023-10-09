@@ -417,7 +417,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: false,
       exactMatch: true,
-      privileges_required: ['ASMV', 'RMV'],
+      privileges_required: ['LVM', 'LVV'],
       showAccordion: [
         {
           name: 'Title',
@@ -659,7 +659,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: false,
       exactMatch: true,
-      privileges_required: ['ASMV', 'RMV'],
+      privileges_required: ['LVM', 'LVV'],
       showAccordion: [
         {
           name: 'Title',
@@ -1139,7 +1139,27 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {},
     },
-
+    {
+        page: 'progress_report',
+        system_name: 'Progress Report',
+        url: null,
+        display_name: 'Progress Report',
+        icon: null,
+        visible: true,
+        isTitle: true,
+      },
+      {
+        page: 'daily_report',
+        system_name: 'Daily Report',
+        url: '#daily_report',
+        display_name: 'Daily Report',
+        icon: 'fa fa-fw fa-history',
+        visible: true,
+        isTitle: false,
+        privileges_required: ['RV'],
+        showAccordion: [],
+        accordion_value: {},
+      },
   ];
 
   public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -1557,6 +1577,27 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {},
     },
+    {
+      page: 'progress_report',
+      system_name: 'Progress Report',
+      url: null,
+      display_name: 'Progress Report',
+      icon: null,
+      visible: true,
+      isTitle: true,
+    },
+    {
+      page: 'daily_report',
+      system_name: 'Daily Report',
+      url: '#daily_report',
+      display_name: 'Daily Report',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false,
+      privileges_required: ['RV'],
+      showAccordion: [],
+      accordion_value: {},
+    },
   ];
 
   public static GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST = [
@@ -1755,6 +1796,27 @@ export class CONSTANTS {
         { name: 'Purge', key: 'purge' },
       ],
       accordion_value: { configuration: true, purge: true, control: true },
+    },
+    {
+      page: 'progress_report',
+      system_name: 'Progress Report',
+      url: null,
+      display_name: 'Progress Report',
+      icon: null,
+      visible: true,
+      isTitle: true,
+    },
+    {
+      page: 'daily_report',
+      system_name: 'Daily Report',
+      url: '#daily_report',
+      display_name: 'Daily Report',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false,
+      privileges_required: ['RV'],
+      showAccordion: [],
+      accordion_value: {},
     },
   ];
 
@@ -2196,6 +2258,10 @@ export class CONSTANTS {
     'Today': [datefns.startOfDay(new Date()), new Date()],
     ...CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS
   };
+
+  public static DATE_OPTION_YESTERDAY = {
+    'Yesterday': [datefns.startOfDay(datefns.subDays(new Date(), 1)), datefns.startOfDay(new Date())],
+  }
 
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';

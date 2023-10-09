@@ -358,7 +358,7 @@ export class CommonService {
       blobHTTPHeaders: { blobContentType: file.type },
     });
     if (response._response.status === 201) {
-      if(iconsize && iconsize.modelOpenFlag==='mapPinIcon'){
+      if(iconsize && iconsize?.modelOpenFlag==='mapPinIcon'){
         return {
           url: containerName + '/' + encodedBlobUrl,
           name: file.name,

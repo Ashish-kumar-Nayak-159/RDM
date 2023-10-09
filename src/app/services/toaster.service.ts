@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,13 +24,18 @@ export class ToasterService {
   showErrorAlert(message, header, positionClass, timeOut) {
     this.toastr.error(message, header, { positionClass, timeOut });
   }
-
-  showCriticalAlert(message, header, positionClass, timeOut) {
-    this.toastr.error(message, header, { positionClass, timeOut });
+  showCriticalAlert(message, header, positionClass, timeOut,playAudio?: any){
+    const toast =this.toastr.error(message, header, { positionClass, timeOut});
+    toast.onShown.subscribe(() => {
+        playAudio?.play();
+    }),
+    toast.onHidden.subscribe(() => {
+        playAudio?.pause();
+      });
   }
-
+  
   showWarningAlert(message, header, positionClass, timeOut) {
-    this.toastr.warning(message, header, { positionClass, timeOut });
+     this.toastr.warning(message, header, { positionClass, timeOut });   
   }
 
   showInformationalAlert(message, header, positionClass, timeOut) {

@@ -4,7 +4,7 @@
             <form class="form-inline vw-75">
                     <div class="row d-flex vw-100">
                         <div class="col-6 d-flex">
-                            <app-date-range-picker *ngIf="filterObj?.from_Date && filterObj?.to_Date && selectedDateRange" [filterObj]="originalFilterObj" [options]="datePickerOptions" [selectedDateRange]="selectedDateRange" (selectedDateApplyEmitter)="selectedDateApply($event)"></app-date-range-picker>
+                            <app-date-range-picker *ngIf="originalFilterObj && selectedDateRange" [filterObj]="originalFilterObj" [options]="datePickerOptions" [selectedDateRange]="selectedDateRange" (selectedDateApplyEmitter)="selectedDateApply($event)"></app-date-range-picker>
                             <div class="form-group">
                                 <button class="btn btn-sm searchBtn btn-primary" type="button" name="search-hierarchy" placement="bottom" tooltip="Search" 
                                 (click)="dailyReportsData=[] ; preOffset= 0 ; getReportDatabySearch()" [disabled]="dailyReportApiLoading">

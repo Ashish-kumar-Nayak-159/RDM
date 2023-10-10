@@ -124,6 +124,10 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
           }
         } else {
           this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
+          this.overviewFile = undefined;
+          if(this.scaled_image_size && this.scaled_image_size?.controls['file']){
+            this.scaled_image_size.controls['file'].reset();
+          }
         }
       };
     }

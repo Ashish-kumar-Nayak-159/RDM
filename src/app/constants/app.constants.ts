@@ -2408,4 +2408,8 @@ export class CONSTANTS {
   public static DEFAULT_MICROSOFT_TEAMS_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
   public static DEFAULT_WEBHOOK_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
   public static DAILY_REPORT_DATE_FILTER ="dailyReportDateFilter";
+  public static ASSET_ALERT_AUDIO_SIZE = 5000000;
+  public static DEFAULT_AUDIO_DURATION = 6000;
+  public static MODEL_ALERT_AUDIO = 'model_alertCondition_audio';
+  public static ASSET_ALERT_AUDIO = 'asset_alertCondition_audio';
 }

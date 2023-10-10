@@ -2,7 +2,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { AssetService } from './../../../services/assets/asset.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy,ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -77,6 +77,9 @@ export class AssetAlertConditionsComponent implements OnInit {
   userGroups: any[] = [];
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   widgetStringFromMenu: any;
+  selectedAudioFile:any;
+
+  @ViewChild('alert_sound', {static: false})alert_sound :ElementRef;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -372,8 +375,8 @@ export class AssetAlertConditionsComponent implements OnInit {
             sms: { enabled: false, recipients: [] },
             push_notification: { enabled: false, recipients: [] },
             service_connection: { enabled: false, connections: [] }
-          };
-        }
+        };
+      }
       } else {
         if (!this.alertObj.actions.email) {
           this.alertObj.actions.email = { enabled: false, recipients: [] };
@@ -477,7 +480,10 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.editDocuments = {};
   }
 
-  onUpdateAlertConditions() {
+  async onUpdateAlertConditions() {
+    if(this.selectedAudioFile && this.selectedAudioFile?.name){
+      await this.uploadFile();
+    }
     let arr = [];
     arr = this.alertObj.visualization_widgets;
     arr.forEach((widget, index) => {
@@ -532,7 +538,10 @@ export class AssetAlertConditionsComponent implements OnInit {
     );
   }
 
-  onCreateAlertCondition() {
+  async onCreateAlertCondition() {
+    if(this.selectedAudioFile && this.selectedAudioFile?.name){
+      await this.uploadFile();
+    }
     const alertObj = JSON.parse(JSON.stringify(this.alertObj));
     alertObj.created_by = this.loggedInUser.email;
     if (
@@ -584,6 +593,7 @@ export class AssetAlertConditionsComponent implements OnInit {
 
   onCloseAlertConditionModal() {
     $('#addAlertConditionModal').modal('hide');
+    this.selectedAudioFile = undefined;
     this.alertObj = undefined;
     this.toggleRows = {};
     this.editDocuments = {};
@@ -658,5 +668,64 @@ export class AssetAlertConditionsComponent implements OnInit {
       obj[newKey] = obj[oldKey];
     }
     return obj;
+  }
+
+onAudioFileSelected(audio : FileList){
+  let selectedFile = audio.item(0);
+  if(!selectedFile.type.startsWith('audio/')){
+    this.toasterService.showError('Please Select Audio File', 'Upload File');
+    this.alert_sound.nativeElement.value='';
+    return;
+  }
+  else{
+    if (selectedFile?.size > CONSTANTS?.ASSET_ALERT_AUDIO_SIZE){
+      this.toasterService.showError('Audio File Size Exceeded' + " " + CONSTANTS.ASSET_ALERT_AUDIO_SIZE / 1000000 + " " + 'MB', 'Upload File');
+      this.alert_sound.nativeElement.value='';
+      return;
+    }
+    else {
+      let audioDuration;
+      const audioElement: HTMLAudioElement = new Audio();
+      audioElement.src = URL.createObjectURL(selectedFile);
+      audioElement.load();
+        audioElement.addEventListener('loadedmetadata', () => {
+          audioDuration = audioElement.duration;
+        });        
+        setTimeout(() =>{
+          if(audioDuration > CONSTANTS.DEFAULT_AUDIO_DURATION/1000){
+            this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.DEFAULT_AUDIO_DURATION / 1000 + " " + 'Second', 'Upload File');
+            this.alert_sound.nativeElement.value='';
+            return;
+          }else{
+            this.selectedAudioFile = selectedFile;
+          }
+        },100);
+    }
+  }
+}
+
+async uploadFile(){
+    const data = await this.commonService.uploadImageToBlob(
+      this.selectedAudioFile,this.contextApp.app + '/models/' + this.asset.name);
+      if (data && data?.name && data?.url) {
+        const audioFile ={
+          name:data.name,
+          url:data.url
+        }
+        this.alertObj.metadata = {
+          ...this.alertObj?.metadata,
+          critical_alert_sound: audioFile
+        };
+      } 
+      else {
+      this.toasterService.showError('Error in uploading audio file', 'Upload file');
+      return ;
+    }
+  }
+
+  removeCriticalAlertAudioData(){
+    if(this.alertObj?.severity.toLowerCase()!=='critical' && this.alertObj?.metadata?.critical_alert_sound){
+      delete this.alertObj.metadata.critical_alert_sound;
+    }
   }
 }

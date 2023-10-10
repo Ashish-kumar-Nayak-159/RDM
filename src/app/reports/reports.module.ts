@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-
+import { Daterangepicker } from 'ng2-daterangepicker';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports/reports.component';
 import { PreGeneratedReportsComponent } from './pre-generated-reports/pre-generated-reports.component';
@@ -25,6 +25,7 @@ import { DailyReportsComponent } from './daily-reports/daily-reports.component';
     NgSelectModule,
     TooltipModule,
     CommonCustomModule,
+    Daterangepicker
   ],
 })
 export class ReportsModule {}

@@ -134,7 +134,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   onWidgetTypeChange() {
-    if (this.labalName === "Add") {
+    if (this.labalName == "Add") {
       this.widgetObj.properties = [{}];
     }
     if (
@@ -154,15 +154,16 @@ export class ConfigLogicalAssestComponent implements OnInit {
         else if (this.widgetObj?.widget_type === "StringWidget") {
           this.filteredPropList.push(prop);
         }
-
       }
     });
 
     if (this.widgetObj?.widget_type === "ConditionalNumber") {
+      this.propertyObj = {}
       this.isDisabled = false;
       this.trueConditionalNumber = 'ON';
       this.falseConditionalNumber = 'OFF';
       this.formula = '';
+
       this.propertyObj.metadata = {
         properties: [
           {
@@ -532,7 +533,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "units": element.propertyList.find(units => units?.json_key == element?.json_key)?.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id,
-          "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`
+          "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`,
 
         }
         customProperties.push(obj);

@@ -31,18 +31,6 @@
           *ngFor="let prop of chartConfig.properties; let i = index"
           [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
 
-          <!-- <p class="text-xs live-widget-title mb-0" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
-                  ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')" [ngClass]= "{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'SmallNumber' && chartConfig.widgetType != 'StringWidget'))}">
-  
-              ({{(prop?.type === 'Edge Derived Properties' ? 'ED' : (prop?.type ===
-              'Cloud Derived Properties' ? 'CD' : (
-              prop?.type === 'Derived KPIs' ? 'DK' : 'M'
-              )))}}) {{prop.title}}
-              {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
-              prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
-            </p> -->
-
-          <!-- {{telemetryObj?.[prop.property?.json_key] | json}} -->
           <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
             <!-- <app-line-chart-without-axis [asset]="asset"
                 [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
@@ -68,13 +56,7 @@
                 : telemetryObj[prop?.composite_key]?.value
                 )
                 : telemetryObj[prop?.json_key]?.value ? telemetryObj[prop?.json_key]?.value: 'NA' }}
-                <!-- {{ (telemetryObj[prop.property?.composite_key] && (telemetryObj[prop.property?.composite_key]?.value !==
-                undefined
-                && telemetryObj[prop.property?.composite_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                (convertToNumber(telemetryObj[prop.property?.composite_key]?.value)) :
-                (telemetryObj[prop.property?.composite_key].value))
-                : 'NA'}} -->
+
                 <sub class="text-xs live-widget-title mb-0">
                   {{prop?.units ? ('(' +
                   prop?.units + ')') : ''}}

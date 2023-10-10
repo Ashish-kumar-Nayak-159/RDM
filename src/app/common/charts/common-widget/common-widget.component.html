@@ -43,7 +43,7 @@
               [ngClass]="telmetryDivAddonClass?.length > 0 ? telmetryDivAddonClass : ''">
               {{ (telemetryObj[prop?.composite_key] && (telemetryObj[prop?.composite_key]?.value !== undefined
               && telemetryObj[prop?.composite_key]?.value !== null)) ?
-              (prop.property?.data_type === 'Number' ?
+              (prop?.data_type === 'Number' ?
               telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals) :
               telemetryObj[prop?.composite_key]?.value) : 'NA'}}
             </div>

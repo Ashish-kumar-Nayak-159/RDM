@@ -68,12 +68,18 @@ export class SmallNumberWidgetComponent implements OnInit {
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
-    console.log("Chekcinggg", this.telemetryObj)
     this.subscriptions.push(
       this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+    setTimeout(() => {
+      if (this.telemetryObj) {
+        this.chartConfig.properties.forEach((prop, cIndex) => {
+          this.refreshLatestTelemetryInChart(prop);
+        });
+      }
+    }, 400);
   }
 
 

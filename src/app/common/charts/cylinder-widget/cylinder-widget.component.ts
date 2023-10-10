@@ -40,6 +40,8 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
   telemetryData: any;
   subscriptions: Subscription[] = [];
   widgetStringFromMenu: any;
+  latestPropWiseTelemetryData: any;
+  currentDate: string;
 
   constructor(private commonService: CommonService, private zone: NgZone, private chartService: ChartService) { }
 
@@ -49,7 +51,35 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   ngAfterViewInit() {
-    this.generateChart();
+    setTimeout(() => {
+      this.generateChart();
+    }, 400);
+  }
+
+  refreshLatestTelemetryInChart(chartItem: am4charts.XYChart3D, prop: any) {
+    this.currentDate = this.commonService.convertUTCDateToLocalDate(new Date().toISOString(), CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+    const compositeKey = prop.composite_key;
+    if (this.telemetryObj.hasOwnProperty(compositeKey)) {
+      if (!this.latestPropWiseTelemetryData || !this.latestPropWiseTelemetryData.hasOwnProperty(compositeKey) || (
+        this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('date') &&
+        this.telemetryObj[compositeKey].hasOwnProperty('date') &&
+        this.latestPropWiseTelemetryData[compositeKey].date < this.telemetryObj[compositeKey].date &&
+        this.telemetryObj[compositeKey].hasOwnProperty('value') &&
+        this.telemetryObj[compositeKey]['value'] !== undefined &&
+        this.telemetryObj[compositeKey]['value'] !== null)) {
+        if (!this.latestPropWiseTelemetryData) this.latestPropWiseTelemetryData = {};
+        if (prop?.data_type === 'Number' && prop.hasOwnProperty('digitsAfterDecimals')) this.telemetryObj[compositeKey].value = this.telemetryObj[compositeKey].value.toFixed(prop.digitsAfterDecimals);
+        this.latestPropWiseTelemetryData[compositeKey] = this.telemetryObj[compositeKey];
+      }
+    }
+    if (chartItem && this.latestPropWiseTelemetryData?.hasOwnProperty(compositeKey) &&
+      this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('value')) {
+      chartItem.data = [{
+        fillCapacity: Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        empty: Number(prop?.maxCapacityValue || '100') - Number(this.latestPropWiseTelemetryData[compositeKey]['value']),
+        category: ''
+      }];
+    }
   }
 
   ngOnChanges(changes) {
@@ -132,16 +162,7 @@ export class CylinderWidgetComponent implements OnInit, AfterViewInit, OnChanges
       series2.columns.template.strokeOpacity = 0.2;
       series2.columns.template.strokeWidth = 2;
 
-      this.telemetryData = {};
-      if (
-        this.telemetryObj[prop.property?.composite_key]?.value !== undefined &&
-        this.telemetryObj[prop.property?.composite_key]?.value !== null
-      ) {
-        this.telemetryData.fillCapacity = Number(this.telemetryObj[prop.property?.composite_key]?.value || '0');
-        this.telemetryData.empty = Number((prop?.maxCapacityValue || '100') - this.telemetryData.fillCapacity);
-        this.telemetryData.category = '';
-      }
-      chart.data = [this.telemetryData];
+      this.refreshLatestTelemetryInChart(chart, prop);
       this.chart.push(chart);
     });
   }

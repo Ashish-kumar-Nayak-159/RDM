@@ -560,8 +560,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     );
   }
 
+
   async onSaveWidgetObj() {
-    debugger
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);
       return;
@@ -650,11 +650,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           type: type,
           json_key: prop.property.json_key,
           composite_key: `${type}#${prop?.property?.json_key}`,
-
         };
         arr[0]['json_Data'].push(obj);
       });
-      this.widgetObj.properties = JSON.parse(JSON.stringify(arr));;
+      this.widgetObj.properties = JSON.parse(JSON.stringify(arr));
     }
 
     else if (this.widgetObj.widgetType == "NumberWithImage") {

@@ -46,11 +46,17 @@
               <div id="{{chartConfig.chartId}}_chart_{{i}}" style="width: 100%;height: 130px"></div>
             </div>
             <span class="text-darkblue display-5 font-weight-bold">
-              {{ (telemetryObj[prop?.composite_key] && (telemetryObj[prop?.composite_key]?.value !== undefined
-              && telemetryObj[prop?.composite_key]?.value !== null)) ?
-              (prop.property?.data_type === 'Number' ?
-              telemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals) :
-              telemetryObj[prop?.composite_key]?.value) : 'NA'}}
+              {{ telemetryObj && telemetryObj[prop.composite_key] &&
+              telemetryObj[prop?.composite_key]?.value !== undefined &&
+              telemetryObj[prop?.composite_key]?.value !== null
+              ?
+              (
+              prop?.data_type === 'Number'
+              ? telemetryObj[prop?.composite_key].value.toFixed(prop.digitsAfterDecimals)
+              : telemetryObj[prop?.composite_key].value
+              )
+              : telemetryObj[prop?.json_key].value }}
+
             </span>
           </div>
           <div>

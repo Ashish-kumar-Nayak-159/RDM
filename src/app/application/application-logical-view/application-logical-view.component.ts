@@ -832,6 +832,7 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
   // }
 
   async processTelemetryData(telemetryObj) {
+    debugger
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     // this.sampleCountArr[0] = this.sampleCountArr[0] + 1;

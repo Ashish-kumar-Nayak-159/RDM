@@ -136,10 +136,6 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
                   if (prop?.data_type === 'Number') {
                     prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.composite_key]?.value))
                   }
-                  // else {
-                  //   console.log('111111111')
-                  //   prop.lastValue = this.telemetryObj[prop?.composite_key]?.value
-                  // }
                 }
                 if (prop?.asset_id == this.telemetryObj?.asset_id) {
                   prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date;

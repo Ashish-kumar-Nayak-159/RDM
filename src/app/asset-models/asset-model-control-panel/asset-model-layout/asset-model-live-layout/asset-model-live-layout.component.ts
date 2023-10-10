@@ -560,7 +560,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     );
   }
 
-
   async onSaveWidgetObj() {
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
       this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add ' + this.widgetStringFromMenu);

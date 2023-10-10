@@ -846,12 +846,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.previousProperties = [];
             obj['previous_properties'] = [];
             this.telemetryObj = obj;
-            console.log("telemetryobj", this.telemetryObj)
             this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
-            // this.telemetryObj = response.message;
-            // const hours = this.telemetryObj['Running Hours'].split(':');
-            // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
-            // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
             if (environment.app === 'SopanCMS') {
               this.getTimeDifference(
                 Math.floor(Number(this.latestRunningHours)),

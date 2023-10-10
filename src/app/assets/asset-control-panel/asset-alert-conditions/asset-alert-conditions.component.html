@@ -659,7 +659,7 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Severity:</label>
             <select class="form-control form-control-sm" id="template" name="model_type"
-              [(ngModel)]="alertObj.severity">
+              [(ngModel)]="alertObj.severity" (change)="alertObj?.severity !== 'Critical' && alertObj?.metadata?.critical_alert_sound && alertObj?.metadata?.critical_alert_sound?.name  ?  removeCriticalAlertAudioData()  : ''">
               <option [ngValue]="undefined">Select Severity</option>
               <option [ngValue]="'Critical'">Critical</option>
               <option [ngValue]="'Error'">Error</option>
@@ -678,6 +678,24 @@
               <option [ngValue]="'Cloud'" [defaultSelected]="menuDetail?.accordion_value?.edge === false">Cloud</option>
             </select>
           </div>
+
+          <div class="mb-4" *ngIf="alertObj?.severity==='Critical'">
+            <label for="alert-sound" class="col-form-label ">Critical Alert Sound:</label>
+            <div class="form-group input-group row m-0">
+              <div class="file-input form-control form-control-sm p-0 col-8">
+                <input type="file" id="alert-sound" #alert_sound class="file" 
+                  (change)="onAudioFileSelected($event.target.files)" accept=".mp3,.wav" >
+                  <label for="alert-sound" class="overflow-text"
+                  [tooltip]="alertObj?.metadata?.critical_alert_sound?.name && !selectedAudioFile?.name ? alertObj.metadata.critical_alert_sound.name : selectedAudioFile?.name ? selectedAudioFile.name : 'Choose File'" >
+                  {{alertObj?.metadata?.critical_alert_sound?.name && !selectedAudioFile?.name ? alertObj.metadata.critical_alert_sound.name : selectedAudioFile?.name ? selectedAudioFile.name : 'Choose File'}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file" id="alert-sound" class="file" #alert_sound accept=".mp3,.wav" (change)="onAudioFileSelected($event.target.files)" >
+                <label for="alert-sound" class="bg-secondary text-white">Browse</label>
+              </div>
+            </div>
+          </div>
+          
         </form>
       </div>
       <div class="modal-footer">

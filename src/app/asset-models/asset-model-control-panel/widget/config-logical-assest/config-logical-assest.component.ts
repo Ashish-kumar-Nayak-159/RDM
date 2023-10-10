@@ -134,7 +134,9 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
 
   onWidgetTypeChange() {
-    this.widgetObj.properties = [{}];
+    if (this.labalName === "Add") {
+      this.widgetObj.properties = [{}];
+    }
     if (
       this.widgetObj.widget_type === 'NumberWithTrend' ||
       this.widgetObj.widget_type === 'LineChart' ||
@@ -527,7 +529,7 @@ export class ConfigLogicalAssestComponent implements OnInit {
           "type": element.type,
           "title": element.title,
           "json_key": element.json_key,
-          "units": element.unit,
+          "units": element.propertyList.find(units => units?.json_key == element?.json_key)?.unit,
           "digitsAfterDecimals": element.digitsAfterDecimals,
           "asset_id": element.asset_id,
           "composite_key": `${element.asset_id}#${element.type}#${element.json_key}`
@@ -1034,7 +1036,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
 
         if (data.widget_type != "ConditionalNumber" && data.widget_type != "GaugeChart" && data.widget_type != "CylinderWidget" && data.widget_type != "RectangleWidget") {
           this.widgetObj = data;
-          this.onWidgetTypeChange();
+          setTimeout(() => {
+            this.onWidgetTypeChange();
+
+          }, 300);
           this.isDataFill = true;
 
         }

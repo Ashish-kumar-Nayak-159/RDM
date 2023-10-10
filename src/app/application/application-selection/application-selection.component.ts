@@ -91,6 +91,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
+      localStorage.removeItem(CONSTANTS.MODEL_ALERT_AUDIO);
+      localStorage.removeItem(CONSTANTS.ASSET_ALERT_AUDIO);
     }
     const decodedToken = this.commonService.decodeJWTToken(app.token);
     if (decodedToken?.privileges && decodedToken.privileges.indexOf('APV') <= -1) {

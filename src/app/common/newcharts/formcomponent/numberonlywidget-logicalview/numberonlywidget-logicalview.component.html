@@ -3,7 +3,7 @@
     <ng-container *ngFor="let prop of widgetObj.properties; let i = index;">
         <div class="form-group">
             <label for="message-text" class="col-form-label required">Asset </label>
-            <a *ngIf="i === 0 && widgetObj?.widget_type !== 'SmallNumber'"
+            <a *ngIf="i === 0 && widgetObj?.widget_type !== 'SmallNumber'  && widgetObj?.widget_type !== 'GaugeChart'"
                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1" href="javascript:void(0)"
                 (click)="addProperty()" placement="bottom" tooltip="Add Property"><em
                     class="fa fa-plus fa-sm text-white"></em></a>

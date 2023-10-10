@@ -1026,10 +1026,10 @@ export class ConfigLogicalAssestComponent implements OnInit {
           this.widgetObj.endAngle = data.metadata.endAngle;
           this.widgetObj.noOfDataPointsForTrend = data.metadata.noOfDataPointsForTrend;
           this.widgetObj.properties.forEach(element => {
-            let getName = this.propertyList.find(x => x.json_key == element?.json_key);
-            element.name = getName?.name;
-            element.data_type = getName?.data_type;
-            element.property = getName;
+            let getMatchingProperty = this.commonService.getMatchingPropertyFromPropertyList(element?.json_key, element?.type, this.propertyList);
+            element.name = getMatchingProperty?.name;
+            element.data_type = getMatchingProperty?.data_type;
+            element.property = getMatchingProperty;
           });
           this.isDataFill = true;
 

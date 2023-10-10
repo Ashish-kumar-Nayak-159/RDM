@@ -114,4 +114,23 @@ export class SmallNumberWidgetComponent implements OnInit {
     return Number(value);
   }
 
+  hasPropType(chartConfig, propType, debug = false) {
+    let matchingCount = 0;
+    if (debug) {
+      debugger;
+    }
+    const widgetType = chartConfig.widgetType;
+    if (widgetType === "CylinderWidget" || widgetType === "RectangleWidget" || widgetType === "GaugeChart"
+      || widgetType === "StringWidget" || widgetType === "NumberWithImage" || widgetType === "NumberWithTrend"
+      || widgetType === "OnlyNumber" || widgetType === "SmallNumber") {
+      matchingCount = chartConfig.properties.filter(p => p.type === propType).length;
+    } else if (widgetType === "AreaChart" || widgetType === "LineChart") {
+      matchingCount = chartConfig["y1AxisProps"].filter(p => p.type === propType).length + chartConfig["y2AxisProps"].filter(p => p.type === propType).length;
+    } else if (widgetType === "ConditionalNumber") {
+      chartConfig.properties.forEach(prop => {
+        matchingCount += prop["json_Data"].filter(jDProp => jDProp.type === propType).length;
+      });
+    }
+    return matchingCount > 0;
+  }
 }

@@ -31,15 +31,10 @@
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
 
           <div *ngIf="widget?.widgetType === 'SmallNumber'"
-            class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
-                || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+            class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': '48%',
                 'margin-left':'0', 'margin-top': '2%' }">
-
-            <!-- {{telemetryObj.temperature.value| json}}
-                {{telemetryObj.pressure1.value | json}} -->
-
-            <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            <app-small-number-widget [chartConfig]="widget" (removeWidget)="removeWidget($event)"
+              [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
             </app-small-number-widget>
           </div>
         </ng-container>

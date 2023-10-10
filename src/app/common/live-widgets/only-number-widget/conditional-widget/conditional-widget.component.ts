@@ -30,25 +30,25 @@ export class ConditionalWidgetComponent implements OnInit {
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
-    if (this.chartConfig) {
-      let jsonArray = [];
-      this.chartConfig.properties.forEach(element => {
-        let jsonObj = {
-          name: element.title,
-          type: element.type,
-          composite_key: element.composite_key,
-          asset_id: element.asset_id,
-          json_key: element.json_key
-        };
-        jsonArray.push(jsonObj);
-      });
-      let obj = {
-        "text": this.chartConfig.text,
-        "formula": this.chartConfig.formula,
-        "json_Data": jsonArray
-      }
-      this.chartConfig.properties = [obj];
-    }
+    // if (this.chartConfig) {
+    //   let jsonArray = [];
+    //   this.chartConfig.properties.forEach(element => {
+    //     let jsonObj = {
+    //       name: element.title,
+    //       type: element.type,
+    //       composite_key: element.composite_key,
+    //       asset_id: element.asset_id,
+    //       json_key: element.json_key
+    //     };
+    //     jsonArray.push(jsonObj);
+    //   });
+    //   let obj = {
+    //     "text": this.chartConfig.text,
+    //     "formula": this.chartConfig.formula,
+    //     "json_Data": jsonArray
+    //   }
+    //   this.chartConfig.properties = [obj];
+    // }
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
@@ -114,7 +114,7 @@ export class ConditionalWidgetComponent implements OnInit {
   evaluatePropCondition(telemetryObj) {
     let condition = this.chartConfig?.formula;
     try {
-      this.chartConfig?.properties[0]?.json_Data.forEach((jd, i) => {
+      this.chartConfig?.properties?.forEach((jd, i) => {
         condition = condition?.replaceAll(`%${i + 1}%`, telemetryObj[jd?.composite_key]?.value);
       });
       var actualVal = eval(condition);

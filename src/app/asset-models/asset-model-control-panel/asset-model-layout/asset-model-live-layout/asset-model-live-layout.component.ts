@@ -224,11 +224,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }, 1000);
   }
 
-  getPropertyType(id) {
-    this.data_type = this.propertyList.find((prop) => prop.json_key === id)?.data_type;
-    return this.propertyList.find((prop) => prop.json_key === id)?.data_type;
-  }
-
   async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
@@ -242,6 +237,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           if (response?.live_widgets?.length > 0) {
             // alert('hereeee');
             this.liveWidgets = response.live_widgets;
+            console.log(JSON.stringify(this.liveWidgets));
             // let count = 1;
             this.liveWidgets.forEach((widget) => {
               this.checkingsmallwidget = widget.widgetType;
@@ -259,7 +255,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                   if (prop.property) {
                     prop.json_key = prop.property.json_key;
                   }
-                  prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                  prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                   prop.type = prop.property?.type;
 
                   if (prop?.type === 'Derived KPIs') {
@@ -273,40 +269,24 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                   }
                 });
               } else {
-                widget?.y1AxisProps.forEach((prop) => {
+                const enrichProp = (prop) => {
                   if (prop.id) {
                     prop.json_key = prop.id;
                   }
-                  prop.property = this.propertyList.find(
-                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  );
+                  prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
+                  prop.type = prop.property?.type;
                   if (prop?.type === 'Derived KPIs') {
                     widget.derived_kpis = true;
                   } else if (prop?.type === 'Edge Derived Properties') {
                     widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  } else if (prop?.type === 'Cloud Derived Properties') {
                     widget.cloud_derived_props = true;
                   } else {
                     widget.measured_props = true;
                   }
-                });
-                widget?.y2AxisProps?.forEach((prop) => {
-                  if (prop.id) {
-                    prop.json_key = prop.id;
-                  }
-                  prop.property = this.propertyList.find(
-                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  );
-                  if (prop?.type === 'Derived KPIs') {
-                    widget.derived_kpis = true;
-                  } else if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
+                };
+                widget?.y1AxisProps.forEach((prop) => enrichProp(prop));
+                widget?.y2AxisProps?.forEach((prop) => enrichProp(prop));
               }
             });
             this.getTelemetryData();
@@ -521,10 +501,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     }
     this.liveWidgets = JSON.parse(JSON.stringify(arr));
-    this.updateAssetModel(this.liveWidgets, this.widgetStringFromMenu + ' removed successfully.');
+    this.updateAssetModel([...this.liveWidgets], this.widgetStringFromMenu + ' removed successfully.');
   }
 
-  async updateAssetModel(arr, message) {
+  async updateAssetModel(_arr, message) {
+    const arr = [..._arr];
     arr.forEach((widget) => {
       if (widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart') {
         widget.y1AxisProps.forEach((prop) => {
@@ -533,7 +514,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         widget.y2AxisProps.forEach((prop) => {
           delete prop.property;
         });
-      } else {
+      }
+      else {
         widget.properties.forEach((prop) => {
           //delete prop.property;
         });
@@ -676,10 +658,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     // this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + datefns.getUnixTime(new Date());
     this.widgetObj['slave_id'] = this.selectedSlave?.slave_id;
-    const arr = this.liveWidgets;
-    arr.push(this.widgetObj);
-
-    this.updateAssetModel(arr, this.widgetStringFromMenu + ' added successfully.');
+    this.updateAssetModel([...this.liveWidgets, { ...this.widgetObj }], this.widgetStringFromMenu + ' added successfully.');
 
     this.trueConditionalNumber = 'ON'
     this.falseConditionalNumber = 'OFF'

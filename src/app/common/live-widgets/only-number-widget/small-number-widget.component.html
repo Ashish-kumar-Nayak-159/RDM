@@ -8,16 +8,16 @@
         </h6>
       </div>
       <div class="ml-auto">
-        <div class="round-badge badge-navyblue" tooltip="Derived KPI"
-          *ngIf="chartConfig.derived_kpis && !asset && !chartConfig.freezed">DK</div>
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="hasPropType(chartConfig, 'Derived KPIs')">
+          DK</div>
         <div class="round-badge badge-darkblue" tooltip="Edge Derived Property"
-          *ngIf="chartConfig.edge_derived_props && !asset && !chartConfig.freezed">
+          *ngIf="hasPropType(chartConfig, 'Edge Derived Properties')">
           ED</div>
         <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
-          *ngIf="chartConfig.cloud_derived_props && !asset && !chartConfig.freezed">CD</div>
+          *ngIf="hasPropType(chartConfig, 'Cloud Derived Properties')">CD</div>
 
         <div class="round-badge badge-blue" tooltip="Measured Property"
-          *ngIf="!asset && !chartConfig.freezed && chartConfig.measured_props">M</div>
+          *ngIf="hasPropType(chartConfig, 'Measured Properties')">M</div>
         <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
           href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
           tooltip="Remove {{widgetStringFromMenu}}"><em class="fa fa-close"></em></a>

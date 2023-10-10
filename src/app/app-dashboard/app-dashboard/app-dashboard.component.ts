@@ -463,7 +463,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
           async (response: any) => {
             if (response?.live_widgets?.length > 0) {
-              response.live_widgets.forEach((widget) => {
+              response.live_widgets?.forEach((widget) => {
                 this.checkingsmallwidget = widget.widgetType;
                 this.checkconditionalwidget = widget.widgetType;
                 if (widget.widgetType === 'SmallNumber') {
@@ -482,11 +482,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   widget['text'] = widget?.properties[0]?.text;
                   widget?.properties[0]?.json_Data.forEach((prop) => {
                     let newProp = {};
-                    let filteredProp = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                    let filteredProp = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                     newProp["property"] = filteredProp;
                     newProp["type"] = filteredProp?.type;
                     newProp["json_key"] = prop?.json_key;
                     newProp["title"] = filteredProp?.name;
+                    newProp["composite_key"] = prop.composite_key
                     if (filteredProp) {
                       this.addPropertyInList(filteredProp);
                     }
@@ -504,17 +505,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   widget.properties = propertiesData;
                 }
                 else if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart' && widget.widgetType !== 'ConditionalNumber') {
-
                   widget?.properties.forEach((prop) => {
                     if (prop.property) {
                       prop.json_key = prop.property.json_key;
                     }
-                    // prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                    // prop.type = prop.property?.type;
-
-                    // if (prop?.property) {
-                    //   this.addPropertyInList(prop.property);
-                    // }
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {
@@ -526,15 +520,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                     this.actualPropertyList.push(prop);
                   });
-                } else {
+                }
+                else {
                   widget?.y1AxisProps?.forEach((prop) => {
                     if (prop.id) {
                       prop.json_key = prop.id;
                     }
-                    // prop.property = this.propertyList.find(
-                    //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                    // );
-                    // this.addPropertyInList(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {
@@ -551,10 +542,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (prop.id) {
                       prop.json_key = prop.id;
                     }
-                    // prop.property = this.propertyList.find(
-                    //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                    // );
-                    // this.addPropertyInList(prop);
+
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {

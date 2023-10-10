@@ -1,6 +1,6 @@
 import {
   ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector,
-  Input, OnDestroy,OnChanges, OnInit, ViewChild
+  Input, OnDestroy, OnChanges, OnInit, ViewChild
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as datefns from 'date-fns';
@@ -29,8 +29,8 @@ declare var $: any;
   styleUrls: ['./application-visualization.component.css'],
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
-  ruleCode:any;
-  docType:boolean;
+  ruleCode: any;
+  docType: boolean;
   @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
@@ -89,7 +89,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   nullValueArr: any[];
   frequency: any;
   ShowSelectedWidgets: boolean = false; // Property to show hide Show Selected Property widgets
-  showWidgetList(){ // Function call on show / hide selected widgets button click 
+  showWidgetList() { // Function call on show / hide selected widgets button click 
     this.ShowSelectedWidgets = !this.ShowSelectedWidgets; // Toggle Selected Property Widgets
   }
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
@@ -102,10 +102,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   headerMessage
   bodyMessage
   modalConfig
-  disableAckBtn=true;
-  selectFileType=undefined;
-  uploadFileType=undefined;
-  ackAlertType=undefined;
+  disableAckBtn = true;
+  selectFileType = undefined;
+  uploadFileType = undefined;
+  ackAlertType = undefined;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -238,12 +238,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       $('.responsive-tabs').addClass('open');
     } else {
       $('.responsive-tabs').removeClass('open');
-      if(type==='recommendation' && this.alertCondition?.recommendation_html){
-        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/<br>/g,'');
-        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/:&#160;/g,':&nbsp;');
-        this.alertCondition.recommendation_html=this.alertCondition?.recommendation_html.replace(/&#160;/g,'');
+      if (type === 'recommendation' && this.alertCondition?.recommendation_html) {
+        this.alertCondition.recommendation_html = this.alertCondition?.recommendation_html.replace(/<br>/g, '');
+        this.alertCondition.recommendation_html = this.alertCondition?.recommendation_html.replace(/:&#160;/g, ':&nbsp;');
+        this.alertCondition.recommendation_html = this.alertCondition?.recommendation_html.replace(/&#160;/g, '');
+      }
     }
-  }
   }
 
   onNumberChange(event, type) {
@@ -646,7 +646,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               item.measured_props = false;
               item.cloud_derived_props = false;
               item.y1axis.forEach((prop) => {
-                const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                const type = prop?.type || this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList)?.type;
                 if (type === 'Edge Derived Properties') {
                   item.edge_derived_props = true;
                 } else if (type === 'Cloud Derived Properties') {
@@ -656,7 +656,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 }
               });
               item.y2axis.forEach((prop) => {
-                const type = prop?.type || this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                const type = prop?.type || this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList)?.type;
                 if (type === 'Edge Derived Properties') {
                   item.edge_derived_props = true;
                 } else if (type === 'Cloud Derived Properties') {
@@ -1095,7 +1095,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
-    alert.metadata =null;
+    alert.metadata = null;
     this.acknowledgedAlert = alert;
     this.ruleCode = alert?.source_info?.rule_code
     this.acknowledgedAlertIndex = this.latestAlerts.findIndex((alertObj) => alertObj.id === alert.id);
@@ -1142,38 +1142,38 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       data: {},
     });
   }
-  extensisonValidator(fileName:any){
-    const name=fileName.split('.').pop()?.toLowerCase();
+  extensisonValidator(fileName: any) {
+    const name = fileName.split('.').pop()?.toLowerCase();
 
-    let extractedFileExtension='';
-    if(name=='webm'|| name=='mp4'){
-      return extractedFileExtension='Video';
+    let extractedFileExtension = '';
+    if (name == 'webm' || name == 'mp4') {
+      return extractedFileExtension = 'Video';
     }
-    else{
-      if(name=='jpg'|| name=='jpeg'|| name=='png'|| name=='svg'){
-        return extractedFileExtension='Image';
+    else {
+      if (name == 'jpg' || name == 'jpeg' || name == 'png' || name == 'svg') {
+        return extractedFileExtension = 'Image';
       }
-     else{
-        if(name=='pdf'){
-          return extractedFileExtension='Pdf';
+      else {
+        if (name == 'pdf') {
+          return extractedFileExtension = 'Pdf';
         }
-        else{
-          if(name=='doc'|| name=='docx'){
-            return extractedFileExtension='Word';
+        else {
+          if (name == 'doc' || name == 'docx') {
+            return extractedFileExtension = 'Word';
           }
-          else{
-            if(name=='xls'|| name=='xlsx'|| name=='csv'){
-              return extractedFileExtension='Excel';
+          else {
+            if (name == 'xls' || name == 'xlsx' || name == 'csv') {
+              return extractedFileExtension = 'Excel';
             }
-            else{
-              if(name=='zip'|| name=='rar'){
-                return extractedFileExtension='Compress';
+            else {
+              if (name == 'zip' || name == 'rar') {
+                return extractedFileExtension = 'Compress';
+              }
+              else {
+                if (name == 'txt') {
+                  return extractedFileExtension = 'Text';
                 }
-                else{
-                  if(name=='txt'){
-                    return extractedFileExtension='Text';
-                  }
-                }
+              }
             }
           }
         }
@@ -1185,33 +1185,33 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   this.toasterService.showError('This file is not valid for selected document type', 'Select File');
     //   return;
     // }
-    const fileName=files?.item(0).name;
-    let extractedFileExtension=this.extensisonValidator(fileName);
+    const fileName = files?.item(0).name;
+    let extractedFileExtension = this.extensisonValidator(fileName);
     if (extractedFileExtension?.toLowerCase() !== this.acknowledgedAlert.metadata.files[index].type?.toLowerCase()) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
     // if file name contains single comma then 
-    if(files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")){
-      this.toasterService.showError("file name should not contain ' '",'Select File');
-      return;     
+    if (files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")) {
+      this.toasterService.showError("file name should not contain ' '", 'Select File');
+      return;
     }
 
     this.uploadedFiles.splice(index, 1, {
       'file': files?.item(0),
       'index': index
     })
-    this.uploadFileType=this.acknowledgedAlert.metadata.files[index].type; // uploaded file type
+    this.uploadFileType = this.acknowledgedAlert.metadata.files[index].type; // uploaded file type
     this.acknowledgedAlert.metadata.files[index].data.name = files?.item(0).name;
     this.acknowledgedAlert.metadata.files[index].filetype = files?.item(0).type;
-    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
-    this.uploadFileType=undefined;
-  } 
-  selectionChange(selectedType:any,index){
-    this.selectFileType=selectedType; //dropdown file type 
-    this.selectFileType!==this.uploadFileType ? this.disableAckBtn=true : this.disableAckBtn=false;
-    if(this.disableAckBtn===true){
-      this.acknowledgedAlert.metadata.files[index].data.name='';
+    this.selectFileType !== this.uploadFileType ? this.disableAckBtn = true : this.disableAckBtn = false;
+    this.uploadFileType = undefined;
+  }
+  selectionChange(selectedType: any, index) {
+    this.selectFileType = selectedType; //dropdown file type 
+    this.selectFileType !== this.uploadFileType ? this.disableAckBtn = true : this.disableAckBtn = false;
+    if (this.disableAckBtn === true) {
+      this.acknowledgedAlert.metadata.files[index].data.name = '';
     }
   }
   async uploadFile() {
@@ -1235,18 +1235,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async acknowledgeAlert() {
-    this.acknowledgedAlert?.metadata?.files?.forEach((file)=>{
-         if(!this.extensisonValidator(file.data.name)?.toLowerCase()?.includes(file?.type?.toLowerCase()))
-         {
-          this.toasterService.showError('This file is not valid for selected document type', 'Select File');
-          this.docType = true
-          return;
-         }
-         else{
-          this.docType = false
-         }
+    this.acknowledgedAlert?.metadata?.files?.forEach((file) => {
+      if (!this.extensisonValidator(file.data.name)?.toLowerCase()?.includes(file?.type?.toLowerCase())) {
+        this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+        this.docType = true
+        return;
+      }
+      else {
+        this.docType = false
+      }
     })
-    if(!this.docType){
+    if (!this.docType) {
       await this.uploadFile();
       const files = [];
       this.acknowledgedAlert.metadata.files.forEach((file) => {
@@ -1273,7 +1272,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.to_date = epoch ? epoch + 300 : null;
       obj.metadata['user_id'] = this.userData.email;
       obj.metadata['acknowledged_date'] = new Date().toISOString();
-      if(this.contextApp.app === 'Indygo' || this.contextApp.app ==='IndygoBeta'){
+      if (this.contextApp.app === 'Indygo' || this.contextApp.app === 'IndygoBeta') {
         this.subscriptions.push(
           this.assetService.acknowledgeAssetAlertIndygo(obj).subscribe(
             (response) => {
@@ -1282,9 +1281,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.closeAcknowledgementModal();
               this.acknowledgedAlert = undefined;
               this.disableAckBtn = true;
-              this.uploadFileType=undefined;
-              this.selectFileType=undefined;
-    
+              this.uploadFileType = undefined;
+              this.selectFileType = undefined;
+
               //this.acknowledgedAlertIndex = -1
               // this.getAlarms();
             },
@@ -1293,7 +1292,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
           )
         );
-      }else{
+      } else {
         this.subscriptions.push(
           this.assetService.acknowledgeAssetAlert(obj).subscribe(
             (response) => {
@@ -1301,7 +1300,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.getLatestAlerts();
               this.closeAcknowledgementModal();
               this.acknowledgedAlert = undefined
-    
+
               //this.acknowledgedAlertIndex = -1
               // this.getAlarms();
             },
@@ -1321,8 +1320,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (alert?.id === this.acknowledgedAlert?.id || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
           alert.metadata = {};
           this.disableAckBtn = true;
-          this.uploadFileType=undefined;
-          this.selectFileType=undefined;
+          this.uploadFileType = undefined;
+          this.selectFileType = undefined;
         }
       });
     }

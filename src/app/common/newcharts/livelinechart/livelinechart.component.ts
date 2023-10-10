@@ -382,7 +382,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     }
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
-      // prop.property = this.propertyList.find(x => x.composite_key == prop.composite_key);
       const series = chart.series.push(new am4charts.LineSeries());
       series.units = prop.property?.json_model ? prop.property?.json_model[prop.composite_key]?.units : "V";
       series.name = prop.name;

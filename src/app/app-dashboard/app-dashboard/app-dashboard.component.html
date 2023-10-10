@@ -241,7 +241,7 @@
             <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
               *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
               [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
-            <app-live-line-chart [chartConfig]="widget" [propertyList]="widgetPropertyList"
+            <app-live-line-chart [chartConfig]="widget" [propertyList]="actualPropertyList"
               [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
               *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
             </app-live-line-chart>

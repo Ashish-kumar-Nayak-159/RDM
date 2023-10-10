@@ -221,7 +221,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }
-                // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop?.type;
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
@@ -247,7 +246,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 if (prop) {
                   prop.json_key = prop.json_key;
                 }
-                // prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
                 prop.type = prop?.type;
                 this.actualPropertyList.push(prop);
 
@@ -276,9 +274,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 }
                 this.addPropertyInList(prop);
 
-                // prop.property = this.propertyList.find(
-                //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                // );
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
                 } else if (prop?.type === 'Edge Derived Properties') {
@@ -295,9 +290,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
                 if (prop.id) {
                   prop.json_key = prop.id;
                 }
-                // prop.property = this.propertyList.find(
-                //   (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                // );
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
                 } else if (prop?.type === 'Edge Derived Properties') {

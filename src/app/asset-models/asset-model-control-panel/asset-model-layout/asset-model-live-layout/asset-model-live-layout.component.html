@@ -21,69 +21,64 @@
   </div>
 </div>
 
-  <div class="table-responsive app-asset-model-live-layout-box">
-  
-    <!-- for the small widget -->
-    <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
-      <!-- <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em> -->
-      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
-        <div class="grid-card-container">
-          <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+<div class="table-responsive app-asset-model-live-layout-box">
 
-            <div *ngIf="widget?.widgetType === 'SmallNumber'"
-              class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
-                || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
-                'margin-left':'0', 'margin-top': '2%' }">       
-
-                <!-- {{telemetryObj.temperature.value| json}}
-                {{telemetryObj.pressure1.value | json}} -->
-
-              <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
-                (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
-              </app-small-number-widget>
-            </div>
-          </ng-container>
-        </div>
-  
-      </ng-container>
-    </div>
-  
-    <!-- for the other widget -->
-    <div class="clearfix">
-      <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-      <div class="row col-md-12 mb-5">
+  <!-- for the small widget -->
+  <div *ngIf="checkwidgettype === true" class="smallnumber-widget-class-overflowhidden">
+    <!-- <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em> -->
+    <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+      <div class="grid-card-container">
         <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-          <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
-            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
-            'margin-left':'2%', 'margin-top': '2%' }">
-            <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
-            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj" >
 
-            </app-conditional-widget>
-            <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
-            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
-            </app-only-number-widget>
-            <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-            </app-gauge-chart>
-            <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-            </app-rectangle-widget>
-            <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
-              (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
-            </app-cylinder-widget>
-            <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
-              (removeWidget)="removeWidget($event)"
-              *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
-            </app-live-line-chart>
+          <div *ngIf="widget?.widgetType === 'SmallNumber'"
+            class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': '48%',
+                'margin-left':'0', 'margin-top': '2%' }">
+            <app-small-number-widget [chartConfig]="widget" (removeWidget)="removeWidget($event)"
+              [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+            </app-small-number-widget>
           </div>
         </ng-container>
-  
-  
-  
+      </div>
+
+    </ng-container>
+  </div>
+
+  <!-- for the other widget -->
+  <div class="clearfix">
+    <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+    <div class="row col-md-12 mb-5">
+      <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+        <div *ngIf="widget?.widgetType !== 'SmallNumber'" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend' 
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
+            'margin-left':'2%', 'margin-top': '2%' }">
+          <app-conditional-widget *ngIf="widget?.widgetType === 'ConditionalNumber'" [chartConfig]="widget"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+
+          </app-conditional-widget>
+          <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber'  || widget?.widgetType === 'NumberWithTrend'
+            || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj" [apiTelemetryObj]="telemetryObj">
+          </app-only-number-widget>
+          <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+          </app-gauge-chart>
+          <app-rectangle-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'RectangleWidget'"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+          </app-rectangle-widget>
+          <app-cylinder-widget [chartConfig]="widget" *ngIf="widget.widgetType === 'CylinderWidget'"
+            (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
+          </app-cylinder-widget>
+          <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
+            (removeWidget)="removeWidget($event)"
+            *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+          </app-live-line-chart>
+        </div>
+      </ng-container>
+
+
+
     </div>
-  <!-- <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
+    <!-- <div  class="{{checkwidgettype === true ? 'smallnumber-widget-class-overflowhidden' : 'tableFixHead modal-live-widget-container'}}">
     <em *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
        <div class="{{checkwidgettype === true ? 'grid-card-container' : 'row col-md-12'}}">
@@ -124,8 +119,8 @@
     </ng-container>
 
   </div> -->
+  </div>
 </div>
-</div>  
 
 
 
@@ -205,51 +200,54 @@
           [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
         </app-add-only-number-widget> -->
           <div *ngIf="widgetObj.widgetType != 'ConditionalNumber'">
-          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" 
-            [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
-          </app-add-only-number-widget>
+            <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj"
+              [propertyList]="filteredPropList" *ngIf="filteredPropList.length > 0">
+            </app-add-only-number-widget>
           </div>
 
           <ng-container *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>
-              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"  [disabled]="isDisabled"  ><em
-                  class="fas fa fa-plus"></em>
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"
+                [disabled]="isDisabled"><em class="fas fa fa-plus"></em>
               </button>
               <div class="bg-light p-3">
                 <ng-container
                   *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
                   <div class="form-group row">
                     <div class="col-4">
-                      <ng-select [items]="filteredPropList"   class="custom-dropdown sm" bindLabel="name"
+                      <ng-select [items]="filteredPropList" class="custom-dropdown sm" bindLabel="name"
                         [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
                         groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
                         [(ngModel)]="propObj.property" [disabled]="isDisabled">
                         <ng-template ng-option-tmp let-item="item">
-                          <span [tooltip]="item.name"  > <em
+                          <span [tooltip]="item.name"> <em
                               [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></em>
                             {{item.name}}</span>
                         </ng-template>
                       </ng-select>
                     </div>
                     <div class="col-4 justify-center">
-                        <select class="form-control form-control-sm" id="operator{{propIndex}}"
-                          name="operator{{propIndex}}" [(ngModel)]="propObj.operator" [disabled]="isDisabled" >
-                          <option [ngValue]="undefined">Select Operator</option>
-                          <option [ngValue]="'>='">>=</option>
-                          <option [ngValue]="'<='"><=</option>
-                          <option [ngValue]="'<'"><</option>
-                          <option [ngValue]="'>'">></option>
-                          <option [ngValue]="'=='">==</option>
-                          <option [ngValue]="'!='">!=</option>
+                      <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                        name="operator{{propIndex}}" [(ngModel)]="propObj.operator" [disabled]="isDisabled">
+                        <option [ngValue]="undefined">Select Operator</option>
+                        <option [ngValue]="'>='">>=</option>
+                        <option [ngValue]="'<='">
+                          <=< /option>
+                        <option [ngValue]="'<'">
+                          << /option>
+                        <option [ngValue]="'>'">></option>
+                        <option [ngValue]="'=='">==</option>
+                        <option [ngValue]="'!='">!=</option>
 
 
-                        </select>
+                      </select>
                       <!-- <label for="operator" class="h4 col-form-label ">OR</label> -->
                     </div>
                     <div class="col-4">
-                      <input type="number" [disabled]="isDisabled" class="form-control form-control-sm" id="constant{{propIndex}}"
-                        name="constant{{propIndex}}" placeholder="Enter Value" [(ngModel)]="propObj.value">
+                      <input type="number" [disabled]="isDisabled" class="form-control form-control-sm"
+                        id="constant{{propIndex}}" name="constant{{propIndex}}" placeholder="Enter Value"
+                        [(ngModel)]="propObj.value">
                     </div>
                   </div>
                   <div class="form-group row" *ngIf="!isLast">
@@ -257,7 +255,7 @@
                     </div> -->
                     <div class="col-4 offset-4">
                       <select class="form-control form-control-sm" id="operator1{{propIndex}}"
-                        name="operator1{{propIndex}}" [(ngModel)]="propObj.operator1" [disabled]="isDisabled" >
+                        name="operator1{{propIndex}}" [(ngModel)]="propObj.operator1" [disabled]="isDisabled">
                         <option [ngValue]="undefined">Select Operator</option>
                         <option [ngValue]="'&&'">&&</option>
                         <option [ngValue]="'||'">||</option>
@@ -316,7 +314,7 @@
                   </div>
                 </ng-container>
               </div> -->
-              
+
               <div class="row mt-3">
                 <div class="col-sm-12 col-md-6">
                   <div class="row">
@@ -324,8 +322,11 @@
                       <label for="true" class="mt-1">True:</label>&nbsp;
                     </div>
                     <div class="col-sm-3 col-md-10">
-                      <input type="text" id="true" autocomplete="off" #trueConditional="ngModel" class="form-control form-control-sm shadow-none" name="fortrue" [(ngModel)]="trueConditionalNumber" [disabled]="isDisabled">
-                      <span *ngIf="trueConditionalNumber?.length > 5  && trueConditionalNumber!='ON'" class="text-danger">only 5 characters allowed.</span>
+                      <input type="text" id="true" autocomplete="off" #trueConditional="ngModel"
+                        class="form-control form-control-sm shadow-none" name="fortrue"
+                        [(ngModel)]="trueConditionalNumber" [disabled]="isDisabled">
+                      <span *ngIf="trueConditionalNumber?.length > 5  && trueConditionalNumber!='ON'"
+                        class="text-danger">only 5 characters allowed.</span>
                     </div>
                   </div>
                 </div>
@@ -335,38 +336,42 @@
                       <label for="false" class="mt-1">False:</label>&nbsp;
                     </div>
                     <div class="col-sm-3 col-md-10">
-                      <input type="text" id="false" autocomplete="off" #falseConditional="ngModel" class="form-control form-control-sm shadow-none" name="forfalse" [(ngModel)]="falseConditionalNumber" [disabled]="isDisabled">
-                      <span *ngIf="falseConditionalNumber?.length > 5  && falseConditionalNumber!='OFF'" class="text-danger">only 5 characters allowed.</span>        
+                      <input type="text" id="false" autocomplete="off" #falseConditional="ngModel"
+                        class="form-control form-control-sm shadow-none" name="forfalse"
+                        [(ngModel)]="falseConditionalNumber" [disabled]="isDisabled">
+                      <span *ngIf="falseConditionalNumber?.length > 5  && falseConditionalNumber!='OFF'"
+                        class="text-danger">only 5 characters allowed.</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-             
+
             </div>
           </ng-container>
-          <div  *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
-            <button type="button" class="btn btn-success lockclass"  *ngIf="isDisabled == false"
-            (click)="ValidateallInputField()">Lock</button>
-          <button type="button" class="btn unlockclass" *ngIf="isDisabled == true"
-          (click)="clearInputField()">Unlock</button>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label required">Formula :</label>
-            <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula" name="formula"
-              [(ngModel)]="formula" placeholder="Enter Key Name">
-          </div>
+          <div *ngIf="widgetObj.widgetType === 'ConditionalNumber'">
+            <button type="button" class="btn btn-success lockclass" *ngIf="isDisabled == false"
+              (click)="ValidateallInputField()">Lock</button>
+            <button type="button" class="btn unlockclass" *ngIf="isDisabled == true"
+              (click)="clearInputField()">Unlock</button>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Formula :</label>
+              <input #name="ngModel" validateText type="text" class="form-control form-control-sm" id="formula"
+                name="formula" [(ngModel)]="formula" placeholder="Enter Key Name">
+            </div>
           </div>
 
 
-          <div   *ngIf="widgetObj.widgetType === 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
-            <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading || !isDisabled"
+          <div *ngIf="widgetObj.widgetType === 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
+            <button type="button" class="btn btn-primary add-row"
+              [disabled]="!form.valid || isCreateWidgetAPILoading || !isDisabled"
               (click)="onSaveWidgetObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
               (click)="onCloseAddWidgetModal()">Cancel</button>
             <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></em>
           </div>
 
-          <div   *ngIf="widgetObj.widgetType !== 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
+          <div *ngIf="widgetObj.widgetType !== 'ConditionalNumber'" class="modal-footer fixed-bottom bg-white">
             <button type="button" class="btn btn-primary add-row" [disabled]="!form.valid || isCreateWidgetAPILoading"
               (click)="onSaveWidgetObj()">Save</button>
             <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"

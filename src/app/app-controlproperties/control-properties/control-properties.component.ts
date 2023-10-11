@@ -345,28 +345,6 @@ export class ControlPropertiesComponent implements OnInit {
         }
       }
     }
-    // debugger
-    // let setProperties: any = {};
-    // let uniqueId = (this.selectedAssets.type !== CONSTANTS.NON_IP_ASSET ? this.filterObj?.asset_id : this.selectedAssets.gateway_id) + '_' + this.commonService.generateUUID();
-
-    // setProperties = {
-    //   "asset_id": this.filterObj.asset_id,
-    //   "message": {
-    //     "command": "write_data",
-    //     "asset_id": "TempAsset",
-    //     "properties": {}
-    //   },
-    //   "app": this.environmentApp ? this.environmentApp : 'Indygo',
-    //   "timestamp": datefns.getUnixTime(new Date()),
-    //   "acknowledge": "Full",
-    //   "expire_in_min": 1,
-    //   "job_id": uniqueId,
-    //   "request_type": 'Sync Control Properties',
-    //   "job_type": "Message",
-    //   "sub_job_id": uniqueId + "_1",
-    // }
-    // console.log("Checkinggggg", JSON.stringify(setProperties))
-
   }
 
   resetData() {

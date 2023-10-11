@@ -94,7 +94,7 @@ export class CylinderwidgetComponent implements OnInit, AfterViewInit, OnChanges
         this.latestPropWiseTelemetryData[compositeKey] = this.telemetryObj[compositeKey];
       }
     }
-    if (chartItem && this.latestPropWiseTelemetryData.hasOwnProperty(compositeKey) &&
+    if (chartItem && this.latestPropWiseTelemetryData?.hasOwnProperty(compositeKey) &&
       this.latestPropWiseTelemetryData[compositeKey].hasOwnProperty('value')) {
       chartItem.data = [{
         fillCapacity: Number(this.latestPropWiseTelemetryData[compositeKey]['value']),

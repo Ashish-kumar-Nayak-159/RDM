@@ -15,7 +15,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   isFileUploading = false;
   dropdownProperties: any[] = [];
   contextApp: any;
-  constructor(private commonService: CommonService, private toasterService: ToasterService) {}
+  constructor(private commonService: CommonService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -34,7 +34,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     if (prop?.property) {
       // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
-      if(this.widgetObj?.widgetType === 'SmallNumber'){
+      if (this.widgetObj?.widgetType === 'SmallNumber') {
         prop.digitsAfterDecimals = '1';
       }
       // prop.load_value_using = 'signalr';
@@ -78,7 +78,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     }
   }
 
- 
 
-  onColorChangeComplete(event) {}
+
+  onColorChangeComplete(event) { }
 }

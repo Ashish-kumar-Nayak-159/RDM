@@ -41,21 +41,30 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   }
 
   ngAfterViewInit() {
-    this.plotChart();
+    setTimeout(() => {
+      this.plotChart();
+    }, 500);
   }
+
 
   ngOnChanges(changes) {
     if (changes.telemetryObj && this.chart) {
       // const data = JSON.parse(JSON.stringify(this.chart.data));
       let valueArr = [];
-      const newObj = {
-        message_date: new Date(this.telemetryObj[this.property]?.date),
-      };
-      newObj[this.property] = this.telemetryObj[this.property]?.value;
-      if (newObj['message_date'] > this.startPoint[this.property]) {
-        this.chart.data.push(newObj);
-        // this.telemetryData.push(element);
-        this.startPoint[this.property] = newObj['message_date'];
+      const foundAsset = Object.keys(this.telemetryObj).find(key => key === this.asset);
+
+      if (foundAsset) {
+        const newObj = {
+          message_date: new Date(this.telemetryObj[this.property]?.date),
+        };
+        newObj[this.property] = this.telemetryObj[this.property]?.value;
+
+        if (newObj['message_date'] > this.startPoint[this.property]) {
+          this.chart.data.push(newObj);
+          // this.telemetryData.push(element);
+          this.startPoint[this.property] = newObj['message_date'];
+
+        }
 
       }
 
@@ -80,7 +89,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.range1.grid.disabled = this.min === this.max;
         this.range2.grid.disabled = this.min + this.max === this.average * 2;
       }
-      if (this.chart.data.length >= this.chartConfig.noOfDataPointsForTrend) {
+      if (this.chart.data.length > this.chartConfig.noOfDataPointsForTrend) {
         this.chart.data.splice(0, 1);
       }
       this.chart.validateData();
@@ -92,14 +101,16 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
-      if (this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
+      const foundAsset = Object.keys(this.telemetryObj).find(key => key === this.asset);
+      if (foundAsset && this.telemetryObj[this.property]?.value !== undefined && this.telemetryObj[this.property]?.value !== null) {
         const newObj = {
           message_date: new Date(this.telemetryObj[this.property]?.date),
         };
         newObj[this.property] = this.telemetryObj[this.property]?.value;
+
         data.push(newObj);
       }
-      if (this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
+      if (foundAsset && this.telemetryObj[this.property]?.value !== null && this.telemetryObj[this.property]?.value !== undefined) {
         this.max = Number(this.telemetryObj[this.property]?.value);
         this.min = Number(this.telemetryObj[this.property]?.value);
         if (this.min === this.max) {
@@ -121,6 +132,60 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     });
   }
 
+  // createValueAxis(chart, axis) {
+  //   const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+  //   if (chart.yAxes.indexOf(valueYAxis) !== 0) {
+  //     valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
+  //   }
+  //   valueYAxis.renderer.grid.template.disabled = true;
+  //   valueYAxis.renderer.labels.template.disabled = true;
+  //   valueYAxis.labelsEnabled = false;
+  //   valueYAxis.renderer.minGridDistance = 40;
+  //   valueYAxis.min = this.min;
+  //   valueYAxis.max = this.max;
+  //   valueYAxis.strictMinMax = true;
+
+  //   const range0 = valueYAxis.axisRanges.create();
+  //   range0.value = this.min;
+  //   range0.label.fontSize = '0.6em';
+  //   range0.label.fontWeight = 'bold';
+  //   range0.label.text = this.min?.toString();
+  //   this.range0 = range0;
+
+  //   const range1 = valueYAxis.axisRanges.create();
+  //   range1.value = this.max;
+  //   range1.label.fontSize = '0.6em';
+  //   range1.label.fontWeight = 'bold';
+  //   range1.label.text = this.max?.toString();
+  //   this.range1 = range1;
+
+  //   const range2 = valueYAxis.axisRanges.create();
+  //   range2.value = this.average;
+  //   range2.label.fontSize = '0.6em';
+  //   range2.label.fontWeight = 'bold';
+  //   range2.label.text = this.average?.toString();
+  //   this.range2 = range2;
+
+  //   const series = chart.series.push(new am4charts.LineSeries());
+  //   series.dataFields.dateX = 'message_date';
+  //   series.name = this.property;
+  //   series.stroke = '#1A5A9E';
+  //   series.yAxis = valueYAxis;
+  //   series.dataFields.valueY = this.property;
+  //   series.compareText = true;
+  //   series.strokeWidth = 1.5;
+  //   series.strokeOpacity = 1;
+  //   series.connect = true;
+  //   series.fillOpacity = 0;
+
+  //   const bullet = series.bullets.push(new am4charts.CircleBullet());
+  //   bullet.stroke = '#1A5A9E';
+  //   bullet.strokeWidth = 2;
+  //   bullet.circle.radius = 1;
+
+  //   valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+  //   this.valueAxis = valueYAxis;
+  // }
   createValueAxis(chart, axis) {
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
     if (chart.yAxes.indexOf(valueYAxis) !== 0) {

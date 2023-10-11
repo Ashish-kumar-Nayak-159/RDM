@@ -329,7 +329,7 @@ export class CommonService {
     return guid
   }
 
-  async uploadImageToBlob(file, folderName,iconsize?, containerName = undefined) {
+  async uploadImageToBlob(file, folderName, iconsize?, containerName = undefined) {
     if (!containerName) {
       containerName = environment.blobContainerName;
     }
@@ -358,14 +358,14 @@ export class CommonService {
       blobHTTPHeaders: { blobContentType: file.type },
     });
     if (response._response.status === 201) {
-      if(iconsize && iconsize?.modelOpenFlag==='mapPinIcon'){
+      if (iconsize && iconsize?.modelOpenFlag === 'mapPinIcon') {
         return {
           url: containerName + '/' + encodedBlobUrl,
           name: file.name,
-          height:iconsize.height,
-          width:iconsize.width
+          height: iconsize.height,
+          width: iconsize.width
         };
-      }else{
+      } else {
         return {
           url: containerName + '/' + encodedBlobUrl,
           name: file.name,
@@ -459,12 +459,16 @@ export class CommonService {
     return this.http.get(this.url + AppUrls.ASSET_UPTIME + asset_id)
   }
 
-  appPrivilegesPermission(key: string){
+  appPrivilegesPermission(key: string) {
     const decodedToken = this.getdecodedToken();
     return decodedToken?.privileges?.indexOf(key) !== -1;
   }
 
-  getdecodedToken(){
+  getdecodedToken() {
     return this.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+  }
+
+  getMatchingPropertyFromPropertyList(jsonKey, jsonType, propertyList) {
+    return propertyList.find((propObj) => propObj.json_key === jsonKey && propObj.type === jsonType);
   }
 }

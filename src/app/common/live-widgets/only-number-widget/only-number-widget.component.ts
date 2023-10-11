@@ -25,6 +25,8 @@ export class OnlyNumberWidgetComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   decodedToken: any;
   widgetStringFromMenu: any;
+  startPoint: any = {};
+
   constructor(private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -38,10 +40,56 @@ export class OnlyNumberWidgetComponent implements OnInit, OnDestroy {
         this.telemetryData = JSON.parse(JSON.stringify([]));
       })
     );
+
+    setTimeout(() => {
+      if (this.telemetryObj) {
+        this.chartConfig.properties?.forEach(prop => {
+          if (prop?.asset_id == this.telemetryObj?.asset_id) {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+          } else {
+            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date;
+            prop.lastValue = this.telemetryObj[prop?.json_key]?.value;
+
+          }
+        })
+      }
+
+    }, 400);
   }
 
   convertToNumber(value) {
     return Number(value);
+  }
+
+  ngOnChanges(changes) {
+    if (changes.telemetryObj) {
+      this.chartConfig.properties.forEach(prop => {
+        if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
+          if (this.telemetryObj) {
+            if (this.telemetryObj[prop?.composite_key]?.date) {
+
+              if (!this.startPoint[prop.asset_id]) {
+                this.startPoint[prop.composite_key] = new Date(this.telemetryObj[prop?.composite_key]?.date);
+              }
+              if (new Date(this.telemetryObj[prop?.composite_key]?.date) >= this.startPoint[prop.asset_id]) {
+                if (prop?.composite_key == this.telemetryObj?.asset_id && this.telemetryObj[prop?.composite_key] &&
+                  (this.telemetryObj[prop?.composite_key]?.value !== undefined
+                    && this.telemetryObj[prop?.composite_key]?.value !== null)) {
+                  if (prop?.data_type === 'Number') {
+                    prop.lastValue = (this.convertToNumber(this.telemetryObj[prop?.composite_key]?.value))
+                  }
+                }
+                if (prop?.composite_key == this.telemetryObj?.composite_key) {
+                  prop.lastDate = this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date;
+                  prop.lastValue = this.telemetryObj[prop?.composite_key]?.value;
+
+                }
+              }
+            }
+          }
+        }
+      });
+    }
   }
 
   // ngOnChanges(changes) {

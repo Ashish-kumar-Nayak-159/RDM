@@ -39,28 +39,27 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.chartConfig) {
       this.chartId = this.chartConfig.chart_Id;
       this.widgetId = this.chartConfig.id;
-      this.chartConfig.properties = this.chartConfig.properties[0].properties;
     }
 
     setTimeout(() => {
-      if (this.telemetryObj && this.type == 'LogicalView') {
-        this.chartConfig.properties.forEach((prop, cIndex) => {
-          this.refreshLatestTelemetryInChart(this.chart[cIndex], prop, cIndex);
+      // if (this.telemetryObj && this.type == 'LogicalView') {
+      //   this.chartConfig.properties.forEach((prop, cIndex) => {
+      //     this.refreshLatestTelemetryInChart(this.chart[cIndex], prop, cIndex);
 
-        });
-      }
-      if (this.type !== 'LogicalView') {
-        this.chartConfig.properties.forEach(prop => {
-          if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            this.startPoint[prop.asset_id] = new Date(
-              this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-            );
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-          } else {
-            prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
-          }
-        })
-      }
+      //   });
+      // }
+      // if (this.type !== 'LogicalView') {
+      //   this.chartConfig.properties.forEach(prop => {
+      //     if (prop?.asset_id == this.telemetryObj?.asset_id) {
+      //       this.startPoint[prop.asset_id] = new Date(
+      //         this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+      //       );
+      //       prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+      //     } else {
+      //       prop.lastDate = this.telemetryObj[prop?.json_key]?.date || this.telemetryObj[prop?.json_key]?.message_date
+      //     }
+      //   })
+      // }
     }, 400);
 
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -128,9 +127,22 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
-      this.chartConfig.properties.forEach((prop, cIndex) => {
-        const chartItem = this.chart.length > cIndex ? this.chart[cIndex] : undefined;
-        this.refreshLatestTelemetryInChart(chartItem, prop, cIndex);
+      //  this.label.text = changes.value.currentValue;
+      this.chartConfig.properties.forEach((prop, index) => {
+        if (this.hand[index] && this.chart[index]) {
+          this.hand[index].value = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
+        }
+        if (
+          this.chart[index] &&
+          !this.hand[index] &&
+          this.telemetryObj[prop?.composite_key]?.value !== undefined &&
+          this.telemetryObj[prop?.composite_key]?.value !== null
+        ) {
+          const hand = this.chart[index].hands.push(new am4charts.ClockHand());
+          hand.radius = am4core.percent(97);
+          hand.value = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
+          this.hand.splice(index, 0, hand);
+        }
       });
     }
     // if (this.chart && changes.telemetryObj) {
@@ -186,7 +198,7 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chart_id + '_chart_' + index, am4charts.GaugeChart);
       chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-      if (this.chartConfig.metadata.startAngle !== undefined && this.chartConfig.metadata.startAngle !== null) {
+      if (this.chartConfig.metadata?.startAngle !== undefined && this.chartConfig.metadata?.startAngle !== null) {
         chart.startAngle = -(this.chartConfig.metadata.startAngle + 180) % 360;
       }
       if (this.chartConfig.metadata.endAngle !== undefined && this.chartConfig.metadata.endAngle !== null) {
@@ -223,31 +235,20 @@ export class GaugechartComponent implements OnInit, OnChanges, AfterViewInit {
       range2.axisFill.fillOpacity = 1;
       range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
       range2.axisFill.zIndex = -1;
-
-      // if (this.telemetryObj) {
-      //   if (
-      //     prop.asset_id == this.telemetryObj[prop.composite_key]?.asset_id &&
-      //     this.telemetryObj[prop.composite_key]?.value !== undefined &&
-      //     this.telemetryObj[prop.composite_key]?.value !== null
-      //   ) {
-      //     alert('1')
-      //     const hand = chart.hands.push(new am4charts.ClockHand());
-      //     hand.radius = am4core.percent(97);
-      //     hand.value = Number(this.telemetryObj[prop.composite_key]?.value || '0');
-      //     this.hand.splice(index, 0, hand);
-      //   }
-      //   else {
-      //     alert('2')
-
-      //     const hand = chart.hands.push(new am4charts.ClockHand());
-      //     hand.radius = am4core.percent(97);
-      //     hand.value = Number(0);
-      //     this.hand.splice(index, 0, hand);
-      //   }
-      // }
-      // this.startPoint[prop.asset_id] = new Date(
-      //   this.telemetryObj[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
-      // );
+      if (
+        this.telemetryObj[prop?.composite_key]?.value !== undefined &&
+        this.telemetryObj[prop?.composite_key]?.value !== null
+      ) {
+        const hand = chart.hands.push(new am4charts.ClockHand());
+        hand.radius = am4core.percent(97);
+        hand.value = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
+        this.hand.splice(index, 0, hand);
+      } else {
+        const hand = chart.hands.push(new am4charts.ClockHand());
+        hand.radius = am4core.percent(97);
+        hand.value = Number(this.telemetryObj[prop?.composite_key]?.value || '0');
+        this.hand.splice(index, 0, hand);
+      }
       this.chart.splice(index, 0, chart);
     });
   }

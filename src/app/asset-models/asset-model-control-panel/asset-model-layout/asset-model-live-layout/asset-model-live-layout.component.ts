@@ -235,10 +235,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
         (response: any) => {
           if (response?.live_widgets?.length > 0) {
-            // alert('hereeee');
             this.liveWidgets = response.live_widgets;
-            console.log(JSON.stringify(this.liveWidgets));
-            // let count = 1;
             this.liveWidgets.forEach((widget) => {
               this.checkingsmallwidget = widget.widgetType;
 

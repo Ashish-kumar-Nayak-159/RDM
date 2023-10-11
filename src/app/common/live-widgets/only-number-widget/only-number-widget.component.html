@@ -72,35 +72,6 @@
                 (convertToNumber(telemetryObj[prop?.composite_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
                 (telemetryObj[prop?.composite_key].value))
                 : 'NA'}} {{prop.unit}}
-
-                <!-- {{ telemetryObj && telemetryObj[prop.composite_key] &&
-                telemetryObj[prop?.composite_key]?.value !== undefined &&
-                telemetryObj[prop?.composite_key]?.value !== null
-                ?
-                (
-                prop?.data_type === 'Number'
-                ? (convertToNumber(telemetryObj[prop?.composite_key]?.value).toFixed(prop.digitsAfterDecimals))
-                : telemetryObj[prop?.composite_key]?.value
-                )
-                : telemetryObj[prop?.json_key]?.value ? telemetryObj[prop?.json_key]?.value: 'NA' }} -->
-
-                <!-- {{ (prop?.asset_id == telemetryObj?.asset_id) ? (telemetryObj[prop?.composite_key] &&
-                (telemetryObj[prop?.composite_key]?.value !==
-                undefined
-                && telemetryObj[prop?.composite_key]?.value !== null)) ?
-                (prop?.data_type === 'Number' ?
-                (convertToNumber(telemetryObj[prop?.composite_key]?.value)?.toFixed(prop.digitsAfterDecimals))
-                :
-                (telemetryObj[prop?.composite_key].value))
-                : 'NA':prop?.lastValue}} {{prop.unit}} -->
-
-                <!-- {{ (telemetryObj[prop.property?.json_key] && (telemetryObj[prop.property?.json_key]?.value !==
-                undefined
-                && telemetryObj[prop.property?.json_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
-                (telemetryObj[prop.property?.json_key].value))
-                : 'NA'}} {{prop.unit}} -->
               </ng-container>
               <ng-template #APIPropValTemplate>
                 {{ (prop?.asset_id == telemetryObj?.asset_id) ? (apiTelemetryObj[prop?.composite_key] &&
@@ -110,12 +81,6 @@
                 (apiTelemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
                 (apiTelemetryObj[prop?.composite_key].value))
                 : 'NA':prop?.lastValue}} {{prop.unit}}
-                <!-- {{ (apiTelemetryObj[prop.property?.json_key] && (apiTelemetryObj[prop.property?.json_key]?.value !==
-                undefined && apiTelemetryObj[prop.property?.json_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                (apiTelemetryObj[prop.property?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
-                (apiTelemetryObj[prop.property?.json_key].value))
-                : 'NA'}} {{prop.unit}} -->
               </ng-template>
 
             </span>
@@ -129,8 +94,6 @@
                 telemetryObj[prop?.composite_key]?.date
                 ? (telemetryObj[prop?.composite_key]?.value ? telemetryObj[prop?.composite_key].date : '')
                 : telemetryObj[prop?.json_key]?.value !== null ? telemetryObj[prop?.json_key].date : 'NA' }}
-
-                <!-- {{telemetryObj[prop?.composite_key]?.date || telemetryObj[prop?.composite_key]?.message_date}} -->
               </ng-container>
               <ng-template #APIPropDateTemplate>
                 {{apiTelemetryObj[prop?.composite_key]?.date ||

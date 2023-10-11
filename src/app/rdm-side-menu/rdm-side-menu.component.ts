@@ -252,10 +252,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
   getAssetData() {
     const obj = {
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      hierarchy: JSON.stringify(this.contextApp?.user.hierarchy),
       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
     };
-    const method = this.assetService.getAndSetAllAssets(obj, this.contextApp.app);
+    const method = this.assetService.getAndSetAllAssets(obj, this.contextApp?.app);
     this.apiSubscriptions.push(
       method.subscribe((response: any) => {
         if (response?.data?.length > 0) {

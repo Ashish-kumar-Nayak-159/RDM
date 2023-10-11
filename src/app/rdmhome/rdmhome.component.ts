@@ -82,6 +82,8 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           }
         });
+      } else {
+        this.commonService.onLogOut()
       }
     }
   }

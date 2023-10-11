@@ -116,9 +116,6 @@ export class SmallNumberWidgetComponent implements OnInit {
 
   hasPropType(chartConfig, propType, debug = false) {
     let matchingCount = 0;
-    if (debug) {
-      debugger;
-    }
     const widgetType = chartConfig.widgetType;
     if (widgetType === "CylinderWidget" || widgetType === "RectangleWidget" || widgetType === "GaugeChart"
       || widgetType === "StringWidget" || widgetType === "NumberWithImage" || widgetType === "NumberWithTrend"

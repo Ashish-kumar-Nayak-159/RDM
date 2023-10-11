@@ -146,13 +146,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
               }
             }
           }
-          // if (this.propertyBasedData[prop.composite_key]?.data) {
-          //   this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key].data);
-          // } else {
-          //   // Handle the case when prop.composite_key or its 'data' property doesn't exist
-          //   console.log(`No data found for ${prop.composite_key}`);
-          // }
-
 
           this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key]?.['data']);
         });

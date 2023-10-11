@@ -32,15 +32,7 @@
           [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
 
           <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
-            <!-- <app-line-chart-without-axis [asset]="asset"
-                [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
-                [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
-              </app-line-chart-without-axis> -->
           </div>
-          <!-- <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
-              <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
-                  }}" alt="" />
-            </div> -->
           <div *ngIf="contextApp.app!='Kirloskar'"
             [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}">
             <span class="text-darkblue display-5 font-weight-bold"
@@ -60,8 +52,6 @@
                 <sub class="text-xs live-widget-title mb-0">
                   {{prop?.units ? ('(' +
                   prop?.units + ')') : ''}}
-                  <!-- {{prop.property?.json_model[prop.property?.json_key]?.unit ? ('(' +
-                  prop.property?.json_model[prop.property?.json_key]?.unit + ')') : ''}} -->
                 </sub>
               </ng-container>
 
@@ -75,9 +65,6 @@
                 : 'NA'}} {{prop.unit}}
               </ng-template>
             </span>
-            <!-- <p>
-              {{telemetryObj[prop?.composite_key]?.value | json}}
-            </p> -->
 
             <p class="mb-0" style="font-size: 10px;">
               {{ telemetryObj && telemetryObj[prop.composite_key] &&
@@ -102,18 +89,9 @@
                 (telemetryObj[prop?.composite_key]?.value) :
                 (telemetryObj[prop?.composite_key].value))
                 : telemetryObj[prop?.json_key].value }}
-                <!-- {{ (telemetryObj[prop.property?.composite_key] && (telemetryObj[prop.property?.composite_key]?.value !==
-                undefined
-                && telemetryObj[prop.property?.composite_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                (telemetryObj[prop.property?.composite_key]?.value) :
-                (telemetryObj[prop.property?.composite_key].value))
-                : 'NA'}} -->
                 <sub class="text-xs live-widget-title mb-0">
                   {{prop?.units ? ('(' +
                   prop?.units + ')') : ''}}
-                  <!-- {{prop.property?.json_model[prop.property?.composite_key]?.units ? ('(' +
-                  prop.property?.json_model[prop.property?.composite_key]?.units + ')') : ''}} -->
                 </sub>
 
               </ng-container>
@@ -129,25 +107,13 @@
               </ng-template>
             </span>
             <p class="mb-0" style="font-size: 10px;">
-              {{(apiTelemetryObj[prop.property?.json_key]?.date) ?
-              (apiTelemetryObj[prop.property?.json_key]?.date) :
-              ''}}
+              {{ telemetryObj && telemetryObj[prop.composite_key] &&
+              telemetryObj[prop?.composite_key]?.date
+              ? (telemetryObj[prop?.composite_key]?.value ? telemetryObj[prop?.composite_key].date :
+              telemetryObj[prop?.composite_key].date)
+              : telemetryObj[prop?.json_key]?.value !== null ? telemetryObj[prop?.json_key].date : 'NA' }}
             </p>
           </div>
-          <!-- <div [ngClass]="{'mt-4': chartConfig.widgetType === 'SmallNumber' || chartConfig.widgetType === 'StringWidget'}" -->
-          <!-- <div
-
-            [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }"  >
-              <span class="text-grey">
-                <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
-                  {{telemetryObj[prop.property?.json_key]?.date || telemetryObj[prop.property?.json_key]?.message_date}}
-                </ng-container>
-                <ng-template #APIPropDateTemplate>
-                  {{apiTelemetryObj[prop.property?.json_key]?.date ||
-                  apiTelemetryObj[prop.property?.json_key]?.message_date}}
-                </ng-template>
-              </span>
-            </div> -->
         </div>
       </div>
     </div>

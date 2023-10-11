@@ -28,10 +28,12 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
   ngOnInit(): void {
     const isSelectedDateRangeValid = Object.keys(this.options.ranges).length && this.options.ranges.hasOwnProperty(this.selectedDateRange);
     if (isSelectedDateRangeValid) return;
-    this.selectedDateRange = Object.keys(this.options.ranges)[0];
+    if (this.selectedDateRange == undefined) {
+      this.selectedDateRange = Object.keys(this.options.ranges)[0];
+      this.filterObj.from_date = datefns.getUnixTime(this.options.ranges[this.selectedDateRange][0]);
+      this.filterObj.to_date = datefns.getUnixTime(this.options.ranges[this.selectedDateRange][1]);
+    }
     this.filterObj.dateOption = this.selectedDateRange;
-    this.filterObj.from_date = datefns.getUnixTime(this.options.ranges[this.selectedDateRange][0]);
-    this.filterObj.to_date = datefns.getUnixTime(this.options.ranges[this.selectedDateRange][1]);
   }
 
   ngAfterViewInit() {

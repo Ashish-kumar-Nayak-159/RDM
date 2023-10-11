@@ -2252,6 +2252,10 @@ export class CONSTANTS {
     'This Month': [datefns.startOfMonth(new Date()), new Date()],
     'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.startOfMonth(new Date())]
   };
+  public static  DATE_OPTIONS_CUSTOM_RANGE = {
+    'Custom Range' : [datefns.startOfDay(new Date()), new Date()],
+    ...CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS
+  }
 
   public static DATE_OPTIONS = {
     ...CONSTANTS.DATE_OPTIONS_WITHIN_24_HOURS,
@@ -2403,6 +2407,7 @@ export class CONSTANTS {
   public static DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX = /^(?:Endpoint=sb:\/\/){1}[A-Za-z]{1}[a-zA-Z0-9-]{4,48}[a-zA-Z0-9]{1}(?:.servicebus.windows.net\/;SharedAccessKeyName=[\w.-\/]{1,260};SharedAccessKey=){1}(.){44}(;EntityPath=[\w.-\/]{1,260}){1}()+$/;
   public static DEFAULT_MICROSOFT_TEAMS_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
   public static DEFAULT_WEBHOOK_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
+  public static DAILY_REPORT_DATE_FILTER ="dailyReportDateFilter";
   public static ASSET_ALERT_AUDIO_SIZE = 5000000;
   public static DEFAULT_AUDIO_DURATION = 6000;
   public static MODEL_ALERT_AUDIO = 'model_alertCondition_audio';

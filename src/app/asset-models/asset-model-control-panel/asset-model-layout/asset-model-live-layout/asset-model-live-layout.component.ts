@@ -625,7 +625,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         var type = (prop?.property.type === 'Edge Derived Properties' ? 'ed' : (prop?.property.type === 'Measured Properties' ? 'm' : (prop?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
         const obj = {
           name: prop.property.name,
-          type: type,
+          type: prop?.property.type,
           json_key: prop.property.json_key,
           composite_key: `${type}#${prop?.property?.json_key}`,
         };

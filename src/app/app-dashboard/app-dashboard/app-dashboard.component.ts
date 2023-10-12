@@ -481,17 +481,22 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   widget['formula'] = widget?.properties[0]?.formula;
                   widget['text'] = widget?.properties[0]?.text;
                   widget?.properties[0]?.json_Data.forEach((prop) => {
-                    let newProp = {};
-                    let filteredProp = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
-                    newProp["property"] = filteredProp;
-                    newProp["type"] = filteredProp?.type;
-                    newProp["json_key"] = prop?.json_key;
-                    newProp["title"] = filteredProp?.name;
-                    newProp["composite_key"] = prop.composite_key
-                    if (filteredProp) {
-                      this.addPropertyInList(filteredProp);
+                    if (prop) {
+                      prop.json_key = prop.json_key;
                     }
-                    propertiesData.push(newProp);
+                    prop.type = prop?.type;
+                    this.actualPropertyList.push(prop);
+                    // let newProp = {};
+                    // let filteredProp = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
+                    // newProp["property"] = filteredProp;
+                    // newProp["type"] = filteredProp?.type;
+                    // newProp["json_key"] = prop?.json_key;
+                    // newProp["title"] = filteredProp?.name;
+                    // newProp["composite_key"] = prop.composite_key
+                    // if (filteredProp) {
+                    //   this.addPropertyInList(filteredProp);
+                    // }
+                    propertiesData.push(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
                     } else if (prop?.type === 'Edge Derived Properties') {

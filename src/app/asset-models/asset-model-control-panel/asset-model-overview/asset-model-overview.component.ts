@@ -143,14 +143,8 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async uploadFile(): Promise<void>{
     this.isFileUploading = true;
-    const icon_size={
-      width:this.scaled_image_size.controls['width'].value,
-      height:this.scaled_image_size.controls['height'].value,
-      modelOpenFlag:this.modelOpenFlag
-    }
-
     const data = await this.commonService.uploadImageToBlob(
-      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name,this.modelOpenFlag !=='assetModelFlag' ? icon_size : ''
+      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name
     );
     if (data) {
       if(this.modelOpenFlag==='assetModelFlag'){
@@ -158,18 +152,56 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       }else{
         this.updatedAssetModel.metadata.mapPinIcon = data;
       }
-      
+
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
     this.isFileUploading = false;
-    // this.blobState.uploadItems(this.overviewFile);
   }
 
+   resizingImg(): Promise<void>{
+    return new Promise<void>(async (resolve) => {
+
+      let imgFile = this.overviewFile;
+      const img_width=this.scaled_image_size.get('width').value;
+      const img_height=this.scaled_image_size.get('height').value;
+      let reader = new FileReader(); // Read image file
+      reader.readAsDataURL(imgFile);
+
+      reader.onload = (readFile) => { //load the reader
+        let file_url = readFile.target.result;
+        let image: any = new Image();
+        image.src = file_url;
+
+        image.onload =() => {
+          let canvas = document.createElement('canvas'); //creating canvas
+          canvas.width = img_width;
+          canvas.height =  img_height;
+          let context = canvas.getContext('2d');
+          context.drawImage(image, 0 , 0 , canvas.width, canvas.height ); //resizing
+          context.canvas.toDataURL(imgFile?.type, 90);
+
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], imgFile?.name, { type: imgFile?.type, lastModified: Date.now() });
+            const fileList = new DataTransfer();
+            fileList.items.add(file);
+            this.overviewFile = fileList.files[0];
+            this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
+              await this.uploadFile();
+              resolve();
+            }, imgFile?.type);
+          }
+      }
+    });
+  }
   async updateAssetsModel() {
-    //upload file
-    if(this.modelOpenFlag!=='removePinIcon'){
-      await this.uploadFile();
+    if(this.modelOpenFlag==='mapPinIcon'){
+      await this.resizingImg();
+    }
+    else{
+      if (this.modelOpenFlag == 'assetModelFlag'){
+        await this.uploadFile();
+      }
     }
     this.assetModel = JSON.parse(JSON.stringify(this.updatedAssetModel));
     if (
@@ -195,7 +227,6 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
           this.onCloseAssetsModelModal();
           this.assetModelService.assetModelRefreshData.emit(this.assetModel.name);
             this.toasterService.showSuccess(response.message,this.modelOpenFlag==='assetModelFlag'? 'Update Asset Model' : 'Map Pin Icon Updated');
-            this.overviewFile=undefined;
         },
         (error) => {
           this.isUpdateAssetsModelAPILoading = false;
@@ -203,7 +234,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
         }
       )
     );
-    this.modelOpenFlag=undefined;
+    this.onCloseAssetsModelModal();
   }
 
   onCloseAssetsModelModal() {

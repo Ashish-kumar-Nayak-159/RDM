@@ -450,12 +450,16 @@ export class CommonService {
     return this.http.get(this.url + AppUrls.ASSET_UPTIME + asset_id)
   }
 
-  appPrivilegesPermission(key: string){
+  appPrivilegesPermission(key: string) {
     const decodedToken = this.getdecodedToken();
     return decodedToken?.privileges?.indexOf(key) !== -1;
   }
 
-  getdecodedToken(){
+  getdecodedToken() {
     return this.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+  }
+
+  getMatchingPropertyFromPropertyList(jsonKey, jsonType, propertyList) {
+    return propertyList.find((propObj) => propObj.json_key === jsonKey && propObj.type === jsonType);
   }
 }

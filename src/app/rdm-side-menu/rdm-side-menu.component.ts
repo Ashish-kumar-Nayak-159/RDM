@@ -23,26 +23,26 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   activeFragment: any;
   currentURL: string;
-  criticalToaster:boolean = false;
-  errorToaster:boolean = false;
-  warningToaster:boolean = false;
-  informationalToaster:boolean = false;
-  criticalFlag:boolean = false;
-  errorFlag:boolean = false;
-  warningFlag:boolean = false;
-  informationalFlag:boolean = false;
-  c_message:any;
-  e_message:any;
-  w_message:any;
-  i_message:any;
-  c_message_asset_display_name:any;
-  e_message_asset_display_name:any;
-  w_message_asset_display_name:any;
-  i_message_asset_display_name:any;
-  c_message_asset_id:any;
-  e_message_asset_id:any;
-  w_message_asset_id:any;
-  i_message_asset_id:any;
+  criticalToaster: boolean = false;
+  errorToaster: boolean = false;
+  warningToaster: boolean = false;
+  informationalToaster: boolean = false;
+  criticalFlag: boolean = false;
+  errorFlag: boolean = false;
+  warningFlag: boolean = false;
+  informationalFlag: boolean = false;
+  c_message: any;
+  e_message: any;
+  w_message: any;
+  i_message: any;
+  c_message_asset_display_name: any;
+  e_message_asset_display_name: any;
+  w_message_asset_display_name: any;
+  i_message_asset_display_name: any;
+  c_message_asset_id: any;
+  e_message_asset_id: any;
+  w_message_asset_id: any;
+  i_message_asset_id: any;
   selectedAsset: any;
   sasToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
@@ -57,7 +57,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     private assetModelService: AssetModelService,
   ) { }
 
-  async ngOnInit(): Promise<void> { 
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetData();
@@ -73,7 +73,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             60000,
             this.audioUrl !== null ? this.criticalAlertAudioLoader(this.audioUrl) : ''
           )
-          this.audioUrl='';
+          this.audioUrl = '';
 
         }
         if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
@@ -139,15 +139,15 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       })
     );
   }
-  criticalAlertAudioLoader(srcUrl?){
+  criticalAlertAudioLoader(srcUrl?) {
     let playAudio: HTMLAudioElement = new Audio();
-    if(srcUrl){
+    if (srcUrl) {
       playAudio.src = srcUrl;
       return playAudio;
     }
   }
 
- async criticalAlertNotification(msg){
+  async criticalAlertNotification(msg) {
     return new Promise<void>((resolve) => {
       let asset_model_name: any;
       if (msg?.asset_id && msg?.severity && msg?.code) {
@@ -214,10 +214,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
                         url: this.audioUrl ? this.audioUrl : ''
                       }
                       if (msg?.code?.startsWith('M_')) {
-                        this.storingInLocalStorage(alertDataObj, msg,CONSTANTS.MODEL_ALERT_AUDIO);
+                        this.storingInLocalStorage(alertDataObj, msg, CONSTANTS.MODEL_ALERT_AUDIO);
                       }
                       else {
-                        this.storingInLocalStorage(alertDataObj, msg,CONSTANTS.ASSET_ALERT_AUDIO);
+                        this.storingInLocalStorage(alertDataObj, msg, CONSTANTS.ASSET_ALERT_AUDIO);
                       }
                     }
                   }
@@ -252,10 +252,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
   getAssetData() {
     const obj = {
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+      hierarchy: JSON.stringify(this.contextApp?.user.hierarchy),
       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
     };
-    const method = this.assetService.getAndSetAllAssets(obj, this.contextApp.app);
+    const method = this.assetService.getAndSetAllAssets(obj, this.contextApp?.app);
     this.apiSubscriptions.push(
       method.subscribe((response: any) => {
         if (response?.data?.length > 0) {
@@ -314,7 +314,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
               60000,
               this.audioUrl !== null ? this.criticalAlertAudioLoader(this.audioUrl) : ''
             );
-            this.audioUrl='';
+            this.audioUrl = '';
           }
           if ((!msg.type || msg.type === 'alert') && msg?.severity?.toLowerCase() === 'warning') {
             this.toasterService.showWarningAlert(

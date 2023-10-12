@@ -80,19 +80,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
 
     if (!this.chartConfig?.noOfDataPointsForTrend) {
       this.chartConfig.noOfDataPointsForTrend = this.chartConfig.metadata?.noOfDataPointsForTrend;
-      // this.chartConfig.y1AxisProps?.forEach((prop) => {
-      //   prop.noOfDataPointsForTrend = this.chartConfig.noOfDataPointsForTrend
-      //   this.y1noOfDataPointsForTrend = prop.noOfDataPointsForTrend
-
-      // });
-      // this.chartConfig.y2AxisProps?.forEach((prop) => {
-      //   prop.noOfDataPointsForTrend = this.chartConfig.noOfDataPointsForTrend
-      //   this.y2noOfDataPointsForTrend = prop.noOfDataPointsForTrend
-
-      // });
-      // console.log("y1AxisProps", this.chartConfig.y1AxisProps)
-      // console.log("y2AxisProps", this.chartConfig.y2AxisProps)
-
     }
 
     setTimeout(() => this.plotChart(), 1000);
@@ -113,9 +100,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.telemetryObj && this.chart && this.telemetryData) {
-      // if (this.chartConfig.noOfDataPointsForTrend > 0) {
       if (changes.telemetryObj.currentValue != changes.telemetryObj.previousValue) {
-        // console.log(JSON.stringify(this.telemetryObj));
 
         this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
 
@@ -161,13 +146,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
               }
             }
           }
-          // if (this.propertyBasedData[prop.composite_key]?.data) {
-          //   this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key].data);
-          // } else {
-          //   // Handle the case when prop.composite_key or its 'data' property doesn't exist
-          //   console.log(`No data found for ${prop.composite_key}`);
-          // }
-
 
           this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key]?.['data']);
         });
@@ -206,12 +184,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
 
             }
           }
-          // if (this.propertyBasedData[prop.composite_key]?.data) {
-          //   this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key].data);
-          // } else {
-          //   // Handle the case when prop.composite_key or its 'data' property doesn't exist
-          //   console.log(`No data found for ${prop.composite_key}`);
-          // }
           this.telemetryData = this.telemetryData.concat(this.propertyBasedData[prop.composite_key]?.['data']);
 
         });
@@ -318,9 +290,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.propertyBasedData[prop.composite_key] ||
       this.propertyBasedData[prop.composite_key].latest_message_date.getTime() !==
       new Date(this.telemetryObj[prop.composite_key].date).getTime()) {
-      // console.log('livelinechart:')
-      // console.log(prop.composite_key);
-      // console.log(this.telemetryObj);
       obj[prop.composite_key] = this.telemetryObj[prop.composite_key].value;
       obj['message_date'] = new Date(this.telemetryObj[prop.composite_key].date);
       if (!this.propertyBasedData[prop.composite_key]) {
@@ -406,7 +375,6 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
     }
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
-      // prop.property = this.propertyList.find(x => x.composite_key == prop.composite_key);
       const series = chart.series.push(new am4charts.LineSeries());
       series.units = prop.property?.json_model ? prop.property?.json_model[prop.composite_key]?.units : "V";
       series.name = prop.name;
@@ -435,12 +403,11 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
       series.legendSettings.labelText = '({propType}) {name} ({units})';
       series.fillOpacity = this.chartConfig.widget_type.includes('Area') ? 0.3 : 0;
       // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
-
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       if (series.units) {
-        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
       } else {
-        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       }
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
@@ -457,7 +424,7 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getPropertyType(key) {
-    return this.propertyList.filter((prop) => prop.composite_key === key)[0]?.type || 'Measured';
+    return this.propertyList?.filter((prop) => prop.composite_key === key)[0]?.type || 'Measured';
   }
 
   openConfirmRemoveWidgetModal() {

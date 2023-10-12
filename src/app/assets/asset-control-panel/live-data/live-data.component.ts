@@ -37,7 +37,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private signalRService: SignalRService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -124,7 +124,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 if (prop.property) {
                   prop.json_key = prop.property.json_key;
                 }
-                prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                 prop.type = prop.property?.type || prop.type;
                 if (prop?.property) {
                   this.addPropertyInList(prop.property);
@@ -144,9 +144,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 if (prop.id) {
                   prop.json_key = prop.id;
                 }
-                prop.property = this.propertyList.find(
-                  (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                );
+                prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                 this.addPropertyInList(prop);
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;
@@ -162,9 +160,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 if (prop.id) {
                   prop.json_key = prop.id;
                 }
-                prop.property = this.propertyList.find(
-                  (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                );
+                prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                 this.addPropertyInList(prop);
                 if (prop?.type === 'Derived KPIs') {
                   widget.derived_kpis = true;

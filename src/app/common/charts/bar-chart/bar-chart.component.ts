@@ -46,7 +46,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
   decodedToken: any;
   environmentApp = environment.app;
   widgetStringFromMenu: any;
-  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
+  constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -197,9 +197,9 @@ export class BarChartComponent implements OnInit, OnDestroy {
       var pdf = chart.exporting.getFormatOptions("pdf");
       chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.getFormatOptions('pdfdata').addURL = false;
-      var pdfdata =chart.exporting.getFormatOptions("pdfdata");
-      chart.exporting.events.on("exportstarted", function(ev) {
-        chart.exporting.timeoutDelay= 20000;
+      var pdfdata = chart.exporting.getFormatOptions("pdfdata");
+      chart.exporting.events.on("exportstarted", function (ev) {
+        chart.exporting.timeoutDelay = 20000;
       })
       pdfdata.font = am4fonts_notosans_jp;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
@@ -263,14 +263,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
     this.toggleThreshold(this.showThreshold);
   }
 
-  getPropertyName(key) {
-    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;
-  }
-
-  getPropertyType(key) {
-    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.type || 'Measured';
-  }
-
   toggleThreshold(show) {
     if (show) {
       let shownItem;
@@ -300,10 +292,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
   }
 
   createValueAxis(chart, axis) {
-    const valueYAxis = chart.xAxes.push(new am4charts.ValueAxis());
-    // if (chart.yAxes.indexOf(valueYAxis) !== 0){
-    //   valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
-    // }
     const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
     arr.forEach((prop, index) => {
       const series = chart.series.push(new am4charts.ColumnSeries());
@@ -314,16 +302,17 @@ export class BarChartComponent implements OnInit, OnDestroy {
           series.units = propObj.json_model[propObj.json_key].units;
         }
       });
-      series.name = this.getPropertyName(prop.json_key);
-      const proptype = this.getPropertyType(prop.json_key);
+      const matchingProperty = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
+      series.name = matchingProperty ? matchingProperty.name : prop.json_key;
+      const proptype = matchingProperty ? matchingProperty.type : "Measured";
       series.propType =
         proptype === 'Edge Derived Properties'
           ? 'ED'
           : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+              ? 'DK'
+              : 'M';
       series.propKey = prop.json_key;
       series.columns.template.fillOpacity = 0.8;
       series.compareText = true;

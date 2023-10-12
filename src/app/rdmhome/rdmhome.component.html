@@ -7,27 +7,27 @@
       <div class="logo float-right"><a><img alt="" src="../../assets/img/Kemsys-Logo.png"
             class="d-none d-md-block img-fluid"></a>
       </div>
-  </ng-container>
-  <ng-container *ngIf="defaultAppName === 'Rogers'">
-    <div class="logo float-left"><a><img alt="" src="../../assets/img/rogers.png" class="d-block img-fluid"></a>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="defaultAppName === 'Indygo'">
-    <div class="logo float-left"><a><img alt="" src="../../assets/img/indygo.png" class="d-block img-fluid"></a>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="defaultAppName === 'MyEquipos'">
-    <div class="logo float-left"><a><img alt="" src="../../assets/img/telawne-logo.png" class="d-block img-fluid"></a>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="defaultAppName === 'SopanCMS'">
-    <div class="logo float-left"><a><img alt="" src="../../assets/img/sopan.png" class="d-block img-fluid"></a>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="defaultAppName === 'Kirloskar'">
-    <div class="logo float-left"><a><img alt="" src="../../assets/img/kirloskar.png" class="d-block img-fluid"></a>
-    </div>
-  </ng-container>
+    </ng-container>
+    <ng-container *ngIf="defaultAppName === 'Rogers'">
+      <div class="logo float-left"><a><img alt="" src="../../assets/img/rogers.png" class="d-block img-fluid"></a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="defaultAppName === 'Indygo'">
+      <div class="logo float-left"><a><img alt="" src="../../assets/img/indygo.png" class="d-block img-fluid"></a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="defaultAppName === 'MyEquipos'">
+      <div class="logo float-left"><a><img alt="" src="../../assets/img/telawne-logo.png" class="d-block img-fluid"></a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="defaultAppName === 'SopanCMS'">
+      <div class="logo float-left"><a><img alt="" src="../../assets/img/sopan.png" class="d-block img-fluid"></a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="defaultAppName === 'Kirloskar'">
+      <div class="logo float-left"><a><img alt="" src="../../assets/img/kirloskar.png" class="d-block img-fluid"></a>
+      </div>
+    </ng-container>
 
   </div>
 </header><!-- #header -->
@@ -46,7 +46,7 @@
       <!--<h2>We provide<br><span>solutions</span><br>for your business!</h2>-->
       <h2>Manage, Monitor & Control<br>Your IoT Assets<br>using Kemsys Azure RDM!</h2>
       <div>
-        <a [routerLink]="['/login']" routerLinkActive="active" class="btn-get-started scrollto">Login</a>
+        <a (click)="onLoginClick()" routerLinkActive="active" class="btn-get-started scrollto">Login</a>
         <!--<a href="#services" class="btn-services scrollto">Our Services</a>-->
       </div>
     </div>
@@ -205,7 +205,8 @@
             <div class="col-4 info">
               <em class="fa fa-envelope mt-2" style="font-size: 1.5rem;"></em>
               <p class="mb-2">
-              <a  [href]="mailto('saleseds@kemsys.com', 'newSubject')">saleseds@kemsys.com</a></p>
+                <a [href]="mailto('saleseds@kemsys.com', 'newSubject')">saleseds@kemsys.com</a>
+              </p>
               <!-- <p class="mb-2">saleseds@kemsys.com</p> -->
               <em class="fa fa-phone" style="font-size: 1.5rem;"></em>
               <p>+918025456596</p>

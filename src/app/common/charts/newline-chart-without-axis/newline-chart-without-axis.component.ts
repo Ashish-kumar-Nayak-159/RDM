@@ -127,7 +127,6 @@ export class NewLineChartWithoutAxisComponent implements OnInit, OnDestroy, OnCh
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
       }
       chart.data = data;
-      debugger
       this.startPoint[this.property] = new Date(this.telemetryObj[this.property]?.date);
 
       chart.logo.disabled = true;

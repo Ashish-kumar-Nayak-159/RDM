@@ -329,6 +329,8 @@ export class AssetModelService {
         )
         .pipe(
           map((data: any) => {
+            data['live_widgets'] = this.enrichCompositeKeysInLiveWidgets(data.hasOwnProperty('live_widgets')
+              ? data['live_widgets'] : []);
             let obj = {};
             if (assetModel) {
               obj = { ...assetModel };
@@ -341,13 +343,66 @@ export class AssetModelService {
             } else {
               obj['live_widgets'] = data.live_widgets;
             }
-            this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
+            //this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
             return data;
           }),
           catchError((error) => {
             return throwError(error);
           })
         );
+    }
+  }
+
+  enrichCompositeKeysInLiveWidgets = (data) => {
+    return data.map(widget => {
+      const widgetType = widget.widgetType;
+      if (widgetType === "CylinderWidget" || widgetType === "RectangleWidget" || widgetType === "GaugeChart"
+        || widgetType === "StringWidget" || widgetType === "NumberWithImage" || widgetType === "NumberWithTrend"
+        || widgetType === "OnlyNumber" || widgetType === "SmallNumber") {
+        return {
+          ...widget,
+          properties: widget.properties.map(prop => this.enrichCompositeKey(prop))
+        }
+      } else if (widgetType === "AreaChart" || widgetType === "LineChart") {
+        return {
+          ...widget,
+          "y1AxisProps": widget["y1AxisProps"].map(prop => this.enrichCompositeKey(prop)),
+          "y2AxisProps": widget["y2AxisProps"].map(prop => this.enrichCompositeKey(prop)),
+        }
+      } else if (widgetType === "ConditionalNumber") {
+        return {
+          ...widget,
+          properties: widget.properties.map(prop => {
+            return {
+              ...prop,
+              "json_Data": prop["json_Data"].map(jDProp => this.enrichCompositeKey(jDProp))
+            }
+          })
+        }
+      }
+    });
+  }
+
+  enrichCompositeKey = (prop) => {
+    return {
+      ...prop,
+      composite_key: `${this.getPropType(prop.type)}#${prop.json_key}`
+    }
+  }
+
+  getPropType = (type) => {
+    switch (type) {
+      case 'Measured Properties':
+      case "Controllable Properties":
+        return 'm';
+      case 'Edge Derived Properties':
+        return 'ed';
+      case 'Cloud Derived Properties':
+        return 'cd';
+      case 'Derived KPIs':
+        return 'dkpi';
+      default:
+        return type;
     }
   }
 

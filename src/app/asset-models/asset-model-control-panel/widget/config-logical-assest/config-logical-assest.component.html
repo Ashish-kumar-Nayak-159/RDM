@@ -203,7 +203,7 @@
                             </button>
                             <div class="bg-light p-3">
                                 <ng-container
-                                    *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
+                                    *ngFor="let propObj of propertyObj?.metadata?.properties; let propIndex = index; last as isLast">
                                     <div class="form-group row">
                                         <div class="col-12 mb-2">
                                             <ng-select [items]="drpassets" class="custom-dropdown w-12 sm"

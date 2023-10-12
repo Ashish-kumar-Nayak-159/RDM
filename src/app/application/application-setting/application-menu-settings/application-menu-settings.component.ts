@@ -49,7 +49,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.menu_settings.asset_control_panel_menu = [...arr];
+      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+        this.applicationData.menu_settings.asset_control_panel_menu = [...arr];
+      }else{
+        this.applicationData.menu_settings.asset_control_panel_menu = [...this.controlPanelPermission(arr)];
+      }
     }
     if (this.applicationData?.menu_settings?.legacy_asset_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.legacy_asset_control_panel_menu =
@@ -70,7 +74,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...arr];
+      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+        this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...arr];
+      }else{
+        this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...this.controlPanelPermission(arr)];
+      }
     }
     if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
@@ -93,7 +101,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
+      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+        this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
+      }else{
+        this.applicationData.menu_settings.gateway_control_panel_menu = [...this.controlPanelPermission(arr)];
+      }
     }
      
     if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
@@ -220,6 +232,11 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   //   this.applicationData.menu_settings[index].visible = !this.applicationData.menu_settings[index].visible;
   // }
 
+  controlPanelPermission(arr: any){
+    const arr1 = arr.filter( object => (this.decodedToken?.app !== 'Kirloskar' || this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Daily Report' || object?.system_name === 'Progress Report'));
+    return arr1;
+
+  }
   openReorderMainMenuModal() {
     $('#reorderMainMenuModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.getTableSortable();

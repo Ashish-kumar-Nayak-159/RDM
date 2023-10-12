@@ -242,11 +242,6 @@ export class LivewidgetComponent implements OnInit {
     }, 1000);
   }
 
-  getPropertyType(id) {
-    this.data_type = this.propertyList.find((prop) => prop.json_key === id)?.data_type;
-    return this.propertyList.find((prop) => prop.json_key === id)?.data_type;
-  }
-
   async getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
@@ -277,7 +272,7 @@ export class LivewidgetComponent implements OnInit {
                   if (prop.property) {
                     prop.json_key = prop.property.json_key;
                   }
-                  prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                  prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                   prop.type = prop.property?.type;
 
                   if (prop?.type === 'Derived KPIs') {
@@ -295,9 +290,7 @@ export class LivewidgetComponent implements OnInit {
                   if (prop.id) {
                     prop.json_key = prop.id;
                   }
-                  prop.property = this.propertyList.find(
-                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  );
+                  prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                   if (prop?.type === 'Derived KPIs') {
                     widget.derived_kpis = true;
                   } else if (prop?.type === 'Edge Derived Properties') {
@@ -312,9 +305,7 @@ export class LivewidgetComponent implements OnInit {
                   if (prop.id) {
                     prop.json_key = prop.id;
                   }
-                  prop.property = this.propertyList.find(
-                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-                  );
+                  prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
                   if (prop?.type === 'Derived KPIs') {
                     widget.derived_kpis = true;
                   } else if (prop?.type === 'Edge Derived Properties') {
@@ -1046,9 +1037,9 @@ export class LivewidgetComponent implements OnInit {
             }
             else if (dataElement.widget_type == "RectangleWidget" || dataElement.widget_type == "CylinderWidget") {
               dataElement.properties.forEach(element => {
-                let getName = this.propertyList.find(x => x.json_key == element?.json_key);
-                element.name = getName?.name;
-                element.property = getName;
+                let getMatchingProperty = this.commonService.getMatchingPropertyFromPropertyList(element?.json_key, element?.type, this.propertyList);
+                element.name = getMatchingProperty?.name;
+                element.property = getMatchingProperty;
               });
             }
 
@@ -1070,7 +1061,7 @@ export class LivewidgetComponent implements OnInit {
               if (prop.property) {
                 prop.json_key = prop.property.json_key;
               }
-              prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
               prop.type = prop.property?.type;
 
               if (prop?.type === 'Derived KPIs') {
@@ -1093,7 +1084,7 @@ export class LivewidgetComponent implements OnInit {
               if (prop) {
                 prop.json_key = prop.json_key;
               }
-              prop = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+              prop = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
               prop.type = prop?.type;
 
               if (prop?.type === 'Derived KPIs') {
@@ -1112,9 +1103,7 @@ export class LivewidgetComponent implements OnInit {
               if (prop.id) {
                 prop.json_key = prop.id;
               }
-              prop.property = this.propertyList.find(
-                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-              );
+              prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
               if (prop?.type === 'Derived KPIs') {
                 widget.derived_kpis = true;
               } else if (prop?.type === 'Edge Derived Properties') {
@@ -1129,9 +1118,7 @@ export class LivewidgetComponent implements OnInit {
               if (prop.id) {
                 prop.json_key = prop.id;
               }
-              prop.property = this.propertyList.find(
-                (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
-              );
+              prop.property = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);;
               if (prop?.type === 'Derived KPIs') {
                 widget.derived_kpis = true;
               } else if (prop?.type === 'Edge Derived Properties') {

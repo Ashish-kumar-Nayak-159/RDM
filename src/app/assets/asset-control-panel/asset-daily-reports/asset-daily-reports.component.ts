@@ -17,19 +17,19 @@ declare var $: any;
 })
 export class AssetDailyReportsComponent implements OnInit {
   @Input() asset: Asset = new Asset();
+  dailyReportFilterDate: any;
   dailyReportsData: any = [];
   preOffset = 0;
   preLimit = 20;
   uptimeDateFilter: any = {};
   apiResponseSubscription: Subscription[] = [];
   datePickerOptions: any = {
-    locale: { format: 'YYYY-MM-DD HH:mm' },
+    locale: { format: 'YYYY-MM-DD' },
     alwaysShowCalendars: false,
-    autoUpdateInput: true,
-    singleDatePicker: true,
+    autoUpdateInput: false,
     maxDate: new Date(),
     timePicker: false,
-    ranges: CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS,
+    ranges: CONSTANTS.DATE_OPTIONS_CUSTOM_RANGE,
   }
   selectedDateRange: string;
   contextApp: any;
@@ -51,6 +51,7 @@ export class AssetDailyReportsComponent implements OnInit {
   ngOnInit(): void {
     if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'
     ){
+      this.dailyReportFilterDate =sessionStorage.getItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       this.allAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
       this.apiResponseSubscription.push(
@@ -66,13 +67,27 @@ export class AssetDailyReportsComponent implements OnInit {
         })
       );
       this.datePickerOptions.maxDate.setDate(this.datePickerOptions.maxDate.getDate() - 1);
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      this.loadFromLocalStorage();
+     this.loadFromLocalStorage();
       this.getReportDatabySearch();
     }
   }
   loadFromLocalStorage() {
-    const data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    const reportFilter = JSON.parse(this.dailyReportFilterDate);
+    if(reportFilter){
+      this.filterObj.from_date = reportFilter?.from_date;
+      this.filterObj.to_date = reportFilter?.to_date;
+      this.filterObj.dateOption = reportFilter?.from_date;
+      const obj ={
+        app: this.filterObj.app,
+        dateOption:reportFilter?.from_date ,
+        from_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_from_date),
+        to_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_to_date)
+      }
+      this.selectedDateRange = obj.from_date + " to " + obj.to_date;
+      this.originalFilterObj = JSON.parse(JSON.stringify(obj));
+
+    }else{
+      let data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (data) {
       data.dateOption = "Yesterday";
       if (data?.dateOption) {
@@ -80,22 +95,39 @@ export class AssetDailyReportsComponent implements OnInit {
         let from_date_convertTODate = new Date(dateObj.from_date * 1000);
         let to_date_convertTODate = new Date(dateObj.to_date * 1000);
 
-        if (data?.dateOption === "Yesterday") {
-          this.filterObj.from_Date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
-          this.filterObj.to_Date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
-          this.selectedDateRange = data.dateOption;
+        this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
+        this.filterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
+        this.selectedDateRange = data.dateOption;
+        const obj ={
+          app: this.filterObj.app,
+          dateOption:data?.dateOption,
+          from_date:  dateObj.from_date,
+          to_date: dateObj.to_date
         }
+        this.selectedDateRange = data?.dateOption;
+        this.originalFilterObj = JSON.parse(JSON.stringify(obj));
       }
 
     }
-  }
-
+    }
+  }  
   selectedDateApply(filteredDate: any) {
     let fromDateConvert = datefns.format(datefns.fromUnixTime(filteredDate.from_date), "yyyy-MM-dd");
-    let toDateConvert: any = datefns.format(datefns.fromUnixTime(filteredDate.to_date), "yyyy-MM-dd");
-    this.selectedDateRange = filteredDate.dateOption;
-    this.filterObj.from_Date = fromDateConvert;
-    this.filterObj.to_Date = toDateConvert;
+    let toDateConvert = datefns.format(datefns.fromUnixTime(filteredDate.to_date), "yyyy-MM-dd");
+    this.filterObj.from_date = fromDateConvert;
+    this.filterObj.to_date = toDateConvert;
+    if(filteredDate.dateOption!== "Custom Range"){
+      this.selectedDateRange = filteredDate.dateOption;
+    }else{
+      this.selectedDateRange = fromDateConvert + " to " + toDateConvert;
+    }
+    const obj ={
+      app: this.filterObj.app,
+      dateOption:filteredDate?.dateOption,
+      from_date:  filteredDate.from_date,
+      to_date: filteredDate.to_date
+    }
+    this.originalFilterObj = JSON.parse(JSON.stringify(obj));
   }
   getReportDatabySearch() {
     const obj = {
@@ -103,8 +135,8 @@ export class AssetDailyReportsComponent implements OnInit {
       count: this.preLimit,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       assetId: this.asset.asset_id,
-      fromDate: this.filterObj.from_Date,
-      toDate: this.filterObj.to_Date
+      fromDate: this.filterObj.from_date,
+      toDate: this.filterObj.to_date
     }
     this.dailyReportApiLoading = true;
     this.loadingMessage = 'Loading API Data , Please wait';
@@ -167,6 +199,7 @@ export class AssetDailyReportsComponent implements OnInit {
     $('#downloadReportModal').modal('hide');
   }
   ngOnDestroy(){
+    sessionStorage.removeItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
   }
 
 }

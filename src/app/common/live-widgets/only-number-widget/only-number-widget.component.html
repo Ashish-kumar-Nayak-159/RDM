@@ -24,11 +24,14 @@
     </div>
     <div class="card-body1 card-height">
       <div class="row text-center " *ngIf="telemetryObj">
-        <div class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) + (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage' ? 2 : 1)) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
-          *ngFor="let prop of chartConfig.properties; let i = index" [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
+        <div
+          class="col-md-{{(chartConfig?.properties?.length>=6 ? ((12 / chartConfig?.properties?.length) + (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage' ? 2 : 1)) : (12 / chartConfig?.properties?.length)) | number: '1.0-0'}} text-center widget-row-separator"
+          *ngFor="let prop of chartConfig.properties; let i = index"
+          [ngClass]="{'border-left': i > 0 && ((i % 6 != 0 && chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage') || (i % 4 != 0 && (chartConfig.widgetType === 'NumberWithTrend' || chartConfig.widgetType === 'NumberWithImage'))),'border-right' : i > 5 && i == chartConfig.properties.length -1}">
 
           <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
-                ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')" [ngClass]= "{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'OnlyNumber' && chartConfig.widgetType != 'StringWidget'))}">
+                ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')"
+            [ngClass]="{'border-top' : (i > 5 && (chartConfig.widgetType != 'NumberWithTrend' && chartConfig.widgetType != 'NumberWithImage')) || (i > 3 && (chartConfig.widgetType != 'OnlyNumber' && chartConfig.widgetType != 'StringWidget'))}">
 
             ({{(prop?.type === 'Edge Derived Properties' ? 'ED' : (prop?.type ===
             'Cloud Derived Properties' ? 'CD' : (
@@ -40,16 +43,17 @@
 
 
           <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
-            <app-line-chart-without-axis [asset]="asset"
-              [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"
-              [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.property?.json_key">
+            <app-line-chart-without-axis [asset]="prop?.composite_key"
+              [chartId]="chartConfig.chartId + '_' + (prop?.property?.composite_key || prop.title) + '_' + i"
+              [chartConfig]="chartConfig" [telemetryObj]="telemetryObj" [property]="prop.composite_key">
             </app-line-chart-without-axis>
           </div>
           <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
             <img class="img-fluid px-2 img-szmd" src="{{blobStorageURL + prop?.image?.url + blobToken
                 }}" alt="" />
           </div>
-          <div *ngIf="(chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget') && !asset" style="height:7rem;">
+          <div *ngIf="(chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget') && !asset"
+            style="height:7rem;">
             <div class="OnlyNumber"></div>
           </div>
           <div *ngIf="asset"
@@ -61,34 +65,39 @@
               <!-- {{telemetryObj[prop.property?.json_key]}} -->
               <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropValTemplate">
 
-                {{ (telemetryObj[prop.property?.json_key] && (telemetryObj[prop.property?.json_key]?.value !==
+                {{ (telemetryObj[prop?.composite_key] && (telemetryObj[prop?.composite_key]?.value !==
                 undefined
-                && telemetryObj[prop.property?.json_key]?.value !== null)) ?
+                && telemetryObj[prop?.composite_key]?.value !== null)) ?
                 (prop.property?.data_type === 'Number' ?
-                (convertToNumber(telemetryObj[prop.property?.json_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
-                (telemetryObj[prop.property?.json_key].value))
+                (convertToNumber(telemetryObj[prop?.composite_key]?.value)?.toFixed(prop.digitsAfterDecimals)) :
+                (telemetryObj[prop?.composite_key].value))
                 : 'NA'}} {{prop.unit}}
               </ng-container>
               <ng-template #APIPropValTemplate>
-                {{ (apiTelemetryObj[prop.property?.json_key] && (apiTelemetryObj[prop.property?.json_key]?.value !==
-                undefined && apiTelemetryObj[prop.property?.json_key]?.value !== null)) ?
-                (prop.property?.data_type === 'Number' ?
-                (apiTelemetryObj[prop.property?.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
-                (apiTelemetryObj[prop.property?.json_key].value))
-                : 'NA'}} {{prop.unit}}
+                {{ (prop?.asset_id == telemetryObj?.asset_id) ? (apiTelemetryObj[prop?.composite_key] &&
+                (apiTelemetryObj[prop?.composite_key]?.value !==
+                undefined && apiTelemetryObj[prop?.composite_key]?.value !== null)) ?
+                (prop?.data_type === 'Number' ?
+                (apiTelemetryObj[prop?.composite_key]?.value?.toFixed(prop.digitsAfterDecimals)) :
+                (apiTelemetryObj[prop?.composite_key].value))
+                : 'NA':prop?.lastValue}} {{prop.unit}}
               </ng-template>
 
             </span>
           </div>
-          <div [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}"
-          [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }"  >
+          <div
+            [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}"
+            [ngStyle]="{'margin-top': chartConfig.widgetType === 'NumberWithTrend' && !asset ? '1rem' : '' }">
             <span class="text-grey">
               <ng-container *ngIf="prop.load_value_using !== 'api' else APIPropDateTemplate">
-                {{telemetryObj[prop.property?.json_key]?.date || telemetryObj[prop.property?.json_key]?.message_date}}
+                {{ telemetryObj && telemetryObj[prop.composite_key] &&
+                telemetryObj[prop?.composite_key]?.date
+                ? (telemetryObj[prop?.composite_key]?.value ? telemetryObj[prop?.composite_key].date : '')
+                : telemetryObj[prop?.json_key]?.value !== null ? telemetryObj[prop?.json_key].date : 'NA' }}
               </ng-container>
               <ng-template #APIPropDateTemplate>
-                {{apiTelemetryObj[prop.property?.json_key]?.date ||
-                apiTelemetryObj[prop.property?.json_key]?.message_date}}
+                {{apiTelemetryObj[prop?.composite_key]?.date ||
+                apiTelemetryObj[prop?.composite_key]?.message_date}}
               </ng-template>
             </span>
           </div>

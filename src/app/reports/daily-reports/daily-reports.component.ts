@@ -44,12 +44,12 @@ export class DailyReportsComponent implements OnInit {
     locale: { format: 'YYYY-MM-DD HH:mm' },
     alwaysShowCalendars: false,
     autoUpdateInput: false,
+    singleDatePicker: true,
+    autoApply: true,
     maxDate: new Date(),
-    minDate: new Date(),
-    timePicker: false,
-    ranges: CONSTANTS.DATE_OPTION_YESTERDAY,
-    singleDatePicker: true
+    minDate: new Date()
   }
+  epoch_Date: any;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
     public commonService: CommonService,
@@ -196,18 +196,28 @@ export class DailyReportsComponent implements OnInit {
 
   dailyReportViewMore(report: any) {
     if(report?.assetId){
+      const obj ={
+        dateOption:"Custom Range",
+        from_date: this.filterObj.from_date,
+        to_date: this.filterObj.to_date,
+        epoch_from_date: this.epoch_Date.start,
+        epoch_to_date: this.epoch_Date.end
+      }
+      sessionStorage.setItem(CONSTANTS.DAILY_REPORT_DATE_FILTER, JSON.stringify(obj));
       this.router.navigate([`/applications/${this.contextApp.app}/assets/${report.assetId}/control-panel`], { fragment: 'daily_report' });
     }
     else{
       this.toasterService.showError('Asset Id Not Found','Error');
     }
   }
-  selectedDate(selectedDateObj) {
-    let from_date_convertTODate = new Date(selectedDateObj.from_date * 1000);
-    let to_date_convertTODate = new Date(selectedDateObj.to_date * 1000);
-    this.filterObj.from_date = this.originalFilterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
-    this.filterObj.to_date =this.originalFilterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd").toString();
-    this.selectedDateRange = selectedDateObj.dateOption;
+  selectedDate(selectedDateObj: any ) {
+    this.epoch_Date=selectedDateObj;
+    const from_date = datefns.getUnixTime(new Date(selectedDateObj.start));
+    const to_date = datefns.getUnixTime(new Date(selectedDateObj.end));
+    let new_from_date = new Date(from_date * 1000);
+    let new_to_date = new Date(to_date * 1000);
+    this.filterObj.from_date = datefns.format(new_from_date, "yyyy-MM-dd").toString();
+    this.filterObj.to_date = datefns.format(new_to_date, "yyyy-MM-dd").toString();
     this.preOffset = 0;
   }
 

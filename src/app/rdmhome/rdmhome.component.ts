@@ -25,7 +25,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private commonService: CommonService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -82,13 +82,28 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           }
         });
+      } else {
+        this.commonService.onLogOut()
       }
     }
   }
 
+
+  async onLoginClick() {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    if (this.userData) {
+      await this.processUserData(this.userData);
+
+    } else {
+      this.router.navigate(['/login']);
+    }
+
+
+  }
+
   mailto(emailAddress: string, emailSubject: any) {
     return "mailto:" + emailAddress + "?subject=" + emailSubject
-}
+  }
 
   ngAfterViewInit(): void {
     $('body').css({ 'overflow-y': 'auto' });
@@ -148,8 +163,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           this.applicationService.getExportedHierarchy({ response_format: 'Object' }).subscribe((response: any) => {
             localStorage.removeItem(CONSTANTS.HIERARCHY_TAGS);
-            if(response)
-            {
+            if (response) {
               this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
             }
           });

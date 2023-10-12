@@ -9,11 +9,13 @@
                             [assets]="assets" [closeOnSelection]="false" [showAsset]="false"
                             (clearHierarchyEvent)="onClearHierarchy($event)"
                             (saveHierarchyEvent)="onSaveHierarchy($event)"></app-hierarchy-dropdown>
-
-                        <app-date-range-picker *ngIf="filterObj?.from_date && filterObj?.to_date"
-                            [filterObj]="originalFilterObj" (selectedDateApplyEmitter)="selectedDate($event)"
-                            [selectedDateRange]="selectedDateRange"
-                            [options]="datePickerOptions"></app-date-range-picker>
+                            <div class="left-inner-addon mt-1 mr-2">
+                                <em class="fa fa-calendar"></em>
+                                <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
+                                  name="daterangeInput" autocomplete="off" [(ngModel)]="filterObj.from_date"
+                                  [options]="datePickerOptions" (selected)="selectedDate($event)" style="width: 10rem!important"
+                                  placement="bottom" />
+                              </div>
                         <div class="form-group">
                             <button class="btn btn-sm searchBtn btn-primary" type="button" placement="bottom"
                                 tooltip="Search" [disabled]="dailyReportApiLoading"
@@ -46,8 +48,8 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Asset Name</th>
                                 <th scope="col">% Volumetric Eff.</th>
-                                <th scope="col">fuel Consumption KG/HR</th>
-                                <th scope="col">power Consumption KW/HR</th>
+                                <th scope="col">Fuel Consumption KG/HR</th>
+                                <th scope="col">Power Consumption KW/HR</th>
                                 <th scope="col">Error (%)</th>
                                 <th scope="col">Action</th>
                             </tr>

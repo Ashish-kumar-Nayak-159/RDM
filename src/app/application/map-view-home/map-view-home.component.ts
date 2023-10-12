@@ -285,8 +285,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                       this.blobToken
                       : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
                     scaledSize: {
-                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
+                      width:  20,
+                      height: 20,
                     },
                   };
                 }

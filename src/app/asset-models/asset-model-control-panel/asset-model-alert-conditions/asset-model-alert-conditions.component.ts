@@ -466,6 +466,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.setupForm?.reset();
     if (alertObj) {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
+      console.log(this.alertObj);
       if (this.alertObj.alert_type === 'Asset') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(alertObj?.metadata?.slave_id, Validators.required),
@@ -621,6 +622,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   async onUpdateAlertConditions() {
     if(this.selectedAudioFile && this.selectedAudioFile?.name){
       await this.uploadFile();
+    }
+    if(!this.alertObj?.metadata?.critical_alert_sound){
+      let modelAlert = this.commonService.getItemFromLocalStorage(CONSTANTS.MODEL_ALERT_AUDIO);
+      if(modelAlert?.length>0){
+        modelAlert.forEach( (alertAudio) => {
+          if(alertAudio?.msgCode === this.alertObj?.code && alertAudio?.alert_Id === this.alertObj?.id ){
+            console.log('code =', alertAudio?.msgCode);
+          }
+        })
+      }
     }
     this.alertObj.metadata = {
       ...this.alertObj?.metadata,
@@ -847,6 +858,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       else {
       this.toasterService.showError('Error in uploading audio file', 'Upload file');
       return ;
+    }
+  }
+  removeAlertSound(types: any){
+    if(types =='selectedAudioFile'){
+      this.selectedAudioFile = undefined;
+    }
+    else{
+      if(types === 'critical_alert_sound')
+      delete this.alertObj.metadata.critical_alert_sound;
+      this.selectedAudioFile = undefined;
     }
   }
 

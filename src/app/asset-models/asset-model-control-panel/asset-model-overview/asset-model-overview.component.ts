@@ -111,25 +111,20 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       }
     }
     else {
-      const image = new Image();
-      image.src = URL.createObjectURL(this.overviewFile);
-
-      image.onload = (e: any) => {
-        const selectedImage = e.target as HTMLImageElement;
-        if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
-          if(this.modelOpenFlag==='assetModelFlag'){
+      if(this.modelOpenFlag==='assetModelFlag'){
+        const image = new Image();
+        image.src = URL.createObjectURL(this.overviewFile);
+        image.onload = (e: any) => {
+          const selectedImage = e.target as HTMLImageElement;
+          if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
             this.updatedAssetModel.metadata.image = this.overviewFile;
-          }else{
-            this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
+          } else {
+            this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
           }
-        } else {
-          this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
-          this.overviewFile = undefined;
-          if(this.scaled_image_size && this.scaled_image_size?.controls['file']){
-            this.scaled_image_size.controls['file'].reset();
-          }
-        }
-      };
+        };
+      }else{
+        this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
+      }
     }
   }
   

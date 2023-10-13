@@ -723,6 +723,17 @@ async uploadFile(){
     }
   }
 
+  removeAlertSound(types: any){
+    if(types =='selectedAudioFile'){
+      this.selectedAudioFile = undefined;
+    }
+    else{
+      if(types === 'critical_alert_sound')
+      delete this.alertObj.metadata.critical_alert_sound;
+      this.selectedAudioFile = undefined;
+    }
+  }
+
   removeCriticalAlertAudioData(){
     if(this.alertObj?.severity.toLowerCase()!=='critical' && this.alertObj?.metadata?.critical_alert_sound){
       delete this.alertObj.metadata.critical_alert_sound;

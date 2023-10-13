@@ -466,7 +466,6 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.setupForm?.reset();
     if (alertObj) {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
-      console.log(this.alertObj);
       if (this.alertObj.alert_type === 'Asset') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(alertObj?.metadata?.slave_id, Validators.required),
@@ -623,16 +622,17 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     if(this.selectedAudioFile && this.selectedAudioFile?.name){
       await this.uploadFile();
     }
-    if(!this.alertObj?.metadata?.critical_alert_sound){
-      let modelAlert = this.commonService.getItemFromLocalStorage(CONSTANTS.MODEL_ALERT_AUDIO);
-      if(modelAlert?.length>0){
-        modelAlert.forEach( (alertAudio) => {
-          if(alertAudio?.msgCode === this.alertObj?.code && alertAudio?.alert_Id === this.alertObj?.id ){
-            console.log('code =', alertAudio?.msgCode);
-          }
-        })
-      }
-    }
+    // if(!this.alertObj?.metadata?.critical_alert_sound){
+    //   let modelAlert = this.commonService.getItemFromLocalStorage(CONSTANTS.MODEL_ALERT_AUDIO);
+    //   if(modelAlert?.length>0){
+    //     modelAlert.forEach( (alertAudio) => {
+    //       if(alertAudio?.msgCode === this.alertObj?.code && alertAudio?.alert_Id === this.alertObj?.id ){
+    //         console.log('code =', alertAudio?.msgCode);
+    //       }
+    //     })
+    //   }
+    // }
+    // Above comment code i will use to fix K-1-I1861 issue tomorrow
     this.alertObj.metadata = {
       ...this.alertObj?.metadata,
       ...this.setupForm?.value

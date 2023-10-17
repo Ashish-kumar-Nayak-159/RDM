@@ -47,7 +47,8 @@ export class DailyReportsComponent implements OnInit {
     singleDatePicker: true,
     autoApply: true,
     maxDate: new Date(),
-    minDate: new Date()
+    minDate: new Date(),
+    endDate: new Date()
   }
   epoch_Date: any;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
@@ -93,9 +94,10 @@ export class DailyReportsComponent implements OnInit {
         to_date_convertTODate.setDate(to_date_convertTODate.getDate() - 7);
         this.datePickerOptions.minDate = to_date_convertTODate;
         this.datePickerOptions.maxDate =from_date_convertTODate;
+        this.datePickerOptions.startDate =from_date_convertTODate;
         this.selectedDateRange = item.dateOption;
         this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
-        this.filterObj.to_date = datefns.format(new Date(dateObj.to_date * 1000), "yyyy-MM-dd").toString();
+        this.filterObj.to_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
       }
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));

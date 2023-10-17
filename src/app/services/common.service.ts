@@ -462,4 +462,12 @@ export class CommonService {
   getMatchingPropertyFromPropertyList(jsonKey, jsonType, propertyList) {
     return propertyList.find((propObj) => propObj.json_key === jsonKey && propObj.type === jsonType);
   }
+  storingInLocalStorage(alertDataObj, storage) {
+    if(alertDataObj?.length != 0){
+      localStorage.removeItem(storage);
+      this.setItemInLocalStorage(storage, JSON.stringify(alertDataObj));
+    }else
+    localStorage.removeItem(storage);
+
+  }
 }

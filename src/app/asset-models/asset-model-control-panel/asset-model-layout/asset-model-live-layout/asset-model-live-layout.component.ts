@@ -590,6 +590,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             json_key: prop.json_key,
             color: prop.color,
             composite_key: `${type}#${prop.json_key}`,
+            units: prop?.json_model[prop?.json_key]?.units ? prop?.json_model[prop?.json_key]?.units : prop.unit,
+
           };
           arr.push(obj);
         });
@@ -607,6 +609,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             json_key: prop.json_key,
             color: prop.color,
             composite_key: `${type}#${prop.json_key}`,
+            units: prop?.json_model[prop?.json_key]?.units ? prop?.json_model[prop?.json_key]?.units : prop.unit,
+
 
           };
           arr.push(obj);
@@ -639,6 +643,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       await Promise.all(this.widgetObj.properties.map(async (element, index) => {
         var type = (element?.property.type === 'Edge Derived Properties' ? 'ed' : (element?.property.type === 'Measured Properties' ? 'm' : (element?.property.type === 'Cloud Derived Properties' ? 'cd' : '')))
         element.composite_key = `${type}#${element?.property?.json_key}`
+        element.json_key = `${element?.property?.json_key}`
+        element.type = `${element?.property?.type}`
         const data = await this.commonService.uploadImageToBlob(
           element.image,
           this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets'

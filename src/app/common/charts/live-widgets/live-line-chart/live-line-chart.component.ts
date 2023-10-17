@@ -321,7 +321,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
       const series = chart.series.push(new am4charts.LineSeries());
-      series.units = prop.property?.json_model[prop.composite_key]?.units;
+      series.units = prop.units;
       series.name = prop.name;
       const proptype = this.getPropertyType(prop.composite_key);
       series.propType =

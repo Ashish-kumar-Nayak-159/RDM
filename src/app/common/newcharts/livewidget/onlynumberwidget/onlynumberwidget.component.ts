@@ -78,9 +78,9 @@ export class OnlynumberwidgetComponent implements OnInit, OnDestroy {
             prop.lastValue = "NA"
           }
           if (prop?.asset_id == this.telemetryObj?.asset_id) {
-            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date
+            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj?.[prop?.composite_key]?.message_date
           } else {
-            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj[prop?.composite_key]?.message_date || 'NA';
+            prop.lastDate = this.telemetryObj?.[prop?.composite_key]?.date || this.telemetryObj?.[prop?.composite_key]?.message_date || 'NA';
 
           }
           if (this.telemetryObj) {

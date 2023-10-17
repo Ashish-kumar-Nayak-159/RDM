@@ -525,6 +525,17 @@ export class AssetAlertConditionsComponent implements OnInit {
           (response: any) => {
             this.isCreateAlertConditionLoading = false;
             this.getAlertConditions();
+            let assetAlertAudio = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_ALERT_AUDIO);
+            assetAlertAudio = assetAlertAudio?.length ? JSON.parse(assetAlertAudio) : [];
+            if(assetAlertAudio?.length){
+              assetAlertAudio.forEach( (item: any) => {
+                if(item?.alert_Id === this.asset?.asset_id && item?.msgCode === this.alertObj?.code){
+                  assetAlertAudio.pop(item);
+                }
+              });
+              this.commonService.storingInLocalStorage(assetAlertAudio, CONSTANTS.ASSET_ALERT_AUDIO);
+            }
+
             this.onCloseAlertConditionModal();
             this.toasterService.showSuccess(response.message, 'Update Alert Condition');
             this.toggleRows = {};

@@ -207,14 +207,19 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
                   if (msg?.severity?.toLowerCase() === item?.severity?.toLowerCase() && msg?.code === item?.code && msg?.source?.toLowerCase() === item?.alert_type?.toLowerCase()) {
                     if (item?.metadata && item?.metadata?.critical_alert_sound && item?.metadata?.critical_alert_sound?.url) {
                       this.audioUrl = this.blobStorageURL + (item.metadata.critical_alert_sound.url) + this.sasToken;
-                      const alertDataObj = {
+                      let alertDataObj = {
                         msgCode: msg?.code,
                         message: msg?.message,
                         alert_Id: msg?.asset_id,
                         url: this.audioUrl ? this.audioUrl : ''
                       }
                       if (msg?.code?.startsWith('M_')) {
-                        this.storingInLocalStorage(alertDataObj, msg, CONSTANTS.MODEL_ALERT_AUDIO);
+
+                        const data={
+                          ...alertDataObj,
+                          model_name :item?.asset_model
+                        }
+                        this.storingInLocalStorage(data, msg, CONSTANTS.MODEL_ALERT_AUDIO);
                       }
                       else {
                         this.storingInLocalStorage(alertDataObj, msg, CONSTANTS.ASSET_ALERT_AUDIO);

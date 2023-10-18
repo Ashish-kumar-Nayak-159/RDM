@@ -162,7 +162,7 @@
             <label for="recipient-name" class="col-form-label">Upload Map Pin Icon:</label>
             <div class="form-group input-group row m-0">
               <div class="file-input form-control form-control-sm p-0 col-8">
-                <input type="file" accept=".jpeg,.png,.svg,.jpg" formControlName="file" id="file" class="file"
+                <input type="file" accept=".jpeg,.png,.jpg" formControlName="file" id="file" class="file"
                   (change)="onLogoFileSelected($event.target.files)">
                 <label for="file" class="overflow-text"
                   [tooltip]="overviewFile && overviewFile.name ? overviewFile.name : ''">
@@ -170,7 +170,7 @@
                 
               </div>
               <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-                <input type="file" accept=".jpeg,.png,.svg,.jpg" formControlName="file" id="file" class="file">
+                <input type="file" accept=".jpeg,.png,.jpg" formControlName="file" id="file" class="file">
                 <label for="file" class="bg-secondary text-white">Browse</label>
               </div>
             </div>

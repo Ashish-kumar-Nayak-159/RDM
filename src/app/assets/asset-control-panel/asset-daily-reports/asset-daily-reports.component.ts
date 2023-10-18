@@ -111,12 +111,25 @@ export class AssetDailyReportsComponent implements OnInit {
     }
     }
   }  
+  dateAdjustment(filteredDate, type= undefined){
+    let date = new Date (filteredDate * 1000);
+    const datePipe = new DatePipe('en-US');
+    date.setDate(date.getDate()- 1);
+    const formatDate = datePipe.transform(date, 'yyyy-MM-dd').toLowerCase();
+    return type === 'Last Month' ? datefns.format(datefns.fromUnixTime(filteredDate - 1000), "yyyy-MM-dd") : 
+    type !== 'rowData' ? formatDate : datefns.format(datefns.fromUnixTime(filteredDate), "yyyy-MM-dd") ;
+  }
+
   selectedDateApply(filteredDate: any) {
-    let fromDateConvert = datefns.format(datefns.fromUnixTime(filteredDate.from_date), "yyyy-MM-dd");
-    let toDateConvert = datefns.format(datefns.fromUnixTime(filteredDate.to_date), "yyyy-MM-dd");
+    let fromDateConvert =this.dateAdjustment(filteredDate.from_date,'rowData');
+    let toDateConvert = this.dateAdjustment(filteredDate.to_date, 'rowData');
     this.filterObj.from_date = fromDateConvert;
     this.filterObj.to_date = toDateConvert;
     if(filteredDate.dateOption!== "Custom Range"){
+      this.filterObj.to_date = this.dateAdjustment(filteredDate.to_date , filteredDate.dateOption == "Last Month" ? 'Last Month' :  '' );
+      if(filteredDate.dateOption == 'Last 30 Days'){
+        this.filterObj.from_date = this.dateAdjustment(filteredDate.from_date );
+      }
       this.selectedDateRange = filteredDate.dateOption;
     }else{
       this.selectedDateRange = fromDateConvert + " to " + toDateConvert;

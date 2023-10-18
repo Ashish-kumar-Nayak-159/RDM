@@ -103,27 +103,35 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.overviewFile = files.item(0);
-    if (this.overviewFile?.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
-      this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
+    if(this.overviewFile?.name.endsWith('.jpg' || '.jpeg' || '.png')){
+      if (this.overviewFile?.size > CONSTANTS.ASSET_MODEL_IMAGE_SIZE){
+        this.toasterService.showError('File size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_SIZE / 1000000 + " " + 'MB', 'Upload file');
+        this.overviewFile = undefined;
+        if(this.scaled_image_size && this.scaled_image_size?.controls['file']){
+          this.scaled_image_size.controls['file'].reset();
+        }
+      }
+      else {
+        if(this.modelOpenFlag==='assetModelFlag'){
+          const image = new Image();
+          image.src = URL.createObjectURL(this.overviewFile);
+          image.onload = (e: any) => {
+            const selectedImage = e.target as HTMLImageElement;
+            if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
+              this.updatedAssetModel.metadata.image = this.overviewFile;
+            } else {
+              this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
+            }
+          };
+        }else{
+          this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
+        }
+      }
+    }else{
+      this.toasterService.showError('Unsupported File', 'Upload file');
       this.overviewFile = undefined;
       if(this.scaled_image_size && this.scaled_image_size?.controls['file']){
         this.scaled_image_size.controls['file'].reset();
-      }
-    }
-    else {
-      if(this.modelOpenFlag==='assetModelFlag'){
-        const image = new Image();
-        image.src = URL.createObjectURL(this.overviewFile);
-        image.onload = (e: any) => {
-          const selectedImage = e.target as HTMLImageElement;
-          if (selectedImage.width <= CONSTANTS.ASSET_MODEL_IMAGE_WIDTH && selectedImage.height <= CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT){
-            this.updatedAssetModel.metadata.image = this.overviewFile;
-          } else {
-            this.toasterService.showError('Image size exceeded' + " " + CONSTANTS.ASSET_MODEL_IMAGE_WIDTH + " " + 'x' + " " + CONSTANTS.ASSET_MODEL_IMAGE_HEIGHT + " " + 'px', 'Upload file');
-          }
-        };
-      }else{
-        this.updatedAssetModel.metadata.mapPinIcon = this.overviewFile;
       }
     }
   }

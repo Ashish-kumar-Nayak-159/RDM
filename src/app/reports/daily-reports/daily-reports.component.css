@@ -7,14 +7,17 @@
       font-size: 12px;
   }
   .tableFixHead {
-    overflow: auto;
-    height: calc(100vh - 10.5rem);
+    overflow: auto !important;
+    height: calc(100vh - 5rem) !important;
   }
   .loadMoreBtn {
-    width : 80vw !important;
-    height : 2.7rem !important;
-     display: flex !important;
-     justify-content: center !important;
-     padding-bottom: 2.5rem !important;
+    position: absolute !important;
+    top:92.5% !important;
+    left: 50% !important;
+    z-index: 8 !important;
+    width : 10vw !important;
+    height : 1rem !important;
+    display: flex !important;
+    justify-content: center !important;
 
   }

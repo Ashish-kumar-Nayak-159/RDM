@@ -88,17 +88,17 @@
                             </ng-container>
                         </tbody>
                     </table>
-                    <div class="loadMoreBtn ">
-                        <span class="pull-center " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
-                            <a href="javascript:void(0)" class=" "
-                                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="bottom"
-                                tooltip="Load More Records...">Load More...</a>
-                        </span>
-                    </div>
                 </div>
             </div>
 
         </div>
+    </div>
+    <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
+        <span class="pull-center " >
+            <a href="javascript:void(0)" class=" "
+                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="auto"
+                tooltip="Load More Records...">Load More...</a>
+        </span>
     </div>
     <div class="modal fade" id="downloadReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
         <div class="modal-dialog" role="document">

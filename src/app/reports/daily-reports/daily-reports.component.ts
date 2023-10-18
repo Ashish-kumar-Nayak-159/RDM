@@ -202,8 +202,8 @@ export class DailyReportsComponent implements OnInit {
         dateOption:"Custom Range",
         from_date: this.filterObj.from_date,
         to_date: this.filterObj.to_date,
-        epoch_from_date: this.epoch_Date.start,
-        epoch_to_date: this.epoch_Date.end
+        epoch_from_date:  this.selectedDateRange === 'Yesterday'? this.commonService.convertDateToEpoch(this.filterObj.from_date) : this.epoch_Date.start,
+        epoch_to_date: this.selectedDateRange === 'Yesterday'? this.commonService.convertDateToEpoch(this.filterObj.to_date) : this.epoch_Date.end
       }
       sessionStorage.setItem(CONSTANTS.DAILY_REPORT_DATE_FILTER, JSON.stringify(obj));
       this.router.navigate([`/applications/${this.contextApp.app}/assets/${report.assetId}/control-panel`], { fragment: 'daily_report' });
@@ -213,6 +213,7 @@ export class DailyReportsComponent implements OnInit {
     }
   }
   selectedDate(selectedDateObj: any ) {
+    this.selectedDateRange = "Custom Range";
     this.epoch_Date=selectedDateObj;
     const from_date = datefns.getUnixTime(new Date(selectedDateObj.start));
     const to_date = datefns.getUnixTime(new Date(selectedDateObj.end));

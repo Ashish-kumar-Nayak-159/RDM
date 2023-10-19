@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './telemetry.component.html',
   styleUrls: ['./telemetry.component.css'],
 })
-export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TelemetryComponent implements OnInit, OnDestroy {
   telemetryFilter: any = {};
   telemetry: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -34,6 +34,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   directionColumn: string;
   frequency: any;
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  dateStorage: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -141,9 +142,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryFilter.app = this.contextApp.app;
     this.telemetryFilter.epoch = true;
     this.originalTelemetryFilter = { ...this.telemetryFilter };
-  }
-
-  ngAfterViewInit() {
     this.loadFromCache();
   }
 
@@ -154,14 +152,15 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       if (item.dateOption === 'Custom Range') {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
+        this.dateStorage= this.telemetryFilter;
         this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.telemetryFilter.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.telemetryFilter.to_date), "dd-MM-yyyy HH:mm");
       } else {
         const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
-        this.selectedDateRange = this.telemetryFilter.dateOption;
         // this.telemetryFilter.last_n_secs = item.to_date - item.from_date;
       }
+      this.selectedDateRange = this.telemetryFilter.dateOption;
       // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       //   this.telemetryFilter.isTypeEditable = true;
       // } else {
@@ -256,10 +255,17 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   searchTelemetry(filterObj, updateFilterObj = true) {
     this.telemetry = [];
-    if (filterObj.dateOption !== 'Custom Range') {
+    if(filterObj?.from_date == undefined && filterObj?.to_date === undefined){
+      filterObj.from_date = this.dateStorage.from_date;
+      filterObj.to_date = this.dateStorage.to_date;
+    }
+    if (filterObj?.dateOption !== 'Custom Range' && !filterObj?.dateOption.includes('to')) {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
       filterObj.from_date = dateObj.from_date;
       filterObj.to_date = dateObj.to_date;
+    }
+    else{
+      filterObj.dateOption = 'Custom Range';
     }
     const obj = { ...filterObj };
     obj.partition_key = this.asset?.tags?.partition_key;
@@ -316,7 +322,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
               item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
             });
           }
-          if (this.telemetryFilter.dateOption !== 'Custom Range') {
+          if (this.telemetryFilter?.dateOption !== 'Custom Range' && !this.telemetryFilter?.dateOption.includes('to')) {
             this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
           } else {
             this.telemetryTableConfig.dateRange = 'this selected range';

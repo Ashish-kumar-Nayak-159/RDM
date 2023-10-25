@@ -202,9 +202,9 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
             id="daily_report" >
             <app-asset-daily-reports *ngIf="commonService.appPrivilegesPermission('RV') &&
-            decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests' && 
-            activeTab === 'daily_report'" [asset]="asset">
-            </app-asset-daily-reports>
+            ((decodedToken?.app === 'Kirloskar') || (decodedToken?.app === 'VNHierarchyTests')) &&
+            activeTab === 'daily_report' && asset" [asset]="asset">
+          </app-asset-daily-reports>
           </div>
           <!-- /.container1-fluid -->
 

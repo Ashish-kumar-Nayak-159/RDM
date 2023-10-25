@@ -51,7 +51,6 @@ export class AssetDailyReportsComponent implements OnInit {
   ngOnInit(): void {
     if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'
     ){
-      this.dailyReportFilterDate =sessionStorage.getItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       this.allAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
       this.apiResponseSubscription.push(
@@ -72,44 +71,51 @@ export class AssetDailyReportsComponent implements OnInit {
     }
   }
   loadFromLocalStorage() {
-    const reportFilter = JSON.parse(this.dailyReportFilterDate);
-    if(reportFilter){
-      this.filterObj.from_date = reportFilter?.from_date;
-      this.filterObj.to_date = reportFilter?.to_date;
-      this.filterObj.dateOption = reportFilter?.from_date;
-      const obj ={
-        app: this.filterObj.app,
-        dateOption:reportFilter?.from_date ,
-        from_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_from_date),
-        to_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_to_date)
-      }
-      this.selectedDateRange = obj.from_date + " to " + obj.to_date;
-      this.originalFilterObj = JSON.parse(JSON.stringify(obj));
-
-    }else{
-      let data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    if (data) {
-      data.dateOption = "Yesterday";
-      if (data?.dateOption) {
-        let dateObj = this.commonService.getMomentStartEndDate(data.dateOption);
-        let from_date_convertTODate = new Date(dateObj.from_date * 1000);
-        let to_date_convertTODate = new Date(dateObj.to_date * 1000);
-
-        this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
-        this.filterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
-        this.selectedDateRange = data.dateOption;
+    return new Promise<void>((resolve) => {
+      this.dailyReportFilterDate =sessionStorage.getItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
+      const reportFilter = JSON.parse(this.dailyReportFilterDate);
+      if(reportFilter){
+        this.filterObj.from_date = reportFilter?.from_date;
+        this.filterObj.to_date = reportFilter?.to_date;
+        this.filterObj.dateOption = reportFilter?.from_date;
         const obj ={
           app: this.filterObj.app,
-          dateOption:data?.dateOption,
-          from_date:  dateObj.from_date,
-          to_date: dateObj.to_date
+          dateOption:reportFilter?.from_date ,
+          from_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_from_date),
+          to_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_to_date)
         }
-        this.selectedDateRange = data?.dateOption;
+        this.selectedDateRange = obj.from_date + " to " + obj.to_date;
         this.originalFilterObj = JSON.parse(JSON.stringify(obj));
+  
+      }else{
+        let data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      if (data) {
+        data.dateOption = "Yesterday";
+        if (data?.dateOption) {
+          let dateObj = this.commonService.getMomentStartEndDate(data.dateOption);
+          let from_date_convertTODate = new Date(dateObj.from_date * 1000);
+          let to_date_convertTODate = new Date(dateObj.to_date * 1000);
+  
+          this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
+          this.filterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
+          this.selectedDateRange = data.dateOption;
+          const obj ={
+            app: this.filterObj.app,
+            dateOption:data?.dateOption,
+            from_date:  dateObj.from_date,
+            to_date: dateObj.to_date
+          }
+          this.selectedDateRange = data?.dateOption;
+          this.originalFilterObj = JSON.parse(JSON.stringify(obj));
+        }
+  
       }
+      }
+      // this.getReportDatabySearch();
+      resolve();
 
-    }
-    }
+    });
+
   }  
   dateAdjustment(filteredDate, type= undefined){
     let date = new Date (filteredDate * 1000);
@@ -147,7 +153,7 @@ export class AssetDailyReportsComponent implements OnInit {
       offset: this.preOffset,
       count: this.preLimit,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      assetId: this.asset.asset_id,
+      assetId: this.asset?.asset_id,
       fromDate: this.filterObj.from_date,
       toDate: this.filterObj.to_date
     }

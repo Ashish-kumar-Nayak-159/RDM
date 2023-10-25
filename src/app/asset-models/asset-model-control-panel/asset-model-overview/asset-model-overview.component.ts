@@ -145,9 +145,14 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   async uploadFile(): Promise<void>{
+    const icon_size={
+      width:this.scaled_image_size.controls['width'].value,
+      height:this.scaled_image_size.controls['height'].value,
+      modelOpenFlag:this.modelOpenFlag
+    }
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(
-      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name
+      this.overviewFile,this.contextApp.app + '/models/' + this.assetModel?.name ? this.assetModel.name : this.updatedAssetModel.name,this.modelOpenFlag !=='assetModelFlag' ? icon_size : ''
     );
     if (data) {
       if(this.modelOpenFlag==='assetModelFlag'){

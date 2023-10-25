@@ -27,8 +27,8 @@ export class DailyReportsComponent implements OnInit {
   preOffset = 0;
   contextAppUserHierarchyLength = 0;
   actualHierarchyArr: any;
-  preLimit = 20;
-  currentLimit = 20;
+  preLimit = 10;
+  currentLimit = 10;
   apiSubscriptions: Subscription[] = [];
   isReportDataLoading = false;
   configureHierarchy: any = {};

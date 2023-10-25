@@ -6,18 +6,35 @@
       font-weight: 100;
       font-size: 12px;
   }
-  .tableFixHead {
-    overflow: auto !important;
-    height: calc(100vh - 5rem) !important;
-  }
   .loadMoreBtn {
     position: absolute !important;
     top:92.5% !important;
     left: 50% !important;
     z-index: 8 !important;
-    width : 10vw !important;
-    height : 1rem !important;
+    width : 10.1vw !important;
+    height : 1.1rem !important;
     display: flex !important;
     justify-content: center !important;
 
   }
+  .loadMoreBtn a {
+    text-decoration: none !important;
+    font-size: 14px !important;
+    color: blue !important;
+  }
+  .tablefixHead {
+    overflow: auto;
+    height: 100%;
+    max-height: calc(100vh - 11.9rem - 1rem);
+    margin-bottom: 1rem;
+}
+.header-fix{
+  position: sticky !important;
+  top: 0 !important;
+  opacity: 1 !important;
+  background-color: white !important;
+}
+.table-behavior{
+  position:relative !important;
+  background-color: white !important;
+}

@@ -38,12 +38,12 @@
             </form>
         </div>
     </div>
-    <div class="overlap-wrapper">
+    <div class="overlap-wrapper" [class]=" loadMoreVisible ? 'pb-5' : 'pb-4' ">
         <div class="over-lap">
             <div class="table-responsive">
                 <div class="tablefixHead">
-                    <table class="table table-hover" aria-describedby="">
-                        <thead class="table-header ">
+                    <table class="table table-hover table-behavior" aria-describedby="">
+                        <thead class="table-header header-fix">
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Asset Name</th>
@@ -96,8 +96,7 @@
     <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
         <span class="pull-center " >
             <a href="javascript:void(0)" class=" "
-                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="auto"
-                tooltip="Load More Records...">Load More...</a>
+                (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" >Load More...</a>
         </span>
     </div>
     <div class="modal fade" id="downloadReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

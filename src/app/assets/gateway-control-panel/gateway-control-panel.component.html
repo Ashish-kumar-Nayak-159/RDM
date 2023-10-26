@@ -121,7 +121,7 @@
 
             <div class="tab-pane" class="pt-1 " [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
             id="daily_report">
-            <app-asset-daily-reports *ngIf="activeTab === 'daily_report' && this.commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests'&& asset" [asset]="asset">
+            <app-asset-daily-reports *ngIf="activeTab === 'daily_report' && this.commonService.appPrivilegesPermission('RV') && ((decodedToken?.app === 'Kirloskar') || (decodedToken?.app === 'VNHierarchyTests')) && asset" [asset]="asset">
             </app-asset-daily-reports>
           </div>
             <!-- /.container1-fluid -->

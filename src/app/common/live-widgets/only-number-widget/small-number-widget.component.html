@@ -88,7 +88,7 @@
                 (prop?.data_type === 'Number' ?
                 (telemetryObj[prop?.composite_key]?.value) :
                 (telemetryObj[prop?.composite_key].value))
-                : telemetryObj[prop?.json_key].value }}
+                : telemetryObj[prop?.json_key]?.value }}
                 <sub class="text-xs live-widget-title mb-0">
                   {{prop?.units ? ('(' +
                   prop?.units + ')') : ''}}
@@ -102,7 +102,7 @@
                 undefined && apiTelemetryObj[prop.property?.composite_key]?.value !== null)) ?
                 (prop.property?.data_type === 'Number' ?
                 (apiTelemetryObj[prop.property?.composite_key]?.value) :
-                (apiTelemetryObj[prop.property?.composite_key].value))
+                (apiTelemetryObj[prop.property?.composite_key]?.value))
                 : 'NA'}} {{prop.unit}}
               </ng-template>
             </span>

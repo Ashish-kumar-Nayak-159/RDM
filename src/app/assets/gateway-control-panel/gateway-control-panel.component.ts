@@ -34,6 +34,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+  decodedToken: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private assetService: AssetService,
@@ -45,6 +46,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.gateway_control_panel_menu.length > 0) {

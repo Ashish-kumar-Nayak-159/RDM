@@ -59,7 +59,7 @@
           <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
       <em class="fa fa-bars"></em>
     </button> -->
-          <div class="">
+          <div class="pt-2">
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_overview" role="tabpanel">
               <app-overview *ngIf="activeTab === 'overview' && asset" [tileData]="tileData"
                 [componentState]="componentState" [asset]="asset" [menuDetail]="getMenuDetail('overview')">
@@ -119,9 +119,9 @@
               <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset"></app-asset-packages>
             </div>
 
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" *ngIf="commonService.appPrivilegesPermission('RV')  && commonService.getdecodedToken()?.app === 'Kirloskar' || commonService.getdecodedToken()?.app === 'VNHierarchyTests' " role="tabpanel"
+            <div class="tab-pane" class="pt-1 " [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
             id="daily_report">
-            <app-asset-daily-reports *ngIf="commonService.appPrivilegesPermission('RV') && commonService.getdecodedToken()?.app === 'Kirloskar' || commonService.getdecodedToken()?.app === 'VNHierarchyTests' && activeTab === 'daily_report'" [asset]="asset">
+            <app-asset-daily-reports *ngIf="activeTab === 'daily_report' && this.commonService.appPrivilegesPermission('RV') && decodedToken?.app === 'Kirloskar' || decodedToken?.app === 'VNHierarchyTests'&& asset" [asset]="asset">
             </app-asset-daily-reports>
           </div>
             <!-- /.container1-fluid -->

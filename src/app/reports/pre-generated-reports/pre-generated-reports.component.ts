@@ -864,6 +864,7 @@ parentid=0;
          this.report_id = data?.id
          this.dataOfEachReport();
          $(".over-lap").css('display', 'block')
+         this.isFilterSelected= false;
       }
       else if(type==='edit'){
           this.assets = this.originalAssets;
@@ -966,6 +967,7 @@ parentid=0;
    backToMain() {
     this.showPlus = true
     $(".over-lap").css('display', 'none')
+    this.isFilterSelected = true;
   }
 
   dataOfEachReport(){

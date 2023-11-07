@@ -197,10 +197,15 @@ export class AssetDailyReportsComponent implements OnInit {
             'Asset ID': reports?.assetId,
             'Asset Name': reports?.assetName,
             'Date': datePipe.transform(reports?.reportDate, 'dd/MMM/yyyy').toLowerCase(),
-            '% Volumetric Eff.': reports?.volumetricEfficiency ? reports?.volumetricEfficiency : 0,
-            'Fuel Consuption KG/HR': reports?.fuelConsumption ? reports?.fuelConsumption : 0,
-            'Power Consumption KW/HR': reports?.powerConsumption ? reports.powerConsumption : 0,
-            'Error (%)': reports?.error ? reports.error : 0,
+            'FM-101 (Suction) Diff. Kg': reports?.suctionDiff,
+            'FM-102 (Discharge) Diff. Kg': reports?.dischargeDiff,
+            'FM-103 (IC) Diff. Kg': reports?.fM103Diff,
+            'Vent Diff. Kg': reports?.ventDiff,
+            'Total Diff. FM(101-102-103-Vent) Kg': reports?.totalDiff,
+            '% Volumetric Eff.': reports?.volumetricEfficiency,
+            'Fuel Consuption KG/HR': reports?.fuelConsumption,
+            'Power Consumption KW/HR': reports?.powerConsumption,
+            'Error (%)': reports?.error
   
           })
         })

@@ -239,10 +239,15 @@ export class DailyReportsComponent implements OnInit {
             'Asset ID': report?.assetId ? report?.assetId : report?.pgsNo,
             'Asset Name': report?.assetName ? report.assetName : report?.assetId,
             'Date': report?.reportDate ? datePipe.transform(report?.reportDate, 'dd/MMM/yyyy').toLowerCase() : report?.reportDate,
-            '% Volumetric Eff.': report?.volumetricEfficiency ? report.volumetricEfficiency : 0,
-            'Fuel Consuption KG/HR': report?.fuelConsumption ? report?.fuelConsumption : 0,
-            'Power Consuption KW/HR': report?.powerConsumption ? report?.powerConsumption : 0,
-            'Error (%)': report?.error ? report?.error : 0
+            'FM-101 (Suction) Diff. Kg': report?.suctionDiff,
+            'FM-102 (Discharge) Diff. Kg': report?.dischargeDiff,
+            'FM-103 (IC) Diff. Kg': report?.fM103Diff,
+            'Vent Diff. Kg': report?.ventDiff,
+            'Total Diff. FM(101-102-103-Vent) Kg': report?.totalDiff,
+            '% Volumetric Eff.': report?.volumetricEfficiency,
+            'Fuel Consuption KG/HR': report?.fuelConsumption,
+            'Power Consumption KW/HR': report?.powerConsumption,
+            'Error (%)': report?.error
           })
         });
         exportFromJSON({ data, fileName, exportType });

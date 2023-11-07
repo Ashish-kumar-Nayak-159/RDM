@@ -8,7 +8,7 @@
   }
   .loadMoreBtn {
     position: absolute !important;
-    top:92.5% !important;
+    top:92% !important;
     left: 50% !important;
     z-index: 8 !important;
     width : 10.1vw !important;
@@ -33,6 +33,9 @@
   top: 0 !important;
   opacity: 1 !important;
   background-color: white !important;
+}
+.header-fix tr th {
+  vertical-align: top !important;
 }
 .table-behavior{
   position:relative !important;

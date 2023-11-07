@@ -47,6 +47,11 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Asset Name</th>
+                                <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                                <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                                <th scope="col">FM-103 (IC) Diff. Kg</th>
+                                <th scope="col">Vent Diff. Kg</th>
+                                <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
                                 <th scope="col">% Volumetric Eff.</th>
                                 <th scope="col">Fuel Consumption KG/HR</th>
                                 <th scope="col">Power Consumption KW/HR</th>
@@ -60,10 +65,15 @@
                                     <tr>
                                         <td> {{i+1}} </td>
                                         <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
-                                        <td>{{report?.volumetricEfficiency ? report.volumetricEfficiency : 0}}</td>
-                                        <td>{{report?.fuelConsumption ? report.fuelConsumption : 0 }}</td>
-                                        <td>{{report?.powerConsumption ? report.powerConsumption : 0}}</td>
-                                        <td>{{report?.error ? report.error : 0}}</td>
+                                        <td>{{report?.suctionDiff}}</td>
+                                        <td>{{report?.dischargeDiff}}</td>
+                                        <td>{{report?.fM103Diff}}</td>
+                                        <td>{{report?.ventDiff}}</td>
+                                        <td>{{report?.totalDiff}}</td>
+                                        <td>{{report?.volumetricEfficiency}}</td>
+                                        <td>{{report?.fuelConsumption}}</td>
+                                        <td>{{report?.powerConsumption}}</td>
+                                        <td>{{report?.error}}</td>
                                         <td>
                                             <a type="button" role="button"
                                                 *ngIf="report ? isTabVisible(report)?.visible : ''"

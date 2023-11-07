@@ -5,8 +5,15 @@
      z-index: 4;
      padding-right: 3rem !important;
   }
-
+  .loadMoreBtn a {
+    text-decoration: none !important;
+    font-size: 14px !important;
+    color: blue !important;
+  }
+  .table-header tr th {
+    vertical-align: top !important;
+  }
   .tableFixHead {
     overflow: auto !important;
-    height: calc(100vh - 10.5rem) !important;
+    height: calc(100vh - 12.5rem) !important;
   }

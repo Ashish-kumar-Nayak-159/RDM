@@ -31,6 +31,11 @@
                         <thead class="table-header">
                             <tr>
                                 <th scope="col">Date</th>
+                                <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                                <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                                <th scope="col">FM-103 (IC) Diff. Kg</th>
+                                <th scope="col">Vent Diff. Kg</th>
+                                <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
                                 <th scope="col">% Volumetric Eff.</th>
                                 <th scope="col">Fuel Consumption KG/HR</th>
                                 <th scope="col">Power Consumption KW/HR</th>
@@ -41,10 +46,15 @@
                             <ng-container *ngIf="dailyReportsData" >
                                 <tr *ngFor="let report of dailyReportsData; let i = index">
                                     <td>{{report.reportDate | date : 'dd-MMM-yyyy'}} </td>
-                                    <td>{{report?.volumetricEfficiency ? report.volumetricEfficiency : '0'}} </td>
-                                    <td>{{report?.fuelConsumption ? report.fuelConsumption : '0'}} </td>
-                                    <td>{{report?.powerConsumption ? report.powerConsumption : '0'}} </td>
-                                    <td>{{report?.error ? report.error : '0'}} </td>
+                                    <td>{{report?.suctionDiff}}</td>
+                                    <td>{{report?.dischargeDiff}}</td>
+                                    <td>{{report?.fM103Diff}}</td>
+                                    <td>{{report?.ventDiff}}</td>
+                                    <td>{{report?.totalDiff}}</td>
+                                    <td>{{report?.volumetricEfficiency}}</td>
+                                    <td>{{report?.fuelConsumption}}</td>
+                                    <td>{{report?.powerConsumption}}</td>
+                                    <td>{{report?.error}}</td>
                                 </tr>
                             </ng-container>
                             <ng-container *ngIf="dailyReportsData?.length===0">
@@ -62,13 +72,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="loadMoreBtn " [style.height]="loadMoreVisible ? '2rem' : '0' ">
-                    <span class="pull-center " *ngIf="loadMoreVisible && !dailyReportApiLoading">
-                        <a href="javascript:void(0)" class=" "
-                          (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" placement="bottom"
-                          tooltip="Load More Records...">Load More...</a>
-                      </span>
-                </div>
+            </div>
+            <div class="loadMoreBtn " [style.height]="loadMoreVisible ? '2rem' : '0' ">
+                <span class="pull-center " *ngIf="loadMoreVisible && !dailyReportApiLoading">
+                    <a href="javascript:void(0)" class=""
+                      (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" >Load More...</a>
+                  </span>
             </div>
             </div>
         </div>

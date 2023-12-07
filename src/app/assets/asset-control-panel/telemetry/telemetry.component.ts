@@ -201,7 +201,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(filterObj) {
-    
+
     this.telemetryFilter.from_date = filterObj.from_date;
     this.telemetryFilter.to_date = filterObj.to_date;
     this.telemetryFilter.dateOption = filterObj.dateOption;
@@ -211,7 +211,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.telemetryFilter.from_date,
       this.telemetryFilter.to_date
     );
-    
+
     if (records > this.noOfRecords) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
@@ -367,7 +367,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     }
   }
 
-  openTelemetryMessageModal(obj) {
+  openTelemetryMessageModal(obj, modelType) {
     // if (obj.type === this.telemetryTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,
@@ -378,13 +378,13 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     this.getMessageData(obj).then((message) => {
       this.selectedTelemetry.message = message;
     });
-    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    $( modelType === 'message' ? '#telemetryMessageModal' : '#telemetryChartModal').modal({ backdrop: 'static', keyboard: false, show: true });
     // }
   }
 
-  onModalEvents(eventType) {
+  onModalEvents(eventType, modelType) {
     if (eventType === 'close') {
-      $('#telemetryMessageModal').modal('hide');
+      $(modelType === 'message' ? '#telemetryMessageModal' : '#telemetryChartModal').modal('hide');
       this.selectedTelemetry = undefined;
     }
   }

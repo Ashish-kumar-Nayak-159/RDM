@@ -13,7 +13,7 @@
         <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
           [(ngModel)]="telemetryFilter.isTypeEditable"
           (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;">
-          <label for="checkbox" class="ml-2">Sampling:</label>
+        <label for="checkbox" class="ml-2">Sampling:</label>
       </div>
       <div class="form-group input-group">
         <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
@@ -23,8 +23,8 @@
         <!-- <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div> -->
         <div class="form-group pl-2">
           <select class="form-control form-control-sm" id="samplingFormat"
-            [(ngModel)]="telemetryFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
-            [disabled]="!telemetryFilter.isTypeEditable" [ngClass]="{'active': telemetryFilter.sampling_format}">
+          [(ngModel)]="telemetryFilter.sampling_format" name="samplingFormat" style="width: 11rem!important;"
+          [disabled]="!telemetryFilter.isTypeEditable" [ngClass]="{'active': telemetryFilter.sampling_format}">
             <option [ngValue]="undefined">Sampling Format</option>
             <option [ngValue]="'minute'">Minute</option>
             <option [ngValue]="'hour'">Hour</option>
@@ -88,8 +88,11 @@
             <td>{{c.local_message_date}}</td>
             <td>{{c.local_iothub_date}}</td>
             <td>{{c.local_created_date}}</td>
-            <td><a href="javascript:void(0)" (click)="openTelemetryMessageModal(c)" tooltip="View Telemetry Message" placement="left"><em
-                  class="fa fa-fw fa-eye"></em></a></td>
+            <td><a href="javascript:void(0)" (click)="openTelemetryMessageModal(c,'message')" tooltip="View Telemetry Message" placement="left"><em
+              class="fa fa-fw fa-eye"></em></a>
+              <a href="javascript:void(0)" (click)="openTelemetryMessageModal(c,'chart')" tooltip="View Chart"
+                placement="left"><em class="fa fa-fw fa-map ml-1"></em></a>
+            </td>
           </tr>
         </ng-container>
         <tr *ngIf="telemetry.length === 0 && !isTelemetryLoading && isFilterSelected">
@@ -114,6 +117,31 @@
 <div class="modal right fade" id="telemetryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="selectedTelemetry?.message" [headerMessage]="'Telemetry Message'"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+      (modalEvents)="onModalEvents($event, 'message')" [modalConfig]="modalConfig"></app-message-modal>
+  </div>
+</div>
+
+<div class="modal fade" id="telemetryChartModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" *ngIf="selectedTelemetry?.message">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5" *ngIf="selectedTelemetry?.message?.m['181_ms']" id="staticBackdropLabel">
+          {{selectedTelemetry?.message?.m['181_ms']}} </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="onModalEvents('close', 'chart')">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <app-plotly-chart *ngIf="selectedTelemetry?.message" [bodyMessage]="selectedTelemetry?.message"
+            [messageType]="'asset'"></app-plotly-chart>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+          (click)="onModalEvents('close', 'chart')">Close</button>
+      </div>
+    </div>
   </div>
 </div>

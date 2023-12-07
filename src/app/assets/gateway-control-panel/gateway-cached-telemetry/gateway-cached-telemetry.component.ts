@@ -110,6 +110,13 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
               valueclass: '',
               tooltip: 'View Document',
             },
+            {
+              icon: 'fa fa-fw fa-map',
+              text: '',
+              id: 'View Chart',
+              valueclass: '',
+              tooltip: 'View Chart',
+            }
           ],
         },
       ],
@@ -235,21 +242,21 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
   async openTelemetryMessageModal(obj) {
     if (obj.for === 'Download') {
       this.downloadFile(obj.data, 'download');
-    } else if (obj.for === 'View Document') {
+    } else if (obj?.for === 'View Document' || obj?.for == 'View Chart') {
       this.selectedTelemetry = obj.data;
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
         isDisplayCancel: true,
       };
-      $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      $(obj.for == 'View Chart' ? '#telemetryChartModal' : '#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
       await this.downloadFile(obj.data, 'view');
     }
   }
 
-  onModalEvents(eventType) {
+  onModalEvents(eventType, modelType) {
     if (eventType === 'close') {
-      $('#telemetryMessageModal').modal('hide');
+      $(modelType === 'message' ? '#telemetryMessageModal' : '#telemetryChartModal').modal('hide');
       this.selectedTelemetry = undefined;
     }
   }

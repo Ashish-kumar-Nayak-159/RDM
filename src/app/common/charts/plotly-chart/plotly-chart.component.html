@@ -1,0 +1,22 @@
+<div class="">
+  <div class="nav nav-bar d-flex">
+    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+      <li class="nav-item mx-1" role="presentation">
+        <button class="nav-link  btn btn-primary btn-sm" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" tooltip="ISO 0Hz-6kHz" type="button" role="tab" aria-controls="pills-home" aria-selected="true"(click)="filterData(0,6000,'ISO 0Hz-6kHz')">0Hz-6kHz</button>
+      </li>
+      <li class="nav-item mx-1" role="presentation">
+        <button class="nav-link btn btn-primary btn-sm" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false" tooltip="ISO 0Hz-120Hz"  (click)="filterData(0,120,'ISO 0Hz-120Hz')" >0-120Hz</button>
+      </li>
+      <li class="nav-item mx-1" role="presentation">
+        <button class="nav-link btn btn-primary btn-sm" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" tooltip="ISO 2Hz-1kHz" (click)="filterData(2,1000,'ISO 2Hz-1kHz' )">2Hz-1kHz</button>
+      </li>
+      <li class="nav-item mx-1" role="presentation">
+        <button class="nav-link btn btn-primary btn-sm" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" tootltip="ISO 500Hz-6kHz" (click)="filterData(500,6000,'ISO 500Hz-6kHz')">500Hz-6kHz</button>
+      </li>
+    </ul>
+  </div>
+  <div class="tableFixHead">
+      <div class="" id='Frequency'></div>
+      <div  class="" id="Time"></div>
+    </div>
+  </div>

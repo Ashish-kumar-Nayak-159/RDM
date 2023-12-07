@@ -15,7 +15,7 @@
       <div class="modal-content" *ngIf="selectedTelemetry">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">View Document</h5>
-          <button type="button" class="close"  aria-label="Close" (click)="onModalEvents('close')">
+          <button type="button" class="close"  aria-label="Close" (click)="onModalEvents('close', 'message')">
             <span aria-hidden="true" tooltip="Close">&times;</span>
           </button>
         </div>
@@ -27,7 +27,7 @@
           <!-- <iframe *ngIf="selectedTelemetry.type === 'PDF'"  [src]="sanitizeURL()" style="width: 100%;height: 80vh"></iframe> -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+          <button type="button" class="btn btn-secondary" (click)="onModalEvents('close', 'message')">
             Cancel
           </button>
         </div>
@@ -35,3 +35,24 @@
 
     </div>
   </div>
+
+<div class="modal fade" id="telemetryChartModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" *ngIf="fileData">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5" *ngIf="fileData && fileData.data[0]?.m['181_ms']" id="staticBackdropLabel"> {{fileData.data[0]?.m['181_ms']}} </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" (click)="onModalEvents('close', 'chart')">
+          <span aria-hidden="true" tooltip="Close">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <app-plotly-chart *ngIf="fileData" [bodyMessage]="fileData" [messageType] ="'gateway'"></app-plotly-chart>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="onModalEvents('close', 'chart')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

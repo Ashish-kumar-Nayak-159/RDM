@@ -47,7 +47,8 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "src/assets/Build/KemsysBuild.loader.js"
+              "src/assets/Build/KemsysBuild.loader.js",
+              "node_modules/plotly.js-dist-min/plotly.min.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

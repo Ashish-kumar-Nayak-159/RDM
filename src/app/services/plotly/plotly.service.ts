@@ -7,8 +7,8 @@ export class PlotlyService {
 
   constructor() { }
 
-  plotlyChart(title: string, plotDiv: string, fftAxis: any,legendTitle: any,fftFreq: any = undefined){
-    const graphTitle= plotDiv;
+  plotlyChart(title: string, plotDiv: any, level: any, fftAxis: any,legendTitle: any,fftFreq: any = undefined){
+    const graphTitle= level;
     const trace = fftAxis.map((axis: any, i: number) => ({
       mode: 'lines',
       type: 'scatter',
@@ -18,9 +18,9 @@ export class PlotlyService {
       y: axis,
     }));
     const layout = {
-      title: title.includes('ISO ') ? 'FFT with' + title + ' Filter'  : title ,
+      title: title.includes('ISO ') ? 'FFT with ' + title + ' Filter '  : title ,
       uirevision: true,
-      xaxis: {title: graphTitle == 'Frequency' ? graphTitle+" (Hz)" : graphTitle , autorange: true },
+      xaxis: {title: graphTitle == 'Frequency' ? graphTitle+" (Hz) " : graphTitle , autorange: true },
       yaxis: {title:'Amplitude', autorange: true },
       showlegend: true,
       responsive: true

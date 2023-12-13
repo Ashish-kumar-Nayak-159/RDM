@@ -1,6 +1,6 @@
 <div class="">
   <div class="nav nav-bar d-flex">
-    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+    <ul class="nav nav-pills" id="pills-tab" role="tablist" *ngIf="!filterProperty">
       <li class="nav-item mx-1" role="presentation">
         <button class="nav-link  btn btn-primary btn-sm" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" tooltip="ISO 0Hz-6kHz" type="button" role="tab" aria-controls="pills-home" aria-selected="true"(click)="filterData(0,6000,'ISO 0Hz-6kHz')">0Hz-6kHz</button>
       </li>
@@ -15,8 +15,10 @@
       </li>
     </ul>
   </div>
-  <div class="tableFixHead">
-      <div class="" id='Frequency'></div>
-      <div  class="" id="Time"></div>
-    </div>
+  <div class="">
+    <h5 class="mt-4">{{currentData['181_ms']}} </h5>
+    <div id="Frequency" #Frequency></div>
+    <div id="Time" #Time></div>
+  </div>
+
   </div>

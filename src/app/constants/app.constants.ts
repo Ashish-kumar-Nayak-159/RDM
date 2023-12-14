@@ -393,6 +393,23 @@ export class CONSTANTS {
 
   public static SIDE_MENU_LIST = [
     {
+      page: 'Dashboard',
+      system_name: 'Dashboard',
+      url: 'applications/:appName/data-dashboard',
+      display_name: 'Dashboard',
+      icon: 'fas fa-fw fa-home',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Dashboard',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Home',
       system_name: 'Home',
       url: 'applications/:appName',

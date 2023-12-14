@@ -1,0 +1,247 @@
+.critical-dot a {
+  color: red;
+}
+.critical-dot:hover a {
+  color: red !important;
+}
+.critical-dot a::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: red !important;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.warning-dot a {
+  color: #d78b13;
+}
+.warning-dot a:hover {
+  color: #d78b13 !important;
+}
+.warning-dot a::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #d78b13 !important;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+/* .tab-dashboard{padding: 15px 50px;} */
+.asset-map-view {
+  width: 100%;
+}
+.main-tab,
+.sub-tab {
+  margin-left: 0;
+  padding: 0;
+}
+.main-tab {
+  margin-bottom: -8px;
+}
+.main-tab li {
+  display: inline-block;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.main-tab li.active a {
+  border-bottom: 1px solid #1a5a9e !important;
+  color: #000;
+  background-color: #fafcff;
+  font-weight: 600;
+}
+.main-tab li:hover a {
+  color: #224abe;
+  text-decoration: none;
+}
+.main-tab li a {
+  font-size: 0.8rem;
+  padding-bottom: 5px;
+  border-top-left-radius: 0.35rem;
+  border-top-right-radius: 0.35rem;
+  padding: 0.5rem 1rem;
+}
+.sub-tab li a {
+  font-size: 16px;
+  padding-bottom: 5px;
+}
+.sub-tab li.active a {
+  border-bottom: 1px solid #224abe;
+  color: #000;
+}
+.sub-tab li:hover a {
+  border-bottom: 1px solid #224abe;
+  color: #000;
+  text-decoration: none;
+}
+.sub-tab li {
+  display: inline-block;
+  margin-right: 15px;
+}
+.chilid-sub-tab {
+  margin: 0;
+  padding: 0;
+}
+.chilid-sub-tab li {
+  display: inline-block;
+  margin-right: 15px;
+}
+.chilid-sub-tab li a {
+  border: 1px solid;
+  padding: 5px 10px;
+}
+/* .chilid-sub-tab li a::before{content: "";
+width: 10px;
+height: 10px;
+background-color: #000;
+display: inline-block;
+border-radius: 50%;
+margin-right: 5px;} */
+.chilid-sub-tab li.active a {
+  color: #224abe;
+  border: 1px solid;
+  padding: 5px 10px;
+}
+/* .chilid-sub-tab li.active a::before{content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #d78b13;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;} */
+.chilid-sub-tab li:hover a {
+  color: #224abe;
+  text-decoration: none;
+}
+/* .chilid-sub-tab li:hover a::before{content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #d78b13;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;} */
+.sub-tab-panel {
+  padding: 15px;
+}
+.tab-tbl a {
+  color: #224abe;
+  cursor: pointer;
+}
+.tab-dashboard a {
+  cursor: pointer;
+}
+.multi-tab {
+  display: flex;
+  justify-content: space-between;
+}
+.card-table {
+  border: 1px solid #c7e0f4;
+  display: inline-block;
+  padding: 15px;
+  box-shadow: 1px 2px 5px #eef3fa;
+  min-width: 400px;
+  max-width: 100%;
+}
+.card-table table {
+  margin-bottom: 15px;
+}
+.card-table td {
+  padding: 5px 15px;
+}
+.card-table a {
+  padding: 5px 15px;
+  background-color: #eef3fa;
+  margin-left: 15px;
+}
+.search-box {
+  width: 200px;
+  margin-left: 10px;
+  margin-top: 15px;
+}
+/* map */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+
+agm-map {
+  height: calc(100vh - 8rem);
+}
+
+.map-container {
+  position: relative;
+}
+
+.select-box-map {
+  position: absolute;
+}
+
+.gm-style-iw-d + .gm-ui-hover-effect,
+.gm-ui-hover-effect {
+  position: absolute;
+  right: 8px !important;
+  top: 8px !important;
+}
+
+.unity-modal-card {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  bottom: 0;
+  left: 192px;
+  /* left: 0; */
+  z-index: 9999;
+}
+
+.unity-modal-card card-body {
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+}
+
+.unity-modal-card .card-header {
+  background-color: #f2f0f3;
+  border-bottom: transparent;
+}
+
+.unity-backdrop {
+  position: fixed;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.2;
+  z-index: 9998;
+}
+
+.pswp__button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  border-radius: 9999999px;
+  background: rgba(0, 0, 0, 0.9);
+  place-items: center;
+  color: #fff;
+  border: none;
+}
+
+.pswp__button--close {
+  margin-right: 6px;
+}
+
+.pswp__button:hover,
+.pswp__button:active,
+.pswp__button:focus,
+.pswp__button:focus-within {
+  /* background: #fff; */
+  border: none;
+  outline: none;
+}
+
+/* map */
+
+@media (min-width: 768px) {
+  .modal-dialog {
+      max-width: 80%;
+  }
+}

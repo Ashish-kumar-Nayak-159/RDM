@@ -61,6 +61,10 @@ const routes: Routes = [
     loadChildren: () => import('./assets/assets.module').then((module) => module.AssetsModule),
   },
   {
+    path: 'applications/:applicationId/data-dashboard',
+    loadChildren: () => import('./app-data-dashboard/app-data-dashboard.module').then((module) => module.AppDataDashboardModule),
+  },
+  {
     path: 'login',
     component: RDMLoginComponent,
   },

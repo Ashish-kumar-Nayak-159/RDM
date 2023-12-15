@@ -126,7 +126,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   mainTab = 1;
   subTab = 1;
   childTab = 1;
-  chartTbl = 1
+  chartTbl = 1;
+  alertCircleTbl = 1
   
   isGetAssetsAPILoading = false;
   healthyAssetCount = 0;
@@ -151,6 +152,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
   onChartTblChange(value){
     this.chartTbl = value;
+  }
+  onAlertCircleTblChange(value){
+    this.alertCircleTbl = value;
   }
 
   onMarkerClick(infowindow, gm) {

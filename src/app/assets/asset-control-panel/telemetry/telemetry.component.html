@@ -90,7 +90,7 @@
             <td>{{c.local_created_date}}</td>
             <td><a href="javascript:void(0)" (click)="openTelemetryMessageModal(c,'message')" tooltip="View Telemetry Message" placement="left"><em
               class="fa fa-fw fa-eye"></em></a>
-              <a href="javascript:void(0)" (click)="openTelemetryMessageModal(c,'chart')" tooltip="View Chart"
+              <a href="javascript:void(0)"  *ngIf="contextApp?.app === 'VNHierarchyTests'" (click)="openTelemetryMessageModal(c,'chart')" tooltip="View Chart"
                 placement="left"><em class="fa fa-fw fa-map ml-1"></em></a>
             </td>
           </tr>
@@ -121,9 +121,9 @@
   </div>
 </div>
 
-<div class="modal fade" id="telemetryChartModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
+<div class="modal fade" id="telemetryChartModal" *ngIf="contextApp?.app === 'VNHierarchyTests'" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" *ngIf="selectedTelemetry?.message">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title fs-5" *ngIf="selectedTelemetry?.message?.m['181_ms']" id="staticBackdropLabel">
           {{selectedTelemetry?.message?.m['181_ms']}} </h5>
@@ -136,6 +136,7 @@
         <div class="">
           <app-plotly-chart *ngIf="selectedTelemetry?.message" [bodyMessage]="selectedTelemetry?.message"
             [messageType]="'asset'"></app-plotly-chart>
+            <h5 *ngIf="!selectedTelemetry?.message">Data Not Found</h5>
         </div>
       </div>
       <div class="modal-footer">

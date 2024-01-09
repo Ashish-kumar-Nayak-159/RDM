@@ -36,9 +36,9 @@
     </div>
   </div>
 
-<div class="modal fade" id="telemetryChartModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
+<div class="modal fade" id="telemetryChartModal" *ngIf="contextApp?.app === 'VNHierarchyTests'" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" *ngIf="fileData">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title fs-5" *ngIf="fileData && fileData.data[0]?.m['181_ms']" id="staticBackdropLabel"> {{fileData.data[0]?.m['181_ms']}} </h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" (click)="onModalEvents('close', 'chart')">
@@ -48,6 +48,8 @@
       <div class="modal-body">
         <div class="">
           <app-plotly-chart *ngIf="fileData" [bodyMessage]="fileData" [messageType] ="'gateway'"></app-plotly-chart>
+          <h5 *ngIf="!fileData && !isFileDataLoading">Data Not Found</h5>
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"  *ngIf="isFileDataLoading"></em>
         </div>
       </div>
       <div class="modal-footer">

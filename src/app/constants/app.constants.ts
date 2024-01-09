@@ -449,7 +449,7 @@ export class CONSTANTS {
       url: 'applications/:appName/broadSense',
       display_name: 'Broad sense Gateway',
       icon: 'fa fa-fw fa-chart-bar',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV', 'RMV'],
       showAccordion: [

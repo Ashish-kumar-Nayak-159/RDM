@@ -109,22 +109,26 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
               id: 'View Document',
               valueclass: '',
               tooltip: 'View Document',
-            },
-            {
-              icon: 'fa fa-fw fa-map',
-              text: '',
-              id: 'View Chart',
-              valueclass: '',
-              tooltip: 'View Chart',
             }
           ],
         },
       ],
       // rowHighlight: {
-      //   param: 'process_status',
-      //   value: 'Success',
-      // },
-    };
+        //   param: 'process_status',
+        //   value: 'Success',
+        // },
+      };
+      if(this.contextApp?.app === 'VNHierarchyTests'){
+        this.telemetryTableConfig.data[4].btnData.push(
+        {
+          icon: 'fa fa-fw fa-map',
+          text: '',
+          id: 'View Chart',
+          valueclass: '',
+          tooltip: 'View Chart',
+        }
+      )
+    }
     this.loadFromCache();
     this.filterObj.epoch = true;
   }

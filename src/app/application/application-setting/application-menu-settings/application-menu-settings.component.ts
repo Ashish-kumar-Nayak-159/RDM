@@ -107,7 +107,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         this.applicationData.menu_settings.gateway_control_panel_menu = [...this.controlPanelPermission(arr)];
       }
     }
-     
+
     if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
@@ -134,7 +134,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
-      
+
     }
   if (!this.applicationData?.menu_settings?.miscellaneous_menu) {
       this.applicationData.menu_settings.miscellaneous_menu =
@@ -177,7 +177,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             item.index = index;
             let aFlag = false;
             item.showAccordion?.forEach((aItem) => {
-  
+
               menu.showAccordion?.forEach((mItem) => {
                 if (aItem.name === mItem.name) {
                   aFlag = true;
@@ -215,7 +215,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.menu_settings.main_menu = [...arr];
+      this.applicationData.menu_settings.main_menu = this.decodedToken?.app == 'VNHierarchyTests' ? [...arr] : [...this.mainMenuTabFilter(arr)];
       this.applicationData.menu_settings.main_menu.forEach((menu, i) => {
         if (menu.index === undefined || menu.index === null) {
           menu.index = i;
@@ -231,6 +231,10 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   //   alert('here');
   //   this.applicationData.menu_settings[index].visible = !this.applicationData.menu_settings[index].visible;
   // }
+  mainMenuTabFilter(arr: any){
+    const arr1 = arr.filter( object => (this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Broad sense Gateway'));
+    return arr1;
+  }
 
   controlPanelPermission(arr: any){
     const arr1 = arr.filter( object => (this.decodedToken?.app !== 'Kirloskar' || this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Daily Report' || object?.system_name === 'Progress Report'));

@@ -24,9 +24,11 @@ export class BroadSenseComponent implements OnInit {
   searchData: any;
   frequencyFilter: any;
   reloadCharts = false;
+  decodedToken: any;
   constructor(public commonService: CommonService) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.allData = [data1['default'], data2['default'], data3['default']]
     this.dataArray = [181, 182, 183, 184, 185];
     this.frequencyFilter = [

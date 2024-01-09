@@ -10,7 +10,7 @@ import { ApplicationGatewayMonitoringComponent } from './application-gateway-mon
 import { ApplicationHistoricalLiveDataComponent } from './application-historical-live-data/application-historical-live-data.component';
 import { ApplicationLogicalViewComponent } from './application-logical-view/application-logical-view.component';
 import { AppDashboardHistoricalComponent } from '../app-dashboard/app-dashboard-historical/app-dashboard-historical.component';
-
+import { BroadSenseComponent } from './broad-sense/broad-sense.component';
 const routes: Routes = [
   {
     path: 'selection',
@@ -27,7 +27,7 @@ const routes: Routes = [
     component: ApplicationLogicalViewComponent,
     canActivate: [AuthGuardService],
   },
-  
+
    {
     path: ':appName/historical-trend',
     component: AppDashboardHistoricalComponent,
@@ -37,6 +37,11 @@ const routes: Routes = [
   {
     path: ':appName/historical-live',
     component: ApplicationHistoricalLiveDataComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: ':appName/broadSense',
+    component: BroadSenseComponent,
     canActivate: [AuthGuardService],
   },
   {

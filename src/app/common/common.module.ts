@@ -58,6 +58,7 @@ import { ControlPropertiesComponent } from '../app-controlproperties/control-pro
 import { CommonTableControlPropertiesComponent } from './common-table-control-properties/common-table-control-properties/common-table-control-properties.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.component';
+import { PlotlyChartComponent } from './charts/plotly-chart/plotly-chart.component';
 @NgModule({
   declarations: [
     // FilterComponent,
@@ -104,7 +105,8 @@ import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.
     LivelinechartComponent,
     ControlPropertiesComponent,
     CommonTableControlPropertiesComponent,
-    TextEditorComponent
+    TextEditorComponent,
+    PlotlyChartComponent
   ],
   imports: [
     CommonModule,
@@ -167,7 +169,8 @@ import { TextEditorComponent } from '../app-maintenance/text-editor/text-editor.
     LivelinechartComponent,
     ControlPropertiesComponent,
     CommonTableControlPropertiesComponent,
-    TextEditorComponent
+    TextEditorComponent,
+    PlotlyChartComponent
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, BsDatepickerConfig],
 })

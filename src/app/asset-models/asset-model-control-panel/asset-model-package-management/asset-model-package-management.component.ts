@@ -106,34 +106,32 @@ export class AssetModelPackageManagementComponent implements OnInit {
               valueclass: '',
               tooltip: 'Download',
             },
+            {
+              icon: 'fa fa-fw fa-edit',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            },
+            {
+              icon: 'fa fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            }
           ],
         },
       ],
     };
-    if (environment.environment == 'DEV') {
-      this.packageTableConfig.data[3].btnData.push({
-        icon: 'fa fa-fw fa-edit',
-        text: '',
-        id: 'Edit',
-        valueclass: '',
-        tooltip: 'Edit',
-        disableConditions: {
-          key: 'freezed',
-          value: true
-        }
-      })
-      this.packageTableConfig.data[3].btnData.push({
-        icon: 'fa fa-fw fa-trash',
-        text: '',
-        id: 'Delete',
-        valueclass: '',
-        tooltip: 'Delete',
-        disableConditions: {
-          key: 'freezed',
-          value: true
-        }
-      })
-    }
   }
 
   getPackages() {
@@ -149,7 +147,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     );
   }
 
-  openAddPackageModal(obj = undefined) {    
+  openAddPackageModal(obj = undefined) {
     this.uploadedFile = [];
     if (!obj) {
       this.packageObj = {

@@ -1,861 +1,522 @@
 <div class="blue-nav-bar">
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
-      <div class="main-heading ">Dashboard</div>
+      <div class="main-heading">Dashboard</div>
     </div>
+
+    <!-- Main Tab -->
     <div class="ml-auto">
       <div class="main-tab-panel">
-          <ul class="main-tab">
-            <li class="active" [ngClass]="{'active': mainTab === 1}"><a (click)="onMainTabChange(1)"><i class="fab fa-mixcloud mr-2"></i>Assets</a></li>
-            <li [ngClass]="{'active': mainTab === 2}"><a (click)="onMainTabChange(2)"><i class="fa fa-bell fa-fw mr-2"></i>Alerts</a></li>
-          </ul>
+        <ul class="main-tab">
+          <li class="active" [ngClass]="{ active: mainTab === 'assets' }">
+            <a (click)="onMainTabChange('assets')"><i class="fab fa-mixcloud mr-2"></i>Assets</a>
+          </li>
+          <li [ngClass]="{ active: mainTab === 'alerts' }">
+            <a (click)="onMainTabChange('alerts')"><i class="fa fa-bell fa-fw mr-2"></i>Alerts</a>
+          </li>
+        </ul>
       </div>
     </div>
+    <!--  -->
   </div>
 </div>
+<!-- body -->
 <div class="tab-dashboard">
-  <!-- <div class="row">
-    <div class="col-12 col-md-2">
-
-    </div>
-    <div class="col-12 col-md-8">
-
-    </div>
-  </div> -->
-  <!-- <div class="row main-tab-panel">
-    <div class="col-12">
-      <ul class="main-tab">
-        <li class="active" [ngClass]="{'active': mainTab === 1}"><a (click)="onMainTabChange(1)">Assets</a></li>
-        <li [ngClass]="{'active': mainTab === 2}"><a (click)="onMainTabChange(2)">Alerts</a></li>
-      </ul>
-    </div>
-  </div> -->
-  <div id="assetsBlock" *ngIf="mainTab === 1" class="row sub-tab-panel">
+  <!-- Assets Tab -->
+  <div id="assetsBlock" *ngIf="mainTab === 'assets'" class="row sub-tab-panel">
+    <!-- Assets SubTabs -->
     <div class="col-12 multi-tab">
       <ul class="sub-tab">
-        <li class="active" [ngClass]="{'active': subTab === 1}"><a (click)="onSubTabChange(1)"><i class="fa-fw fa-map fas"></i> Map View</a></li>
-        <li [ngClass]="{'active': subTab === 2}"><a (click)="onSubTabChange(2)"><i class="fa-fw fa-list fas"></i> List View</a></li>
+        <li class="active" [ngClass]="{ active: subTab === 'map_view' }">
+          <a (click)="onSubTabChange('map_view')"><i class="fa-fw fa-map fas"></i> Map View</a>
+        </li>
+        <li [ngClass]="{ active: subTab === 'list_view' }">
+          <a (click)="onSubTabChange('list_view')"><i class="fa-fw fa-list fas"></i> List View</a>
+        </li>
       </ul>
-      <!-- <ul class="chilid-sub-tab" *ngIf="subTab === 2">
-        <li class="active" [ngClass]="{'active': childTab === 1}"><a (click)="onChildTabChange(1)">Status</a></li>
-        <li [ngClass]="{'active': childTab === 2}"><a (click)="onChildTabChange(2)">Performance</a></li>
-      </ul> -->
     </div>
-    <div class="col-12 multi-tab" *ngIf="subTab === 2">
+    <!-- List View SubTab -->
+    <div class="col-12 multi-tab" *ngIf="subTab === 'list_view'">
       <ul class="chilid-sub-tab status-per-tab">
-        <li class="active" [ngClass]="{'active': childTab === 1}"><a (click)="onChildTabChange(1)"><i class="fa fa-cogs fa-fw"></i> Status</a></li>
-        <li [ngClass]="{'active': childTab === 2}"><a (click)="onChildTabChange(2)"><i class="fa fa-chart-line fa-fw"></i> Performance</a></li>
+        <li class="active" [ngClass]="{ active: childTab === 'status' }">
+          <a (click)="onChildTabChange('status')"><i class="fa fa-cogs fa-fw"></i> Status</a>
+        </li>
+        <li [ngClass]="{ active: childTab === 'performance' }">
+          <a (click)="onChildTabChange('performance')"><i class="fa fa-chart-line fa-fw"></i> Performance</a>
+        </li>
       </ul>
     </div>
-    <div class="w-100 list-view-paddding" *ngIf="subTab === 1" >
-    <div class="asset-map-view" id="mapOfAssets">
-      <div class="main-heading">
-        <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-            (clearHierarchyEvent)="onClearHierarchy()">
-          </app-hierarchy-dropdown>
-          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
-                class="fas fa-search fa-sm"></em></button></div>
-        </form>
-      </div>
-      <div id="map-container-google-1" class="z-depth-1-half map-container">
-        <agm-map *ngIf="!isGetAssetsAPILoading" #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
-          [fitBounds]="mapFitBounds" [fullscreenControl]='true' [mapTypeControl]='true'>
-          <agm-marker-cluster [imagePath]="imagePath">
-            <ng-container *ngFor="let asset of mapAssets; let i = index; ">
-              <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
-                [latitude]="asset.latitude" [longitude]="asset.longitude" (mouseOver)="onMarkerClick(infowindow, gm)"
-                [iconUrl]="asset.icon">
+    <!-- Assets Map View Tab -->
+    <div class="w-100 list-view-paddding" *ngIf="subTab === 'map_view'">
+      <div class="" *ngIf="isGetAssetsAPILoading">Loading<em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
+      <div class="asset-map-view" id="mapOfAssets" *ngIf=" !isGetAssetsAPILoading" >
+        <div class="main-heading">
+          <form class="form-inline">
+            <ng-container *ngIf="environmentApp === 'SopanCMS'">
+              <div class="form-group">
+                <div class="numberCircle" [ngClass]="{'active': activeCircle === 'all'}" tooltip="All Assets">
+                  <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{assets.length}}</a>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="greenNumberCircle" [ngClass]="{'active': activeCircle === 'healthy'}"
+                  tooltip="Healthy Assets">
+                  <a href="javascript:void(0)" class="text-white"
+                    (click)="onClickOfCount('healthy')">{{healthyAssetCount}}</a>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="redNumberCircle" [ngClass]="{'active': activeCircle === 'unhealthy'}"
+                  tooltip="Unhealthy Assets">
+                  <a href="javascript:void(0)" class="text-white"
+                    (click)="onClickOfCount('unhealthy')">{{unhealthyAssetCount}}</a>
+                </div>
+              </div>
+            </ng-container>
+            <app-hierarchy-dropdown
+              #hierarchyDropdown
+              [showAsset]="false"
+              [closeOnSelection]="true"
+              [filterObj]="filterObj"
+              [assets]="assets"
+              (saveHierarchyEvent)="onSaveHierachy($event)"
+              (clearHierarchyEvent)="onClearHierarchy($event)"
+            >
+            </app-hierarchy-dropdown>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-sm searchBtn btn-primary"
+                (click)="onAssetFilterApply('Assets_map')"
+              >
+                <em class="fas fa-search fa-sm"></em>
+              </button>
+            </div>
+          </form>
+        </div>
+        <!-- agm Map -->
+        <div id="map-container-google-1" class="z-depth-1-half map-container"  >
+          <agm-map
+            #gm
+            [latitude]="centerLatitude"
+            [longitude]="centerLongitude"
+            [styles]="customMapStyle"
+            [fitBounds]="mapFitBounds"
+            [fullscreenControl]="true"
+            [mapTypeControl]="true"
+          >
+            <agm-marker-cluster [imagePath]="imagePath" >
+              <ng-container *ngFor="let asset of mapAssets; let i = index">
+                <agm-marker
+                  *ngIf="asset?.latitude && asset?.longitude"
+                  [agmFitBounds]="mapFitBounds"
+                  [latitude]="asset.latitude"
+                  [longitude]="asset.longitude"
+                  (mouseOver)="onMarkerClick(infowindow, gm)"
+                  [iconUrl]="asset.icon"
+                >
                 <agm-info-window #infowindow>
-                  <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
-                  <div class="card border-0 border-top-1 border-primary" style="min-width:400px; max-width: 430px;">
-                    <div class="card-header card-table bg-white map-card" style="padding: .75rem 1rem; border-bottom: 0; padding-bottom: 0;">
-                      <h3>New Red Alert</h3>
-                      <div class="red-alert-block">
-                        <div class="red-alert-data">
-                          <table *ngIf="chartTbl === 1">
-                            <tbody >
-                  
-                              <tr>
-                                <td><strong>Alert Type :</strong></td>
-                                <td>keely Buildcon</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Asset : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Hierarchy : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Alert Title : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Alert Time : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                            </tbody>
-                  
-                          </table>
-                          
-                          <a href="">View More Details</a>
+                  <div class="card border-0 border-top-1 border-primary" style="min-width:180px; max-width: 430px;">
+                    <div class="card-header bg-white" style="padding: .75rem 1rem; border-bottom: 0; padding-bottom: 0;">
+                      <strong class="mb-0 fw-bold">{{asset.display_name ? asset.display_name: asset.asset_id}}</strong>
+                    </div>
+                    <div class="card-body" style="padding: 1rem;">
+                      <div class="row">
+
+                        <div class="col-sm-12 col-md-12">
+                          <div class="d-flex" style="gap: 12px;">
+                            <a type="button"
+                              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1"
+                              style="z-index: 1;" (click)="redirectToAsset(asset)"
+                              class="text-primary d-flex align-items-center" style="gap: 6px;">
+                              <em class="fa fa-fw fa-table me-4" title="View Control Panel"
+                                style="font-size: 15px;"></em>View Control Panel
+                            </a>&nbsp;&nbsp;
+                            <a type="button"
+                              *ngIf="decodedToken?.privileges && (decodedToken.privileges.indexOf('ASMV') > -1 || decodedToken.privileges.indexOf('RMV') > -1 ) "
+                              style="z-index: 1;" (click)="redirectToLiveData(asset)"
+                              class="text-primary d-flex align-items-center" style="gap: 6px;">
+                              <em *ngIf="contextApp?.dashboard_config?.show_live_widgets &&  displayicon === true"
+                                class="fa fa-chart-bar fa-fw me-4" title="{{tooltipmapicon}}" style="font-size: 15px;"></em>
+                              <em *ngIf="!(contextApp?.dashboard_config?.show_live_widgets)"
+                                class="fa fa-chart-bar fa-fw me-4" title="View Historic Data"
+                                style="font-size: 15px;"></em>Live Data
+                            </a>&nbsp;&nbsp;
+                            <a type="button"
+                              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1"
+                              style="z-index: 1;" (click)="redirectToControlPropertiesAsset(asset)"
+                              class="text-primary d-flex align-items-center" style="gap: 6px;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-sliders" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                  d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
+                              </svg>Control Properties
+                            </a>
+
+                            <div>
+                              <a *ngIf="contextApp.app==='CMS_Dev'" type="button" (click)="onSave(asset)"
+                                class="btn text-primary open-unity-card d-flex align-items-center"
+                                style="gap: 6px; font-size: 13px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
+                                  class="bi bi-unity" viewBox="0 0 16 16">
+                                  <path
+                                    d="M15 11.2V3.733L8.61 0v2.867l2.503 1.466c.099.067.099.2 0 .234L8.148 6.3c-.099.067-.197.033-.263 0L4.92 4.567c-.099-.034-.099-.2 0-.234l2.504-1.466V0L1 3.733V11.2v-.033.033l2.438-1.433V6.833c0-.1.131-.166.197-.133L6.6 8.433c.099.067.132.134.132.234v3.466c0 .1-.132.167-.198.134L4.031 10.8l-2.438 1.433L7.983 16l6.391-3.733-2.438-1.434L9.434 12.3c-.099.067-.198 0-.198-.133V8.7c0-.1.066-.2.132-.233l2.965-1.734c.099-.066.197 0 .197.134V9.8L15 11.2Z" />
+                                </svg>
+                                3D Model
+                              </a>
+                            </div>
+                          </div>
                         </div>
-                        <div class="red-alert-img-data">
-                          <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3">
-                          <p><strong>Gateway Status</strong></p>
-                          <p>CT#1-TA_GW <span>Offline</span></p>
+
+                        <div class="col-sm-12 col-md-12">
+                          <hr>
+                          <div
+                            *ngIf="asset?.map_content?.data && (asset.map_content.data | keyvalue)?.length > 0; else noSPCDTemplate">
+                            <div *ngFor="let kpi of asset.map_content.data | keyvalue">
+                              <p><b>{{kpi.key}}:</b> {{kpi.value}}</p>
+                            </div>
+                          </div>
                         </div>
-                     </div>   
+
+                        <div class="col-sm-12 col-md-12">
+                          <ng-template #noSPCDTemplate>
+                            <p class="mb-0">No data available.</p>
+                          </ng-template>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12">
+                          <ng-container *ngIf="environmentApp === 'Kirloskar'">
+                            <hr>
+                            <p class="mb-1"><b>MTTR:</b> {{asset.mttr}}</p>
+                            <p class="mb-1"><b>MTBF:</b> {{asset.mtbf}}</p>
+                            <p class="mb-1"><b>Gas loss:</b>{{asset.gas}}</p>
+                            <p class="mb-1"><b>Gas Consumption:</b>{{asset.power}}</p>
+                          </ng-container>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
-    
-    
+
+
                 </agm-info-window>
-              </agm-marker>
-            </ng-container>
-          </agm-marker-cluster>
-        </agm-map>
+                </agm-marker>
+              </ng-container>
+            </agm-marker-cluster>
+          </agm-map>
+        </div>
+      </div>
+      <div>
       </div>
     </div>
-  </div>
-    <div class="w-100 list-view-paddding" *ngIf="subTab === 2">
-         <!--Status-->
-    <div class="asset-map-view" *ngIf="childTab === 1"  id="statusOfAssets">
-      <div class="container">
-        <div class="row text-center">
+    <!--list_view-->
+    <div class="w-100 list-view-paddding" *ngIf="subTab === 'list_view'">
+      <!--Status-->
+      <div class="asset-map-view" *ngIf="childTab === 'status'" id="statusOfAssets">
+        <div class="container">
+          <div class="row text-center">
             <div class="col">
-                <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100);">
-                    <div class="card-body">
-                        <h2 class="card-title">Total Gateway</h2>
-                        <h1 class="font-weight-bold">6</h1>
-                    </div>
+              <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100)">
+                <div class="card-body">
+                  <h2 class="card-title">Total Gateway</h2>
+                  <h1 class="font-weight-bold">6</h1>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card rounded-top online" style="border-bottom: 9px solid green;">
-                    <div class="card-body">
-                        <h2 class="card-title">Online</h2>
-                        <h1 class="font-weight-bold">0</h1>
-                    </div>
-                </div>
+              </div>
             </div>
             <div class="col">
-                <div class="card rounded-top offline">
-                    <div class="card-body" style="border-bottom: 9px solid #c10606f7;">
-                        <h2 class="card-title">Offline</h2>
-                        <h1 class="font-weight-bold">1</h1>
-                    </div>
+              <div class="card rounded-top online" style="border-bottom: 9px solid green">
+                <div class="card-body">
+                  <h2 class="card-title">Online</h2>
+                  <h1 class="font-weight-bold">0</h1>
                 </div>
+              </div>
             </div>
-        </div>
-    
-    </div>
-      <div class="blue-nav-bar mt-3 pl-0 pr-0">
-        <div class="d-flex align-items-center">
-          <div class="main-heading">
-            <form class="form-inline">
-              <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-                [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-                (clearHierarchyEvent)="onClearHierarchy()">
-              </app-hierarchy-dropdown>
-              <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-                  (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
-                    class="fas fa-search fa-sm"></em></button></div>
-            </form>
-          </div>
-
-          <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
-          <div class="ml-auto">
-            <div class="asset-nav-tabs">
-              <nav>
-                <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-                  <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                    href="#" role="tab" aria-controls="nav-provisioned"
-                    aria-selected="true" >
-                    <em class="fab fa-mixcloud mr-2"></em>
-                    <span class="d-none d-md-inline-block">Provisioned</span></a>
-                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                     href="#" role="tab"
-                    aria-controls="nav-unprovisioned" aria-selected="false" >
-                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
+            <div class="col">
+              <div class="card rounded-top offline">
+                <div class="card-body" style="border-bottom: 9px solid #c10606f7">
+                  <h2 class="card-title">Offline</h2>
+                  <h1 class="font-weight-bold">1</h1>
                 </div>
-              </nav>
-            </div>
-          </div>
-          <div class="main-heading pr-3">
-            0 Telemetry/ Day | 0
-          </div>
-        </div>
-
-      </div>
-      <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table-top">
-        <table class="table table-hover mt-3">
-          <thead>
-            <tr>
-              <th scope="col">Sr#</th>
-              <th scope="col">Gateway Id</th>
-              <th scope="col">Name</th>
-              <th scope="col">Status</th>
-              <th scope="col">Ingestion Status</th>
-              <th scope="col">Last Ingestion On</th>
-              <th scope="col">CreatedOn</th>
-              <th scope="col">Live Data</th>
-              <th scope="col">Historical Trend</th>
-              <th scope="col">DPR Data</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-              <td><a href="">Link</a></td>
-            </tr>
-          </tbody>
-
-        </table>
-      </div>
-    </div>
-    <!--Status-->
-    <!--Performance-->
-    <div class="asset-map-view" *ngIf="childTab === 2" id="performanceOfAssets">
-      <div class="blue-nav-bar mt-3 pl-0 pr-0">
-        <div class="d-flex align-items-center">
-          <div class="main-heading">
-            <form class="form-inline">
-              <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-                [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-                (clearHierarchyEvent)="onClearHierarchy()">
-              </app-hierarchy-dropdown>
-              <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-                  (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
-                    class="fas fa-search fa-sm"></em></button></div>
-            </form>
-          </div>
-
-          <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
-          <div class="ml-auto">
-            <div class="asset-nav-tabs">
-              <nav>
-                <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-                  <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                    href="#" role="tab" aria-controls="nav-provisioned"
-                    aria-selected="true" >
-                    <em class="fab fa-mixcloud mr-2"></em>
-                    <span class="d-none d-md-inline-block">Provisioned</span></a>
-                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                     href="#" role="tab"
-                    aria-controls="nav-unprovisioned" aria-selected="false" >
-                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
-                </div>
-              </nav>
+              </div>
             </div>
           </div>
         </div>
-
-      </div>
-      <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
-        <table class="table table-hover mt-3">
-          <thead>
-            <tr>
-              <th scope="col">Sr#</th>
-              <th scope="col">Gateway Id</th>
-              <th scope="col">Name</th>
-              <th scope="col">Date</th>
-              <th scope="col">FM-101 (Suction) Diff. Kg</th>
-              <th scope="col">FM-102 (Discharge) Diff. Kg</th>
-              <th scope="col">FM-103 (IC) Diff. Kg</th>
-              <th scope="col">Vent Diff. Kg</th>
-              <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-              <th scope="col">Fuel Consumption</th>
-              <th scope="col">Power Consumption</th>
-              <th scope="col">% Volumetric Eff.</th>
-              <th scope="col">Error %</th>
-              <th scope="col">Details</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-            </tr>
-            <tr>
-              <td>01</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td>test</td>
-              <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-            </tr>
-            
-          </tbody>
-
-        </table>
-      </div>
-    </div>
-    <!--Performance-->
-    </div>
-   
-  </div>
-  <div id="alertsBlock" *ngIf="mainTab === 2" class="row sub-tab-panel">
-    
-    <div class="col-12">
-      <ul class="sub-tab">
-        <li class="active" [ngClass]="{'active': subTab === 1}"><a (click)="onSubTabChange(1)"><i class="fa-fw fa-map fas"></i> Map View</a></li>
-        <li [ngClass]="{'active': subTab === 2}"><a (click)="onSubTabChange(2)"><i class="fa-fw fa-list fas"></i> List View</a></li>
-      </ul>
-    </div>
-    <div class="w-100 list-view-paddding">
-    <div class="asset-map-view" *ngIf="childTab === 1"  id="statusOfAssets">
-      <div class="container">
-        <div class="row text-center pt-2">
-            <div class="col-md-4">
-                <div class="card rounded-top online" (click)="changeImagePath('r')" (click)="onAlertCircleTblChange(1)" style="border-bottom: 9px solid #c10606f7;">
-                    <div class="card-body">
-                        <h2 class="card-title">Critical</h2>
-                        <h1 class="font-weight-bold">20</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card rounded-top offline" (click)="changeImagePath('y')" (click)="onAlertCircleTblChange(2)">
-                    <div class="card-body" style="border-bottom: 9px solid #d78b13;">
-                        <h2 class="card-title">Warning</h2>
-                        <h1 class="font-weight-bold">1</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-    </div>
-    <!-- <div class="col-12">
-      <ul class="chilid-sub-tab mt-3">
-        <li class="critical-dot"><a (click)="changeImagePath('r')" (click)="onAlertCircleTblChange(1)"><p>5</p> Critical</a></li>
-        <li class="warning-dot"><a (click)="changeImagePath('y')" (click)="onAlertCircleTblChange(2)"><p>3</p> Warning</a></li>
-      </ul>
-    </div> -->
-    <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 1" id="mapOfAlerts">
-      <div class="main-heading">
-        <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-            (clearHierarchyEvent)="onClearHierarchy()">
-          </app-hierarchy-dropdown>
-          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
-                class="fas fa-search fa-sm"></em></button></div>
-        </form>
-      </div>
-      <agm-map *ngIf="!isGetAssetsAPILoading"  #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
-          [fitBounds]="mapFitBounds" [fullscreenControl]='true' [mapTypeControl]='true'>
-          <agm-marker-cluster [imagePath]="imagePath">
-            <ng-container *ngFor="let asset of mapAssets; let i = index; ">
-              <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
-                [latitude]="asset.latitude" [longitude]="asset.longitude" (mouseOver)="onMarkerClick(infowindow, gm)"
-                [iconUrl]="asset.icon">
-                <agm-info-window #infowindow>
-                  <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
-                  <div class="card border-0 border-top-1 border-primary" style="min-width:400px; max-width: 430px;">
-                    <div class="card-header card-table bg-white map-card" style="padding: .75rem 1rem; border-bottom: 0; padding-bottom: 0;">
-                      <h3>New Red Alert</h3>
-                      <div class="red-alert-block">
-                        <div class="red-alert-data">
-                          <table *ngIf="chartTbl === 1">
-                            <tbody >
-                  
-                              <tr>
-                                <td><strong>Alert Type :</strong></td>
-                                <td>keely Buildcon</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Asset : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Hierarchy : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Alert Title : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Alert Time : </strong></td>
-                                <td>test 1</td>
-                              </tr>
-                            </tbody>
-                  
-                          </table>
-                          
-                          <a href="">View More Details</a>
-                        </div>
-                        <div class="red-alert-img-data">
-                          <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3">
-                          <p><strong>Gateway Status</strong></p>
-                          <p>CT#1-TA_GW <span>Offline</span></p>
-                        </div>
-                     </div>   
-                    </div>
-                  </div>
-    
-    
-                </agm-info-window>
-              </agm-marker>
-            </ng-container>
-          </agm-marker-cluster>
-        </agm-map>
-    </div>
-    <!--Status-->
-    <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 2" id="statusOfAlerts">
-      
-      <div class="tab-tbl custom-table table-responsive alert-list-view p-0" id="table-top">
-        <div class="blue-nav-bar mt-3 mb-3 pl-0 pr-0">
+        <div class="blue-nav-bar mt-3 pl-0 pr-0">
           <div class="d-flex align-items-center">
             <div class="main-heading">
               <form class="form-inline">
-                <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-                  [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
-                  (clearHierarchyEvent)="onClearHierarchy()">
+                <app-hierarchy-dropdown
+                  #hierarchyDropdown
+                  *ngIf="filterObj"
+                  [showAsset]="true"
+                  [closeOnSelection]="true"
+                  [filterObj]="filterObj"
+                  [assets]="assets"
+                  (saveHierarchyEvent)="onSaveHierachy($event)"
+                  (clearHierarchyEvent)="onClearHierarchy($event)"
+                >
                 </app-hierarchy-dropdown>
-                <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-                    (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><em
-                      class="fas fa-search fa-sm"></em></button></div>
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-sm searchBtn btn-primary"
+                    (click)="onAssetFilterApply()"
+                    [disabled]="isTelemetryDataLoading"
+                  >
+                    <em class="fas fa-search fa-sm"></em>
+                  </button>
+                </div>
               </form>
             </div>
-  
+
             <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-              tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
+            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
             <div class="ml-auto">
               <div class="asset-nav-tabs">
                 <nav>
-                  <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+                  <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                     <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                      href="#" role="tab" aria-controls="nav-provisioned"
-                      aria-selected="true" >
-                      <em class="fab fa-mixcloud mr-2"></em>
-                      <span class="d-none d-md-inline-block">Provisioned</span></a>
-                    <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                       href="#" role="tab"
-                      aria-controls="nav-unprovisioned" aria-selected="false" >
-                      <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                      <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
+                    href="#" role="tab" aria-controls="nav-provisioned"
+                    aria-selected="true" >
+                    <em class="fab fa-mixcloud mr-2"></em>
+                    <span class="d-none d-md-inline-block">Provisioned</span></a>
+                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
+                     href="#" role="tab"
+                    aria-controls="nav-unprovisioned" aria-selected="false" >
+                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
+                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
                   </div>
                 </nav>
               </div>
             </div>
-            <div class="main-heading pr-3">
-              0 Telemetry/ Day | 0
-            </div>
-          </div>
-  
-        </div>
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height">
-              <table *ngIf="alertCircleTbl === 1" class="table table-hover critical-tbl">
-                <thead>
-                  <tr>
-                    <th scope="col">Assets</th>
-                    <th scope="col">Alert Title</th>
-                    <th scope="col">Alert Time</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-      
-                  <tr (click)="onChartTblChange(1)">
-                    <td>01</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr (click)="onChartTblChange(2)">
-                    <td>02</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>03</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>04</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>05</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>06</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>07</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                </tbody>
-      
-              </table>
-              <table *ngIf="alertCircleTbl === 2" class="table table-hover warning-tbl">
-                <thead>
-                  <tr>
-                    <th scope="col">Assets</th>
-                    <th scope="col">Alert Title</th>
-                    <th scope="col">Alert Time</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-      
-                  <tr (click)="onChartTblChange(1)">
-                    <td>01</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr (click)="onChartTblChange(2)">
-                    <td>02</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>03</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>04</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>05</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>06</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                  <tr>
-                    <td>07</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td><span class="status-circle"></span></td>
-                  </tr>
-                </tbody>
-      
-              </table>
-            </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <div class="card-table" *ngIf="alertCircleTbl === 1">
-                <h3>New Red Alert</h3>
-             <div class="red-alert-block">
-                <div class="red-alert-data">
-                  <table *ngIf="chartTbl === 1">
-                    <tbody >
-          
-                      <tr>
-                        <td><strong>Alert Type :</strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Asset : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Hierarchy : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Title : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Time : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                    </tbody>
-          
-                  </table>
-                  <table *ngIf="chartTbl === 2">
-                    <tbody>
-          
-                      <tr>
-                        <td><strong>Alert Type - Critical/Warning :</strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Asset : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Hierarchy : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Title : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Time : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                    </tbody>
-          
-                  </table>
-                  <a href="">View More Details</a>
-                </div>
-                <div class="red-alert-img-data">
-                  <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3">
-                  <p><strong>Gateway Status</strong></p>
-                  <p>CT#1-TA_GW <span>Offline</span></p>
-                </div>
-             </div>   
-            </div>
-            <div class="card-table" *ngIf="alertCircleTbl === 2">
-              <h3>New Yellow Alert</h3>
-              <div class="red-alert-block">
-                <div class="red-alert-data">
-                  <table *ngIf="chartTbl === 1">
-                    <tbody >
-          
-                      <tr>
-                        <td><strong>Alert Type :</strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Asset : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Hierarchy : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Title : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Time : </strong></td>
-                        <td>test 1</td>
-                      </tr>
-                    </tbody>
-          
-                  </table>
-                  <table *ngIf="chartTbl === 2">
-                    <tbody>
-          
-                      <tr>
-                        <td><strong>Alert Type - Critical/Warning :</strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Asset : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Hierarchy : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Title : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Alert Time : </strong></td>
-                        <td>test 2</td>
-                      </tr>
-                    </tbody>
-          
-                  </table>
-                  <a href="">View More Details</a>
-                </div>
-                <div class="red-alert-img-data">
-                  <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3">
-                  <p><strong>Gateway Status</strong></p>
-                  <p>CT#1-TA_GW <span>Offline</span></p>
-                </div>
-              </div>
-               
-              
-            </div>
+            <div class="main-heading pr-3">0 Telemetry/ Day | 0</div>
           </div>
         </div>
-        
+        <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table-top">
+          <table class="table table-hover mt-3">
+            <thead>
+              <tr>
+                <th scope="col">Sr#</th>
+                <th scope="col">Gateway Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ingestion Status</th>
+                <th scope="col">Last Ingestion On</th>
+                <th scope="col">CreatedOn</th>
+                <th scope="col">Live Data</th>
+                <th scope="col">Historical Trend</th>
+                <th scope="col">DPR Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+              <tr>
+                <td>01</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+                <td><a href="">Link</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <!--Status-->
-   
-  </div>
-</div>
-</div>
+      <!--Status-->
+      <!--Performance-->
+      <div class="asset-map-view" *ngIf="childTab === 'performance'" id="performanceOfAssets">
+        <div class="blue-nav-bar mt-3 pl-0 pr-0">
+          <div class="d-flex align-items-center">
+            <div class="main-heading">
+              <form class="form-inline">
+                <app-hierarchy-dropdown
+                  #hierarchyDropdown
+                  *ngIf="filterObj"
+                  [showAsset]="true"
+                  [closeOnSelection]="true"
+                  [filterObj]="filterObj"
+                  [assets]="assets"
+                  (saveHierarchyEvent)="onSaveHierachy($event)"
+                  (clearHierarchyEvent)="onClearHierarchy($event)"
+                >
+                </app-hierarchy-dropdown>
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-sm searchBtn btn-primary"
+                    (click)="onAssetFilterApply()"
+                    [disabled]="isTelemetryDataLoading"
+                  >
+                    <em class="fas fa-search fa-sm"></em>
+                  </button>
+                </div>
+              </form>
+            </div>
 
-<div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="moreInfoModalLabel">PGS-557</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+            <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
+            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
+            <div class="ml-auto">
+              <div class="asset-nav-tabs">
+                <nav>
+                  <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
+                    href="#" role="tab" aria-controls="nav-provisioned"
+                    aria-selected="true" >
+                    <em class="fab fa-mixcloud mr-2"></em>
+                    <span class="d-none d-md-inline-block">Provisioned</span></a>
+                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
+                     href="#" role="tab"
+                    aria-controls="nav-unprovisioned" aria-selected="false" >
+                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
+                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
           <table class="table table-hover mt-3">
             <thead>
               <tr>
+                <th scope="col">Sr#</th>
+                <th scope="col">Gateway Id</th>
+                <th scope="col">Name</th>
                 <th scope="col">Date</th>
                 <th scope="col">FM-101 (Suction) Diff. Kg</th>
                 <th scope="col">FM-102 (Discharge) Diff. Kg</th>
@@ -866,10 +527,10 @@
                 <th scope="col">Power Consumption</th>
                 <th scope="col">% Volumetric Eff.</th>
                 <th scope="col">Error %</th>
+                <th scope="col">Details</th>
               </tr>
             </thead>
             <tbody>
-  
               <tr>
                 <td>01</td>
                 <td>test</td>
@@ -881,6 +542,10 @@
                 <td>test</td>
                 <td>test</td>
                 <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
               </tr>
               <tr>
                 <td>01</td>
@@ -893,6 +558,10 @@
                 <td>test</td>
                 <td>test</td>
                 <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
               </tr>
               <tr>
                 <td>01</td>
@@ -905,6 +574,10 @@
                 <td>test</td>
                 <td>test</td>
                 <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
               </tr>
               <tr>
                 <td>01</td>
@@ -917,6 +590,10 @@
                 <td>test</td>
                 <td>test</td>
                 <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
               </tr>
               <tr>
                 <td>01</td>
@@ -929,131 +606,669 @@
                 <td>test</td>
                 <td>test</td>
                 <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
               </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              
             </tbody>
-  
           </table>
+        </div>
+      </div>
+      <!--Performance-->
+    </div>
+  </div>
+  <!-- Alerts Tab -->
+  <div id="alertsBlock" *ngIf="mainTab === 'alerts'" class="row sub-tab-panel">
+    <div class="col-12">
+      <ul class="sub-tab">
+        <li class="active" [ngClass]="{ active: subTab === 'map_view' }">
+          <a (click)="onSubTabChange('map_view')"><i class="fa-fw fa-map fas"></i> Map View</a>
+        </li>
+        <li [ngClass]="{ active: subTab === 'list_view' }">
+          <a (click)="onSubTabChange('list_view')"><i class="fa-fw fa-list fas"></i> List View</a>
+        </li>
+      </ul>
+    </div>
+    <div class="w-100 list-view-paddding">
+      <div class="asset-map-view" *ngIf="childTab === 'status'" id="statusOfAssets">
+        <div class="container">
+          <div class="row text-center pt-2">
+            <div class="col-md-4">
+              <div
+                class="card rounded-top online"
+                (click)="changeImagePath('r')"
+                (click)="onAlertCircleTblChange(1)"
+                style="border-bottom: 9px solid #c10606f7"
+              >
+                <div class="card-body">
+                  <h2 class="card-title">Critical</h2>
+                  <h1 class="font-weight-bold">20</h1>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card rounded-top offline" (click)="changeImagePath('y')" (click)="onAlertCircleTblChange(2)">
+                <div class="card-body" style="border-bottom: 9px solid #d78b13">
+                  <h2 class="card-title">Warning</h2>
+                  <h1 class="font-weight-bold">1</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-12">
+      <ul class="chilid-sub-tab mt-3">
+        <li class="critical-dot"><a (click)="changeImagePath('r')" (click)="onAlertCircleTblChange(1)"><p>5</p> Critical</a></li>
+        <li class="warning-dot"><a (click)="changeImagePath('y')" (click)="onAlertCircleTblChange(2)"><p>3</p> Warning</a></li>
+      </ul>
+    </div> -->
+        <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'map_view'" id="mapOfAlerts">
+          <div class="main-heading">
+            <form class="form-inline">
+              <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
+              </app-hierarchy-dropdown>
+              <div class="form-group">
+                <button
+                  type="button"
+                  class="btn btn-sm searchBtn btn-primary"
+                  (click)="onAssetFilterApply()"
+                  [disabled]="isTelemetryDataLoading"
+                >
+                  <em class="fas fa-search fa-sm"></em>
+                </button>
+              </div>
+            </form>
+          </div>
+          <agm-map
+            *ngIf="!isGetAssetsAPILoading"
+            #gm
+            [latitude]="centerLatitude"
+            [longitude]="centerLongitude"
+            [styles]="customMapStyle"
+            [fitBounds]="mapFitBounds"
+            [fullscreenControl]="true"
+            [mapTypeControl]="true"
+          >
+            <agm-marker-cluster [imagePath]="imagePath">
+              <ng-container *ngFor="let asset of mapAssets; let i = index">
+                <agm-marker
+                  *ngIf="asset.latitude && asset.longitude"
+                  [agmFitBounds]="mapFitBounds"
+                  [latitude]="asset.latitude"
+                  [longitude]="asset.longitude"
+                  (mouseOver)="onMarkerClick(infowindow, gm)"
+                  [iconUrl]="asset.icon"
+                >
+                {{asset}}
+                  <agm-info-window #infowindow>
+                    <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
+                    <div class="card border-0 border-top-1 border-primary" style="min-width: 400px; max-width: 430px">
+                      <div
+                        class="card-header card-table bg-white map-card"
+                        style="padding: 0.75rem 1rem; border-bottom: 0; padding-bottom: 0"
+                      >
+                        <h3>New Red Alert</h3>
+                        <div class="red-alert-block">
+                          <div class="red-alert-data">
+                            <table *ngIf="chartTbl === 1">
+                              <tbody>
+                                <tr>
+                                  <td><strong>Alert Type :</strong></td>
+                                  <td>keely Buildcon</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Asset : </strong></td>
+                                  <td>test 1</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Hierarchy : </strong></td>
+                                  <td>test 1</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Alert Title : </strong></td>
+                                  <td>test 1</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Alert Time : </strong></td>
+                                  <td>test 1</td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <a href="">View More Details</a>
+                          </div>
+                          <div class="red-alert-img-data">
+                            <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
+                            <p><strong>Gateway Status</strong></p>
+                            <p>CT#1-TA_GW <span>Offline</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </agm-info-window>
+                </agm-marker>
+              </ng-container>
+            </agm-marker-cluster>
+          </agm-map>
+        </div>
+        <!--Status-->
+        <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'list_view'" id="statusOfAlerts">
+          <div class="tab-tbl custom-table table-responsive alert-list-view p-0" id="table-top">
+            <div class="blue-nav-bar mt-3 mb-3 pl-0 pr-0">
+              <div class="d-flex align-items-center">
+                <div class="main-heading">
+                  <form class="form-inline">
+                    <app-hierarchy-dropdown
+                      #hierarchyDropdown
+                      *ngIf="filterObj"
+                      [showAsset]="true"
+                      [closeOnSelection]="true"
+                      [filterObj]="filterObj"
+                      [assets]="assets"
+                      (saveHierarchyEvent)="onSaveHierachy($event)"
+                      (clearHierarchyEvent)="onClearHierarchy($event)"
+                    >
+                    </app-hierarchy-dropdown>
+                    <div class="form-group">
+                      <button
+                        type="button"
+                        class="btn btn-sm searchBtn btn-primary"
+                        (click)="onAssetFilterApply()"
+                        [disabled]="isTelemetryDataLoading"
+                      >
+                        <em class="fas fa-search fa-sm"></em>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
+              tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
+                <div class="ml-auto">
+                  <div class="asset-nav-tabs">
+                    <nav>
+                      <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                        <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
+                      href="#" role="tab" aria-controls="nav-provisioned"
+                      aria-selected="true" >
+                      <em class="fab fa-mixcloud mr-2"></em>
+                      <span class="d-none d-md-inline-block">Provisioned</span></a>
+                    <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
+                       href="#" role="tab"
+                      aria-controls="nav-unprovisioned" aria-selected="false" >
+                      <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
+                      <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
+                      </div>
+                    </nav>
+                  </div>
+                </div>
+                <div class="main-heading pr-3">0 Telemetry/ Day | 0</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height">
+                  <table *ngIf="alertCircleTbl === 1" class="table table-hover critical-tbl">
+                    <thead>
+                      <tr>
+                        <th scope="col">Assets</th>
+                        <th scope="col">Alert Title</th>
+                        <th scope="col">Alert Time</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr (click)="onChartTblChange(1)">
+                        <td>01</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr (click)="onChartTblChange(2)">
+                        <td>02</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>03</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>04</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>05</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>06</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>07</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <table *ngIf="alertCircleTbl === 2" class="table table-hover warning-tbl">
+                    <thead>
+                      <tr>
+                        <th scope="col">Assets</th>
+                        <th scope="col">Alert Title</th>
+                        <th scope="col">Alert Time</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr (click)="onChartTblChange(1)">
+                        <td>01</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr (click)="onChartTblChange(2)">
+                        <td>02</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>03</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>04</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>05</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>06</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                      <tr>
+                        <td>07</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td><span class="status-circle"></span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="card-table" *ngIf="alertCircleTbl === 1">
+                  <h3>New Red Alert</h3>
+                  <div class="red-alert-block">
+                    <div class="red-alert-data">
+                      <table *ngIf="chartTbl === 1">
+                        <tbody>
+                          <tr>
+                            <td><strong>Alert Type :</strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Asset : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Hierarchy : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Title : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Time : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table *ngIf="chartTbl === 2">
+                        <tbody>
+                          <tr>
+                            <td><strong>Alert Type - Critical/Warning :</strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Asset : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Hierarchy : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Title : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Time : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <a href="">View More Details</a>
+                    </div>
+                    <div class="red-alert-img-data">
+                      <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
+                      <p><strong>Gateway Status</strong></p>
+                      <p>CT#1-TA_GW <span>Offline</span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-table" *ngIf="alertCircleTbl === 2">
+                  <h3>New Yellow Alert</h3>
+                  <div class="red-alert-block">
+                    <div class="red-alert-data">
+                      <table *ngIf="chartTbl === 1">
+                        <tbody>
+                          <tr>
+                            <td><strong>Alert Type :</strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Asset : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Hierarchy : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Title : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Time : </strong></td>
+                            <td>test 1</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table *ngIf="chartTbl === 2">
+                        <tbody>
+                          <tr>
+                            <td><strong>Alert Type - Critical/Warning :</strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Asset : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Hierarchy : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Title : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alert Time : </strong></td>
+                            <td>test 2</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <a href="">View More Details</a>
+                    </div>
+                    <div class="red-alert-img-data">
+                      <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
+                      <p><strong>Gateway Status</strong></p>
+                      <p>CT#1-TA_GW <span>Offline</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Status-->
+      </div>
+    </div>
+  </div>
+
+  <!-- DPR Table -->
+  <div
+    class="modal fade"
+    id="moreInfoModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="moreInfoModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="moreInfoModalLabel">PGS-557</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
+            <table class="table table-hover mt-3">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                  <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                  <th scope="col">FM-103 (IC) Diff. Kg</th>
+                  <th scope="col">Vent Diff. Kg</th>
+                  <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
+                  <th scope="col">Fuel Consumption</th>
+                  <th scope="col">Power Consumption</th>
+                  <th scope="col">% Volumetric Eff.</th>
+                  <th scope="col">Error %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+                <tr>
+                  <td>01</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

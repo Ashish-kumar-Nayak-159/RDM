@@ -1,5 +1,5 @@
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from './../../../environments/environment';
 import {
   Component,
@@ -11,6 +11,7 @@ import {
   ComponentFactoryResolver,
   Injector,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
@@ -29,22 +30,69 @@ import { ChartService } from 'src/app/services/chart/chart.service';
 import * as datefns from 'date-fns';
 
 declare var $: any;
+declare var createUnityInstance: any;
 @Component({
   selector: 'app-app-data-dashboard',
   templateUrl: './app-data-dashboard.component.html',
   styleUrls: ['./app-data-dashboard.component.css'],
 })
 export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
-  defaultAppName = environment.app;
-  userData: any;
+
+  ////Common Start ////
   contextApp: any;
+  apiSubscriptions: Subscription[] = [];
+  environmentApp = environment.app;
+  blobURL = environment.blobURL;
+  blobToken = environment.blobKey;
+  defaultAppName = environment.app;
+  decodedToken: any;
+
+  mainTab = 'assets';
+  subTab = 'map_view';
+  childTab = 'status';
+
+  filterObj: any = {};
+  assets: any[] = [];
+  configuredHierarchy: any ={};
+  isTelemetryDataLoading = false;
+  userData: any;
+  constantData = CONSTANTS;
+  ////Common End ////
+  ////Assets Start ////
+  ////Assets Map View Start ////
+  mapAssets: any[] = [];
+  healthyAssetCount = 0;
+  unhealthyAssetCount = 0;
+  mapFitBounds = true;
   centerLatitude: any;
   centerLongitude: any;
-  mapFitBounds = true;
-  mapAssets: any[] = [];
+  assetModelsList: any;
   tileData: any;
-  assets: any[] = [];
-  filterObj: any = {};
+  displayicon: boolean = true;
+  tooltipmapicon: any;
+  imagePath = './assets/img/m';
+  customMapStyle = [
+    {
+      featureType: 'poi',
+      stylers: [{ visibility: 'off' }],
+    },
+    {
+      featureType: 'transit',
+      stylers: [{ visibility: 'off' }],
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels.icon',
+      stylers: [{ visibility: 'off' }],
+    },
+  ];
+  activeCircle = 'all';
+  displayNameUnityModal: any;
+  gameInstance: any;
+  gameConfig: any;
+  getAssetsAPILoading = false;
+  ////Assets Map View end ////
+
   propertyList: any[] = [];
   telemetryObj: any;
   apiTelemetryObj: any;
@@ -52,7 +100,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   refreshInterval: any;
   selectedTab = 'telemetry';
   lastReportedTelemetryValues: any;
-  isTelemetryDataLoading = false;
   signalRTelemetrySubscription: any;
   isFilterSelected = false;
   midNightHour: number;
@@ -67,7 +114,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   c2dLoadingMessage: string;
   isTelemetryModeAPICalled = false;
   originalFilter: any;
-  apiSubscriptions: Subscription[] = [];
   liveWidgets: any[] = [];
   historicalWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
@@ -85,7 +131,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   historicalDateFilter: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   selectedDateRange: string;
-  decodedToken: any;
   isShowOpenFilter = true;
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
@@ -105,84 +150,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   lastTelemetryValueControl: any;
   refreshcontrolProperties = false;
   actualPropertyList: any;
-  displayicon: boolean = true;
-  tooltipmapicon: any;
-  environmentApp = environment.app;
-  customMapStyle = [
-    {
-      featureType: 'poi',
-      stylers: [{ visibility: 'off' }],
-    },
-    {
-      featureType: 'transit',
-      stylers: [{ visibility: 'off' }],
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels.icon',
-      stylers: [{ visibility: 'off' }],
-    },
-  ];
-  mainTab = 1;
-  subTab = 1;
-  childTab = 1;
+
   chartTbl = 1;
   alertCircleTbl = 1
-  
+
   isGetAssetsAPILoading = false;
-  healthyAssetCount = 0;
-  unhealthyAssetCount = 0;
-  constantData = CONSTANTS;
   originalAssets: any[] = [];
-  blobURL = environment.blobURL;
-  blobToken = environment.blobKey;
-  assetModelsList: any;
 
-  imagePath ='./assets/img/r'
-  onMainTabChange(value){
-    this.mainTab = value;
-    this.subTab = 1; 
-    this.childTab = 1; 
-  }
-  onSubTabChange(value){
-    this.subTab = value
-  }
-  onChildTabChange(value){
-    this.childTab = value;
-  }
-  onChartTblChange(value){
-    this.chartTbl = value;
-  }
-  onAlertCircleTblChange(value){
-    this.alertCircleTbl = value;
-  }
-
-  onMarkerClick(infowindow, gm) {
-    if (gm?.lastOpen != null) {
-      gm.lastOpen?.close();
-    }
-    gm.lastOpen = infowindow;
-    infowindow.open();
-  }
-  redirectToAsset(asset) {
-    // this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
-  }
-
-  redirectToControlPropertiesAsset(asset) {
-    // this.router.navigate([`applications/${this.contextApp.app}/assets/${asset.asset_id}/control-panel`], { fragment: 'control_properties' })
-  }
-
-  onSave(asset) {
-
-  }
-
-  redirectToLiveData(asset) {
-    const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    pagefilterObj['hierarchy'] = asset.hierarchy;
-    pagefilterObj['assets'] = asset;
-    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    // this.router.navigate(['applications', this.contextApp.app, 'dashboard']);
-  }
 
 
   constructor(
@@ -195,82 +169,30 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private route: ActivatedRoute
-  ) { }
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router
+    ) { }
 
-  async ngOnInit(): Promise<void> {
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp.metadata?.filter_settings?.record_count) {
-      this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
-    }
-    this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
-    this.getTileName();
-    // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-    //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    //   this.historicalDateFilter.dateOption = item.dateOption;
-    //   if (item.dateOption !== 'Custom Range') {
-    //     const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-    //     this.historicalDateFilter.from_date = dateObj.from_date;
-    //     this.historicalDateFilter.to_date = dateObj.to_date;
-    //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   } else {
-    //     this.historicalDateFilter.from_date = item.from_date;
-    //     this.historicalDateFilter.to_date = item.to_date;
-    //     // this.historicalDateFilter.last_n_secs = undefined;
-    //   }
-    //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-    //   // this.historicalDateFilter.to_date = moment().utc().unix();
-    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   this.historicalDateFilter.widgets = [];
-    //   this.selectedDateRange = this.historicalDateFilter.dateOption;
-    //   this.historicalDateFilter.type = true;
-    //   this.historicalDateFilter.sampling_format = 'minute';
-    //   this.historicalDateFilter.sampling_time = 1;
-    // }
-    await this.getAllAssets();
-    await this.getAssets(this.contextApp.user.hierarchy);
-    this.onTabChange();
-    if ($(window).width() < 992) {
-      this.isShowOpenFilter = false;
-    }
-
-    // if (this.selectedTab === 'telemetry') {
-    //   this.loadFromCache();
-    // }
-  }
-
-  getTileName() {
-    let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach((item) => {
-      if (item.page === 'Live Data') {
-        selectedItem = item.showAccordion;
-      }
-    });
-    this.tileData = selectedItem;
-  }
-
-  ngAfterViewInit() {
-    if ($('#overlay')) {
-      $('#overlay').hide();
-    }
-  }
-
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
-  }
+    async ngOnInit(): Promise<void> {
+      this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+      this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      // For for Map Start//
+      // this.onMainTabChange('assets');
+      this.mapViewDataContainer();
+      // await this.mapViewDataContainer();
+      // await this.getAllAssets();
+      // await this.getAssets(this.contextApp.user.hierarchy);
 
 
-  
-  onSaveHierachy() {
+
+      // if (this.contextApp.metadata?.filter_settings?.record_count) {
+      //   this.noOfRecords = this.contextApp.metadata?.filter_settings?.record_count;
+      // }
+      // this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
+      // this.getTileName();
+      ////
 
     // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
     //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -281,180 +203,708 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     //     this.historicalDateFilter.to_date = dateObj.to_date;
     //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
     //   } else {
-    //     this.historicalDateFilter.from_date = item.from_date;
-    //     this.historicalDateFilter.to_date = item.to_date;
-    //     // this.historicalDateFilter.last_n_secs = undefined;
-    //   }
-    //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-    //   // this.historicalDateFilter.to_date = moment().utc().unix();
-    //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-    //   this.historicalDateFilter.widgets = [];
-    //   this.selectedDateRange = this.historicalDateFilter.dateOption;
-    //   this.historicalDateFilter.type = true;
-    //   this.historicalDateFilter.sampling_format = 'minute';
-    //   this.historicalDateFilter.sampling_time = 1;
-    // }
+      //     this.historicalDateFilter.from_date = item.from_date;
+      //     this.historicalDateFilter.to_date = item.to_date;
+      //     // this.historicalDateFilter.last_n_secs = undefined;
+      //   }
+      //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      //   // this.historicalDateFilter.to_date = moment().utc().unix();
+      //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+      //   this.historicalDateFilter.widgets = [];
+      //   this.selectedDateRange = this.historicalDateFilter.dateOption;
+      //   this.historicalDateFilter.type = true;
+      //   this.historicalDateFilter.sampling_format = 'minute';
+      //   this.historicalDateFilter.sampling_time = 1;
+      // }
+      // await this.getAllAssets();
+      // await this.getAssets(this.contextApp.user.hierarchy);
 
+      // this.onTabChange();
+      // if ($(window).width() < 992) {
+      //   this.isShowOpenFilter = false;
+      // }
 
-    this.originalFilter = {};
-    if (this.filterObj.asset) {
-      this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-      this.onChangeOfAsset();
-    }
-
-    this.selectedDateRange = ''
-    this.historicalDateFilter.dateOption = ''
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    this.historicalDateFilter.dateOption = item.dateOption
-    setTimeout(() => {
-      this.selectedDateRange = this.historicalDateFilter.dateOption
-    }, 200);
-
-    this.historicalWidgets = [];
-  }
-
-  onClearHierarchy() {
-    this.isFilterSelected = false;
-    this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
-    this.frequency = undefined;
-    this.controlPropertybtn = false;
-  }
-
-  onChangeOfAsset() {
-    const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    const frequencyArr = [];
-    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
-      // this.onChangeOfAsset(this.filterObj.asset);
-      const records = this.commonService.calculateEstimatedRecords(
-        this.frequency,
-        this.historicalDateFilter.from_date,
-        this.historicalDateFilter.to_date
-      );
-      if (records > this.noOfRecords) {
-        this.historicalDateFilter.isTypeEditable = true;
-      } else {
-        this.historicalDateFilter.isTypeEditable = false;
+      // if (this.selectedTab === 'telemetry') {
+        //   this.loadFromCache();
+        // }
       }
-    }
-  }
 
-  async loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    if (item) {
-      // this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
-      if (item.assets) {
-        this.filterObj.asset = item.assets;
-        await this.onChangeOfAsset();
-        this.onFilterSelection(this.filterObj, false, true, true);
+      onMainTabChange(mTabName){
+        this.mainTab = mTabName;
+        this.onSubTabChange('map_view');
       }
-    }
-  }
+      onSubTabChange(sTabName){
+        this.subTab = sTabName;
+        if(sTabName === 'map_view')
+        {
+          this.mapViewDataContainer();
+          this.childTab = 'status';
+        }
+      }
 
-  async onSwitchValueChange(event) {
-    $('#overlay').show();
-    this.c2dResponseMessage = [];
-    this.signalRModeValue = event;
-    this.isC2dAPILoading = true;
-    clearInterval(this.c2dResponseInterval);
-    const obj = {
-      method: 'change_asset_mode',
-      asset_id: this.filterObj.asset.asset_id,
-      gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
-      message: {
-        telemetry_mode: !this.signalRModeValue ? 'normal' : 'turbo',
-        asset_id: this.filterObj.asset.asset_id,
-      },
-      app: this.contextApp.app,
-      job_type: 'DirectMethod',
-      request_type: 'Change Asset Mode',
-      job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null,
-    };
-    obj.sub_job_id = obj.job_id + '_1';
-    this.apiSubscriptions.push(
-      this.assetService
-        .callAssetMethod(obj, this.contextApp.app, this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id)
-        .subscribe(
-          (response: any) => {
-            if (response?.asset_response) {
-              this.chartService.clearDashboardTelemetryList.emit([]);
-              const arr = [];
-              this.telemetryData = JSON.parse(JSON.stringify([]));
-              this.telemetryData = JSON.parse(JSON.stringify(arr));
-              this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
+      // Hierarchy Start//
+      onSaveHierachy(configuredHierarchy: any) {
+        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+        // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
+        //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        //   this.historicalDateFilter.dateOption = item.dateOption;
+        //   if (item.dateOption !== 'Custom Range') {
+        //     const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        //     this.historicalDateFilter.from_date = dateObj.from_date;
+        //     this.historicalDateFilter.to_date = dateObj.to_date;
+        //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+        //   } else {
+        //     this.historicalDateFilter.from_date = item.from_date;
+        //     this.historicalDateFilter.to_date = item.to_date;
+        //     // this.historicalDateFilter.last_n_secs = undefined;
+        //   }
+        //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+        //   // this.historicalDateFilter.to_date = moment().utc().unix();
+        //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
+        //   this.historicalDateFilter.widgets = [];
+        //   this.selectedDateRange = this.historicalDateFilter.dateOption;
+        //   this.historicalDateFilter.type = true;
+        //   this.historicalDateFilter.sampling_format = 'minute';
+        //   this.historicalDateFilter.sampling_time = 1;
+        // }
+        this.originalFilter = {};
+        if (this.filterObj.asset) {
+          this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+          this.onChangeOfAsset();
+        }
+
+        this.selectedDateRange = ''
+        this.historicalDateFilter.dateOption = ''
+        const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        this.historicalDateFilter.dateOption = item.dateOption
+        setTimeout(() => {
+          this.selectedDateRange = this.historicalDateFilter.dateOption
+        }, 200);
+
+        this.historicalWidgets = [];
+      }
+      onClearHierarchy(configuredHierarchy: any) {
+        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+        // this.isFilterSelected = false;
+        // this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
+        // this.frequency = undefined;
+        // this.controlPropertybtn = false;
+      }
+
+      async onAssetFilterApply(filterType? , updateFilterObj = true, filterObj?, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+        if( filterType === 'Assets_map' ){
+          this.activeCircle = 'all';
+          this.assets = this.hierarchyDropdown.getAssets();
+          this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+          this.healthyAssetCount = 0;
+          this.unhealthyAssetCount = 0;
+          this.assets.forEach((assetObj) => {
+            if (assetObj?.map_content?.healthy === true) {
+              this.healthyAssetCount++;
+            } else if (assetObj?.map_content?.healthy === false) {
+              this.unhealthyAssetCount++;
             }
-            this.isC2dAPILoading = false;
-            this.c2dLoadingMessage = undefined;
-            this.telemetryInterval = undefined;
-          },
-          (error) => {
-            this.toasterService.showError(error?.message, 'Change Telemetry Mode');
-            this.signalRModeValue = !this.signalRModeValue;
-            this.isC2dAPILoading = false;
-            this.c2dLoadingMessage = undefined;
+          });
+
+          if (updateFilterObj) {
+            const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+            pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+            Object.keys(this.configuredHierarchy).forEach((key) => {
+              if (this.configuredHierarchy[key]) {
+                pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+              }
+            });
+            delete pagefilterObj.assets;
+            this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
           }
-        )
-    );
-  }
 
-  getAssetData() {
-    return new Promise<void>((resolve1) => {
-      this.assetDetailData = undefined;
+          if (this.mapAssets.length > 0) {
+            this.mapFitBounds = false;
+            const center = this.commonService.averageGeolocation(this.mapAssets);
+            this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+            this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
 
-      this.apiSubscriptions.push(
-        this.assetService.getAssetDetailById(this.contextApp.app, this.filterObj.asset.asset_id).subscribe(
-          async (response: any) => {
-            this.assetDetailData = JSON.parse(JSON.stringify(response));
-            this.normalModelInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
-              ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
-              : 60;
-            this.turboModeInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-              ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-              : 1;
-            this.frequencyDiffInterval = Math.abs(
-              (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
-                ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
-                : 60) -
-              (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-                ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
-                : 1)
-            );
-            resolve1();
-          },
-          (error) => (this.isTelemetryDataLoading = false)
-        )
-      );
-    });
-  }
+            // this.zoom = 8;
+          } else {
+            // this.mapFitBounds = true;
+            this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+            this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+            this.mapFitBounds = false;
+            // this.zoom = undefined;
+          }
+        }
+        else{
+          this.refreshcontrolProperties = true
+          this.propertyList = [];
+          this.c2dResponseMessage = [];
+          this.signalRControlTelemetry = [];
+          $('#overlay').hide();
+          clearInterval(this.c2dResponseInterval);
+          this.signalRService.disconnectFromSignalR('telemetry');
+          this.signalRTelemetrySubscription?.unsubscribe();
+          clearInterval(this.sampleCountInterval);
+          this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
 
-  compareFn(c1, c2): boolean {
-    return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
-  }
+          const obj = JSON.parse(JSON.stringify(filterObj));
+          let asset_model: any;
+          if (obj.asset) {
+            obj.asset_id = obj.asset.asset_id;
+            asset_model = obj.asset.asset_model;
+            delete obj.asset;
+          } else {
+            this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
+            this.telemetryObj = undefined;
+            this.apiTelemetryObj = undefined;
+            this.telemetryData = [];
+            this.liveWidgets = [];
+            this.historicalWidgets = [];
+            this.isFilterSelected = false;
+            return;
+          }
+          // if (
+          //   !this.contextApp?.dashboard_config &&
+          //   !this.contextApp?.dashboard_config?.show_live_widgets &&
+          //   !this.contextApp?.dashboard_config?.show_historical_widgets
+          // ) {
+          //   this.contextApp.dashboard_config = {
+          //     show_live_widgets: true,
+          //   };
+          // }
+          const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+          pagefilterObj['assets'] = filterObj.asset;
+          //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
 
-  getAssets(hierarchy) {
-    return new Promise<void>((resolve1) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-      };
-      this.apiSubscriptions.push(
-        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-          if (response?.data) {
-            this.assets = response.data;
-            if (this.assets?.length === 1) {
-              this.filterObj.asset = this.assets[0];
+          this.originalFilter = JSON.parse(JSON.stringify(filterObj));
+          this.isTelemetryDataLoading = true;
+          await this.getAssetData();
+          if (asset_model) {
+
+            this.getTelemetryMode(this.filterObj.asset.asset_id);
+            await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
+            await this.getAssetsModelProperties(asset_model);
+            if (this.propertyList) {
+              let flag = false;
+              this.propertyList.forEach(element => {
+                if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
+                  flag = true;
+                  return;
+                }
+              });
+              this.controlPropertybtn = flag;
+            }
+            this.sampleCountArr = Array(60).fill(0);
+            this.sampleCountValue = 0;
+            await this.getLiveWidgets(asset_model);
+            this.getLiveWidgetTelemetryDetails(obj);
+
+          }
+        }
+      }
+
+      getAssetData() {
+        return new Promise<void>((resolve1) => {
+          this.assetDetailData = undefined;
+          this.apiSubscriptions.push(
+            this.assetService.getAssetDetailById(this.contextApp.app, this.filterObj.asset.asset_id).subscribe(
+              async (response: any) => {
+                this.assetDetailData = JSON.parse(JSON.stringify(response));
+                this.normalModelInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                  ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                  : 60;
+                this.turboModeInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                  ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                  : 1;
+                this.frequencyDiffInterval = Math.abs(
+                  (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                    ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                    : 60) -
+                  (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                    ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                    : 1)
+                );
+                resolve1();
+              },
+              (error) => (this.isTelemetryDataLoading = false)
+            )
+          );
+        });
+      }
+      // Hierarchy end//
+
+      // Common Start //
+      loadFromCache(item?) {
+        if(item){
+          this.hierarchyDropdown.updateHierarchyDetail(item);
+          if (item.hierarchy) {
+            this.assets = this.hierarchyDropdown.getAssets();
+            this.onAssetFilterApply('Assets_map',false);
+          }
+        }
+        else{
+          const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          if (item1) {
+            // this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
+            if (item1.assets) {
+              this.filterObj.asset = item1.assets;
               this.onChangeOfAsset();
+              this.onAssetFilterApply(this.filterObj, false, true, true);
             }
           }
-          resolve1();
+        }
+      }
+
+      async getAssetModelData() {
+        return new Promise<void>((resolve) => {
+          const obj = {
+            app: this.contextApp.app,
+          };
+          this.apiSubscriptions.push(
+            this.assetModelService.getAssetsModelsList(obj).subscribe(
+              (response: any) => {
+                this.assetModelsList = response.data;
+                resolve();
+              },
+              (error) => {
+                this.toasterService.showError(error.message, 'Model List');
+              }
+            )
+          );
         })
-      );
-    });
-  }
+      }
+
+      async getAssets(hierarchy) {
+        this.getAssetsAPILoading = true;
+        return new Promise<void>((resolve1) => {
+          const obj = {
+            hierarchy: JSON.stringify(hierarchy),
+            type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+          };
+          this.apiSubscriptions.push(
+            this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+              if (response?.data) {
+                this.assets = response.data;
+                if (this.assets?.length === 1) {
+                  this.filterObj.asset = this.assets[0];
+                  this.onChangeOfAsset();
+                }
+                this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, this.assets);
+                this.getAssetsAPILoading = false;
+              }
+              resolve1();
+            },
+            (error)=> {this.getAssetsAPILoading = false; })
+          );
+        });
+      }
+
+      getAllAssets() {
+        this.isGetAssetsAPILoading = true;
+        const obj = {
+          hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+          type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
+          map_content: true,
+        };
+        this.apiSubscriptions.push(
+          this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
+            (response: any) => {
+              if (response?.data) {
+                this.assets = response.data;
+                this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+                this.isGetAssetsAPILoading = false;
+                this.assets.forEach((asset) => {
+                  if (this.environmentApp === 'Kirloskar') {
+                    asset.mttr = '7 Mins';
+                    asset.mtbf = '2 days 5 hours';
+                    asset.gas = '0.4%';
+                    asset.power = '45 SCMH';
+                  }
+                  if (asset?.map_content?.healthy === true) {
+                    this.healthyAssetCount++;
+                  } else if (asset?.map_content?.healthy === false) {
+                    this.unhealthyAssetCount++;
+                  }
+                  if (
+                    asset.type === this.constantData.IP_ASSET &&
+                    asset?.connection_state?.toLowerCase() === 'connected'
+                  ) {
+                    asset.icon = {
+                      url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+                        ? this.blobURL +
+                        this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+                        this.blobToken
+                        : './assets/img/iot-assets-green.svg',
+                      scaledSize: {
+                        width: 20,
+                        height: 20,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_ASSET &&
+                    asset?.connection_state?.toLowerCase() === 'disconnected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/assets-red.gif',
+                      scaledSize: {
+                        width: 20,
+                        height: 20,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_GATEWAY &&
+                    asset?.connection_state?.toLowerCase() === 'connected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/iot-gateways-green.svg',
+                      scaledSize: {
+                        width: 20,
+                        height: 20,
+                      },
+                    };
+                  } else if (
+                    asset.type === this.constantData.IP_GATEWAY &&
+                    asset?.connection_state?.toLowerCase() === 'disconnected'
+                  ) {
+                    asset.icon = {
+                      url: './assets/img/assets-red.gif',
+                      scaledSize: {
+                        width: 20,
+                        height: 20,
+                      },
+                    };
+                  } else if (asset.type === this.constantData.NON_IP_ASSET) {
+                    let pinData = this.modifyIcon(asset, this.assetModelsList);
+                    asset.icon = {
+                      url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+                        ? this.blobURL +
+                        this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+                        this.blobToken
+                        : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
+                      scaledSize: {
+                        width: this.assetModelsList && pinData !== undefined && pinData && pinData?.width ? pinData.width : 20,
+                        height: this.assetModelsList && pinData !== undefined && pinData && pinData?.height ? pinData.height : 20,
+                      },
+                    };
+                  }
+                });
+                this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+                const center = this.commonService.averageGeolocation(this.assets);
+                this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+                this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+                this.mapFitBounds = false;
+                if (!center.latitude && !this.contextApp.metadata?.latitude) {
+                  navigator.geolocation.getCurrentPosition(this.showPosition)
+                }
+                if (!this.centerLatitude || !this.centerLongitude) {
+                  this.centerLatitude = 23.0225;
+                  this.centerLongitude = 72.5714;
+                }
+              } else {
+                this.centerLatitude = this.contextApp.metadata?.latitude;
+                this.centerLongitude = this.contextApp.metadata?.longitude;
+                this.mapFitBounds = false;
+              }
+            },
+            (error) => (this.isGetAssetsAPILoading = false)
+          )
+        );
+      }
+
+      onChangeOfAsset() {
+        const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+        const frequencyArr = [];
+        frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+        frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+        frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+        this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
+        if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
+          // this.onChangeOfAsset(this.filterObj.asset);
+          const records = this.commonService.calculateEstimatedRecords(
+            this.frequency,
+            this.historicalDateFilter.from_date,
+            this.historicalDateFilter.to_date
+          );
+          if (records > this.noOfRecords) {
+            this.historicalDateFilter.isTypeEditable = true;
+          } else {
+            this.historicalDateFilter.isTypeEditable = false;
+          }
+        }
+      }
+      // Common End //
+
+      // Map Start //
+      async mapViewDataContainer() {
+        this.assetModelsList = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
+        if (this.assetModelsList == undefined) {
+          await this.getAssetModelData()
+        }
+        this.contextApp.menu_settings.main_menu.forEach((item) => {
+          if (item.page === 'Live Data' && item.visible === true) {
+            this.displayicon = true;
+            this.tooltipmapicon = item.display_name;
+          } else if (item.page === 'Live Data' && item.visible === false) {
+            this.displayicon = false;
+          }
+        });
+        await this.getAllAssets();
+        await this.getAssets(this.contextApp.user.hierarchy);
+
+        setTimeout(async() => {
+          const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          await this.getAssets(item.hierarchy);
+          // this.assets = this.hierarchyDropdown.getAssets();
+          if(!this.getAssetsAPILoading){
+            if (this.assets.length > 0) {
+              const center = this.commonService.averageGeolocation(this.assets);
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+              if (!center.latitude && !this.contextApp.metadata?.latitude) {
+                navigator.geolocation.getCurrentPosition(this.showPosition)
+              }
+              if (item) {
+                this.loadFromCache(item);
+              } else {
+                this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
+                this.onAssetFilterApply('Assets_map');
+              }
+              if (!this.centerLatitude || !this.centerLongitude) {
+
+                this.centerLatitude = 23.0225;
+                this.centerLongitude = 72.5714;
+              }
+              this.mapFitBounds = false;
+            }
+            else {
+              this.centerLatitude = this.contextApp.metadata?.latitude;
+              this.centerLongitude = this.contextApp.metadata?.longitude;
+              this.mapFitBounds = false;
+            }
+
+
+            const center = this.commonService.averageGeolocation(this.assets);
+            if (!center.latitude && !center.longitude) {
+              this.centerLatitude = this.contextApp.metadata?.latitude;
+              this.centerLongitude = this.contextApp.metadata?.longitude;
+              this.mapFitBounds = false;
+            }
+
+          }
+        }, 200);
+      }
+      modifyIcon(asset: any, assetModelsList?: any[]) {
+        if (asset && assetModelsList) {
+          const assetModel = asset.asset_model;
+          let pinIconUrl = assetModelsList.find(modelData => modelData.name === assetModel).mapPinIcon;
+          return pinIconUrl;
+        }
+      }
+      showPosition = (position) => {
+        this.centerLatitude = position?.coords?.latitude || this.centerLatitude;
+        this.centerLongitude = position.coords.longitude || this.centerLongitude;
+      }
+      onMarkerClick(infowindow, gm) {
+        if (gm?.lastOpen != null) {
+          gm.lastOpen?.close();
+        }
+        gm.lastOpen = infowindow;
+        infowindow.open();
+        this.cdr.detectChanges();
+      }
+      redirectToAsset(asset) {
+        this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
+      }
+      redirectToControlPropertiesAsset(asset) {
+        this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel'], { fragment: 'control_properties' });
+      }
+      redirectToLiveData(asset) {
+        const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        pagefilterObj['hierarchy'] = asset.hierarchy;
+        pagefilterObj['assets'] = asset;
+        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        this.router.navigate(['applications', this.contextApp.app, 'dashboard']);
+      }
+      onClickOfCount(type) {
+        const arr = [];
+        this.activeCircle = type;
+        if (type !== 'all') {
+          this.assets.forEach((asset) => {
+            if (type === 'healthy' && asset?.map_content?.healthy === true) {
+              arr.push(asset);
+            }
+            if (type === 'unhealthy' && asset?.map_content?.healthy === false) {
+              arr.push(asset);
+            }
+          });
+
+          this.mapAssets = JSON.parse(JSON.stringify(arr));
+        } else {
+          this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+        }
+        if (this.mapAssets.length > 0) {
+          this.mapFitBounds = true;
+          const center = this.commonService.averageGeolocation(this.mapAssets);
+          this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+          this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+          // this.zoom = 5;
+        } else {
+          this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+          this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+          this.mapFitBounds = false;
+          // this.zoom = undefined;
+        }
+      }
+      onSave(asset) {
+        this.displayNameUnityModal = asset;
+        $(".unity-modal-card").removeClass("d-none");
+        $(".unity-modal-card").addClass("d-block");
+        $(".unity-backdrop").removeClass("d-none");
+        $(".unity-backdrop").addClass("d-block");
+
+        $(".unity-backdrop").click(() => {
+          $(".pswp__button--close").css("background-color", "#ff0000");
+          $(".close-unity-card").css("fill", "#ffffff");
+          setTimeout(() => {
+            $(".pswp__button--close").css("background-color", "#000000");
+            $(".close-unity-card").css("fill", "#ffffff");
+          }, 1000);
+        });
+        var buildUrl = "assets/Build";
+        this.gameConfig = {
+          dataUrl: buildUrl + "/KemsysBuild.data",
+          frameworkUrl: buildUrl + "/KemsysBuild.framework.js",
+          codeUrl: buildUrl + "/KemsysBuild.wasm",
+          companyName: "DefaultCompany",
+          productName: "API Data",
+          productVersion: "0.1",
+        };
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+          // Mobile device style: fill the whole browser client area with the game canvas:
+          var meta = document.createElement('meta');
+          meta.name = 'viewport';
+          meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+          document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+        createUnityInstance(document.querySelector("#unity-canvas"), this.gameConfig).then((unityInstance) => {
+          this.gameInstance = unityInstance;
+        });
+      }
+      onClose() {
+        $(".unity-modal-card").addClass("d-none");
+        $(".unity-modal-card").removeClass("d-block");
+        $(".unity-backdrop").addClass("d-none");
+        $(".unity-backdrop").removeClass("d-block");
+        this.gameInstance.Quit();
+        this.gameInstance = null;
+      }
+      async changeImagePath(icon:string){
+        this.imagePath ='./assets/img/'+icon;
+        await this.getAllAssets()
+      }
+      // Map End //
+      getTileName() {
+        let selectedItem;
+        this.contextApp.menu_settings.main_menu.forEach((item) => {
+          if (item.page === 'Live Data') {
+            selectedItem = item.showAccordion;
+          }
+        });
+        this.tileData = selectedItem;
+      }
+
+
+      onChildTabChange(value){
+        this.childTab = value;
+      }
+      onChartTblChange(value){
+        this.chartTbl = value;
+      }
+      onAlertCircleTblChange(value){
+        this.alertCircleTbl = value;
+      }
+
+      onAssetFilterBtnClick() {
+        $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
+          e.stopPropagation();
+        });
+        $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+          if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+            e.preventDefault();
+          }
+        });
+      }
+
+      async onSwitchValueChange(event) {
+        $('#overlay').show();
+        this.c2dResponseMessage = [];
+        this.signalRModeValue = event;
+        this.isC2dAPILoading = true;
+        clearInterval(this.c2dResponseInterval);
+        const obj = {
+          method: 'change_asset_mode',
+          asset_id: this.filterObj.asset.asset_id,
+          gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
+          message: {
+            telemetry_mode: !this.signalRModeValue ? 'normal' : 'turbo',
+            asset_id: this.filterObj.asset.asset_id,
+          },
+          app: this.contextApp.app,
+          job_type: 'DirectMethod',
+          request_type: 'Change Asset Mode',
+          job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
+          sub_job_id: null,
+        };
+        obj.sub_job_id = obj.job_id + '_1';
+        this.apiSubscriptions.push(
+          this.assetService
+            .callAssetMethod(obj, this.contextApp.app, this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id)
+            .subscribe(
+              (response: any) => {
+                if (response?.asset_response) {
+                  this.chartService.clearDashboardTelemetryList.emit([]);
+                  const arr = [];
+                  this.telemetryData = JSON.parse(JSON.stringify([]));
+                  this.telemetryData = JSON.parse(JSON.stringify(arr));
+                  this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
+                }
+                this.isC2dAPILoading = false;
+                this.c2dLoadingMessage = undefined;
+                this.telemetryInterval = undefined;
+              },
+              (error) => {
+                this.toasterService.showError(error?.message, 'Change Telemetry Mode');
+                this.signalRModeValue = !this.signalRModeValue;
+                this.isC2dAPILoading = false;
+                this.c2dLoadingMessage = undefined;
+              }
+            )
+        );
+      }
+
+      compareFn(c1, c2): boolean {
+        return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
+      }
+
+  // async getAssets1(hierarchy) {
+  //   return new Promise<void>((resolve1) => {
+  //     const obj = {
+  //       hierarchy: JSON.stringify(hierarchy),
+  //       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+  //     };
+  //     this.apiSubscriptions.push(
+  //       this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
+  //         if (response?.data) {
+  //           this.assets = response.data;
+  //           if (this.assets?.length === 1) {
+  //             this.filterObj.asset = this.assets[0];
+  //             this.onChangeOfAsset();
+  //           }
+  //         }
+  //         resolve1();
+  //       })
+  //     );
+  //   });
+  // }
 
   onTabChange() {
     this.signalRService.disconnectFromSignalR('telemetry');
@@ -572,16 +1022,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                     }
                     prop.type = prop?.type;
                     this.actualPropertyList.push(prop);
-                    // let newProp = {};
-                    // let filteredProp = this.commonService.getMatchingPropertyFromPropertyList(prop.json_key, prop.type, this.propertyList);
-                    // newProp["property"] = filteredProp;
-                    // newProp["type"] = filteredProp?.type;
-                    // newProp["json_key"] = prop?.json_key;
-                    // newProp["title"] = filteredProp?.name;
-                    // newProp["composite_key"] = prop.composite_key
-                    // if (filteredProp) {
-                    //   this.addPropertyInList(filteredProp);
-                    // }
                     propertiesData.push(prop);
                     if (prop?.type === 'Derived KPIs') {
                       widget.derived_kpis = true;
@@ -702,76 +1142,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       if (index === -1) {
         this.widgetPropertyList.push(prop);
       }
-    }
-  }
-
-
-  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false, isFromMainSearch = true) {
-    this.refreshcontrolProperties = true
-    this.propertyList = [];
-    this.c2dResponseMessage = [];
-    this.signalRControlTelemetry = [];
-    $('#overlay').hide();
-    clearInterval(this.c2dResponseInterval);
-    this.signalRService.disconnectFromSignalR('telemetry');
-    this.signalRTelemetrySubscription?.unsubscribe();
-    clearInterval(this.sampleCountInterval);
-    this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
-
-    const obj = JSON.parse(JSON.stringify(filterObj));
-    let asset_model: any;
-    if (obj.asset) {
-      obj.asset_id = obj.asset.asset_id;
-      asset_model = obj.asset.asset_model;
-      delete obj.asset;
-    } else {
-      this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
-      this.telemetryObj = undefined;
-      this.apiTelemetryObj = undefined;
-      this.telemetryData = [];
-      this.liveWidgets = [];
-      this.historicalWidgets = [];
-      this.isFilterSelected = false;
-      return;
-    }
-    // if (
-    //   !this.contextApp?.dashboard_config &&
-    //   !this.contextApp?.dashboard_config?.show_live_widgets &&
-    //   !this.contextApp?.dashboard_config?.show_historical_widgets
-    // ) {
-    //   this.contextApp.dashboard_config = {
-    //     show_live_widgets: true,
-    //   };
-    // }
-    const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
-    pagefilterObj['assets'] = filterObj.asset;
-    //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-
-    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
-    this.isTelemetryDataLoading = true;
-    await this.getAssetData();
-    if (asset_model) {
-
-      this.getTelemetryMode(this.filterObj.asset.asset_id);
-      await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
-      await this.getAssetsModelProperties(asset_model);
-      if (this.propertyList) {
-        let flag = false;
-        this.propertyList.forEach(element => {
-          if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
-            flag = true;
-            return;
-          }
-        });
-        this.controlPropertybtn = flag;
-      }
-      this.sampleCountArr = Array(60).fill(0);
-      this.sampleCountValue = 0;
-      await this.getLiveWidgets(asset_model);
-      this.getLiveWidgetTelemetryDetails(obj);
-
-
     }
   }
 
@@ -1420,152 +1790,15 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       )
     );
   }
+  // openControlPropertiesModal() {
+  //   this.isOpenControlPropertiesModal = true;
+  // }
 
-  openControlPropertiesModal() {
-    this.isOpenControlPropertiesModal = true;
-
-  }
-
-  getAllAssets() {
-    return new Promise<void>((resolve) => {
-      this.isGetAssetsAPILoading = true;
-      const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
-        map_content: true,
-      };
-      this.apiSubscriptions.push(
-        this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
-          (response: any) => {
-            if (response?.data) {
-              this.assets = response.data;
-              this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-              this.isGetAssetsAPILoading = false;
-              this.assets.forEach((asset) => {
-                if (this.environmentApp === 'Kirloskar') {
-                  asset.mttr = '7 Mins';
-                  asset.mtbf = '2 days 5 hours';
-                  asset.gas = '0.4%';
-                  asset.power = '45 SCMH';
-                }
-                if (asset?.map_content?.healthy === true) {
-                  this.healthyAssetCount++;
-                } else if (asset?.map_content?.healthy === false) {
-                  this.unhealthyAssetCount++;
-                }
-                if (
-                  asset.type === this.constantData.IP_ASSET &&
-                  asset?.connection_state?.toLowerCase() === 'connected'
-                ) {
-                  asset.icon = {
-                    url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
-                      ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                      this.blobToken
-                      : './assets/img/iot-assets-green.svg',
-                    scaledSize: {
-                      width: 20,
-                      height: 20,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_ASSET &&
-                  asset?.connection_state?.toLowerCase() === 'disconnected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/assets-red.gif',
-                    scaledSize: {
-                      width: 20,
-                      height: 20,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_GATEWAY &&
-                  asset?.connection_state?.toLowerCase() === 'connected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/iot-gateways-green.svg',
-                    scaledSize: {
-                      width: 20,
-                      height: 20,
-                    },
-                  };
-                } else if (
-                  asset.type === this.constantData.IP_GATEWAY &&
-                  asset?.connection_state?.toLowerCase() === 'disconnected'
-                ) {
-                  asset.icon = {
-                    url: './assets/img/assets-red.gif',
-                    scaledSize: {
-                      width: 20,
-                      height: 20,
-                    },
-                  };
-                } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                  let pinData = this.modifyIcon(asset, this.assetModelsList);
-                  asset.icon = {
-                    url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
-                      ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                      this.blobToken
-                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
-                    scaledSize: {
-                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
-                    },
-                  };
-                }
-                asset.icon = {
-                  url: './assets/img/assets-red.gif',
-                  scaledSize: {
-                    width: 20,
-                    height: 20,
-                  },
-                };
-              });
-              this.originalAssets = JSON.parse(JSON.stringify(this.assets));
-              const center = this.commonService.averageGeolocation(this.assets);
-              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
-              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
-              this.mapFitBounds = false;
-              if (!center.latitude && !this.contextApp.metadata?.latitude) {
-                navigator.geolocation.getCurrentPosition(this.showPosition)
-              }
-              if (!this.centerLatitude || !this.centerLongitude) {
-                this.centerLatitude = 23.0225;
-                this.centerLongitude = 72.5714;
-              }
-            } else {
-              this.centerLatitude = this.contextApp.metadata?.latitude;
-              this.centerLongitude = this.contextApp.metadata?.longitude;
-              this.mapFitBounds = false;
-            }
-            resolve();
-          },
-          (error) => (this.isGetAssetsAPILoading = false)
-        )
-      );
-    });
-  }
-
-  modifyIcon(asset: any, assetModelsList?: any[]) {
-    if (asset && assetModelsList) {
-      const assetModel = asset.asset_model;
-      let pinIconUrl = assetModelsList.find(modelData => modelData.name === assetModel).mapPinIcon;
-      return pinIconUrl;
+  ngAfterViewInit() {
+    if ($('#overlay')) {
+      $('#overlay').hide();
     }
   }
-
-  showPosition = (position) => {
-    this.centerLatitude = position?.coords?.latitude || this.centerLatitude;
-    this.centerLongitude = position.coords.longitude || this.centerLongitude;
-  }
-
-  changeImagePath(icon:string){
-    this.imagePath ='./assets/img/'+icon;
-    this.getAllAssets()
-  }
-
 
   ngOnDestroy() {
     clearInterval(this.refreshInterval);
@@ -1575,7 +1808,4 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     clearInterval(this.c2dResponseInterval);
     this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
   }
-
-
-
 }

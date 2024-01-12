@@ -9,15 +9,16 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AppDataDashboardComponent } from './app-data-dashboard/app-data-dashboard.component';
-import { AppDataDashboardHistoricalComponent } from './app-data-dashboard-historical/app-data-dashboard-historical.component';
 import { AppDataDashboardRoutingModule } from './app-data-dashboard-routing.module';
 import { AgmCoreModule } from '@agm/core';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
+import { AppDashboardHistoricalComponent } from '../app-dashboard/app-dashboard-historical/app-dashboard-historical.component';
 
 @NgModule({
   declarations: [
     AppDataDashboardComponent,
-     AppDataDashboardHistoricalComponent],
+     AppDashboardHistoricalComponent
+    ],
   imports: [
     CommonModule,
     AppDataDashboardRoutingModule,

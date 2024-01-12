@@ -30,14 +30,14 @@ export class AssetService {
       }
     });
 
-    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
-    if (assets) {
-      return new Observable((observer) => {
-        observer.next({
-          data: assets,
-        });
-      });
-    } else {
+    // const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
+    // if (assets) {
+    //   return new Observable((observer) => {
+    //     observer.next({
+    //       data: assets,
+    //     });
+    //   });
+    // } else {
       return this.http
         .get(this.url + String.Format(AppUrls.GET_IoT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
         .pipe(
@@ -49,7 +49,7 @@ export class AssetService {
             return throwError(error);
           })
         );
-    }
+    // }
   }
 
   getLegacyAsset(filterObj, app) {

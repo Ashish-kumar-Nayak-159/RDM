@@ -42,7 +42,7 @@
   display: inline-block;
   border-radius: 50%;
   margin-right: 5px;
-} */ 
+} */
 /* .tab-dashboard{padding: 15px 50px;} */
 .asset-map-view {
   width: 100%;
@@ -148,7 +148,7 @@ margin-right: 5px;} */
   border-radius: 50%;
   margin-right: 5px;} */
 .sub-tab-panel {
-  padding: 15px;
+  padding: 10px;
 }
 .tab-tbl a {
   color: #224abe;
@@ -208,11 +208,11 @@ margin-right: 5px;} */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
 
 agm-map {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - 8rem) !important;
 }
 
 .map-container {
-  position: relative;
+  position: relative !important;
 }
 
 .select-box-map {

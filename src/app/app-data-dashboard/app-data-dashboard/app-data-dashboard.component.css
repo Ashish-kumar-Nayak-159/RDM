@@ -161,6 +161,10 @@ margin-right: 5px;} */
   display: flex;
   justify-content: space-between;
 }
+.total-gateway:hover, .online:hover, .offline:hover{
+  box-shadow: 7px 0px 5px 0px gray;
+  cursor: pointer;
+}
 .card-table {
   border: 1px solid #c7e0f4;
   display: inline-block;
@@ -301,3 +305,41 @@ agm-map {
 .list-view-paddding {padding: 0 12px;}
 .map-card {padding: 15px !important;border: 0;}
 .map-card strong{font-weight: bold;}
+
+
+.table-header{
+  opacity: 0.9;
+  font-weight: 100;
+  font-size: 12px;
+}
+.loadMoreBtn {
+position: absolute !important;
+top:92% !important;
+left: 50% !important;
+z-index: 8 !important;
+width : 10.1vw !important;
+height : 1.1rem !important;
+display: flex !important;
+justify-content: center !important;
+
+}
+.loadMoreBtn a {
+text-decoration: none !important;
+font-size: 14px !important;
+color: blue !important;
+}
+.tablefixHead {
+overflow: auto;
+height: 100%;
+max-height: calc(100vh - 11.9rem - 1rem);
+margin-bottom: 1rem;
+}
+.header-fix{
+position: sticky !important;
+top: 0 !important;
+opacity: 1 !important;
+background-color: white !important;
+}
+.header-fix tr th {
+vertical-align: top !important;
+}

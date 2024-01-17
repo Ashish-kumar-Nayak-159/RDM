@@ -37,7 +37,7 @@
     </div>
     <!-- List View SubTab -->
     <div class="col-12 multi-tab" *ngIf="subTab === 'list_view'">
-      <ul class="chilid-sub-tab status-per-tab">
+      <ul class="chilid-sub-tab status-per-tab py-0 pt-3">
         <li class="active" [ngClass]="{ active: childTab === 'status' }">
           <a (click)="onChildTabChange('status')"><i class="fa fa-cogs fa-fw"></i> Status</a>
         </li>
@@ -87,7 +87,7 @@
               <button
                 type="button"
                 class="btn btn-sm searchBtn btn-primary"
-                (click)="onAssetFilterApply('Assets_map')"
+                (click)="onAssetFilterApply('assets_map')"
               >
                 <em class="fas fa-search fa-sm"></em>
               </button>
@@ -144,7 +144,7 @@
                             </a>&nbsp;&nbsp;
                             <a type="button"
                               *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMV') > -1"
-                              style="z-index: 1;" (click)="redirectToControlPropertiesAsset(asset)"
+                              style="z-index: 1;" (click)="redirectToAssetControlPanel(asset,'control_properties')"
                               class="text-primary d-flex align-items-center" style="gap: 6px;">
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-sliders" viewBox="0 0 16 16">
@@ -216,40 +216,40 @@
         <div class="container">
           <div class="row text-center">
             <div class="col">
-              <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100)">
-                <div class="card-body">
-                  <h2 class="card-title">Total Gateway</h2>
-                  <h1 class="font-weight-bold">6</h1>
-                </div>
+              <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100);" (click)="fetchGateways('')">
+                  <div class="card-body py-3">
+                      <h2 class="card-title">Total Gateway</h2>
+                      <h1 class="font-weight-bold my-0">{{countData.iot_assets}}</h1>
+                  </div>
               </div>
-            </div>
-            <div class="col">
-              <div class="card rounded-top online" style="border-bottom: 9px solid green">
-                <div class="card-body">
-                  <h2 class="card-title">Online</h2>
-                  <h1 class="font-weight-bold">0</h1>
-                </div>
+          </div>
+          <div class="col">
+              <div class="card rounded-top online" style="border-bottom: 9px solid green;" (click)="fetchGateways('connected')">
+                  <div class="card-body py-3">
+                      <h2 class="card-title">Online</h2>
+                      <h1 class="font-weight-bold my-0">{{countData.online}}</h1>
+                  </div>
               </div>
-            </div>
-            <div class="col">
+          </div>
+          <div class="col">
               <div class="card rounded-top offline">
-                <div class="card-body" style="border-bottom: 9px solid #c10606f7">
-                  <h2 class="card-title">Offline</h2>
-                  <h1 class="font-weight-bold">1</h1>
-                </div>
+                  <div class="card-body py-3" style="border-bottom: 9px solid #c10606f7;" (click)="fetchGateways('disconnected')">
+                      <h2 class="card-title">Offline</h2>
+                      <h1 class="font-weight-bold my-0">{{countData.offline}}</h1>
+                  </div>
               </div>
-            </div>
+          </div>
           </div>
         </div>
-        <div class="blue-nav-bar mt-3 pl-0 pr-0">
+        <div class="blue-nav-bar my-1 px-0">
           <div class="d-flex align-items-center">
             <div class="main-heading">
               <form class="form-inline">
                 <app-hierarchy-dropdown
                   #hierarchyDropdown
                   *ngIf="filterObj"
-                  [showAsset]="true"
-                  [closeOnSelection]="true"
+                  [showAsset]="false"
+                  [closeOnSelection]="false"
                   [filterObj]="filterObj"
                   [assets]="assets"
                   (saveHierarchyEvent)="onSaveHierachy($event)"
@@ -260,214 +260,49 @@
                   <button
                     type="button"
                     class="btn btn-sm searchBtn btn-primary"
-                    (click)="onAssetFilterApply()"
-                    [disabled]="isTelemetryDataLoading"
+                    (click)="onAssetFilterApply('gatewayMoniter')"
                   >
                     <em class="fas fa-search fa-sm"></em>
                   </button>
                 </div>
               </form>
             </div>
-
-            <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
             <div class="ml-auto">
               <div class="asset-nav-tabs">
                 <nav>
                   <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                    <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                    href="#" role="tab" aria-controls="nav-provisioned"
-                    aria-selected="true" >
-                    <em class="fab fa-mixcloud mr-2"></em>
-                    <span class="d-none d-md-inline-block">Provisioned</span></a>
-                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                     href="#" role="tab"
-                    aria-controls="nav-unprovisioned" aria-selected="false" >
-                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
                   </div>
                 </nav>
               </div>
             </div>
-            <div class="main-heading pr-3">0 Telemetry/ Day | 0</div>
+            <div class="main-heading pr-3">{{countData.day_telemetry}} Telemetry/ Day | {{countData.total_telemetry}} &nbsp;</div>
           </div>
         </div>
-        <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table-top">
-          <table class="table table-hover mt-3">
-            <thead>
-              <tr>
-                <th scope="col">Sr#</th>
-                <th scope="col">Gateway Id</th>
-                <th scope="col">Name</th>
-                <th scope="col">Status</th>
-                <th scope="col">Ingestion Status</th>
-                <th scope="col">Last Ingestion On</th>
-                <th scope="col">CreatedOn</th>
-                <th scope="col">Live Data</th>
-                <th scope="col">Historical Trend</th>
-                <th scope="col">DPR Data</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-                <td><a href="">Link</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <div>
+          <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
+              (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+
+          <span class="d-flex justify-content-center w-100" style="margin-top: -20px;margin-right:10px;"
+              *ngIf="applications.length > 0 && loadMoreVisibility && assetTotalcount!=currentOffset+currentLimit">
+              <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
+                  (click)="currentOffset = currentOffset + currentLimit ; assetMonitor(state)" placement="bottom"  [ngStyle]="{'pointer-events': loader ? 'none' : 'auto', 'cursor': loader ? 'not-allowed' : 'pointer'}">Load More...</a><em class="fa fa-spinner fa-spin fa-fw fa" *ngIf="loader"></em>
+          </span>
+      </div><br />
+      <div class="text-center">
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
+      </div>
       </div>
       <!--Status-->
       <!--Performance-->
       <div class="asset-map-view" *ngIf="childTab === 'performance'" id="performanceOfAssets">
-        <div class="blue-nav-bar mt-3 pl-0 pr-0">
+        <div class="blue-nav-bar my-0 p-0">
           <div class="d-flex align-items-center">
             <div class="main-heading">
               <form class="form-inline">
                 <app-hierarchy-dropdown
                   #hierarchyDropdown
                   *ngIf="filterObj"
-                  [showAsset]="true"
+                  [showAsset]="false"
                   [closeOnSelection]="true"
                   [filterObj]="filterObj"
                   [assets]="assets"
@@ -487,23 +322,10 @@
                 </div>
               </form>
             </div>
-
-            <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-            tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
             <div class="ml-auto">
               <div class="asset-nav-tabs">
                 <nav>
                   <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                    <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                    href="#" role="tab" aria-controls="nav-provisioned"
-                    aria-selected="true" >
-                    <em class="fab fa-mixcloud mr-2"></em>
-                    <span class="d-none d-md-inline-block">Provisioned</span></a>
-                  <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                     href="#" role="tab"
-                    aria-controls="nav-unprovisioned" aria-selected="false" >
-                    <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                    <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
                   </div>
                 </nav>
               </div>
@@ -512,10 +334,9 @@
         </div>
         <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
           <table class="table table-hover mt-3">
-            <thead>
+            <thead class="table-header header-fix">
               <tr>
-                <th scope="col">Sr#</th>
-                <th scope="col">Gateway Id</th>
+                <th scope="col">sNo.</th>
                 <th scope="col">Name</th>
                 <th scope="col">Date</th>
                 <th scope="col">FM-101 (Suction) Diff. Kg</th>
@@ -531,91 +352,121 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-              </tr>
-              <tr>
-                <td>01</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td><a data-toggle="modal" data-target="#moreInfoModal">More Info.</a></td>
-              </tr>
-            </tbody>
+              <ng-container *ngIf="dailyReportsData?.length">
+                  <ng-container *ngFor="let report of dailyReportsData; let i = index;">
+                      <tr>
+                          <td> {{i+1}}</td>
+                          <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
+                          <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
+                          <td>{{report?.suctionDiff}}</td>
+                          <td>{{report?.dischargeDiff}}</td>
+                          <td>{{report?.fM103Diff}}</td>
+                          <td>{{report?.ventDiff}}</td>
+                          <td>{{report?.totalDiff}}</td>
+                          <td>{{report?.volumetricEfficiency}}</td>
+                          <td>{{report?.fuelConsumption}}</td>
+                          <td>{{report?.powerConsumption}}</td>
+                          <td>{{report?.error}}</td>
+                          <td>
+                              <a type="button" role="button"
+                                  *ngIf="report ? isTabVisible(report)?.visible : ''"
+                                  tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
+                                  <em class="fa fa-eye"></em>
+                              </a>
+                          </td>
+                      </tr>
+                  </ng-container>
+              </ng-container>
+              <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                  <tr>
+                      <td colspan="12">Daily Reports not available.</td>
+                  </tr>
+              </ng-container>
+              <ng-container *ngIf="dailyReportApiLoading">
+                  <tr>
+                      <td colspan="12">
+                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                      </td>
+                  </tr>
+              </ng-container>
+          </tbody>
           </table>
         </div>
+
+        <!-- <div class="overlap-wrapper" [class]=" loadMoreVisible ? 'pb-5' : 'pb-4' ">
+          <div class="over-lap">
+              <div class="table-responsive">
+                  <div class="tablefixHead">
+                      <table class="table table-hover table-behavior" aria-describedby="">
+                          <thead class="table-header header-fix">
+                              <tr>
+                                  <th scope="col">No</th>
+                                  <th scope="col">Asset Name</th>
+                                  <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                                  <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                                  <th scope="col">FM-103 (IC) Diff. Kg</th>
+                                  <th scope="col">Vent Diff. Kg</th>
+                                  <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
+                                  <th scope="col">% Volumetric Eff.</th>
+                                  <th scope="col">Fuel Consumption KG/HR</th>
+                                  <th scope="col">Power Consumption KW/HR</th>
+                                  <th scope="col">Error (%)</th>
+                                  <th scope="col">Action</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <ng-container *ngIf="dailyReportsData?.length">
+                                  <ng-container *ngFor="let report of dailyReportsData; let i = index;">
+                                      <tr>
+                                          <td> {{i+1}} </td>
+                                          <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
+                                          <td>{{report?.suctionDiff}}</td>
+                                          <td>{{report?.dischargeDiff}}</td>
+                                          <td>{{report?.fM103Diff}}</td>
+                                          <td>{{report?.ventDiff}}</td>
+                                          <td>{{report?.totalDiff}}</td>
+                                          <td>{{report?.volumetricEfficiency}}</td>
+                                          <td>{{report?.fuelConsumption}}</td>
+                                          <td>{{report?.powerConsumption}}</td>
+                                          <td>{{report?.error}}</td>
+                                          <td>
+                                              <a type="button" role="button"
+                                                  *ngIf="report ? isTabVisible(report)?.visible : ''"
+                                                  tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
+                                                  <em class="fa fa-eye"></em>
+                                              </a>
+                                          </td>
+                                      </tr>
+                                  </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                                  <tr>
+                                      <td colspan="12">Daily Reports not available.</td>
+                                  </tr>
+                              </ng-container>
+                              <ng-container *ngIf="dailyReportApiLoading">
+                                  <tr>
+                                      <td colspan="12">
+                                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                                      </td>
+                                  </tr>
+                              </ng-container>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+
+          </div>
+      </div> -->
+      <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
+          <span class="pull-center " >
+              <a href="javascript:void(0)" class=" "
+                  (click)="preOffset = preOffset + preLimit; loadMoreReports();" >Load More...</a>
+          </span>
       </div>
-      <!--Performance-->
+
+      </div>
+      <!--Performance End-->
     </div>
   </div>
   <!-- Alerts Tab -->
@@ -1052,27 +903,21 @@
   </div>
 
   <!-- DPR Table -->
-  <div
-    class="modal fade"
-    id="moreInfoModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="moreInfoModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel">
+    <div *ngIf="!dailyReportApiLoading" class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="moreInfoModalLabel">PGS-557</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title" id="moreInfoModalLabel">{{reportBtnData?.assetName ? reportBtnData?.assetName : reportBtnData?.assetId }}</h5>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Close" >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
+          <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table" >
             <table class="table table-hover mt-3">
               <thead>
                 <tr>
+                  <th scope="col">SNo.</th>
                   <th scope="col">Date</th>
                   <th scope="col">FM-101 (Suction) Diff. Kg</th>
                   <th scope="col">FM-102 (Discharge) Diff. Kg</th>
@@ -1086,186 +931,35 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-                <tr>
-                  <td>01</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
+                <ng-container *ngIf="dailyReportsData?.length">
+                  <ng-container *ngFor="let report of assetDailyReport; let i = index;">
+                      <tr>
+                          <td> {{i+1}}</td>
+                          <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
+                          <td>{{report?.suctionDiff}}</td>
+                          <td>{{report?.dischargeDiff}}</td>
+                          <td>{{report?.fM103Diff}}</td>
+                          <td>{{report?.ventDiff}}</td>
+                          <td>{{report?.totalDiff}}</td>
+                          <td>{{report?.fuelConsumption}}</td>
+                          <td>{{report?.powerConsumption}}</td>
+                          <td>{{report?.volumetricEfficiency}}</td>
+                          <td>{{report?.error}}</td>
+                      </tr>
+                  </ng-container>
+              </ng-container>
+              <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                  <tr>
+                      <td colspan="12">Daily Reports not available.</td>
+                  </tr>
+              </ng-container>
+              <ng-container *ngIf="dailyReportApiLoading">
+                  <tr>
+                      <td colspan="12">
+                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                      </td>
+                  </tr>
+              </ng-container>
               </tbody>
             </table>
           </div>

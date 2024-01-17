@@ -355,6 +355,9 @@ export class ControlPropertiesComponent implements OnInit {
       detail['syncUp'] = false;
       return detail;
     });
+    this.controlproperties = this.properties
+      ?.filter((detail) => { return detail && detail.metadata && (detail.metadata.rw == 'w' || detail.metadata.rw == 'rw') })
+    this.controlproperties = this.controlproperties.map((prop) => { return { ...prop, new_value: prop["json_model"][prop.json_key].defaultValue } });
     this.isEnteredAnyValue = false;
     this.checkBoxvalue = false;
     this.masterSelected = false;

@@ -48,8 +48,8 @@
     </div>
     <!-- Assets Map View Tab -->
     <div class="w-100 list-view-paddding" *ngIf="subTab === 'map_view'">
-      <div class="" *ngIf="isGetAssetsAPILoading">Loading<em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
-      <div class="asset-map-view" id="mapOfAssets" *ngIf=" !isGetAssetsAPILoading" >
+      <div class="mt-2" *ngIf="isGetAssetsAPILoading || assetModelAPILoading">Loading<em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
+      <div class="asset-map-view" id="mapOfAssets" *ngIf=" !isGetAssetsAPILoading && !assetModelAPILoading" >
         <div class="main-heading">
           <form class="form-inline">
             <ng-container *ngIf="environmentApp === 'SopanCMS'">
@@ -75,8 +75,9 @@
             </ng-container>
             <app-hierarchy-dropdown
               #hierarchyDropdown
+              *ngIf="!isGetAssetsAPILoading"
               [showAsset]="false"
-              [closeOnSelection]="true"
+              [closeOnSelection]="false"
               [filterObj]="filterObj"
               [assets]="assets"
               (saveHierarchyEvent)="onSaveHierachy($event)"
@@ -211,12 +212,12 @@
     </div>
     <!--list_view-->
     <div class="w-100 list-view-paddding" *ngIf="subTab === 'list_view'">
-      <!--Status-->
+      <!--Status Start-->
       <div class="asset-map-view" *ngIf="childTab === 'status'" id="statusOfAssets">
         <div class="container">
           <div class="row text-center">
             <div class="col">
-              <div class="card rounded-top total-gateway" style="border-bottom: 9px solid rgb(105, 100, 100);" (click)="fetchGateways('')">
+              <div class="card rounded-top total-gateway" [style.border-top]="state === '' ? '2px solid black' : 'white'" style="border-bottom: 9px solid rgb(105, 100, 100);" (click)="fetchGateways('')">
                   <div class="card-body py-3">
                       <h2 class="card-title">Total Gateway</h2>
                       <h1 class="font-weight-bold my-0">{{countData.iot_assets}}</h1>
@@ -224,7 +225,7 @@
               </div>
           </div>
           <div class="col">
-              <div class="card rounded-top online" style="border-bottom: 9px solid green;" (click)="fetchGateways('connected')">
+              <div class="card rounded-top online" [style.border-top]="state === 'connected' ? '2px solid black' : 'white'" style="border-bottom: 9px solid green" (click)="fetchGateways('connected')">
                   <div class="card-body py-3">
                       <h2 class="card-title">Online</h2>
                       <h1 class="font-weight-bold my-0">{{countData.online}}</h1>
@@ -232,8 +233,8 @@
               </div>
           </div>
           <div class="col">
-              <div class="card rounded-top offline">
-                  <div class="card-body py-3" style="border-bottom: 9px solid #c10606f7;" (click)="fetchGateways('disconnected')">
+              <div class="card rounded-top offline" [style.border-top]="state === 'disconnected' ? '2px solid black' : 'white'"style="border-bottom: 9px solid #c10606f7;"  >
+                  <div class="card-body py-3" (click)="fetchGateways('disconnected')">
                       <h2 class="card-title">Offline</h2>
                       <h1 class="font-weight-bold my-0">{{countData.offline}}</h1>
                   </div>
@@ -247,7 +248,6 @@
               <form class="form-inline">
                 <app-hierarchy-dropdown
                   #hierarchyDropdown
-                  *ngIf="filterObj"
                   [showAsset]="false"
                   [closeOnSelection]="false"
                   [filterObj]="filterObj"
@@ -278,22 +278,22 @@
             <div class="main-heading pr-3">{{countData.day_telemetry}} Telemetry/ Day | {{countData.total_telemetry}} &nbsp;</div>
           </div>
         </div>
-        <div>
+        <div class="dataTableHeight" *ngIf="!loader">
           <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
               (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
-          <span class="d-flex justify-content-center w-100" style="margin-top: -20px;margin-right:10px;"
-              *ngIf="applications.length > 0 && loadMoreVisibility && assetTotalcount!=currentOffset+currentLimit">
+          <span class="d-flex justify-content-center w-100 py-2" style="margin-top: -27px;margin-right:10px;"
+              *ngIf="applications?.length > 0 && loadMoreVisibility && assetTotalcount!=currentOffset+currentLimit">
               <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
                   (click)="currentOffset = currentOffset + currentLimit ; assetMonitor(state)" placement="bottom"  [ngStyle]="{'pointer-events': loader ? 'none' : 'auto', 'cursor': loader ? 'not-allowed' : 'pointer'}">Load More...</a><em class="fa fa-spinner fa-spin fa-fw fa" *ngIf="loader"></em>
           </span>
       </div><br />
-      <div class="text-center">
-          <em class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="loader"></em>
+      <div class="text-center" *ngIf="loader">
+          <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
       </div>
       </div>
-      <!--Status-->
-      <!--Performance-->
+      <!--Status End-->
+      <!--Performance Start-->
       <div class="asset-map-view" *ngIf="childTab === 'performance'" id="performanceOfAssets">
         <div class="blue-nav-bar my-0 p-0">
           <div class="d-flex align-items-center">
@@ -301,7 +301,6 @@
               <form class="form-inline">
                 <app-hierarchy-dropdown
                   #hierarchyDropdown
-                  *ngIf="filterObj"
                   [showAsset]="false"
                   [closeOnSelection]="true"
                   [filterObj]="filterObj"
@@ -314,8 +313,7 @@
                   <button
                     type="button"
                     class="btn btn-sm searchBtn btn-primary"
-                    (click)="onAssetFilterApply()"
-                    [disabled]="isTelemetryDataLoading"
+                    (click)="onAssetFilterApply('performance')"
                   >
                     <em class="fas fa-search fa-sm"></em>
                   </button>
@@ -332,138 +330,75 @@
             </div>
           </div>
         </div>
-        <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
-          <table class="table table-hover mt-3">
-            <thead class="table-header header-fix">
-              <tr>
-                <th scope="col">sNo.</th>
-                <th scope="col">Name</th>
-                <th scope="col">Date</th>
-                <th scope="col">FM-101 (Suction) Diff. Kg</th>
-                <th scope="col">FM-102 (Discharge) Diff. Kg</th>
-                <th scope="col">FM-103 (IC) Diff. Kg</th>
-                <th scope="col">Vent Diff. Kg</th>
-                <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-                <th scope="col">Fuel Consumption</th>
-                <th scope="col">Power Consumption</th>
-                <th scope="col">% Volumetric Eff.</th>
-                <th scope="col">Error %</th>
-                <th scope="col">Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngIf="dailyReportsData?.length">
-                  <ng-container *ngFor="let report of dailyReportsData; let i = index;">
-                      <tr>
-                          <td> {{i+1}}</td>
-                          <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
-                          <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
-                          <td>{{report?.suctionDiff}}</td>
-                          <td>{{report?.dischargeDiff}}</td>
-                          <td>{{report?.fM103Diff}}</td>
-                          <td>{{report?.ventDiff}}</td>
-                          <td>{{report?.totalDiff}}</td>
-                          <td>{{report?.volumetricEfficiency}}</td>
-                          <td>{{report?.fuelConsumption}}</td>
-                          <td>{{report?.powerConsumption}}</td>
-                          <td>{{report?.error}}</td>
-                          <td>
-                              <a type="button" role="button"
-                                  *ngIf="report ? isTabVisible(report)?.visible : ''"
-                                  tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
-                                  <em class="fa fa-eye"></em>
-                              </a>
-                          </td>
-                      </tr>
-                  </ng-container>
-              </ng-container>
-              <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
-                  <tr>
-                      <td colspan="12">Daily Reports not available.</td>
-                  </tr>
-              </ng-container>
-              <ng-container *ngIf="dailyReportApiLoading">
-                  <tr>
-                      <td colspan="12">
-                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
-                      </td>
-                  </tr>
-              </ng-container>
-          </tbody>
-          </table>
-        </div>
-
-        <!-- <div class="overlap-wrapper" [class]=" loadMoreVisible ? 'pb-5' : 'pb-4' ">
-          <div class="over-lap">
-              <div class="table-responsive">
-                  <div class="tablefixHead">
-                      <table class="table table-hover table-behavior" aria-describedby="">
-                          <thead class="table-header header-fix">
-                              <tr>
-                                  <th scope="col">No</th>
-                                  <th scope="col">Asset Name</th>
-                                  <th scope="col">FM-101 (Suction) Diff. Kg</th>
-                                  <th scope="col">FM-102 (Discharge) Diff. Kg</th>
-                                  <th scope="col">FM-103 (IC) Diff. Kg</th>
-                                  <th scope="col">Vent Diff. Kg</th>
-                                  <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-                                  <th scope="col">% Volumetric Eff.</th>
-                                  <th scope="col">Fuel Consumption KG/HR</th>
-                                  <th scope="col">Power Consumption KW/HR</th>
-                                  <th scope="col">Error (%)</th>
-                                  <th scope="col">Action</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <ng-container *ngIf="dailyReportsData?.length">
-                                  <ng-container *ngFor="let report of dailyReportsData; let i = index;">
-                                      <tr>
-                                          <td> {{i+1}} </td>
-                                          <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
-                                          <td>{{report?.suctionDiff}}</td>
-                                          <td>{{report?.dischargeDiff}}</td>
-                                          <td>{{report?.fM103Diff}}</td>
-                                          <td>{{report?.ventDiff}}</td>
-                                          <td>{{report?.totalDiff}}</td>
-                                          <td>{{report?.volumetricEfficiency}}</td>
-                                          <td>{{report?.fuelConsumption}}</td>
-                                          <td>{{report?.powerConsumption}}</td>
-                                          <td>{{report?.error}}</td>
-                                          <td>
-                                              <a type="button" role="button"
-                                                  *ngIf="report ? isTabVisible(report)?.visible : ''"
-                                                  tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
-                                                  <em class="fa fa-eye"></em>
-                                              </a>
-                                          </td>
-                                      </tr>
-                                  </ng-container>
-                              </ng-container>
-                              <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
-                                  <tr>
-                                      <td colspan="12">Daily Reports not available.</td>
-                                  </tr>
-                              </ng-container>
-                              <ng-container *ngIf="dailyReportApiLoading">
-                                  <tr>
-                                      <td colspan="12">
-                                          <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
-                                      </td>
-                                  </tr>
-                              </ng-container>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-
+        <div class="dataTableHeight">
+          <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
+            <table class="table table-hover mt-3">
+              <thead class="table-header header-fix">
+                <tr>
+                  <th scope="col">sNo.</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                  <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                  <th scope="col">FM-103 (IC) Diff. Kg</th>
+                  <th scope="col">Vent Diff. Kg</th>
+                  <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
+                  <th scope="col">Fuel Consumption</th>
+                  <th scope="col">Power Consumption</th>
+                  <th scope="col">% Volumetric Eff.</th>
+                  <th scope="col">Error %</th>
+                  <th scope="col">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="dailyReportsData?.length">
+                    <ng-container *ngFor="let report of dailyReportsData; let i = index;">
+                        <tr>
+                            <td> {{i+1}}</td>
+                            <td> {{report?.assetName ? report.assetName : report?.assetId}} </td>
+                            <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
+                            <td>{{report?.suctionDiff}}</td>
+                            <td>{{report?.dischargeDiff}}</td>
+                            <td>{{report?.fM103Diff}}</td>
+                            <td>{{report?.ventDiff}}</td>
+                            <td>{{report?.totalDiff}}</td>
+                            <td>{{report?.volumetricEfficiency}}</td>
+                            <td>{{report?.fuelConsumption}}</td>
+                            <td>{{report?.powerConsumption}}</td>
+                            <td>{{report?.error}}</td>
+                            <td>
+                                <a type="button" role="button"
+                                    *ngIf="report ? isTabVisible(report)?.visible : ''"
+                                    tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
+                                    <em class="fa fa-eye"></em>
+                                </a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                    <tr>
+                        <td colspan="12">Daily Reports not available.</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="dailyReportApiLoading">
+                    <tr>
+                        <td colspan="12">
+                            <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+            </table>
           </div>
-      </div> -->
-      <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
-          <span class="pull-center " >
-              <a href="javascript:void(0)" class=" "
-                  (click)="preOffset = preOffset + preLimit; loadMoreReports();" >Load More...</a>
-          </span>
-      </div>
+
+        <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
+            <span class="pull-center " >
+                <a href="javascript:void(0)" class=" "
+                    (click)="preOffset = preOffset + preLimit; loadMoreReports();" >Load More...</a>
+            </span>
+          </div>
+        </div>
 
       </div>
       <!--Performance End-->

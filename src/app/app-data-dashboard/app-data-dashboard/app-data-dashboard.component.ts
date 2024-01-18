@@ -93,6 +93,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   gameInstance: any;
   gameConfig: any;
   getAssetsAPILoading = false;
+  assetModelAPILoading = false;
   ////Assets Map View end ////
 
   // Asset List View Start //
@@ -107,7 +108,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
   applications: any = [];
   currentOffset = 0;
-  state:string;
+  state:string = '';
   currentLimit = 10;
   hierarchy: any;
   loadMoreVisibility: boolean = true;
@@ -232,6 +233,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
         if( this.mainTab == 'assets' && sTabName === 'map_view')
         {
+          this.filterObj= {};
+          this.assets= [];
+          this.configuredHierarchy={};
+          this.mapAssets = [];
           await this.mapViewDataContainer();
         }
         else{
@@ -242,11 +247,21 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       onChildTabChange(value){ //Inner Sub Tab
         this.childTab = value;
         if(this.mainTab == 'assets' && this.subTab === 'list_view'){
+          this.filterObj= {};
+          this.assets= [];
+          this.configuredHierarchy={};
           if(this.childTab === 'status' ){
             this.gatewayMonitoringContainer();
           }
           else{
             if(this.childTab === 'performance'){
+
+              setTimeout(()=>{
+                this.loadFromCache();
+              },200);
+              this.preOffset = 0;
+              this.preLimit = 10;
+              this.currentLimit = 10;
               this.performanceTab();
             }
           }
@@ -259,61 +274,19 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.originalFilter = {};
         }
-        // if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-        //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        //   this.historicalDateFilter.dateOption = item.dateOption;
-        //   if (item.dateOption !== 'Custom Range') {
-        //     const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-        //     this.historicalDateFilter.from_date = dateObj.from_date;
-        //     this.historicalDateFilter.to_date = dateObj.to_date;
-        //     // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-        //   } else {
-        //     this.historicalDateFilter.from_date = item.from_date;
-        //     this.historicalDateFilter.to_date = item.to_date;
-        //     // this.historicalDateFilter.last_n_secs = undefined;
-        //   }
-        //   // this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-        //   // this.historicalDateFilter.to_date = moment().utc().unix();
-        //   // this.historicalDateFilter.last_n_secs = this.historicalDateFilter.to_date - this.historicalDateFilter.from_date;
-        //   this.historicalDateFilter.widgets = [];
-        //   this.selectedDateRange = this.historicalDateFilter.dateOption;
-        //   this.historicalDateFilter.type = true;
-        //   this.historicalDateFilter.sampling_format = 'minute';
-        //   this.historicalDateFilter.sampling_time = 1;
-        // }
-
-        // this.originalFilter = {};
-        // if (this.filterObj.asset) {
-        //   this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-        //   this.onChangeOfAsset();
-        // }
-
-        // this.selectedDateRange = ''
-        // this.historicalDateFilter.dateOption = ''
-        // const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        // this.historicalDateFilter.dateOption = item.dateOption
-        // setTimeout(() => {
-        //   this.selectedDateRange = this.historicalDateFilter.dateOption
-        // }, 200);
-
-        // this.historicalWidgets = [];
       }
       onClearHierarchy(configuredHierarchy: any) {
         this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
         if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.hierarchy = { App: this.selectedApp };
         }
-        // this.isFilterSelected = false;
-        // this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
-        // this.frequency = undefined;
-        // this.controlPropertybtn = false;
       }
 
       async onAssetFilterApply(filterType? , updateFilterObj = true, filterObj?, historicalWidgetUpgrade = false, isFromMainSearch = true) {
         if( filterType === 'assets_map' ){
           this.activeCircle = 'all';
-          this.assets = this.hierarchyDropdown?.getAssets();
-          this.mapAssets = this.assets?.length ? JSON.parse(JSON.stringify(this.assets)) : [] ;
+          this.assets = this.hierarchyDropdown.getAssets();
+          this.mapAssets =JSON.parse(JSON.stringify(this.assets));
           this.healthyAssetCount = 0;
           this.unhealthyAssetCount = 0;
           this.assets.forEach((assetObj) => {
@@ -383,70 +356,85 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             }
           }
           else{
-            this.refreshcontrolProperties = true
-            this.propertyList = [];
-            this.c2dResponseMessage = [];
-            this.signalRControlTelemetry = [];
-            $('#overlay').hide();
-            clearInterval(this.c2dResponseInterval);
-            this.signalRService.disconnectFromSignalR('telemetry');
-            this.signalRTelemetrySubscription?.unsubscribe();
-            clearInterval(this.sampleCountInterval);
-            this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
+            if( filterType == 'performance' ){
+              if (updateFilterObj) {
+                const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+                pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+                Object.keys(this.configuredHierarchy).forEach((key) => {
+                  if (this.configuredHierarchy[key]) {
+                    pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+                  }
+                });
+                delete pagefilterObj.assets;
+                this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+                await this.performanceTab();
+              }
+            }else
+            {
+              this.refreshcontrolProperties = true
+              this.propertyList = [];
+              this.c2dResponseMessage = [];
+              this.signalRControlTelemetry = [];
+              $('#overlay').hide();
+              clearInterval(this.c2dResponseInterval);
+              this.signalRService.disconnectFromSignalR('telemetry');
+              this.signalRTelemetrySubscription?.unsubscribe();
+              clearInterval(this.sampleCountInterval);
+              this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
 
-            const obj = JSON.parse(JSON.stringify(filterObj));
-            let asset_model: any;
-            if (obj.asset) {
-              obj.asset_id = obj.asset.asset_id;
-              asset_model = obj.asset.asset_model;
-              delete obj.asset;
-            } else {
-              this.toasterService.showError('Asset selection is required', 'View Live Telemetry11');
-              this.telemetryObj = undefined;
-              this.apiTelemetryObj = undefined;
-              this.telemetryData = [];
-              this.liveWidgets = [];
-              this.historicalWidgets = [];
-              this.isFilterSelected = false;
-              return;
-          }
-          // if (
-          //   !this.contextApp?.dashboard_config &&
-          //   !this.contextApp?.dashboard_config?.show_live_widgets &&
-          //   !this.contextApp?.dashboard_config?.show_historical_widgets
-          // ) {
-          //   this.contextApp.dashboard_config = {
-          //     show_live_widgets: true,
-          //   };
-          // }
-          const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-          pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
-          pagefilterObj['assets'] = filterObj.asset;
-          //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-
-          this.originalFilter = JSON.parse(JSON.stringify(filterObj));
-          this.isTelemetryDataLoading = true;
-          await this.getAssetData();
-          if (asset_model) {
-
-            this.getTelemetryMode(this.filterObj.asset.asset_id);
-            await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
-            await this.getAssetsModelProperties(asset_model);
-            if (this.propertyList) {
-              let flag = false;
-              this.propertyList.forEach(element => {
-                if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
-                  flag = true;
-                  return;
-                }
-              });
-              this.controlPropertybtn = flag;
+              const obj = JSON.parse(JSON.stringify(filterObj));
+              let asset_model: any;
+              if (obj.asset) {
+                obj.asset_id = obj.asset.asset_id;
+                asset_model = obj.asset.asset_model;
+                delete obj.asset;
+              } else {
+                this.toasterService.showError('Asset selection is required', 'View Live Telemetry11');
+                this.telemetryObj = undefined;
+                this.apiTelemetryObj = undefined;
+                this.telemetryData = [];
+                this.liveWidgets = [];
+                this.historicalWidgets = [];
+                this.isFilterSelected = false;
+                return;
             }
-            this.sampleCountArr = Array(60).fill(0);
-            this.sampleCountValue = 0;
-            await this.getLiveWidgets(asset_model);
-            this.getLiveWidgetTelemetryDetails(obj);
+            // if (
+            //   !this.contextApp?.dashboard_config &&
+            //   !this.contextApp?.dashboard_config?.show_live_widgets &&
+            //   !this.contextApp?.dashboard_config?.show_historical_widgets
+            // ) {
+            //   this.contextApp.dashboard_config = {
+            //     show_live_widgets: true,
+            //   };
+            // }
+            const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+            pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+            pagefilterObj['assets'] = filterObj.asset;
+            //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
 
+            this.originalFilter = JSON.parse(JSON.stringify(filterObj));
+            this.isTelemetryDataLoading = true;
+            await this.getAssetData();
+            if (asset_model) {
+
+              this.getTelemetryMode(this.filterObj.asset.asset_id);
+              await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
+              await this.getAssetsModelProperties(asset_model);
+              if (this.propertyList) {
+                let flag = false;
+                this.propertyList.forEach(element => {
+                  if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
+                    flag = true;
+                    return;
+                  }
+                });
+                this.controlPropertybtn = flag;
+              }
+              this.sampleCountArr = Array(60).fill(0);
+              this.sampleCountValue = 0;
+              await this.getLiveWidgets(asset_model);
+              this.getLiveWidgetTelemetryDetails(obj);
+            }
           }
           }
         }
@@ -485,30 +473,30 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       // Common Start //
       loadFromCache(item?) {
         if(item && this.mainTab == 'assets' && this.subTab == 'map_view'){
-          setTimeout(()=>{
             this.hierarchyDropdown?.updateHierarchyDetail(item);
             if (item.hierarchy) {
               this.assets = this.hierarchyDropdown?.getAssets();
               this.onAssetFilterApply('assets_map',false);
             }
-          }, 200);
         }
         else{
           const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-          if(this.mainTab == 'assets' && this.subTab == 'list_view' &&  this.childTab === 'status' || this.childTab === 'performance' ){
+          if(this.mainTab == 'assets' && this.subTab == 'list_view' &&  (this.childTab === 'status' || this.childTab === 'performance') ){
             if (item1) {
-              if (item?.hierarchy)
-                this.hierarchy = item?.hierarchy;
-            }
-          }else{
-            if (item1) {
-              if (item1.assets) {
-                this.filterObj.asset = item1.assets;
-                this.onChangeOfAsset();
-                this.onAssetFilterApply(this.filterObj, false, true, true);
-              }
+              this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item1)));
+              if (item1?.hierarchy)
+                this.hierarchy = item1?.hierarchy;
             }
           }
+          // else{
+          //   if (item1) {
+          //     if (item1.assets) {
+          //       this.filterObj.asset = item1.assets;
+          //       this.onChangeOfAsset();
+          //       this.onAssetFilterApply(this.filterObj, false, true, true);
+          //     }
+          //   }
+          // }
         }
       }
 
@@ -532,7 +520,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       async getAssets(hierarchy) {
-        this.getAssetsAPILoading = true;
         return new Promise<void>((resolve1) => {
           const obj = {
             hierarchy: JSON.stringify(hierarchy),
@@ -541,42 +528,28 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           this.apiSubscriptions.push(
             this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
               if (response?.data) {
-                this.assets = response.data;
-                if (this.assets?.length === 1) {
-                  this.filterObj.asset = this.assets[0];
-                  this.onChangeOfAsset();
-                }
+                //this.assets = response.data;
                 this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, this.assets);
-                this.getAssetsAPILoading = false;
               }
               resolve1();
-            },
-            (error)=> {this.getAssetsAPILoading = false; })
+            })
           );
         });
       }
 
-      getAllAssets(hierarchy? : any) {
-        return new Promise<void>((resolve1) => {
+      getAllAssets() {
+        return new Promise<void>((resolve) => {
           this.isGetAssetsAPILoading = true;
           const obj = {
-            hierarchy: hierarchy ? JSON.stringify(hierarchy) : JSON.stringify(this.contextApp.user.hierarchy),
+            hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
             type: CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_ASSET,
             map_content: true,
           };
           this.apiSubscriptions.push(
-            // this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
-            this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
+            this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
               (response: any) => {
                 if (response?.data) {
                   this.assets = response.data;
-
-                  if (this.assets?.length === 1) {
-                    this.filterObj.asset = this.assets[0];
-                    this.onChangeOfAsset();
-                  }
-                  this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, this.assets);
-
                   this.mapAssets = JSON.parse(JSON.stringify(this.assets));
                   this.isGetAssetsAPILoading = false;
                   this.assets.forEach((asset) => {
@@ -648,8 +621,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                           this.blobToken
                           : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
                         scaledSize: {
-                          width: this.assetModelsList && pinData !== undefined && pinData && pinData?.width ? pinData.width : 20,
-                          height: this.assetModelsList && pinData !== undefined && pinData && pinData?.height ? pinData.height : 20,
+                          width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
+                          height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
                         },
                       };
                     }
@@ -671,12 +644,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                   this.centerLongitude = this.contextApp.metadata?.longitude;
                   this.mapFitBounds = false;
                 }
-                resolve1();
+                resolve();
               },
               (error) => (this.isGetAssetsAPILoading = false)
             )
           );
-          })
+        });
       }
 
       onChangeOfAsset() {
@@ -719,7 +692,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
         try {
           const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-          await this.getAllAssets(item.hierarchy); // Get all Assets with map icon Details
+          await this.getAllAssets();
+          await this.getAssets(this.contextApp.user.hierarchy);
 
           if (this.assets?.length > 0) {
             const center = this.commonService.averageGeolocation(this.assets);
@@ -752,6 +726,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.mapFitBounds = false;
           }
         } catch (error) {
+          this.toasterService.showError(error?.message, "Error");
         }
       }
       modifyIcon(asset: any, assetModelsList?: any[]) {
@@ -1027,8 +1002,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             },
           ],
         };
-
-
       }
       onTableFunctionCall(obj) {
         if(obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')){
@@ -1171,19 +1144,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       // Status End //
       // performance Start //
       async performanceTab(){
-        // //
-        this.preOffset = 0;
-        this.preLimit = 10;
-        this.currentLimit = 10;
         let filterObj: any = {};
         const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
         await this.getAssets(item.hierarchy);
-        // setTimeout(()=>{
-        //   this.hierarchyDropdown?.updateHierarchyDetail(item);
-        //   if (item.hierarchy) {
-        //     this.assets = this.hierarchyDropdown?.getAssets();
-        //   }
-        // }, 0);
         item.dateOption = "Yesterday";
         if (item) {
           if (item?.dateOption) {
@@ -1194,7 +1157,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.selectedDateRange = item.dateOption;
             filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
             filterObj.to_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
-            this.getDailyReportSubscription(filterObj,'report');
+            this.getDailyReportSubscription(filterObj);
           }
         }
       }
@@ -1202,7 +1165,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         return  datefns.format(new Date(dateInfo * 1000), "yyyy-MM-dd").toString();
       }
 
-      getDailyReportSubscription(filterObj: any, reportType = undefined){
+      getDailyReportSubscription(filterObj: any){
         this.dailyReportsData = [];
         // this.dailyReportApiLoading= false;
 
@@ -1211,20 +1174,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           newHierarchy[level] = index != 0 ? this.configuredHierarchy[index] : this.contextApp.app;
         });
         let obj = {
-          // offset: this.preOffset,
-          // count: this.preLimit,
+          offset: this.preOffset,
+          count: this.preLimit,
           hierarchy: JSON.stringify(Object.keys(this.configuredHierarchy)?.length <= 0 ? this.contextApp?.user?.hierarchy : newHierarchy),
           fromDate: filterObj?.from_date,
           toDate: filterObj?.to_date
         }
-        if(reportType == 'report' ){
-          obj['offset'] = this.preOffset;
-          obj['count'] = this.preLimit;
-        }
-        if(filterObj?.assetId && reportType == undefined){
-          obj['assetId']= filterObj.assetId;
-        }
-
         this.dailyReportApiLoading = true;
         this.loadingMessage = "Loading Data, Please Wait...";
         this.loadMoreVisible = true;
@@ -1232,19 +1187,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           if (response?.data) {
             let resData = response?.data;
             this.dailyReportApiLoading = false;
-            if(reportType = 'report'){
-              this.dailyReportsData = [
-                ...this.dailyReportsData,
-                ...resData
-              ]
-              this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
-            }
-            else{
-              this.assetDailyReport = [
-                ...this.assetDailyReport,
-                ...resData
-              ]
-            }
+            this.dailyReportsData = [
+              ...this.dailyReportsData,
+              ...resData
+            ]
+            this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
           }
         },
           (error: any) => {
@@ -1441,27 +1388,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       compareFn(c1, c2): boolean {
         return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
       }
-
-  // async getAssets1(hierarchy) {
-  //   return new Promise<void>((resolve1) => {
-  //     const obj = {
-  //       hierarchy: JSON.stringify(hierarchy),
-  //       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
-  //     };
-  //     this.apiSubscriptions.push(
-  //       this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
-  //         if (response?.data) {
-  //           this.assets = response.data;
-  //           if (this.assets?.length === 1) {
-  //             this.filterObj.asset = this.assets[0];
-  //             this.onChangeOfAsset();
-  //           }
-  //         }
-  //         resolve1();
-  //       })
-  //     );
-  //   });
-  // }
 
   onTabChange() {
     this.signalRService.disconnectFromSignalR('telemetry');

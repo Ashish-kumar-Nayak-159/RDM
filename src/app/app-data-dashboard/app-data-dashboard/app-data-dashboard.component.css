@@ -298,7 +298,11 @@ agm-map {
 .asset-map-view {
   background-color: #eef3fa;
   padding: 15px;
+  height: 100vh !important;
   /* margin: 0 12px; */
+}
+.dataTableHeight{
+  height: calc(100vh - 15.5rem) !important;
 }
 .status-per-tab {background-color: #eef3fa;
   padding: 20px 15px;width: 100%;}

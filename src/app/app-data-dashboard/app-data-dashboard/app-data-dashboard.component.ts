@@ -28,7 +28,7 @@ import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.com
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 import { ChartService } from 'src/app/services/chart/chart.service';
 import * as datefns from 'date-fns';
-import { countInterface } from 'src/app/application/application-gateway-monitoring/count-interface';
+import { assetMCountInterface } from 'src/app/application/application-gateway-monitoring/count-interface';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
 declare var $: any;
@@ -99,12 +99,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   // Asset List View Start //
 
   //Status //
-  countData: countInterface = {
-    iot_assets: 0,
+  countData: assetMCountInterface = {
+    lagecy_count:0,
+    gateway_count: 0,
     online: 0,
     offline: 0,
     total_telemetry: 0,
-    day_telemetry: 0
+    day_telemetry: 0,
+
   }
   applications: any = [];
   currentOffset = 0;
@@ -768,12 +770,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
       redirectToLiveDataHistorical(asset,pageType?) {
         const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        // pagefilterObj['hierarchy'] = asset.hierarchy;
+        pagefilterObj['assets'] = asset;
         if(!asset?.display_name && asset?.name){
           asset['display_name'] = asset.name;
         }
-        pagefilterObj['assets'] = asset;
-        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
         this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
         this.router.navigate(['applications', this.contextApp.app, pageType? pageType : 'dashboard']);
       }
@@ -1067,11 +1067,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         else {
           this.isSelectedAppData = false;
           this.countData = {
-            iot_assets: 0,
+            lagecy_count:0,
+            gateway_count: 0,
             online: 0,
             offline: 0,
             total_telemetry: 0,
-            day_telemetry: 0
+            day_telemetry: 0,
           };
           this.applications = []
         }
@@ -1081,14 +1082,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           hierarchy: JSON.stringify(this.hierarchy)
         }
         this.loader = true;
-        this.applicationService.getAssetStatistics(this.selectedApp,custObj).subscribe((response: any) => {
+        this.applicationService.getAssetStatisticsNew(this.selectedApp,custObj).subscribe((response: any) => {
           this.countData = {
-            iot_assets: response?.iot_assets ?? 0,
+            lagecy_count: response?.lagecy_count ?? 0,
+            gateway_count: response?.gateway_count ?? 0,
             online: response?.online ?? 0,
             offline: response?.offline ?? 0,
             total_telemetry: response?.total_telemetry ?? 0,
             day_telemetry: response?.day_telemetry ?? 0
-
           }
         }, (err) => { this.loader = false })
       }
@@ -1117,13 +1118,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             }else{
               item.last_ingestion_on ="-";
             }
-              if (item.ingestion_status === "Stopped") {
+              if (item?.ingestion_status === "Stopped") {
               item.ingestionCss = "offline"
             }
             else {
               item.ingestionCss = "online"
             }
-            if (item.connection_state == "Disconnected") {
+            if (item?.connection_state == "Disconnected") {
               item.connection_state = "Offline"
               item.cssclass = "offline";
               if (item.offline_since) {
@@ -1133,7 +1134,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             else {
               item.connection_state = "Online"
               item.cssclass = "online";
-              if (item.connection_state == "Online") {
+              if (item?.connection_state == "Online") {
                 item.offline_since = undefined
               }
             }

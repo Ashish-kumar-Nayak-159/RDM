@@ -325,6 +325,16 @@ export class ApplicationService {
 
     return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)),{params})
   }
+  getAssetStatisticsNew(app,filterObj?){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_STATISTICS_NEW, encodeURIComponent(app)),{params})
+  }
 
   getAssetMonitoring(app,filterObj?,changeState?){
     let params = new HttpParams();

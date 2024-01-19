@@ -70,7 +70,8 @@ export class AppDashboardHistoricalComponent implements OnInit {
   c2dLoadingMessage: string;
   c2dResponseInterval: any;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
-
+  dashistroicaldata:any;
+  tempData: any;
 
   constructor(
     private commonService: CommonService,
@@ -120,8 +121,19 @@ export class AppDashboardHistoricalComponent implements OnInit {
   }
 
   async loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    this.commonService.assetMonitoringFilterData.subscribe((data: any) => {
+    let item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.tempData = item;
+    this.commonService.assetMonitoringFilterData.subscribe(async(data: any) => {
+      this.dashistroicaldata = data;
+      if(this.dashistroicaldata){
+        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.dashistroicaldata);
+        item = undefined;
+        await this.onSaveHierachy();
+        this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
+        this.filterObj.asset = this.dashistroicaldata.assets;
+        await this.onChangeOfAsset(this.dashistroicaldata.assets)
+        this.onFilterSelection(this.filterObj, false, true, true);
+      }
     });
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
@@ -164,9 +176,10 @@ export class AppDashboardHistoricalComponent implements OnInit {
     });
   }
 
-  onChangeOfAsset() {
-    const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    console.log(asset)
+  onChangeOfAsset(asset?: any) {
+    if(!asset){
+      asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+    }
     const frequencyArr = [];
     frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
@@ -186,7 +199,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
     }
   }
 
-  onSaveHierachy() {
+  async onSaveHierachy() {
       const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       this.historicalDateFilter.dateOption = item.dateOption;
       if (item.dateOption !== 'Custom Range') {
@@ -754,4 +767,9 @@ export class AppDashboardHistoricalComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(){
+    this.commonService.assetMonitoringFilterData.emit(null);
+    delete this.tempData.assets;
+    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.tempData);
+  }
 }

@@ -269,5 +269,6 @@ export class AppUrls {
 // Dashboard Alert Count
   public static GET_ALERTS_COUNT = 'alert_count';
   public static GET_ASSET_MONITORING_NEW = 'apps/{0}/asset_monitoring_new';
+  public static GET_ASSET_STATISTICS_NEW = 'apps/{0}/asset_statistics_new';
 
 }

@@ -221,7 +221,7 @@
                 <div class="card rounded-top total-gateway" [style.border-top]="state === '' ? '2px solid black' : 'white'" style="border-bottom: 9px solid rgb(105, 100, 100);" (click)="fetchGateways('')">
                     <div class="card-body py-3">
                         <h2 class="card-title">Total Assets</h2>
-                        <h1 class="font-weight-bold my-0">{{countData.iot_assets}}</h1>
+                        <h1 class="font-weight-bold my-0">{{countData?.lagecy_count ? countData?.lagecy_count : 0}}</h1>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@
                 <div class="card rounded-top online" [style.border-top]="state === 'connected' ? '2px solid black' : 'white'" style="border-bottom: 9px solid green" (click)="fetchGateways('connected')">
                     <div class="card-body py-3">
                         <h2 class="card-title">Online</h2>
-                        <h1 class="font-weight-bold my-0">{{countData.online}}</h1>
+                        <h1 class="font-weight-bold my-0">{{countData?.online ? countData.online : 0}}</h1>
                     </div>
                 </div>
             </div>
@@ -237,7 +237,7 @@
                 <div class="card rounded-top offline" [style.border-top]="state === 'disconnected' ? '2px solid black' : 'white'"style="border-bottom: 9px solid #c10606f7;"  >
                     <div class="card-body py-3" (click)="fetchGateways('disconnected')">
                         <h2 class="card-title">Offline</h2>
-                        <h1 class="font-weight-bold my-0">{{countData.offline}}</h1>
+                        <h1 class="font-weight-bold my-0">{{countData?.offline ? countData.offline : 0 }}</h1>
                     </div>
                 </div>
             </div>

@@ -337,7 +337,20 @@ export class ApplicationService {
       params=params.set('state',changeState);
       }
       return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING, encodeURIComponent(app)),{params})
-    
+
+  }
+  getAssetMonitoringNew(app,filterObj?,changeState?){
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    if(changeState==='connected' || changeState==='disconnected'){
+      params=params.set('state',changeState);
+      }
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MONITORING_NEW, encodeURIComponent(app)),{params})
+
   }
 
   getdbschema(app?){
@@ -349,7 +362,7 @@ export class ApplicationService {
     // });
 
     return this.http.get(this.url + String.Format(AppUrls.Get_DBSCHEMA, encodeURIComponent(app)))
-    
+
   }
 
   getServiceConnection(){
@@ -366,6 +379,15 @@ export class ApplicationService {
 
   updateServiceConnection(obj,id){
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_SERVICE_CONNECTION,id),obj)
+  }
+
+  getAlertCount(obj: any){
+    let params =new HttpParams();
+    Object.keys(obj). forEach( (key) => {
+      if(obj[key])
+      params = params.set(key , obj[key]);
+    })
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERTS_COUNT), {params});
   }
 
 }

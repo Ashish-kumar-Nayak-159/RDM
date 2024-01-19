@@ -237,9 +237,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   onChangeOfAsset() {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
     const frequencyArr = [];
-    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
       // this.onChangeOfAsset(this.filterObj.asset);

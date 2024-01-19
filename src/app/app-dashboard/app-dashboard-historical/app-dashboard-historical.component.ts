@@ -121,6 +121,8 @@ export class AppDashboardHistoricalComponent implements OnInit {
 
   async loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    this.commonService.assetMonitoringFilterData.subscribe((data: any) => {
+    });
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
@@ -164,6 +166,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
 
   onChangeOfAsset() {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+    console.log(asset)
     const frequencyArr = [];
     frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
@@ -199,7 +202,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
       this.historicalDateFilter.type = true;
       this.historicalDateFilter.sampling_format = 'minute';
       this.historicalDateFilter.sampling_time = 1;
-    
+
     this.selectedDateRange = ''
     this.historicalDateFilter.dateOption = ''
     const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -258,7 +261,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
     }
   }
 
-  
+
   onDeSelectAll(event) {
     this.historicalDateFilter.widgets = [];
   }

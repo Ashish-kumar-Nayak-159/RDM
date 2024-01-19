@@ -40,11 +40,11 @@
                         </ng-template>
                         <ng-template ng-header-tmp>
                             <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                                <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a
+                                <li *ngIf="historicalWidgets?.length !== historicalDateFilter?.widgets?.length"> <a
                                         href="javascript:void(0)"
                                         (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a>
                                 </li>
-                                <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a
+                                <li *ngIf="historicalWidgets?.length === historicalDateFilter?.widgets?.length"> <a
                                         href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect
                                         All</a></li>
                             </ul>

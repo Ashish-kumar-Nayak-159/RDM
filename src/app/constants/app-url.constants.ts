@@ -266,5 +266,8 @@ export class AppUrls {
   public static CREATE_SERVICE_CONNECTION = 'service-connection'
   public static UPDATE_SERVICE_CONNECTION = 'service-connection/{0}'
   public static CREATE_DAILY_REPORT_SUBSCRIPTION = 'getdailyprogressreport';
+// Dashboard Alert Count
+  public static GET_ALERTS_COUNT = 'alert_count';
+  public static GET_ASSET_MONITORING_NEW = 'apps/{0}/asset_monitoring_new';
 
 }

@@ -479,4 +479,14 @@ export class CommonService {
     localStorage.removeItem(storage);
 
   }
+
+  getDefaultDateOptions() {
+    let filterObj:any = {};
+    filterObj["dateOption"] = CONSTANTS.Last30Days;
+    const dateObj = this.getMomentStartEndDate(filterObj['dateOption']);
+    filterObj["from_date"] = dateObj.from_date;
+    filterObj["to_date"] = dateObj.to_date;
+    return filterObj;
+  }
+  assetMonitoringFilterData: EventEmitter<any> = new EventEmitter<any>();
 }

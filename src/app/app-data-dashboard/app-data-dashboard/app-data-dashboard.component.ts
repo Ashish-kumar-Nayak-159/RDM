@@ -131,8 +131,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   loadMoreVisible = false;
   dailyReportsData = [];
   assetDailyReport: any = [];
-  reportBtnData: any = {};
+  reportBtnData: any = [];
   // Asset List View end //
+
+  // Alert //
+  getAlertCountObj: any={};
 
   propertyList: any[] = [];
   telemetryObj: any;
@@ -231,16 +234,25 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async onSubTabChange(sTabName){ //Inner tab
         this.subTab = sTabName;
 
-        if( this.mainTab == 'assets' && sTabName === 'map_view')
-        {
-          this.filterObj= {};
-          this.assets= [];
-          this.configuredHierarchy={};
-          this.mapAssets = [];
-          await this.mapViewDataContainer();
+        if( this.mainTab == 'assets'){
+          if(sTabName === 'map_view'){
+            this.filterObj= {};
+            this.assets= [];
+            this.configuredHierarchy={};
+            this.mapAssets = [];
+            await this.mapViewDataContainer();
+          }else{
+            this.onChildTabChange('status');
+          }
         }
         else{
-          this.onChildTabChange('status');
+          if(this.mainTab === 'alerts'){
+            if(sTabName === 'map_view' ){
+              this.alertMapViewContainer();
+            }else{
+              this.alertListViewContainer();
+            }
+          }
         }
       }
 
@@ -754,11 +766,15 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       redirectToAssetControlPanel(asset, type) {
         this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel'], { fragment: type});
       }
-      redirectToLiveData(asset,pageType?) {
+      redirectToLiveDataHistorical(asset,pageType?) {
         const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        pagefilterObj['hierarchy'] = asset.hierarchy;
+        // pagefilterObj['hierarchy'] = asset.hierarchy;
+        if(!asset?.display_name && asset?.name){
+          asset['display_name'] = asset.name;
+        }
         pagefilterObj['assets'] = asset;
         this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
         this.router.navigate(['applications', this.contextApp.app, pageType? pageType : 'dashboard']);
       }
       onClickOfCount(type) {
@@ -902,7 +918,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           no_data_message: '',
           data: [
             {
-              header_name: 'Gateway Id',
+              header_name: 'Asset Id',
               is_display_filter: true,
               value_type: 'string',
               // is_sort_required: true,
@@ -1005,7 +1021,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
       onTableFunctionCall(obj) {
         if(obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')){
-          this.redirectToLiveData(obj.data, obj.for);
+          this.redirectToLiveDataHistorical(obj.data, obj.for);
         }
         else{
           this.redirectToAssetControlPanel(obj.data, obj.for);
@@ -1090,7 +1106,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           hierarchy: JSON.stringify(this.hierarchy)
         }
         this.loader = true;
-        this.applicationService.getAssetMonitoring(this.selectedApp, custObj,changeState).subscribe((response: any) => {
+        this.applicationService.getAssetMonitoringNew(this.selectedApp, custObj,changeState).subscribe((response: any) => {
           this.assetCount=response.count;
           this.assetTotalcount=response.totalcount;
           response?.data?.forEach((item) => {
@@ -1326,147 +1342,39 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       // performance End //
       // List View End //
 
+      // Alert Start //
+      // Alert Map View Start //
+      alertMapViewContainer(){
+        let filterObj = this.commonService.getDefaultDateOptions();
+        const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        const obj ={
+          from_date: filterObj.from_date,
+          to_date: filterObj.to_date,
+          hierarchy: JSON.stringify(item.hierarchy),
+          is_telemetry_ts: true
 
-      onAssetFilterBtnClick() {
-        $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-          e.stopPropagation();
-        });
-        $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-          if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-            e.preventDefault();
-          }
-        });
-      }
-
-      async onSwitchValueChange(event) {
-        $('#overlay').show();
-        this.c2dResponseMessage = [];
-        this.signalRModeValue = event;
-        this.isC2dAPILoading = true;
-        clearInterval(this.c2dResponseInterval);
-        const obj = {
-          method: 'change_asset_mode',
-          asset_id: this.filterObj.asset.asset_id,
-          gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
-          message: {
-            telemetry_mode: !this.signalRModeValue ? 'normal' : 'turbo',
-            asset_id: this.filterObj.asset.asset_id,
-          },
-          app: this.contextApp.app,
-          job_type: 'DirectMethod',
-          request_type: 'Change Asset Mode',
-          job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
-          sub_job_id: null,
-        };
-        obj.sub_job_id = obj.job_id + '_1';
-        this.apiSubscriptions.push(
-          this.assetService
-            .callAssetMethod(obj, this.contextApp.app, this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id)
-            .subscribe(
-              (response: any) => {
-                if (response?.asset_response) {
-                  this.chartService.clearDashboardTelemetryList.emit([]);
-                  const arr = [];
-                  this.telemetryData = JSON.parse(JSON.stringify([]));
-                  this.telemetryData = JSON.parse(JSON.stringify(arr));
-                  this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
-                }
-                this.isC2dAPILoading = false;
-                this.c2dLoadingMessage = undefined;
-                this.telemetryInterval = undefined;
-              },
-              (error) => {
-                this.toasterService.showError(error?.message, 'Change Telemetry Mode');
-                this.signalRModeValue = !this.signalRModeValue;
-                this.isC2dAPILoading = false;
-                this.c2dLoadingMessage = undefined;
+        }
+        this.applicationService.getAlertCount(obj).subscribe( (response: any) => {
+          if(response){
+            response.forEach( (obj: any) =>{
+              if(obj?.severity === 'Critical'){
+                this.getAlertCountObj['critical'] = obj;
               }
-            )
-        );
-      }
-
-      compareFn(c1, c2): boolean {
-        return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
-      }
-
-  onTabChange() {
-    this.signalRService.disconnectFromSignalR('telemetry');
-    // this.signalRService.disconnectFromSignalR('alert');
-    this.telemetryData = JSON.parse(JSON.stringify([]));
-    this.telemetryObj = undefined;
-    this.apiTelemetryObj = undefined;
-    this.telemetryInterval = undefined;
-    this.filterObj.asset = undefined;
-    this.widgetPropertyList = [];
-    this.c2dResponseMessage = [];
-    this.isC2dAPILoading = false;
-    this.c2dLoadingMessage = undefined;
-    clearInterval(this.c2dResponseInterval);
-    this.loadFromCache();
-    $('#overlay').hide();
-  }
-
-  onDeSelectAll(event) {
-    this.historicalDateFilter.widgets = [];
-  }
-
-  getHistoricalWidgets(assetModel, historicalWidgetUpgrade) {
-    return new Promise<void>((resolve1) => {
-      const params = {
-        app: this.contextApp.app,
-        name: assetModel,
-      };
-      this.historicalWidgets = [];
-      this.apiSubscriptions.push(
-        this.assetModelService.getAssetsModelLayout(params).subscribe(
-          async (response: any) => {
-            if (response?.historical_widgets?.length > 0) {
-              this.historicalWidgets = response.historical_widgets;
-              this.historicalWidgets.forEach((item) => {
-                item.edge_derived_props = false;
-                item.cloud_derived_props = false;
-                item.measured_props = false;
-                item.derived_kpis = false;
-                item.y1axis.forEach((prop) => {
-                  // const type = this.propertyList.find((propObj) => propObj.json_key === prop.json_key)?.type;
-                  this.SetItemDetails(prop, item);
-                });
-                item.y2axis.forEach((prop) => {
-                  this.SetItemDetails(prop, item);
-                });
-              });
-              // if (historicalWidgetUpgrade) {
-              //   this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
-              // }
-            } else {
-              this.historicalDateFilter.widgets = [];
-            }
-            this.isGetWidgetsAPILoading = false;
-            this.isFilterSelected = true;
-            this.isTelemetryDataLoading = false;
-            resolve1();
-          },
-          () => {
-            this.isGetWidgetsAPILoading = false;
-            this.isTelemetryDataLoading = false;
-            resolve1();
+              if(obj?.severity === 'Warning'){
+                this.getAlertCountObj['warning'] = obj;
+              }
+            } )
           }
-        )
-      );
-    });
-  }
+        }, (error)=> this.toasterService.showError(error.message, 'Error') )
+      }
+      // Alert Map View End //
+      // Alert List View Start //
+      alertListViewContainer(){
+        console.log('Alert List View Page');
+      }
+      // Alert List View End //
+      // Alert End //
 
-  private SetItemDetails(prop: any, item: any) {
-    if (prop.type === 'Derived KPIs') {
-      item.derived_kpis = true;
-    } else if (prop?.type === 'Edge Derived Properties') {
-      item.edge_derived_props = true;
-    } else if (prop?.type === 'Cloud Derived Properties') {
-      item.cloud_derived_props = true;
-    } else {
-      item.measured_props = true;
-    }
-  }
 
   getLiveWidgets(assetType) {
     return new Promise<void>((resolve1) => {
@@ -1585,103 +1493,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         )
       );
     });
-  }
-
-  selectedDate(filterObj) {
-    this.historicalDateFilter.from_date = filterObj.from_date;
-    this.historicalDateFilter.to_date = filterObj.to_date;
-    this.historicalDateFilter.dateOption = filterObj.dateOption;
-    // this.historicalDateFilter.last_n_secs = filterObj.last_n_secs;
-    if (this.filterObj.asset) {
-      const records = this.commonService.calculateEstimatedRecords(
-        this.frequency,
-        this.historicalDateFilter.from_date,
-        this.historicalDateFilter.to_date
-      );
-      if (records > this.noOfRecords) {
-        this.historicalDateFilter.isTypeEditable = true;
-      } else {
-        this.historicalDateFilter.isTypeEditable = false;
-      }
-    }
-  }
-
-  onNumberChange(event, type) {
-    if (Number(event.target.value) % 1 !== 0) {
-      this.toasterService.showError('Decimal values are not allowed.', 'View History');
-      if (type === 'aggregation') {
-        this.historicalDateFilter.aggregation_minutes = Math.floor(Number(event.target.value));
-      } else {
-        this.historicalDateFilter.sampling_time = Math.floor(Number(event.target.value));
-      }
-    }
-  }
-
-  addPropertyInList(prop) {
-    if (this.widgetPropertyList.length === 0) {
-      this.widgetPropertyList.push(prop);
-    } else {
-      const index = this.widgetPropertyList.findIndex((propObj) => propObj.json_key === prop.json_key);
-      if (index === -1) {
-        this.widgetPropertyList.push(prop);
-      }
-    }
-  }
-
-  getHistoricalWidgetsDrivedKPIDetails() {
-    this.propList = [];
-    let kpiCodes = '';
-    this.historicalWidgets.forEach((widget) => {
-      widget.y1axis.forEach((prop) => {
-        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
-          this.propList.push(prop.json_key);
-          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
-          kpiCodes += kpiObj?.code + ',';
-        }
-      });
-      widget.y2axis.forEach((prop) => {
-        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
-          this.propList.push(prop.json_key);
-          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
-          kpiCodes += kpiObj.code + ',';
-        }
-      });
-    });
-    kpiCodes = kpiCodes.replace(/,\s*$/, '');
-    if (kpiCodes.length > 0) {
-      return new Promise<void>((resolve1) => {
-        this.isTelemetryDataLoading = true;
-        this.isFilterSelected = true;
-        const obj = {
-          kpi_codes: kpiCodes,
-          from_date: undefined,
-          to_date: undefined,
-          // last_n_secs: undefined,
-        };
-        if (this.historicalDateFilter.dateOption !== 'Custom Range') {
-          const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
-          obj.from_date = dateObj.from_date;
-          obj.to_date = dateObj.to_date;
-          // obj.last_n_secs = this.historicalDateFilter.last_n_secs;
-        } else {
-          obj.from_date = this.historicalDateFilter.from_date;
-          obj.to_date = this.historicalDateFilter.to_date;
-        }
-
-        this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
-          response.data.forEach((item) => {
-            const itemobj = {
-              message_date: item.metadata.process_end_time,
-            };
-            itemobj[item.kpi_json_key] = item.kpi_result;
-            this.derivedKPIHistoricData.push(itemobj);
-            // this.derivedKPIHistoricData.reverse();
-          });
-          // this.derivedKPIHistoricData = response.data;
-          resolve1();
-        });
-      });
-    }
   }
 
   flattenTelemetryData = (telemetryObj: any) => {
@@ -2166,19 +1977,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
-  onAssetSelection() {
-    if (this.filterObj?.assetArr.length > 0) {
-      this.filterObj.asset = this.filterObj.assetArr[0];
-    } else {
-      this.filterObj.asset = undefined;
-      this.filterObj.assetArr = undefined;
-    }
-  }
-
-  onAssetDeselect() {
-    this.filterObj.asset = undefined;
-    this.filterObj.assetArr = undefined;
-  }
 
   getAssetderivedKPIs(assetId) {
     return new Promise<void>((resolve) => {

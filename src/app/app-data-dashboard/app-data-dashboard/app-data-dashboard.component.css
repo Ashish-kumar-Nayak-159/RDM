@@ -347,3 +347,8 @@ background-color: white !important;
 .header-fix tr th {
 vertical-align: top !important;
 }
+
+
+.alertTabMap{
+  height:15% !important;
+}

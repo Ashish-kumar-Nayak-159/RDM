@@ -423,22 +423,24 @@
             <div class="row text-center pt-2">
               <div class="col-md-4">
                 <div
-                  class="card rounded-top online"
+                  class="card rounded-top online" [style.border-top]="alertCircleTbl === 'critical' ? '2px solid black' : 'white'"
                   (click)="changeImagePath('r')"
-                  (click)="onAlertCircleTblChange(1)"
+                  (click)="onAlertCircleTblChange('critical')"
                   style="border-bottom: 9px solid #c10606f7"
-                >
+                  >
                   <div class="card-body">
                     <h2 class="card-title">Critical</h2>
-                    <h1 class="font-weight-bold">{{getAlertCountObj?.critical?.not_acknowledged_alerts}}</h1>
+                    <h1 class="font-weight-bold">{{getAlertCountObj?.critical?.not_acknowledged_alerts ?? 0}}</h1>
                   </div>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="card rounded-top offline" (click)="changeImagePath('y')" (click)="onAlertCircleTblChange(2)">
-                  <div class="card-body" style="border-bottom: 9px solid #d78b13">
-                    <h2 class="card-title">Warning</h2>
-                    <h1 class="font-weight-bold">{{getAlertCountObj?.warning?.not_acknowledged_alerts}}</h1>
+                <div class="card rounded-top offline"  [style.border-top]="alertCircleTbl === 'warning' ? '2px solid black' : 'white'"
+                (click)="changeImagePath('y')"
+                (click)="onAlertCircleTblChange('warning')">
+                <div class="card-body" style="border-bottom: 9px solid #d78b13">
+                  <h2 class="card-title">Warning</h2>
+                    <h1 class="font-weight-bold">{{getAlertCountObj?.warning?.not_acknowledged_alerts ?? 0}}</h1>
                   </div>
                 </div>
               </div>
@@ -592,7 +594,7 @@
               <div class="row">
                 <div class="col-12 col-md-6">
                   <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height">
-                    <table *ngIf="alertCircleTbl === 1" class="table table-hover critical-tbl">
+                    <table *ngIf="alertCircleTbl === 'critical'" class="table table-hover critical-tbl">
                       <thead>
                         <tr>
                           <th scope="col">Assets</th>
@@ -646,7 +648,7 @@
                         </tr>
                       </tbody>
                     </table>
-                    <table *ngIf="alertCircleTbl === 2" class="table table-hover warning-tbl">
+                    <table *ngIf="alertCircleTbl === 'warning'" class="table table-hover warning-tbl">
                       <thead>
                         <tr>
                           <th scope="col">Assets</th>
@@ -703,7 +705,7 @@
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
-                  <div class="card-table" *ngIf="alertCircleTbl === 1">
+                  <div class="card-table" *ngIf="alertCircleTbl === 'critical'">
                     <h3>New Red Alert</h3>
                     <div class="red-alert-block">
                       <div class="red-alert-data">
@@ -764,7 +766,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="card-table" *ngIf="alertCircleTbl === 2">
+                  <div class="card-table" *ngIf="alertCircleTbl === 'warning'">
                     <h3>New Yellow Alert</h3>
                     <div class="red-alert-block">
                       <div class="red-alert-data">

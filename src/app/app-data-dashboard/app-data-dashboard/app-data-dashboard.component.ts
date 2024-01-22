@@ -198,7 +198,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   actualPropertyList: any;
 
   chartTbl = 1;
-  alertCircleTbl = 1
+  alertCircleTbl = 'critical';
 
   isGetAssetsAPILoading = false;
   originalAssets: any[] = [];
@@ -242,6 +242,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.assets= [];
             this.configuredHierarchy={};
             this.mapAssets = [];
+            this.changeImagePath('m');
             await this.mapViewDataContainer();
           }else{
             this.onChildTabChange('status');
@@ -250,6 +251,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         else{
           if(this.mainTab === 'alerts'){
             if(sTabName === 'map_view' ){
+              this.changeImagePath('r');
+              this.onAlertCircleTblChange('critical');
               this.alertMapViewContainer();
             }else{
               this.alertListViewContainer();
@@ -506,7 +509,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           //   if (item1) {
           //     if (item1.assets) {
           //       this.filterObj.asset = item1.assets;
-          //       this.onChangeOfAsset();
           //       this.onAssetFilterApply(this.filterObj, false, true, true);
           //     }
           //   }
@@ -666,27 +668,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         });
       }
 
-      onChangeOfAsset() {
-        const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-        const frequencyArr = [];
-        frequencyArr.push(asset?.metadata && asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms ? asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms : 60);
-        frequencyArr.push(asset?.metadata && asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms ? asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms : 120);
-        frequencyArr.push(asset?.metadata && asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms ? asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms : 180);
-        this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
-        if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
-          // this.onChangeOfAsset(this.filterObj.asset);
-          const records = this.commonService.calculateEstimatedRecords(
-            this.frequency,
-            this.historicalDateFilter.from_date,
-            this.historicalDateFilter.to_date
-          );
-          if (records > this.noOfRecords) {
-            this.historicalDateFilter.isTypeEditable = true;
-          } else {
-            this.historicalDateFilter.isTypeEditable = false;
-          }
-        }
-      }
       // Common End //
 
       // Map Start //
@@ -773,6 +754,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         pagefilterObj['assets'] = asset;
         if(!asset?.display_name && asset?.name){
           asset['display_name'] = asset.name;
+        }
+        if(pageType === 'dashboard'){
+          this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
         }
         this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
         this.router.navigate(['applications', this.contextApp.app, pageType? pageType : 'dashboard']);
@@ -867,8 +851,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       onChartTblChange(value){
         this.chartTbl = value;
       }
-      onAlertCircleTblChange(value){
+      async onAlertCircleTblChange(value){
         this.alertCircleTbl = value;
+        if(value === 'critical'){
+          this.changeImagePath('r');
+        }else{
+          this.changeImagePath('y');
+        }
       }
       // List View Start //
       // Status Start //
@@ -1345,7 +1334,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Alert Start //
       // Alert Map View Start //
-      alertMapViewContainer(){
+       alertMapViewContainer(){
+        this.getAlertCounts();
+      }
+
+      //get Alert Count
+      getAlertCounts(){
         let filterObj = this.commonService.getDefaultDateOptions();
         const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
         const obj ={

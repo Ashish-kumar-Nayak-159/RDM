@@ -230,10 +230,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       onMainTabChange(mTabName){ //Main Tab
+        this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.mainTab = mTabName;
         this.onSubTabChange('map_view');
       }
       async onSubTabChange(sTabName){ //Inner tab
+        this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.subTab = sTabName;
 
         if( this.mainTab == 'assets'){
@@ -262,6 +264,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       onChildTabChange(value){ //Inner Sub Tab
+        this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.childTab = value;
         if(this.mainTab == 'assets' && this.subTab === 'list_view'){
           this.filterObj= {};
@@ -878,20 +881,22 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         })
 
         if (this.userDataFromLocal.is_super_admin) {
-          this.applicationService.getApplications(obj).subscribe((response: any) => {
-            if (response?.data && response?.data?.length > 0) {
-              let respData = response.data.map((item) => {
-                return item.app;
-              })
-              this.appsList = respData;
-              this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
-              this.hierarchy = { App: this.selectedApp };
-              this.getHierarchy();
-              this.appName();
-            }
-            else { this.appsList = []; }
-          },
-            (error) => this.loader = false)
+          this.apiSubscriptions.push(
+            this.applicationService.getApplications(obj).subscribe((response: any) => {
+              if (response?.data && response?.data?.length > 0) {
+                let respData = response.data.map((item) => {
+                  return item.app;
+                })
+                this.appsList = respData;
+                this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
+                this.hierarchy = { App: this.selectedApp };
+                this.getHierarchy();
+                this.appName();
+              }
+              else { this.appsList = []; }
+            },
+              (error) => this.loader = false)
+          )
         }
         else if (this.contextApp && !this.userDataFromLocal.is_super_admin) {
           let appDataFromLocal = this.contextApp;
@@ -1024,20 +1029,22 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         if (this.userDataFromLocal.is_super_admin) {
           this.isSelectedAppData = false;
           localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
-          this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
-            response.app = this.selectedApp;
-            response.user = {};
-            response.user.hierarchy = { App: this.selectedApp };
-            this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
-            let appObj = {
-              app: this.selectedApp
-            }
-            this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
-              this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
-              this.isSelectedAppData = true;
-              this.changeDetector.detectChanges();
+          this.apiSubscriptions.push(
+            this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
+              response.app = this.selectedApp;
+              response.user = {};
+              response.user.hierarchy = { App: this.selectedApp };
+              this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
+              let appObj = {
+                app: this.selectedApp
+              }
+              this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
+                this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+                this.isSelectedAppData = true;
+                this.changeDetector.detectChanges();
+              })
             })
-          });
+          );
         }
         else {
           this.isSelectedAppData = true;
@@ -1074,16 +1081,18 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           hierarchy: JSON.stringify(this.hierarchy)
         }
         this.loader = true;
-        this.applicationService.getAssetStatisticsNew(this.selectedApp,custObj).subscribe((response: any) => {
-          this.countData = {
-            lagecy_count: response?.lagecy_count ?? 0,
-            gateway_count: response?.gateway_count ?? 0,
-            online: response?.online ?? 0,
-            offline: response?.offline ?? 0,
-            total_telemetry: response?.total_telemetry ?? 0,
-            day_telemetry: response?.day_telemetry ?? 0
-          }
-        }, (err) => { this.loader = false })
+        this.apiSubscriptions.push(
+          this.applicationService.getAssetStatisticsNew(this.selectedApp,custObj).subscribe((response: any) => {
+            this.countData = {
+              lagecy_count: response?.lagecy_count ?? 0,
+              gateway_count: response?.gateway_count ?? 0,
+              online: response?.online ?? 0,
+              offline: response?.offline ?? 0,
+              total_telemetry: response?.total_telemetry ?? 0,
+              day_telemetry: response?.day_telemetry ?? 0
+            }
+          }, (err) => { this.loader = false })
+        );
       }
       fetchGateways(state: string){
         this.applications = [];
@@ -1099,56 +1108,58 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           hierarchy: JSON.stringify(this.hierarchy)
         }
         this.loader = true;
-        this.applicationService.getAssetMonitoringNew(this.selectedApp, custObj,changeState).subscribe((response: any) => {
-          this.assetCount=response.count;
-          this.assetTotalcount=response.totalcount;
-          response?.data?.forEach((item) => {
-            item.created_date_time = item.created_date
-            item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
-            if (item.last_ingestion_on!==null){
-              item.last_ingestion_on =this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
-            }else{
-              item.last_ingestion_on ="-";
-            }
-              if (item?.ingestion_status === "Stopped") {
-              item.ingestionCss = "offline"
-            }
-            else {
-              item.ingestionCss = "online"
-            }
-            if (item?.connection_state == "Disconnected") {
-              item.connection_state = "Offline"
-              item.cssclass = "offline";
-              if (item.offline_since) {
-                item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+        this.apiSubscriptions.push(
+          this.applicationService.getAssetMonitoringNew(this.selectedApp, custObj,changeState).subscribe((response: any) => {
+            this.assetCount=response.count;
+            this.assetTotalcount=response.totalcount;
+            response?.data?.forEach((item) => {
+              item.created_date_time = item.created_date
+              item.created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
+              if (item.last_ingestion_on!==null){
+                item.last_ingestion_on =this.commonService.convertUTCDateToLocalDate(item.last_ingestion_on, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+              }else{
+                item.last_ingestion_on ="-";
               }
-            }
-            else {
-              item.connection_state = "Online"
-              item.cssclass = "online";
-              if (item?.connection_state == "Online") {
-                item.offline_since = undefined
+                if (item?.ingestion_status === "Stopped") {
+                item.ingestionCss = "offline"
               }
+              else {
+                item.ingestionCss = "online"
+              }
+              if (item?.connection_state == "Disconnected") {
+                item.connection_state = "Offline"
+                item.cssclass = "offline";
+                if (item.offline_since) {
+                  item.offline_since = 'Offline Since: ' + this.commonService.convertUTCDateToLocalDate(item.offline_since, CONSTANTS.DEFAULT_DATETIME_STR_FORMAT);
+                }
+              }
+              else {
+                item.connection_state = "Online"
+                item.cssclass = "online";
+                if (item?.connection_state == "Online") {
+                  item.offline_since = undefined
+                }
+              }
+              return item;
+            })
+            if (response?.data?.length < this.currentLimit) {
+              this.loadMoreVisibility = false
             }
-            return item;
-          })
-          if (response?.data?.length < this.currentLimit) {
-            this.loadMoreVisibility = false
-          }
 
-          let mergedObject = [...this.applications, ...response.data];
-          const unique = [...new Map(mergedObject.map(item => [item.asset_id, item])).values()];
+            let mergedObject = [...this.applications, ...response.data];
+            const unique = [...new Map(mergedObject.map(item => [item.asset_id, item])).values()];
 
-          this.applications = unique;
+            this.applications = unique;
 
-          //Note: Searching on same function it will push the same data again and again of searched list
-          // So i have added list, and returned only unique record,
-          //Currently added for asset_id filter as unique.
-          //this.applications = [...this.applications, ...response.data];
+            //Note: Searching on same function it will push the same data again and again of searched list
+            // So i have added list, and returned only unique record,
+            //Currently added for asset_id filter as unique.
+            //this.applications = [...this.applications, ...response.data];
 
-          this.loader = false;
-        },
-          (error) => this.loader = false)
+            this.loader = false;
+          },
+            (error) => this.loader = false)
+        );
       }
       // Status End //
       // performance Start //
@@ -1192,22 +1203,24 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.dailyReportApiLoading = true;
         this.loadingMessage = "Loading Data, Please Wait...";
         this.loadMoreVisible = true;
-        this.assetService.getDailyReportSubscription(this.contextApp?.app, obj).subscribe((response: any) => {
-          if (response?.data) {
-            let resData = response?.data;
-            this.dailyReportApiLoading = false;
-            this.dailyReportsData = [
-              ...this.dailyReportsData,
-              ...resData
-            ]
-            this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
-          }
-        },
-          (error: any) => {
-            this.dailyReportApiLoading = false;
-            this.loadMoreVisible = false;
-            this.toasterService.showError(error?.message, "Error");
-          })
+        this.apiSubscriptions.push(
+          this.assetService.getDailyReportSubscription(this.contextApp?.app, obj).subscribe((response: any) => {
+            if (response?.data) {
+              let resData = response?.data;
+              this.dailyReportApiLoading = false;
+              this.dailyReportsData = [
+                ...this.dailyReportsData,
+                ...resData
+              ]
+              this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
+            }
+          },
+            (error: any) => {
+              this.dailyReportApiLoading = false;
+              this.loadMoreVisible = false;
+              this.toasterService.showError(error?.message, "Error");
+            })
+        );
 
       }
 
@@ -1301,31 +1314,33 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.dailyReportApiLoading = true;
         this.loadingMessage = "Loading Data, Please Wait...";
         this.loadMoreVisible = true;
-        this.assetService.getDailyReportSubscription(this.contextApp?.app, obj).subscribe((response: any) => {
-          if (response?.data) {
-            let resData = response?.data;
-            if(dataObj && dataObj?.assetId){
-              this.assetDailyReport=[...resData];
-              // this.assetDailyReport = [
-              //   ...this.assetDailyReport,
-              //   ...resData
-              // ]
-              // this.loadMoreVisible = this.assetDailyReport?.length < response?.totalcount;
-            }else{
-              this.dailyReportsData = [
-                ...this.dailyReportsData,
-                ...resData
-              ]
-              this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
+        this.apiSubscriptions.push(
+          this.assetService.getDailyReportSubscription(this.contextApp?.app, obj).subscribe((response: any) => {
+            if (response?.data) {
+              let resData = response?.data;
+              if(dataObj && dataObj?.assetId){
+                this.assetDailyReport=[...resData];
+                // this.assetDailyReport = [
+                //   ...this.assetDailyReport,
+                //   ...resData
+                // ]
+                // this.loadMoreVisible = this.assetDailyReport?.length < response?.totalcount;
+              }else{
+                this.dailyReportsData = [
+                  ...this.dailyReportsData,
+                  ...resData
+                ]
+                this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
+              }
             }
-          }
-          this.dailyReportApiLoading = false;
-        },
-          (error: any) => {
             this.dailyReportApiLoading = false;
-            this.loadMoreVisible = false;
-            this.toasterService.showError(error?.message, "Error");
-          })
+          },
+            (error: any) => {
+              this.dailyReportApiLoading = false;
+              this.loadMoreVisible = false;
+              this.toasterService.showError(error?.message, "Error");
+            })
+        );
       }
 
       closeModal(){
@@ -1352,18 +1367,20 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           is_telemetry_ts: true
 
         }
-        this.applicationService.getAlertCount(obj).subscribe( (response: any) => {
-          if(response){
-            response.forEach( (obj: any) =>{
-              if(obj?.severity === 'Critical'){
-                this.getAlertCountObj['critical'] = obj;
-              }
-              if(obj?.severity === 'Warning'){
-                this.getAlertCountObj['warning'] = obj;
-              }
-            } )
-          }
-        }, (error)=> this.toasterService.showError(error.message, 'Error') )
+        this.apiSubscriptions.push(
+          this.applicationService.getAlertCount(obj).subscribe( (response: any) => {
+            if(response){
+              response.forEach( (obj: any) =>{
+                if(obj?.severity === 'Critical'){
+                  this.getAlertCountObj['critical'] = obj;
+                }
+                if(obj?.severity === 'Warning'){
+                  this.getAlertCountObj['warning'] = obj;
+                }
+              } )
+            }
+          }, (error)=> this.toasterService.showError(error.message, 'Error') )
+        );
       }
       // Alert Map View End //
       // Alert List View Start //

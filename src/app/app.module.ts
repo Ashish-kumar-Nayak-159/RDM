@@ -20,7 +20,9 @@ import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
 import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
-
+import * as PlotlyJS from 'plotly.js-dist-min';
+import { PlotlyModule } from 'angular-plotly.js';
+PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +51,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
       libraries: ['places'],
     }),
     NgxIntlTelInputModule,
-
+    PlotlyModule,
   ],
   providers: [HttpInterceptorProviders],
   bootstrap: [AppComponent],

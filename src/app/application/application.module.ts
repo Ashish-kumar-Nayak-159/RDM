@@ -35,6 +35,7 @@ import { GatewayComponent } from './application-logical-view/gateway/gateway.com
 import { LivelinechartComponent } from '../common/newcharts/livelinechart/livelinechart.component';
 import { ServiceConnectionComponent } from './application-setting/service-connection/service-connection.component';
 import { EllipsisPipe } from './application-setting/ellipsis.pipe';
+import { BroadSenseComponent } from './broad-sense/broad-sense.component';
 @NgModule({
   declarations: [
     ApplicationDashboardComponent,
@@ -58,6 +59,7 @@ import { EllipsisPipe } from './application-setting/ellipsis.pipe';
     GatewayComponent,
     ServiceConnectionComponent,
     EllipsisPipe,
+    BroadSenseComponent,
   ],
   imports: [
     CommonModule,

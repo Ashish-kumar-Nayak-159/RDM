@@ -444,6 +444,23 @@ export class CONSTANTS {
       priority: 1,
     },
     {
+      page: 'Broad sense Gateway',
+      system_name: 'Broad sense Gateway',
+      url: 'applications/:appName/broadSense',
+      display_name: 'Broad sense Gateway',
+      icon: 'fa fa-fw fa-chart-bar',
+      visible: false,
+      exactMatch: true,
+      privileges_required: ['ASMV', 'RMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Broad sense Gateway',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Historical Trend',
       system_name: 'Historical Trend',
       url: 'applications/:appName/historical-trend',

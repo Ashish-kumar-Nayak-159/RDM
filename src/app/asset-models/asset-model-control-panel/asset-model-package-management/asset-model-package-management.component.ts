@@ -37,6 +37,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   bodyMessage: string;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   uploadedFile: any = []
+  editpackageModal = false;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -106,34 +107,32 @@ export class AssetModelPackageManagementComponent implements OnInit {
               valueclass: '',
               tooltip: 'Download',
             },
+            {
+              icon: 'fa fa-fw fa-edit',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            },
+            {
+              icon: 'fa fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            }
           ],
         },
       ],
     };
-    if (environment.environment == 'DEV') {
-      this.packageTableConfig.data[3].btnData.push({
-        icon: 'fa fa-fw fa-edit',
-        text: '',
-        id: 'Edit',
-        valueclass: '',
-        tooltip: 'Edit',
-        disableConditions: {
-          key: 'freezed',
-          value: true
-        }
-      })
-      this.packageTableConfig.data[3].btnData.push({
-        icon: 'fa fa-fw fa-trash',
-        text: '',
-        id: 'Delete',
-        valueclass: '',
-        tooltip: 'Delete',
-        disableConditions: {
-          key: 'freezed',
-          value: true
-        }
-      })
-    }
   }
 
   getPackages() {
@@ -149,13 +148,16 @@ export class AssetModelPackageManagementComponent implements OnInit {
     );
   }
 
-  openAddPackageModal(obj = undefined) {    
+  openAddPackageModal(obj = undefined) {
+
     this.uploadedFile = [];
     if (!obj) {
+      this.editpackageModal = false;
       this.packageObj = {
         metadata: {},
       };
     } else {
+      this.editpackageModal = true;
       this.packageObj = JSON.parse(JSON.stringify(obj));
     }
     $('#addPackageModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -206,7 +208,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
     let extension = files.item(0).name.slice((files.item(0).name.lastIndexOf(".") - 1 >>> 0) + 2);
-    if (!(extension === 'zip' || extension ==='hex' || extension ==='bin')) {
+    if (!(extension === 'zip' || extension === 'hex' || extension === 'bin')) {
       this.toasterService.showError('Only .zip, .hex,.bin files are allowed', 'Select File');
       return;
     }
@@ -214,7 +216,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     this.packageObj.metadata.file_name = this.uploadedFile.name;
   }
   onFileSelected(event) {
-    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304","61647361","07466f","16da30"];
+    let allowedZipMagicNumbers = ["504b34", "504B03", "504B0304", "61647361", "07466f", "16da30"];
     this.uploadedFile = [];
     if (event?.target?.files) {
       let fileList = event.target.files as FileList;
@@ -261,7 +263,9 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   async onSavePackageObj() {
-    await this.uploadDocument();
+    if (this.editpackageModal == false) {
+      await this.uploadDocument();
+    }
     if (
       !this.packageObj.name ||
       this.packageObj.name.trim().length === 0 ||
@@ -279,11 +283,11 @@ export class AssetModelPackageManagementComponent implements OnInit {
       );
       return;
     }
-    if(!this.uploadedFile || this.uploadedFile.length === 0)
-    {
+    if (!this.editpackageModal && (!this.uploadedFile || this.uploadedFile.length === 0)) {
       this.toasterService.showError("please upload package file.", (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
       return;
     }
+
 
     this.packageObj.version =
       this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor + '.' + this.packageObj.metadata.patch;

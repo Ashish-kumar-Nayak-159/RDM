@@ -47,7 +47,8 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "src/assets/Build/KemsysBuild.loader.js"
+              "src/assets/Build/KemsysBuild.loader.js",
+              "node_modules/plotly.js-dist-min/plotly.min.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -68,13 +69,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "100kb",
-                  "maximumError": "500kb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "10mb"
                 }
               ]
             },
@@ -95,13 +96,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "100kb",
-                  "maximumError": "500kb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "10mb"
                 }
               ]
             },

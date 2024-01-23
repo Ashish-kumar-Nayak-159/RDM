@@ -755,10 +755,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         if(!asset?.display_name && asset?.name){
           asset['display_name'] = asset.name;
         }
-        if(pageType === 'dashboard'){
-          this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-        }
-        this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        // if(pageType === 'dashboard'){
+        //   this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        //   this.commonService.assetMonitoringFilterData.emit(null);
+        // }else{
+        //   this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
+        // }
         this.router.navigate(['applications', this.contextApp.app, pageType? pageType : 'dashboard']);
       }
       onClickOfCount(type) {

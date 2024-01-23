@@ -123,21 +123,31 @@ export class AppDashboardHistoricalComponent implements OnInit {
   async loadFromCache() {
     let item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.tempData = item;
-    this.commonService.assetMonitoringFilterData.subscribe(async(data: any) => {
-      this.dashistroicaldata = data;
-      if(this.dashistroicaldata){
-        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.dashistroicaldata);
-        item = undefined;
-        await this.onSaveHierachy();
-        this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
-        this.filterObj.asset = this.dashistroicaldata.assets;
-        await this.onChangeOfAsset(this.dashistroicaldata.assets)
-        this.onFilterSelection(this.filterObj, false, true, true);
-      }
-    });
+    // this.commonService.assetMonitoringFilterData.subscribe(async(data: any) => {
+    //   this.dashistroicaldata = data;
+    //   if(this.dashistroicaldata){
+    //     debugger
+    //     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.dashistroicaldata);
+    //     item = undefined;
+    //     // await this.onSaveHierachy();
+    //     // this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
+    //     // this.filterObj.asset = this.dashistroicaldata.assets;
+    //     // await this.onChangeOfAsset(this.dashistroicaldata.assets)
+    //     // this.onFilterSelection(this.filterObj, false, true, true);
+
+    //     this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
+    //   if (data?.assets) {
+    //     await this.onSaveHierachy();
+    //     this.filterObj.asset = this.dashistroicaldata.assets;
+    //     await this.onChangeOfAsset();
+    //     this.onFilterSelection(this.filterObj, false, true, true);
+    //   }
+    //   }
+    // });
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
+        await this.onSaveHierachy();
         this.filterObj.asset = item.assets;
         await this.onChangeOfAsset();
         this.onFilterSelection(this.filterObj, false, true, true);
@@ -165,7 +175,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-            if (this.assets?.length === 1) {
+                        if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
             }
@@ -177,7 +187,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
   }
 
   onChangeOfAsset(asset?: any) {
-    if(!asset){
+        if(!asset){
       asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
     }
     const frequencyArr = [];
@@ -185,7 +195,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
+        if (this.historicalDateFilter.from_date && this.historicalDateFilter.to_date) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
         this.historicalDateFilter.from_date,
@@ -243,7 +253,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
-    if (asset_model) {
+        if (asset_model) {
       await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       this.sampleCountArr = Array(60).fill(0);
@@ -769,7 +779,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
 
   ngOnDestroy(){
     this.commonService.assetMonitoringFilterData.emit(null);
-    delete this.tempData.assets;
+    delete this.tempData?.assets;
     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.tempData);
   }
 }

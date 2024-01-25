@@ -32,25 +32,29 @@ export class PlotlyChartComponent implements OnInit {
       }
     }
   }
+  extractProperKey(data, key){
+    return  Object.keys(data).filter((data: any) => {return data?.includes(key) })
+  }
+
   filterData(start: any, end: any,waveTitle:string){
     let data = JSON.parse(JSON.stringify( this.messageType === 'asset' ? this.bodyMessage['m'] : this.bodyMessage['data'][0]['m']));
     this.currentData = data;
     let filteredArray: any= [];
     let filterIndex=0;
 
-    if(data[`${this.filterProperty?.sId + '_fftFreq'}`]?.length){
-      data[`${this.filterProperty?.sId + '_fftFreq'}`].forEach((dataRange:number, index:number) =>{
+    if(data[this.extractProperKey(data, '_fftFreq')?.[0]]?.length){
+      data[this.extractProperKey(data, '_fftFreq')?.[0]].forEach((dataRange:number, index:number) =>{
         if(dataRange >= start && dataRange <= end ){
           filteredArray.push(dataRange);
           if(filterIndex == 0)
           filterIndex =index;
         }
       })
-      data[`${this.filterProperty?.sId + '_fftFreq'}`] =filteredArray;
+      data[this.extractProperKey(data, '_fftFreq')?.[0]] =filteredArray;
     }
-    data[`${this.filterProperty?.sId + '_fftxAxis'}`]= this.mapAxisData(data[`${this.filterProperty?.sId + '_fftxAxis'}`],filterIndex);
-    data[`${this.filterProperty?.sId + '_fftyAxis'}`]= this.mapAxisData(data[`${this.filterProperty?.sId + '_fftyAxis'}`],filterIndex);
-    data[`${this.filterProperty?.sId + '_fftzAxis'}`]= this.mapAxisData(data[`${this.filterProperty?.sId + '_fftzAxis'}`],filterIndex);
+    data[this.extractProperKey(data, '_fftxAxis')?.[0]]= this.mapAxisData(data[this.extractProperKey(data, '_fftxAxis')?.[0]],filterIndex);
+    data[this.extractProperKey(data, '_fftyAxis')?.[0]]= this.mapAxisData(data[this.extractProperKey(data, '_fftyAxis')?.[0]],filterIndex);
+    data[this.extractProperKey(data, '_fftzAxis')?.[0]]= this.mapAxisData(data[this.extractProperKey(data, '_fftzAxis')?.[0]],filterIndex);
     this.chartPrepare(data,waveTitle);
   }
   mapAxisData(axis: any,freqIndex: any){
@@ -58,22 +62,20 @@ export class PlotlyChartComponent implements OnInit {
   }
 
   chartPrepare(data:any,waveTitle: string){
-    // const fftAxis = [data['181_fftxAxis'],data['181_fftyAxis'],data['181_fftzAxis']];
     const fftAxis = [
-      data[`${this.filterProperty?.sId + '_fftxAxis'}`],
-      data[`${this.filterProperty?.sId + '_fftyAxis'}`],
-      data[`${this.filterProperty?.sId + '_fftzAxis'}`]
+      data[this.extractProperKey(data, '_fftxAxis')?.[0]],
+      data[this.extractProperKey(data, '_fftyAxis')?.[0]],
+      data[this.extractProperKey(data, '_fftzAxis')?.[0]]
     ];
-    // const axis = [data['181_xAxis'],data['181_yAxis'],data['181_zAxis']];
     const axis = [
-      data[`${this.filterProperty?.sId + '_xAxis'}`],
-      data[`${this.filterProperty?.sId + '_yAxis'}`],
-      data[`${this.filterProperty?.sId + '_zAxis'}`]
+      data[this.extractProperKey(data, '_xAxis')?.[0]],
+      data[this.extractProperKey(data, '_yAxis')?.[0]],
+      data[this.extractProperKey(data, '_zAxis')?.[0]]
     ];
     let i=0;
     let sr1 = [];
       while (i <= data[`${this.filterProperty?.sId + '_FftCount'}`]){
-        const temp = i/ (data['181_sr'] ? data['181_sr'] : data[`${this.filterProperty?.sId + '_sr'}`]);
+        const temp = i/ (data[this.extractProperKey(data, '_sr')?.[0]]);
         sr1.push(temp);
         i++;
       }

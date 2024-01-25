@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/constants/app.constants';
-import { DatePipe } from '@angular/common';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { environment } from 'src/environments/environment';
@@ -45,7 +44,6 @@ export class BroadSenseComponent implements OnInit {
   isFilterSelected = false;
   sasToken = environment.blobKey;
   isFileDataLoading: boolean;
-  datePipe: any;
   contextApp: any;
   constructor(public commonService: CommonService, private cd: ChangeDetectorRef,
     private assetService: AssetService,
@@ -55,7 +53,6 @@ export class BroadSenseComponent implements OnInit {
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.SELECTED_APP_DATA));
-    this.datePipe = new DatePipe('en-US');
     this.dataArray = [181, 182, 183, 184];
     this.frequencyFilter = [
       {
@@ -222,7 +219,7 @@ export class BroadSenseComponent implements OnInit {
     async filterMainData(telemetryList){
     if(telemetryList?.length){
       this.actualTelemetryList = this.actualTelemetryList.filter((item) => {
-        item['upload_date']= this.datePipe.transform(item?.upload_date, 'MMM dd,yyyy, hh:mm:ss a')
+        item['upload_date']= this.commonService.convertUTCDateToLocalDate(item.upload_date,'MMM dd yyyy, hh:mm:ss a');
         if(item?.file_path){
           item['file_path_array']= item?.file_path.split('\\');
           if(item['file_path_array'][4] && this.actualFilterData['sId'] && item['file_path_array'][4] == this.actualFilterData['sId']){

@@ -1,6 +1,6 @@
 <div class="">
   <div class="nav nav-bar d-flex">
-    <!-- <ul class="nav nav-pills" id="pills-tab" role="tablist" *ngIf="!filterProperty">
+    <ul class="nav nav-pills" id="pills-tab" role="tablist" *ngIf="!filterProperty">
       <li class="nav-item mx-1" role="presentation">
         <button class="nav-link  btn btn-primary btn-sm" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" tooltip="ISO 0Hz-6kHz" type="button" role="tab" aria-controls="pills-home" aria-selected="true"(click)="filterData(0,6000,'ISO 0Hz-6kHz')">0Hz-6kHz</button>
       </li>
@@ -13,18 +13,18 @@
       <li class="nav-item mx-1" role="presentation">
         <button class="nav-link btn btn-primary btn-sm" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" tootltip="ISO 500Hz-6kHz" (click)="filterData(500,6000,'ISO 500Hz-6kHz')">500Hz-6kHz</button>
       </li>
-    </ul> -->
+    </ul>
   </div>
   <div class="" style="border: 2px solid black !important">
-    <h5 class="mt-4 ml-3">{{currentData['181_ms'] ?? currentData[filterProperty?.sId+'_Measurement']}} </h5>
+    <h5 class="mt-4 ml-3">{{currentData['181_ms'] ?? currentData[extractProperKey(currentData, '_Measurement')?.[0]]}} </h5>
     <div class="d-flex justify-content-center m-2 py-2 border border-dark rounded-0 labelContainer">
-      <p>FFT Count - {{ currentData[filterProperty?.sId+'_FftCount'] ?? 0}},</p>
-      <p>Higher Frequency Band - {{ currentData[filterProperty?.sId+'_hband'] ?? 0}},</p>
-      <p>Lower Frequency Band - {{ currentData[filterProperty?.sId+'_lband'] ?? 0}},</p>
-      <p>X-RMS - {{ currentData[filterProperty?.sId+'_rmsx'] ?? 0}}, </p>
-      <p>Y-RMS - {{ currentData[filterProperty?.sId+'_rmsy'] ?? 0}}, </p>
-      <p>Z-RMS - {{ currentData[filterProperty?.sId+'_rmsz'] ?? 0}}, </p>
-      <p>Sampling Rate - {{ currentData[filterProperty?.sId+'_sr'] ?? 0}}</p>
+      <p>FFT Count - {{ currentData[extractProperKey(currentData, '_FftCount')?.[0]] ?? 0}},</p>
+      <p>Higher Frequency Band - {{ currentData[extractProperKey(currentData, '_hband')?.[0]] ?? 0}},</p>
+      <p>Lower Frequency Band - {{ currentData[extractProperKey(currentData, '_lband')?.[0]] ?? 0}},</p>
+      <p>X-RMS - {{ currentData[extractProperKey(currentData, '_rmsx')?.[0]] ?? 0}}, </p>
+      <p>Y-RMS - {{ currentData[extractProperKey(currentData, '_rmsy')?.[0]] ?? 0}}, </p>
+      <p>Z-RMS - {{ currentData[extractProperKey(currentData, '_rmsz')?.[0]] ?? 0}}, </p>
+      <p>Sampling Rate - {{ currentData[extractProperKey(currentData, '_sr')?.[0]] ?? 0}}</p>
     </div>
     <!-- 181_ms'' -->
     <div class="" id="Frequency" #Frequency></div>

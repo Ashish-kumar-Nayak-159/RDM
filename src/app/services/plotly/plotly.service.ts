@@ -27,7 +27,7 @@ export class PlotlyService {
     };
 
     const config = {
-      modeBarButtonsToRemove: ['zoom','toImage','hoverCompareCartesian'],
+      modeBarButtonsToRemove: ['toImage','hoverCompareCartesian'],
       displaylogo: false,
       displayModeBar: true,
       responsive: true

@@ -21,13 +21,13 @@ export class PlotlyService {
       title: title.includes('ISO ') ? 'FFT with ' + title + ' Filter '  : title ,
       uirevision: true,
       xaxis: {title: graphTitle == 'Frequency' ? graphTitle+" (Hz) " : graphTitle , autorange: true },
-      yaxis: {title:'Amplitude', autorange: true },
+      yaxis: {title:'Y-Axis', autorange: true },
       showlegend: true,
       responsive: true
     };
 
     const config = {
-      modeBarButtonsToRemove: ['zoom','toImage','hoverCompareCartesian'],
+      modeBarButtonsToRemove: ['toImage','hoverCompareCartesian'],
       displaylogo: false,
       displayModeBar: true,
       responsive: true

@@ -11,19 +11,43 @@
       <div class="form-group mb-0">
         <form class="form-inline">
           <div class="d-flex">
-            <div class="">
+            <!-- Assets List -->
+            <div class="pt-1">
               <ng-select [items]="allAssets" id="asset" class="custom-dropdown active sm" style="width: 10rem;"
-              bindLabel="display_name" [clearable]="false" [searchable]="true" clearSearchOnAdd="true"
+              bindLabel="display_name" [clearable]="false" [searchable]="false" clearSearchOnAdd="true"
               [multiple]="false" [closeOnSelect]="true" placeholder="Select Asset" name="sId_selection"
               dropdownPosition="bottom" [(ngModel)]="selectedAsset" (change)="onSelectAssetSelection()">
             </ng-select>
             </div>
-            <div class=""  style="padding: 0 .5rem !important;">
-              <ng-select [items]="dataArray" id="sIdDt" class="custom-dropdown active sm" style="width: 6rem;" bindLabel="sId" [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="false" [closeOnSelect]="true" placeholder="Select Sensor Id" name="sId_selection" dropdownPosition="bottom" [(ngModel)]="actualFilterData['sId']">
+            <div class="pt-1" >
+              <ng-select [items]="dataArray" id="sIdDt" class="custom-dropdown active sm" style="width: 8rem; padding: 0 .5rem !important;" bindLabel="sId" [clearable]="false" [searchable]="false" clearSearchOnAdd="true" [multiple]="false" [closeOnSelect]="true" placeholder="Select Sensor Id" name="sId_selection" dropdownPosition="bottom" [(ngModel)]="actualFilterData['sId']" (change)="onSelectSensorDate()" >
               </ng-select>
             </div>
-            <div class="">
-              <ng-select [items]="chartTypes" name="chart_Type" class="custom-dropdown active  sm" style="width: 8rem;"bindLabel="name" [clearable]="true" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Chart Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.chart_Type" >
+            <div class="" >
+              <app-date-range-picker [filterObj]="originalFilterObj" (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+              </app-date-range-picker>
+            </div>
+
+            <!-- Data Type -->
+            <div class="pt-1 pl-0" style="padding: 0 .5rem">
+              <ng-select [items]="dataFilterType" name="data_Type" class="custom-dropdown active sm" style="width: 8rem;"bindLabel="name" [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="false" [closeOnSelect]="true" placeholder="Select Data Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.data_Type" (change)="onSelectDataType()" >
+              </ng-select>
+            </div>
+            <!-- Frequency Type -->
+            <div class="pt-1">
+              <ng-select [items]="frequencyFilter" name="frequency_Type" class="custom-dropdown active sm" style="width: 8rem;"bindLabel="message" [clearable]="false" [searchable]="true" clearSearchOnAdd="false" [multiple]="false" [closeOnSelect]="true" placeholder="Select Frequency Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.frequency" (change)="onSelectFrequency()" >
+              </ng-select>
+            </div>
+
+            <!-- Uploaded date Type -->
+            <div class="pt-1" style="padding: 0 .5rem">
+              <ng-select [items]="telemetryList" name="upload_date_Type" class="custom-dropdown active sm" style="width: 12rem;"bindLabel="upload_date" [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="false" [closeOnSelect]="true" placeholder="Select Packet Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.uploaded_date" (change)="onChangeUploadedDate($event)" >
+              </ng-select>
+            </div>
+
+            <!-- Chart Type -->
+            <div class="pt-1">
+              <ng-select [items]="chartTypes" name="chart_Type" class="custom-dropdown active  sm" style="width: 8rem;"bindLabel="name" [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Chart Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.chart_Type" >
                 <ng-template ng-multi-label-tmp let-items="items">
                   {{items.length}} selected
                 </ng-template>
@@ -40,30 +64,9 @@
               </ng-select>
             </div>
 
-            <div class="" style="padding: 0 .5rem !important;">
-              <ng-select [items]="dataFilterType" name="data_Type" class="custom-dropdown active sm" style="width: 8rem;"bindLabel="name" [clearable]="true" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Data Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.data_Type" >
-                <ng-template ng-multi-label-tmp let-items="items">
-                  {{items.length}} selected
-                </ng-template>
-                <ng-template ng-header-tmp >
-                  <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                    <li *ngIf="dataFilterType?.length !== actualFilterData['data_Type']?.length">
-                      <a href="javascript:void(0)" (click)="actualFilterData['data_Type'] = dataFilterType" >Select All</a>
-                    </li>
-                    <li *ngIf="dataFilterType?.length === actualFilterData['data_Type']?.length">
-                      <a href="javascript:void(0)" (click)="actualFilterData['data_Type'] = []" >DeSelect All</a>
-                    </li>
-                  </ul>
-                </ng-template>
-              </ng-select>
-            </div>
-
-            <div class="" style="padding: 0 .5rem !important;">
-              <ng-select [items]="frequencyFilter" name="frequency_Type" class="custom-dropdown active sm" style="width: 8rem;"bindLabel="message" [clearable]="false" [searchable]="true" clearSearchOnAdd="false" [multiple]="false" [closeOnSelect]="true" placeholder="Select Frequency Type" dropdownPosition="bottom" [(ngModel)]="actualFilterData.frequency">
-              </ng-select>
-            </div>
-            <div class="">
-              <button type="button" class="btn btn-primary sm  m-0 p-0" style="height:1.9rem !important ; width:1.9rem !important" [disabled]="  !actualFilterData['asset_id'] || !actualFilterData['sId'] || !actualFilterData['chart_Type']?.length || !actualFilterData['data_Type']?.length || !actualFilterData['frequency']" (click)="filterSearch()" >
+            <!-- Search button -->
+            <div class="pt-1" style="padding: 0 .5rem">
+              <button type="button" class="btn btn-primary sm  m-0 p-0" style="height:1.9rem !important ; width:1.9rem !important" [disabled]="  !actualFilterData['asset_id'] || !actualFilterData['sId'] || !actualFilterData['chart_Type']?.length || !actualFilterData['data_Type']?.length || !actualFilterData['frequency'] || !this.actualFilterData?.uploaded_date" (click)="filterSearch()" >
                 <em class="fa fa-search sm"></em>
               </button>
             </div>
@@ -72,27 +75,30 @@
       </div>
     </ng-container>
   </div>
-  <div class="tableFixHead px-3">
-    <ng-container class="py-4" *ngIf="!filterData?.asset_id">
-      <p>Select the filter Option</p>
+  <div class="tableFixHead p-3">
+    <ng-container class="py-4" *ngIf="!filterData?.asset_id || !searchData">
+      <p class="h6 fw-bold">Select the filter Option</p>
     </ng-container>
-    <ng-container class="py-4" *ngIf="searchData?.length == 0 && filterData?.asset_id">
-      <p>No Data Found</p>
+    <ng-container class="py-4" *ngIf="(!searchData?.length && !telemetryList?.length && !actualFilterData?.length ) && filterData?.asset_id">
+      <p class="h6">No Data Found</p>
     </ng-container>
+    <ng-container *ngIf="filterData?.asset_id">
 
-    <ng-container *ngIf="reloadCharts else chartComponent" >
-      <div *ngFor="let item of searchData;">
-        <app-plotly-chart [bodyMessage]="item.data[0]" [messageType]="filterData?.type.toLowerCase().includes('asset') ? 'asset' : 'gateway' " [filterProperty]="filterData" ></app-plotly-chart>
-      </div>
-    </ng-container>
-
-    <ng-template #chartComponent>
-      <ng-container *ngIf="searchData?.length" >
-        <div *ngFor="let item of searchData;">
-          <app-plotly-chart [bodyMessage]="item.data[0]" [messageType]="filterData?.type.toLowerCase().includes('asset') ? 'asset' : 'gateway' " [filterProperty]="filterData" ></app-plotly-chart>
+      <ng-container *ngIf="reloadCharts else chartComponent" >
+        <div *ngIf="searchData;">
+          <app-plotly-chart [bodyMessage]="searchData.data[0]" [messageType]="filterData?.type?.includes('Asset') ? 'asset' : 'gateway'"  [filterProperty]="filterData" ></app-plotly-chart>
         </div>
       </ng-container>
-    </ng-template>
+      <ng-template #chartComponent>
+        <ng-container *ngIf="searchData && filterData" >
+          <div *ngIf="searchData;">
+            <app-plotly-chart [bodyMessage]="searchData.data[0]" [messageType]="filterData?.type?.includes('Asset') ? 'asset' : 'gateway'" [filterProperty]="filterData" ></app-plotly-chart>
+          </div>
+        </ng-container>
+      </ng-template>
+
+    </ng-container>
+
   </div>
 
 </div>

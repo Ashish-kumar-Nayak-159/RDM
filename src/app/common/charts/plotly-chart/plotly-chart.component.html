@@ -16,7 +16,10 @@
     </ul>
   </div>
   <div class="" style="border: 2px solid black !important">
-    <h5 class="mt-4 ml-3">{{currentData['181_ms'] ?? currentData[extractProperKey(currentData, '_Measurement')?.[0]]}} </h5>
+    <div class="d-flex mt-4 ml-3">
+      <h5 class="col-10">{{currentData['181_ms'] ?? currentData[extractProperKey(currentData, '_Measurement')?.[0]]}} </h5>
+      <h5 class="col-2 justify-content-center s_id">{{'Sensor Id -'+ (extractProperKey(currentData, '_sr')?.[0]?.replace('_sr','')) ?? 0}} </h5>
+    </div>
     <div class="d-flex justify-content-center m-2 py-2 border border-dark rounded-0 labelContainer">
       <p>FFT Count - {{ currentData[extractProperKey(currentData, '_FftCount')?.[0]] ?? 0}},</p>
       <p>Higher Frequency Band - {{ currentData[extractProperKey(currentData, '_hband')?.[0]] ?? 0}},</p>

@@ -261,7 +261,7 @@
                     <button
                       type="button"
                       class="btn btn-sm searchBtn btn-primary"
-                      (click)="onAssetFilterApply('gatewayMoniter')"
+                      (click)="onAssetFilterApply('assetMoniter')"
                     >
                       <em class="fas fa-search fa-sm"></em>
                     </button>
@@ -424,7 +424,6 @@
               <div class="col-md-4">
                 <div
                   class="card rounded-top online" [style.border-top]="alertCircleTbl === 'critical' ? '2px solid black' : 'white'"
-                  (click)="changeImagePath('r')"
                   (click)="onAlertCircleTblChange('critical')"
                   style="border-bottom: 9px solid #c10606f7"
                   >
@@ -436,7 +435,6 @@
               </div>
               <div class="col-md-4">
                 <div class="card rounded-top offline"  [style.border-top]="alertCircleTbl === 'warning' ? '2px solid black' : 'white'"
-                (click)="changeImagePath('y')"
                 (click)="onAlertCircleTblChange('warning')">
                 <div class="card-body" style="border-bottom: 9px solid #d78b13">
                   <h2 class="card-title">Warning</h2>
@@ -449,13 +447,13 @@
           <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'map_view'" id="mapOfAlerts">
             <div class="main-heading">
               <form class="form-inline">
-                <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
+                <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
                 </app-hierarchy-dropdown>
                 <div class="form-group">
                   <button
                     type="button"
                     class="btn btn-sm searchBtn btn-primary"
-                    (click)="onAssetFilterApply()"
+                    (click)="onAssetFilterApply('alertMapView')"
                     [disabled]="isTelemetryDataLoading"
                   >
                     <em class="fas fa-search fa-sm"></em>
@@ -464,8 +462,8 @@
               </form>
             </div>
             <div class="alertTabMap">
+              <!-- *ngIf="!isGetAssetsAPILoading" -->
               <agm-map
-                *ngIf="!isGetAssetsAPILoading"
                 #gm
                 [latitude]="centerLatitude"
                 [longitude]="centerLongitude"
@@ -476,15 +474,14 @@
               >
                 <agm-marker-cluster [imagePath]="imagePath">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
-                    <agm-marker
-                      *ngIf="asset.latitude && asset.longitude"
+                                        <agm-marker
+*ngIf="asset.latitude && asset.longitude"
                       [agmFitBounds]="mapFitBounds"
                       [latitude]="asset.latitude"
                       [longitude]="asset.longitude"
                       (mouseOver)="onMarkerClick(infowindow, gm)"
                       [iconUrl]="asset.icon"
                     >
-                    {{asset}}
                       <agm-info-window #infowindow>
                         <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
                         <div class="card border-0 border-top-1 border-primary" style="min-width: 400px; max-width: 430px">

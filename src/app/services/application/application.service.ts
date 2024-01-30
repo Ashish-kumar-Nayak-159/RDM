@@ -399,5 +399,14 @@ export class ApplicationService {
     })
     return this.http.get(this.url + String.Format(AppUrls.GET_ALERTS_COUNT), {params});
   }
+  getAlerts(obj: any){
+    let params =new HttpParams();
+    Object.keys(obj). forEach( (key) => {
+      if(obj[key])
+      params = params.set(key , obj[key]);
+    })
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERTS), {params});
+  }
+
 
 }

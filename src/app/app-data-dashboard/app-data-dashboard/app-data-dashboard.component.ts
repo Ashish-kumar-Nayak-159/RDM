@@ -138,7 +138,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
   // Alert //
   getAlertCountObj: any={};
-
+  acknowledged: boolean = true;
+  alertData: any;
   propertyList: any[] = [];
   telemetryObj: any;
   apiTelemetryObj: any;
@@ -251,11 +252,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
         }
         else{
+          //
           if(this.mainTab === 'alerts'){
             if(sTabName === 'map_view' ){
+              this.alertCircleTbl = 'critical';
+              // this.getAlertCounts();
               this.changeImagePath('r');
-              this.onAlertCircleTblChange('critical');
-              this.alertMapViewContainer();
+              this.onAssetFilterApply('alertMapView');
+              // this.onAlertCircleTblChange(this.alertCircleTbl);
             }else{
               this.alertListViewContainer();
             }
@@ -289,13 +293,15 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       // Hierarchy Start//
-      onSaveHierachy(configuredHierarchy: any) {
+  onSaveHierachy(configuredHierarchy: any) {
+        if(configuredHierarchy)
         this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
         if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.originalFilter = {};
         }
       }
       onClearHierarchy(configuredHierarchy: any) {
+        if(configuredHierarchy)
         this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
         if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.hierarchy = { App: this.selectedApp };
@@ -303,49 +309,51 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       async onAssetFilterApply(filterType? , updateFilterObj = true, filterObj?, historicalWidgetUpgrade = false, isFromMainSearch = true) {
-        if( filterType === 'assets_map' ){
-          this.activeCircle = 'all';
-          this.assets = this.hierarchyDropdown.getAssets();
-          this.mapAssets =JSON.parse(JSON.stringify(this.assets));
-          this.healthyAssetCount = 0;
-          this.unhealthyAssetCount = 0;
-          this.assets.forEach((assetObj) => {
-            if (assetObj?.map_content?.healthy === true) {
-              this.healthyAssetCount++;
-            } else if (assetObj?.map_content?.healthy === false) {
-              this.unhealthyAssetCount++;
+
+        if (updateFilterObj) {
+          const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+          Object.keys(this.configuredHierarchy).forEach((key) => {
+            if (this.configuredHierarchy[key]) {
+              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
             }
           });
-
-          if (updateFilterObj) {
-            const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-            pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-            Object.keys(this.configuredHierarchy).forEach((key) => {
-              if (this.configuredHierarchy[key]) {
-                pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+          delete pagefilterObj.assets;
+          this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        }
+        switch(filterType){
+          case 'assets_map': {
+            this.activeCircle = 'all';
+            this.assets = this.hierarchyDropdown.getAssets();
+            this.mapAssets =JSON.parse(JSON.stringify(this.assets));
+            this.healthyAssetCount = 0;
+            this.unhealthyAssetCount = 0;
+            this.assets.forEach((assetObj) => {
+              if (assetObj?.map_content?.healthy === true) {
+                this.healthyAssetCount++;
+              } else if (assetObj?.map_content?.healthy === false) {
+                this.unhealthyAssetCount++;
               }
             });
-            delete pagefilterObj.assets;
-            this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-          }
 
-          if (this.mapAssets.length > 0) {
-            this.mapFitBounds = false;
-            const center = this.commonService.averageGeolocation(this.mapAssets);
-            this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
-            this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
 
-            // this.zoom = 8;
-          } else {
-            // this.mapFitBounds = true;
-            this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
-            this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
-            this.mapFitBounds = false;
-            // this.zoom = undefined;
+            if (this.mapAssets.length > 0) {
+              this.mapFitBounds = false;
+              const center = this.commonService.averageGeolocation(this.mapAssets);
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+
+              // this.zoom = 8;
+            } else {
+              // this.mapFitBounds = true;
+              this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+              this.mapFitBounds = false;
+              // this.zoom = undefined;
+            }
+            break;
           }
-        }
-        else{
-          if( filterType === 'gatewayMoniter'){
+          case 'assetMoniter': {
             this.applications = [];
             this.currentOffset = 0;
             this.loadMoreVisibility = true;
@@ -363,100 +371,49 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.assetMonitor();
             this.assetStatic();
 
-            if (updateFilterObj) {
-              const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-              pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-              Object.keys(this.configuredHierarchy).forEach((key) => {
-                if (this.configuredHierarchy[key]) {
-                  pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
-                }
-              });
-              delete pagefilterObj.assets;
-              this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-            }
-          }
-          else{
-            if( filterType == 'performance' ){
-              if (updateFilterObj) {
-                const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-                pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-                Object.keys(this.configuredHierarchy).forEach((key) => {
-                  if (this.configuredHierarchy[key]) {
-                    pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
-                  }
-                });
-                delete pagefilterObj.assets;
-                this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-                await this.performanceTab();
-              }
-            }else
-            {
-              this.refreshcontrolProperties = true
-              this.propertyList = [];
-              this.c2dResponseMessage = [];
-              this.signalRControlTelemetry = [];
-              $('#overlay').hide();
-              clearInterval(this.c2dResponseInterval);
-              this.signalRService.disconnectFromSignalR('telemetry');
-              this.signalRTelemetrySubscription?.unsubscribe();
-              clearInterval(this.sampleCountInterval);
-              this.controlpropertyassetId = JSON.parse(JSON.stringify(filterObj));
-
-              const obj = JSON.parse(JSON.stringify(filterObj));
-              let asset_model: any;
-              if (obj.asset) {
-                obj.asset_id = obj.asset.asset_id;
-                asset_model = obj.asset.asset_model;
-                delete obj.asset;
-              } else {
-                this.toasterService.showError('Asset selection is required', 'View Live Telemetry11');
-                this.telemetryObj = undefined;
-                this.apiTelemetryObj = undefined;
-                this.telemetryData = [];
-                this.liveWidgets = [];
-                this.historicalWidgets = [];
-                this.isFilterSelected = false;
-                return;
-            }
-            // if (
-            //   !this.contextApp?.dashboard_config &&
-            //   !this.contextApp?.dashboard_config?.show_live_widgets &&
-            //   !this.contextApp?.dashboard_config?.show_historical_widgets
-            // ) {
-            //   this.contextApp.dashboard_config = {
-            //     show_live_widgets: true,
-            //   };
+            // if (updateFilterObj) {
+            //   const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+            //   pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+            //   Object.keys(this.configuredHierarchy).forEach((key) => {
+            //     if (this.configuredHierarchy[key]) {
+            //       pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+            //     }
+            //   });
+            //   delete pagefilterObj.assets;
+            //   this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
             // }
-            const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-            pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
-            pagefilterObj['assets'] = filterObj.asset;
-            //this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-
-            this.originalFilter = JSON.parse(JSON.stringify(filterObj));
-            this.isTelemetryDataLoading = true;
-            await this.getAssetData();
-            if (asset_model) {
-
-              this.getTelemetryMode(this.filterObj.asset.asset_id);
-              await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
-              await this.getAssetsModelProperties(asset_model);
-              if (this.propertyList) {
-                let flag = false;
-                this.propertyList.forEach(element => {
-                  if (element?.metadata?.rw == 'w' || element?.metadata?.rw == 'rw') {
-                    flag = true;
-                    return;
-                  }
-                });
-                this.controlPropertybtn = flag;
-              }
-              this.sampleCountArr = Array(60).fill(0);
-              this.sampleCountValue = 0;
-              await this.getLiveWidgets(asset_model);
-              this.getLiveWidgetTelemetryDetails(obj);
+            break;
+          }
+          case 'performance':{
+            if (updateFilterObj) {
+              // const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+              // pagefilterObj['hierarchy'] = { App: this.contextApp.app };
+              // Object.keys(this.configuredHierarchy).forEach((key) => {
+              //   if (this.configuredHierarchy[key]) {
+              //     pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+              //   }
+              // });
+              // delete pagefilterObj.assets;
+              // this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
             }
+            await this.performanceTab();
           }
+          case 'alertMapView': {
+            this.alertData = undefined;
+            this.alertCircleTbl = 'critical';
+
+            await this.getAlertCounts();
+        this.alertTabData = (this.alertCircleTbl == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
+            // this.onAlertCircleTblChange(this.alertCircleTbl);
+            await this.getAlertMapData(this.alertCircleTbl);
+            await this.alertMapIconProcessing();
+            break;
           }
+          default: {
+            this.toasterService.showError('Select Correct Tab', '');
+            break;
+          }
+
         }
       }
 
@@ -840,9 +797,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.gameInstance.Quit();
         this.gameInstance = null;
       }
-      async changeImagePath(icon:string){
+      async changeImagePath(icon:any){
         this.imagePath ='./assets/img/'+icon;
-        await this.getAllAssets()
+        // await this.getAllAssets()
       }
       // Map End //
       getTileName() {
@@ -857,13 +814,19 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       onChartTblChange(value){
         this.chartTbl = value;
       }
+      alertTabData: any;
       async onAlertCircleTblChange(value){
+        this.alertTabData = (value == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
         this.alertCircleTbl = value;
+
         if(value === 'critical'){
-          this.changeImagePath('r');
+          await this.changeImagePath('r');
         }else{
-          this.changeImagePath('y');
+          await this.changeImagePath('y');
         }
+        await this.alertMapViewContainer();
+        console.log('mapAssets =', this.mapAssets);
+        console.log('this.alertData =', this.alertData);
       }
       // List View Start //
       // Status Start //
@@ -1352,8 +1315,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Alert Start //
       // Alert Map View Start //
-       alertMapViewContainer(){
-        this.getAlertCounts();
+       async alertMapViewContainer(){
+        await this.getAlertMapData(this.alertCircleTbl);
+        await this.alertMapIconProcessing();
       }
 
       //get Alert Count
@@ -1364,12 +1328,15 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           from_date: filterObj.from_date,
           to_date: filterObj.to_date,
           hierarchy: JSON.stringify(item.hierarchy),
-          is_telemetry_ts: true
-
+          // is_telemetry_ts: true
+        }
+        if(this.filterObj?.asset?.asset_id){
+          obj['asset_id'] = this.filterObj?.asset?.asset_id;
+          obj['gateway_id'] = this.filterObj?.asset?.gateway_id;
         }
         this.apiSubscriptions.push(
           this.applicationService.getAlertCount(obj).subscribe( (response: any) => {
-            if(response){
+            if(response?.length){
               response.forEach( (obj: any) =>{
                 if(obj?.severity === 'Critical'){
                   this.getAlertCountObj['critical'] = obj;
@@ -1377,11 +1344,276 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                 if(obj?.severity === 'Warning'){
                   this.getAlertCountObj['warning'] = obj;
                 }
-              } )
+              } );
+            }else{
+              this.getAlertCountObj['critical'] = null;
+              this.getAlertCountObj['warning'] = null;
             }
           }, (error)=> this.toasterService.showError(error.message, 'Error') )
         );
       }
+
+      // get Alert Data On Click
+      async getAlertMapData(alertType){
+        const filterDate = this.commonService.getDefaultDateOptions();
+        const obj ={
+          from_date: filterDate.from_date,
+          to_date: filterDate.to_date,
+          hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+          acknowledged: this.acknowledged ? false : true,
+          severity:( alertType == 'critical') ? 'Critical' : 'Warning'
+        }
+        if(this.filterObj?.asset?.asset_id){
+          obj['asset_id'] = this.filterObj?.asset?.asset_id;
+          obj['gateway_id'] = this.filterObj?.asset?.gateway_id;
+        }
+        this.apiSubscriptions.push(
+          this.applicationService.getAlerts(obj).subscribe(async (response: any) =>{
+            if(response?.data){
+              this.alertData = response.data;
+              if(this.filterObj?.asset){
+                this.alertData = this.alertData.map((newAlert: any) => {
+                  if(newAlert?.asset_id == this.filterObj?.asset?.asset_id ){
+                    newAlert['asset'] = this.filterObj?.asset;
+                    newAlert['metadata'] = this.filterObj?.asset?.metadata;
+                    newAlert['latitude'] = this.filterObj?.asset?.latitude;
+                    newAlert['longitude'] = this.filterObj?.asset?.longitude;
+                    newAlert['connection_state'] = this.filterObj?.asset?.connection_state;
+                    return newAlert;
+                  }
+                });
+              }else{
+                this.alertData = this.alertData.map((alert: any) => {
+                  const temp: any = this.assets.filter((asset: any) => {return asset?.asset_id === alert?.asset_id});
+                      alert['metadata'] = temp[0]?.metadata;
+                      alert['latitude'] = temp[0]?.latitude;
+                      alert['longitude'] = temp[0]?.longitude;
+                      alert['connection_state'] = temp[0]?.connection_state;
+                      return alert;
+                })
+              }
+              // this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
+              // this.isGetAssetsAPILoading = false;
+              //     this.alertData.forEach((asset) => {
+              //       if (this.environmentApp === 'Kirloskar') {
+              //         asset.mttr = '7 Mins';
+              //         asset.mtbf = '2 days 5 hours';
+              //         asset.gas = '0.4%';
+              //         asset.power = '45 SCMH';
+              //       }
+              //       if (asset?.map_content?.healthy === true) {
+              //         this.healthyAssetCount++;
+              //       } else if (asset?.map_content?.healthy === false) {
+              //         this.unhealthyAssetCount++;
+              //       }
+              //       if (
+              //         asset.type === this.constantData.IP_ASSET &&
+              //         asset?.connection_state?.toLowerCase() === 'connected'
+              //       ) {
+              //         asset.icon = {
+              //           url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
+              //             ? this.blobURL +
+              //             this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
+              //             this.blobToken
+              //             : './assets/img/iot-assets-green.svg',
+              //           scaledSize: {
+              //             width: 20,
+              //             height: 20,
+              //           },
+              //         };
+              //       } else if (
+              //         asset.type === this.constantData.IP_ASSET &&
+              //         asset?.connection_state?.toLowerCase() === 'disconnected'
+              //       ) {
+              //         asset.icon = {
+              //           url: './assets/img/assets-red.gif',
+              //           scaledSize: {
+              //             width: 20,
+              //             height: 20,
+              //           },
+              //         };
+              //       } else if (
+              //         asset.type === this.constantData.IP_GATEWAY &&
+              //         asset?.connection_state?.toLowerCase() === 'connected'
+              //       ) {
+              //         asset.icon = {
+              //           url: './assets/img/iot-gateways-green.svg',
+              //           scaledSize: {
+              //             width: 20,
+              //             height: 20,
+              //           },
+              //         };
+              //       } else if (
+              //         asset.type === this.constantData.IP_GATEWAY &&
+              //         asset?.connection_state?.toLowerCase() === 'disconnected'
+              //       ) {
+              //         asset.icon = {
+              //           url: './assets/img/assets-red.gif',
+              //           scaledSize: {
+              //             width: 20,
+              //             height: 20,
+              //           },
+              //         };
+              //       } else if (asset.type === this.constantData.NON_IP_ASSET) {
+              //         let pinData = this.modifyIcon(asset, this.assetModelsList);
+              //         asset.icon = {
+              //           url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
+              //             ? this.blobURL +
+              //             this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
+              //             this.blobToken
+              //             : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
+              //           scaledSize: {
+              //             width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
+              //             height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
+              //           },
+              //         };
+              //       }
+              //     });
+              //     this.originalAssets = JSON.parse(JSON.stringify(this.alertData));
+              //     const center = this.commonService.averageGeolocation(this.alertData);
+              //     this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+              //     this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+              //     this.mapFitBounds = false;
+              //     if (!center.latitude && !this.contextApp.metadata?.latitude) {
+              //       navigator.geolocation.getCurrentPosition(this.showPosition)
+              //     }
+              //     if (!this.centerLatitude || !this.centerLongitude) {
+              //       this.centerLatitude = 23.0225;
+              //       this.centerLongitude = 72.5714;
+              //     }
+                // } else {
+                //   this.centerLatitude = this.contextApp.metadata?.latitude;
+                //   this.centerLongitude = this.contextApp.metadata?.longitude;
+                //   this.mapFitBounds = false;
+                // }
+
+              //
+
+              // const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+              /////////
+          //     if (this.alertData?.length > 0) {
+          //   const center = this.commonService.averageGeolocation(this.alertData);
+          //   this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+          //   this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+          //   if (!center.latitude && !this.contextApp.metadata?.latitude) {
+          //     navigator.geolocation.getCurrentPosition(this.showPosition);
+          //   }
+          //   // if (item) {
+          //   //   this.loadFromCache(item);
+          //   // } else {
+          //     await this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
+          //     // await this.onAssetFilterApply('assets_map'); // Call onAssetFilterApply after getAllAssets is completed
+          //   // }
+          //   if (!this.centerLatitude || !this.centerLongitude) {
+          //     this.centerLatitude = 23.0225;
+          //     this.centerLongitude = 72.5714;
+          //   }
+          //   this.mapFitBounds = false;
+          // } else {
+          //   this.centerLatitude = this.contextApp.metadata?.latitude;
+          //   this.centerLongitude = this.contextApp.metadata?.longitude;
+          //   this.mapFitBounds = false;
+          // }
+
+          // const center = this.commonService.averageGeolocation(this.assets);
+          // if (!center.latitude && !center.longitude) {
+          //   this.centerLatitude = this.contextApp.metadata?.latitude;
+          //   this.centerLongitude = this.contextApp.metadata?.longitude;
+          //   this.mapFitBounds = false;
+          // }
+          ////////
+            }
+          })
+        );
+
+      }
+
+      async alertMapIconProcessing(){
+        this.activeCircle = 'all';
+            // this.assets = this.hierarchyDropdown.getAssets();
+            if(this.alertData){
+            this.mapAssets =JSON.parse(JSON.stringify(this.alertData));
+            this.healthyAssetCount = 0;
+            this.unhealthyAssetCount = 0;
+            this.alertData.forEach((assetObj) => {
+              if (assetObj?.map_content?.healthy === true) {
+                this.healthyAssetCount++;
+              } else if (assetObj?.map_content?.healthy === false) {
+                this.unhealthyAssetCount++;
+              }
+            });
+
+
+
+            this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
+                  this.isGetAssetsAPILoading = false;
+                  console.log('alertTabData = ',this.alertTabData);
+                  this.alertData.forEach((asset) => {
+                    if (this.environmentApp === 'Kirloskar') {
+                      asset.mttr = '7 Mins';
+                      asset.mtbf = '2 days 5 hours';
+                      asset.gas = '0.4%';
+                      asset.power = '45 SCMH';
+                    }
+                    if (asset?.map_content?.healthy === true) {
+                      this.healthyAssetCount++;
+                    } else if (asset?.map_content?.healthy === false) {
+                      this.unhealthyAssetCount++;
+                    }
+                    if(asset?.severity == this.alertTabData?.severity){
+                      asset.icon = {
+                        url: './assets/img/' + (asset?.severity == 'Critical' ? 'r' : asset?.severity == 'Warning' ? 'y' : 'm') ,
+                        scaledSize: {
+                          width: 20,
+                          height: 20,
+                        },
+                      };
+                    }
+
+
+                  });
+                  this.originalAssets = JSON.parse(JSON.stringify(this.alertData));
+                  const center = this.commonService.averageGeolocation(this.alertData);
+                  this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude;
+                  this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude;
+                  this.mapFitBounds = false;
+                  if (!center.latitude && !this.contextApp.metadata?.latitude) {
+                    navigator.geolocation.getCurrentPosition(this.showPosition)
+                  }
+                  if (!this.centerLatitude || !this.centerLongitude) {
+                    this.centerLatitude = 23.0225;
+                    this.centerLongitude = 72.5714;
+                  }
+                } else {
+                  this.centerLatitude = this.contextApp.metadata?.latitude;
+                  this.centerLongitude = this.contextApp.metadata?.longitude;
+                  this.mapFitBounds = false;
+                }
+
+
+            if (this.mapAssets.length > 0) {
+              this.mapFitBounds = false;
+              const center = this.commonService.averageGeolocation(this.mapAssets);
+              this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
+
+              // this.zoom = 8;
+            } else {
+              // this.mapFitBounds = true;
+              this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
+              this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
+              this.mapFitBounds = false;
+              // this.zoom = undefined;
+            }
+
+        // if(this.alertCircleTbl === 'critical'){
+        //   await this.changeImagePath('r');
+        // }else{
+        //   await this.changeImagePath('y');
+        // }
+        console.log('mapAssets =', this.mapAssets);
+      }
+
       // Alert Map View End //
       // Alert List View Start //
       alertListViewContainer(){

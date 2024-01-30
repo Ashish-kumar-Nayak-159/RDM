@@ -349,6 +349,7 @@ vertical-align: top !important;
 }
 
 
-.alertTabMap{
-  height:15% !important;
+.asset-map-view {
+  height:25% !important;
 }
+agm-map { height: 500px !important; }

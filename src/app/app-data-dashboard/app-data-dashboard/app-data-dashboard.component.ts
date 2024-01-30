@@ -1392,7 +1392,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                       return alert;
                 })
               }
-              // this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
+              this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
+              //
               // this.isGetAssetsAPILoading = false;
               //     this.alertData.forEach((asset) => {
               //       if (this.environmentApp === 'Kirloskar') {

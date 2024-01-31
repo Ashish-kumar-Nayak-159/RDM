@@ -353,3 +353,7 @@ vertical-align: top !important;
   height:25% !important;
 }
 agm-map { height: 500px !important; }
+
+.alertTbl{
+  cursor: pointer !important;
+}

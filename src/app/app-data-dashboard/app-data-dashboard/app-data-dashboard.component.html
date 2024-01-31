@@ -49,8 +49,8 @@
       </div>
       <!-- Assets Map View Tab -->
       <div class="w-100 list-view-paddding" *ngIf="subTab === 'map_view'">
-        <div class="mt-2" *ngIf="isGetAssetsAPILoading || assetModelAPILoading">Loading<em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
-        <div class="asset-map-view" id="mapOfAssets" *ngIf=" !isGetAssetsAPILoading && !assetModelAPILoading" >
+        <div class="mt-2" *ngIf="isGetAssetsAPILoading">Loading<em class="fa fa-spinner fa-spin fa-fw fa-2x"></em></div>
+        <div class="asset-map-view" id="mapOfAssets" *ngIf=" !isGetAssetsAPILoading" >
           <div class="main-heading">
             <form class="form-inline">
               <ng-container *ngIf="environmentApp === 'SopanCMS'">
@@ -98,6 +98,7 @@
           </div>
           <!-- agm Map -->
           <div id="map-container-google-1" class="z-depth-1-half map-container"  >
+            <!-- {{mapAssets | json}} -->
             <agm-map
               #gm
               [latitude]="centerLatitude"
@@ -423,8 +424,8 @@
             <div class="row text-center pt-2">
               <div class="col-md-4">
                 <div
-                  class="card rounded-top online" [style.border-top]="alertCircleTbl === 'critical' ? '2px solid black' : 'white'"
-                  (click)="onAlertCircleTblChange('critical')"
+                class="card rounded-top online" [style.border-top]="alertCircleTbl === 'critical' ? '2px solid black' : 'white'"
+                (click)="onAlertCircleTblChange('critical')"
                   style="border-bottom: 9px solid #c10606f7"
                   >
                   <div class="card-body">
@@ -474,8 +475,8 @@
               >
                 <agm-marker-cluster [imagePath]="imagePath">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
-                                        <agm-marker
-*ngIf="asset.latitude && asset.longitude"
+                    <agm-marker
+                    *ngIf="asset.latitude && asset.longitude"
                       [agmFitBounds]="mapFitBounds"
                       [latitude]="asset.latitude"
                       [longitude]="asset.longitude"
@@ -534,7 +535,7 @@
               </agm-map>
             </div>
           </div>
-          <!--Status-->
+          <!--Status List View-->
           <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'list_view'" id="statusOfAlerts">
             <div class="tab-tbl custom-table table-responsive alert-list-view p-0" id="table-top">
               <div class="blue-nav-bar mt-3 mb-3 pl-0 pr-0">
@@ -556,7 +557,7 @@
                         <button
                           type="button"
                           class="btn btn-sm searchBtn btn-primary"
-                          (click)="onAssetFilterApply()"
+                          (click)="onAssetFilterApply('alertListView')"
                           [disabled]="isTelemetryDataLoading"
                         >
                           <em class="fas fa-search fa-sm"></em>
@@ -564,36 +565,23 @@
                       </div>
                     </form>
                   </div>
-
-                  <!-- <button type="submit" class="btn btn-sm searchBtn btn-primary"  placement="bottom"
-                tooltip="Add App"><em class="fas fa-plus fa-sm"></em></button> -->
                   <div class="ml-auto">
                     <div class="asset-nav-tabs">
                       <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                          <!-- <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab"
-                        href="#" role="tab" aria-controls="nav-provisioned"
-                        aria-selected="true" >
-                        <em class="fab fa-mixcloud mr-2"></em>
-                        <span class="d-none d-md-inline-block">Provisioned</span></a>
-                      <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab"
-                         href="#" role="tab"
-                        aria-controls="nav-unprovisioned" aria-selected="false" >
-                        <em class="fa fa-cloud mr-2" aria-hidden="true"></em>
-                        <span class="d-none d-md-inline-block">Un-Provisioned</span></a> -->
                         </div>
                       </nav>
                     </div>
                   </div>
-                  <div class="main-heading pr-3">0 Telemetry/ Day | 0</div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12 col-md-6">
                   <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height">
-                    <table *ngIf="alertCircleTbl === 'critical'" class="table table-hover critical-tbl">
+                    <table *ngIf="alertCircleTbl" class="table table-hover"  >
                       <thead>
                         <tr>
+                          <th scope="col">SlNo.</th>
                           <th scope="col">Assets</th>
                           <th scope="col">Alert Title</th>
                           <th scope="col">Alert Time</th>
@@ -601,234 +589,57 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr (click)="onChartTblChange(1)">
-                          <td>01</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr (click)="onChartTblChange(2)">
-                          <td>02</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>03</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>04</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>05</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>06</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>07</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <table *ngIf="alertCircleTbl === 'warning'" class="table table-hover warning-tbl">
-                      <thead>
-                        <tr>
-                          <th scope="col">Assets</th>
-                          <th scope="col">Alert Title</th>
-                          <th scope="col">Alert Time</th>
-                          <th scope="col"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr (click)="onChartTblChange(1)">
-                          <td>01</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr (click)="onChartTblChange(2)">
-                          <td>02</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>03</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>04</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>05</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>06</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
-                        <tr>
-                          <td>07</td>
-                          <td>test</td>
-                          <td>test</td>
-                          <td><span class="status-circle"></span></td>
-                        </tr>
+                        <ng-container *ngFor="let asset of alertData; let index = index">
+                          <tr class="alertTbl" (click)="onChartTblChange(asset)" [style.background-color]="asset?.id == chartTbl?.id ? 'rgb(232, 227, 227)' : ''" >
+                            <td>{{index+1}}</td>
+                            <td>{{asset?.display_name ?? asset?.asset_id}}</td>
+                            <td>{{asset?.message ?? 0}}</td>
+                            <td>{{asset?.message_date | date: 'hh:mm:ss a'}}</td>
+                            <td [class]="asset?.severity === 'Critical' ? 'critical-tbl' : 'warning-tbl' " [tooltip]="asset?.severity === 'Critical' ? 'Critical' : 'Warning'" ><span class="status-circle"></span></td>
+                          </tr>
+                        </ng-container>
                       </tbody>
                     </table>
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
-                  <div class="card-table" *ngIf="alertCircleTbl === 'critical'">
-                    <h3>New Red Alert</h3>
+                  <div class="card-table" *ngIf="alertCircleTbl">
+                    <h3>{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ? 'Critical' : 'Warning') + ' Alerts'}}</h3>
                     <div class="red-alert-block">
                       <div class="red-alert-data">
-                        <table *ngIf="chartTbl === 1">
+                          <table>
                           <tbody>
                             <tr>
-                              <td><strong>Alert Type :</strong></td>
-                              <td>test 1</td>
+                              <td class="col-2"><strong>Alert Type : </strong></td>
+                              <td>{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td><strong>Asset : </strong></td>
-                              <td>test 1</td>
+                              <td class="col-2"><strong>Asset : </strong></td>
+                              <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td><strong>Hierarchy : </strong></td>
-                              <td>test 1</td>
+                              <td class="col-2"><strong>Hierarchy : </strong></td>
+                              <td>{{(chartTbl?.hierarchy | json) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td><strong>Alert Title : </strong></td>
-                              <td>test 1</td>
+                              <td class="col-2"><strong>Alert Title : </strong></td>
+                              <td>{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td><strong>Alert Time : </strong></td>
-                              <td>test 1</td>
+                              <td class="col-2"><strong>Alert Time : </strong></td>
+                              <td>{{(chartTbl?.message_date | date: 'dd-MMM-yyy hh:mm:ss a') ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>
-                        <table *ngIf="chartTbl === 2">
-                          <tbody>
-                            <tr>
-                              <td><strong>Alert Type - Critical/Warning :</strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Asset : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Hierarchy : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Title : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Time : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <a href="">View More Details</a>
+                        <div class=""><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
                       </div>
                       <div class="red-alert-img-data">
                         <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
-                        <p><strong>Gateway Status</strong></p>
-                        <p>CT#1-TA_GW <span>Offline</span></p>
+                        <p><strong>Asset Status</strong></p>
+                        <p><span>{{chartTbl?.connection_state ?? ''}}</span></p>
                       </div>
                     </div>
                   </div>
-                  <div class="card-table" *ngIf="alertCircleTbl === 'warning'">
-                    <h3>New Yellow Alert</h3>
-                    <div class="red-alert-block">
-                      <div class="red-alert-data">
-                        <table *ngIf="chartTbl === 1">
-                          <tbody>
-                            <tr>
-                              <td><strong>Alert Type :</strong></td>
-                              <td>test 1</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Asset : </strong></td>
-                              <td>test 1</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Hierarchy : </strong></td>
-                              <td>test 1</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Title : </strong></td>
-                              <td>test 1</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Time : </strong></td>
-                              <td>test 1</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <table *ngIf="chartTbl === 2">
-                          <tbody>
-                            <tr>
-                              <td><strong>Alert Type - Critical/Warning :</strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Asset : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Hierarchy : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Title : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Alert Time : </strong></td>
-                              <td>test 2</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <a href="">View More Details</a>
-                      </div>
-                      <div class="red-alert-img-data">
-                        <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
-                        <p><strong>Gateway Status</strong></p>
-                        <p>CT#1-TA_GW <span>Offline</span></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--Status-->
         </div>
       </div>
     </div>

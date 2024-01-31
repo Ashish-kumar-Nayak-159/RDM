@@ -9,6 +9,7 @@ import jwt_decode from 'jwt-decode';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 import * as datefns from 'date-fns'
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class CommonService {
   flag = false;
   browsername: any = '';
   privateEncryptionString = environment.storgageSecretKey;
+  private behaviorSub = new BehaviorSubject<any>({});
   constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) {
     this.browsername = this.getBrowserName()
   }
@@ -489,4 +491,9 @@ export class CommonService {
     return filterObj;
   }
   assetMonitoringFilterData: EventEmitter<any> = new EventEmitter<any>();
+
+  liveAlertFilterObj = this.behaviorSub.asObservable();
+  setDashboardLiveAlertFIlter(filterObj: any) {
+    this.behaviorSub.next({ ...filterObj });
+  }
 }

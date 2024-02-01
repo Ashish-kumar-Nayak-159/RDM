@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { HierarchyDropdownComponent } from './../../common/hierarchy-dropdown/hierarchy-dropdown.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from './../../../environments/environment';
@@ -71,6 +72,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   customMapStyle = [
     {
       featureType: 'poi',
+      elementType:"labels",
       stylers: [{ visibility: 'off' }],
     },
     {
@@ -208,13 +210,15 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         else{
           //
           if(this.mainTab === 'alerts'){
+            this.changeImagePath('r');
+            this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView');
             if(sTabName === 'map_view' ){
-              this.alertCircleTbl = 'critical';
-              this.changeImagePath('r');
-              this.onAssetFilterApply('alertMapView');
+              // this.alertCircleTbl = 'critical';
+              // this.changeImagePath('r');
+              // this.onAssetFilterApply('alertMapView');
             }else{
-              this.alertCircleTbl = 'critical';
-              this.onAssetFilterApply('alertListView');
+              // this.alertCircleTbl = 'critical';
+              // this.onAssetFilterApply('alertListView');
             }
           }
         }
@@ -607,6 +611,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           longitude: asset?.longitude,
           latitude: asset?.latitude,
         }
+        this.chartTbl = asset;
         // this.onMarkerClick(infowindow, gm);
 
       }
@@ -1281,7 +1286,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           this.applicationService.getAlerts(obj).subscribe(async (response: any) =>{
             if(response){
               this.alertData = response;
-              this.chartTbl= response[0];
+              if(!this.chartTbl?.id){
+                this.chartTbl = response[0];
+              }
               if(this.filterObj?.asset){
                 this.alertData = this.alertData.map((newAlert: any) => {
                   if(newAlert?.asset_id == this.filterObj?.asset?.asset_id ){
@@ -1351,6 +1358,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                       };
                     }
                     return asset;
+
+
                   });
                   this.alertData = JSON.parse(JSON.stringify(data));
                   this.mapAssets = JSON.parse(JSON.stringify(this.alertData));

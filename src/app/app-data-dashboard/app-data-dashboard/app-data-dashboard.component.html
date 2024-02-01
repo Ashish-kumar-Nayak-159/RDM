@@ -468,7 +468,7 @@
                 <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
                   [fitBounds]="mapFitBounds" [fullscreenControl]="true" [mapTypeControl]="true">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
-                      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
+                      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds" [visible]="false"
                         [latitude]="asset.latitude" [longitude]="asset.longitude"
                         (markerClick)="markerDetails(asset)" [iconUrl]="asset.icon">
                       </agm-marker>
@@ -521,7 +521,7 @@
                             </tr>
                           </tbody>
                         </table>
-                        <div class=""><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
+                        <div class="alertListCard"><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
                       </div>
                       <div class="red-alert-img-data">
                         <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
@@ -631,7 +631,7 @@
                             </tr>
                           </tbody>
                         </table>
-                        <div class=""><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
+                        <div class="alertListCard"><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
                       </div>
                       <div class="red-alert-img-data">
                         <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />

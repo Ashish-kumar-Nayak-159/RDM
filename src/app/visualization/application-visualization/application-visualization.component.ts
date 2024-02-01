@@ -89,7 +89,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   nullValueArr: any[];
   frequency: any;
   ShowSelectedWidgets: boolean = false; // Property to show hide Show Selected Property widgets
-  showWidgetList() { // Function call on show / hide selected widgets button click 
+  showWidgetList() { // Function call on show / hide selected widgets button click
     this.ShowSelectedWidgets = !this.ShowSelectedWidgets; // Toggle Selected Property Widgets
   }
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
@@ -106,6 +106,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectFileType = undefined;
   uploadFileType = undefined;
   ackAlertType = undefined;
+  alertFilter: any;
+  private alertSubscriptions:Subscription;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -154,6 +156,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     } else if (this.pageType === 'history') {
       item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    }
+    this.alertSubscriptions = this.commonService.alertFilterObj.subscribe((response) =>{
+      if(response){
+        this.alertFilter = response;
+      }
+      })
+    if(this.alertFilter &&  this.alertFilter?.dateFilterObj){
+      item = this.alertFilter.dateFilterObj;
     }
     if (item) {
       if (this.pageType === 'live') {
@@ -350,7 +360,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.latestAlerts = response.data;
           this.selectedAlert = undefined;
           if (this.latestAlerts.length > 0) {
-            this.onClickOfViewGraph(this.latestAlerts[this.acknowledgedAlertIndex || 0]);
+            let tempIdData: any;
+            if(this.alertFilter){
+              this.latestAlerts.filter((item, index)=> {
+                if(item?.id == this.alertFilter?.id) {
+                  tempIdData = index;
+                }
+              });
+            }
+            this.onClickOfViewGraph(this.latestAlerts[( this.alertFilter? tempIdData : this.acknowledgedAlertIndex )|| 0]);
             this.acknowledgedAlertIndex = undefined;
           } else {
             this.selectedTab = undefined;
@@ -1191,7 +1209,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
-    // if file name contains single comma then 
+    // if file name contains single comma then
     if (files?.item(0)?.name?.includes("'") || files?.item(0)?.name?.includes("''")) {
       this.toasterService.showError("file name should not contain ' '", 'Select File');
       return;
@@ -1208,7 +1226,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.uploadFileType = undefined;
   }
   selectionChange(selectedType: any, index) {
-    this.selectFileType = selectedType; //dropdown file type 
+    this.selectFileType = selectedType; //dropdown file type
     this.selectFileType !== this.uploadFileType ? this.disableAckBtn = true : this.disableAckBtn = false;
     if (this.disableAckBtn === true) {
       this.acknowledgedAlert.metadata.files[index].data.name = '';
@@ -1332,6 +1350,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRAlertSubscription?.unsubscribe();
     this.singalRService.disconnectFromSignalR('alert');
+    if(this.alertSubscriptions)
+    this.alertSubscriptions.unsubscribe();
   }
 
   y1Deselect(e) {

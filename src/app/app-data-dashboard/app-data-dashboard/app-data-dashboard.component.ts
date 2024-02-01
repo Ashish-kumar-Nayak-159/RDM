@@ -139,18 +139,35 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   isMapDataLoading = false;
   originalAssets: any[] = [];
 
+  mapOptions = {
+    styles: [
+      {
+        height: 53,
+        url: './assets/img/y1.png',
+        width: 52
+      },
+      {
+        height: 53,
+        url: './assets/img/r1.png',
+        width: 52
+
+      }
+    ],
+    calculator: (markers) => {
+      return { text: `<h5 style='color: black; font-size: 16px;margin-top: 17px'>${markers.length}</h5>`, index: this.alertCircleTbl === "critical" ? 2 : 1 }
+    },
+
+  }
+
+  alertTabData: any;
+  alertTabType = undefined;
 
 
   constructor(
     private assetService: AssetService,
-    private commonService: CommonService,
+    public commonService: CommonService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
-    private signalRService: SignalRService,
-    private chartService: ChartService,
-    private factoryResolver: ComponentFactoryResolver,
-    private appRef: ApplicationRef,
-    private injector: Injector,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
@@ -191,13 +208,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           if(this.mainTab === 'alerts'){
             if(sTabName === 'map_view' ){
               this.alertCircleTbl = 'critical';
-              // this.getAlertCounts();
               this.changeImagePath('r');
               this.onAssetFilterApply('alertMapView');
-              // this.onAlertCircleTblChange(this.alertCircleTbl);
             }else{
               this.alertCircleTbl = 'critical';
-              this.alertListViewContainer();
+              this.onAssetFilterApply('alertListView');
             }
           }
         }
@@ -275,14 +290,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
               const center = this.commonService.averageGeolocation(this.mapAssets);
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
-
-              // this.zoom = 8;
             } else {
-              // this.mapFitBounds = true;
               this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
               this.mapFitBounds = false;
-              // this.zoom = undefined;
             }
             break;
           }
@@ -356,14 +367,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                 this.hierarchy = item1?.hierarchy;
             }
           }
-          // else{
-          //   if (item1) {
-          //     if (item1.assets) {
-          //       this.filterObj.asset = item1.assets;
-          //       this.onAssetFilterApply(this.filterObj, false, true, true);
-          //     }
-          //   }
-          // }
         }
       }
 
@@ -594,6 +597,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         infowindow.open();
         this.cdr.detectChanges();
       }
+
+      markerDetails(asset,infowindow, gm){
+        console.log('asset =', asset);
+        this.onMarkerClick(infowindow, gm);
+
+      }
+
       redirectToAsset(asset) {
         this.router.navigate(['applications', this.contextApp.app, 'assets', asset.asset_id, 'control-panel']);
       }
@@ -637,12 +647,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           const center = this.commonService.averageGeolocation(this.mapAssets);
           this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
           this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
-          // this.zoom = 5;
         } else {
           this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
           this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
           this.mapFitBounds = false;
-          // this.zoom = undefined;
         }
       }
       onSave(asset) {
@@ -706,7 +714,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       onChartTblChange(value){
         this.chartTbl = value;
       }
-      alertTabData: any;
       async onAlertCircleTblChange(value){
         this.alertTabData = (value == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
         this.alertCircleTbl = value;
@@ -1039,8 +1046,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       getDailyReportSubscription(filterObj: any){
         this.dailyReportsData = [];
-        // this.dailyReportApiLoading= false;
-
       let newHierarchy = {};
         this.contextApp?.hierarchy?.levels.forEach((level, index) => {
           newHierarchy[level] = index != 0 ? this.configuredHierarchy[index] : this.contextApp.app;
@@ -1243,7 +1248,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       // get Alert Data On Click
-      alertTabType = undefined;
       async getAlertMapData(alertType?){
         this.alertTabType = alertType;
         this.isMapDataLoading = true;
@@ -1300,7 +1304,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async alertMapIconProcessing(){
         this.isMapDataLoading = true;
         this.activeCircle = 'all';
-            // this.assets = this.hierarchyDropdown.getAssets();
             if(this.alertData){
             this.mapAssets =JSON.parse(JSON.stringify(this.alertData));
             this.healthyAssetCount = 0;
@@ -1329,7 +1332,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                     if(asset?.severity == this.alertTabData?.severity){
                       asset.icon = {
                         url:
-                        //  './assets/img/' +
                         (asset?.severity == 'Critical' ? './assets/img/r.png' : asset?.severity == 'Warning' ? './assets/img/y.png' : './assets/img/m.png') ,
                         scaledSize: {
                           width: 20,
@@ -1367,13 +1369,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
               this.centerLatitude = center?.latitude || this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = center?.longitude || this.contextApp.metadata?.longitude || 72.5714;
 
-              // this.zoom = 8;
             } else {
-              // this.mapFitBounds = true;
               this.centerLatitude = this.contextApp.metadata?.latitude || 23.0225;
               this.centerLongitude = this.contextApp.metadata?.longitude || 72.5714;
               this.mapFitBounds = false;
-              // this.zoom = undefined;
             }
       }
 
@@ -1383,17 +1382,33 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.getAlertCounts();
       }
 
-      redirectAlertListview(alertData: any){
-        this.commonService.setDashboardLiveAlertFIlter(alertData);
-        this.router.navigate(['applications', this.contextApp.app, 'alerts', 'visualization']);
+       redirectAlertListview(alertData: any){
+        const dateConvert: any = this.commonService.convertDateToEpoch(alertData?.message_date);
+        const changeDate: Date = new Date(dateConvert * 1000);
+        let from_date: any = (changeDate.getTime() - 1000 * 60) / 1000;
+        let to_date: any = (changeDate.getTime() + 1000 * 60) / 1000;
+        if(alertData?.asset_id){
+          const dateFilterObj= {
+            dateOption: 'Custom Range',
+            from_date: from_date,
+            to_date: to_date,
+          }
+          alertData['dateFilterObj'] = dateFilterObj;
+
+          this.commonService.setDashboardAlertFilter(alertData);
+          this.router.navigate(['applications', this.contextApp.app, 'assets', alertData?.asset_id, 'control-panel'], {fragment : 'alert-visualization'});
+        }else{
+          this.toasterService.showError('Asset Id Not Found','Error');
+        }
       }
 
       convertHierarchyJSONtoPlain(obj: any){
-        let hirr: any;
-        Object.keys(obj).forEach((data: any, keys) => {
-          hirr=keys;
+        let hirrArr: any = [];
+        obj = JSON.parse(obj);
+        Object.keys(obj).forEach((key: any, index) => {
+          hirrArr.push(obj[key]);
         })
-        return hirr;
+        return hirrArr.join('/');
       }
       // Alert List View End //
       // Alert End //

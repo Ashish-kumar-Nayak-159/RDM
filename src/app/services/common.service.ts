@@ -492,8 +492,8 @@ export class CommonService {
   }
   assetMonitoringFilterData: EventEmitter<any> = new EventEmitter<any>();
 
-  liveAlertFilterObj = this.behaviorSub.asObservable();
-  setDashboardLiveAlertFIlter(filterObj: any) {
+  alertFilterObj = this.behaviorSub.asObservable();
+  setDashboardAlertFilter(filterObj: any) {
     this.behaviorSub.next({ ...filterObj });
   }
 }

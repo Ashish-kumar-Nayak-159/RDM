@@ -473,18 +473,19 @@
                 [fullscreenControl]="true"
                 [mapTypeControl]="true"
               >
-                <agm-marker-cluster [imagePath]="imagePath">
+              <agm-marker-cluster [styles]="mapOptions.styles" [calculator]="mapOptions.calculator">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
                     <agm-marker
-                    *ngIf="asset.latitude && asset.longitude"
+                    *ngIf="asset?.latitude && asset?.longitude"
                       [agmFitBounds]="mapFitBounds"
                       [latitude]="asset.latitude"
                       [longitude]="asset.longitude"
-                      (mouseOver)="onMarkerClick(infowindow, gm)"
+                      (markerClick)="markerDetails(asset , infowindow, gm)"
                       [iconUrl]="asset.icon"
-                    >
+                      >
+                      <!-- (markerClick)="onMarkerClick(infowindow, gm)" -->
+                      <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
                       <agm-info-window #infowindow>
-                        <!-- <b> <a class="blue-font" style="text-decoration: none;" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b><br/> -->
                         <div class="card border-0 border-top-1 border-primary" style="min-width: 400px; max-width: 430px">
                           <div
                             class="card-header card-table bg-white map-card"
@@ -531,6 +532,11 @@
                       </agm-info-window>
                     </agm-marker>
                   </ng-container>
+                  <!-- New start -->
+                  <!-- <agm-overlay [longitude]="mapAssets[0]?.longitude" [latitude]="mapAssets[0]?.latitude" >
+                    <div [ngClass]="'markerdisplay': true, 'yellow-marker': false, 'blink': true " ></div>
+                  </agm-overlay> -->
+                  <!-- New end -->
                 </agm-marker-cluster>
               </agm-map>
             </div>
@@ -610,24 +616,24 @@
                           <table>
                           <tbody>
                             <tr>
-                              <td class="col-2"><strong>Alert Type : </strong></td>
+                              <td class="col-4"><strong>Alert Type : </strong></td>
                               <td>{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-2"><strong>Asset : </strong></td>
+                              <td class="col-4"><strong>Asset : </strong></td>
                               <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-2"><strong>Hierarchy : </strong></td>
-                              <td>{{(chartTbl?.hierarchy | json) ?? 'NULL'}}</td>
+                              <td class="col-4"><strong>Hierarchy : </strong></td>
+                              <td>{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-2"><strong>Alert Title : </strong></td>
+                              <td class="col-4"><strong>Alert Title : </strong></td>
                               <td>{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-2"><strong>Alert Time : </strong></td>
-                              <td>{{(chartTbl?.message_date | date: 'dd-MMM-yyy hh:mm:ss a') ?? 'NULL'}}</td>
+                              <td class="col-4"><strong>Alert Time : </strong></td>
+                              <td>{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>

@@ -88,6 +88,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   gameInstance: any;
   gameConfig: any;
   getAssetsAPILoading = false;
+  isdisplayAlertCard: boolean = false;
+  selectedAlertObj: any;
   ////Assets Map View end ////
 
   // Asset List View Start //
@@ -598,10 +600,18 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.cdr.detectChanges();
       }
 
-      markerDetails(asset,infowindow, gm){
+      markerDetails(asset){
+        this.isdisplayAlertCard = true ;
         console.log('asset =', asset);
-        this.onMarkerClick(infowindow, gm);
+        this.selectedAlertObj ={
+          longitude: asset?.longitude,
+          latitude: asset?.latitude,
+        }
+        // this.onMarkerClick(infowindow, gm);
 
+      }
+      hideNewAlertCard(){
+        this.isdisplayAlertCard = false;
       }
 
       redirectToAsset(asset) {
@@ -713,6 +723,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
       onChartTblChange(value){
         this.chartTbl = value;
+        this.isdisplayAlertCard = true;
       }
       async onAlertCircleTblChange(value){
         this.alertTabData = (value == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];

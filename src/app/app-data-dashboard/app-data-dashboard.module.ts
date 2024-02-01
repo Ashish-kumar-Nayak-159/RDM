@@ -13,11 +13,11 @@ import { AppDataDashboardRoutingModule } from './app-data-dashboard-routing.modu
 import { AgmCoreModule } from '@agm/core';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { AppDashboardHistoricalComponent } from '../app-dashboard/app-dashboard-historical/app-dashboard-historical.component';
-
+import {AgmOverlays} from 'agm-overlays';
 @NgModule({
   declarations: [
     AppDataDashboardComponent,
-     AppDashboardHistoricalComponent
+     AppDashboardHistoricalComponent,
     ],
   imports: [
     CommonModule,
@@ -30,6 +30,7 @@ import { AppDashboardHistoricalComponent } from '../app-dashboard/app-dashboard-
     NgSelectModule,
     TooltipModule,
     AgmCoreModule,
+    AgmOverlays,
     AgmCoreModule.forRoot({
       libraries: ['places'],
     }),

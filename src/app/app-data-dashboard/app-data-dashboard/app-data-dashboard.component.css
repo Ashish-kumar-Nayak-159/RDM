@@ -165,6 +165,16 @@ margin-right: 5px;} */
   box-shadow: 7px 0px 5px 0px gray;
   cursor: pointer;
 }
+.card-table1{
+  border: 1px solid #c7e0f4;
+    display: inline-block;
+    box-shadow: 1px 1px 4px 0px #ffffff;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 15px 10px !important;
+    height: 265px !important;
+    width: 500px !important;
+}
 .card-table {
   border: 1px solid #c7e0f4;
   display: inline-block;
@@ -179,7 +189,7 @@ margin-right: 5px;} */
 .card-table td {
   padding: 5px;
 }
-.card-table a {
+.card-table a,.card-table1 a {
   padding: 5px 15px;
   background-color: #eef3fa;
   margin-left: 0px;
@@ -298,8 +308,6 @@ agm-map {
 .asset-map-view {
   background-color: #eef3fa;
   padding: 15px;
-  height: 100vh !important;
-  /* margin: 0 12px; */
 }
 .dataTableHeight{
   height: calc(100vh - 15.5rem) !important;
@@ -348,12 +356,6 @@ background-color: white !important;
 vertical-align: top !important;
 }
 
-
-.asset-map-view {
-  height:25% !important;
-}
-agm-map { height: 500px !important; }
-
 .alertTbl{
   cursor: pointer !important;
 }
@@ -361,17 +363,15 @@ agm-map { height: 500px !important; }
 .map-container {
   position: relative;
   height: 500px;
-  /* Adjust the height as needed */
 }
 
 #info-card {
   position: absolute;
-  top: 10px;
+  top: 3px;
   right: 10px;
   background-color: white;
-  padding: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  height: 263px !important;
 }
 
 
@@ -380,9 +380,12 @@ agm-map { height: 500px !important; }
   height: 133px;
 }
 
-.alertListCard a{
+.alertListCard1 a, .alertListCard a{
   text-decoration: none !important;
 
+}
+.alertListCard1{
+  margin-top: 30px !important;
 }
 
 @keyframes glow {

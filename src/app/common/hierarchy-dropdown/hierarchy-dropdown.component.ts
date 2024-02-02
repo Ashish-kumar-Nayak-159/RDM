@@ -134,6 +134,9 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
   }
 
   getDropdownName() {
+    if(this.originalFilterObj == undefined && this.filterObj){
+    }
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     if (this.type == 'logicalView') {
       return this.originalFilterObj?.logicalview ? this.originalFilterObj?.logicalview.name : 'Select Logical View'
     }

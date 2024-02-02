@@ -100,7 +100,7 @@
           <div id="map-container-google-1" class="z-depth-1-half map-container"  >
             <!-- {{mapAssets | json}} -->
             <agm-map
-              #gm
+              #gm style="height: 500px !important;"
               [latitude]="centerLatitude"
               [longitude]="centerLongitude"
               [styles]="customMapStyle"
@@ -454,7 +454,7 @@
                   <button
                     type="button"
                     class="btn btn-sm searchBtn btn-primary"
-                    (click)="onAssetFilterApply('alertMapView')"
+                    (click)="onAssetFilterApply('alertMapView',true, true)"
                     [disabled]="isTelemetryDataLoading"
                   >
                     <em class="fas fa-search fa-sm"></em>
@@ -465,7 +465,7 @@
             <div class="alertTabMap" style="min-height: 500px; z-index: 1;">
 
               <div class="map-container">
-                <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+                <agm-map #gm style="height: 300px !important;" [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
                   [fitBounds]="mapFitBounds" [fullscreenControl]="true" [mapTypeControl]="true">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
                       <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
@@ -479,7 +479,7 @@
                 </agm-map>
 
                 <div id="info-card"  *ngIf="isdisplayAlertCard">
-                  <div class="card-table alert-card-table" >
+                  <div class="card-table1 alert-card-table" >
                     <div class="card-header border-bottom-0">
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="title-wrapper">
@@ -499,27 +499,27 @@
                           <tbody>
                             <tr>
                               <td class="col-4"><strong>Alert Type : </strong></td>
-                              <td>{{chartTbl?.severity ?? 'NULL'}}</td>
+                              <td class="col-4">{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Asset : </strong></td>
-                              <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Hierarchy : </strong></td>
-                              <td>{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Alert Title : </strong></td>
-                              <td>{{chartTbl?.message ?? 'NULL'}}</td>
+                              <td class="col-4">{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Alert Time : </strong></td>
-                              <td>{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>
-                        <div class="alertListCard"><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
+                        <div class="alertListCard1"><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
                       </div>
                       <div class="red-alert-img-data">
                         <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />
@@ -555,7 +555,7 @@
                         <button
                           type="button"
                           class="btn btn-sm searchBtn btn-primary"
-                          (click)="onAssetFilterApply('alertListView')"
+                          (click)="onAssetFilterApply('alertListView',true,true)"
                           [disabled]="isTelemetryDataLoading"
                         >
                           <em class="fas fa-search fa-sm"></em>
@@ -609,23 +609,23 @@
                           <tbody>
                             <tr>
                               <td class="col-4"><strong>Alert Type : </strong></td>
-                              <td>{{chartTbl?.severity ?? 'NULL'}}</td>
+                              <td class="col-4">{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Asset : </strong></td>
-                              <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Hierarchy : </strong></td>
-                              <td>{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Alert Title : </strong></td>
-                              <td>{{chartTbl?.message ?? 'NULL'}}</td>
+                              <td class="col-4">{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
                               <td class="col-4"><strong>Alert Time : </strong></td>
-                              <td>{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
+                              <td class="col-4">{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>

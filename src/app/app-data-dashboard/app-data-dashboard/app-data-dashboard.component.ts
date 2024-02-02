@@ -213,14 +213,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           if(this.mainTab === 'alerts'){
             this.changeImagePath('r');
             this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView');
-            if(sTabName === 'map_view' ){
-              // this.alertCircleTbl = 'critical';
-              // this.changeImagePath('r');
-              // this.onAssetFilterApply('alertMapView');
-            }else{
-              // this.alertCircleTbl = 'critical';
-              // this.onAssetFilterApply('alertListView');
-            }
+            // this.alertCircleTbl = 'critical';
           }
         }
       }
@@ -263,7 +256,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         }
       }
 
-      async onAssetFilterApply(filterType? , updateFilterObj = true, filterObj?, historicalWidgetUpgrade = false, isFromMainSearch = true) {
+      async onAssetFilterApply(filterType? , updateFilterObj = true, resetIndex = false) {
 
         if (updateFilterObj) {
           const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
@@ -273,6 +266,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
               pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
             }
           });
+          if(this.filterObj?.asset){
+            pagefilterObj['assets'] = this.filterObj?.asset;
+            this.hierarchyDropdown?.updateHierarchyDetail(pagefilterObj);
+          }
+          if(pagefilterObj?.assets && (filterType != 'alertMapView' || filterType!= 'alertListView') )
           delete pagefilterObj.assets;
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
         }
@@ -333,7 +331,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             await this.getAlertCounts();
             this.alertTabData = (this.alertCircleTbl == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
             // this.onAlertCircleTblChange(this.alertCircleTbl);
-            await this.getAlertMapData(this.alertCircleTbl);
+            await this.getAlertMapData(this.alertCircleTbl, resetIndex);
             await this.alertMapIconProcessing();
             break;
           }
@@ -343,7 +341,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.alertTabType = undefined;
             // this.alertCircleTbl = 'critical';
             this.getAlertCounts();
-            this.getAlertMapData(this.alertCircleTbl);
+            this.getAlertMapData(this.alertCircleTbl, resetIndex);
             break;
           }
           default: {
@@ -735,12 +733,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.alertCircleTbl = value;
         this.isWarningVisible = (value == 'critical') ? false : true;
 
-        if(value === 'critical'){
-          await this.changeImagePath('r');
-        }else{
-          await this.changeImagePath('y');
-        }
-        await this.alertMapViewContainer();
+        // if(value === 'critical'){
+        //   await this.changeImagePath('r');
+        // }else{
+        //   await this.changeImagePath('y');
+        // }
+        await this.alertMapViewContainer(true);
       }
       // List View Start //
       // Status Start //
@@ -1226,8 +1224,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Alert Start //
       // Alert Map View Start //
-       async alertMapViewContainer(){
-        await this.getAlertMapData(this.alertCircleTbl);
+       async alertMapViewContainer(resetIndex = false){
+        await this.getAlertMapData(this.alertCircleTbl, resetIndex);
         await this.alertMapIconProcessing();
       }
 
@@ -1257,15 +1255,39 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                 }
               } );
             }else{
-              this.getAlertCountObj['critical'] = null;
-              this.getAlertCountObj['warning'] = null;
+              this.getAlertCountObj['critical'] = {
+                not_acknowledged_alerts : 0,
+                severity : "Critical",
+                total_alerts : 0
+              };
+              this.getAlertCountObj['warning'] = {
+                not_acknowledged_alerts : 0,
+                severity : "Warning",
+                total_alerts : 0
+              };
+            }
+            if(response?.length == 1){
+              if(response[0]?.severity != 'Critical'){
+                this.getAlertCountObj['critical'] = {
+                  not_acknowledged_alerts : 0,
+                  severity : "Critical",
+                  total_alerts : 0
+                };
+              }
+              if(response[0]?.severity != 'Warning'){
+                this.getAlertCountObj['warning'] = {
+                  not_acknowledged_alerts : 0,
+                  severity : "Warning",
+                  total_alerts : 0
+                };
+              }
             }
           }, (error)=> this.toasterService.showError(error.message, 'Error') )
         );
       }
 
       // get Alert Data On Click
-      async getAlertMapData(alertType?){
+      async getAlertMapData(alertType?,resetIndex = false){
         this.alertTabType = alertType;
         this.isMapDataLoading = true;
         const filterDate = this.commonService.getDefaultDateOptions();
@@ -1287,8 +1309,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           this.applicationService.getAlerts(obj).subscribe(async (response: any) =>{
             if(response){
               this.alertData = response;
-              if(!this.chartTbl?.id){
+              if(response && (!this.chartTbl?.id || resetIndex)){
                 this.chartTbl = response[0];
+              }else{
+                if(!response){
+                  this.chartTbl = null;
+                }
               }
               if(this.filterObj?.asset){
                 this.alertData = this.alertData.map((newAlert: any) => {
@@ -1443,12 +1469,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       convertHierarchyJSONtoPlain(obj: any){
-        let hirrArr: any = [];
-        obj = JSON.parse(obj);
-        Object.keys(obj).forEach((key: any, index) => {
-          hirrArr.push(obj[key]);
-        })
-        return hirrArr.join('/');
+        if(obj){
+          let hirrArr: any = [];
+          obj = JSON.parse(obj);
+          Object.keys(obj).forEach((key: any, index) => {
+            hirrArr.push(obj[key]);
+          })
+          return hirrArr.join('/');
+        }
       }
       // Alert List View End //
       // Alert End //

@@ -398,7 +398,7 @@ export class CONSTANTS {
       url: 'applications/:appName/data-dashboard',
       display_name: 'Dashboard',
       icon: 'fas fa-fw fa-home',
-      visible: true,
+      visible: false,
       exactMatch: true,
       privileges_required: ['ASMV'],
       showAccordion: [

@@ -78,7 +78,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl(
         'bn',
-        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+        new FormControl(obj?.bn , [Validators.required, Validators.min(0), Validators.max(15)])
       );
     } else {
       this.setupForm.removeControl('bn');
@@ -144,7 +144,7 @@ export class ModelProtocolSpecificDetailsComponent implements OnInit {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl(
         'bn',
-        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+        new FormControl(obj?.bn , [Validators.required, Validators.min(0), Validators.max(15)])
       );
     } else {
       this.setupForm.removeControl('bn');

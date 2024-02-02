@@ -107,6 +107,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   uploadFileType = undefined;
   ackAlertType = undefined;
   alertFilter: any;
+  tempLocalStorage: any;
   private alertSubscriptions:Subscription;
   constructor(
     private commonService: CommonService,
@@ -157,6 +158,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     } else if (this.pageType === 'history') {
       item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
     }
+    this.tempLocalStorage = item;
     this.alertSubscriptions = this.commonService.alertFilterObj.subscribe((response) =>{
       if(response){
         this.alertFilter = response;
@@ -1350,6 +1352,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRAlertSubscription?.unsubscribe();
     this.singalRService.disconnectFromSignalR('alert');
+    this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, this.tempLocalStorage);
     if(this.alertSubscriptions)
     this.alertSubscriptions.unsubscribe();
   }

@@ -493,7 +493,7 @@ export class CommonService {
   assetMonitoringFilterData: EventEmitter<any> = new EventEmitter<any>();
 
   alertFilterObj = this.behaviorSub.asObservable();
-  setDashboardAlertFilter(filterObj: any) {
+  setDashboardFilter(filterObj: any) {
     this.behaviorSub.next({ ...filterObj });
   }
 }

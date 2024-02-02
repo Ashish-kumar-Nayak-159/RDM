@@ -630,12 +630,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           asset['display_name'] = asset.name;
         }
         this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-        // if(pageType === 'dashboard'){
-        //   this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-        //   this.commonService.assetMonitoringFilterData.emit(null);
-        // }else{
-        //   this.commonService.assetMonitoringFilterData.emit(pagefilterObj);
-        // }
+        if(pageType === 'dashboard'){
+          this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+        }else{
+          this.commonService.setDashboardFilter(pagefilterObj);
+        }
         this.router.navigate(['applications', this.contextApp.app, pageType? pageType : 'dashboard']);
       }
       onClickOfCount(type) {
@@ -1461,7 +1460,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
           alertData['dateFilterObj'] = dateFilterObj;
 
-          this.commonService.setDashboardAlertFilter(alertData);
+          this.commonService.setDashboardFilter(alertData);
           this.router.navigate(['applications', this.contextApp.app, 'assets', alertData?.asset_id, 'control-panel'], {fragment : 'alert-visualization'});
         }else{
           this.toasterService.showError('Asset Id Not Found','Error');

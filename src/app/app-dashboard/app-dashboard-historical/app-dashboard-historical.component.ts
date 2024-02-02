@@ -72,7 +72,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   dashistroicaldata:any;
   tempData: any;
-
+  private alertSubscriptions:Subscription;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -123,27 +123,18 @@ export class AppDashboardHistoricalComponent implements OnInit {
   async loadFromCache() {
     let item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.tempData = item;
-    // this.commonService.assetMonitoringFilterData.subscribe(async(data: any) => {
-    //   this.dashistroicaldata = data;
-    //   if(this.dashistroicaldata){
-    //     debugger
-    //     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.dashistroicaldata);
-    //     item = undefined;
-    //     // await this.onSaveHierachy();
-    //     // this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
-    //     // this.filterObj.asset = this.dashistroicaldata.assets;
-    //     // await this.onChangeOfAsset(this.dashistroicaldata.assets)
-    //     // this.onFilterSelection(this.filterObj, false, true, true);
+    this.alertSubscriptions = this.commonService.alertFilterObj.subscribe(async (response) =>{
+      if(response){
+        item = undefined;
+        this.dashistroicaldata = response;
+      await this.onSaveHierachy();
+      this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
+      this.filterObj.asset = this.dashistroicaldata.assets;
+      await this.onChangeOfAsset(this.dashistroicaldata.assets)
+      this.onFilterSelection(this.filterObj, false, true, true);
+      }
+    });
 
-    //     this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(this.dashistroicaldata)));
-    //   if (data?.assets) {
-    //     await this.onSaveHierachy();
-    //     this.filterObj.asset = this.dashistroicaldata.assets;
-    //     await this.onChangeOfAsset();
-    //     this.onFilterSelection(this.filterObj, false, true, true);
-    //   }
-    //   }
-    // });
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item.assets) {
@@ -778,8 +769,10 @@ export class AppDashboardHistoricalComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.commonService.assetMonitoringFilterData.emit(null);
     delete this.tempData?.assets;
+    this.commonService.setDashboardFilter(null);
     this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, this.tempData);
+    if(this.alertSubscriptions)
+    this.alertSubscriptions.unsubscribe();
   }
 }

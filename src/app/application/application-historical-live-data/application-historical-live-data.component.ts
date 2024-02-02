@@ -483,6 +483,9 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     this.signalRTelemetrySubscription?.unsubscribe();
     this.signalRService.disconnectFromSignalR('telemetry');
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    delete item?.assets;
+    this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
 
   }
 

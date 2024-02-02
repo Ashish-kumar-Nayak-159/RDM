@@ -358,15 +358,6 @@ agm-map { height: 500px !important; }
   cursor: pointer !important;
 }
 
-.alertDataContainer{
-  grid-area: "alertDataContainer" !important;
-  height: 25vh !important;
-  width: 25rem !important;
-  background-color: #d78b13 ;
-  position: absolute !important;
-  z-index: 9999 !important;
-}
-
 .map-container {
   position: relative;
   height: 500px;
@@ -384,171 +375,6 @@ agm-map { height: 500px !important; }
 }
 
 
-.yellow-marker {
-  top: -2px;
-  left: -2px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50% !important;
-  position: absolute;
-  -webkit-animation: glowing-yellow 1500ms infinite;
-  -moz-animation: glowing-yellow 1500ms infinite;
-  -o-animation: glowing-yellow 1500ms infinite;
-  animation: glowing-yellow 1500ms infinite;
-  background-color: #004A7F;
-}
-.markerdisplay {
-  top: -2px;
-  left: -2px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50% !important;
-  position: absolute;
-  -webkit-animation: glowing 1500ms infinite;
-  -moz-animation: glowing 1500ms infinite;
-  -o-animation: glowing 1500ms infinite;
-  animation: glowing 1500ms infinite;
-  background-color: #004A7F;
-}
-
-
-/* // Red Animation */
-@-webkit-keyframes glowing {
-  0% {
-    background-color: #B20000;
-    -webkit-box-shadow: 0 0 3px #B20000;
-  }
-
-  50% {
-    background-color: #FF0000;
-    -webkit-box-shadow: 0 0 40px #FF0000;
-  }
-
-  100% {
-    background-color: #B20000;
-    -webkit-box-shadow: 0 0 3px #B20000;
-  }
-}
-
-@-moz-keyframes glowing {
-  0% {
-    background-color: #B20000;
-    -moz-box-shadow: 0 0 3px #B20000;
-  }
-
-  50% {
-    background-color: #FF0000;
-    -moz-box-shadow: 0 0 40px #FF0000;
-  }
-
-  100% {
-    background-color: #B20000;
-    -moz-box-shadow: 0 0 3px #B20000;
-  }
-}
-
-@-o-keyframes glowing {
-  0% {
-    background-color: #B20000;
-    box-shadow: 0 0 3px #B20000;
-  }
-
-  50% {
-    background-color: #FF0000;
-    box-shadow: 0 0 40px #FF0000;
-  }
-
-  100% {
-    background-color: #B20000;
-    box-shadow: 0 0 3px #B20000;
-  }
-}
-
-@keyframes glowing {
-  0% {
-    background-color: #B20000;
-    box-shadow: 0 0 3px #B20000;
-  }
-
-  50% {
-    background-color: #FF0000;
-    box-shadow: 0 0 40px #FF0000;
-  }
-
-  100% {
-    background-color: #B20000;
-    box-shadow: 0 0 3px #B20000;
-  }
-}
-
-/* // Glowing yellow animation start */
-@-webkit-keyframes glowing-yellow {
-  0% {
-    background-color: #EB8A1B;
-    -webkit-box-shadow: 0 0 3px #EB8A1B;
-  }
-
-  50% {
-    background-color: #FBC45B;
-    -webkit-box-shadow: 0 0 40px #FBC45B;
-  }
-
-  100% {
-    background-color: #EB8A1B;
-    -webkit-box-shadow: 0 0 3px #EB8A1B;
-  }
-}
-
-@-moz-keyframes glowing-yellow {
-  0% {
-    background-color: #EB8A1B;
-    -moz-box-shadow: 0 0 3px #EB8A1B;
-  }
-
-  50% {
-    background-color: #FBC45B;
-    -moz-box-shadow: 0 0 40px #FBC45B;
-  }
-
-  100% {
-    background-color: #EB8A1B;
-    -moz-box-shadow: 0 0 3px #EB8A1B;
-  }
-}
-
-@-o-keyframes glowing-yellow {
-  0% {
-    background-color: #EB8A1B;
-    box-shadow: 0 0 3px #EB8A1B;
-  }
-
-  50% {
-    background-color: #FBC45B;
-    box-shadow: 0 0 40px #FBC45B;
-  }
-
-  100% {
-    background-color: #EB8A1B;
-    box-shadow: 0 0 3px #EB8A1B;
-  }
-}
-
-@keyframes glowing-yellow {
-  0% {
-    background-color: #EB8A1B;
-    box-shadow: 0 0 3px #EB8A1B;
-  }
-
-  50% {
-    background-color: #FBC45B;
-    box-shadow: 0 0 40px #FBC45B;
-  }
-
-  100% {
-    background-color: #EB8A1B;
-    box-shadow: 0 0 3px #EB8A1B;
-  }
-}
 
 .gateway-card {
   height: 133px;
@@ -557,4 +383,40 @@ agm-map { height: 500px !important; }
 .alertListCard a{
   text-decoration: none !important;
 
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px 0px #555;
+    background-color: #555;
+  }
+  50% {
+    box-shadow: 0 0 30px 10px #FFD700;
+    background-color: #FFD700;
+  }
+  100% {
+    box-shadow: 0 0 10px 0px #555;
+    background-color: #555;
+  }
+}
+
+/* Apply the animation to the specific class */
+.yellow-glow {
+  animation: glow 1.5s infinite;
+}
+
+@keyframes glow1 {
+  0% {
+    filter: brightness(0.5) hue-rotate(0deg);
+  }
+  50% {
+    filter: brightness(1.5) hue-rotate(180deg);
+  }
+  100% {
+    filter: brightness(0.5) hue-rotate(0deg);
+  }
+}
+
+.red-glow1 {
+  animation: glow1 1.5s infinite;
 }

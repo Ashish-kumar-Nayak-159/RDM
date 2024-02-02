@@ -165,6 +165,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
   alertTabData: any;
   alertTabType = undefined;
+  isWarningVisible: boolean = false;
 
 
   constructor(
@@ -194,7 +195,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async onSubTabChange(sTabName){ //Inner tab
         this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.subTab = sTabName;
-
+        // this.isdisplayAlertCard = false;
         if( this.mainTab == 'assets'){
           if(sTabName === 'map_view'){
             this.filterObj= {};
@@ -328,7 +329,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
           case 'alertMapView': {
             this.alertData = undefined;
-            this.alertCircleTbl = 'critical';
+            // this.alertCircleTbl = 'critical';
             await this.getAlertCounts();
             this.alertTabData = (this.alertCircleTbl == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
             // this.onAlertCircleTblChange(this.alertCircleTbl);
@@ -340,7 +341,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.getAllAssets();
             this.alertData = undefined;
             this.alertTabType = undefined;
-            this.alertCircleTbl = 'critical';
+            // this.alertCircleTbl = 'critical';
             this.getAlertCounts();
             this.getAlertMapData(this.alertCircleTbl);
             break;
@@ -605,8 +606,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       markerDetails(asset){
-        this.isdisplayAlertCard = true ;
-        console.log('asset =', asset);
+        this.isdisplayAlertCard = true;
         this.selectedAlertObj ={
           longitude: asset?.longitude,
           latitude: asset?.latitude,
@@ -733,6 +733,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async onAlertCircleTblChange(value){
         this.alertTabData = (value == 'critical') ? this.getAlertCountObj['critical'] : this.getAlertCountObj['warning'];
         this.alertCircleTbl = value;
+        this.isWarningVisible = (value == 'critical') ? false : true;
 
         if(value === 'critical'){
           await this.changeImagePath('r');
@@ -1347,19 +1348,38 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                     } else if (asset?.map_content?.healthy === false) {
                       this.unhealthyAssetCount++;
                     }
-                    if(asset?.severity == this.alertTabData?.severity){
+                    // if(asset?.severity == this.alertTabData?.severity){
+                    //   asset.icon = {
+                    //     url:
+                    //     (asset?.severity == 'Critical' ? './assets/img/r.png' : asset?.severity == 'Warning' ? './assets/img/y.png' : './assets/img/m.png') ,
+                    //     scaledSize: {
+                    //       width: 20,
+                    //       height: 20,
+                    //     },
+                    //   };
+                    // }
+                    if(asset?.severity?.toLowerCase() == 'critical'){
                       asset.icon = {
-                        url:
-                        (asset?.severity == 'Critical' ? './assets/img/r.png' : asset?.severity == 'Warning' ? './assets/img/y.png' : './assets/img/m.png') ,
+                        url : './assets/img/red2.gif',
                         scaledSize: {
                           width: 20,
                           height: 20,
                         },
-                      };
+                        class: 'red-glow1'
+                      }
+                    }else if(asset?.severity?.toLowerCase() == 'warning'){
+                      asset.icon = {
+                        url : './assets/img/yellow3.gif',
+                        scaledSize: {
+                          width: 20,
+                          height: 20,
+                        },
+                        class: 'yellow-glow'
+                      }
                     }
+
+
                     return asset;
-
-
                   });
                   this.alertData = JSON.parse(JSON.stringify(data));
                   this.mapAssets = JSON.parse(JSON.stringify(this.alertData));

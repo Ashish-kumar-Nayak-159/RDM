@@ -468,24 +468,22 @@
                 <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
                   [fitBounds]="mapFitBounds" [fullscreenControl]="true" [mapTypeControl]="true">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
-                      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds" [visible]="false"
+                      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
                         [latitude]="asset.latitude" [longitude]="asset.longitude"
                         (markerClick)="markerDetails(asset)" [iconUrl]="asset.icon">
                       </agm-marker>
                     </ng-container>
                   <agm-overlay  [longitude]="selectedAlertObj?.longitude ?? mapAssets[0]?.longitude" [latitude]="selectedAlertObj?.latitude ?? mapAssets[0]?.latitude" >
-                    <div [ngClass]="{'markerdisplay': true, 'yellow-marker': alertCircleTbl == 'warning', 'blink': true} " ></div>
+                    <!-- <div [ngClass]="{'markerdisplay': !isWarningVisible, 'yellow-marker': isWarningVisible, 'blink': true} " ></div> -->
                   </agm-overlay>
                 </agm-map>
 
                 <div id="info-card"  *ngIf="isdisplayAlertCard">
                   <div class="card-table alert-card-table" >
-
                     <div class="card-header border-bottom-0">
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="title-wrapper">
-                          <h3 class="card-title mb-0" *ngIf="true">Critical Alert</h3>
-                          <h3 class="card-title mb-0" *ngIf="false">Warning Alert</h3>
+                          <h3>{{(chartTbl?.severity?.tolowerCase() == 'critical' ? 'Critical' : chartTbl?.severity?.tolowerCase() == 'warning' ? 'Warning' : '' ) + ' Alerts'}}</h3>
                         </div>
                         <button type="button" class="btn btn-link" (click)="hideNewAlertCard()">
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">

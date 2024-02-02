@@ -13,7 +13,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { AppDashboardHistoricalComponent } from './app-dashboard-historical/app-dashboard-historical.component';
 
 @NgModule({
-  declarations: [AppDashboardComponent, AppDashboardHistoricalComponent],
+  declarations: [AppDashboardComponent,
+    ],
   imports: [
     CommonModule,
     AppDashboardRoutingModule,

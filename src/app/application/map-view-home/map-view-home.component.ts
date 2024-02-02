@@ -232,15 +232,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   asset.type === this.constantData.IP_ASSET &&
                   asset?.connection_state?.toLowerCase() === 'connected'
                 ) {
+                  let pinData = this.modifyIcon(asset, this.assetModelsList);
                   asset.icon = {
                     url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
                       ? this.blobURL +
                       this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
                       this.blobToken
-                      : './assets/img/iot-assets-green.svg',
+                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/iot-assets-green.svg',
                     scaledSize: {
-                      width: 20,
-                      height: 20,
+                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
+                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
                     },
                   };
                 } else if (

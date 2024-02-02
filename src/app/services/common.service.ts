@@ -9,6 +9,7 @@ import jwt_decode from 'jwt-decode';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 import * as datefns from 'date-fns'
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class CommonService {
   flag = false;
   browsername: any = '';
   privateEncryptionString = environment.storgageSecretKey;
+  private behaviorSub = new BehaviorSubject<any>({});
   constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) {
     this.browsername = this.getBrowserName()
   }
@@ -478,5 +480,20 @@ export class CommonService {
     }else
     localStorage.removeItem(storage);
 
+  }
+
+  getDefaultDateOptions() {
+    let filterObj:any = {};
+    filterObj["dateOption"] = CONSTANTS.Last30Days;
+    const dateObj = this.getMomentStartEndDate(filterObj['dateOption']);
+    filterObj["from_date"] = dateObj.from_date;
+    filterObj["to_date"] = dateObj.to_date;
+    return filterObj;
+  }
+  assetMonitoringFilterData: EventEmitter<any> = new EventEmitter<any>();
+
+  alertFilterObj = this.behaviorSub.asObservable();
+  setDashboardAlertFilter(filterObj: any) {
+    this.behaviorSub.next({ ...filterObj });
   }
 }

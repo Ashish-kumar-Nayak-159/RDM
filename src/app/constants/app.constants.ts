@@ -393,6 +393,23 @@ export class CONSTANTS {
 
   public static SIDE_MENU_LIST = [
     {
+      page: 'Dashboard',
+      system_name: 'Dashboard',
+      url: 'applications/:appName/data-dashboard',
+      display_name: 'Dashboard',
+      icon: 'fas fa-fw fa-home',
+      visible: true,
+      exactMatch: true,
+      privileges_required: ['ASMV'],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Dashboard',
+        },
+      ],
+      priority: 1,
+    },
+    {
       page: 'Home',
       system_name: 'Home',
       url: 'applications/:appName',
@@ -2429,4 +2446,5 @@ export class CONSTANTS {
   public static DEFAULT_AUDIO_DURATION = 6000;
   public static MODEL_ALERT_AUDIO = 'model_alertCondition_audio';
   public static ASSET_ALERT_AUDIO = 'asset_alertCondition_audio';
+  public static Last30Days = 'Last 30 Days';
 }

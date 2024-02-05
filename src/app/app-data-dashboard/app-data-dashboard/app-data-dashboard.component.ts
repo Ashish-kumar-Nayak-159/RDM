@@ -370,7 +370,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       loadFromCache(item?) {
         if(item && this.mainTab == 'assets' && this.subTab == 'map_view'){
             this.hierarchyDropdown?.updateHierarchyDetail(item);
-            if (item.hierarchy) {
+            if (item?.hierarchy) {
               this.assets = this.hierarchyDropdown?.getAssets();
               this.onAssetFilterApply('assets_map',true);
             }
@@ -1403,8 +1403,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                       asset.icon = {
                         url : './assets/img/red2.gif',
                         scaledSize: {
-                          width: 20,
-                          height: 20,
+                          width: 15,
+                          height: 15,
                         },
                         class: 'red-glow1'
                       }
@@ -1483,17 +1483,18 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       convertHierarchyJSONtoPlain(obj: any){
         if(obj){
-          let hirrArr: any = [];
           obj = JSON.parse(obj);
-          let data: any;
+          let dataString: string = '';
           this.contextApp?.hierarchy?.levels.forEach((item, index)=> {
-            if(this.contextApp?.hierarchy?.levels[item] == obj[item]){
+            if(obj[item]){
+              dataString += obj[item];
+
+              if(index < (this.contextApp?.hierarchy?.levels?.length - 1)){
+                dataString += '/';
+              }
             }
-          })
-          Object.keys(obj).forEach((key: any, index) => {
-            hirrArr.push(obj[key]);
-          })
-          return hirrArr.join('/');
+          });
+          return dataString;
         }
       }
       // Alert List View End //

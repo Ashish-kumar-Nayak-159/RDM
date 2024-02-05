@@ -253,10 +253,18 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Hierarchy Start//
   onSaveHierachy(configuredHierarchy: any) {
-        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    if(configuredHierarchy){
+      this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    }else{
+      this.configuredHierarchy = undefined;
+    }
       }
       onClearHierarchy(configuredHierarchy: any) {
-        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+        if(configuredHierarchy){
+          this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+        }else{
+          this.configuredHierarchy = undefined;
+        }
         // if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.hierarchy = { App: this.selectedApp };
         // }
@@ -364,7 +372,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             this.hierarchyDropdown?.updateHierarchyDetail(item);
             if (item.hierarchy) {
               this.assets = this.hierarchyDropdown?.getAssets();
-              this.onAssetFilterApply('assets_map',false);
+              this.onAssetFilterApply('assets_map',true);
             }
         }
         else{

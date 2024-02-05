@@ -1489,7 +1489,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             if(obj[item]){
               dataString += obj[item];
 
-              if(index < (this.contextApp?.hierarchy?.levels?.length - 1)){
+              if((Object.keys(obj)?.length > 1) && (index < (Object.keys(obj)?.length))){
                 dataString += '/';
               }
             }

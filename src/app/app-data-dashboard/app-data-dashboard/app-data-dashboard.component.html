@@ -448,7 +448,6 @@
           <div class="asset-map-view p-0" *ngIf="subTab === 'map_view'" id="mapOfAlerts">
             <div class="main-heading">
               <form class="form-inline">
-                {{filterObj | json}}
                 <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
                 </app-hierarchy-dropdown>
                 <div class="form-group">

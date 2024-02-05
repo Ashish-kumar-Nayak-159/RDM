@@ -195,7 +195,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async onSubTabChange(sTabName){ //Inner tab
         this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.subTab = sTabName;
-        // this.isdisplayAlertCard = false;
         if( this.mainTab == 'assets'){
           if(sTabName === 'map_view'){
             this.filterObj= {};
@@ -209,17 +208,19 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
         }
         else{
-          //
           if(this.mainTab === 'alerts'){
             this.changeImagePath('r');
-            const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-            if (item) {
-              this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
-              if (item.assets) {
-                this.filterObj.asset = item.assets;
-              }
-            }
-            this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView', false);
+            await this.getAllAssets();
+          const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          await this.getAssets(item.hierarchy);
+         if (item) {
+           this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
+          //  if (item?.assets) {
+             this.filterObj.asset = item?.assets;
+          //  }
+           this.hierarchy = item?.hierarchy;
+         }
+            this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView');
             // this.alertCircleTbl = 'critical';
           }
         }
@@ -252,32 +253,30 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Hierarchy Start//
   onSaveHierachy(configuredHierarchy: any) {
-        if(configuredHierarchy)
         this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
       }
       onClearHierarchy(configuredHierarchy: any) {
-        if(configuredHierarchy)
         this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
-        if(this.subTab === 'list_view' && this.childTab === 'status'){
+        // if(this.subTab === 'list_view' && this.childTab === 'status'){
           this.hierarchy = { App: this.selectedApp };
-        }
+        // }
       }
-
       async onAssetFilterApply(filterType? , updateFilterObj = true, resetIndex = false) {
-
         if (updateFilterObj) {
           const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
           pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-          Object.keys(this.configuredHierarchy).forEach((key) => {
-            if (this.configuredHierarchy[key]) {
-              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
-            }
-          });
-          if(this.filterObj?.asset){
-            pagefilterObj['assets'] = this.filterObj?.asset;
+          if(this.configuredHierarchy){
+            Object.keys(this.configuredHierarchy).forEach((key) => {
+              if (this.configuredHierarchy[key]) {
+                pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+              }
+            });
+
           }
-          if(pagefilterObj?.assets && (filterType != 'alertMapView' || filterType!= 'alertListView') )
-          delete pagefilterObj.assets;
+          pagefilterObj['assets'] = this.filterObj?.asset;
+          if (pagefilterObj?.assets && !(filterType === 'alertMapView' || filterType === 'alertListView')) {
+            delete pagefilterObj.assets;
+        }
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
         }
         switch(filterType){
@@ -342,7 +341,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             break;
           }
           case 'alertListView': {
-            this.getAllAssets();
             this.alertData = undefined;
             this.alertTabType = undefined;
             // this.alertCircleTbl = 'critical';
@@ -1479,6 +1477,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         if(obj){
           let hirrArr: any = [];
           obj = JSON.parse(obj);
+          let data: any;
+          this.contextApp?.hierarchy?.levels.forEach((item, index)=> {
+            if(this.contextApp?.hierarchy?.levels[item] == obj[item]){
+            }
+          })
           Object.keys(obj).forEach((key: any, index) => {
             hirrArr.push(obj[key]);
           })

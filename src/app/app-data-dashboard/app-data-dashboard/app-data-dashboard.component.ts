@@ -212,7 +212,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           //
           if(this.mainTab === 'alerts'){
             this.changeImagePath('r');
-            this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView');
+            const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+            if (item) {
+              this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
+              if (item.assets) {
+                this.filterObj.asset = item.assets;
+              }
+            }
+            this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView', false);
             // this.alertCircleTbl = 'critical';
           }
         }
@@ -268,7 +275,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           });
           if(this.filterObj?.asset){
             pagefilterObj['assets'] = this.filterObj?.asset;
-            this.hierarchyDropdown?.updateHierarchyDetail(pagefilterObj);
           }
           if(pagefilterObj?.assets && (filterType != 'alertMapView' || filterType!= 'alertListView') )
           delete pagefilterObj.assets;
@@ -872,7 +878,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                   tooltip: 'View Historical Trend',
                 },
               ],
-            },
+            }
+          ],
+        };
+        if(this.contextApp?.app == 'VNHierarchyTests' || this.contextApp?.app == 'Kirloskar'){
+          this.tableConfig.data.push(
             {
               header_name: 'DPR Data',
               key: undefined,
@@ -887,8 +897,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                 },
               ],
             },
-          ],
-        };
+          )
+        }
       }
       onTableFunctionCall(obj) {
         if(obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')){
@@ -1447,12 +1457,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.getAlertCounts();
       }
 
-       redirectAlertListview(alertData: any){
-        const dateConvert: any = this.commonService.convertDateToEpoch(alertData?.message_date);
-        const changeDate: Date = new Date(dateConvert * 1000);
-        let from_date: any = (changeDate.getTime() - 1000 * 60) / 1000;
-        let to_date: any = (changeDate.getTime() + 1000 * 60) / 1000;
-        if(alertData?.asset_id){
+  redirectAlertListview(alertData: any) {
+    if(alertData && alertData?.asset_id){
+          const dateConvert: any = this.commonService.convertDateToEpoch(alertData?.message_date);
+          const changeDate: Date = new Date(dateConvert * 1000);
+          let from_date: any = (changeDate.getTime() - 1000 * 60) / 1000;
+          let to_date: any = (changeDate.getTime() + 1000 * 60) / 1000;
           const dateFilterObj= {
             dateOption: 'Custom Range',
             from_date: from_date,
@@ -1462,8 +1472,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
           this.commonService.setDashboardFilter(alertData);
           this.router.navigate(['applications', this.contextApp.app, 'assets', alertData?.asset_id, 'control-panel'], {fragment : 'alert-visualization'});
-        }else{
-          this.toasterService.showError('Asset Id Not Found','Error');
         }
       }
 

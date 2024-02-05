@@ -124,7 +124,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
     let item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     this.tempData = item;
     this.alertSubscriptions = this.commonService.alertFilterObj.subscribe(async (response) =>{
-      if(response){
+      if(response && response?.assets){
         item = undefined;
         this.dashistroicaldata = response;
       await this.onSaveHierachy();

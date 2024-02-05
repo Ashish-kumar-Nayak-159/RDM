@@ -37,7 +37,7 @@
         </ul>
       </div>
       <!-- List View SubTab -->
-      <div class="col-12 multi-tab" *ngIf="subTab === 'list_view'">
+      <div class="col-12 multi-tab" *ngIf="subTab === 'list_view' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')">
         <ul class="chilid-sub-tab status-per-tab py-0 pt-3">
           <li class="active" [ngClass]="{ active: childTab === 'status' }">
             <a (click)="onChildTabChange('status')"><i class="fa fa-cogs fa-fw"></i> Status</a>
@@ -97,10 +97,10 @@
             </form>
           </div>
           <!-- agm Map -->
-          <div id="map-container-google-1" class="z-depth-1-half map-container"  >
-            <!-- {{mapAssets | json}} -->
+          <div id="map-container-google-1" class="z-depth-1-half map-container h-100"  >
             <agm-map
-              #gm style="height: 500px !important;"
+            style="height: calc(100vh - 250px) !important;"
+              #gm
               [latitude]="centerLatitude"
               [longitude]="centerLongitude"
               [styles]="customMapStyle"
@@ -296,7 +296,7 @@
         </div>
         <!--Status End-->
         <!--Performance Start-->
-        <div class="asset-map-view" *ngIf="childTab === 'performance'" id="performanceOfAssets">
+        <div class="asset-map-view" *ngIf="childTab === 'performance' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')" id="performanceOfAssets">
           <div class="blue-nav-bar my-0 p-0">
             <div class="d-flex align-items-center">
               <div class="main-heading">
@@ -445,9 +445,10 @@
               </div>
             </div>
           </div>
-          <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'map_view'" id="mapOfAlerts">
+          <div class="asset-map-view p-0" *ngIf="subTab === 'map_view'" id="mapOfAlerts">
             <div class="main-heading">
               <form class="form-inline">
+                {{filterObj | json}}
                 <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)" (clearHierarchyEvent)="onClearHierarchy($event)">
                 </app-hierarchy-dropdown>
                 <div class="form-group">
@@ -462,20 +463,17 @@
                 </div>
               </form>
             </div>
-            <div class="alertTabMap" style="min-height: 500px; z-index: 1;">
+            <div class="alertTabMap" style="z-index: 1;">
 
-              <div class="map-container">
-                <agm-map #gm style="height: 300px !important;" [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+              <div class="map-container h-100">
+                <agm-map style ="height: calc(100vh - 350px) !important;" #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
                   [fitBounds]="mapFitBounds" [fullscreenControl]="true" [mapTypeControl]="true">
                   <ng-container *ngFor="let asset of mapAssets; let i = index">
-                      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
-                        [latitude]="asset.latitude" [longitude]="asset.longitude"
-                        (markerClick)="markerDetails(asset)" [iconUrl]="asset.icon">
+                      <agm-marker *ngIf="asset?.latitude && asset?.longitude" [agmFitBounds]="mapFitBounds"
+                        [latitude]="asset?.latitude" [longitude]="asset?.longitude"
+                        (markerClick)="markerDetails(asset)" [iconUrl]="asset?.icon">
                       </agm-marker>
                     </ng-container>
-                  <agm-overlay  [longitude]="selectedAlertObj?.longitude ?? mapAssets[0]?.longitude" [latitude]="selectedAlertObj?.latitude ?? mapAssets[0]?.latitude" >
-                    <!-- <div [ngClass]="{'markerdisplay': !isWarningVisible, 'yellow-marker': isWarningVisible, 'blink': true} " ></div> -->
-                  </agm-overlay>
                 </agm-map>
 
                 <div id="info-card"  *ngIf="isdisplayAlertCard">
@@ -483,7 +481,7 @@
                     <div class="card-header border-bottom-0">
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="title-wrapper">
-                          <h3>{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ? 'Critical' : 'Warning') + ' Alerts'}}</h3>
+                          <h6 class="mt-2">{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ? 'Critical' : 'Warning') + ' Alerts'}}</h6>
                         </div>
                         <button type="button" class="btn btn-link" (click)="hideNewAlertCard()">
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">
@@ -498,24 +496,24 @@
                           <table>
                           <tbody>
                             <tr>
-                              <td class="col-4"><strong>Alert Type : </strong></td>
-                              <td class="col-4">{{chartTbl?.severity ?? 'NULL'}}</td>
+                              <td><strong>Alert Type : </strong></td>
+                              <td>{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Asset : </strong></td>
-                              <td class="col-4">{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
+                              <td><strong>Asset : </strong></td>
+                              <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Hierarchy : </strong></td>
-                              <td class="col-4">{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
+                              <td><strong>Hierarchy : </strong></td>
+                              <td>{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Alert Title : </strong></td>
-                              <td class="col-4">{{chartTbl?.message ?? 'NULL'}}</td>
+                              <td><strong>Alert Title : </strong></td>
+                              <td>{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Alert Time : </strong></td>
-                              <td class="col-4">{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
+                              <td><strong>Alert Time : </strong></td>
+                              <td>{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -534,9 +532,9 @@
             </div>
           </div>
           <!--Status List View-->
-          <div class="asset-map-view mt-3 p-0" *ngIf="subTab === 'list_view'" id="statusOfAlerts">
+          <div class="asset-map-view p-0" *ngIf="subTab === 'list_view'" id="statusOfAlerts">
             <div class="tab-tbl custom-table table-responsive alert-list-view p-0" id="table-top">
-              <div class="blue-nav-bar mt-3 mb-3 pl-0 pr-0">
+              <div class="blue-nav-bar mt-0 mb-3 pl-0 pr-0">
                 <div class="d-flex align-items-center">
                   <div class="main-heading">
                     <form class="form-inline">
@@ -601,35 +599,35 @@
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
-                  <div class="card-table alert-card-table" *ngIf="alertCircleTbl">
-                    <h3>{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ? 'Critical' : 'Warning') + ' Alerts'}}</h3>
+                  <div class="card-table alert-card-table " style="padding: 13px !important;" *ngIf="alertCircleTbl">
+                    <h4>{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ? 'Critical' : 'Warning') + ' Alerts'}}</h4>
                     <div class="red-alert-block">
                       <div class="red-alert-data">
                           <table>
                           <tbody>
                             <tr>
-                              <td class="col-4"><strong>Alert Type : </strong></td>
-                              <td class="col-4">{{chartTbl?.severity ?? 'NULL'}}</td>
+                              <td><strong>Alert Type : </strong></td>
+                              <td>{{chartTbl?.severity ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Asset : </strong></td>
-                              <td class="col-4">{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
+                              <td><strong>Asset : </strong></td>
+                              <td>{{(chartTbl?.display_name ?? chartTbl?.asset_id) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Hierarchy : </strong></td>
-                              <td class="col-4">{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
+                              <td><strong>Hierarchy : </strong></td>
+                              <td>{{(convertHierarchyJSONtoPlain(chartTbl?.hierarchy)) ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Alert Title : </strong></td>
-                              <td class="col-4">{{chartTbl?.message ?? 'NULL'}}</td>
+                              <td><strong>Alert Title : </strong></td>
+                              <td>{{chartTbl?.message ?? 'NULL'}}</td>
                             </tr>
                             <tr>
-                              <td class="col-4"><strong>Alert Time : </strong></td>
-                              <td class="col-4">{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
+                              <td><strong>Alert Time : </strong></td>
+                              <td>{{(commonService.convertUTCDateToLocalDate(chartTbl?.message_date , 'dd-MMM-yyy hh:mm:ss a')) ?? 'NULL'}}</td>
                             </tr>
                           </tbody>
                         </table>
-                        <div class="alertListCard"><a *ngIf="chartTbl" href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
+                        <div class="alertListCard"><a  [style.cursor]="chartTbl ? 'pointer' : 'not-allowed' " href="javascript:void(0)" (click)="redirectAlertListview(chartTbl)">View More Details</a></div>
                       </div>
                       <div class="red-alert-img-data">
                         <img src="../../assets/img/card-circle-img.png" class="img-profile rounded-circle mr-3" />

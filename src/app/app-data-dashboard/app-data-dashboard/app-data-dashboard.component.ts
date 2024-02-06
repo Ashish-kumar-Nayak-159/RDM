@@ -195,7 +195,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       async onSubTabChange(sTabName){ //Inner tab
         this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
         this.subTab = sTabName;
-        // this.isdisplayAlertCard = false;
         if( this.mainTab == 'assets'){
           if(sTabName === 'map_view'){
             this.filterObj= {};
@@ -209,9 +208,18 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
         }
         else{
-          //
           if(this.mainTab === 'alerts'){
             this.changeImagePath('r');
+            await this.getAllAssets();
+          const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+          await this.getAssets(item.hierarchy);
+         if (item) {
+           this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
+          //  if (item?.assets) {
+             this.filterObj.asset = item?.assets;
+          //  }
+           this.hierarchy = item?.hierarchy;
+         }
             this.onAssetFilterApply(sTabName === 'map_view' ? 'alertMapView' : 'alertListView');
             // this.alertCircleTbl = 'critical';
           }
@@ -245,33 +253,38 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
       // Hierarchy Start//
   onSaveHierachy(configuredHierarchy: any) {
-        if(configuredHierarchy)
-        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    if(configuredHierarchy){
+      this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+    }else{
+      this.configuredHierarchy = undefined;
+    }
       }
       onClearHierarchy(configuredHierarchy: any) {
-        if(configuredHierarchy)
-        this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
-        if(this.subTab === 'list_view' && this.childTab === 'status'){
-          this.hierarchy = { App: this.selectedApp };
+        if(configuredHierarchy){
+          this.configuredHierarchy = JSON.parse(JSON.stringify(configuredHierarchy));
+        }else{
+          this.configuredHierarchy = undefined;
         }
+        // if(this.subTab === 'list_view' && this.childTab === 'status'){
+          this.hierarchy = { App: this.selectedApp };
+        // }
       }
-
       async onAssetFilterApply(filterType? , updateFilterObj = true, resetIndex = false) {
-
         if (updateFilterObj) {
           const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
           pagefilterObj['hierarchy'] = { App: this.contextApp.app };
-          Object.keys(this.configuredHierarchy).forEach((key) => {
-            if (this.configuredHierarchy[key]) {
-              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
-            }
-          });
-          if(this.filterObj?.asset){
-            pagefilterObj['assets'] = this.filterObj?.asset;
-            this.hierarchyDropdown?.updateHierarchyDetail(pagefilterObj);
+          if(this.configuredHierarchy){
+            Object.keys(this.configuredHierarchy).forEach((key) => {
+              if (this.configuredHierarchy[key]) {
+                pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configuredHierarchy[key];
+              }
+            });
+
           }
-          if(pagefilterObj?.assets && (filterType != 'alertMapView' || filterType!= 'alertListView') )
-          delete pagefilterObj.assets;
+          pagefilterObj['assets'] = this.filterObj?.asset;
+          if (pagefilterObj?.assets && !(filterType === 'alertMapView' || filterType === 'alertListView')) {
+            delete pagefilterObj.assets;
+        }
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
         }
         switch(filterType){
@@ -336,7 +349,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             break;
           }
           case 'alertListView': {
-            this.getAllAssets();
             this.alertData = undefined;
             this.alertTabType = undefined;
             // this.alertCircleTbl = 'critical';
@@ -358,9 +370,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       loadFromCache(item?) {
         if(item && this.mainTab == 'assets' && this.subTab == 'map_view'){
             this.hierarchyDropdown?.updateHierarchyDetail(item);
-            if (item.hierarchy) {
+            if (item?.hierarchy) {
               this.assets = this.hierarchyDropdown?.getAssets();
-              this.onAssetFilterApply('assets_map',false);
+              this.onAssetFilterApply('assets_map',true);
             }
         }
         else{
@@ -872,7 +884,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                   tooltip: 'View Historical Trend',
                 },
               ],
-            },
+            }
+          ],
+        };
+        if(this.contextApp?.app == 'VNHierarchyTests' || this.contextApp?.app == 'Kirloskar'){
+          this.tableConfig.data.push(
             {
               header_name: 'DPR Data',
               key: undefined,
@@ -887,8 +903,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                 },
               ],
             },
-          ],
-        };
+          )
+        }
       }
       onTableFunctionCall(obj) {
         if(obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')){
@@ -1387,8 +1403,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                       asset.icon = {
                         url : './assets/img/red2.gif',
                         scaledSize: {
-                          width: 20,
-                          height: 20,
+                          width: 15,
+                          height: 15,
                         },
                         class: 'red-glow1'
                       }
@@ -1447,12 +1463,12 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         this.getAlertCounts();
       }
 
-       redirectAlertListview(alertData: any){
-        const dateConvert: any = this.commonService.convertDateToEpoch(alertData?.message_date);
-        const changeDate: Date = new Date(dateConvert * 1000);
-        let from_date: any = (changeDate.getTime() - 1000 * 60) / 1000;
-        let to_date: any = (changeDate.getTime() + 1000 * 60) / 1000;
-        if(alertData?.asset_id){
+  redirectAlertListview(alertData: any) {
+    if(alertData && alertData?.asset_id){
+          const dateConvert: any = this.commonService.convertDateToEpoch(alertData?.message_date);
+          const changeDate: Date = new Date(dateConvert * 1000);
+          let from_date: any = (changeDate.getTime() - 1000 * 60) / 1000;
+          let to_date: any = (changeDate.getTime() + 1000 * 60) / 1000;
           const dateFilterObj= {
             dateOption: 'Custom Range',
             from_date: from_date,
@@ -1462,19 +1478,23 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
           this.commonService.setDashboardFilter(alertData);
           this.router.navigate(['applications', this.contextApp.app, 'assets', alertData?.asset_id, 'control-panel'], {fragment : 'alert-visualization'});
-        }else{
-          this.toasterService.showError('Asset Id Not Found','Error');
         }
       }
 
       convertHierarchyJSONtoPlain(obj: any){
         if(obj){
-          let hirrArr: any = [];
           obj = JSON.parse(obj);
-          Object.keys(obj).forEach((key: any, index) => {
-            hirrArr.push(obj[key]);
-          })
-          return hirrArr.join('/');
+          let dataString: string = '';
+          this.contextApp?.hierarchy?.levels.forEach((item, index)=> {
+            if(obj[item]){
+              dataString += obj[item];
+
+              if((Object.keys(obj)?.length > 1) && (index < (Object.keys(obj)?.length))){
+                dataString += '/';
+              }
+            }
+          });
+          return dataString;
         }
       }
       // Alert List View End //

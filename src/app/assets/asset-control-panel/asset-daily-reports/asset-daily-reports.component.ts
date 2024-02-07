@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 import * as datefns from 'date-fns';
 import { ToasterService } from 'src/app/services/toaster.service';
 import exportFromJSON from 'export-from-json';
+import { report } from 'process';
 declare var $: any;
 @Component({
   selector: 'app-asset-daily-reports',
@@ -19,6 +20,7 @@ export class AssetDailyReportsComponent implements OnInit {
   @Input() asset: Asset = new Asset();
   dailyReportFilterDate: any;
   dailyReportsData: any = [];
+  dailyReportsTotalAverage: any = [];
   preOffset = 0;
   preLimit = 20;
   uptimeDateFilter: any = {};
@@ -40,6 +42,7 @@ export class AssetDailyReportsComponent implements OnInit {
   allAssets: any;
   loadMoreVisible: boolean = false;
   selectedAsstDetails: any;
+  assetName: any;
   totalCount: any = 0;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -49,14 +52,15 @@ export class AssetDailyReportsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'
-    ){
+    if (this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'
+    ) {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       this.allAssets = this.commonService.getItemFromLocalStorage(CONSTANTS.ALL_ASSETS_LIST);
       this.apiResponseSubscription.push(
         this.allAssets.forEach((item) => {
           if (this.asset?.asset_id === item?.asset_id) {
             this.selectedAsstDetails = item;
+            this.assetName = item.display_name
           }
         }),
         this.activatedRoute.paramMap.subscribe((paramData) => {
@@ -66,84 +70,84 @@ export class AssetDailyReportsComponent implements OnInit {
         })
       );
       this.datePickerOptions.maxDate.setDate(this.datePickerOptions.maxDate.getDate() - 1);
-     this.loadFromLocalStorage();
+      this.loadFromLocalStorage();
       this.getReportDatabySearch();
     }
   }
   loadFromLocalStorage() {
     return new Promise<void>((resolve) => {
-      this.dailyReportFilterDate =sessionStorage.getItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
+      this.dailyReportFilterDate = sessionStorage.getItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
       const reportFilter = JSON.parse(this.dailyReportFilterDate);
-      if(reportFilter){
+      if (reportFilter) {
         this.filterObj.from_date = reportFilter?.from_date;
         this.filterObj.to_date = reportFilter?.to_date;
         this.filterObj.dateOption = reportFilter?.from_date;
-        const obj ={
+        const obj = {
           app: this.filterObj.app,
-          dateOption:reportFilter?.from_date ,
-          from_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_from_date),
-          to_date:  this.commonService.convertDateToEpoch(reportFilter.epoch_to_date)
+          dateOption: reportFilter?.from_date,
+          from_date: this.commonService.convertDateToEpoch(reportFilter.epoch_from_date),
+          to_date: this.commonService.convertDateToEpoch(reportFilter.epoch_to_date)
         }
         this.selectedDateRange = obj.from_date + " to " + obj.to_date;
         this.originalFilterObj = JSON.parse(JSON.stringify(obj));
-  
-      }else{
+
+      } else {
         let data = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      if (data) {
-        data.dateOption = "Yesterday";
-        if (data?.dateOption) {
-          let dateObj = this.commonService.getMomentStartEndDate(data.dateOption);
-          let from_date_convertTODate = new Date(dateObj.from_date * 1000);
-          let to_date_convertTODate = new Date(dateObj.to_date * 1000);
-  
-          this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
-          this.filterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
-          this.selectedDateRange = data.dateOption;
-          const obj ={
-            app: this.filterObj.app,
-            dateOption:data?.dateOption,
-            from_date:  dateObj.from_date,
-            to_date: dateObj.to_date
+        if (data) {
+          data.dateOption = "Yesterday";
+          if (data?.dateOption) {
+            let dateObj = this.commonService.getMomentStartEndDate(data.dateOption);
+            let from_date_convertTODate = new Date(dateObj.from_date * 1000);
+            let to_date_convertTODate = new Date(dateObj.to_date * 1000);
+
+            this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd");
+            this.filterObj.to_date = datefns.format(to_date_convertTODate, "yyyy-MM-dd");
+            this.selectedDateRange = data.dateOption;
+            const obj = {
+              app: this.filterObj.app,
+              dateOption: data?.dateOption,
+              from_date: dateObj.from_date,
+              to_date: dateObj.to_date
+            }
+            this.selectedDateRange = data?.dateOption;
+            this.originalFilterObj = JSON.parse(JSON.stringify(obj));
           }
-          this.selectedDateRange = data?.dateOption;
-          this.originalFilterObj = JSON.parse(JSON.stringify(obj));
+
         }
-  
-      }
       }
       // this.getReportDatabySearch();
       resolve();
 
     });
 
-  }  
-  dateAdjustment(filteredDate, type= undefined){
-    let date = new Date (filteredDate * 1000);
+  }
+  dateAdjustment(filteredDate, type = undefined) {
+    let date = new Date(filteredDate * 1000);
     const datePipe = new DatePipe('en-US');
-    date.setDate(date.getDate()- 1);
+    date.setDate(date.getDate() - 1);
     const formatDate = datePipe.transform(date, 'yyyy-MM-dd').toLowerCase();
-    return type === 'Last Month' ? datefns.format(datefns.fromUnixTime(filteredDate - 1000), "yyyy-MM-dd") : 
-    type !== 'rowData' ? formatDate : datefns.format(datefns.fromUnixTime(filteredDate), "yyyy-MM-dd") ;
+    return type === 'Last Month' ? datefns.format(datefns.fromUnixTime(filteredDate - 1000), "yyyy-MM-dd") :
+      type !== 'rowData' ? formatDate : datefns.format(datefns.fromUnixTime(filteredDate), "yyyy-MM-dd");
   }
 
   selectedDateApply(filteredDate: any) {
-    let fromDateConvert =this.dateAdjustment(filteredDate.from_date,'rowData');
+    let fromDateConvert = this.dateAdjustment(filteredDate.from_date, 'rowData');
     let toDateConvert = this.dateAdjustment(filteredDate.to_date, 'rowData');
     this.filterObj.from_date = fromDateConvert;
     this.filterObj.to_date = toDateConvert;
-    if(filteredDate.dateOption!== "Custom Range"){
-      this.filterObj.to_date = this.dateAdjustment(filteredDate.to_date , filteredDate.dateOption == "Last Month" ? 'Last Month' :  '' );
-      if(filteredDate.dateOption == 'Last 30 Days'){
-        this.filterObj.from_date = this.dateAdjustment(filteredDate.from_date );
+    if (filteredDate.dateOption !== "Custom Range") {
+      this.filterObj.to_date = this.dateAdjustment(filteredDate.to_date, filteredDate.dateOption == "Last Month" ? 'Last Month' : '');
+      if (filteredDate.dateOption == 'Last 30 Days') {
+        this.filterObj.from_date = this.dateAdjustment(filteredDate.from_date);
       }
       this.selectedDateRange = filteredDate.dateOption;
-    }else{
+    } else {
       this.selectedDateRange = fromDateConvert + " to " + toDateConvert;
     }
-    const obj ={
+    const obj = {
       app: this.filterObj.app,
-      dateOption:filteredDate?.dateOption,
-      from_date:  filteredDate.from_date,
+      dateOption: filteredDate?.dateOption,
+      from_date: filteredDate.from_date,
       to_date: filteredDate.to_date
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(obj));
@@ -173,6 +177,9 @@ export class AssetDailyReportsComponent implements OnInit {
           ... this.dailyReportsData,
           ...response.data
         ]
+        this.dailyReportsTotalAverage = [];
+        this.dailyReportsTotalAverage.push(response.totalAverageData);
+
         this.dailyReportApiLoading = false;
       }
     },
@@ -184,7 +191,7 @@ export class AssetDailyReportsComponent implements OnInit {
 
   }
   saveAsExcel() {
-    if(this.dailyReportsData?.length){
+    if (this.dailyReportsData?.length) {
       const fileName = 'DPR -' + this.selectedAsstDetails?.display_name ? this.selectedAsstDetails.display_name : this.selectedAsstDetails?.asset_id + '-' + this.filterObj.from_date + '-' + this.filterObj.to_date;
       const exportType = exportFromJSON.types.xls;
       let data = [];
@@ -192,6 +199,22 @@ export class AssetDailyReportsComponent implements OnInit {
       this.loadingMessage = "Preparing daily Report Data...";
       const datePipe = new DatePipe('en-US');
       setTimeout(() => {
+        this.dailyReportsTotalAverage?.forEach((average: any) => {
+          data.push({
+            'Asset ID': this.asset?.asset_id,
+            'Asset Name': this.assetName,
+            'Date': 'Average',
+            'FM-101 (Suction) Diff. Kg': average?.avgSuctionDiff.toFixed(2),
+            'FM-102 (Discharge) Diff. Kg': average?.avgDischargeDiff.toFixed(2),
+            'FM-103 (IC) Diff. Kg': average?.avgFM103Diff.toFixed(2),
+            'Vent Diff. Kg': average?.avgVentDiff.toFixed(2),
+            'Total Diff. FM(101-102-103-Vent) Kg': average?.avgTotalDiff.toFixed(2),
+            '% Volumetric Eff.': average?.avgVolumetricEfficiency.toFixed(2),
+            'Fuel Consuption KG/HR': average?.avgFuelConsumption.toFixed(2),
+            'Power Consumption KW/HR': average?.avgPowerConsumption.toFixed(2),
+            'Error (%)': average?.avgError.toFixed(2)
+          });
+        });
         this.dailyReportsData?.forEach((reports: any) => {
           data.push({
             'Asset ID': reports?.assetId,
@@ -206,15 +229,15 @@ export class AssetDailyReportsComponent implements OnInit {
             'Fuel Consuption KG/HR': reports?.fuelConsumption,
             'Power Consumption KW/HR': reports?.powerConsumption,
             'Error (%)': reports?.error
-  
-          })
-        })
+          });
+        });
+
         exportFromJSON({ data, fileName, exportType });
         $('#downloadReportModel').modal('hide');
       }, 1000);
     }
-    else{
-      this.toasterService.showError( 'Daily Report Not Avilable.' , 'Error In Export Excel');
+    else {
+      this.toasterService.showError('Daily Report Not Avilable.', 'Error In Export Excel');
     }
   }
 
@@ -222,7 +245,7 @@ export class AssetDailyReportsComponent implements OnInit {
     this.loadingMessage = undefined;
     $('#downloadReportModal').modal('hide');
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     sessionStorage.removeItem(CONSTANTS.DAILY_REPORT_DATE_FILTER);
   }
 

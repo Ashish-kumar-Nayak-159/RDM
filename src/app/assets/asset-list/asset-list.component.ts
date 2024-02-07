@@ -16,7 +16,7 @@ declare var $: any;
   templateUrl: './asset-list.component.html',
   styleUrls: ['./asset-list.component.css'],
 })
-export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
+export class AssetListComponent implements OnInit, OnDestroy, AfterViewInit {
   assetFilterObj: AssetListFilter = new AssetListFilter();
   originalAssetFilterObj: AssetListFilter = new AssetListFilter();
   assetsList: any[] = [];
@@ -53,7 +53,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
-  parentid:any;
+  parentid: any;
   customMapStyle = [
     {
       featureType: 'poi',
@@ -90,13 +90,13 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     private assetService: AssetService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private cdRef:ChangeDetectorRef
-  ) { }  
+    private cdRef: ChangeDetectorRef
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.commonService.setItemInLocalStorage("model_item","test");
+    this.commonService.setItemInLocalStorage("model_item", "test");
     this.assetsList = [];
     this.getTileName();
     this.protocolList = CONSTANTS.PROTOCOLS;
@@ -117,7 +117,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
         this.onTabChange(CONSTANTS.IP_GATEWAY);
       }
     }
-    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);    
+    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     this.cdRef.detectChanges();
   }
   getDisplayHierarchyString(index, hierarchyKey, parentid = 0) {
@@ -169,7 +169,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.assetFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
     this.originalAssetFilterObj = JSON.parse(JSON.stringify(this.assetFilterObj));
     if (type === CONSTANTS.NON_IP_ASSET) {
-       this.getGatewayList();
+      this.getGatewayList();
     }
     this.componentState = type;
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
@@ -319,15 +319,14 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
     this.currentPageView = type;
   }
 
-  setAllAssetList()
-  {
+  setAllAssetList() {
     const assetTypesObj = {
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
-    };  
+    };
     this.subscriptions.push(
-      this.assetService.getAndSetAllAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {              
-      }),            
+      this.assetService.getAndSetAllAssets(assetTypesObj, this.contextApp.app).subscribe((response: any) => {
+      }),
     );
   }
 
@@ -362,7 +361,7 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
 
   async openAssetEditModal(asset) {
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
-       this.getGatewayList();
+      this.getGatewayList();
     }
     await this.getAssetData(asset.asset_id);
     this.isOpenAssetCreateModal = true;
@@ -545,10 +544,10 @@ export class AssetListComponent implements OnInit, OnDestroy,AfterViewInit {
               const keys = Object.keys(item.hierarchy);
               this.parentid = 0;
               this.contextApp.hierarchy.levels.forEach((key, index) => {
-                if(index != 0)
-                item.hierarchyString +=  item.hierarchy[key] ? this.getDisplayHierarchyString(index,item.hierarchy[key],this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                if (index != 0)
+                  item.hierarchyString += item.hierarchy[key] ? this.getDisplayHierarchyString(index, item.hierarchy[key], this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
                 else
-                item.hierarchyString +=  item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
+                  item.hierarchyString += item.hierarchy[key] ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '') : '';
               });
             }
           });

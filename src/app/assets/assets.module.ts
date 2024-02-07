@@ -79,6 +79,7 @@ import { AppMaintenanceModule } from '../app-maintenance/app-maintenance.module'
 import { AssetModelUpTimeComponent } from './asset-control-panel/asset-model-uptime/asset-model-uptime.component';
 import { AssetControlPropertiesComponent } from './asset-control-panel/asset-control-properties/asset-control-properties/asset-control-properties.component';
 import { AssetDailyReportsComponent } from './asset-control-panel/asset-daily-reports/asset-daily-reports.component';
+import { ToFixedPipe } from '../application/application-setting/to-fixed.pipe';
 
 @NgModule({
   declarations: [
@@ -141,6 +142,9 @@ import { AssetDailyReportsComponent } from './asset-control-panel/asset-daily-re
     AssetModelUpTimeComponent,
     AssetControlPropertiesComponent,
     AssetDailyReportsComponent,
+    ToFixedPipe,
+
+
 
 
   ],

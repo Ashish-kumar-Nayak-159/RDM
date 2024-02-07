@@ -155,8 +155,10 @@ export class WhiteListAssetListComponent implements OnInit {
                 this.contextApp.hierarchy.levels.forEach((key, index) => {
                   if (index != 0) {
                     item.hierarchyString += item.hierarchy_json[key] ? this.getDisplayHierarchyString(index, item.hierarchy_json[key], this.parentid) + (keys[index + 1] ? ' / ' : '') : '';
+                    console.log('item.hierarchyString IF: ', item.hierarchyString);
                   } else
                     item.hierarchyString += item.hierarchy_json[key] ? item.hierarchy_json[key] + (keys[index + 1] ? ' / ' : '') : '';
+                  console.log('item.hierarchyString else: ', item.hierarchyString);
                 });
               }
               if (this.type === CONSTANTS.NON_IP_ASSET) {

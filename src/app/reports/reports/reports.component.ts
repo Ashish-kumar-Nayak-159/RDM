@@ -48,7 +48,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
   preGeneratedTab: { visibility: boolean; name: any };
-  dailyReportTab : { visibility : boolean ; name: any};
+  dailyReportTab: { visibility: boolean; name: any };
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -103,7 +103,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
     }
-    else if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
+    else if (this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests') {
       this.onTabSelect('daily-reports');
     }
   }
@@ -208,8 +208,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       visibility: reportDataItem['Pre-Generated Reports'],
       name: reportDataItem['Pre-Generated Reports'],
     };
-    if(this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests'){
-      this.dailyReportTab ={
+    if (this.commonService.appPrivilegesPermission('RV') && this.decodedToken?.app === 'Kirloskar' || this.decodedToken?.app === 'VNHierarchyTests') {
+      this.dailyReportTab = {
         visibility: reportDataItem['daily Reports'],
         name: reportDataItem['daily Reports'],
       }
@@ -281,9 +281,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onChangeOfAsset(event) {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === event.asset_id);
     const frequencyArr = [];
-    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     if (this.filterObj.from_date && this.filterObj.to_date) {
       // this.onChangeOfAsset(this.filterObj.asset);

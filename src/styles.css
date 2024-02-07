@@ -1,17 +1,22 @@
 @import '~@ng-select/ng-select/themes/default.theme.css';
 @import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
+
 /* ng-select class changes */
 .text-grey {
   color: #909090;
   font-size: 0.6rem;
 }
 
-.fix-height-image{
+.fix-height-image {
   max-height: 50px;
   /* object-fit: cover; */
 }
 
-#toast-container > .toast-livealert-error {
+.app-dashboard-mix .table_class_new {
+  max-height: calc(100vh - 370px) !important;
+}
+
+#toast-container>.toast-livealert-error {
   background-color: #fb5515;
   position: relative;
   overflow: hidden;
@@ -25,6 +30,7 @@
   box-shadow: 0 0 12px #999999;
   color: #FFFFFF;
 }
+
 /* #toast-container > .toast-critical{
   background-color: #cc0000;  
   position: relative;
@@ -40,7 +46,7 @@
   color: #FFFFFF;
 
 } */
-#toast-container > .toast-informational{
+#toast-container>.toast-informational {
   background-color: #229954;
 }
 
@@ -51,13 +57,18 @@
 .modelRuleAccordion .panel-body.card-block.card-body {
   padding: 1.5rem;
 }
+
 .theme-green .bs-datepicker-head {
   background-color: #a7aac0;
 }
-.theme-green .bs-datepicker-body table td span.selected, .theme-green .bs-datepicker-body table td.selected span,
-.theme-green .bs-datepicker-body table td span[class*=select-]:after, .theme-green .bs-datepicker-body table td[class*=select-] span:after {
+
+.theme-green .bs-datepicker-body table td span.selected,
+.theme-green .bs-datepicker-body table td.selected span,
+.theme-green .bs-datepicker-body table td span[class*=select-]:after,
+.theme-green .bs-datepicker-body table td[class*=select-] span:after {
   background-color: #a7aac0;
 }
+
 .theme-green .bs-datepicker-body table td.week span {
   color: #a7aac0;
 }
@@ -116,6 +127,7 @@
 .accordion-toggle .btn:focus {
   box-shadow: none !important;
 }
+
 .required:after {
   content: ' *';
   color: red;
@@ -132,6 +144,7 @@
   text-decoration: underline;
   color: blue;
 }
+
 .blue-font {
   color: #4e73df !important;
   text-decoration: underline;
@@ -154,6 +167,7 @@ a.disabled {
   overflow-x: hidden;
   overflow-y: auto;
 }
+
 /*
 input:invalid {
   border: 1px solid red;
@@ -168,20 +182,20 @@ input:invalid {
   max-height: 100px;
 }
 
-.panel-default > .panel-heading {
+.panel-default>.panel-heading {
   background-color: #eff5ff !important;
 }
 
 .accordion-toggle[aria-expanded='true']:before {
   /* content: '\f139'; */
   content: '';
-  font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
+  font: normal normal bold 14px/1 FontAwesome, var(--font-family-sans-serif);
 }
 
 .accordion-toggle[aria-expanded='false']:before {
   /* content: '\f13a'; */
   content: '';
-  font: normal normal bold 14px/1 FontAwesome,var(--font-family-sans-serif);
+  font: normal normal bold 14px/1 FontAwesome, var(--font-family-sans-serif);
 }
 
 .card.customClass .card-header {
@@ -211,6 +225,7 @@ input:invalid {
 .switch.switch-medium {
   outline: none;
 }
+
 .w-10 {
   width: 10rem !important;
 }
@@ -249,6 +264,7 @@ input:invalid {
   z-index: 2;
   margin-right: 0.7rem;
 }
+
 .cdk-overlay-container {
   /* position: fixed; */
   pointer-events: none;
@@ -260,6 +276,7 @@ input:invalid {
   position: absolute;
   z-index: 9999999 !important;
 }
+
 .cdk-global-overlay-wrapper,
 .cdk-overlay-container {
   pointer-events: none;
@@ -288,6 +305,7 @@ input:invalid {
   white-space: nowrap;
   overflow: hidden;
 }
+
 .derived-con-pad {
   margin-top: 4rem;
   max-height: calc(100vh - 6.5rem);
@@ -304,6 +322,7 @@ input:invalid {
 .tableFixHead-asset-rules-list {
   height: calc(100vh - 21rem) !important;
 }
+
 .pointer {
   cursor: pointer;
 }
@@ -328,7 +347,7 @@ input:invalid {
   max-height: 170px;
 }
 
-.iti__flag-container.open + input {
+.iti__flag-container.open+input {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 }
@@ -400,9 +419,10 @@ ngx-intl-tel-input input[disabled] {
   background-color: white !important;
 }
 
-json-editor > div{
+json-editor>div {
   height: 100%;
 }
+
 /* end */
 
 /* for hierarchy dropdown  */

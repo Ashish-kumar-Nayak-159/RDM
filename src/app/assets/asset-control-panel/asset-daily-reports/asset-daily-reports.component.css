@@ -1,19 +1,69 @@
 .loadMoreBtn {
-    width : 80vw !important;
-     display: flex !important;
-     justify-content: center !important;
-     z-index: 4;
-     padding-right: 3rem !important;
-  }
-  .loadMoreBtn a {
-    text-decoration: none !important;
-    font-size: 14px !important;
-    color: blue !important;
-  }
-  .table-header tr th {
-    vertical-align: top !important;
-  }
-  .tableFixHead {
-    overflow: auto !important;
-    height: calc(100vh - 12.5rem) !important;
-  }
+  width: 80vw !important;
+  display: flex !important;
+  justify-content: center !important;
+  z-index: 4;
+  padding-right: 3rem !important;
+}
+
+.loadMoreBtn a {
+  text-decoration: none !important;
+  font-size: 14px !important;
+  color: blue !important;
+}
+
+/* .table-header tr th {
+  vertical-align: top !important;
+}
+
+.tableFixHead {
+  overflow: auto !important;
+  height: calc(100vh - 12.5rem) !important;
+}
+
+.fixed-row {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 1;
+  white-space: nowrap;
+} */
+
+.table-header th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.fixed-row {
+  position: sticky;
+  top: 62px;
+  /* Adjust the top value to match the height of your table header */
+  background-color: #f8f9fa;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.tableFixHead {
+  overflow: auto;
+  max-height: calc(100vh - 12.5rem);
+}
+
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  /* background-color: #f8f9fa; */
+  z-index: 2;
+}
+
+.tableFixHead tbody td:second-child,
+.fixed-row td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #f8f9fa;
+  z-index: 1;
+}
+
+.fixed-row td {
+  position: relative;
+}

@@ -1,27 +1,35 @@
-<ng-container *ngIf="commonService.appPrivilegesPermission('RV') && commonService.getdecodedToken()?.app === 'Kirloskar' || commonService.getdecodedToken()?.app === 'VNHierarchyTests'">
+<ng-container
+    *ngIf="commonService.appPrivilegesPermission('RV') && commonService.getdecodedToken()?.app === 'Kirloskar' || commonService.getdecodedToken()?.app === 'VNHierarchyTests'">
     <div class="tab-bar">
         <div class="col">
             <form class="form-inline vw-75">
-                    <div class="row d-flex vw-100">
-                        <div class="col-6 d-flex">
-                            <app-date-range-picker *ngIf="originalFilterObj && selectedDateRange" [filterObj]="originalFilterObj" [options]="datePickerOptions" [selectedDateRange]="selectedDateRange" (selectedDateApplyEmitter)="selectedDateApply($event)"></app-date-range-picker>
-                            <div class="form-group">
-                                <button class="btn btn-sm searchBtn btn-primary" type="button" name="search-hierarchy" placement="bottom" tooltip="Search" 
-                                (click)="dailyReportsData=[] ; preOffset= 0 ; getReportDatabySearch()" [disabled]="dailyReportApiLoading">
-                                    <em class="fa fa-search fa-sm"></em>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-6 d-flex justify-content-end">
-                            <div class="form-group">
-                                <a href="javascript:void(0)" (click)="saveAsExcel()" [style.pointer-events]="dailyReportApiLoading" placement="left" tooltip="Export as Excel" class="ml-1" >
-                                    <em class="fa fa-lg fa-file-excel-o"></em>
-                                </a>
-                            </div>    
+                <div class="row d-flex vw-100">
+                    <div class="col-6 d-flex">
+                        <app-date-range-picker *ngIf="originalFilterObj && selectedDateRange"
+                            [filterObj]="originalFilterObj" [options]="datePickerOptions"
+                            [selectedDateRange]="selectedDateRange"
+                            (selectedDateApplyEmitter)="selectedDateApply($event)"></app-date-range-picker>
+                        <div class="form-group">
+                            <button class="btn btn-sm searchBtn btn-primary" type="button" name="search-hierarchy"
+                                placement="bottom" tooltip="Search"
+                                (click)="dailyReportsData=[] ; preOffset= 0 ; getReportDatabySearch()"
+                                [disabled]="dailyReportApiLoading">
+                                <em class="fa fa-search fa-sm"></em>
+                            </button>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <div class="form-group">
+                            <a href="javascript:void(0)" (click)="saveAsExcel()"
+                                [style.pointer-events]="dailyReportApiLoading" placement="left"
+                                tooltip="Export as Excel" class="ml-1">
+                                <em class="fa fa-lg fa-file-excel-o"></em>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="overlap-wrapper vh-50">
         <div class="over-lap">
@@ -43,7 +51,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <ng-container *ngIf="dailyReportsData" >
+                            <ng-container>
+                                <tr class="fixed-row" *ngFor="let average of dailyReportsTotalAverage; let i = index">
+                                    <td>Average</td>
+                                    <td>{{ average?.avgSuctionDiff | toFixed }}</td>
+                                    <td>{{ average?.avgDischargeDiff | toFixed }}</td>
+                                    <td>{{ average?.avgFM103Diff | toFixed }}</td>
+                                    <td>{{ average?.avgVentDiff | toFixed }}</td>
+                                    <td>{{ average?.avgTotalDiff | toFixed }}</td>
+                                    <td>{{ average?.avgVolumetricEfficiency | toFixed }}</td>
+                                    <td>{{ average?.avgFuelConsumption | toFixed }}</td>
+                                    <td>{{ average?.avgPowerConsumption | toFixed }}</td>
+                                    <td>{{ average?.avgError | toFixed }}</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="dailyReportsData">
                                 <tr *ngFor="let report of dailyReportsData; let i = index">
                                     <td>{{report.reportDate | date : 'dd-MMM-yyyy'}} </td>
                                     <td>{{report?.suctionDiff}}</td>
@@ -64,11 +86,11 @@
                             </ng-container>
                             <ng-container *ngIf="dailyReportApiLoading">
                                 <tr>
-                                  <td colspan="12">
-                                    <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
-                                  </td>
+                                    <td colspan="12">
+                                        <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                                    </td>
                                 </tr>
-                              </ng-container>
+                            </ng-container>
                         </tbody>
                     </table>
                 </div>
@@ -76,32 +98,34 @@
             <div class="loadMoreBtn " [style.height]="loadMoreVisible ? '2rem' : '0' ">
                 <span class="pull-center " *ngIf="loadMoreVisible && !dailyReportApiLoading">
                     <a href="javascript:void(0)" class=""
-                      (click)="preOffset = preOffset + preLimit; getReportDatabySearch();" >Load More...</a>
-                  </span>
-            </div>
+                        (click)="preOffset = preOffset + preLimit; getReportDatabySearch();">Load More...</a>
+                </span>
             </div>
         </div>
-    
-    
+    </div>
+
+
     <div class="modal fade" id="downloadReportModel" tabindex="-1" aria-labelledby="exampleModalLabel" role="dialog">
         <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fs-5" id="exampleModalLabel">Downloading {{selectedAsstDetails?.display_name ? selectedAsstDetails.display_name : selectedAsstDetails?.asset_id }} Daily Report</h6>
-              <button type="button" class="close" *ngIf="loadingMessage" (click)="cancelDownloadModal()">
-                <span aria-hidden="true" tooltip="Close">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fs-5" id="exampleModalLabel">Downloading {{selectedAsstDetails?.display_name
+                        ? selectedAsstDetails.display_name : selectedAsstDetails?.asset_id }} Daily Report</h6>
+                    <button type="button" class="close" *ngIf="loadingMessage" (click)="cancelDownloadModal()">
+                        <span aria-hidden="true" tooltip="Close">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ng-container>
+                        {{loadingMessage}}
+                        <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
+                    </ng-container>
+                </div>
+                <div class="modal-footer" *ngIf="loadingMessage?.toLowerCase()?.includes('loading')">
+                    <button type="button" class="btn btn-secondary add-row"
+                        (click)="cancelDownloadModal()">Cancel</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <ng-container>
-                  {{loadingMessage}}
-                  <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
-                </ng-container>
-              </div>
-              <div class="modal-footer" *ngIf="loadingMessage?.toLowerCase()?.includes('loading')">
-                <button type="button" class="btn btn-secondary add-row" (click)="cancelDownloadModal()">Cancel</button>
-              </div>
-          </div>
         </div>
-      </div>
+    </div>
 </ng-container>

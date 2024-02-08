@@ -377,18 +377,18 @@
               <table class="table table-hover mt-3">
                 <thead class="table-header header-fix">
                   <tr>
-                    <th scope="col">sNo.</th>
-                    <th scope="col">Name</th>
+                    <th scope="col">No.</th>
+                    <th scope="col">Asset Name</th>
                     <th scope="col">Date</th>
                     <th scope="col">FM-101 (Suction) Diff. Kg</th>
                     <th scope="col">FM-102 (Discharge) Diff. Kg</th>
                     <th scope="col">FM-103 (IC) Diff. Kg</th>
                     <th scope="col">Vent Diff. Kg</th>
                     <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-                    <th scope="col">Fuel Consumption</th>
-                    <th scope="col">Power Consumption</th>
                     <th scope="col">% Volumetric Eff.</th>
-                    <th scope="col">Error %</th>
+                    <th scope="col">Fuel Consumption KG/HR</th>
+                    <th scope="col">Power Consumption KG/HR</th>
+                    <th scope="col">Error (%)</th>
                     <th scope="col">Details</th>
                   </tr>
                 </thead>
@@ -409,7 +409,7 @@
                         <td>{{report?.powerConsumption}}</td>
                         <td>{{report?.error}}</td>
                         <td>
-                          <a type="button" role="button" *ngIf="report ? isTabVisible(report)?.visible : ''"
+                          <a type="button" role="button"
                             tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
                             <em class="fa fa-eye"></em>
                           </a>
@@ -706,9 +706,11 @@
 
         </div>
 
-        <!-- DPR Popup Table -->
+        </div>
+        </div>
+
         <div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel">
-          <div *ngIf="!dailyReportApiLoading" class="modal-dialog" role="document">
+          <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="moreInfoModalLabel">{{reportBtnData?.assetName ?
@@ -720,23 +722,23 @@
               <div class="modal-body">
                 <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
                   <table class="table table-hover mt-3">
-                    <thead>
+                    <thead class="table-header header-fix">
                       <tr>
-                        <th scope="col">SNo.</th>
+                        <th scope="col">No.</th>
                         <th scope="col">Date</th>
                         <th scope="col">FM-101 (Suction) Diff. Kg</th>
                         <th scope="col">FM-102 (Discharge) Diff. Kg</th>
                         <th scope="col">FM-103 (IC) Diff. Kg</th>
                         <th scope="col">Vent Diff. Kg</th>
                         <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-                        <th scope="col">Fuel Consumption</th>
-                        <th scope="col">Power Consumption</th>
                         <th scope="col">% Volumetric Eff.</th>
-                        <th scope="col">Error %</th>
+                        <th scope="col">Fuel Consumption  KG/HR</th>
+                        <th scope="col">Power Consumption  KG/HR</th>
+                        <th scope="col">Error (%)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <ng-container *ngIf="dailyReportsData?.length">
+                      <ng-container *ngIf="assetDailyReport?.length">
                         <ng-container *ngFor="let report of assetDailyReport; let i = index;">
                           <tr>
                             <td> {{i+1}}</td>
@@ -746,19 +748,19 @@
                             <td>{{report?.fM103Diff}}</td>
                             <td>{{report?.ventDiff}}</td>
                             <td>{{report?.totalDiff}}</td>
+                            <td>{{report?.volumetricEfficiency}}</td>
                             <td>{{report?.fuelConsumption}}</td>
                             <td>{{report?.powerConsumption}}</td>
-                            <td>{{report?.volumetricEfficiency}}</td>
                             <td>{{report?.error}}</td>
                           </tr>
                         </ng-container>
                       </ng-container>
-                      <ng-container *ngIf="dailyReportsData?.length === 0 && !dailyReportApiLoading">
+                      <ng-container *ngIf="assetDailyReport?.length === 0 && !assetDailyReportApiLoading">
                         <tr>
                           <td colspan="12">Daily Reports not available.</td>
                         </tr>
                       </ng-container>
-                      <ng-container *ngIf="dailyReportApiLoading">
+                      <ng-container *ngIf="assetDailyReportApiLoading">
                         <tr>
                           <td colspan="12">
                             <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
@@ -772,6 +774,3 @@
             </div>
           </div>
         </div>
-      </div>
-
-    </div>

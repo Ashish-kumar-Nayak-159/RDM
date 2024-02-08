@@ -179,8 +179,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
   modifyIcon(asset: any, assetModelsList?: any[]) {
     if (asset && assetModelsList) {
-      const assetModel = asset.asset_model;
-      let pinIconUrl = assetModelsList.find(modelData => modelData.name === assetModel).mapPinIcon;
+      const assetModel = asset?.asset_model;
+      let pinIconUrl = assetModelsList.find(modelData => modelData?.name === assetModel)?.mapPinIcon;
       return pinIconUrl;
     }
   }
@@ -215,9 +215,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
             if (response?.data) {
               this.assets = response.data;
               this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-              this.isGetAssetsAPILoading = false;
               this.assets.forEach((asset) => {
-                if (this.environmentApp === 'Kirloskar') {
+                  const pinData = this.modifyIcon(asset, this.assetModelsList);
+                  if (this.environmentApp === 'Kirloskar') {
                   asset.mttr = '7 Mins';
                   asset.mtbf = '2 days 5 hours';
                   asset.gas = '0.4%';
@@ -232,16 +232,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                   asset.type === this.constantData.IP_ASSET &&
                   asset?.connection_state?.toLowerCase() === 'connected'
                 ) {
-                  let pinData = this.modifyIcon(asset, this.assetModelsList);
                   asset.icon = {
-                    url: this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url
-                      ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.iot_asset?.healthy?.url +
-                      this.blobToken
-                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/iot-assets-green.svg',
+                    url: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/iot-assets-green.svg',
                     scaledSize: {
-                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
+                      width: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.width ? pinData.width : 20,
+                      height: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.height ? pinData.height : 20,
                     },
                   };
                 } else if (
@@ -278,16 +273,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     },
                   };
                 } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                  let pinData = this.modifyIcon(asset, this.assetModelsList);
                   asset.icon = {
-                    url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
-                      ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                      this.blobToken
-                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
+                    url: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
                     scaledSize: {
-                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
+                      width: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.width ? pinData.width : 20,
+                      height: this.assetModelsList?.length && (pinData !== undefined || pinData != null) && pinData?.height ? pinData.height : 20,
                     },
                   };
                 }
@@ -309,7 +299,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
               this.centerLongitude = this.contextApp.metadata?.longitude;
               this.mapFitBounds = false;
             }
-            resolve();
+              this.isGetAssetsAPILoading = false;
+              resolve();
           },
           (error) => (this.isGetAssetsAPILoading = false)
         )

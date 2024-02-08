@@ -163,9 +163,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if(response){
         this.alertFilter = response;
       }
-      })
+    });
     if(this.alertFilter &&  this.alertFilter?.dateFilterObj){
-      item = this.alertFilter.dateFilterObj;
+      item = undefined;
+      this.filterObj.dateOption = 'Custom Range';
+      this.filterObj.from_date = this.alertFilter?.dateFilterObj.from_date;
+      this.filterObj.to_date = this.alertFilter?.dateFilterObj.to_date;
+      this.selectedDateRange = datefns.format(datefns.fromUnixTime(this.filterObj.from_date), "dd-MM-yyyy HH:mm") + ' to ' + datefns.format(datefns.fromUnixTime(this.filterObj.to_date), "dd-MM-yyyy HH:mm");
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      this.getLatestAlerts(false);
     }
     if (item) {
       if (this.pageType === 'live') {
@@ -303,7 +309,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     let configuredHierarchy = this.configuredHierarchy;
     if (this.pageType === 'history') {
-      if (this.filterObj.dateOption !== 'Custom Range') {
+      if(this.filterObj?.dateOption?.includes(' to ')){
+        this.filterObj.dateOption = 'Custom Range';
+      }
+      if (this.filterObj.dateOption !== 'Custom Range' ) {
         const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
         this.filterObj.from_date = dateObj.from_date;
         this.filterObj.to_date = dateObj.to_date;
@@ -1353,8 +1362,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.signalRAlertSubscription?.unsubscribe();
     this.singalRService.disconnectFromSignalR('alert');
     this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, this.tempLocalStorage);
-    if(this.alertSubscriptions)
-    this.alertSubscriptions.unsubscribe();
+    if(this.alertSubscriptions){
+      this.alertSubscriptions.unsubscribe();
+    }
+    this.commonService.setDashboardFilter(null);
   }
 
   y1Deselect(e) {

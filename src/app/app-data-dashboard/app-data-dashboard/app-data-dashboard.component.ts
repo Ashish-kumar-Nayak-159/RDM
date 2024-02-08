@@ -126,6 +126,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   preOffset = 0;
   preLimit = 10;
   dailyReportApiLoading: boolean = false;
+  assetDailyReportApiLoading: boolean = false;
   loadMoreVisible = false;
   dailyReportsData = [];
   assetDailyReport: any = [];
@@ -440,6 +441,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
               this.mapAssets = JSON.parse(JSON.stringify(this.assets));
               this.isGetAssetsAPILoading = false;
               this.assets.forEach((asset) => {
+                const pinData = this.modifyIcon(asset, this.assetModelsList);
                 if (this.environmentApp === 'Kirloskar') {
                   asset.mttr = '7 Mins';
                   asset.mtbf = '2 days 5 hours';
@@ -500,16 +502,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
                     },
                   };
                 } else if (asset.type === this.constantData.NON_IP_ASSET) {
-                  let pinData = this.modifyIcon(asset, this.assetModelsList);
                   asset.icon = {
-                    url: this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url
-                      ? this.blobURL +
-                      this.contextApp?.dashboard_config?.map_icons?.legacy_asset?.healthy?.url +
-                      this.blobToken
-                      : this.assetModelsList && pinData !== undefined && pinData && pinData.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
+                    url: this.assetModelsList && (pinData !== undefined || pinData != null) && pinData?.url ? this.blobURL + pinData.url + this.blobToken : './assets/img/legacy-assets.svg',
                     scaledSize: {
-                      width: this.assetModelsList && pinData !== undefined && pinData && pinData.width ? pinData.width : 20,
-                      height: this.assetModelsList && pinData !== undefined && pinData && pinData.height ? pinData.height : 20,
+                      width: this.assetModelsList && (pinData !== undefined || pinData != null) && pinData?.width ? pinData.width : 20,
+                      height: this.assetModelsList && (pinData !== undefined || pinData != null) && pinData?.height ? pinData.height : 20,
                     },
                   };
                 }
@@ -597,8 +594,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
   modifyIcon(asset: any, assetModelsList?: any[]) {
     if (asset && assetModelsList) {
-      const assetModel = asset.asset_model;
-      let pinIconUrl = assetModelsList.find(modelData => modelData.name === assetModel).mapPinIcon;
+      const assetModel = asset?.asset_model;
+      let pinIconUrl = assetModelsList.find(modelData => modelData?.name === assetModel)?.mapPinIcon;
       return pinIconUrl;
     }
   }
@@ -1176,7 +1173,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   async getDailyReport(dataObj?: any) {
-    this.dailyReportApiLoading = true;
+    this.assetDailyReportApiLoading = true;
     let newHierarchy = {};
     this.contextApp?.hierarchy?.levels.forEach((level, index) => {
       newHierarchy[level] = index != 0 ? this.configuredHierarchy[index] : this.contextApp.app;
@@ -1198,33 +1195,20 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
     }
 
-    this.dailyReportApiLoading = true;
+    this.assetDailyReportApiLoading = true;
     this.loadingMessage = "Loading Data, Please Wait...";
-    this.loadMoreVisible = true;
     this.apiSubscriptions.push(
       this.assetService.getDailyReportSubscription(this.contextApp?.app, obj).subscribe((response: any) => {
         if (response?.data) {
           let resData = response?.data;
           if (dataObj && dataObj?.assetId) {
             this.assetDailyReport = [...resData];
-            // this.assetDailyReport = [
-            //   ...this.assetDailyReport,
-            //   ...resData
-            // ]
-            // this.loadMoreVisible = this.assetDailyReport?.length < response?.totalcount;
-          } else {
-            this.dailyReportsData = [
-              ...this.dailyReportsData,
-              ...resData
-            ]
-            this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
           }
         }
-        this.dailyReportApiLoading = false;
+        this.assetDailyReportApiLoading = false;
       },
         (error: any) => {
-          this.dailyReportApiLoading = false;
-          this.loadMoreVisible = false;
+          this.assetDailyReportApiLoading = false;
           this.toasterService.showError(error?.message, "Error");
         })
     );
@@ -1485,11 +1469,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     if (obj) {
       obj = JSON.parse(obj);
       let dataString: string = '';
-      this.contextApp?.hierarchy?.levels.forEach((item, index) => {
+      Object.keys(obj).forEach((item, index) => {
         if (obj[item]) {
           dataString += obj[item];
 
-          if ((Object.keys(obj)?.length > 1) && (index < (Object.keys(obj)?.length))) {
+          if ((Object.keys(obj)?.length > 1) && (index < (Object.keys(obj)?.length -1))) {
             dataString += '/';
           }
         }

@@ -1,3 +1,7 @@
+.alert-list-view-height {
+  min-height: calc(100vh - 170px);
+}
+
 .search-form {
   margin: -8px 0 0 0;
   padding: 0;

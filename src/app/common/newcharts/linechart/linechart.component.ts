@@ -101,7 +101,6 @@ export class LinechartComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.chartService.disposeChartEvent.subscribe(() => {
           if (this.chart) {
-            // alert('5888');
             this.chart.dispose();
           }
           this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -603,7 +602,6 @@ export class LinechartComponent implements OnInit, OnDestroy {
   }
 
   toggleProperty(prop) {
-    // alert('here  ' + prop);
     this.seriesArr.forEach((item, index) => {
       const seriesColumn = this.chart.series.getIndex(index);
       if (prop === item.propKey) {

@@ -205,6 +205,8 @@ export class AssetDailyReportsComponent implements OnInit {
             'Asset Name': this.assetName,
             'Date': 'Average',
             'FM-101 (Suction) Diff. Kg': average?.avgSuctionDiff.toFixed(2),
+            'Fuel Consumption. Kg': average?.AvgFuelConsumptionPerKG,
+            'Power Consumption. Kg': average?.AvgPowerConsumptionPerKG,
             'FM-102 (Discharge) Diff. Kg': average?.avgDischargeDiff.toFixed(2),
             'FM-103 (IC) Diff. Kg': average?.avgFM103Diff.toFixed(2),
             'Vent Diff. Kg': average?.avgVentDiff.toFixed(2),
@@ -227,7 +229,9 @@ export class AssetDailyReportsComponent implements OnInit {
             'Total Diff. FM(101-102-103-Vent) Kg': reports?.totalDiff,
             '% Volumetric Eff.': reports?.volumetricEfficiency,
             'Fuel Consuption KG/HR': reports?.fuelConsumption,
+            'Fuel Consumption Per Kg': reports?.fuelConsumptionPerKG,
             'Power Consumption KW/HR': reports?.powerConsumption,
+            'Power Consumption KW/Kg': reports?.powerConsumptionPerKG,
             'Error (%)': reports?.error
           });
         });

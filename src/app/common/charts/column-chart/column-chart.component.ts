@@ -45,7 +45,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   decodedToken: any;
   environmentApp = environment.app;
   widgetStringFromMenu: any;
-  constructor(private zone: NgZone, private chartService: ChartService, private commonService: CommonService) {}
+  constructor(private zone: NgZone, private chartService: ChartService, private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -65,7 +65,6 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.chartService.disposeChartEvent.subscribe(() => {
           if (this.chart) {
-            // alert('5888');
             this.chart.dispose();
           }
           this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -197,9 +196,9 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       var pdf = chart.exporting.getFormatOptions("pdf");
       chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.getFormatOptions('pdfdata').addURL = false;
-      var pdfdata =chart.exporting.getFormatOptions("pdfdata");
-      chart.exporting.events.on("exportstarted", function(ev) {
-        chart.exporting.timeoutDelay= 20000;
+      var pdfdata = chart.exporting.getFormatOptions("pdfdata");
+      chart.exporting.events.on("exportstarted", function (ev) {
+        chart.exporting.timeoutDelay = 20000;
       })
       pdfdata.font = am4fonts_notosans_jp;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
@@ -311,10 +310,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         proptype === 'Edge Derived Properties'
           ? 'ED'
           : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+              ? 'DK'
+              : 'M';
       series.propKey = prop.json_key;
       series.columns.template.fillOpacity = 0.8;
       series.compareText = true;
@@ -414,7 +413,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     return this.propertyList.filter((prop) => prop.json_key === key)[0]?.type || 'Measured';
   }
 
-  removeWidget(chartId) {}
+  removeWidget(chartId) { }
 
   ngOnDestroy(): void {
     if (this.chart) {

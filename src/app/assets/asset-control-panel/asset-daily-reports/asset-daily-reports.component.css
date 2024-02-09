@@ -37,9 +37,10 @@
 
 .fixed-row td {
   position: sticky;
-  top: 43px;
+  top: 43px !important;
   /* Adjust the top value to match the height of your table header */
   background-color: #f8f9fa;
+
   z-index: 1;
   white-space: nowrap;
 }
@@ -70,6 +71,6 @@
 
 @media only screen and (max-width: 1700px) {
   .fixed-row td {
-    top: 60px;
+    top: 72px !important;
   }
 }

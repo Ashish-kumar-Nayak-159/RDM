@@ -25,7 +25,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
     private commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
@@ -49,9 +49,9 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+      if (this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests') {
         this.applicationData.menu_settings.asset_control_panel_menu = [...arr];
-      }else{
+      } else {
         this.applicationData.menu_settings.asset_control_panel_menu = [...this.controlPanelPermission(arr)];
       }
     }
@@ -74,9 +74,9 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+      if (this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests') {
         this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...arr];
-      }else{
+      } else {
         this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...this.controlPanelPermission(arr)];
       }
     }
@@ -101,9 +101,9 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      if(this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests'){
+      if (this.decodedToken?.app == 'Kirloskar' || this.decodedToken?.app == 'VNHierarchyTests') {
         this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
-      }else{
+      } else {
         this.applicationData.menu_settings.gateway_control_panel_menu = [...this.controlPanelPermission(arr)];
       }
     }
@@ -120,8 +120,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             flag = true;
             item.display_name = menu.display_name;
             item.visible = menu.visible;
-            if(menu.page === 'layout' && !menu.hasOwnProperty('showAccordion'))
-            {
+            if (menu.page === 'layout' && !menu.hasOwnProperty('showAccordion')) {
               menu.showAccordion = item.showAccordion;
               menu.accordion_value = item.accordion_value;
 
@@ -136,7 +135,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.model_control_panel_menu = [...arr];
 
     }
-  if (!this.applicationData?.menu_settings?.miscellaneous_menu) {
+    if (!this.applicationData?.menu_settings?.miscellaneous_menu) {
       this.applicationData.menu_settings.miscellaneous_menu =
         CONSTANTS.MISCELLANEOUS_MENU_SIDE_MENU_LIST;
     } else {
@@ -228,16 +227,15 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
   // onChangeOfVisibilityCheckbox(index) {
-  //   alert('here');
   //   this.applicationData.menu_settings[index].visible = !this.applicationData.menu_settings[index].visible;
   // }
-  mainMenuTabFilter(arr: any){
-    const arr1 = arr.filter( object => (this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Broad sense Gateway'));
+  mainMenuTabFilter(arr: any) {
+    const arr1 = arr.filter(object => (this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Broad sense Gateway'));
     return arr1;
   }
 
-  controlPanelPermission(arr: any){
-    const arr1 = arr.filter( object => (this.decodedToken?.app !== 'Kirloskar' || this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Daily Report' || object?.system_name === 'Progress Report'));
+  controlPanelPermission(arr: any) {
+    const arr1 = arr.filter(object => (this.decodedToken?.app !== 'Kirloskar' || this.decodedToken?.app !== 'VNHierarchyTests') && !(object?.system_name === 'Daily Report' || object?.system_name === 'Progress Report'));
     return arr1;
 
   }

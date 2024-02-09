@@ -66,7 +66,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.chartService.disposeChartEvent.subscribe(() => {
           if (this.chart) {
-            // alert('5888');
             this.chart.dispose();
           }
           this.subscriptions.forEach((sub) => sub.unsubscribe());

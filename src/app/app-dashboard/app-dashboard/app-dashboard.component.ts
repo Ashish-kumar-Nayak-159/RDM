@@ -1200,7 +1200,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           (error) => {
             // this.isTelemetryDataLoading = false;
-            // alert('111111');
             resolve1();
           }
         )

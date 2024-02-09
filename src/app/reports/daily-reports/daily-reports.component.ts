@@ -62,7 +62,7 @@ export class DailyReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    if(this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests'){
+    if (this.commonService.appPrivilegesPermission('RV') && this.commonService.getdecodedToken()?.app === 'Kirloskar' || this.commonService.getdecodedToken()?.app === 'VNHierarchyTests') {
       this.allAsset = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       this.actualHierarchyArr = this.commonService.getItemFromLocalStorage(CONSTANTS.HIERARCHY_TAGS);
@@ -89,12 +89,12 @@ export class DailyReportsComponent implements OnInit {
     if (item) {
       if (item?.dateOption) {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-        let from_date_convertTODate:any = new Date(dateObj.from_date * 1000);
+        let from_date_convertTODate: any = new Date(dateObj.from_date * 1000);
         let to_date_convertTODate = new Date(dateObj.to_date * 1000);
         to_date_convertTODate.setDate(to_date_convertTODate.getDate() - 7);
         this.datePickerOptions.minDate = to_date_convertTODate;
-        this.datePickerOptions.maxDate =from_date_convertTODate;
-        this.datePickerOptions.startDate =from_date_convertTODate;
+        this.datePickerOptions.maxDate = from_date_convertTODate;
+        this.datePickerOptions.startDate = from_date_convertTODate;
         this.selectedDateRange = item.dateOption;
         this.filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
         this.filterObj.to_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
@@ -148,73 +148,73 @@ export class DailyReportsComponent implements OnInit {
     this.preLimit = this.currentLimit;
     this.configureHierarchy = JSON.parse(JSON.stringify(clear));
   }
-  isTabVisible(report: any){
+  isTabVisible(report: any) {
     let assetType: string;
-    let menuItems:any= [];
-    this.allAsset.forEach((asset: any) =>{
-      if(asset?.length != 0){
-        if(report?.assetId?.toLowerCase() === asset?.asset_id?.toLowerCase()){
+    let menuItems: any = [];
+    this.allAsset.forEach((asset: any) => {
+      if (asset?.length != 0) {
+        if (report?.assetId?.toLowerCase() === asset?.asset_id?.toLowerCase()) {
           assetType = asset.type;
-          if(asset?.type?.toLowerCase() === CONSTANTS?.NON_IP_ASSET?.toLowerCase()){
+          if (asset?.type?.toLowerCase() === CONSTANTS?.NON_IP_ASSET?.toLowerCase()) {
             if (this.contextApp?.menu_settings?.legacy_asset_control_panel_menu?.length > 0) {
               menuItems = this.contextApp.menu_settings.legacy_asset_control_panel_menu;
             }
-            else{
-              menuItems= CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
+            else {
+              menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           }
-          else{
-            if(this.contextApp?.menu_settings?.asset_control_panel_menu?.length >0){
+          else {
+            if (this.contextApp?.menu_settings?.asset_control_panel_menu?.length > 0) {
               menuItems = this.contextApp.menu_settings.asset_control_panel_menu;
             }
-            else{
+            else {
               menuItems = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
             }
           }
         }
       }
-    } )
+    })
     let selectedMenu: any;
-    let ViewObj ={
-      type : assetType,
-      visible : false
+    let ViewObj = {
+      type: assetType,
+      visible: false
     }
-    if(menuItems?.length > 0){
+    if (menuItems?.length > 0) {
       menuItems.forEach((menu) => {
-        if(menu?.url === '#daily_report'){
-          selectedMenu= menu;
-          }
-        });
-      }
-      if(selectedMenu?.url === '#daily_report' && selectedMenu?.visible ){
-        ViewObj.visible= true ;
-        return ViewObj;
-      }
-      else{
-        ViewObj.visible= false ;
-        return ViewObj;
-      }
+        if (menu?.url === '#daily_report') {
+          selectedMenu = menu;
+        }
+      });
+    }
+    if (selectedMenu?.url === '#daily_report' && selectedMenu?.visible) {
+      ViewObj.visible = true;
+      return ViewObj;
+    }
+    else {
+      ViewObj.visible = false;
+      return ViewObj;
+    }
   }
 
   dailyReportViewMore(report: any) {
-    if(report?.assetId){
-      const obj ={
-        dateOption:"Custom Range",
+    if (report?.assetId) {
+      const obj = {
+        dateOption: "Custom Range",
         from_date: this.filterObj.from_date,
         to_date: this.filterObj.to_date,
-        epoch_from_date:  this.selectedDateRange === 'Yesterday'? this.commonService.convertDateToEpoch(this.filterObj.from_date) : this.epoch_Date.start,
-        epoch_to_date: this.selectedDateRange === 'Yesterday'? this.commonService.convertDateToEpoch(this.filterObj.to_date) : this.epoch_Date.end
+        epoch_from_date: this.selectedDateRange === 'Yesterday' ? this.commonService.convertDateToEpoch(this.filterObj.from_date) : this.epoch_Date.start,
+        epoch_to_date: this.selectedDateRange === 'Yesterday' ? this.commonService.convertDateToEpoch(this.filterObj.to_date) : this.epoch_Date.end
       }
       sessionStorage.setItem(CONSTANTS.DAILY_REPORT_DATE_FILTER, JSON.stringify(obj));
       this.router.navigate([`/applications/${this.contextApp.app}/assets/${report.assetId}/control-panel`], { fragment: 'daily_report' });
     }
-    else{
-      this.toasterService.showError('Asset Id Not Found','Error');
+    else {
+      this.toasterService.showError('Asset Id Not Found', 'Error');
     }
   }
-  selectedDate(selectedDateObj: any ) {
+  selectedDate(selectedDateObj: any) {
     this.selectedDateRange = "Custom Range";
-    this.epoch_Date=selectedDateObj;
+    this.epoch_Date = selectedDateObj;
     const from_date = datefns.getUnixTime(new Date(selectedDateObj.start));
     const to_date = datefns.getUnixTime(new Date(selectedDateObj.end));
     let new_from_date = new Date(from_date * 1000);
@@ -225,13 +225,13 @@ export class DailyReportsComponent implements OnInit {
   }
 
   saveExcel() {
-    if(this.dailyReportsData?.length){
+    if (this.dailyReportsData?.length) {
       const fileName = 'DPR-' + this.contextApp?.app + this.filterObj?.from_date;
-      const exportType = exportFromJSON.types.xls;  
+      const exportType = exportFromJSON.types.xls;
       let data = [];
       $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.loadingMessage = 'Preparing Daily Report Data...';
-  
+
       setTimeout(() => {
         this.dailyReportsData.forEach((report) => {
           const datePipe = new DatePipe('en-US');
@@ -246,7 +246,9 @@ export class DailyReportsComponent implements OnInit {
             'Total Diff. FM(101-102-103-Vent) Kg': report?.totalDiff,
             '% Volumetric Eff.': report?.volumetricEfficiency,
             'Fuel Consuption KG/HR': report?.fuelConsumption,
+            'Fuel Consumption Per Kg': report?.fuelConsumptionPerKG,
             'Power Consumption KW/HR': report?.powerConsumption,
+            'Power Consumption KW/Kg': report?.powerConsumptionPerKG,
             'Error (%)': report?.error
           })
         });
@@ -254,8 +256,8 @@ export class DailyReportsComponent implements OnInit {
         this.cancelDownloadModal();
       }, 1000);
     }
-    else{
-      this.toasterService.showError( 'Daily Report Not Avilable.' , 'Error In Export Excel');
+    else {
+      this.toasterService.showError('Daily Report Not Avilable.', 'Error In Export Excel');
     }
   }
 

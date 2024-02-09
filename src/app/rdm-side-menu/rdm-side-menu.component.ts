@@ -215,9 +215,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
                       }
                       if (msg?.code?.startsWith('M_')) {
 
-                        const data={
+                        const data = {
                           ...alertDataObj,
-                          model_name :item?.asset_model
+                          model_name: item?.asset_model
                         }
                         this.storingInLocalStorage(data, msg, CONSTANTS.MODEL_ALERT_AUDIO);
                       }
@@ -306,7 +306,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     if (this.userData) {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       if (this.contextApp) {
-        // alert('here');
         this.connectToSignalR();
         this.getAssetData();
         this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {

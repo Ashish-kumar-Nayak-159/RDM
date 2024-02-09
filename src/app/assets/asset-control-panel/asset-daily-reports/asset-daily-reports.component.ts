@@ -205,16 +205,15 @@ export class AssetDailyReportsComponent implements OnInit {
             'Asset Name': this.assetName,
             'Date': 'Average',
             'FM-101 (Suction) Diff. Kg': average?.avgSuctionDiff.toFixed(2),
-
             'FM-102 (Discharge) Diff. Kg': average?.avgDischargeDiff.toFixed(2),
             'FM-103 (IC) Diff. Kg': average?.avgFM103Diff.toFixed(2),
             'Vent Diff. Kg': average?.avgVentDiff.toFixed(2),
             'Total Diff. FM(101-102-103-Vent) Kg': average?.avgTotalDiff.toFixed(2),
             '% Volumetric Eff.': average?.avgVolumetricEfficiency.toFixed(2),
             'Fuel Consuption KG/HR': average?.avgFuelConsumption.toFixed(2),
-            'Fuel Consumption. Kg': average?.avgFuelConsumptionPerKG,
+            'Fuel Consumption Per Kg': average?.avgFuelConsumptionPerKG,
             'Power Consumption KW/HR': average?.avgPowerConsumption.toFixed(2),
-            'Power Consumption. Kg': average?.avgPowerConsumptionPerKG,
+            'Power Consumption KW/Kg': average?.avgPowerConsumptionPerKG,
 
             'Error (%)': average?.avgError.toFixed(2)
           });

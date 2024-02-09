@@ -35,9 +35,9 @@
   z-index: 2;
 }
 
-.fixed-row {
+.fixed-row td {
   position: sticky;
-  top: 62px;
+  top: 43px;
   /* Adjust the top value to match the height of your table header */
   background-color: #f8f9fa;
   z-index: 1;
@@ -64,6 +64,12 @@
   z-index: 1;
 }
 
-.fixed-row td {
+/* .fixed-row td {
   position: relative;
+} */
+
+@media only screen and (max-width: 1700px) {
+  .fixed-row td {
+    top: 60px;
+  }
 }

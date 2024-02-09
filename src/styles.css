@@ -16,6 +16,10 @@
   max-height: calc(100vh - 370px) !important;
 }
 
+.app-dashboard-mix .performance-tbl-lsit.table_class_new {
+  max-height: calc(100vh - 250px) !important;
+}
+
 #toast-container>.toast-livealert-error {
   background-color: #fb5515;
   position: relative;

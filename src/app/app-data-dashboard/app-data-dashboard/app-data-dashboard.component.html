@@ -346,9 +346,9 @@
         <div class="asset-map-view"
           *ngIf="childTab === 'performance' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')"
           id="performanceOfAssets">
-          <div class="blue-nav-bar my-0 p-0">
+          <!-- <div class="blue-nav-bar my-0 p-0">
             <div class="d-flex align-items-center">
-              <!-- <div class="main-heading" *ngIf="childTab === 'performance' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')">
+              <div class="main-heading" *ngIf="childTab === 'performance' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')">
                 <form class="form-inline">
                   <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" [closeOnSelection]="true"
                     [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
@@ -361,7 +361,7 @@
                     </button>
                   </div>
                 </form>
-              </div> -->
+              </div>
               <div class="ml-auto">
                 <div class="asset-nav-tabs">
                   <nav>
@@ -371,9 +371,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="dataTableHeight">
-            <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
+            <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new performance-tbl-lsit "
+              id="table">
               <table class="table table-hover mt-3">
                 <thead class="table-header header-fix">
                   <tr>
@@ -409,8 +410,8 @@
                         <td>{{report?.powerConsumption}}</td>
                         <td>{{report?.error}}</td>
                         <td>
-                          <a type="button" role="button"
-                            tooltip="More Info" placement="auto" (click)="dailyReportViewMore(report)">
+                          <a type="button" role="button" tooltip="More Info" placement="auto"
+                            (click)="dailyReportViewMore(report)">
                             <em class="fa fa-eye"></em>
                           </a>
                         </td>
@@ -706,71 +707,71 @@
 
         </div>
 
-        </div>
-        </div>
+      </div>
+    </div>
 
-        <div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="moreInfoModalLabel">{{reportBtnData?.assetName ?
-                  reportBtnData?.assetName : reportBtnData?.assetId }}</h5>
-                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
-                  <table class="table table-hover mt-3">
-                    <thead class="table-header header-fix">
+    <div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="moreInfoModalLabel">{{reportBtnData?.assetName ?
+              reportBtnData?.assetName : reportBtnData?.assetId }}</h5>
+            <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="tab-tbl tableFixHead custom-table table-responsive table_class_new" id="table">
+              <table class="table table-hover mt-3">
+                <thead class="table-header header-fix">
+                  <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">FM-101 (Suction) Diff. Kg</th>
+                    <th scope="col">FM-102 (Discharge) Diff. Kg</th>
+                    <th scope="col">FM-103 (IC) Diff. Kg</th>
+                    <th scope="col">Vent Diff. Kg</th>
+                    <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
+                    <th scope="col">% Volumetric Eff.</th>
+                    <th scope="col">Fuel Consumption KG/HR</th>
+                    <th scope="col">Power Consumption KG/HR</th>
+                    <th scope="col">Error (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="assetDailyReport?.length">
+                    <ng-container *ngFor="let report of assetDailyReport; let i = index;">
                       <tr>
-                        <th scope="col">No.</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">FM-101 (Suction) Diff. Kg</th>
-                        <th scope="col">FM-102 (Discharge) Diff. Kg</th>
-                        <th scope="col">FM-103 (IC) Diff. Kg</th>
-                        <th scope="col">Vent Diff. Kg</th>
-                        <th scope="col">Total Diff. FM(101-102-103-Vent) Kg</th>
-                        <th scope="col">% Volumetric Eff.</th>
-                        <th scope="col">Fuel Consumption  KG/HR</th>
-                        <th scope="col">Power Consumption  KG/HR</th>
-                        <th scope="col">Error (%)</th>
+                        <td> {{i+1}}</td>
+                        <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
+                        <td>{{report?.suctionDiff}}</td>
+                        <td>{{report?.dischargeDiff}}</td>
+                        <td>{{report?.fM103Diff}}</td>
+                        <td>{{report?.ventDiff}}</td>
+                        <td>{{report?.totalDiff}}</td>
+                        <td>{{report?.volumetricEfficiency}}</td>
+                        <td>{{report?.fuelConsumption}}</td>
+                        <td>{{report?.powerConsumption}}</td>
+                        <td>{{report?.error}}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      <ng-container *ngIf="assetDailyReport?.length">
-                        <ng-container *ngFor="let report of assetDailyReport; let i = index;">
-                          <tr>
-                            <td> {{i+1}}</td>
-                            <td> {{report?.reportDate | date: 'dd-MM-yyyy'}} </td>
-                            <td>{{report?.suctionDiff}}</td>
-                            <td>{{report?.dischargeDiff}}</td>
-                            <td>{{report?.fM103Diff}}</td>
-                            <td>{{report?.ventDiff}}</td>
-                            <td>{{report?.totalDiff}}</td>
-                            <td>{{report?.volumetricEfficiency}}</td>
-                            <td>{{report?.fuelConsumption}}</td>
-                            <td>{{report?.powerConsumption}}</td>
-                            <td>{{report?.error}}</td>
-                          </tr>
-                        </ng-container>
-                      </ng-container>
-                      <ng-container *ngIf="assetDailyReport?.length === 0 && !assetDailyReportApiLoading">
-                        <tr>
-                          <td colspan="12">Daily Reports not available.</td>
-                        </tr>
-                      </ng-container>
-                      <ng-container *ngIf="assetDailyReportApiLoading">
-                        <tr>
-                          <td colspan="12">
-                            <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="assetDailyReport?.length === 0 && !assetDailyReportApiLoading">
+                    <tr>
+                      <td colspan="12">Daily Reports not available.</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="assetDailyReportApiLoading">
+                    <tr>
+                      <td colspan="12">
+                        <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
+      </div>
+    </div>

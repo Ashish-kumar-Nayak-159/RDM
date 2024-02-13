@@ -815,6 +815,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           fixed_value_list: [],
           data_type: 'text',
           data_key: 'name',
+          btn_list: [
+            {
+              text: '',
+              id: 'dashboard_listview',
+              valueclass: 'd-flex  w-75',
+            }
+          ],
+
           //is_sort: true
         },
         {
@@ -904,8 +912,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
   onTableFunctionCall(obj) {
+    console.log("obj", obj)
     if (obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')) {
       this.redirectToLiveDataHistorical(obj.data, obj.for);
+    }
+    else if (obj && (obj?.for === "dashboard_listview")) {
+      this.router.navigate(['applications', this.contextApp.app, 'assets', obj.data?.asset_id, 'control-panel']);
+
     }
     else {
       this.redirectToAssetControlPanel(obj.data, obj.for);

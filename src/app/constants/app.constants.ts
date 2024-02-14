@@ -2447,4 +2447,5 @@ export class CONSTANTS {
   public static MODEL_ALERT_AUDIO = 'model_alertCondition_audio';
   public static ASSET_ALERT_AUDIO = 'asset_alertCondition_audio';
   public static Last30Days = 'Last 30 Days';
+  public static Last24hrs = 'Last 24 Hours';
 }

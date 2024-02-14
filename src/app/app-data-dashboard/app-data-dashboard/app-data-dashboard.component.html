@@ -440,7 +440,7 @@
 
             <div class="loadMoreBtn " *ngIf=" loadMoreVisible && !dailyReportApiLoading">
               <span class="pull-center ">
-                <a href="javascript:void(0)" class=" "
+                <a href="javascript:void(0)"
                   (click)="preOffset = preOffset + preLimit; loadMoreReports();">Load More...</a>
               </span>
             </div>
@@ -469,7 +469,7 @@
             </app-hierarchy-dropdown>
             <div class="form-group">
               <button type="button" class="btn btn-sm searchBtn btn-primary"
-                (click)="onAssetFilterApply('alertMapView',true, true)" [disabled]="isTelemetryDataLoading">
+                (click)=" alertTotalcount = 0; alerCurrentOffset = 0;alertCurrentLimit = 10; onAssetFilterApply('alertMapView',true, true)" [disabled]="isTelemetryDataLoading">
                 <em class="fas fa-search fa-sm"></em>
               </button>
             </div>
@@ -483,7 +483,7 @@
             </app-hierarchy-dropdown>
             <div class="form-group">
               <button type="button" class="btn btn-sm searchBtn btn-primary"
-                (click)="onAssetFilterApply('alertListView',true,true)" [disabled]="isTelemetryDataLoading">
+                (click)="alertTotalcount = 0; alerCurrentOffset = 0;alertCurrentLimit = 10; onAssetFilterApply('alertListView',true,true)" [disabled]="isTelemetryDataLoading">
                 <em class="fas fa-search fa-sm"></em>
               </button>
             </div>
@@ -497,7 +497,7 @@
               <div class="col-md-4">
                 <div class="card rounded-top online"
                   [style.border-top]="alertCircleTbl === 'critical' ? '2px solid black' : 'white'"
-                  (click)="onAlertCircleTblChange('critical')" style="border-bottom: 9px solid #c10606f7">
+                  (click)="alertData = []; onAlertCircleTblChange('critical')" style="border-bottom: 9px solid #c10606f7">
                   <div class="card-body">
                     <h2 class="card-title">Critical</h2>
                     <h1 class="font-weight-bold">{{getAlertCountObj?.critical?.not_acknowledged_alerts ?? 0}}</h1>
@@ -507,7 +507,7 @@
               <div class="col-md-4">
                 <div class="card rounded-top offline"
                   [style.border-top]="alertCircleTbl === 'warning' ? '2px solid black' : 'white'"
-                  (click)="onAlertCircleTblChange('warning')">
+                  (click)="alertData = []; onAlertCircleTblChange('warning')">
                   <div class="card-body" style="border-bottom: 9px solid #d78b13">
                     <h2 class="card-title">Warning</h2>
                     <h1 class="font-weight-bold">{{getAlertCountObj?.warning?.not_acknowledged_alerts ?? 0}}</h1>
@@ -659,9 +659,21 @@
                               class="status-circle"></span></td>
                         </tr>
                       </ng-container>
-                    </tbody>
-                  </table>
-                </div>
+                      <ng-container class="col-5" *ngIf="alertsAPILoading">
+                        <span>Loading <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em></span>
+                        <td >
+                      </td>
+                        </ng-container>
+                      </tbody>
+                      </table>
+                      </div>
+                      <ng-container *ngIf="!alertsAPILoading && alertData?.length > 0 && !alertLoadMoreVisibility && alertTotalcount!=alerCurrentOffset+alertCurrentLimit">
+                        <span class="loadMorePosition">
+                          <a href="javascript:;" style="text-decoration: none;color:blue;" class="ml-5"
+                          (click)="alerCurrentOffset = alerCurrentOffset + alertCurrentLimit ; getAlertMapData(alertTabType)" placement="bottom">{{'Load More...'}}
+                          </a>
+                          </span>
+                          </ng-container>
               </div>
               <div class="col-12 col-md-6">
                 <div class="card-table alert-card-table " style="padding: 13px !important;" *ngIf="alertCircleTbl">
@@ -766,12 +778,12 @@
                   </ng-container>
                   <ng-container *ngIf="assetDailyReport?.length === 0 && !assetDailyReportApiLoading">
                     <tr>
-                      <td colspan="12">Daily Reports not available.</td>
+                      <td colspan="13">Daily Reports not available.</td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="assetDailyReportApiLoading">
                     <tr>
-                      <td colspan="12">
+                      <td colspan="13">
                         <em class="fa fa-fw fa-2x  fa-spin fa-spinner"></em>
                       </td>
                     </tr>

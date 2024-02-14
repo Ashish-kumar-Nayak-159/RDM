@@ -129,7 +129,7 @@ export class DailyReportsComponent implements OnInit {
           ...this.dailyReportsData,
           ...resData
         ]
-        this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
+        this.loadMoreVisible = this.dailyReportsData?.length < response?.totalCount;
       }
     },
       (error: any) => {

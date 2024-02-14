@@ -484,7 +484,7 @@ export class CommonService {
 
   getDefaultDateOptions() {
     let filterObj:any = {};
-    filterObj["dateOption"] = CONSTANTS.Last30Days;
+    filterObj["dateOption"] = CONSTANTS.Last24hrs;
     const dateObj = this.getMomentStartEndDate(filterObj['dateOption']);
     filterObj["from_date"] = dateObj.from_date;
     filterObj["to_date"] = dateObj.to_date;

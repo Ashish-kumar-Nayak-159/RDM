@@ -574,3 +574,10 @@ agm-map {
 .tab-dashboard {
   overflow: auto;
 }
+
+.loadMorePosition{
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin-bottom: 20px !important;
+}

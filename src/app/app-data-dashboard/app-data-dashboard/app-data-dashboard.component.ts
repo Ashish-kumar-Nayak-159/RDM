@@ -116,6 +116,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   selectedApp: string;
   assetCount = 0;
   assetTotalcount = 0;
+  alertTotalcount = 0;
+  alerCurrentOffset = 0;
+  alertCurrentLimit = 10;
+  alertLoadMoreVisibility: boolean = false;
   userDataFromLocal: any;
   receivedAppName: string;
   isSelectedAppData = false;
@@ -167,7 +171,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   alertTabData: any;
   alertTabType = undefined;
   isWarningVisible: boolean = false;
-
+  alertsAPILoading: boolean = false;
 
   constructor(
     private assetService: AssetService,
@@ -912,7 +916,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
   onTableFunctionCall(obj) {
-    console.log("obj", obj)
     if (obj && (obj?.for === "dashboard" || obj?.for === 'historical-trend')) {
       this.redirectToLiveDataHistorical(obj.data, obj.for);
     }
@@ -1109,7 +1112,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             ...this.dailyReportsData,
             ...resData
           ]
-          this.loadMoreVisible = this.dailyReportsData?.length < response?.totalcount;
+          this.loadMoreVisible = this.dailyReportsData?.length < response?.totalCount;
         }
       },
         (error: any) => {
@@ -1237,6 +1240,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   // Alert Start //
   // Alert Map View Start //
   async alertMapViewContainer(resetIndex = false) {
+    this.alertTotalcount = 0;
+    this.alerCurrentOffset = 0;
+    this.alertCurrentLimit = 10;
     await this.getAlertMapData(this.alertCircleTbl, resetIndex);
     await this.alertMapIconProcessing();
   }
@@ -1300,10 +1306,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
   // get Alert Data On Click
   async getAlertMapData(alertType?, resetIndex = false) {
+    this.alertsAPILoading = true;
     this.alertTabType = alertType;
     this.isMapDataLoading = true;
     const filterDate = this.commonService.getDefaultDateOptions();
     const obj = {
+      offset: this.alerCurrentOffset,
+      count: this.alertCurrentLimit,
       from_date: filterDate.from_date,
       to_date: filterDate.to_date,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
@@ -1320,9 +1329,11 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     this.apiSubscriptions.push(
       this.applicationService.getAlerts(obj).subscribe(async (response: any) => {
         if (response) {
-          this.alertData = response;
-          if (response && (!this.chartTbl?.id || resetIndex)) {
-            this.chartTbl = response[0];
+          this.alertTotalcount=response?.count;
+          let data  = response?.data;
+          this.alertData = this.alertData?.length ? [...this.alertData,...data] : data;
+          if (response?.data && (!this.chartTbl?.id || resetIndex)) {
+            this.chartTbl = this.alertData[0];
           } else {
             if (!response) {
               this.chartTbl = null;
@@ -1349,10 +1360,16 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
               return alert;
             })
           }
+          // this.loadMoreVisibility = response?.data?.length < this.alertCurrentLimit ?true : false;
+          this.loadMoreVisibility = this.alertData?.length < response?.count ?true : false;
           this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
           this.alertMapIconProcessing();
 
         }
+        this.alertsAPILoading = false;
+      },
+      (error) =>{
+        this.alertsAPILoading = false;
       })
     );
 

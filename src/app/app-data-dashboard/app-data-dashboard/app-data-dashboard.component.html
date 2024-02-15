@@ -325,11 +325,11 @@
                 &nbsp;</div>
             </div>
           </div>
-          <div class="dataTableHeight app-dashboard-mix" *ngIf="!loader">
+          <div class=" app-dashboard-mix" [style.height]="(subTab === 'list_view') && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar') ? 'calc(100vh - 25.5rem) !important' : 'calc(100vh - 15.5rem) !important' " *ngIf="!loader">
             <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
               (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
-            <span class="d-flex justify-content-center w-100 py-2" style="margin-top: -27px;margin-right:10px;"
+            <span class="d-flex justify-content-center w-100 py-2" style="margin-right:10px;" [style] ="(subTab === 'list_view') && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar') ? 'margin-top :-12px !important; ' : 'margin-top : -22px !important;' "
               *ngIf="applications?.length > 0 && loadMoreVisibility && assetTotalcount!=currentOffset+currentLimit">
               <a href="javascript:;" style="text-decoration: none;color:blue;" class="mr-1"
                 (click)="currentOffset = currentOffset + currentLimit ; assetMonitor(state)" placement="bottom"
@@ -491,7 +491,7 @@
         </div>
       </div>
       <div class="w-100 list-view-paddding">
-        <div class="asset-map-view" *ngIf="childTab === 'status'" id="statusOfAssets">
+        <div class="asset-map-view" *ngIf="mainTab === 'alerts'" id="statusOfAssets">
           <div class="container">
             <div class="row text-center pt-2">
               <div class="col-md-4">

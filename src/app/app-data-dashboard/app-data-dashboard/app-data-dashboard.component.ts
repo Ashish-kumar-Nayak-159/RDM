@@ -994,7 +994,9 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           total_telemetry: response?.total_telemetry ?? 0,
           day_telemetry: response?.day_telemetry ?? 0
         }
-      }, (err) => { this.loader = false })
+      }, (err) => {
+        this.loader = false
+      })
     );
   }
   fetchGateways(state: string) {
@@ -1067,6 +1069,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   // Status End //
   // performance Start //
   async performanceTab() {
+    this.dailyReportsData = [];
     let filterObj: any = {};
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     await this.getAssets(item.hierarchy);
@@ -1088,7 +1091,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   getDailyReportSubscription(filterObj: any) {
-    this.dailyReportsData = [];
     let newHierarchy = {};
     this.contextApp?.hierarchy?.levels.forEach((level, index) => {
       newHierarchy[level] = index != 0 ? this.configuredHierarchy[index] : this.contextApp.app;
@@ -1185,7 +1187,24 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   loadMoreReports() {
-    this.getDailyReport();
+    this.getDailyReportSubscription(this.getDPRDateFilter());
+  }
+
+  getDPRDateFilter(){
+    let filterObj: any = {};
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    item.dateOption = "Yesterday";
+    if (item) {
+      if (item?.dateOption) {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        let from_date_convertTODate: any = new Date(dateObj.from_date * 1000);
+        let to_date_convertTODate = new Date(dateObj.to_date * 1000);
+        to_date_convertTODate.setDate(to_date_convertTODate.getDate() - 7);
+        filterObj.from_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
+        filterObj.to_date = datefns.format(from_date_convertTODate, "yyyy-MM-dd").toString();
+      }
+    }
+    return filterObj;
   }
 
   async getDailyReport(dataObj?: any) {
@@ -1499,7 +1518,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     if (obj) {
       obj = JSON.parse(obj);
       let dataString: string = '';
-      Object.keys(obj).forEach((item, index) => {
+      this.contextApp?.hierarchy?.levels.forEach((item, index) => {
         if (obj[item]) {
           dataString += obj[item];
 

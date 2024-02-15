@@ -1527,6 +1527,26 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           }
         }
       });
+      let tempLevel: any = [];
+      this.contextApp?.hierarchy?.levels.forEach((item, index) => {
+        Object.keys(obj).forEach((hirrKey) =>{
+          if(item == hirrKey){
+            tempLevel.push(item)
+          }
+        })
+      });
+      if(tempLevel?.length != this.contextApp?.hierarchy?.levels?.length){
+        dataString = '';
+        Object.keys(obj).forEach((item, index) => {
+          if (obj[item]) {
+            dataString += obj[item];
+
+            if ((Object.keys(obj)?.length > 1) && (index < (Object.keys(obj)?.length - 1))) {
+              dataString += '/';
+            }
+          }
+        });
+      }
       return dataString;
     }
   }

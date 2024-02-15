@@ -172,7 +172,6 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   alertTabType = undefined;
   isWarningVisible: boolean = false;
   alertsAPILoading: boolean = false;
-  statisticAPILoading: boolean = false;
 
   constructor(
     private assetService: AssetService,
@@ -981,11 +980,10 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
   assetStatic() {
-    this.statisticAPILoading = true;
     const custObj = {
       hierarchy: JSON.stringify(this.hierarchy)
     }
-    // this.loader = true;
+    this.loader = true;
     this.apiSubscriptions.push(
       this.applicationService.getAssetStatisticsNew(this.selectedApp, custObj).subscribe((response: any) => {
         this.countData = {
@@ -996,10 +994,8 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
           total_telemetry: response?.total_telemetry ?? 0,
           day_telemetry: response?.day_telemetry ?? 0
         }
-        this.statisticAPILoading = false;
       }, (err) => {
-        this.statisticAPILoading = true;
-        // this.loader = false
+        this.loader = false
       })
     );
   }
@@ -1522,7 +1518,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     if (obj) {
       obj = JSON.parse(obj);
       let dataString: string = '';
-      Object.keys(obj).forEach((item, index) => {
+      this.contextApp?.hierarchy?.levels.forEach((item, index) => {
         if (obj[item]) {
           dataString += obj[item];
 

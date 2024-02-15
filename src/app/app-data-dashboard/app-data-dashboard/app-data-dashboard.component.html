@@ -87,7 +87,7 @@
           <div class="main-heading search-form"
             *ngIf="childTab === 'performance' && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar')">
             <form class="form-inline">
-              <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" [closeOnSelection]="true"
+              <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" [closeOnSelection]="false"
                 [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy($event)"
                 (clearHierarchyEvent)="onClearHierarchy($event)">
               </app-hierarchy-dropdown>
@@ -325,7 +325,7 @@
                 &nbsp;</div>
             </div>
           </div>
-          <div class=" app-dashboard-mix" [style.height]="(subTab === 'list_view') && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar') ? 'calc(100vh - 25.5rem) !important' : 'calc(100vh - 15.5rem) !important' " *ngIf="!loader">
+          <div class=" app-dashboard-mix" [style.height]="(subTab === 'list_view') && (contextApp?.app == 'VNHierarchyTests' || contextApp?.app == 'Kirloskar') ? 'calc(100vh - 25.5rem) !important' : 'calc(100vh - 15.5rem) !important' ">
             <app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
               (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
 
@@ -337,7 +337,7 @@
                 More...</a><em class="fa fa-spinner fa-spin fa-fw fa" *ngIf="loader"></em>
             </span>
           </div><br />
-          <div class="text-center" *ngIf="loader">
+          <div class="text-center" *ngIf="applications?.length == 0 && loader">
             <em class="fa fa-spinner fa-spin fa-fw fa-2x"></em>
           </div>
         </div>
@@ -634,8 +634,8 @@
                   </div>-->
             </div>
             <div class="row mt-3">
-              <div class="col-12 col-md-6">
-                <div class="tab-tbl alert-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height">
+              <div class="col-12 col-md-6 bg-light">
+                <div class="tab-tbl alert-tbl tableFixHead custom-table table-responsive table_class_new_fixed-height ">
                   <table *ngIf="alertCircleTbl" class="table table-hover">
                     <thead>
                       <tr>
@@ -669,14 +669,14 @@
                       </div>
                       <ng-container *ngIf="!alertsAPILoading && alertData?.length > 0 && !alertLoadMoreVisibility && alertTotalcount!=alerCurrentOffset+alertCurrentLimit">
                         <span class="loadMorePosition">
-                          <a href="javascript:;" style="text-decoration: none;color:blue;" class="ml-5"
+                          <a href="javascript:void(0);" style="text-decoration: none;color:blue;" class="ml-5"
                           (click)="alerCurrentOffset = alerCurrentOffset + alertCurrentLimit ; getAlertMapData(alertTabType)" placement="bottom">{{'Load More...'}}
                           </a>
                           </span>
                           </ng-container>
               </div>
               <div class="col-12 col-md-6">
-                <div class="card-table alert-card-table " style="padding: 13px !important;" *ngIf="alertCircleTbl">
+                <div class="card-table alert-card-table bg-light" style="padding: 13px !important;" *ngIf="alertCircleTbl">
                   <h4>{{(alertTabType == undefined ? 'All Critical And Warning' : alertCircleTbl === 'critical' ?
                     'Critical' : 'Warning') + ' Alerts'}}</h4>
                   <div class="red-alert-block">

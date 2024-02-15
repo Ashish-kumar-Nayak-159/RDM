@@ -239,7 +239,7 @@ margin-right: 5px;} */
   min-width: 100%;
   max-width: 100%;
   padding: 15px 10px !important;
-  height: 220px !important;
+  height: auto !important;
   width: 500px !important;
 }
 
@@ -490,7 +490,7 @@ agm-map {
   right: 10px;
   background-color: white;
   z-index: 1;
-  height: 220px !important;
+  height: auto !important;
 }
 
 

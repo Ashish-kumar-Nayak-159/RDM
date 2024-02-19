@@ -667,7 +667,7 @@
                       </tbody>
                       </table>
                       </div>
-                      <ng-container *ngIf="!alertsAPILoading && alertData?.length > 0 && !alertLoadMoreVisibility && alertTotalcount!=alerCurrentOffset+alertCurrentLimit">
+                      <ng-container *ngIf="!alertsAPILoading && alertData?.length > 0 && alertLoadMoreVisibility && alertTotalcount!=alerCurrentOffset+alertCurrentLimit">
                         <span class="loadMorePosition">
                           <a href="javascript:void(0);" style="text-decoration: none;color:blue;" class="ml-5"
                           (click)="alerCurrentOffset = alerCurrentOffset + alertCurrentLimit ; getAlertMapData(alertTabType)" placement="bottom">{{'Load More...'}}

@@ -1330,13 +1330,14 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     this.isMapDataLoading = true;
     const filterDate = this.commonService.getDefaultDateOptions();
     const obj = {
-      offset: this.alerCurrentOffset,
-      count: this.alertCurrentLimit,
       from_date: filterDate.from_date,
       to_date: filterDate.to_date,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      acknowledged: this.acknowledged ? false : true,
-      // severity:( alertType == 'critical') ? 'Critical' : 'Warning'
+      acknowledged: this.acknowledged ? false : true
+    }
+    if(this. mainTab === 'alerts' && this.subTab === 'list_view'){
+      obj['offset'] = this.alerCurrentOffset;
+      obj['count'] = this.alertCurrentLimit;
     }
     if (this.filterObj?.asset?.asset_id) {
       obj['asset_id'] = this.filterObj?.asset?.asset_id;
@@ -1380,7 +1381,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
             })
           }
           // this.loadMoreVisibility = response?.data?.length < this.alertCurrentLimit ?true : false;
-          this.loadMoreVisibility = this.alertData?.length < response?.count ?true : false;
+          this.alertLoadMoreVisibility = this.alertData?.length < response?.count ? true : false;
           this.mapAssets = JSON.parse(JSON.stringify(this.alertData));
           this.alertMapIconProcessing();
 

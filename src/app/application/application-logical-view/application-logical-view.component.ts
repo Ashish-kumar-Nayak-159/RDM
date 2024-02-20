@@ -747,8 +747,10 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       const obj = {};
 
       this.filterObj?.logicalview?.assets?.forEach(asset => {
+        debugger
         fobj.asset_id = asset.asset_id;
         fobj.partition_key = asset.asset_id;
+        fobj.name = "Testing Purpose"
         this.assetService.getLastTelmetry(this.contextApp.app, fobj).subscribe(
           (response: any) => {
             if (response?.message) {
@@ -809,11 +811,13 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
           },
           (error) => {
             this.isTelemetryDataLoading = false
+            delete fobj.logicalview;
+
           }
           // (error) => (this.isTelemetryDataLoading = false)
         )
       })
-      delete fobj.logicalview;
+      // delete fobj.logicalview;
       resolve('');
     });
   }

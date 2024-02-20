@@ -66,6 +66,7 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
     if (this.type == 'logicalView') {
       this.logicalAsset = this.filterObj.logicalview;
+      console.log('this.logicalAsset: ', this.logicalAsset);
     }
   }
 
@@ -135,8 +136,10 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
   getDropdownName() {
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+
+    // console.log('this.originalFilterObj: ', this.originalFilterObj?.logicalview);
     if (this.type == 'logicalView') {
-      return this.originalFilterObj?.logicalview ? this.originalFilterObj?.logicalview.name : 'Select Logical View'
+      return this.originalFilterObj?.logicalview ? this.originalFilterObj?.logicalview?.name : 'Select Logical View'
     }
     if (this.showSlave && (this.originalFilterObj?.slave?.slave_name || this.originalFilterObj?.slave?.slave_id)) {
       let slaveName = this.originalFilterObj?.slave?.slave_name || this.originalFilterObj?.slave?.slave_id;

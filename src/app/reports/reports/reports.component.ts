@@ -61,6 +61,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   decodedToken: any;
   frequency: any;
   noOfRecords = CONSTANTS.NO_OF_RECORDS;
+  getAssetsAPILoading: boolean = false;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
     public commonService: CommonService,
@@ -113,7 +114,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       if (this.tabType === 'custom') {
         this.loadFromCache();
       }
-    }, 0);
+    }, 500);
   }
 
   onTabSelect(type) {
@@ -254,6 +255,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   getAssets(hierarchy) {
     return new Promise<void>((resolve) => {
+      this.getAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
@@ -272,8 +274,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
               this.filterObj.asset = this.assets[0];
             }
           }
+          this.getAssetsAPILoading = false;
           resolve();
-        })
+        }, (error) =>{this.getAssetsAPILoading = false;})
       );
     });
   }

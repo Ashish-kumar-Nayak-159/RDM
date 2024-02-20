@@ -101,7 +101,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   lastTelemetryValueControl: any;
   refreshcontrolProperties = false;
   actualPropertyList: any;
-
+  getAssetsAPILoading : boolean = false;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -147,7 +147,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   this.historicalDateFilter.sampling_time = 1;
     // }
     await this.getAssets(this.contextApp.user.hierarchy);
-    this.onTabChange();
+    setTimeout(() =>{
+      this.onTabChange();
+    },1000);
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
@@ -260,7 +262,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
-      if (item.assets) {
+      if (item?.assets) {
         this.filterObj.asset = item.assets;
         await this.onChangeOfAsset();
         this.onFilterSelection(this.filterObj, false, true, true);
@@ -351,6 +353,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
+      this.getAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
@@ -364,7 +367,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               this.onChangeOfAsset();
             }
           }
+          this.getAssetsAPILoading = false;
           resolve1();
+        },
+        (error) =>{
+          this.getAssetsAPILoading = false;
         })
       );
     });

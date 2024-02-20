@@ -6,7 +6,7 @@
         <div class="ml-auto">
             <div class="">
                 <form class="form-inline">
-                    <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true"
+                    <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && !getAssetsAPILoading" [showAsset]="true"
                         [closeOnSelection]="true" [filterObj]="filterObj" [assets]="assets"
                         (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
                     </app-hierarchy-dropdown>

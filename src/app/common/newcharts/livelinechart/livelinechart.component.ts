@@ -405,9 +405,9 @@ export class LivelinechartComponent implements OnInit, OnChanges, OnDestroy {
       // series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       if (series.units) {
-        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} : [bold]{valueY}[/] ({units})';
       } else {
-        series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+        bullet.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       }
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;

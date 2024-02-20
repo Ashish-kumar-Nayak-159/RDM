@@ -17,7 +17,7 @@
               <em class="fas fa-chart-line mr-2"></em>
               <span class="d-none d-md-inline-block">Daily {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
             </a>
-            
+
             <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}"
               id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated" role="tab"
               aria-controls="nav-pre-generated" aria-selected="false" (click)="onTabSelect('pre-generated')"
@@ -96,7 +96,7 @@
                 </div>
               </div>
             </div> -->
-            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && !getAssetsAPILoading" [showAsset]="true" [closeOnSelection]="true" [filterObj]="filterObj"
               [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
             </app-hierarchy-dropdown>
             <div class="form-group">

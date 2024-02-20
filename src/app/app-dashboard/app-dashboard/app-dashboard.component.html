@@ -31,8 +31,8 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
-            [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && !getAssetsAPILoading" [showAsset]="true" [closeOnSelection]="true"
+            [filterObj]="filterObj" [assets]="assets" [type]="'LiveData'" (saveHierarchyEvent)="onSaveHierachy()"
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
@@ -205,7 +205,7 @@
           <div class="grid-card-container">
             <ng-container *ngFor="let widget of liveWidgets; let i = index;">
               <div *ngIf="widget?.widgetType === 'SmallNumber'"
-                class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+                class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}" [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                 || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                 'margin-left':'0', 'margin-top': '2%' }">
                 <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"
@@ -250,9 +250,9 @@
       </div>
 
       <!-- <ng-container *ngFor="let widget of liveWidgets; let i = index;">
-       
+
         <div *ngIf="widget?.widgetType === 'SmallNumber'" class="{{checkwidgettype === true ? 'smallnumber-widget-class' : ''}}"
-          [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'  
+          [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                 || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'RectangleWidget' || widget.widgetType === 'CylinderWidget' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                 'margin-left':'0.3%', 'margin-top': '2%' }">
           <app-small-number-widget *ngIf="widget?.widgetType === 'SmallNumber'" [chartConfig]="widget"

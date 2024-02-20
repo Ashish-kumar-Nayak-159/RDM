@@ -54,6 +54,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   @ViewChild('historicalLivechart') historicalLivechart: ElementRef;
   sameAsset: string;
   isAssetSelected: boolean = false;
+  getAssetsAPILoading: boolean = false;
 
 
 
@@ -85,6 +86,7 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
   }
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
+      this.getAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
@@ -98,7 +100,10 @@ export class ApplicationHistoricalLiveDataComponent implements OnInit, OnDestroy
               this.onChangeOfAsset();
             }
           }
+          this.getAssetsAPILoading = false;
           resolve1();
+        }, (error) => {
+          this.getAssetsAPILoading = false;
         })
       );
     });

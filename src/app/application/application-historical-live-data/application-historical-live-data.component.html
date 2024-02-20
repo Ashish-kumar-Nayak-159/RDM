@@ -7,7 +7,7 @@
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [closeOnSelection]="true"
+          <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj && !getAssetsAPILoading" [showAsset]="true" [closeOnSelection]="true"
             [filterObj]="filterObj" [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()"
             (clearHierarchyEvent)="onClearHierarchy()">
           </app-hierarchy-dropdown>
@@ -49,14 +49,14 @@
           [filterObj]="historicalDateFilter" (selectedDateApplyEmitter)="selectedDate($event)"
           [selectedDateRange]="selectedDateRange" [disabled]="isAssetWiseTelemetryData" >
         </app-date-range-picker>
-      
+
       </form>
     </ng-template>
 
     <ng-container *ngIf="isFilterSelected">
       <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
     </ng-container>
-  
+
   </div>
 </div>
 <!-- <app-historical-livechart></app-historical-livechart> -->

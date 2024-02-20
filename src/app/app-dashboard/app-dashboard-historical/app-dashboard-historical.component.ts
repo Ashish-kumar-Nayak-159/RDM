@@ -72,6 +72,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   dashistroicaldata:any;
   tempData: any;
+  getAssetsAPILoading: boolean = true;
   private alertSubscriptions:Subscription;
   constructor(
     private commonService: CommonService,
@@ -98,7 +99,9 @@ export class AppDashboardHistoricalComponent implements OnInit {
     this.widgetStringFromMenu = this.commonService.getValueFromModelMenuSetting('layout', 'widget');
     this.getTileName();
     await this.getAssets(this.contextApp.user.hierarchy);
-    this.onTabChange();
+    setTimeout(() =>{
+      this.onTabChange();
+    }, 1000)
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
@@ -158,6 +161,7 @@ export class AppDashboardHistoricalComponent implements OnInit {
   }
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
+      this.getAssetsAPILoading = true;
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
@@ -166,12 +170,15 @@ export class AppDashboardHistoricalComponent implements OnInit {
         this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-                        if (this.assets?.length === 1) {
+            if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
               this.onChangeOfAsset();
             }
           }
+          this.getAssetsAPILoading = false;
           resolve1();
+        }, (error) =>{
+          this.getAssetsAPILoading = false;
         })
       );
     });

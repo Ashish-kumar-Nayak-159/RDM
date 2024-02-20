@@ -458,7 +458,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       const filterObj = {
         app: this.contextApp.app,
         asset_id: this.selectedAlert.asset_id,
-        asset_model: this.selectedAsset.asset_model || this.selectedAsset?.tags?.asset_model,
+        asset_model: this.selectedAsset?.asset_model || this.selectedAsset?.tags?.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id),
       };
       this.alertCondition = undefined;
@@ -481,7 +481,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                     metadata: {
                       beforeIntervalForVisualizationWidgets: 10,
                       afterIntervalForVisualizationWidgets: 10,
-                      ...response.data[0].metadata
+                      ...response.data[0]?.metadata
                     }
                   }
                   this.beforeInterval = this.alertCondition.metadata.beforeIntervalForVisualizationWidgets;
@@ -616,7 +616,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.asset_model ? this.alertCondition.asset_model : this.selectedAsset.asset_model,
+        name: this.alertCondition?.asset_model ? this.alertCondition.asset_model : this.selectedAsset?.asset_model,
       };
       this.subscriptions.push(
         this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
@@ -760,11 +760,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAlert?.metadata?.files?.forEach((file) => { file['url'] = file.data.url; file['name'] = file.data.name; file['data']['type'] = file.type; file.data.sanitizedURL = this.sanitizeURL(file.data.url); file['sanitizedURL'] = file.data.sanitizedURL });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
-    this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
+    this.selectedAsset = this.originalAssets.find((asset) => asset?.asset_id === this.selectedAlert?.asset_id);
     // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();
     await this.getAssetderivedKPIs(
-      this.alertCondition?.asset_id ? this.alertCondition.asset_id : this.selectedAsset.asset_id
+      this.alertCondition?.asset_id ? this.alertCondition?.asset_id : this.selectedAsset?.asset_id
     );
     await this.getAssetsModelProperties();
     await this.getDocuments();

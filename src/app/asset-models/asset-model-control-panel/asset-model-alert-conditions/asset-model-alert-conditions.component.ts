@@ -688,10 +688,10 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   async onCreateAlertCondition() {
+    this.alertObj.metadata = this.setupForm?.value;
     if(this.selectedAudioFile && this.selectedAudioFile?.name){
       await this.uploadFile();
     }
-    this.alertObj.metadata = this.setupForm?.value;
     const alertObj = JSON.parse(JSON.stringify(this.alertObj));
     if (
       !alertObj.message ||
@@ -778,7 +778,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onDeselectAll(e, type) {
-    if (e === [] || e.length === 0) {
+    if (e?.length === 0) {
       if (type == 'document') {
         this.selectedDocuments = []
       }
@@ -828,11 +828,13 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
             audioElement.load();
               audioElement.addEventListener('loadedmetadata', () => {
                 audioDuration = audioElement.duration;
-              });        
+              });
               setTimeout(() =>{
                 if(audioDuration > CONSTANTS.DEFAULT_AUDIO_DURATION/1000){
                   this.toasterService.showError('Audio File Duration Exceeded' + " " + CONSTANTS.DEFAULT_AUDIO_DURATION / 1000 + " " + 'Second', 'Upload File');
-                  this.alert_sound.nativeElement.value='';
+                  if(this.alert_sound?.nativeElement?.value){
+                    this.alert_sound.nativeElement.value='';
+                  }
                   return;
                 }else{
                   this.selectedAudioFile = selectedFile;

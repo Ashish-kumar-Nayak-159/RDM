@@ -271,7 +271,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['applications']);
       this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, data);
     } else {
-      // if user is logged in for first time force the user to change password      
+      // if user is logged in for first time force the user to change password
       if (data.password_created_date === '' || data.password_created_date === null) {
         this.isResetPassword = true;
         return;
@@ -320,7 +320,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           };
           this.userData.apps[0].user = obj;
           await this.getApplicationData(this.userData.apps[0]);
-          this.router.navigate(['applications', this.applicationData.app]);
+          const menu = this.applicationData?.menu_settings?.main_menu?.length > 0 ? this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          const menuObj1 = menu.filter((menuData) => menuData?.visible && menuData?.url?.includes(':appName'))[0];
+          if(menuObj1?.url){
+            menuObj1.url = menuObj1.url.replace(':appName', this.applicationData.app);
+            this.router.navigateByUrl(menuObj1.url);
+          }
         }
         this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
       } else {

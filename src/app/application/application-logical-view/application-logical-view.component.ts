@@ -747,7 +747,6 @@ export class ApplicationLogicalViewComponent implements OnInit, OnDestroy {
       const obj = {};
 
       this.filterObj?.logicalview?.assets?.forEach(asset => {
-        debugger
         fobj.asset_id = asset.asset_id;
         fobj.partition_key = asset.asset_id;
         fobj.name = "Testing Purpose"

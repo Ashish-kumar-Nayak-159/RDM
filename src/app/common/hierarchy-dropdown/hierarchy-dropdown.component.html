@@ -79,7 +79,7 @@
     </ng-select>
     <ng-select *ngIf="type == 'logicalView' && showAsset" [items]="logicalView" class="custom dropdown-open"
       bindLabel="name" [clearable]="false" [searchable]="false" [closeOnSelect]="false" appendTo="#liveDataSelectAsset"
-      placeholder="Select111 Logical Asset" dropdownPosition="bottom" name="asset-dropdown" (change)="onSaveHierachy()"
+      placeholder="Logical Asset" dropdownPosition="bottom" name="asset-dropdown" (change)="onSaveHierachy()"
       [(ngModel)]="logicalAsset">
       <ng-template ng-option-tmp let-asset="item">
         <span [tooltip]="asset.name"> {{asset.name}}</span>

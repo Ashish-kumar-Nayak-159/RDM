@@ -187,43 +187,51 @@
           </tr>
           <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
             <div *ngIf="item?.json?.type">
-            <tr>
-              <td>
-                <label for="inputPassword" class="col-form-label" [ngClass]="item?.json?.required ? 'required' :''">{{item.name}}{{item.name && item.json?.units ? (" (" + item.json.units + ")") : "" }}:</label>
-              </td>
-              <td>
-                <div>
-                  <ng-container *ngIf="item.json.type === 'string'">
-                    <input type="text" class="form-control form-control-sm" name="{{item.name}}"
-                      [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
-                      maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}"
-                      (focusout)="onStringFocusOut(item.json.minLength,item.json.maxLength,item.value.length,i)">                   
-                  </ng-container>
-                  <ng-container *ngIf="item.json.type === 'number'">
-                    <input type="number" class="form-control form-control-sm" name="{{item.name}}"
-                      [(ngModel)]="item.value"
-                      min="{{item.json.minValue !== undefined || item.json.minValue !== null ? item.json.minValue : null}}"
-                      max="{{item.json.maxValue !== undefined || item.json.maxValue !== null  ? item.json.maxValue : null}}"
-                      step="any"
-                      (focusout)="onNumberFocusOut(item.json.minValue,item.json.maxValue,item.value,i)">
-                  </ng-container>
-                  <ng-container *ngIf="item.json.type === 'boolean'">
-                    <div class="btn-group" name="booleandata">
-                      <ui-switch checkedLabel="{{item.json.trueValue}}" uncheckedLabel="{{item.json.falseValue}}"
-                        size="small" [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
-                        uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white"
-                        uncheckedTextColor="white"></ui-switch>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngIf="item.json.type === 'enum'">
-                    <select class="form-control form-control-sm" id="widget" name="acknowledge"
-                      [(ngModel)]="item.value">
-                      <option [ngValue]="val.value" *ngFor="let val of item.json.enum">{{val.label}}</option>
-                    </select>
-                  </ng-container>
-                </div>
-              </td>
-            </tr>
+              <tr>
+                <td>
+                  <label for="inputPassword" class="col-form-label"
+                    [ngClass]="item?.json?.required ? 'required' :''">{{item.name}}{{item.name && item.json?.units ? ("
+                    (" + item.json.units + ")") : "" }}:</label>
+                </td>
+                <td>
+                  <div>
+                    <ng-container *ngIf="item.json.type === 'string'">
+                      <input type="text" class="form-control form-control-sm" name="{{item.name}}"
+                        [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
+                        maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}"
+                        (focusout)="onStringFocusOut(item.json.minLength,item.json.maxLength,item.value.length,i)">
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'array'">
+                      <div class="json-editor-wrapper">
+                        <json-editor #editor [options]="editorOptions" style="width:500px;min-height: 40rem;"
+                          name="json" [data]="[]">
+                        </json-editor>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'number'">
+                      <input type="number" class="form-control form-control-sm" name="{{item.name}}"
+                        [(ngModel)]="item.value"
+                        min="{{item.json.minValue !== undefined || item.json.minValue !== null ? item.json.minValue : null}}"
+                        max="{{item.json.maxValue !== undefined || item.json.maxValue !== null  ? item.json.maxValue : null}}"
+                        step="any" (focusout)="onNumberFocusOut(item.json.minValue,item.json.maxValue,item.value,i)">
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'boolean'">
+                      <div class="btn-group" name="booleandata">
+                        <ui-switch checkedLabel="{{item.json.trueValue}}" uncheckedLabel="{{item.json.falseValue}}"
+                          size="small" [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
+                          uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white"
+                          uncheckedTextColor="white"></ui-switch>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'enum'">
+                      <select class="form-control form-control-sm" id="widget" name="acknowledge"
+                        [(ngModel)]="item.value">
+                        <option [ngValue]="val.value" *ngFor="let val of item.json.enum">{{val.label}}</option>
+                      </select>
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
             </div>
           </ng-container>
           <ng-container *ngIf="jsonModelKeys.length === 0">

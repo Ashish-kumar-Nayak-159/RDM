@@ -1,6 +1,6 @@
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { HttpParams } from '@angular/common/http';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as datefns from 'date-fns';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,8 @@ import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { String } from 'typescript-string-operations';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+
 
 @Component({
   selector: 'app-specific-c2d-message',
@@ -17,6 +19,8 @@ import { String } from 'typescript-string-operations';
   styleUrls: ['./specific-c2d-message.component.css'],
 })
 export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
+  @ViewChild('editor', { static: false }) editor: JsonEditorComponent;
+
   @Input() pageType: any;
   @Input() componentState: any;
   @Input() asset: Asset = new Asset();
@@ -38,6 +42,10 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   constantData = CONSTANTS;
   controlWidgets: any[] = [];
   assetMethods: any[] = [];
+  // arrayJsonEditorData: any = [];
+  arrayJsonEditorData: any[] = []; // Initialize as an empty array
+  arrayJsonEditorErrorState: boolean = false; // Initialize as an empty array
+  jsonData: any;
   @Input() selectedWidget: any;
   @Input() jsonModelKeys: any[] = [];
   contextApp: any;
@@ -46,6 +54,8 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   slaves = [];
   selectedLevel = 0;
   canSend = true;
+  editorOptions: JsonEditorOptions;
+
   constructor(
     private toasterService: ToasterService,
     private assetService: AssetService,
@@ -58,6 +68,31 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.displayType = 'compose';
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['code']; // set all allowed modes
+    this.editorOptions.mode = 'code';
+    this.editorOptions.onChange = () => {
+      try {
+        this.jsonData = JSON.parse(JSON.stringify(this.editor.get()));
+        this.arrayJsonEditorErrorState = false;
+      }
+      catch (err) {
+        this.arrayJsonEditorErrorState = true;
+      }
+    }
+    this.editorOptions.enableSort = false;
+    this.editorOptions.enableTransform = false;
+    // this.editorOptions.escapeUnicode = false;
+    // this.editorOptions.expandAll = false;
+    // this.editorOptions.sortObjectKeys = false;
+    // this.editorOptions.history = false;
+    this.editorOptions.search = false;
+    // this.editorOptions.mainMenuBar = false;
+    // this.editorOptions.navigationBar = false;
+    this.editorOptions.statusBar = false;
+    // this.editorOptions.
+    this.editorOptions.expandAll = false;
+    this.editorOptions.statusBar = false;
     this.c2dMessageData = {
       asset_id: this.asset.asset_id,
       gateway_id: this.asset.gateway_id || this.asset.tags.gateway_id,
@@ -136,6 +171,18 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     }
   }
 
+
+
+
+  isValidArray(obj: any) {
+    try {
+      return Array.isArray(obj) && obj.length > 0 && JSON.parse(JSON.stringify(obj));
+    } catch (err) {
+      return false;
+    }
+  }
+
+
   sentC2DMessage() {
     if (this.canSend) {
       this.selectedLevel = 1;
@@ -153,20 +200,34 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       obj.message['slave_id'] = this.selectedSlaveValue;
       obj.message['asset_id'] = this.selectedAssetValue;
       let validateRequired = true;
+      let errorMessage = 'Please set all required fields';
+      // if (!this.arrayJsonEditorErrorState) {
+      //   this.arrayJsonEditorData = this.jsonData
+      // }
       this.jsonModelKeys.forEach((item) => {
         if (item.value !== null || item.value !== undefined) {
           if (item.json.type === 'boolean') {
             obj.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
+          } else if (item.json.type === 'array' && !this.arrayJsonEditorErrorState) {
+            obj.message[item.key] = JSON.parse(JSON.stringify(this.editor.get()));
           } else {
             obj.message[item.key] = item.value;
           }
         }
-        if (item.json.hasOwnProperty("required") && item.json.required && item.value === null) {
+
+
+        if (item.json.type === "array" && !this.isValidArray(obj.message[item.key]) && this.arrayJsonEditorErrorState) {
           validateRequired = false;
+          errorMessage = 'Please provide valid JSON array, with at-least one value';
         }
+        else if (item.json.type !== "array" && item.json.hasOwnProperty("required") && item.json.required && item.value === null) {
+          validateRequired = false;
+
+        }
+
       });
       if (!validateRequired) {
-        this.toasterService.showError('Please set all required fields', 'Validate Message Detail');
+        this.toasterService.showError(errorMessage, 'Validate Message Detail');
         return;
       }
       // obj.request_type = 'Custom';

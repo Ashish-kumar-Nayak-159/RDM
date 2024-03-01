@@ -1,6 +1,7 @@
 .red-font {
   color: #E74A3B;
 }
+
 .green-font {
   color: #1cc88a;
 }
@@ -15,6 +16,7 @@
   font-size: 30px;
   margin-bottom: -1.5rem;
 }
+
 .timer div {
   padding: 1px;
   border-radius: 3px;
@@ -25,6 +27,7 @@
   font-weight: 400;
   width: 45px;
 }
+
 .timer .smalltext {
   color: #fff;
   font-size: 9px;
@@ -34,6 +37,7 @@
   padding: 0;
   width: auto;
 }
+
 .timer #time-up {
   margin: 8px 0 0;
   text-align: left;
@@ -44,3 +48,22 @@
   letter-spacing: 1px;
 }
 
+.jsoneditor {
+  width: 500px !important;
+}
+
+.jsoneditor.jsoneditor-mode-code {
+  width: 500px !important;
+  background-color: red !important;
+}
+
+div.jsoneditor-mode-code {
+  width: 500px;
+  background-color: red !important;
+
+}
+
+.json-editor-wrapper {
+  width: 500px;
+  /* Set the desired width */
+}

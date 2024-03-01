@@ -157,6 +157,20 @@ export class CONSTANTS {
       metadata: {},
       deleted: false,
       type: 'apps',
+    },
+    {
+      id: 11,
+      name: 'Script',
+      is_start: false,
+      is_stop: false,
+      is_restart: false,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'Cert Manager',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
     }
   ];
 
@@ -1174,26 +1188,26 @@ export class CONSTANTS {
       accordion_value: {},
     },
     {
-        page: 'progress_report',
-        system_name: 'Progress Report',
-        url: null,
-        display_name: 'Progress Report',
-        icon: null,
-        visible: true,
-        isTitle: true,
-      },
-      {
-        page: 'daily_report',
-        system_name: 'Daily Report',
-        url: '#daily_report',
-        display_name: 'Daily Report',
-        icon: 'fa fa-fw fa-history',
-        visible: true,
-        isTitle: false,
-        privileges_required: ['RV'],
-        showAccordion: [],
-        accordion_value: {},
-      },
+      page: 'progress_report',
+      system_name: 'Progress Report',
+      url: null,
+      display_name: 'Progress Report',
+      icon: null,
+      visible: true,
+      isTitle: true,
+    },
+    {
+      page: 'daily_report',
+      system_name: 'Daily Report',
+      url: '#daily_report',
+      display_name: 'Daily Report',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false,
+      privileges_required: ['RV'],
+      showAccordion: [],
+      accordion_value: {},
+    },
   ];
 
   public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -2286,8 +2300,8 @@ export class CONSTANTS {
     'This Month': [datefns.startOfMonth(new Date()), new Date()],
     'Last Month': [datefns.subMonths(datefns.startOfMonth(new Date()), 1), datefns.startOfMonth(new Date())]
   };
-  public static  DATE_OPTIONS_CUSTOM_RANGE = {
-    'Custom Range' : [datefns.startOfDay(new Date()), new Date()],
+  public static DATE_OPTIONS_CUSTOM_RANGE = {
+    'Custom Range': [datefns.startOfDay(new Date()), new Date()],
     ...CONSTANTS.DATE_OPTIONS_MORE_THAN_24_HOURS
   }
 
@@ -2441,7 +2455,7 @@ export class CONSTANTS {
   public static DEFAULT_SERVICE_BUS_CONNECTION_SETRING_REGEX = /^(?:Endpoint=sb:\/\/){1}[A-Za-z]{1}[a-zA-Z0-9-]{4,48}[a-zA-Z0-9]{1}(?:.servicebus.windows.net\/;SharedAccessKeyName=[\w.-\/]{1,260};SharedAccessKey=){1}(.){44}(;EntityPath=[\w.-\/]{1,260}){1}()+$/;
   public static DEFAULT_MICROSOFT_TEAMS_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
   public static DEFAULT_WEBHOOK_ENDPOINT_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&\(\)\*\+,;=.]+$/;
-  public static DAILY_REPORT_DATE_FILTER ="dailyReportDateFilter";
+  public static DAILY_REPORT_DATE_FILTER = "dailyReportDateFilter";
   public static ASSET_ALERT_AUDIO_SIZE = 5000000;
   public static DEFAULT_AUDIO_DURATION = 6000;
   public static MODEL_ALERT_AUDIO = 'model_alertCondition_audio';

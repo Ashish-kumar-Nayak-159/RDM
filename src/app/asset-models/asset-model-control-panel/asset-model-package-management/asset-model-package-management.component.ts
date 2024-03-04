@@ -141,7 +141,13 @@ export class AssetModelPackageManagementComponent implements OnInit {
     this.subscriptions.push(
       this.assetModelService.getPackages(this.contextApp.app, this.assetModel.name, {}).subscribe((response: any) => {
         if (response.data?.length > 0) {
-          this.packages = response.data;
+          this.packages = response.data.map(d => {
+            return {
+              ...d,
+              app_name: d.name,
+              name: CONSTANTS.ASSETAPPPS.find(a => a.name === d.name).display_name,
+            }
+          });
         }
         this.isPackagesAPILoading = false;
       })

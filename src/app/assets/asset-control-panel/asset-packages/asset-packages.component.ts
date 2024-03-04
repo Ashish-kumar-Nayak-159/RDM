@@ -17,7 +17,7 @@ export class AssetPackagesComponent implements OnInit {
   contextApp: any;
   constantData = CONSTANTS;
   packageTableConfig: any;
-  constructor(private assetModelService: AssetModelService, private commonService: CommonService) {}
+  constructor(private assetModelService: AssetModelService, private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -92,7 +92,13 @@ export class AssetPackagesComponent implements OnInit {
         .getPackages(this.contextApp.app, this.asset.tags.asset_model, {})
         .subscribe((response: any) => {
           if (response.data?.length > 0) {
-            this.packages = response.data;
+            this.packages = response.data.map(d => {
+              return {
+                ...d,
+                app_name: d.name,
+                name: CONSTANTS.ASSETAPPPS.find(a => a.name === d.name).display_name,
+              }
+            });
           }
           this.isPackagesAPILoading = false;
         })

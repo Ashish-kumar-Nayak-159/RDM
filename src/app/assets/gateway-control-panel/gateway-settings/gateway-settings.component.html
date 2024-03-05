@@ -1,50 +1,53 @@
 <div class="tab-bar">
   <div class="">
     <ul class="nav">
-      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
+      <li class="nav-item"
+        *ngIf="componentState !== constantData.NON_IP_ASSET && menuDetail?.accordion_value?.test_connection">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
           (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-plug"></em>
           <span class="text-secondary">Test Connection</span></a>
       </li>
-      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
+      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET && menuDetail?.accordion_value?.fota">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'FOTA'}" href="javascript:void(0)"
           (click)="onClickOfTab('FOTA')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-image"></em>
           <span class="text-secondary">FOTA</span></a>
       </li>
-      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
+      <li class="nav-item"
+        *ngIf="componentState !== constantData.NON_IP_ASSET && menuDetail?.accordion_value?.manage_application">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Applications'}" href="javascript:void(0)"
           (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-microchip"></em>
           <span class="text-secondary">Manage Applications</span></a>
       </li>
-      <li class="nav-item" *ngIf="componentState !== constantData.IP_ASSET">
+      <li class="nav-item"
+        *ngIf="componentState !== constantData.IP_ASSET && menuDetail?.accordion_value?.manage_assets">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Assets'}" href="javascript:void(0)"
           (click)="onClickOfTab('Manage Assets')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-laptop"></em>
           <span class="text-secondary">Manage Assets</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.sync_slaves">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Slaves'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Slaves')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Slaves</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.sync_properties">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Properties</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.sync_rules">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Rules'}" href="javascript:void(0)"
           (click)="onClickOfTab('Register Rules')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-building"></em>
           <span class="text-secondary">Sync Rules</span></a>
       </li>
       <li class="nav-item"
-        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && decodedToken?.privileges?.indexOf('ASMS') > -1">
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && decodedToken?.privileges?.indexOf('ASMS') > -1 && menuDetail?.accordion_value?.settings">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Settings'}" href="javascript:void(0)"
           (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
           <em class="fa fa-fw fa-cog"></em>
@@ -53,7 +56,6 @@
     </ul>
   </div>
 </div>
-
 <ng-container *ngIf="selectedTab === 'Test Connection'">
   <div class="table-responsive">
     <div class="tableFixHead">

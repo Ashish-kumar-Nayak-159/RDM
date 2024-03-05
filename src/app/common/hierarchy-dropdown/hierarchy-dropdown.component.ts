@@ -66,7 +66,6 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
 
     if (this.type == 'logicalView') {
       this.logicalAsset = this.filterObj.logicalview;
-      console.log('this.logicalAsset: ', this.logicalAsset);
     }
   }
 

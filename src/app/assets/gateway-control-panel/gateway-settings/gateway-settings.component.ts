@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetService } from 'src/app/services/assets/asset.service';
@@ -14,6 +14,7 @@ export class GatewaySettingsComponent implements OnInit {
   @Input() asset: any;
   @Input() tileData: any;
   @Input() componentState: any;
+  @Input() menuDetail: any;
   subscriptions: Subscription[] = [];
   contextApp: any;
   userData: any;
@@ -26,11 +27,12 @@ export class GatewaySettingsComponent implements OnInit {
   c2dJobFilter: any = {};
   c2dJobFilter1: any = {};
   decodedToken: any;
+  activeClass = false;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.asset = JSON.parse(JSON.stringify(this.asset));
@@ -41,9 +43,39 @@ export class GatewaySettingsComponent implements OnInit {
     this.getAssetData();
     this.c2dJobFilter.request_type = 'Test Connection';
     this.c2dJobFilter.job_type = 'DirectMethod';
-    // this.c2dJobFilter1.request_type = 'Sync Rules';
-    // this.c2dJobFilter1.job_type = 'Message';
+    if (this.menuDetail?.accordion_value?.test_connection) {
+      this.selectedTab = 'Test Connection';
+
+    } else if (this.menuDetail?.accordion_value?.fota) {
+      this.selectedTab = 'FOTA';
+
+    } else if (this.menuDetail?.accordion_value?.manage_application) {
+      this.selectedTab = 'Manage Applications';
+
+    } else if (this.menuDetail?.accordion_value?.manage_assets) {
+      this.selectedTab = 'Manage Assets';
+
+    } else if (this.menuDetail?.accordion_value?.sync_slaves) {
+      this.selectedTab = 'Register Slaves';
+    }
+    else if (this.menuDetail?.accordion_value?.sync_properties) {
+      this.selectedTab = 'Register Properties';
+    }
+    else if (this.menuDetail?.accordion_value?.sync_rules) {
+      this.selectedTab = 'Register Rules';
+    }
+    else if (this.menuDetail?.accordion_value?.settings) {
+      this.selectedTab = 'Settings';
+    }
+    else {
+      if (this.componentState === this.constantData.NON_IP_ASSET) {
+        this.selectedTab = 'Manage Assets'
+      } else {
+        this.selectedTab = 'Test Connection'
+      }
+    }
   }
+
 
   getAssetData() {
     this.subscriptions.push(
@@ -74,9 +106,9 @@ export class GatewaySettingsComponent implements OnInit {
             };
           }
           if (this.componentState === this.constantData.NON_IP_ASSET) {
-            this.onClickOfTab('Manage Assets');
+            this.onClickOfTab(this.selectedTab);
           } else {
-            this.onClickOfTab('Test Connection');
+            this.onClickOfTab(this.selectedTab);
           }
         })
     );

@@ -2,7 +2,7 @@
 <div id="wrapper">
   <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetDataLoading">
     Loading Asset Data...
-    <em class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></em>
+    <em class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></em>
   </div>
   <!-- Sidebar -->
   <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isAssetDataLoading">
@@ -26,7 +26,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name">
-                <em class="{{menu.icon}}" placement="bottom" ></em>
+                <em class="{{menu.icon}}" placement="bottom"></em>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>
@@ -70,12 +70,14 @@
                 [menuDetail]="getMenuDetail('tags')"></app-tags>
             </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="asset_settings">
-              <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset" [componentState]="componentState"
-              >
+              <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset"
+                [componentState]="componentState" [menuDetail]="getMenuDetail('setup')">
               </app-gateway-settings>
             </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="asset_notifications">
-              <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset"></app-asset-messages-wrapper>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
+              id="asset_notifications">
+              <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset"
+                [asset]="asset"></app-asset-messages-wrapper>
             </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
               id="asset_cached_telemetry">
@@ -92,8 +94,7 @@
               <app-asset-life-cycle-events *ngIf="activeTab === 'asset_life_cycle' && asset" [asset]="asset">
               </app-asset-life-cycle-events>
             </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}"
-              role="tabpanel" id="asset_logs">
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="asset_logs">
               <app-logs *ngIf="activeTab === 'logs' && asset" [asset]="asset"></app-logs>
             </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
@@ -115,15 +116,19 @@
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="asset_count">
               <app-asset-count *ngIf="activeTab === 'count' && asset" [asset]="asset"></app-asset-count>
             </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="asset_package_management">
-              <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset"></app-asset-packages>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel"
+              id="asset_package_management">
+              <app-asset-packages *ngIf="activeTab === 'package_management' && asset"
+                [asset]="asset"></app-asset-packages>
             </div>
 
             <div class="tab-pane" class="pt-1 " [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
-            id="daily_report">
-            <app-asset-daily-reports *ngIf="activeTab === 'daily_report' && this.commonService.appPrivilegesPermission('RV') && ((decodedToken?.app === 'Kirloskar') || (decodedToken?.app === 'VNHierarchyTests')) && asset" [asset]="asset">
-            </app-asset-daily-reports>
-          </div>
+              id="daily_report">
+              <app-asset-daily-reports
+                *ngIf="activeTab === 'daily_report' && this.commonService.appPrivilegesPermission('RV') && ((decodedToken?.app === 'Kirloskar') || (decodedToken?.app === 'VNHierarchyTests')) && asset"
+                [asset]="asset">
+              </app-asset-daily-reports>
+            </div>
             <!-- /.container1-fluid -->
 
           </div>

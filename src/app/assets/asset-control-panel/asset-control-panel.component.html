@@ -147,7 +147,7 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="asset_setup">
             <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset"
-              [componentState]="componentState">
+              [menuDetail]="getMenuDetail('setup')" [componentState]="componentState">
             </app-gateway-settings>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'uptime'}" role="tabpanel" id="asset_uptime">
@@ -199,12 +199,11 @@
             <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && asset" [asset]="asset">
             </app-gateway-cached-alerts>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel"
-            id="daily_report" >
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'daily_report'}" role="tabpanel" id="daily_report">
             <app-asset-daily-reports *ngIf="commonService.appPrivilegesPermission('RV') &&
             ((decodedToken?.app === 'Kirloskar') || (decodedToken?.app === 'VNHierarchyTests')) &&
             activeTab === 'daily_report' && asset" [asset]="asset">
-          </app-asset-daily-reports>
+            </app-asset-daily-reports>
           </div>
           <!-- /.container1-fluid -->
 

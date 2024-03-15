@@ -88,6 +88,8 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     handleResponseError(error, request?, next?) {
+        debugger
+        console.log("testing", error)
         // Business error
         if (error.status === 400) {
             // Show message
@@ -95,6 +97,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
         // Invalid token error
         else if (error.status === 401 && error?.error?.reason === 'cors_error') {
+            this.toasterService.showError('Please login again', 'Session Expired');
+            this.commonService.onLogOut();
+        }
+
+        else if (error.status === 401 && (error?.error?.reason === 'claim_missing' || error?.error?.reason === 'version_upgrade')) {
             this.toasterService.showError('Please login again', 'Session Expired');
             this.commonService.onLogOut();
         }
@@ -149,7 +156,6 @@ export class AuthInterceptor implements HttpInterceptor {
                     return next.handle(request);
                 }),
                 catchError(e => {
-
                     if (e.status !== 401) {
                         return this.handleResponseError(e);
                     } else {

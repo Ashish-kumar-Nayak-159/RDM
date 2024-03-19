@@ -243,14 +243,13 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       }
       else {
         if (this.childTab === 'performance') {
-
-          setTimeout(() => {
-            this.loadFromCache();
-          }, 200);
           this.preOffset = 0;
           this.preLimit = 10;
           this.currentLimit = 10;
-          this.performanceTab();
+          setTimeout(() => {
+            this.loadFromCache();
+            this.performanceTab();
+          }, 200);
         }
       }
     }
@@ -340,6 +339,7 @@ export class AppDataDashboardComponent implements OnInit, OnDestroy, AfterViewIn
         break;
       }
       case 'performance': {
+        this.preOffset = 0;
         await this.performanceTab();
         break;
       }

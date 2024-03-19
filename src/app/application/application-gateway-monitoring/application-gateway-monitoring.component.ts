@@ -210,7 +210,8 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
         response.user.hierarchy = { App: this.selectedApp };
         this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
         let appObj = {
-          app: this.selectedApp
+          app: this.selectedApp,
+          response_format: 'Object'
         }
         this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
           this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
@@ -251,7 +252,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   async loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-    if (item) {
+    if (Object.keys(item)?.length) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item?.hierarchy)
         this.hierarchy = item?.hierarchy;
@@ -317,17 +318,17 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       if (response?.data?.length < this.currentLimit) {
         this.loadMoreVisibility = false
       }
-      
+
       let mergedObject = [...this.applications, ...response.data];
       const unique = [...new Map(mergedObject.map(item => [item.asset_id, item])).values()];
-      
+
       this.applications = unique;
-      
+
       //Note: Searching on same function it will push the same data again and again of searched list
       // So i have added list, and returned only unique record,
       //Currently added for asset_id filter as unique.
       //this.applications = [...this.applications, ...response.data];
-      
+
       this.loader = false;
     },
       (error) => this.loader = false)

@@ -70,7 +70,7 @@
     <div class="col-sm-4 pl-4" *ngIf="isSelectedAppData">
         <div class="d-flex" >
             <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
-                (clearHierarchyEvent)="onClearHierarchy($event)" [closeOnSelection]="false" [filterObj]="filterObj" [assets]="assets">
+                (clearHierarchyEvent)="onClearHierarchy($event)" [closeOnSelection]="false">
             </app-hierarchy-dropdown>
             <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary ml-2"
                     (click)="filteredHiearchyObj()"><em class="fas fa-search fa-sm"></em></button></div>

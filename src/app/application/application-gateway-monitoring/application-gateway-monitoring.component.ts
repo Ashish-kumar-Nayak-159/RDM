@@ -83,7 +83,6 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           this.appsList = respData
           this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
           this.hierarchy = { App: this.selectedApp };
-          this.getHierarchy();
           this.appName();
         }
         else { this.appsList = []; }
@@ -200,38 +199,42 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   }
 
-  getHierarchy() {
-    if (this.userDataFromLocal.is_super_admin) {
-      this.isSelectedAppData = false;
-      localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
-      this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
-        response.app = this.selectedApp;
-        response.user = {};
-        response.user.hierarchy = { App: this.selectedApp };
-        this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
-        let appObj = {
-          app: this.selectedApp,
-          response_format: 'Object'
-        }
-        this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
-          this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
-          this.isSelectedAppData = true;
-          this.changeDetector.detectChanges();
-        })
-      });
-    }
-    else {
-      this.isSelectedAppData = true;
-      this.changeDetector.detectChanges();
-    }
+  async getHierarchy() {
+    return new Promise <void>((resolve) =>{
+      if (this.userDataFromLocal.is_super_admin) {
+        this.isSelectedAppData = false;
+        localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
+        this.applicationService.getApplicationDetail(this.selectedApp).subscribe((response: any) => {
+          response.app = this.selectedApp;
+          response.user = {};
+          response.user.hierarchy = { App: this.selectedApp };
+          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
+          let appObj = {
+            app: this.selectedApp,
+            response_format: 'Object'
+          }
+          this.applicationService.getExportedHierarchy(appObj).subscribe((response: any) => {
+            this.commonService.setItemInLocalStorage(CONSTANTS.HIERARCHY_TAGS, response?.data);
+            this.isSelectedAppData = true;
+            this.changeDetector.detectChanges();
+            resolve();
+          })
+        });
+      }
+      else {
+        this.isSelectedAppData = true;
+        this.changeDetector.detectChanges();
+        resolve();
+      }
+    })
   }
-  appName() {
+  async appName() {
     this.applications = []
     this.loadMoreVisibility = true;
     this.currentOffset = 0;
     this.currentLimit = 10;
     if (this.selectedApp) {
-      this.getHierarchy();
+      await this.getHierarchy();
       this.hierarchy = { App: this.selectedApp };
       this.loadFromCache();
       this.assetStatic();

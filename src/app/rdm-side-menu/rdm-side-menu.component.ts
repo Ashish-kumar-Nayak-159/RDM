@@ -60,8 +60,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getAssetData();
     if (this.contextApp && !this.userData?.is_super_admin) {
+      this.getAssetData();
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(async (msg) => {
         if ((!msg.type || msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical')) {

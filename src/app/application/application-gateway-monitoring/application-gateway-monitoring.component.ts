@@ -58,6 +58,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   assetCount=0;
   assetTotalcount=0;
+  isAppChanged= false;
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private commonService: CommonService, private applicationService: ApplicationService,
     private route: ActivatedRoute, private changeDetector: ChangeDetectorRef) { }
@@ -66,6 +67,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
     const userData = localStorage.getItem(CONSTANTS.USER_DETAILS);
     const selectedAppData = localStorage.getItem(CONSTANTS.SELECTED_APP_DATA);
     this.userDataFromLocal = JSON.parse(this.commonService.decryptString(userData))
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     // this.assets = this.hierarchyDropdown.getAssets();
     const obj = {
       environment: environment.environment,
@@ -81,7 +83,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
             return item.app
           })
           this.appsList = respData
-          this.selectedApp = this.receivedAppName ? this.receivedAppName : respData[0];
+          this.selectedApp = this.receivedAppName ? this.receivedAppName : this.contextApp?.app ? this.contextApp.app : respData[0];
           this.hierarchy = { App: this.selectedApp };
           this.appName();
         }
@@ -209,6 +211,7 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
           response.user = {};
           response.user.hierarchy = { App: this.selectedApp };
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, response);
+          this.contextApp = response ;
           let appObj = {
             app: this.selectedApp,
             response_format: 'Object'
@@ -228,13 +231,18 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
       }
     })
   }
-  async appName() {
+  async appName(appChanged = false) {
+    this.isAppChanged = appChanged;
     this.applications = []
     this.loadMoreVisibility = true;
     this.currentOffset = 0;
     this.currentLimit = 10;
     if (this.selectedApp) {
       await this.getHierarchy();
+      if (this.userDataFromLocal.is_super_admin) {
+        const obj ={hierarchy : this.hierarchy }
+        this.hierarchyDropdown.updateHierarchyDetail(obj);
+      }
       this.hierarchy = { App: this.selectedApp };
       this.loadFromCache();
       this.assetStatic();
@@ -255,6 +263,10 @@ export class ApplicationGatewayMonitoringComponent implements OnInit {
 
   async loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    if(this.userDataFromLocal?.is_super_admin && this.isAppChanged){
+      item.hierarchy = { App: this.selectedApp };
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
+    }
     if (Object.keys(item)?.length) {
       this.hierarchyDropdown.updateHierarchyDetail(JSON.parse(JSON.stringify(item)));
       if (item?.hierarchy)

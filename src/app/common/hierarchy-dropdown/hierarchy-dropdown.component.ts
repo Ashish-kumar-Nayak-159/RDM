@@ -262,10 +262,10 @@ export class HierarchyDropdownComponent implements OnInit, OnChanges {
     let parentId = 0;
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[key]) {
-        parentId = this.actualhierarchyNewArr.find(r => r.level == index + 1 && r.key == this.configureHierarchy[key] && r.parent_id == parentId).id;
+        parentId = this.actualhierarchyNewArr.find(r => r?.level == index + 1 && r?.key == this.configureHierarchy[key] && r?.parent_id == parentId)?.id;
       }
     });
-    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r.id == parentId);
+    let selectedHierarchy = this.actualhierarchyNewArr.find(r => r?.id == parentId);
     if (selectedHierarchy) {
       this.hierarchyNewArr[i + 1] = this.actualhierarchyNewArr.filter(r => r.level == i + 1 && r.parent_id == selectedHierarchy.id);
     }

@@ -62,7 +62,7 @@
 
 <div class="row">
     <div class="col-sm-3 pl-3" *ngIf="appsList && appsList.length > 1" >
-        <select  class="outline-none form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName()">
+        <select  class="outline-none form-control form-control-sm ml-3" [(ngModel)]="selectedApp" (change)="appName(true)">
             <option [ngValue]="undefined">Select App</option>
             <option value={{item}} *ngFor="let item of appsList">{{item}}</option>
         </select>
